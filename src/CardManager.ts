@@ -79,7 +79,7 @@ export class CardManager {
 	}
 
 	// transmit to server
-	public sendSelectedCards() {
-		console.log(this.selectedCards);
+	public selectedCardsToJSON(): string {
+		return (JSON.stringify(this.selectedCards));
 	}
 }

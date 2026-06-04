@@ -23,6 +23,11 @@ export enum CardSuite {
 	Spade
 }
 
+export interface CardSerialized {
+	rank: CardRank;
+	suite: CardSuite;
+}
+
 export class Card {
 	private static	textureLoader = new THREE.TextureLoader();
 	private static	geometry: THREE.PlaneGeometry = new THREE.PlaneGeometry(1, 1.5);
@@ -124,5 +129,12 @@ export class Card {
 			case CardRank.Ace: texture = Card.frontTextureAtlas[y * col + 12]; break ;
 		}
 		return (texture);
+	}
+
+	public toJSON(): CardSerialized {
+		return {
+			rank: this.rank,
+			suite: this.suite
+		}
 	}
 }

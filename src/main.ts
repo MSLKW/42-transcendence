@@ -2,6 +2,7 @@ import * as THREE from 'three';
 import { Card, CardRank, CardSuite } from './Card.ts';
 import { CardManager } from './CardManager.ts';
 import { CardHand, HandType, PentupleType } from './CardHand.ts';
+import { socket } from './ClientWebsocket.ts';
 
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 100);
@@ -72,7 +73,8 @@ window.addEventListener('resize', resize);
 
 const button = document.getElementById('ui-button');
 button?.addEventListener('click', () => {
-	cardManager.sendSelectedCards();
+	const cardsJson: string = cardManager.selectedCardsToJSON();
+	socket.emit('msg', cardsJson);
 })
 
 function animate(time: DOMHighResTimeStamp) {
