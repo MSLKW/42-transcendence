@@ -45,7 +45,7 @@ export class Card {
 		// Load texture based on rank and suite
 		// this.frontTexture = this.getTexture(this.rank, this.suite);
 		this.frontTexture = this.getFrontTexture(this.rank, this.suite);
-		this.backTexture = Card.textureLoader.load('/src/resources/card_back.webp');
+		this.backTexture = Card.textureLoader.load('/resources/card_back.webp');
 
 		this.frontMaterial = new THREE.MeshBasicMaterial({color: 0xffffff, map: this.frontTexture, side: THREE.FrontSide });
 		this.backMaterial = new THREE.MeshBasicMaterial({color: 0xffffff, map: this.backTexture, side: THREE.BackSide });
@@ -78,7 +78,7 @@ export class Card {
 	private static initTextureAtlas(): Array<THREE.Texture>
 	{
 		const textureAtlas: Array<THREE.Texture> = [];
-		const textureAtlasPath: string = '/src/resources/cardTextures.png';
+		const textureAtlasPath: string = '/resources/cardTextures.png';
 		const cols: number = 13;
 		const rows: number = 4;
 		// Index starts from bottom-left and goes right(x) and up(y)

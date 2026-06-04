@@ -1,8 +1,17 @@
 {
+  "type": "module",
   "devDependencies": {
+    "@types/express": "^5.0.6",
+    "@types/node": "^25.9.1",
     "@types/three": "^0.184.1",
-    "three": "^0.184.0",
     "typescript": "^6.0.3",
     "vite": "^8.0.16"
+  },
+  "dependencies": {
+    "express": "^5.2.1",
+    "three": "^0.184.0"
+  },
+  "scripts": {
+    "build": "tsc && vite build"
   }
 }
