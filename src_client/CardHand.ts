@@ -1,31 +1,5 @@
-import { Card, CardSerialized, CardRank, CardSuite } from './Card.ts';
-// cardhand logic, accepts cardhand
-// have enum single, double, triple, pentuple
-// evaluate pentuple types
-
-export enum HandType {
-	None,
-	Single,
-	Double,
-	Triple,
-	Pentuple
-};
-
-export enum PentupleType {
-	None,
-	Straight,
-	Flush,
-	FullHouse,
-	FourOfAKind,
-	StraightFlush,
-	// RoyalFlush
-}
-
-export interface CardHandSerialized {
-	cards: Array<CardSerialized>;
-	handType: HandType;
-	pentupleType: PentupleType;
-}
+import { Card } from './Card.ts';
+import { HandType, PentupleType, CardRank, CardSuite, CardHandTransmit} from '../src_shared/Types.ts'
 
 export class CardHand {
 	public readonly	cards: Array<Card>;
@@ -202,7 +176,7 @@ export class CardHand {
 		return (false);
 	}
 
-	public toJSON(): CardHandSerialized {
+	public toJSON(): CardHandTransmit {
 		return {
 			cards: this.cards,
 			handType: this.handType,

@@ -4,8 +4,9 @@ import { createServer } from 'http';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { Server } from 'socket.io';
+import z from 'zod';
 
-// import { CardHandSerialized } from './src/CardHand.ts';
+import { CardHandTransmit, CardRank, CardSuite, HandType, PentupleType } from '../src_shared/Types.js'
 
 const app = express();
 const httpServer = createServer(app);
@@ -31,6 +32,8 @@ io.on("connection", (socket) => {
 
 	socket.on('msg', (msg) => {
 		// const cardhand = JSON.parse(msg) as CardHandSerialized;
+		const cardHand = JSON.parse(msg) as CardHandTransmit;
+		console.log(`Handtype: ${HandType[cardHand.handType]}`);
 		console.log(`msg received: ${msg}`);
 	});
 });

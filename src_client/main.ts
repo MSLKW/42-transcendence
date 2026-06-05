@@ -1,7 +1,8 @@
 import * as THREE from 'three';
-import { Card, CardRank, CardSuite } from './Card.ts';
+import { CardRank, CardSuite, HandType, PentupleType } from '../src_shared/Types.ts';
+import { Card } from './Card.ts';
 import { CardManager } from './CardManager.ts';
-import { CardHand, HandType, PentupleType } from './CardHand.ts';
+import { CardHand } from './CardHand.ts';
 import { socket } from './ClientWebsocket.ts';
 
 const scene = new THREE.Scene();

@@ -1,32 +1,5 @@
 import * as THREE from 'three';
-
-export enum CardRank {
-	Three,
-	Four,
-	Five,
-	Six,
-	Seven,
-	Eight,
-	Nine,
-	Ten,
-	Jack,
-	Queen,
-	King,
-	Ace,
-	Two
-}
-
-export enum CardSuite {
-	Diamond,
-	Club,
-	Heart,
-	Spade
-}
-
-export interface CardSerialized {
-	rank: CardRank;
-	suite: CardSuite;
-}
+import { CardRank, CardSuite, CardTransmit } from '../src_shared/Types.ts';
 
 export class Card {
 	private static	textureLoader = new THREE.TextureLoader();
@@ -131,7 +104,7 @@ export class Card {
 		return (texture);
 	}
 
-	public toJSON(): CardSerialized {
+	public toJSON(): CardTransmit {
 		return {
 			rank: this.rank,
 			suite: this.suite

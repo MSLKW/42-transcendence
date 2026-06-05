@@ -2,9 +2,6 @@ import * as THREE from 'three';
 import { Card } from './Card.ts';
 import { CardHand } from './CardHand.ts';
 
-// accept Card objects
-// handles positioning of multiple card objects
-
 export class CardManager {
 	private	pointLeft: THREE.Vector3;
 	private pointRight: THREE.Vector3;
