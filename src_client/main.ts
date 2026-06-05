@@ -4,6 +4,7 @@ import { Card } from './Card.ts';
 import { CardManager } from './CardManager.ts';
 import { CardHand } from './CardHand.ts';
 import { socket } from './ClientWebsocket.ts';
+import { CardHeap } from './CardHeap.ts';
 
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 100);
@@ -27,7 +28,9 @@ document.body.appendChild(renderer.domElement);
 // 	y += 2;
 // }
 
-let cardManager = new CardManager(new THREE.Vector3(-5, 0, 0), new THREE.Vector3(5, 0, 0));
+const cardHeap = new CardHeap();
+
+let cardManager = new CardManager(new THREE.Vector3(-5, -3, 0), new THREE.Vector3(5, -3, 0));
 for (let i = 0; i < 13; i++) {
 	let card = new Card(i, CardSuite.Spade);
 	scene.add(card.object);
@@ -75,7 +78,14 @@ window.addEventListener('resize', resize);
 const button = document.getElementById('ui-button');
 button?.addEventListener('click', () => {
 	const cardsJson: string = cardManager.selectedCardsToJSON();
-	socket.emit('msg', cardsJson);
+	socket.emit('playCardHand', cardsJson);
+})
+
+socket.on('playCardHand', (status) => {
+	if (status === 'success') {
+		const cardHand = cardManager.sendSelectedCards();
+		cardHeap.receiveCardHand(cardHand);
+	}
 })
 
 function animate(time: DOMHighResTimeStamp) {

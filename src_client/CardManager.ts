@@ -7,7 +7,7 @@ export class CardManager {
 	private pointRight: THREE.Vector3;
 	private	slots: Array<THREE.Vector3>;
 	private cards: Array<Card>;
-	private selectedCards: CardHand;
+	private	selectedCards: CardHand;
 	
 	constructor(pointLeft: THREE.Vector3, pointRight: THREE.Vector3) {
 		this.slots = [];
@@ -20,7 +20,7 @@ export class CardManager {
 	public receiveCard(card: Card) {
 		this.cards.push(card);
 		this.calculateSlots();
-		this.updateSlots();
+		this.updateCardPositions();
 	}
 
 	public removeCard(card: Card) {
@@ -31,12 +31,13 @@ export class CardManager {
 		}
 		this.cards.splice(index, 1);
 		this.calculateSlots();
-		this.updateSlots();
+		this.updateCardPositions();
 	}
 
+	// very prone to breaking lol, gotta revamp
 	private	calculateSlots() {
 		this.slots.length = 0;
-		const amountOfDistances = this.cards.length - 1;
+		const amountOfDistances = Math.max(0, this.cards.length - 1);
 		const distX = Math.abs(this.pointRight.x - this.pointLeft.x);
 		const iteration = distX / amountOfDistances;
 		for (let x = this.pointLeft.x; x <= this.pointRight.x; x += iteration) {
@@ -44,7 +45,7 @@ export class CardManager {
 		}
 	}
 
-	private updateSlots() {
+	private updateCardPositions() {
 		for (let i = 0; i < this.cards.length; i++)
 		{
 			let card = this.cards.at(i);
@@ -63,13 +64,15 @@ export class CardManager {
 		if (intersected.length > 0) {
 			let card: Card = intersected[0].object.userData.instance;
 			if (card && this.cards.indexOf(card) != -1) {
-				this.cards.splice(this.cards.indexOf(card), 1);
-				this.selectedCards.receiveCard(card);
-				console.log(`card selected: ${card.rank}, ${card.suite}`);
+				if (this.selectedCards.receiveCard(card) == true) {
+					console.log(`card selected: ${card.rank}, ${card.suite}`);
+					this.removeCard(card);
+					card.object.position.setY(card.object.position.y + 2);
+				}
 			}
 			else if (card && this.selectedCards.cards.indexOf(card) != -1) {
 				this.selectedCards.removeCard(card);
-				this.cards.push(card);
+				this.receiveCard(card);
 				console.log(`Card deselected: ${card.rank}, ${card.suite}`);
 			}
 		}
@@ -78,5 +81,13 @@ export class CardManager {
 	// transmit to server
 	public selectedCardsToJSON(): string {
 		return (JSON.stringify(this.selectedCards));
+	}
+
+	public sendSelectedCards(): CardHand {
+		const cardHand = this.selectedCards;
+		for (let i = 0; i < this.selectedCards.cards.length; i++) {
+			this.selectedCards = new CardHand();
+		}
+		return (cardHand);
 	}
 }

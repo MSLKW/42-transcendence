@@ -10,14 +10,15 @@ export class CardHand {
 		this.cards = [];
 	}
 
-	public receiveCard(card: Card) {
+	public receiveCard(card: Card): boolean {
 		if (this.cards.length >= 5) {
 			console.log('CardHand is full');
-			return ;
+			return (false);
 		}
 		this.cards.push(card);
 		this.cards.sort(this.sortCards);
 		this.evaluateHandType();
+		return (true);
 	}
 
 	public removeCard(card: Card) {

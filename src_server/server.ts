@@ -36,4 +36,9 @@ io.on("connection", (socket) => {
 		console.log(`Handtype: ${HandType[cardHand.handType]}`);
 		console.log(`msg received: ${msg}`);
 	});
+
+	socket.on("playCardHand", (body) => {
+		const cardHandTransmit = JSON.parse(body) as CardHandTransmit;
+		socket.emit('playCardHand', 'success');
+	})
 });
