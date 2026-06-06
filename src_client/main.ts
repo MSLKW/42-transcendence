@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { CardRank, CardSuite, CardTransmit, HandType, PentupleType } from '../src_shared/Types.ts';
+import { CardHandTransmit, CardRank, CardSuite, CardTransmit, HandType, PentupleType } from '../src_shared/Types.ts';
 import { Card } from './Card.ts';
 import { CardManager } from './CardManager.ts';
 import { CardHand } from './CardHand.ts';
@@ -79,14 +79,39 @@ const button = document.getElementById('ui-button');
 button?.addEventListener('click', () => {
 	const cardsJson: string = cardManager.selectedCardsToJSON();
 	socket.emit('playCardHand', cardsJson);
+});
+
+const startGameButton = document.getElementById('start-game-button');
+startGameButton?.addEventListener('click', () => {
+	socket.emit('startGame', socket.id);
+});
+
+socket.on('startGame', (status) => {
+	console.log(`Start Game: ${status}`);
+});
+
+socket.on('endGame', (body) => {
+	console.log(body);
 })
 
 socket.on('playCardHand', (status) => {
+	console.log(`playCardHand status: ${status}`);
 	if (status === 'success') {
 		const cardHand = cardManager.sendSelectedCards();
-		cardHeap.receiveCardHand(cardHand);
+		cardHand.disposeCards();
 	}
-})
+});
+
+socket.on("cardHeapUpdate", (body) => {
+	const cardHandTransmit = JSON.parse(body) as CardHandTransmit;
+	const cardHand = new CardHand();
+	for (let i = 0; i < cardHandTransmit.cards.length; i++) {
+		let card = new Card(cardHandTransmit.cards[i].rank, cardHandTransmit.cards[i].suite)
+		cardHand.receiveCard(card);
+		scene.add(card.object);
+	}
+	cardHeap.receiveCardHand(cardHand);
+});
 
 socket.on('collectCards', (cards) => {
 	const cardTransmits: Array<CardTransmit> = JSON.parse(cards) as Array<CardTransmit>;

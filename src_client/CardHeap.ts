@@ -11,7 +11,7 @@ export class CardHeap {
 		this.cardHands = [];
 	}
 
-	receiveCardHand(cardHand: CardHand) {
+	public receiveCardHand(cardHand: CardHand) {
 		this.cardHands.push(cardHand);
 		let xOffset = -2;
 		for (let i = 0; i < cardHand.cards.length; i++) {

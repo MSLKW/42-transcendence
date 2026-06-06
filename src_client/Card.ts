@@ -5,6 +5,7 @@ export class Card {
 	private static	textureLoader = new THREE.TextureLoader();
 	private static	geometry: THREE.PlaneGeometry = new THREE.PlaneGeometry(1, 1.5);
 	private static	frontTextureAtlas: Array<THREE.Texture> = Card.initTextureAtlas();
+	private static	backTexture: THREE.Texture = Card.textureLoader.load('/resources/card_back.webp');
 	private	frontTexture: THREE.Texture;
 	private	backTexture: THREE.Texture;
 	private	frontMaterial: THREE.MeshBasicMaterial;
@@ -23,7 +24,7 @@ export class Card {
 		// Load texture based on rank and suite
 		// this.frontTexture = this.getTexture(this.rank, this.suite);
 		this.frontTexture = this.getFrontTexture(this.rank, this.suite);
-		this.backTexture = Card.textureLoader.load('/resources/card_back.webp');
+		this.backTexture = Card.backTexture;
 
 		this.frontMaterial = new THREE.MeshBasicMaterial({color: 0xffffff, map: this.frontTexture, side: THREE.FrontSide });
 		this.backMaterial = new THREE.MeshBasicMaterial({color: 0xffffff, map: this.backTexture, side: THREE.BackSide });
@@ -34,6 +35,14 @@ export class Card {
 		this.backMesh.userData.instance = this;
 		this.object.add(this.frontMesh);
 		this.object.add(this.backMesh);
+	}
+
+	public dispose() {
+		this.frontMaterial.dispose();
+		this.backMaterial.dispose();
+		this.frontMesh.removeFromParent();
+		this.backMesh.removeFromParent();
+		this.object.removeFromParent();
 	}
 	
 	public static pushCards(cardsA: Array<Card>, cardsB: Array<Card>)

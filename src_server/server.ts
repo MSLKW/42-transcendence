@@ -7,7 +7,9 @@ import { Server } from 'socket.io';
 import z from 'zod';
 
 import { CardHandTransmit, CardRank, CardSuite, HandType, PentupleType } from '../src_shared/Types.js'
-import { CardDeck } from './CardDeck.js';
+import { CardDeckState } from './CardDeckState.js';
+import { PlayerState } from './PlayerState.js';
+import { GameState } from './GameState.js';
 
 const app = express();
 const httpServer = createServer(app);
@@ -26,22 +28,24 @@ httpServer.listen(port, () => {
 	console.log(`Server is running on ${port}`);
 });
 
-const cardDeck = new CardDeck();
+const cardDeck = new CardDeckState();
 
-const io = new Server(httpServer);
+export const io = new Server(httpServer);
 
-io.on("connection", (socket) => {
-	console.log(`Socket has connected: ${socket.id}`);
+const game = new GameState();
 
-	socket.emit('collectCards', JSON.stringify(cardDeck.dealCards(13)));
+// io.on("connection", (socket) => {
+	
+// 	console.log(`Socket has connected: ${socket.id}`);
 
-	socket.on("disconnect", () => {
-		console.log(`Socket has disconnected: ${socket.id}`);
-	})
+// 	socket.emit('collectCards', JSON.stringify(cardDeck.dealCards(13)));
 
-	socket.on("playCardHand", (body) => {
-		const cardHandTransmit = JSON.parse(body) as CardHandTransmit;
-		socket.emit('playCardHand', 'success');
-	})
-});
+// 	socket.on("disconnect", () => {
+// 		console.log(`Socket has disconnected: ${socket.id}`);
+// 	})
 
+// 	socket.on("playCardHand", (body) => {
+// 		const cardHandTransmit = JSON.parse(body) as CardHandTransmit;
+// 		socket.emit('playCardHand', 'success');
+// 	})
+// });

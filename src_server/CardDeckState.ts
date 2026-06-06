@@ -1,6 +1,6 @@
 import { CardTransmit } from "../src_shared/Types.js"
 
-export class CardDeck {
+export class CardDeckState {
 	private cards: Array<CardTransmit>;
 	
 	constructor() {

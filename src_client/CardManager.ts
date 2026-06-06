@@ -105,9 +105,9 @@ export class CardManager {
 
 	public sendSelectedCards(): CardHand {
 		const cardHand = this.selectedCards;
-		for (let i = 0; i < this.selectedCards.cards.length; i++) {
+		// for (let i = 0; i < this.selectedCards.cards.length; i++) {
 			this.selectedCards = new CardHand();
-		}
+		// }
 		return (cardHand);
 	}
 }
