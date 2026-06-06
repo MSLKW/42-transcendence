@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { CardRank, CardSuite, HandType, PentupleType } from '../src_shared/Types.ts';
+import { CardRank, CardSuite, CardTransmit, HandType, PentupleType } from '../src_shared/Types.ts';
 import { Card } from './Card.ts';
 import { CardManager } from './CardManager.ts';
 import { CardHand } from './CardHand.ts';
@@ -30,12 +30,12 @@ document.body.appendChild(renderer.domElement);
 
 const cardHeap = new CardHeap();
 
-let cardManager = new CardManager(new THREE.Vector3(-5, -3, 0), new THREE.Vector3(5, -3, 0));
-for (let i = 0; i < 13; i++) {
-	let card = new Card(i, CardSuite.Spade);
-	scene.add(card.object);
-	cardManager.receiveCard(card);
-}
+let cardManager = new CardManager(new THREE.Vector3(-5, -3, 0), new THREE.Vector3(5, -3, 0), new THREE.Vector3(-2, -1.5, 0), new THREE.Vector3(2, -1.5, 0));
+// for (let i = 0; i < 13; i++) {
+// 	let card = new Card(i, CardSuite.Spade);
+// 	scene.add(card.object);
+// 	cardManager.receiveCard(card);
+// }
 
 // const cards1: Array<Card> = [
 // 	new Card(CardRank.Two, CardSuite.Heart), 
@@ -58,7 +58,7 @@ function eventClick(event: PointerEvent) {
 	mouse.y = -((event.clientY - canvas.top) / canvas.height) * 2 + 1;
 	raycaster.setFromCamera(mouse, camera);
 	// console.log(`${mouse.x} | ${mouse.y}`);
-	cardManager.selectCard(raycaster);
+	cardManager.interactCard(raycaster);
 }
 
 function resize() {
@@ -85,6 +85,16 @@ socket.on('playCardHand', (status) => {
 	if (status === 'success') {
 		const cardHand = cardManager.sendSelectedCards();
 		cardHeap.receiveCardHand(cardHand);
+	}
+})
+
+socket.on('collectCards', (cards) => {
+	const cardTransmits: Array<CardTransmit> = JSON.parse(cards) as Array<CardTransmit>;
+	for (let i = 0; i < cardTransmits.length; i++) {
+		let card = new Card(cardTransmits[i].rank, cardTransmits[i].suite);
+		cardManager.receiveCard(card);
+		scene.add(card.object);
+		// console.log(card);
 	}
 })
 

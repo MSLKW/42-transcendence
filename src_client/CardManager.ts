@@ -8,19 +8,25 @@ export class CardManager {
 	private	slots: Array<THREE.Vector3>;
 	private cards: Array<Card>;
 	private	selectedCards: CardHand;
+	private selectedPointLeft: THREE.Vector3;
+	private selectedPointRight: THREE.Vector3;
+	private selectedSlots: Array<THREE.Vector3>;
 	
-	constructor(pointLeft: THREE.Vector3, pointRight: THREE.Vector3) {
+	constructor(pointLeft: THREE.Vector3, pointRight: THREE.Vector3, selectedPointLeft: THREE.Vector3, selectedPointRight: THREE.Vector3) {
 		this.slots = [];
 		this.cards = [];
 		this.selectedCards = new CardHand();
 		this.pointLeft = pointLeft;
 		this.pointRight = pointRight;
+		this.selectedPointLeft = selectedPointLeft;
+		this.selectedPointRight = selectedPointRight;
+		this.selectedSlots = [];
 	}
 
 	public receiveCard(card: Card) {
 		this.cards.push(card);
-		this.calculateSlots();
-		this.updateCardPositions();
+		this.slots = this.calculateSlots(this.cards, this.pointLeft, this.pointRight);
+		this.updateCardPositions(this.cards, this.slots);
 	}
 
 	public removeCard(card: Card) {
@@ -30,26 +36,27 @@ export class CardManager {
 			return ;
 		}
 		this.cards.splice(index, 1);
-		this.calculateSlots();
-		this.updateCardPositions();
+		this.slots = this.calculateSlots(this.cards, this.pointLeft, this.pointRight);
+		this.updateCardPositions(this.cards, this.slots);
 	}
 
 	// very prone to breaking lol, gotta revamp
-	private	calculateSlots() {
-		this.slots.length = 0;
-		const amountOfDistances = Math.max(0, this.cards.length - 1);
-		const distX = Math.abs(this.pointRight.x - this.pointLeft.x);
+	private	calculateSlots(cards: Array<Card>, pointLeft: THREE.Vector3, pointRight: THREE.Vector3): Array<THREE.Vector3> {
+		const slots: Array<THREE.Vector3> = [];
+		const amountOfDistances = Math.max(0, cards.length - 1);
+		const distX = Math.abs(pointRight.x - pointLeft.x);
 		const iteration = distX / amountOfDistances;
-		for (let x = this.pointLeft.x; x <= this.pointRight.x; x += iteration) {
-			this.slots.push(new THREE.Vector3(x, this.pointLeft.y, 0));
+		for (let x = pointLeft.x; x <= pointRight.x; x += iteration) {
+			slots.push(new THREE.Vector3(x, pointLeft.y, 0));
 		}
+		return (slots)
 	}
 
-	private updateCardPositions() {
-		for (let i = 0; i < this.cards.length; i++)
+	private updateCardPositions(cards: Array<Card>, slots: Array<THREE.Vector3>) {
+		for (let i = 0; i < cards.length; i++)
 		{
-			let card = this.cards.at(i);
-			let slot = this.slots.at(i);
+			let card = cards.at(i);
+			let slot = slots.at(i);
 			if (card && slot) {
 				card.object.position.set(slot.x, slot.y, slot.z);
 			}
@@ -57,24 +64,37 @@ export class CardManager {
 	}
 
 	// update card position via slot for selected card
-	public selectCard(raycaster: THREE.Raycaster) {
+	public interactCard(raycaster: THREE.Raycaster) {
 		let cardObjects = Card.getCardObjects(this.cards);
 		let cardHandObjects = Card.getCardObjects(this.selectedCards.cards);
 		let intersected = raycaster.intersectObjects(cardObjects.concat(cardHandObjects));
 		if (intersected.length > 0) {
 			let card: Card = intersected[0].object.userData.instance;
 			if (card && this.cards.indexOf(card) != -1) {
-				if (this.selectedCards.receiveCard(card) == true) {
-					console.log(`card selected: ${card.rank}, ${card.suite}`);
-					this.removeCard(card);
-					card.object.position.setY(card.object.position.y + 2);
-				}
+				this.selectCard(card);
 			}
 			else if (card && this.selectedCards.cards.indexOf(card) != -1) {
-				this.selectedCards.removeCard(card);
-				this.receiveCard(card);
-				console.log(`Card deselected: ${card.rank}, ${card.suite}`);
+				this.deselectCard(card);
 			}
+		}
+	}
+
+	private	selectCard(card: Card) {
+		if (this.selectedCards.receiveCard(card) == true) {
+			console.log(`card selected: ${card.rank}, ${card.suite}`);
+			this.removeCard(card);
+			this.selectedSlots = this.calculateSlots(this.selectedCards.cards, this.selectedPointLeft, this.selectedPointRight);
+			this.updateCardPositions(this.selectedCards.cards, this.selectedSlots);
+			// card.object.position.setY(card.object.position.y + 2);
+		}
+	}
+
+	private deselectCard(card: Card) {
+		if (this.selectedCards.removeCard(card)) {
+			this.receiveCard(card);
+			console.log(`Card deselected: ${card.rank}, ${card.suite}`);
+			this.selectedSlots = this.calculateSlots(this.selectedCards.cards, this.selectedPointLeft, this.selectedPointRight);
+			this.updateCardPositions(this.selectedCards.cards, this.selectedSlots);
 		}
 	}
 

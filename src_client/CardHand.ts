@@ -21,19 +21,20 @@ export class CardHand {
 		return (true);
 	}
 
-	public removeCard(card: Card) {
+	public removeCard(card: Card): boolean {
 		if (this.cards.length == 0) {
 			console.log('CardHand is empty');
-			return ;
+			return (false);
 		}
 		let index = this.cards.indexOf(card);
 		if (index == -1) {
 			console.log('Card to remove not found');
-			return ;
+			return (false);
 		}
 		this.cards.splice(index, 1);
 		this.cards.sort(this.sortCards);
 		this.evaluateHandType();
+		return (true);
 	}
 
 	// Sorts the cards by descending from rank first, then suite if the rank is the same

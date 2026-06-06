@@ -7,6 +7,7 @@ import { Server } from 'socket.io';
 import z from 'zod';
 
 import { CardHandTransmit, CardRank, CardSuite, HandType, PentupleType } from '../src_shared/Types.js'
+import { CardDeck } from './CardDeck.js';
 
 const app = express();
 const httpServer = createServer(app);
@@ -25,20 +26,22 @@ httpServer.listen(port, () => {
 	console.log(`Server is running on ${port}`);
 });
 
+const cardDeck = new CardDeck();
+
 const io = new Server(httpServer);
 
 io.on("connection", (socket) => {
 	console.log(`Socket has connected: ${socket.id}`);
 
-	socket.on('msg', (msg) => {
-		// const cardhand = JSON.parse(msg) as CardHandSerialized;
-		const cardHand = JSON.parse(msg) as CardHandTransmit;
-		console.log(`Handtype: ${HandType[cardHand.handType]}`);
-		console.log(`msg received: ${msg}`);
-	});
+	socket.emit('collectCards', JSON.stringify(cardDeck.dealCards(13)));
+
+	socket.on("disconnect", () => {
+		console.log(`Socket has disconnected: ${socket.id}`);
+	})
 
 	socket.on("playCardHand", (body) => {
 		const cardHandTransmit = JSON.parse(body) as CardHandTransmit;
 		socket.emit('playCardHand', 'success');
 	})
 });
+
