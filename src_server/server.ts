@@ -28,24 +28,6 @@ httpServer.listen(port, () => {
 	console.log(`Server is running on ${port}`);
 });
 
-const cardDeck = new CardDeckState();
-
 export const io = new Server(httpServer);
 
 const game = new GameState();
-
-// io.on("connection", (socket) => {
-	
-// 	console.log(`Socket has connected: ${socket.id}`);
-
-// 	socket.emit('collectCards', JSON.stringify(cardDeck.dealCards(13)));
-
-// 	socket.on("disconnect", () => {
-// 		console.log(`Socket has disconnected: ${socket.id}`);
-// 	})
-
-// 	socket.on("playCardHand", (body) => {
-// 		const cardHandTransmit = JSON.parse(body) as CardHandTransmit;
-// 		socket.emit('playCardHand', 'success');
-// 	})
-// });

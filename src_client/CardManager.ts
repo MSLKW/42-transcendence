@@ -11,11 +11,13 @@ export class CardManager {
 	private selectedPointLeft: THREE.Vector3;
 	private selectedPointRight: THREE.Vector3;
 	private selectedSlots: Array<THREE.Vector3>;
+	private playerId: string;
 	
-	constructor(pointLeft: THREE.Vector3, pointRight: THREE.Vector3, selectedPointLeft: THREE.Vector3, selectedPointRight: THREE.Vector3) {
+	constructor(pointLeft: THREE.Vector3, pointRight: THREE.Vector3, selectedPointLeft: THREE.Vector3, selectedPointRight: THREE.Vector3, playerId: string) {
 		this.slots = [];
 		this.cards = [];
-		this.selectedCards = new CardHand();
+		this.playerId = playerId
+		this.selectedCards = new CardHand(this.playerId);
 		this.pointLeft = pointLeft;
 		this.pointRight = pointRight;
 		this.selectedPointLeft = selectedPointLeft;
@@ -106,7 +108,7 @@ export class CardManager {
 	public sendSelectedCards(): CardHand {
 		const cardHand = this.selectedCards;
 		// for (let i = 0; i < this.selectedCards.cards.length; i++) {
-			this.selectedCards = new CardHand();
+			this.selectedCards = new CardHand(this.playerId);
 		// }
 		return (cardHand);
 	}

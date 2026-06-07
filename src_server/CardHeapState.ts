@@ -13,9 +13,7 @@ export class CardHeapState {
 	public receiveCardHand(cardHand: CardHandTransmit) {
 		// console.log(cardHand);
 		this.cardHands.push(cardHand);
-		if (this.currentHandType === HandType.None) {
-			this.currentHandType = cardHand.handType;
-		}
+		this.currentHandType = cardHand.handType;
 		io.to("game").emit("cardHeapUpdate", JSON.stringify(cardHand));
 	}
 
@@ -24,17 +22,17 @@ export class CardHeapState {
 		if (topCardHand === undefined) {
 			return (true);
 		}
+		if (topCardHand.playerId === other.playerId) {
+			return (true);
+		}
 		if (this.currentHandType !== HandType.None && other.handType !== this.currentHandType)
 			return (false);
-
 		// Comparing
 		if (other.handType === HandType.Single || other.handType === HandType.Double || other.handType === HandType.Triple) {
-			console.log('test')
 			if (other.cards[0].rank > topCardHand.cards[0].rank)
 				return (true);
 			else if (other.cards[0].rank === topCardHand.cards[0].rank && other.cards[0].suite > topCardHand.cards[0].suite)
 				return (true);
-			console.log('test2');
 		}
 		else if (other.handType === HandType.Pentuple) {
 			if (other.pentupleType > topCardHand.pentupleType)

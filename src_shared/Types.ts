@@ -49,4 +49,5 @@ export interface CardHandTransmit {
 	cards: Array<CardTransmit>;
 	handType: HandType;
 	pentupleType: PentupleType;
+	playerId: string;
 }

@@ -5,9 +5,11 @@ export class CardHand {
 	public readonly	cards: Array<Card>;
 	public			handType: HandType = HandType.None;
 	public			pentupleType: PentupleType = PentupleType.None;
+	public			playerId: string;
 
-	constructor() {
+	constructor(playerId: string) {
 		this.cards = [];
+		this.playerId = playerId;
 	}
 
 	public receiveCard(card: Card): boolean {
@@ -189,6 +191,7 @@ export class CardHand {
 			cards: this.cards,
 			handType: this.handType,
 			pentupleType: this.pentupleType,
+			playerId: this.playerId
 		}
 	}
 }
