@@ -26,17 +26,17 @@ function resize() {
 }
 window.addEventListener('resize', resize);
 
+// temp for playerid, should use cookies or smth else
+const urlParams = new URLSearchParams(window.location.search);
+const playerId = urlParams.get('id');
+
 const cardHeap = new CardHeap();
-const player = new Player(cardHeap);
+if (playerId) {
+	const player = new Player(playerId, cardHeap);
+}
 
 function animate(time: DOMHighResTimeStamp) {
 	renderer.render(scene, camera);
-	// for (let i: number = 0; i < allCards.length; i++) {
-	// 	let card = allCards.at(i);
-	// 	if (card) {
-	// 		card.object.rotation.y = time / 1000;
-	// 	}
-	// }
 	// console.log(renderer.info.render.calls);
 }
 renderer.setAnimationLoop(animate);

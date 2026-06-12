@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BigTwo</title>
+    <title>BigTwo Login</title>
 	<style>
 		body {
 			margin: 0;
@@ -11,9 +11,9 @@
 	</style>
 </head>
 <body>
-	<button id="start-game-button">Start Game</button>
-	<button id="send-cards-button">Send Cards</button>
-	<button id="skip-turn-button">Skip Turn</button>
-    <script type="module" src="./src_client/main.ts"></script>
+	<label for="player-id">Player Id:</label>
+	<input type="text" id="player-id" name="player-id">
+	<button id="login">Login</button>
+    <script type="module" src="./src_client/login.ts"></script>
 </body>
 </html>

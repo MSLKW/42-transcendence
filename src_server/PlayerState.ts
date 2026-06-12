@@ -6,11 +6,13 @@ import { io } from './server.js';
 
 export class PlayerState {
 	public	socket: Socket;
+	public	playerId: string;
 	private cards: Array<CardTransmit>;
 	private gameStateRef: GameState;
 	private cardHeapRef: CardHeapState;
 
-	constructor(socket: Socket, gameState: GameState) {
+	constructor(playerId: string, socket: Socket, gameState: GameState) {
+		this.playerId = playerId;
 		this.cards = [];
 		this.socket = socket;
 		this.gameStateRef = gameState
@@ -77,7 +79,7 @@ export class PlayerState {
 		this.removeCards(cardHand.cards);
 
 		if (this.cards.length === 0) { // preferably want this in GameState since it's literally ending the game lol
-			io.to("game").emit("endGame", `Socket<${socket.id} won the game!`);
+			this.gameStateRef.endGame(this)
 		}
 		this.gameStateRef.nextPlayerTurn();
 	}

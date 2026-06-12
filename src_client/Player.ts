@@ -14,14 +14,24 @@ export class Player {
 	private cardHeapRef: CardHeap;
 	private raycaster: THREE.Raycaster;
 
-	constructor(cardHeapRef: CardHeap) {
-		this.socket = io('http://localhost:3000');
+	constructor(playerId: string, cardHeapRef: CardHeap) {
+		this.socket = io('http://localhost:3000', {
+			auth: {
+				token: playerId
+			}
+		});
 		this.cardHeapRef = cardHeapRef;
 		this.raycaster = new THREE.Raycaster();
 		
 		this.socket.on('connect', () => {
 			console.log(`Socket connected`);
 		});
+		this.socket.on('gracefulDisconnect', () => {
+			this.socket.disconnect();
+		});
+		this.socket.on('disconnect', (reason) => {
+			console.log('Socket disconnected')
+		})
 
 		this.socket.on('initPlayer', (playerId) => {
 			this.initPlayer(playerId);

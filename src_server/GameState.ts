@@ -19,16 +19,21 @@ export class GameState {
 		this.playerTurnIndex = 0;
 
 		io.on("connection", (socket) => {
-			this.connectPlayer(socket);	
+			this.connectPlayer(socket);
 		});
 	}
 
 	private connectPlayer(socket: Socket) {
-		console.log(`Socket<${socket.id}> has connected`);
-		socket.emit("initPlayer", socket.id); // can be some other id later
+		const playerId: string = socket.handshake.auth.token;
 		
 		socket.on("disconnect", () => {
-			console.log(`Socket<${socket.id}> has disconnected`);
+			if (this.isGameStarted == false) {
+				const index = this.players.findIndex((player) => player.playerId === playerId);
+				if (index != -1) {
+					this.players.splice(index, 1);
+					console.log(`Player<${playerId}> has disconnected`);
+				}
+			}
 		})
 
 		// pref only let the host do it or smth
@@ -41,15 +46,28 @@ export class GameState {
 			}
 		})
 
-		if (this.players.length <= 4 && this.isGameStarted == false) {
-			this.players.push(new PlayerState(socket, this));
+		const index = this.players.findIndex((player) => player.playerId === playerId);
+		if (index == -1 && this.players.length < 4 && this.isGameStarted == false) {
+			console.log(`Player<${playerId}> has connected`);
+			this.players.push(new PlayerState(playerId, socket, this));
+			socket.emit("initPlayer", playerId); // can be some other id later
+			socket.join("game");
+		}
+		else if (this.isGameStarted == true && index >= 0) {
+			console.log(`Player<${playerId}> has reconnected`);
+			socket.emit("initPlayer", playerId); // can be some other id later
 			socket.join("game");
 		}
 		else {
-			socket.disconnect(true);
-			console.log('disconnecting socket cuz players are full');
+			socket.emit("gracefulDisconnect");
+			setTimeout(() => {
+				socket.disconnect(true);
+			}, 1000);
+			console.log(`Player<${playerId}> is not allowed to connect`);
 		}
 	}
+
+	// private disconnectPlayer()
 
 	private playerTurnEvent() {
 		const player = this.players.at(this.playerTurnIndex);
@@ -84,6 +102,7 @@ export class GameState {
 	public startGame(): boolean {
 		if (this.isGameStarted == true)
 			return (false);
+		console.log("Game Started")
 		for (let i = 0; i < this.players.length; i++) {
 			this.players[i].collectCards(this.cardDeck.dealCards(13));
 		}
@@ -93,7 +112,25 @@ export class GameState {
 		return (true);
 	}
 
-	public endGame() {
+	public endGame(player: PlayerState) {
+		console.log(`Game Ended | Winner is Player<${player.playerId}>`);
+		io.to("game").emit("endGame", `Player<${player.playerId}> won the game!`);
+	}
+
+	public transmitGameState() {
+		// for reconnection
+		// card heap cards, arg requires a playerState to send to
+		/*
+		cardHeap: [
+			{ card hands }
+		]
+		otherPlayerCardsAmounts: [
 		
+		]
+		playerCards {
+			just grab from playerState
+		}
+
+		*/
 	}
 }
