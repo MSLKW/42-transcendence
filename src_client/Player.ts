@@ -41,10 +41,10 @@ export class Player {
 	private initPlayer(playerId: string) {
 		this.playerId = playerId;
 		this.cardManager = new CardManager(
-			new THREE.Vector3(-5, -3, 0), 
-			new THREE.Vector3(5, -3, 0), 
-			new THREE.Vector3(-2, -1.5, 0), 
-			new THREE.Vector3(2, -1.5, 0), 
+			new THREE.Vector3(0, -2, 0),
+			new THREE.Euler(0, 0, 0),
+			10,
+			5,
 			this.playerId
 		);
 
