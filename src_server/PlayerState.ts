@@ -18,11 +18,11 @@ export class PlayerState {
 		this.gameStateRef = gameState
 		this.cardHeapRef = gameState.cardHeap;
 		
-		socket.on("playCardHand", (body) => {
+		socket.on("play_card_hand", (body) => {
 			this.playCardHand(socket, body);
 		});
 
-		socket.on("playerSkipTurn", (body) => {
+		socket.on("player_skip_turn", (body) => {
 			this.gameStateRef.skipPlayerTurn(this);
 		})
 	}
@@ -31,7 +31,7 @@ export class PlayerState {
 		for (let i = 0; i < cards.length; i++) {
 			this.cards.push(cards[i]);
 		}
-		this.socket.emit('collectCards', JSON.stringify(cards));
+		this.socket.emit('collect_cards', JSON.stringify(cards));
 	}
 
 	private removeCard(card: CardTransmit) {
@@ -50,31 +50,31 @@ export class PlayerState {
 	}
 
 	public turnSignal() {
-		this.socket.emit('playerTurn');
+		this.socket.emit('player_turn');
 	}
 
 	// Returns if player has finished all his cards
 	private playCardHand(socket: Socket, body: string) {
 		if (this.gameStateRef.isPlayerTurn(this) === false) {
-			socket.emit('playCardHand', 'failure: not ur turn');
+			socket.emit('play_card_hand', 'failure: not ur turn');
 			return;
 		}
 		const cardHand = JSON.parse(body) as CardHandTransmit;
 		if (cardHand.handType === HandType.None || (cardHand.handType === HandType.Pentuple && cardHand.pentupleType === PentupleType.None)) {
-			socket.emit('playCardHand', 'failure: cardhand is not even a thing');
+			socket.emit('play_card_hand', 'failure: cardhand is not even a thing');
 			return ;
 		}
 		if (this.cardHeapRef.isCardHandPlayable(cardHand) == false) {
-			socket.emit('playCardHand', 'failure: cardhand is not playable');
+			socket.emit('play_card_hand', 'failure: cardhand is not playable');
 			return ;
 		}
 		for (let i = 0; i < cardHand.cards.length; i++) {
 			if (this.cards.findIndex((card: CardTransmit) => card.rank === cardHand.cards[i].rank && card.suite === cardHand.cards[i].suite ) == -1) {
-				socket.emit('playCardHand', 'failure: cardhand not in playerState cards');
+				socket.emit('play_card_hand', 'failure: cardhand not in playerState cards');
 				return ;
 			}
 		}
-		socket.emit('playCardHand', 'success');
+		socket.emit('play_card_hand', 'success');
 		this.cardHeapRef.receiveCardHand(cardHand);
 		this.removeCards(cardHand.cards);
 

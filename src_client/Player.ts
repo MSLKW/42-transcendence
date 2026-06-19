@@ -26,14 +26,14 @@ export class Player {
 		this.socket.on('connect', () => {
 			console.log(`Socket connected`);
 		});
-		this.socket.on('gracefulDisconnect', () => {
+		this.socket.on('graceful_disconnect', () => {
 			this.socket.disconnect();
 		});
 		this.socket.on('disconnect', (reason) => {
 			console.log('Socket disconnected')
 		})
 
-		this.socket.on('initPlayer', (playerId) => {
+		this.socket.on('init_player', (playerId) => {
 			this.initPlayer(playerId);
 		})
 	}
@@ -51,28 +51,28 @@ export class Player {
 		const sendCardsButton = document.getElementById('send-cards-button');
 		sendCardsButton?.addEventListener('click', () => {
 			const cardsJson: string = this.cardManager.selectedCardsToJSON();
-			this.socket.emit('playCardHand', cardsJson);
+			this.socket.emit('play_card_hand', cardsJson);
 		});
 		
 		const skipTurnButton = document.getElementById('skip-turn-button');
 		skipTurnButton?.addEventListener('click', () => {
-			this.socket.emit('playerSkipTurn');
+			this.socket.emit('player_skip_turn');
 		})
 		
 		const startGameButton = document.getElementById('start-game-button');
 		startGameButton?.addEventListener('click', () => {
-			this.socket.emit('startGame', this.socket.id);
+			this.socket.emit('start_game', this.socket.id);
 		});
 		
-		this.socket.on('startGame', (status) => {
+		this.socket.on('start_game', (status) => {
 			console.log(`Start Game: ${status}`);
 		});
 		
-		this.socket.on('endGame', (body) => {
+		this.socket.on('end_game', (body) => {
 			console.log(body);
 		})
 		
-		this.socket.on('playCardHand', (status) => {
+		this.socket.on('play_card_hand', (status) => {
 			if (status === 'success') {
 				const cardHand = this.cardManager.sendSelectedCards();
 				cardHand.disposeCards();
@@ -82,11 +82,11 @@ export class Player {
 			}
 		});
 		
-		this.socket.on('playerTurn', () => {
+		this.socket.on('player_turn', () => {
 			console.log('This player\'s is our turn!');
 		});
 		
-		this.socket.on("cardHeapUpdate", (body) => {
+		this.socket.on("card_heap_update", (body) => {
 			const cardHandTransmit = JSON.parse(body) as CardHandTransmit;
 			const cardHand = new CardHand(this.playerId);
 			for (let i = 0; i < cardHandTransmit.cards.length; i++) {
@@ -97,7 +97,7 @@ export class Player {
 			this.cardHeapRef.receiveCardHand(cardHand);
 		});
 		
-		this.socket.on('collectCards', (cards) => {
+		this.socket.on('collect_cards', (cards) => {
 			const cardTransmits: Array<CardTransmit> = JSON.parse(cards) as Array<CardTransmit>;
 			for (let i = 0; i < cardTransmits.length; i++) {
 				let card = new Card(cardTransmits[i].rank, cardTransmits[i].suite);

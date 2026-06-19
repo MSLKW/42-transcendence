@@ -37,12 +37,12 @@ export class GameState {
 		})
 
 		// pref only let the host do it or smth
-		socket.on("startGame", (body) => {
+		socket.on("start_game", (body) => {
 			if (this.startGame() == true) {
-				socket.emit("startGame", 'success');
+				socket.emit("start_game", 'success');
 			}
 			else {
-				socket.emit("startGame", 'failure');
+				socket.emit("start_game", 'failure');
 			}
 		})
 
@@ -50,16 +50,16 @@ export class GameState {
 		if (index == -1 && this.players.length < 4 && this.isGameStarted == false) {
 			console.log(`Player<${playerId}> has connected`);
 			this.players.push(new PlayerState(playerId, socket, this));
-			socket.emit("initPlayer", playerId); // can be some other id later
+			socket.emit("init_player", playerId); // can be some other id later
 			socket.join("game");
 		}
 		else if (this.isGameStarted == true && index >= 0) {
 			console.log(`Player<${playerId}> has reconnected`);
-			socket.emit("initPlayer", playerId); // can be some other id later
+			socket.emit("init_player", playerId); // can be some other id later
 			socket.join("game");
 		}
 		else {
-			socket.emit("gracefulDisconnect");
+			socket.emit("graceful_disconnect");
 			setTimeout(() => {
 				socket.disconnect(true);
 			}, 1000);
