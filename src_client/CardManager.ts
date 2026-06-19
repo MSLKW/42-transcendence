@@ -6,7 +6,7 @@ export class CardManager {
 	private position: THREE.Vector3;
 	private rotation: THREE.Euler;
 	private boundSpace: number;
-	private	slots: Array<THREE.Vector3>; // Relative to the object position
+	private	slots: Array<THREE.Vector3>;
 	private cards: Array<Card>;
 	private	selectedCards: CardHand;
 	private selectedBoundSpace: number;
@@ -28,7 +28,7 @@ export class CardManager {
 	public receiveCard(card: Card) {
 		this.cards.push(card);
 		this.slots = this.calculateSlots(this.cards, this.boundSpace);
-		this.updateCardPositions(this.cards, this.slots);
+		this.updateCardObjects(this.cards, this.slots);
 	}
 
 	public removeCard(card: Card) {
@@ -39,7 +39,7 @@ export class CardManager {
 		}
 		this.cards.splice(index, 1);
 		this.slots = this.calculateSlots(this.cards, this.boundSpace);
-		this.updateCardPositions(this.cards, this.slots);
+		this.updateCardObjects(this.cards, this.slots);
 	}
 
 	// very prone to breaking lol, gotta revamp
@@ -49,10 +49,9 @@ export class CardManager {
 		const slots: Array<THREE.Vector3> = [];
 		const leftBound = -(boundSpace / 2)
 		const rightBound = boundSpace / 2
-		const amountOfDistances = Math.max(0, cards.length - 1);
-		const distX = Math.abs(rightBound - leftBound);
-		const iteration = distX / amountOfDistances;
-		for (let x = leftBound; x <= rightBound; x += iteration) {
+		for (let i = 0; i < cards.length; i++) {
+			let normalizedIndex = cards.length > 1 ? i / (cards.length - 1) : 0.5;
+			let x = THREE.MathUtils.lerp(leftBound, rightBound, normalizedIndex);
 			const slot = new THREE.Vector3(this.position.x + offset.x + x, this.position.y + offset.y, this.position.z + offset.z);
 			slots.push(this.rotateAroundPivot(slot, this.position, this.rotation));
 		}
@@ -63,16 +62,29 @@ export class CardManager {
 		return (new THREE.Vector3().copy(position).sub(pivot).applyEuler(rotation).add(pivot));
 	}
 
-	private updateCardPositions(cards: Array<Card>, slots: Array<THREE.Vector3>) {
-		for (let i = 0; i < cards.length; i++)
-		{
+	private updateCardObjects(cards: Array<Card>, slots: Array<THREE.Vector3>) {
+		for (let i = 0; i < cards.length; i++) {
 			let card = cards.at(i);
 			let slot = slots.at(i);
 			if (card && slot) {
+				let normalizedIndex = cards.length > 1 ? i / (cards.length - 1) : 0.5;
 				card.object.position.copy(slot);
 				card.object.rotation.copy(this.rotation);
+				this.applyFanEffect(card.object, 40, 1, normalizedIndex);
+				// console.log(`updated card object rank: ${card.rank} suite: ${card.suite} position: ${card.object.position.x},${card.object.position.y},${card.object.position.z} index: ${normalizedIndex}`);
 			}
 		}
+	}
+
+	private applyFanEffect(object: THREE.Object3D, rotation: number, position: number, normalizedIndex: number) {
+		const fanRotationStart = (rotation / 2) * (Math.PI / 180);
+		const fanRotationEnd = -(rotation / 2) * (Math.PI / 180);
+
+		const fanPositionValley = -(position / 2)
+		const fanPositionPeak = position / 2
+
+		object.rotateZ(THREE.MathUtils.lerp(fanRotationStart, fanRotationEnd, normalizedIndex));
+		object.translateY(THREE.MathUtils.lerp(fanPositionValley, fanPositionPeak, Math.sin(normalizedIndex * Math.PI)));
 	}
 
 	// update card position via slot for selected card
@@ -95,9 +107,8 @@ export class CardManager {
 		if (this.selectedCards.receiveCard(card) == true) {
 			console.log(`card selected: ${card.rank}, ${card.suite}`);
 			this.removeCard(card);
-			this.selectedSlots = this.calculateSlots(this.selectedCards.cards, this.selectedBoundSpace, new THREE.Vector3(0, 2, 0));
-			this.updateCardPositions(this.selectedCards.cards, this.selectedSlots);
-			// card.object.position.setY(card.object.position.y + 2);
+			this.selectedSlots = this.calculateSlots(this.selectedCards.cards, this.selectedBoundSpace, new THREE.Vector3(0, 3, 0));
+			this.updateCardObjects(this.selectedCards.cards, this.selectedSlots);
 		}
 	}
 
@@ -105,8 +116,8 @@ export class CardManager {
 		if (this.selectedCards.removeCard(card)) {
 			this.receiveCard(card);
 			console.log(`Card deselected: ${card.rank}, ${card.suite}`);
-			this.selectedSlots = this.calculateSlots(this.selectedCards.cards, this.selectedBoundSpace, new THREE.Vector3(0, 2, 0));
-			this.updateCardPositions(this.selectedCards.cards, this.selectedSlots);
+			this.selectedSlots = this.calculateSlots(this.selectedCards.cards, this.selectedBoundSpace, new THREE.Vector3(0, 3, 0));
+			this.updateCardObjects(this.selectedCards.cards, this.selectedSlots);
 		}
 	}
 
