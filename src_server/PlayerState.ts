@@ -1,5 +1,5 @@
 import { Socket } from 'socket.io';
-import { CardTransmit, CardHandTransmit, HandType, PentupleType } from '../src_shared/Types.js';
+import { CardTransmit, CardRank, CardSuite, CardHandTransmit, HandType, PentupleType } from '../src_shared/Types.js';
 import { GameState } from './GameState.js';
 import { CardHeapState } from './CardHeapState.js';
 import { io } from './server.js';
@@ -23,7 +23,7 @@ export class PlayerState {
 		});
 
 		socket.on("player_skip_turn", (body) => {
-			this.gameStateRef.skipPlayerTurn(this);
+			this.skipTurn();
 		})
 	}
 
@@ -32,6 +32,13 @@ export class PlayerState {
 			this.cards.push(cards[i]);
 		}
 		this.socket.emit('collect_cards', JSON.stringify(cards));
+	}
+
+	public hasThreeDiamonds(): boolean {
+		const card = this.cards.find((card) => card.rank === CardRank.Three && card.suite === CardSuite.Diamond);
+		if (card)
+			return (true);
+		return (false);
 	}
 
 	private removeCard(card: CardTransmit) {
@@ -51,6 +58,14 @@ export class PlayerState {
 
 	public turnSignal() {
 		this.socket.emit('player_turn');
+	}
+
+	public skipTurn() {
+		if (this.gameStateRef.isPlayerTurn(this)) {
+			this.gameStateRef.nextPlayerTurn();
+			this.socket.emit("player_skip_turn", "success");
+		}
+		this.socket.emit("player_skip_turn", "false");
 	}
 
 	// Returns if player has finished all his cards

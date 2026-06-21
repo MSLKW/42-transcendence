@@ -16,7 +16,7 @@ export class GameState {
 		this.cardDeck = new CardDeckState();
 		this.cardHeap = new CardHeapState();
 		this.isGameStarted = false;
-		this.playerTurnIndex = 0;
+		this.playerTurnIndex = -1;
 
 		io.on("connection", (socket) => {
 			this.connectPlayer(socket);
@@ -97,12 +97,11 @@ export class GameState {
 
 	private playerTurnEvent() {
 		const player = this.players.at(this.playerTurnIndex);
-		if (player) {
-			player.turnSignal();
-		}
-		else if (player === undefined) {
+		if (player === undefined) {
 			console.log('Player is missing for player turn');
+			return ;
 		}
+		player.turnSignal();
 	}
 
 	public nextPlayerTurn() {
@@ -119,12 +118,6 @@ export class GameState {
 		return (false);
 	}
 
-	public skipPlayerTurn(player: PlayerState) {
-		if (this.isPlayerTurn(player)) {
-			this.nextPlayerTurn();
-		}
-	}
-
 	private opponentCollectCards() {
 		const opponentCards: Record<string, number> = {};
 		for (let i = 0; i < this.players.length; i++) {
@@ -138,11 +131,20 @@ export class GameState {
 			return (false);
 		console.log("Game Started");
 		for (let i = 0; i < this.players.length; i++) {
-			this.players[i].collectCards(this.cardDeck.dealCards(13));
+			this.players[i].collectCards(this.cardDeck.dealCards(Math.floor(this.cardDeck.size / this.players.length)));
 		}
 		this.opponentCollectCards();
 		this.isGameStarted = true;
-		this.playerTurnIndex = 0; // find player with 3 of diamonds and set player turn index to it
+		for (let i = 0; i < this.players.length; i++) {
+			if (this.players[i].hasThreeDiamonds()) {
+				this.playerTurnIndex = i;
+				if (this.players.length === 3) { 
+					this.players[i].collectCards(this.cardDeck.dealCards(1));
+				}
+			}
+		}
+		if (this.playerTurnIndex === -1)
+			this.playerTurnIndex = 0;
 		this.playerTurnEvent();
 		return (true);
 	}

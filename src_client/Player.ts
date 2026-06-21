@@ -9,16 +9,36 @@ import { scene, renderer, camera } from './main.ts';
 
 export class Player {
 	private	socket: Socket;
-	private playerId!: string;
-	public	cardManager!: CardManager;
+	private playerId: string;
+	public	cardManager: CardManager;
 	private cardHeapRef: CardHeap;
 	private raycaster: THREE.Raycaster;
+
+	private sendCardsButton: HTMLButtonElement;
+	private skipTurnButton: HTMLButtonElement;
+	private startGameButton: HTMLButtonElement;
 
 	constructor(socket: Socket, playerId: string, cardHeapRef: CardHeap) {
 		this.socket = socket;
 		this.cardHeapRef = cardHeapRef;
+		this.playerId = playerId;
 		this.raycaster = new THREE.Raycaster();
-		
+
+		this.sendCardsButton = document.getElementById('send-cards-button') as HTMLButtonElement;
+		this.skipTurnButton = document.getElementById('skip-turn-button') as HTMLButtonElement;
+		this.startGameButton = document.getElementById('start-game-button') as HTMLButtonElement;
+
+		this.cardManager = new CardManager(this.playerId);
+
+		if (this.sendCardsButton === undefined || this.skipTurnButton === undefined || this.startGameButton === undefined) {
+			console.error("Player could not get HTML buttons");
+			return ;
+		}
+		this.setupListeners();
+		this.isPlayerTurn(false);
+	}
+
+	private setupListeners() {
 		this.socket.on('connect', () => {
 			console.log(`Socket connected`);
 		});
@@ -28,35 +48,6 @@ export class Player {
 		this.socket.on('disconnect', (reason) => {
 			console.log('Socket disconnected')
 		})
-
-		this.initPlayer(playerId);
-	}
-
-	private initPlayer(playerId: string) {
-		this.playerId = playerId;
-		this.cardManager = new CardManager(
-			this.playerId,
-			new THREE.Vector3(0, 2, 8),
-			new THREE.Euler(0, 0, 0),
-			10,
-			5,
-		);
-
-		const sendCardsButton = document.getElementById('send-cards-button');
-		sendCardsButton?.addEventListener('click', () => {
-			const cardsJson: string = this.cardManager.selectedCardsToJSON();
-			this.socket.emit('player_play_card_hand', cardsJson);
-		});
-		
-		const skipTurnButton = document.getElementById('skip-turn-button');
-		skipTurnButton?.addEventListener('click', () => {
-			this.socket.emit('player_skip_turn');
-		})
-		
-		const startGameButton = document.getElementById('start-game-button');
-		startGameButton?.addEventListener('click', () => {
-			this.socket.emit('game_start', this.socket.id);
-		});
 		
 		this.socket.on('game_start', (status) => {
 			console.log(`Start Game: ${status}`);
@@ -70,7 +61,7 @@ export class Player {
 			if (status === 'success') {
 				const cardHand = this.cardManager.sendSelectedCards();
 				this.cardHeapRef.receiveCardHand(cardHand);
-
+				this.isPlayerTurn(false);
 			}
 			else {
 				console.log(`playCardHand status: ${status}`);
@@ -78,8 +69,15 @@ export class Player {
 		});
 		
 		this.socket.on('player_turn', () => {
+			this.isPlayerTurn(true);
 			console.log('This player\'s is our turn!');
 		});
+
+		this.socket.on('player_skip_turn', (status) => {
+			if (status == "success") {
+				this.isPlayerTurn(false);
+			}
+		})
 		
 		this.socket.on('collect_cards', (cards) => {
 			const cardTransmits: Array<CardTransmit> = JSON.parse(cards) as Array<CardTransmit>;
@@ -89,6 +87,19 @@ export class Player {
 				scene.add(card.object);
 			}
 		})
+
+		this.sendCardsButton.addEventListener('click', () => {
+			const cardsJson: string = this.cardManager.selectedCardsToJSON();
+			this.socket.emit('player_play_card_hand', cardsJson);
+		});
+		
+		this.skipTurnButton.addEventListener('click', () => {
+			this.socket.emit('player_skip_turn');
+		})
+		
+		this.startGameButton.addEventListener('click', () => {
+			this.socket.emit('game_start', this.socket.id);
+		});
 
 		renderer.domElement.addEventListener('click', (event) => {
 			this.eventClick(event);
@@ -102,5 +113,16 @@ export class Player {
 		mouse.y = -((event.clientY - canvas.top) / canvas.height) * 2 + 1;
 		this.raycaster.setFromCamera(mouse, camera);
 		this.cardManager.interactCard(this.raycaster);
+	}
+
+	private isPlayerTurn(isTurn: boolean) {
+		if (isTurn === true) {
+			this.sendCardsButton.disabled = false;
+			this.skipTurnButton.disabled = false;
+		}
+		else {
+			this.sendCardsButton.disabled = true;
+			this.skipTurnButton.disabled = true;
+		}
 	}
 }

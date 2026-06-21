@@ -115,6 +115,7 @@ export class CardManager {
 
 		object.rotateZ(THREE.MathUtils.lerp(fanRotationStart, fanRotationEnd, normalizedIndex));
 		object.translateY(THREE.MathUtils.lerp(fanPositionValley, fanPositionPeak, Math.sin(normalizedIndex * Math.PI)));
+		object.translateZ(THREE.MathUtils.lerp(0, 0.1, normalizedIndex));
 	}
 
 	// update card position via slot for selected card

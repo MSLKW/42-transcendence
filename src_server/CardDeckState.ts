@@ -2,11 +2,13 @@ import { CardTransmit } from "../src_shared/Types.js"
 
 export class CardDeckState {
 	private cards: Array<CardTransmit>;
+	public size: number;
 	
 	constructor() {
 		this.cards = [];
 		this.initCards();
 		this.shuffleCards();
+		this.size = 52;
 	}
 
 	private initCards() {
