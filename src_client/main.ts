@@ -9,12 +9,12 @@ import { Player } from './Player.ts';
 import { OrbitControls } from 'three/examples/jsm/Addons.js';
 import { Opponent } from './Opponent.ts'
 
-const container = document.getElementById('threejs-canvas');
 export const scene = new THREE.Scene();
 export const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 100);
 export const renderer = new THREE.WebGLRenderer();
 
 renderer.setSize(window.innerWidth, window.innerHeight);
+const container = document.getElementById('threejs-canvas');
 container?.appendChild(renderer.domElement);
 
 // Setup Scene
@@ -44,7 +44,7 @@ box2Mesh.position.set(-20, 2, -20);
 scene.add(boxMesh, box2Mesh);
 
 const orbitControls = new OrbitControls(camera, renderer.domElement);
-camera.position.set(0, 0, 0);
+camera.position.set(0, 10, 0);
 orbitControls.update();
 
 // camera.rotation.set();

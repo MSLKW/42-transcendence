@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import { CardRank, CardSuite, CardTransmit } from '../src_shared/Types.ts';
+import { scene } from './main.ts'
 
 export class Card {
 	private static	textureLoader = new THREE.TextureLoader();
@@ -35,6 +36,8 @@ export class Card {
 		this.backMesh.userData.instance = this;
 		this.object.add(this.frontMesh);
 		this.object.add(this.backMesh);
+
+		scene.add(this.object);
 	}
 
 	public dispose() {

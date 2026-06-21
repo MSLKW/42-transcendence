@@ -57,4 +57,7 @@ export class CardHeapState {
 		return (false);
 	}
 
+	public transmit() {
+		return (this.cardHands)
+	}
 }

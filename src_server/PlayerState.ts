@@ -17,12 +17,16 @@ export class PlayerState {
 		this.socket = socket;
 		this.gameStateRef = gameState
 		this.cardHeapRef = gameState.cardHeap;
-		
-		socket.on("player_play_card_hand", (body) => {
-			this.playCardHand(socket, body);
+
+		this.setupSocketListeners()
+	}
+
+	public setupSocketListeners() {
+		this.socket.on("player_play_card_hand", (body) => {
+			this.playCardHand(this.socket, body);
 		});
 
-		socket.on("player_skip_turn", (body) => {
+		this.socket.on("player_skip_turn", (body) => {
 			this.skipTurn();
 		})
 	}

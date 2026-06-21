@@ -3,6 +3,7 @@ import { io } from './server.js';
 import { PlayerState } from './PlayerState.js';
 import { CardDeckState } from './CardDeckState.js'
 import { CardHeapState } from './CardHeapState.js'
+import { ReconnectTransmit } from '../src_shared/Types.js';
 
 export class GameState {
 	private players: Array<PlayerState>;
@@ -75,7 +76,10 @@ export class GameState {
 		else if (this.isGameStarted == true && index >= 0) {
 			console.log(`Player<${playerId}> has reconnected`);
 			const player = this.players[index];
+			player.socket = socket;
+			player.setupSocketListeners();
 			this.playerJoin(player);
+			player.socket.emit("player_reconnect", JSON.stringify(this.transmit(player)));
 		}
 		else {
 			socket.emit("graceful_disconnect");
@@ -118,12 +122,12 @@ export class GameState {
 		return (false);
 	}
 
-	private opponentCollectCards() {
-		const opponentCards: Record<string, number> = {};
+	private playerCardsAmount() {
+		const playerCardsAmount: Record<string, number> = {};
 		for (let i = 0; i < this.players.length; i++) {
-			opponentCards[this.players[i].playerId] = this.players[i].cards.length;
+			playerCardsAmount[this.players[i].playerId] = this.players[i].cards.length;
 		}
-		io.to("game").emit("opponent_collect_cards", JSON.stringify(opponentCards));
+		return (playerCardsAmount);
 	}
 
 	public startGame(): boolean {
@@ -133,7 +137,7 @@ export class GameState {
 		for (let i = 0; i < this.players.length; i++) {
 			this.players[i].collectCards(this.cardDeck.dealCards(Math.floor(this.cardDeck.size / this.players.length)));
 		}
-		this.opponentCollectCards();
+		io.to("game").emit("opponent_collect_cards", JSON.stringify(this.playerCardsAmount()));;
 		this.isGameStarted = true;
 		for (let i = 0; i < this.players.length; i++) {
 			if (this.players[i].hasThreeDiamonds()) {
@@ -154,20 +158,14 @@ export class GameState {
 		io.to("game").emit("game_end", `Player<${player.playerId}> won the game!`);
 	}
 
-	public transmitGameState() {
-		// for reconnection
-		// card heap cards, arg requires a playerState to send to
-		/*
-		cardHeap: [
-			{ card hands }
-		]
-		otherPlayerCardsAmounts: [
-		
-		]
-		playerCards {
-			just grab from playerState
+	// For reconnecting player state
+	public transmit(player: PlayerState) {
+		const transmitObject: ReconnectTransmit = {
+			cardHeap: this.cardHeap.transmit(),
+			playerCardsAmount: this.playerCardsAmount(),
+			playerCards: player.cards,
+			isPlayerTurn: this.isPlayerTurn(player)
 		}
-
-		*/
+		return (transmitObject);
 	}
 }

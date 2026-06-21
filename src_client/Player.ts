@@ -1,6 +1,6 @@
 import { io, Socket } from 'socket.io-client';
 import * as THREE from 'three';
-import { CardTransmit, CardHandTransmit } from '../src_shared/Types.ts';
+import { CardTransmit, CardHandTransmit, ReconnectTransmit } from '../src_shared/Types.ts';
 import { CardHand } from './CardHand.ts';
 import { Card } from './Card.ts';
 import { CardManager } from './CardManager.ts';
@@ -89,12 +89,16 @@ export class Player {
 		
 		this.socket.on('collect_cards', (cards) => {
 			const cardTransmits: Array<CardTransmit> = JSON.parse(cards) as Array<CardTransmit>;
-			for (let i = 0; i < cardTransmits.length; i++) {
-				let card = new Card(cardTransmits[i].rank, cardTransmits[i].suite);
-				this.cardManager.receiveCard(card);
-				scene.add(card.object);
-			}
+			this.collectCards(cardTransmits);
 		})
+
+		this.socket.on("player_reconnect", (gameStateJSON) => {
+			const gameState = JSON.parse(gameStateJSON) as ReconnectTransmit;
+
+			this.cardHeapRef.reconnect(gameState.cardHeap);
+			this.collectCards(gameState.playerCards);
+			this.isPlayerTurn(gameState.isPlayerTurn);
+		});
 
 		this.sendCardsButton.addEventListener('click', () => {
 			const cardsJson: string = this.cardManager.selectedCardsToJSON();
@@ -139,6 +143,13 @@ export class Player {
 		else {
 			this.sendCardsButton.disabled = true;
 			this.skipTurnButton.disabled = true;
+		}
+	}
+
+	private collectCards(cardTransmits: Array<CardTransmit>) {
+		for (let i = 0; i < cardTransmits.length; i++) {
+			let card = new Card(cardTransmits[i].rank, cardTransmits[i].suite);
+			this.cardManager.receiveCard(card);
 		}
 	}
 }

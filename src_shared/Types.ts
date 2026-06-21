@@ -51,3 +51,10 @@ export interface CardHandTransmit {
 	pentupleType: PentupleType;
 	playerId: string;
 }
+
+export type ReconnectTransmit = {
+	cardHeap: Array<CardHandTransmit>,
+	playerCardsAmount: Record<string, number>,
+	playerCards: Array<CardTransmit>,
+	isPlayerTurn: boolean
+}
