@@ -23,9 +23,28 @@ export class GameState {
 		});
 	}
 
+	private getSeatOrder() {
+		/*
+		seatOrder: {
+			playerId0: 0
+			playerId1: 1
+			playerId2: 2
+			playerId3: 3
+		}
+		*/
+		const seatOrder: Record<string, number> = {};
+		for (let i = 0; i < this.players.length; i++) {
+			seatOrder[this.players[i].playerId] = i;
+		}
+		return (seatOrder)
+	}
+
 	private connectPlayer(socket: Socket) {
-		const playerId: string = socket.handshake.auth.token;
+		const authId: string = socket.handshake.auth.token;
 		
+		// Convert authId to playerId with authentication system
+		const playerId = authId
+
 		socket.on("disconnect", () => {
 			if (this.isGameStarted == false) {
 				const index = this.players.findIndex((player) => player.playerId === playerId);
@@ -37,26 +56,26 @@ export class GameState {
 		})
 
 		// pref only let the host do it or smth
-		socket.on("start_game", (body) => {
+		socket.on("game_start", (body) => {
 			if (this.startGame() == true) {
-				socket.emit("start_game", 'success');
+				socket.emit("game_start", 'success');
 			}
 			else {
-				socket.emit("start_game", 'failure');
+				socket.emit("game_start", 'failure');
 			}
 		})
 
 		const index = this.players.findIndex((player) => player.playerId === playerId);
 		if (index == -1 && this.players.length < 4 && this.isGameStarted == false) {
 			console.log(`Player<${playerId}> has connected`);
-			this.players.push(new PlayerState(playerId, socket, this));
-			socket.emit("init_player", playerId); // can be some other id later
-			socket.join("game");
+			const player = new PlayerState(playerId, socket, this);
+			this.players.push(player);
+			this.playerJoin(player);
 		}
 		else if (this.isGameStarted == true && index >= 0) {
 			console.log(`Player<${playerId}> has reconnected`);
-			socket.emit("init_player", playerId); // can be some other id later
-			socket.join("game");
+			const player = this.players[index];
+			this.playerJoin(player);
 		}
 		else {
 			socket.emit("graceful_disconnect");
@@ -67,7 +86,14 @@ export class GameState {
 		}
 	}
 
-	// private disconnectPlayer()
+	private playerJoin(player: PlayerState) {
+		const transmitObject = {
+			"playerId": player.playerId,
+			"seatOrder": this.getSeatOrder()
+		}
+		player.socket.join("game");
+		io.to("game").emit("player_join", JSON.stringify(transmitObject))
+	}
 
 	private playerTurnEvent() {
 		const player = this.players.at(this.playerTurnIndex);
@@ -86,7 +112,7 @@ export class GameState {
 		this.playerTurnEvent();
 	}
 
-	public	isPlayerTurn(player: PlayerState) {
+	public isPlayerTurn(player: PlayerState) {
 		if (this.players.indexOf(player) === this.playerTurnIndex) {
 			return (true);
 		}
@@ -99,13 +125,22 @@ export class GameState {
 		}
 	}
 
+	private opponentCollectCards() {
+		const opponentCards: Record<string, number> = {};
+		for (let i = 0; i < this.players.length; i++) {
+			opponentCards[this.players[i].playerId] = this.players[i].cards.length;
+		}
+		io.to("game").emit("opponent_collect_cards", JSON.stringify(opponentCards));
+	}
+
 	public startGame(): boolean {
 		if (this.isGameStarted == true)
 			return (false);
-		console.log("Game Started")
+		console.log("Game Started");
 		for (let i = 0; i < this.players.length; i++) {
 			this.players[i].collectCards(this.cardDeck.dealCards(13));
 		}
+		this.opponentCollectCards();
 		this.isGameStarted = true;
 		this.playerTurnIndex = 0; // find player with 3 of diamonds and set player turn index to it
 		this.playerTurnEvent();
@@ -114,7 +149,7 @@ export class GameState {
 
 	public endGame(player: PlayerState) {
 		console.log(`Game Ended | Winner is Player<${player.playerId}>`);
-		io.to("game").emit("endGame", `Player<${player.playerId}> won the game!`);
+		io.to("game").emit("game_end", `Player<${player.playerId}> won the game!`);
 	}
 
 	public transmitGameState() {

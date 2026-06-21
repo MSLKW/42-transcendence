@@ -4,16 +4,18 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>BigTwo</title>
-	<style>
-		body {
-			margin: 0;
-		}
-	</style>
+	<link rel="stylesheet" href="style.css">
 </head>
 <body>
-	<button id="start-game-button">Start Game</button>
-	<button id="send-cards-button">Send Cards</button>
-	<button id="skip-turn-button">Skip Turn</button>
+	<div class="canvas-container">
+		<div id="threejs-canvas"></div>
+			<button class="ui-misc" id="start-game-button">Start Game</button>
+			<div class="ui-action">
+				<button id="send-cards-button">Send Cards</button>
+				<button id="skip-turn-button">Skip Turn</button>
+			</div>
+		</div>
+	</div>
     <script type="module" src="./src_client/main.ts"></script>
 </body>
 </html>

@@ -7,7 +7,7 @@ import { io } from './server.js';
 export class PlayerState {
 	public	socket: Socket;
 	public	playerId: string;
-	private cards: Array<CardTransmit>;
+	public cards: Array<CardTransmit>;
 	private gameStateRef: GameState;
 	private cardHeapRef: CardHeapState;
 
@@ -18,7 +18,7 @@ export class PlayerState {
 		this.gameStateRef = gameState
 		this.cardHeapRef = gameState.cardHeap;
 		
-		socket.on("play_card_hand", (body) => {
+		socket.on("player_play_card_hand", (body) => {
 			this.playCardHand(socket, body);
 		});
 
@@ -56,25 +56,25 @@ export class PlayerState {
 	// Returns if player has finished all his cards
 	private playCardHand(socket: Socket, body: string) {
 		if (this.gameStateRef.isPlayerTurn(this) === false) {
-			socket.emit('play_card_hand', 'failure: not ur turn');
+			socket.emit('player_play_card_hand', 'failure: not ur turn');
 			return;
 		}
 		const cardHand = JSON.parse(body) as CardHandTransmit;
 		if (cardHand.handType === HandType.None || (cardHand.handType === HandType.Pentuple && cardHand.pentupleType === PentupleType.None)) {
-			socket.emit('play_card_hand', 'failure: cardhand is not even a thing');
+			socket.emit('player_play_card_hand', 'failure: cardhand is not even a thing');
 			return ;
 		}
 		if (this.cardHeapRef.isCardHandPlayable(cardHand) == false) {
-			socket.emit('play_card_hand', 'failure: cardhand is not playable');
+			socket.emit('player_play_card_hand', 'failure: cardhand is not playable');
 			return ;
 		}
 		for (let i = 0; i < cardHand.cards.length; i++) {
 			if (this.cards.findIndex((card: CardTransmit) => card.rank === cardHand.cards[i].rank && card.suite === cardHand.cards[i].suite ) == -1) {
-				socket.emit('play_card_hand', 'failure: cardhand not in playerState cards');
+				socket.emit('player_play_card_hand', 'failure: cardhand not in playerState cards');
 				return ;
 			}
 		}
-		socket.emit('play_card_hand', 'success');
+		socket.emit('player_play_card_hand', 'success');
 		this.cardHeapRef.receiveCardHand(cardHand);
 		this.removeCards(cardHand.cards);
 

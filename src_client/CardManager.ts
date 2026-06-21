@@ -7,13 +7,17 @@ export class CardManager {
 	private rotation: THREE.Euler;
 	private boundSpace: number;
 	private	slots: Array<THREE.Vector3>;
-	private cards: Array<Card>;
+	private	cards: Array<Card>;
 	private	selectedCards: CardHand;
 	private selectedBoundSpace: number;
 	private selectedSlots: Array<THREE.Vector3>;
 	private playerId: string;
 	
-	constructor(position: THREE.Vector3, rotation: THREE.Euler, boundSpace: number, selectedBoundSpace: number, playerId: string) {
+	constructor(playerId: string,
+				position: THREE.Vector3 = new THREE.Vector3(0, 0, 0),
+				rotation: THREE.Euler = new THREE.Euler(0, 0, 0), 
+				boundSpace: number = 10, 
+				selectedBoundSpace: number = 5) {
 		this.position = position;
 		this.rotation = rotation;
 		this.slots = [];
@@ -40,6 +44,32 @@ export class CardManager {
 		this.cards.splice(index, 1);
 		this.slots = this.calculateSlots(this.cards, this.boundSpace);
 		this.updateCardObjects(this.cards, this.slots);
+	}
+
+	public removeCardByIndex(index: number): Card | undefined {
+		console.log(this.cards);
+		const card = this.cards.at(index);
+		if (card === undefined) {
+			console.log('Card to remove not found');
+			return (undefined);
+		}
+		this.cards.splice(index, 1);
+		this.slots = this.calculateSlots(this.cards, this.boundSpace);
+		this.updateCardObjects(this.cards, this.slots);
+		return (card);
+	}
+
+	public update(position: THREE.Vector3 | undefined, rotation: THREE.Euler | undefined) {
+		if (position !== undefined) {
+			this.position = position;
+		}
+		if (rotation !== undefined) {
+			this.rotation = rotation;
+		}
+		this.slots = this.calculateSlots(this.cards, this.boundSpace);
+		this.updateCardObjects(this.cards, this.slots);
+		this.selectedSlots = this.calculateSlots(this.selectedCards.cards, this.selectedBoundSpace);
+		this.updateCardObjects(this.selectedCards.cards, this.selectedSlots);
 	}
 
 	// very prone to breaking lol, gotta revamp

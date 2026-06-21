@@ -44,6 +44,18 @@ export class Card {
 		this.backMesh.removeFromParent();
 		this.object.removeFromParent();
 	}
+
+	public setCardRankSuite(rank: CardRank | undefined, suite: CardSuite | undefined) {
+		if (rank) {
+			this.rank = rank;
+		}
+		if (suite) {
+			this.suite = suite;
+		}
+		this.frontTexture = this.getFrontTexture(this.rank, this.suite);
+		this.frontMaterial.map = this.frontTexture;
+		this.frontMaterial.needsUpdate = true;
+	}
 	
 	public static pushCards(cardsA: Array<Card>, cardsB: Array<Card>)
 	{

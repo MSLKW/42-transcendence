@@ -10,16 +10,12 @@ import { scene, renderer, camera } from './main.ts';
 export class Player {
 	private	socket: Socket;
 	private playerId!: string;
-	private cardManager!: CardManager;
+	public	cardManager!: CardManager;
 	private cardHeapRef: CardHeap;
 	private raycaster: THREE.Raycaster;
 
-	constructor(playerId: string, cardHeapRef: CardHeap) {
-		this.socket = io('http://localhost:3000', {
-			auth: {
-				token: playerId
-			}
-		});
+	constructor(socket: Socket, playerId: string, cardHeapRef: CardHeap) {
+		this.socket = socket;
 		this.cardHeapRef = cardHeapRef;
 		this.raycaster = new THREE.Raycaster();
 		
@@ -33,25 +29,23 @@ export class Player {
 			console.log('Socket disconnected')
 		})
 
-		this.socket.on('init_player', (playerId) => {
-			this.initPlayer(playerId);
-		})
+		this.initPlayer(playerId);
 	}
 
 	private initPlayer(playerId: string) {
 		this.playerId = playerId;
 		this.cardManager = new CardManager(
-			new THREE.Vector3(0, -2, 0),
+			this.playerId,
+			new THREE.Vector3(0, 2, 8),
 			new THREE.Euler(0, 0, 0),
 			10,
 			5,
-			this.playerId
 		);
 
 		const sendCardsButton = document.getElementById('send-cards-button');
 		sendCardsButton?.addEventListener('click', () => {
 			const cardsJson: string = this.cardManager.selectedCardsToJSON();
-			this.socket.emit('play_card_hand', cardsJson);
+			this.socket.emit('player_play_card_hand', cardsJson);
 		});
 		
 		const skipTurnButton = document.getElementById('skip-turn-button');
@@ -61,21 +55,22 @@ export class Player {
 		
 		const startGameButton = document.getElementById('start-game-button');
 		startGameButton?.addEventListener('click', () => {
-			this.socket.emit('start_game', this.socket.id);
+			this.socket.emit('game_start', this.socket.id);
 		});
 		
-		this.socket.on('start_game', (status) => {
+		this.socket.on('game_start', (status) => {
 			console.log(`Start Game: ${status}`);
 		});
 		
-		this.socket.on('end_game', (body) => {
+		this.socket.on('game_end', (body) => {
 			console.log(body);
 		})
 		
-		this.socket.on('play_card_hand', (status) => {
+		this.socket.on('player_play_card_hand', (status) => {
 			if (status === 'success') {
 				const cardHand = this.cardManager.sendSelectedCards();
-				cardHand.disposeCards();
+				this.cardHeapRef.receiveCardHand(cardHand);
+
 			}
 			else {
 				console.log(`playCardHand status: ${status}`);
@@ -86,24 +81,12 @@ export class Player {
 			console.log('This player\'s is our turn!');
 		});
 		
-		this.socket.on("card_heap_update", (body) => {
-			const cardHandTransmit = JSON.parse(body) as CardHandTransmit;
-			const cardHand = new CardHand(this.playerId);
-			for (let i = 0; i < cardHandTransmit.cards.length; i++) {
-				let card = new Card(cardHandTransmit.cards[i].rank, cardHandTransmit.cards[i].suite)
-				cardHand.receiveCard(card);
-				scene.add(card.object);
-			}
-			this.cardHeapRef.receiveCardHand(cardHand);
-		});
-		
 		this.socket.on('collect_cards', (cards) => {
 			const cardTransmits: Array<CardTransmit> = JSON.parse(cards) as Array<CardTransmit>;
 			for (let i = 0; i < cardTransmits.length; i++) {
 				let card = new Card(cardTransmits[i].rank, cardTransmits[i].suite);
 				this.cardManager.receiveCard(card);
 				scene.add(card.object);
-				// console.log(card);
 			}
 		})
 
@@ -118,7 +101,6 @@ export class Player {
 		mouse.x = ((event.clientX - canvas.left) / canvas.width) * 2 - 1;
 		mouse.y = -((event.clientY - canvas.top) / canvas.height) * 2 + 1;
 		this.raycaster.setFromCamera(mouse, camera);
-		// console.log(`${mouse.x} | ${mouse.y}`);
 		this.cardManager.interactCard(this.raycaster);
 	}
 }

@@ -154,38 +154,6 @@ export class CardHand {
 		return (true);
 	}
 
-	// Returns true if better, returns false if weaker
-	public compare(other: CardHand): boolean {
-		if (this.handType === HandType.Single || this.handType === HandType.Double || this.handType === HandType.Triple) {
-			if (this.cards[0].rank > other.cards[0].rank)
-				return (true);
-			else if (this.cards[0].suite > other.cards[0].suite)
-				return (true);
-		}
-		else if (this.handType === HandType.Pentuple) {
-			if (this.pentupleType > other.pentupleType)
-				return (true);
-			if (this.pentupleType === PentupleType.Straight || this.pentupleType === PentupleType.StraightFlush) {
-				if (this.cards[0].rank > other.cards[0].rank)
-					return (true);
-				else if (this.cards[0].suite > other.cards[0].suite)
-					return (true);
-			}
-			else if (this.pentupleType === PentupleType.Flush) {
-				if (this.cards[0].suite > other.cards[0].suite)
-					return (true);
-				else if (this.cards[0].rank > other.cards[0].rank)
-					return (true);
-			}
-			else if (this.pentupleType === PentupleType.FullHouse || this.pentupleType === PentupleType.FourOfAKind) {
-				if (this.cards[2].rank > other.cards[2].rank) {
-					return (true);
-				}
-			}
-		}
-		return (false);
-	}
-
 	public toJSON(): CardHandTransmit {
 		return {
 			cards: this.cards,
