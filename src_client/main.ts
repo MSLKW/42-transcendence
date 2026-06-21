@@ -89,20 +89,20 @@ if (authId && playerId) {
 		if (object.playerId === playerId) {
 			const player = new Player(socket, playerId, cardHeap);
 			const [pos, rot] = tablePosition(object.seatOrder[playerId], true);
-			player.cardManager.update(pos, rot);
+			player.cardManager.updateManager(pos, rot);
 			const seatOrder: Record<string, number> = object.seatOrder;
 			Object.keys(seatOrder).forEach((id) => {
 				if (id !== playerId ) {
 					const opponent = new Opponent(socket, id, cardHeap);
 					const [pos, rot] = tablePosition(object.seatOrder[id], false);
-					opponent.cardManager.update(pos, rot);
+					opponent.cardManager.updateManager(pos, rot);
 				}
 			})
 		}
 		else {
 			const opponent = new Opponent(socket, object.playerId, cardHeap);
 			const [pos, rot] = tablePosition(object.seatOrder[object.playerId], false);
-			opponent.cardManager.update(pos, rot);
+			opponent.cardManager.updateManager(pos, rot);
 		}
 	});
 }

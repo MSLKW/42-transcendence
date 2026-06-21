@@ -17,6 +17,8 @@ export class Player {
 	private sendCardsButton: HTMLButtonElement;
 	private skipTurnButton: HTMLButtonElement;
 	private startGameButton: HTMLButtonElement;
+	private sortCardsByRankButton: HTMLButtonElement;
+	private sortCardsBySuiteButton: HTMLButtonElement
 
 	constructor(socket: Socket, playerId: string, cardHeapRef: CardHeap) {
 		this.socket = socket;
@@ -27,10 +29,16 @@ export class Player {
 		this.sendCardsButton = document.getElementById('send-cards-button') as HTMLButtonElement;
 		this.skipTurnButton = document.getElementById('skip-turn-button') as HTMLButtonElement;
 		this.startGameButton = document.getElementById('start-game-button') as HTMLButtonElement;
+		this.sortCardsByRankButton = document.getElementById('sort-cards-by-rank-button') as HTMLButtonElement;
+		this.sortCardsBySuiteButton = document.getElementById('sort-cards-by-suite-button') as HTMLButtonElement;
 
 		this.cardManager = new CardManager(this.playerId);
 
-		if (this.sendCardsButton === undefined || this.skipTurnButton === undefined || this.startGameButton === undefined) {
+		if (this.sendCardsButton === undefined || 
+			this.skipTurnButton === undefined || 
+			this.startGameButton === undefined ||
+			this.sortCardsByRankButton === undefined ||
+			this.sortCardsBySuiteButton === undefined) {
 			console.error("Player could not get HTML buttons");
 			return ;
 		}
@@ -99,6 +107,14 @@ export class Player {
 		
 		this.startGameButton.addEventListener('click', () => {
 			this.socket.emit('game_start', this.socket.id);
+		});
+
+		this.sortCardsByRankButton.addEventListener('click', () => {
+			this.cardManager.sortCards((a, b) => a.rank - b.rank);
+		});
+
+		this.sortCardsBySuiteButton.addEventListener('click', () => {
+			this.cardManager.sortCards((a, b) => a.suite - b.suite);
 		});
 
 		renderer.domElement.addEventListener('click', (event) => {

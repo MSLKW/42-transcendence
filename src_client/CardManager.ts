@@ -59,7 +59,12 @@ export class CardManager {
 		return (card);
 	}
 
-	public update(position: THREE.Vector3 | undefined, rotation: THREE.Euler | undefined) {
+	public sortCards(compareFunction: (a: Card, b: Card) => number) {
+		this.cards.sort(compareFunction);
+		this.updateCardObjects(this.cards, this.slots);
+	}
+
+	public updateManager(position: THREE.Vector3 | undefined, rotation: THREE.Euler | undefined) {
 		if (position !== undefined) {
 			this.position = position;
 		}
