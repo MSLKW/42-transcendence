@@ -17,16 +17,31 @@ export const renderer = new THREE.WebGLRenderer();
 renderer.setSize(window.innerWidth, window.innerHeight);
 container?.appendChild(renderer.domElement);
 
-const tableGeometry = new THREE.CylinderGeometry(10, 10, 1, 20);
-const tableMaterial = new THREE.MeshBasicMaterial({ color: 0x4c5ee6 });
+// Setup Scene
+
+scene.background = new THREE.Color("#383B3D")
+
+const tableGeometry = new THREE.CylinderGeometry(10, 10, 1, 32);
+const tableMaterial = new THREE.MeshBasicMaterial({ color: 0xebbb52 });
 const tableMesh = new THREE.Mesh(tableGeometry, tableMaterial);
 scene.add(tableMesh);
 
-const boxGeometry = new THREE.BoxGeometry(1, 1, 1);
-const boxMaterial = new THREE.MeshBasicMaterial({ color: 0xffffff });
+const floorGeometry = new THREE.PlaneGeometry(50, 50);
+const floorMaterial = new THREE.MeshBasicMaterial({ color: 0x122654 });
+const floorMesh = new THREE.Mesh(floorGeometry, floorMaterial);
+floorMesh.position.set(0, -3, 0);
+floorMesh.rotation.x = -Math.PI / 2;
+scene.add(floorMesh)
+
+const boxGeometry = new THREE.BoxGeometry(5, 10, 5);
+const boxMaterial = new THREE.MeshBasicMaterial({ color: 0x2bcfb3 });
 const boxMesh = new THREE.Mesh(boxGeometry, boxMaterial);
-boxMesh.position.set(0, 2, 5);
-scene.add(boxMesh);
+boxMesh.position.set(20, 2, 20);
+
+const box2Material = new THREE.MeshBasicMaterial({ color: 0x88cf2b });
+const box2Mesh = new THREE.Mesh(boxGeometry, box2Material);
+box2Mesh.position.set(-20, 2, -20);
+scene.add(boxMesh, box2Mesh);
 
 const orbitControls = new OrbitControls(camera, renderer.domElement);
 camera.position.set(0, 0, 0);

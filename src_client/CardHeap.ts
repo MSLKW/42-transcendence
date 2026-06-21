@@ -13,11 +13,12 @@ export class CardHeap {
 
 	public receiveCardHand(cardHand: CardHand) {
 		this.cardHands.push(cardHand);
-		let xOffset = -2;
+		let xStart = -2.5;
+		let xEnd = 2.5;
 		for (let i = 0; i < cardHand.cards.length; i++) {
+			let normalizedIndex = cardHand.cards.length > 1 ? i / (cardHand.cards.length - 1) : 0.5;
 			cardHand.cards[i].object.rotation.set(-Math.PI / 2, 0, 0);
-			cardHand.cards[i].object.position.set(this.position.x + xOffset, this.position.y, this.position.z);
-			xOffset++;
+			cardHand.cards[i].object.position.set(this.position.x + THREE.MathUtils.lerp(xStart, xEnd, normalizedIndex), this.position.y, this.position.z);
 		}
 		this.position.y += 0.01;
 	}
