@@ -1,6 +1,6 @@
 import { create } from "zustand";
 
-export type GameScene = "LOGIN" | "HOME" | "LOBBY" | "GAMEPLAY" | "R3FGAMEPLAY" | "RESULTS";
+export type GameScene = "LOGIN" | "HOME" | "LOBBY" | "GAMEPLAY" | "R3F" | "RESULTS";
 
 interface GameState {
 	currentScene: GameScene;
