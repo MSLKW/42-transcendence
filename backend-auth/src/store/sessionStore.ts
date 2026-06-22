@@ -5,4 +5,5 @@ export interface SessionStore {
 	getSession(token: string): Promise<Session | null>;
 	updateExpiry(token: string, expiresAt: Date): Promise<void>;
 	deleteSession(token: string): Promise<void>;
+	deleteSessionsByUserId(userId: string): Promise<void>;
 }

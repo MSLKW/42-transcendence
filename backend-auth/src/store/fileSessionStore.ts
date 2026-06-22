@@ -17,7 +17,7 @@ export class FileSessionStore implements SessionStore {
 			const raw = await fs.readFile(this.filePath(token), "utf-8");
 			const parsed = JSON.parse(raw);
 			return {
-				token,
+				token, // the raw token the caller already has; never read from disk
 				userId: parsed.userId,
 				createdAt: new Date(parsed.createdAt),
 				expiresAt: new Date(parsed.expiresAt),
@@ -48,6 +48,25 @@ export class FileSessionStore implements SessionStore {
 		return { token, ...stored };
 	}
 
+	private async readAllSessionFiles(): Promise<Array<Omit<Session, "token"> & { fileToken: string }>> {
+		await fs.mkdir(DATA_DIR, { recursive: true });
+		const files = await fs.readdir(DATA_DIR);
+		const sessions: Array<Omit<Session, "token"> & { fileToken: string }> = [];
+
+		for (const file of files) {
+			const raw = await fs.readFile(path.join(DATA_DIR, file), "utf-8");
+			const parsed = JSON.parse(raw);
+			sessions.push({
+				fileToken: file.replace(/\.json$/, ""), // the hashed token, used only to locate the file
+				userId: parsed.userId,
+				createdAt: new Date(parsed.createdAt),
+				expiresAt: new Date(parsed.expiresAt),
+			});
+		}
+
+		return sessions;
+	}
+
 	async getSession(token: string): Promise<Session | null> {
 		return this.readSessionFile(token);
 	}
@@ -71,6 +90,15 @@ export class FileSessionStore implements SessionStore {
 			if (err.code !== "ENOENT") {
 				throw err;
 			}
+		}
+	}
+
+	async deleteSessionsByUserId(userId: string): Promise<void> {
+		const all = await this.readAllSessionFiles();
+		const matching = all.filter(s => s.userId === userId);
+
+		for (const session of matching) {
+			await fs.unlink(path.join(DATA_DIR, `${session.fileToken}.json`));
 		}
 	}
 }

@@ -47,6 +47,7 @@ export function signinHandler(userStore: UserStore, sessionStore: SessionStore) 
 			}
 
 			await userStore.resetFailedAttempts(user.id);
+			await sessionStore.deleteSessionsByUserId(user.id);
 
 			const expiresAt = new Date(Date.now() + SESSION_DURATION_MS);
 			const session = await sessionStore.createSession(user.id, expiresAt);
