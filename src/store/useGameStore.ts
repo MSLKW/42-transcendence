@@ -2,6 +2,19 @@ import { create } from "zustand";
 
 export type GameScene = "LOGIN" | "HOME" | "LOBBY" | "GAMEPLAY" | "R3F" | "RESULTS";
 
+export type AchievementId = 
+	| "FIRST_LOGIN"
+	| "LOGIN_1_WEEK"
+	| "PLAYED_1_GAME"
+	| "PLAYED_10_GAMES"
+	| "PLAYED_42_GAMES"
+	| "FIRST_WIN"
+	| "WIN_STREAK_2"
+	| "WIN_STREAK_5"
+	| "WIN_STREAK_10"
+	| "MASTER_COLLECTOR"
+	;
+
 interface GameState {
 	currentScene: GameScene;
 	playerName: string;
@@ -9,7 +22,7 @@ interface GameState {
 	totalPlayed: number;
 	totalWins: number;
 	winStreak: number;
-	achievements: number[];
+	achievements: Record<AchievementId, { unlockedAt: number } | null>;
 
 	setScene: (scene: GameScene) => void;
 	setPlayerName: (name: string) => void;
@@ -18,7 +31,7 @@ interface GameState {
 	incTotalWins: () => void;
 	incWinStreak: () => void;
 	resetWinStreak: () => void;
-	unlockAchievement: (which: number) => void;
+	unlockAchievement: (id: AchievementId) => void;
 	resetGame: () => void;
 }
 
@@ -29,7 +42,18 @@ export const useGameStore = create<GameState>((set) => ({
 	totalPlayed: 0,
 	totalWins: 0,
 	winStreak: 0,
-	achievements: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+	achievements: {
+		FIRST_LOGIN: null,
+		LOGIN_1_WEEK: null,
+		PLAYED_1_GAME: null,
+		PLAYED_10_GAMES: null,
+		PLAYED_42_GAMES: null,
+		FIRST_WIN: null,
+		WIN_STREAK_2: null,
+		WIN_STREAK_5: null,
+		WIN_STREAK_10: null,
+		MASTER_COLLECTOR: null,
+	},
 
 	setScene: (scene) => set({ currentScene: scene }),
 	setPlayerName: (name) => set({ playerName: name }),
@@ -38,11 +62,15 @@ export const useGameStore = create<GameState>((set) => ({
 	incTotalWins: () => set((state) => ({ totalWins: state.totalWins + 1 })),
 	incWinStreak: () => set((state) => ({ winStreak: state.winStreak + 1 })),
 	resetWinStreak: () => set({ winStreak: 0 }),
-	unlockAchievement: (which) => set((state) => {
-		const nextAchievements = [...state.achievements];
-		if (which >= 0 && which < nextAchievements.length)
-			nextAchievements[which] = 1;
-		return { achievements: nextAchievements };
+	unlockAchievement: (id) => set((state) => {
+		if (state.achievements[id])
+			return {};
+		return {
+			achievements: {
+				...state.achievements,
+				[id]: { unlockedAt: Date.now() }
+			}
+		};
 	}),
 	resetGame: () => set({
 		playerName: "",
@@ -50,7 +78,18 @@ export const useGameStore = create<GameState>((set) => ({
 		totalPlayed: 0,
 		totalWins: 0,
 		winStreak: 0,
-		achievements: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+		achievements: {
+			FIRST_LOGIN: null,
+			LOGIN_1_WEEK: null,
+			PLAYED_1_GAME: null,
+			PLAYED_10_GAMES: null,
+			PLAYED_42_GAMES: null,
+			FIRST_WIN: null,
+			WIN_STREAK_2: null,
+			WIN_STREAK_5: null,
+			WIN_STREAK_10: null,
+			MASTER_COLLECTOR: null,
+		},
 		currentScene: "LOGIN",
 	}),
 }));

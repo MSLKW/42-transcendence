@@ -3,6 +3,13 @@ import { useGameStore } from './store/useGameStore';
 export default function Dev() {
 	const setScene = useGameStore((state) => state.setScene);
 
+	const showFrame = () => {
+		console.log("Show frame");
+	}
+	const showStats = () => {
+		console.log("Show stats");
+	}
+
 	return (
 		<section className="w-full h-15">
 			<ul className="ul-dev">
@@ -14,8 +21,8 @@ export default function Dev() {
 				<li><button type="button" onClick={() => setScene('RESULTS')}>Results</button></li>
 			</ul>
 			<ul className="ul-dev">
-				<li><button type="button">Frame</button></li>
-				<li><button type="button">Stats</button></li>
+				<li><button type="button" onClick={showFrame}>Frame</button></li>
+				<li><button type="button" onClick={showStats}>Stats</button></li>
 			</ul>
 		</section>
 	);
