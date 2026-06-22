@@ -17,7 +17,7 @@ const sessionStore = new FileSessionStore();
 app.post("/signup", signupHandler(userStore));
 app.post("/signin", signinHandler(userStore, sessionStore));
 app.delete("/logout", logoutHandler(sessionStore));
-app.post("/validate", validateSessionHandler(sessionStore));
+app.get("/validate", validateSessionHandler(sessionStore));
 
 app.use((err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {
 	if (err.type === "entity.parse.failed") {
