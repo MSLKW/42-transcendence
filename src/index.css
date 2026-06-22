@@ -1,5 +1,6 @@
 @import "tailwindcss";
 @import "./css/base/typography.css";
+@import "./css/uic/ul.css";
 
 @theme {
 	--color-n0: #191b1c;
