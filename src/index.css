@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@import "./css/base/typography.css";
 
 @theme {
 	--color-n0: #191b1c;
