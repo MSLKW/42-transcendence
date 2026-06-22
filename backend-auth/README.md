@@ -30,7 +30,15 @@ Responses:
 - 200: { id }
 - 401: account not found / wrong password
 
-### POST /validate
+### DELETE /logout
+Header:
+Authorization: Bearer \<session\_token\>
+
+Responses:
+- 200: successful logout
+- 401: missing or malformed authorization / invalid session
+
+### GET /validate
 Header:
 Authorization: Bearer \<session\_token\>
 
@@ -41,4 +49,5 @@ Responses:
 ## TESTS
 - npm run test:signup \<email\> \<password\>
 - npm run test:singin \<identifier\> \<password\>
+- npm run test:logout \<session\_toekn\>
 - npm run test:validate \<session\_token\>

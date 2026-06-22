@@ -7,3 +7,4 @@ build/
 .env.local
 *.log
 npm-debug.log*
+*.swp
