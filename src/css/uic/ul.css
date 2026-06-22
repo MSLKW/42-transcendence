@@ -1,9 +1,7 @@
-@layer components {
-	ul {
-		@apply 
-			w-full h-full
-			flex place-content-evenly place-items-center
-			text-r4
-			;
-	}
+ul {
+	@apply 
+		w-full h-full
+		flex place-content-evenly place-items-center
+		text-r4
+		;
 }

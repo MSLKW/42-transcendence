@@ -58,6 +58,9 @@
 @utility canvas-screen {
 	@apply w-screen h-screen border-r4;
 }
+@utility canvas-three {
+	@apply absolute pointer-events-none;
+}
 
 html,
 body,

@@ -1,5 +1,3 @@
-@layer base {
-	h1 {
-		@apply text-9xl font-bold text-n6;
-	}
+h1 {
+	@apply text-9xl font-bold text-n6;
 }
