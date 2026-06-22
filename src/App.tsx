@@ -1,7 +1,7 @@
 function App() {
 	return (
 		<>
-			<h1 className='text-9xl bg-a4'>Big 2</h1>
+			<h1 className='text-9xl text-n6'>Big 2</h1>
 		</>
 	)
 }
