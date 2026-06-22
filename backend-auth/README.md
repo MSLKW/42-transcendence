@@ -1,4 +1,4 @@
-# Auth Backend
+# Backend Auth
 
 ## Running locally
 npm install
