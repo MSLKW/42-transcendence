@@ -5,7 +5,9 @@
 	"main": "index.js",
 	"scripts": {
 		"dev": "tsx src/index.ts",
-		"test": "echo \"Error: no test specified\" && exit 1"
+		"test:signup": "bash scripts/test-signup.sh",
+		"test:signin": "bash scripts/test-signin.sh",
+		"test:validate": "bash scripts/test-validate.sh"
 	},
 	"author": "",
 	"license": "ISC",
@@ -17,6 +19,7 @@
 	},
 	"dependencies": {
 		"argon2": "^0.44.0",
+		"dotenv": "^17.4.2",
 		"express": "^5.2.1"
 	}
 }

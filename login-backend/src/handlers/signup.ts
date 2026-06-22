@@ -5,8 +5,12 @@ import { validateEmail, validatePassword } from "../auth/validation";
 
 export function signupHandler(userStore: UserStore) {
 	return async (req: Request, res: Response) => {
-		const { email, password } = req.body ?? {};
+		if (req.headers["content-type"] != "application/json")
+				return res.status(415).json(
+					{ error: "Content-Type must be application/json" }
+				);
 
+		const { email, password } = req.body ?? {};
 		if (typeof email !== "string" || typeof password !== "string") {
 			return res.status(400).json({ error: "Email and password are required." });
 		}

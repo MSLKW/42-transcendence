@@ -1,5 +1,10 @@
+import { SessionStore } from "../store/sessionStore";
+import { Session } from "../models/session";
+import { SESSION_DURATION_MS } from "../config/sessionConfig";
+
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const MIN_PASSWORD_LENGTH = 8;
+const MIN_USERNAME_LENGTH = 3;
 
 export function validateEmail(email: string): boolean {
 	return EMAIL_REGEX.test(email);
@@ -7,7 +12,42 @@ export function validateEmail(email: string): boolean {
 
 export function validatePassword(password: string): { valid: boolean; reason?: string } {
 	if (password.length < MIN_PASSWORD_LENGTH) {
-		return { valid: false, reason: `Password must be at least ${MIN_PASSWORD_LENGTH} characters long.` };
+		return {
+			valid: false,
+			reason: `Password must be at least ${MIN_PASSWORD_LENGTH} characters long.`
+		};
 	}
 	return { valid: true };
+}
+
+export function validateUsername(username: string): boolean {
+	if (username.length < MIN_USERNAME_LENGTH) {
+		return {
+			valid: false,
+			reason: `Username must be at least ${MIN_USERNAME_LENGTH} characters long`
+		};
+	}
+	return { valid: true };
+}
+
+export async function validateSession(
+	sessionStore: SessionStore,
+	token: string
+): Promise<Session | null> {
+	const session = await sessionStore.getSession(token);
+
+	if (session === null) {
+		return null;
+	}
+
+	const now = new Date();
+	if (session.expiresAt < now) {
+		await sessionStore.deleteSession(token);
+		return null;
+	}
+
+	const newExpiresAt = new Date(now.getTime() + SESSION_DURATION_MS);
+	await sessionStore.updateExpiry(token, newExpiresAt);
+
+	return { ...session, expiresAt: newExpiresAt };
 }
