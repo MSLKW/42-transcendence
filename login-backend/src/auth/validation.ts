@@ -20,7 +20,7 @@ export function validatePassword(password: string): { valid: boolean; reason?: s
 	return { valid: true };
 }
 
-export function validateUsername(username: string): boolean {
+export function validateUsername(username: string): { valid: boolean; reason?: string} {
 	if (username.length < MIN_USERNAME_LENGTH) {
 		return {
 			valid: false,

@@ -28,7 +28,7 @@ app.use((err: any, req: express.Request, res: express.Response, next: express.Ne
 });
 
 const PORT = 3000;
-const ERROR_MESSAGES = {
+const ERROR_MESSAGES: Record<string, string> = {
 	EADDRINUSE: `Port ${PORT} is already in use.`,
 	EACCES: `Insufficient permissions to bind to port ${PORT}.`,
 	EADDRNOTAVAIL: "The specified address is not available."
@@ -38,9 +38,9 @@ const server = app.listen(PORT, () => {
 	console.log(`Server running on http://localhost:${PORT}`);
 });
 
-server.on("error", (err) => {
+server.on("error", (err: NodeJS.ErrnoException) => {
 	console.error(
-		ERROR_MESSAGES[err.code] ??
+		(err.code !== undefined ? ERROR_MESSAGES[err.code] : undefined) ??
 		`Unexpected server error (${err.code}): ${err.message}`
 	);
 	process.exit(1);

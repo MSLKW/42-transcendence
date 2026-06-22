@@ -4,9 +4,10 @@
 	"description": "",
 	"main": "index.js",
 	"scripts": {
-		"dev": "tsx src/index.ts",
+		"dev": "tsc --noEmit && tsx src/index.ts",
 		"test:signup": "bash scripts/test-signup.sh",
 		"test:signin": "bash scripts/test-signin.sh",
+		"test:logout": "bash scripts/test-logout.sh",
 		"test:validate": "bash scripts/test-validate.sh"
 	},
 	"author": "",

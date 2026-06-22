@@ -1,4 +1,4 @@
-import { User } from "../model/user"
+import { User } from "../models/user"
 
 export interface UserStore {
   createUser(email: string, passwordHash: string): Promise<User>;
