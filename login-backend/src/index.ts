@@ -4,6 +4,7 @@ import { FileUserStore } from "./store/fileUserStore";
 import { FileSessionStore } from "./store/fileSessionStore";
 import { signupHandler } from "./handlers/signup";
 import { signinHandler } from "./handlers/signin";
+import { logoutHandler } from "./handlers/logout";
 import { validateSessionHandler } from "./handlers/validateSession";
 
 const app = express();
@@ -15,6 +16,7 @@ const sessionStore = new FileSessionStore();
 
 app.post("/signup", signupHandler(userStore));
 app.post("/signin", signinHandler(userStore, sessionStore));
+app.delete("/logout", logoutHandler(sessionStore));
 app.post("/validate", validateSessionHandler(sessionStore));
 
 app.use((err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {
