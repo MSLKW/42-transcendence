@@ -1,14 +1,10 @@
 import { useGameStore } from './store/useGameStore';
+import { useDevStore } from './store/useDevStore';
 
 export default function Dev() {
 	const setScene = useGameStore((state) => state.setScene);
-
-	const showFrame = () => {
-		console.log("Show frame");
-	}
-	const showStats = () => {
-		console.log("Show stats");
-	}
+	const showFrame = useDevStore((state) => state.setShowFrame);
+	const showStats = useDevStore((state) => state.setShowStats);
 
 	return (
 		<section className="w-full h-15">
