@@ -1,7 +1,7 @@
 function Dev() {
 	return (
 		<>
-			<div className="w-full h-15">
+			<section className="w-full h-15">
 				<ul className="
 					w-full h-full
 					flex place-content-evenly place-items-center
@@ -14,7 +14,7 @@ function Dev() {
 					<li>Three</li>
 					<li>Results</li>
 				</ul>
-			</div>
+			</section>
 		</>
 	);
 }
