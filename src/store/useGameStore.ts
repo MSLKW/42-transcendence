@@ -1,4 +1,5 @@
 import { create } from "zustand";
+import { persist } from "zustand/middleware";
 
 export type GameScene = "LOGIN" | "HOME" | "LOBBY" | "GAMEPLAY" | "R3F" | "RESULTS";
 
@@ -35,61 +36,68 @@ interface GameState {
 	resetGame: () => void;
 }
 
-export const useGameStore = create<GameState>((set) => ({
-	currentScene: "LOGIN",
-	playerName: "",
-	playerAvatar: "",
-	totalPlayed: 0,
-	totalWins: 0,
-	winStreak: 0,
-	achievements: {
-		FIRST_LOGIN: null,
-		LOGIN_1_WEEK: null,
-		PLAYED_1_GAME: null,
-		PLAYED_10_GAMES: null,
-		PLAYED_42_GAMES: null,
-		FIRST_WIN: null,
-		WIN_STREAK_2: null,
-		WIN_STREAK_5: null,
-		WIN_STREAK_10: null,
-		MASTER_COLLECTOR: null,
-	},
-
-	setScene: (scene) => set({ currentScene: scene }),
-	setPlayerName: (name) => set({ playerName: name }),
-	setPlayerAvatar: (avatar) => set({ playerAvatar: avatar }),
-	incTotalPlayed: () => set((state) => ({ totalPlayed: state.totalPlayed + 1 })),
-	incTotalWins: () => set((state) => ({ totalWins: state.totalWins + 1 })),
-	incWinStreak: () => set((state) => ({ winStreak: state.winStreak + 1 })),
-	resetWinStreak: () => set({ winStreak: 0 }),
-	unlockAchievement: (id) => set((state) => {
-		if (state.achievements[id])
-			return {};
-		return {
+export const useGameStore = create<GameState>() (
+	persist(
+		(set) => ({
+			currentScene: "LOGIN",
+			playerName: "",
+			playerAvatar: "",
+			totalPlayed: 0,
+			totalWins: 0,
+			winStreak: 0,
 			achievements: {
-				...state.achievements,
-				[id]: { unlockedAt: Date.now() }
-			}
-		};
-	}),
-	resetGame: () => set({
-		playerName: "",
-		playerAvatar: "",
-		totalPlayed: 0,
-		totalWins: 0,
-		winStreak: 0,
-		achievements: {
-			FIRST_LOGIN: null,
-			LOGIN_1_WEEK: null,
-			PLAYED_1_GAME: null,
-			PLAYED_10_GAMES: null,
-			PLAYED_42_GAMES: null,
-			FIRST_WIN: null,
-			WIN_STREAK_2: null,
-			WIN_STREAK_5: null,
-			WIN_STREAK_10: null,
-			MASTER_COLLECTOR: null,
-		},
-		currentScene: "LOGIN",
-	}),
-}));
+				FIRST_LOGIN: null,
+				LOGIN_1_WEEK: null,
+				PLAYED_1_GAME: null,
+				PLAYED_10_GAMES: null,
+				PLAYED_42_GAMES: null,
+				FIRST_WIN: null,
+				WIN_STREAK_2: null,
+				WIN_STREAK_5: null,
+				WIN_STREAK_10: null,
+				MASTER_COLLECTOR: null,
+			},
+
+			setScene: (scene) => set({ currentScene: scene }),
+			setPlayerName: (name) => set({ playerName: name }),
+			setPlayerAvatar: (avatar) => set({ playerAvatar: avatar }),
+			incTotalPlayed: () => set((state) => ({ totalPlayed: state.totalPlayed + 1 })),
+			incTotalWins: () => set((state) => ({ totalWins: state.totalWins + 1 })),
+			incWinStreak: () => set((state) => ({ winStreak: state.winStreak + 1 })),
+			resetWinStreak: () => set({ winStreak: 0 }),
+			unlockAchievement: (id) => set((state) => {
+				if (state.achievements[id])
+					return {};
+				return {
+					achievements: {
+						...state.achievements,
+						[id]: { unlockedAt: Date.now() }
+					}
+				};
+			}),
+			resetGame: () => set({
+				playerName: "",
+				playerAvatar: "",
+				totalPlayed: 0,
+				totalWins: 0,
+				winStreak: 0,
+				achievements: {
+					FIRST_LOGIN: null,
+					LOGIN_1_WEEK: null,
+					PLAYED_1_GAME: null,
+					PLAYED_10_GAMES: null,
+					PLAYED_42_GAMES: null,
+					FIRST_WIN: null,
+					WIN_STREAK_2: null,
+					WIN_STREAK_5: null,
+					WIN_STREAK_10: null,
+					MASTER_COLLECTOR: null,
+				},
+				currentScene: "LOGIN",
+			}),
+		}),
+		{
+			name: 'game-session-storage',
+		}
+	)
+);
