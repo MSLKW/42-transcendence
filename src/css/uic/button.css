@@ -1,0 +1,19 @@
+button {
+	@apply
+		transition-all duration-100 ease-in-out
+		;
+}
+button:hover {
+	@apply
+		scale-105
+		;
+}
+
+@utility btn-icon {
+	@apply
+		h-full aspect-square
+		bg-n1
+		border border-n2
+		rounded-3xl
+		;
+}
