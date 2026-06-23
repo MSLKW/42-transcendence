@@ -1,14 +1,17 @@
-import { useDevStore } from "../store/useDevStore";
+import { useEffect } from "react";
 import { Canvas } from "@react-three/fiber";
 import { Stats } from "@react-three/drei";
+import { useDevStore } from "../store/useDevStore";
 
 export const Gameplay = () => {
 	const showFrame = useDevStore((state) => state.showFrame);
 	const showStats = useDevStore((state) => state.showStats);
+
+	useEffect(() => { window.scrollTo({ top: 0, behavior: 'smooth', })}, []);
 	
 	return (
-		<section className={`canvas-screen ${showFrame ? "border" : ""}`}>
-			{showStats && <div className="canvas-three"><Canvas><Stats /></Canvas></div>}
+		<section className={`cont-area ${showFrame ? "border" : ""}`}>
+			{showStats && <div className="cont-three"><Canvas><Stats /></Canvas></div>}
 			<h1>Gameplay</h1>
 		</section>
 	);

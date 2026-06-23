@@ -1,18 +1,18 @@
-import { useDevStore } from "../store/useDevStore";
+import { useEffect } from "react";
 import { Canvas } from "@react-three/fiber";
 import { Stats } from "@react-three/drei";
+import { useDevStore } from "../store/useDevStore";
 
 export const Login = () => {
 	const showFrame = useDevStore((state) => state.showFrame);
 	const showStats = useDevStore((state) => state.showStats);
+
+	useEffect(() => { window.scrollTo({ top: 0, behavior: 'smooth', })}, []);
 	
 	return (
 		<section className={`cont-area ${showFrame ? "border" : ""}`}>
 			{showStats && <div className="cont-three"><Canvas><Stats /></Canvas></div>}
 			<div className="flex flex-col w-full h-full">
-				{/* <div className="w-full h-full border border-c4">
-					<button className="w-full min-h-15 h-full bg-n6">a</button>
-				</div> */}
 				<div className={`
 					cont-row basis-12.5 shrink ${showFrame ? "border" : ""}
 					justify-end
