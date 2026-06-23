@@ -57,7 +57,12 @@
 }
 
 @utility cont-area {
-	@apply w-screen h-screen border-r4 p-5;
+	@apply
+		w-screen min-w-80
+		h-screen min-h-80 
+		p-5
+		border-r4 
+		;
 }
 @utility cont-row {
 	@apply flex w-full border-c4;
