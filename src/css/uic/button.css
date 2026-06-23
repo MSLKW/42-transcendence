@@ -3,11 +3,14 @@ button {
 		transition-all duration-100 ease-in-out
 		cursor-pointer
 		;
-}
-button:hover {
-	@apply
-		scale-105
-		;
+
+	&:hover:not(:disabled) {
+		@apply scale-105;
+	}
+
+	&:disabled {
+		@apply opacity-50 cursor-default;
+	}
 }
 
 @utility btn-icon {
@@ -17,7 +20,28 @@ button:hover {
 		bg-n1
 		border border-n2
 		rounded-3xl
+		relative
 		;
+
+	&::after {
+		content: attr(data-tip);
+		@apply
+			w-max
+			absolute top-[calc(100%+10px)] -translate-x-1/2
+			bg-n1
+			border border-n2
+			rounded-lg
+			text-n6
+			px-5
+			pointer-events-none
+			origin-top scale-0 opacity-0
+			transition-all ease-out duration-50
+			;
+	}
+
+	&:hover::after {
+		@apply scale-100 opacity-100;
+	}
 }
 @utility btn-text {
 	@apply

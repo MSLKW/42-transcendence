@@ -18,7 +18,7 @@ export const Login = () => {
 					cont-row basis-12.5 shrink ${showFrame ? "border" : ""}
 					justify-end
 				`}>
-					<button className="btn-icon"><Info /></button>
+					<button className="btn-icon" data-tip="Info"><Info /></button>
 				</div>
 				<div className={`cont-row min-h-10 flex-3 ${showFrame ? "border" : ""}`}/>
 				<div className={`cont-row basis-17.5 shrink flex justify-center items-center gap-5 ${showFrame ? "border" : ""}`}>
