@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { CardHandTransmit, CardRank, CardSuite, CardTransmit, HandType, PentupleType } from '../src_shared/Types.ts';
+import { CardHandTransmit, CardRank, CardSuite, CardTransmit, HandType, PentupleType, PlayerSeatOrderTransmit } from '../src_shared/Types.ts';
 import { Card } from './Card.ts';
 import { CardManager } from './CardManager.ts';
 import { CardHand } from './CardHand.ts';
@@ -79,12 +79,12 @@ if (authId && playerId) {
 	socket.on('graceful_disconnect', () => {
 		socket.disconnect();
 	});
-	socket.on('disconnect', (reason) => {
+	socket.on('disconnect', () => {
 		console.log('Socket disconnected')
 	});
 
 	socket.on('player_join', (playerData) => { 
-		const object = JSON.parse(playerData);
+		const object = JSON.parse(playerData) as PlayerSeatOrderTransmit;
 		console.log(object);
 		if (object.playerId === playerId) {
 			const player = new Player(socket, playerId, cardHeap);

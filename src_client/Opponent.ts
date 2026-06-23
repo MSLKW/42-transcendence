@@ -4,7 +4,7 @@ import { CardManager } from './CardManager.ts';
 import { CardHeap } from './CardHeap.ts';
 import { Card } from './Card.ts';
 import { scene } from './main.ts';
-import { CardHandTransmit, ReconnectTransmit } from '../src_shared/Types.ts';
+import { CardHandTransmit, GameStateTransmit } from '../src_shared/Types.ts';
 import { CardHand } from './CardHand.ts';
 
 export class Opponent {
@@ -20,12 +20,6 @@ export class Opponent {
 		this.cardManager = new CardManager(this.opponentId);
 
 		console.log(`opponent<${this.opponentId}> joined`);
-
-		this.socket.on("opponent_collect_cards", (opponentCardsAmountJSON) => {
-			const opponentCardsAmount: Record<string, number> = JSON.parse(opponentCardsAmountJSON);
-			const amount = opponentCardsAmount[this.opponentId];
-			this.collectCardsAmount(amount);
-		});
 
 		this.socket.on("opponent_play_card_hand", (cardHandTransmitJSON) => {
 			const cardHandTransmit = JSON.parse(cardHandTransmitJSON) as CardHandTransmit;
@@ -43,8 +37,8 @@ export class Opponent {
 			}
 		});
 
-		this.socket.on("player_reconnect", (gameStateJSON) => {
-			const gameState = JSON.parse(gameStateJSON) as ReconnectTransmit;
+		this.socket.on("player_game_state", (gameStateJSON) => {
+			const gameState = JSON.parse(gameStateJSON) as GameStateTransmit;
 
 			const cardsAmount = gameState.playerCardsAmount[this.opponentId];
 			this.collectCardsAmount(cardsAmount);

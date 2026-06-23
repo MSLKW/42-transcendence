@@ -1,6 +1,6 @@
 import { io, Socket } from 'socket.io-client';
 import * as THREE from 'three';
-import { CardTransmit, CardHandTransmit, ReconnectTransmit } from '../src_shared/Types.ts';
+import { CardTransmit, CardHandTransmit, GameStateTransmit } from '../src_shared/Types.ts';
 import { CardHand } from './CardHand.ts';
 import { Card } from './Card.ts';
 import { CardManager } from './CardManager.ts';
@@ -47,16 +47,6 @@ export class Player {
 	}
 
 	private setupListeners() {
-		this.socket.on('connect', () => {
-			console.log(`Socket connected`);
-		});
-		this.socket.on('graceful_disconnect', () => {
-			this.socket.disconnect();
-		});
-		this.socket.on('disconnect', (reason) => {
-			console.log('Socket disconnected')
-		})
-		
 		this.socket.on('game_start', (status) => {
 			console.log(`Start Game: ${status}`);
 		});
@@ -86,16 +76,11 @@ export class Player {
 				this.isPlayerTurn(false);
 			}
 		})
-		
-		this.socket.on('collect_cards', (cards) => {
-			const cardTransmits: Array<CardTransmit> = JSON.parse(cards) as Array<CardTransmit>;
-			this.collectCards(cardTransmits);
-		})
 
-		this.socket.on("player_reconnect", (gameStateJSON) => {
-			const gameState = JSON.parse(gameStateJSON) as ReconnectTransmit;
+		this.socket.on("player_game_state", (gameStateJSON) => {
+			const gameState = JSON.parse(gameStateJSON) as GameStateTransmit;
 
-			this.cardHeapRef.reconnect(gameState.cardHeap);
+			this.cardHeapRef.sync(gameState.cardHeap);
 			this.collectCards(gameState.playerCards);
 			this.isPlayerTurn(gameState.isPlayerTurn);
 		});
@@ -107,10 +92,10 @@ export class Player {
 		
 		this.skipTurnButton.addEventListener('click', () => {
 			this.socket.emit('player_skip_turn');
-		})
+		});
 		
 		this.startGameButton.addEventListener('click', () => {
-			this.socket.emit('game_start', this.socket.id);
+			this.socket.emit('game_start', this.playerId);
 		});
 
 		this.sortCardsByRankButton.addEventListener('click', () => {

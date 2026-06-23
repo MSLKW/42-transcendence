@@ -52,9 +52,14 @@ export interface CardHandTransmit {
 	playerId: string;
 }
 
-export type ReconnectTransmit = {
+export type GameStateTransmit = {
 	cardHeap: Array<CardHandTransmit>,
 	playerCardsAmount: Record<string, number>,
 	playerCards: Array<CardTransmit>,
 	isPlayerTurn: boolean
+}
+
+export type PlayerSeatOrderTransmit = {
+	playerId: string,
+	seatOrder: Record<string, number>
 }

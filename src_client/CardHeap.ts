@@ -29,7 +29,7 @@ export class CardHeap {
 		}
 	}
 
-	public reconnect(cardHands: Array<CardHandTransmit>) {
+	public sync(cardHands: Array<CardHandTransmit>) {
 		for (let i = 0; i < cardHands.length; i++) {
 			let cardHand = new CardHand(cardHands[i].playerId);
 			for (let j = 0; j < cardHands[i].cards.length; j++) {
@@ -39,6 +39,5 @@ export class CardHeap {
 			}
 			this.receiveCardHand(cardHand);
 		}
-
 	}
 }

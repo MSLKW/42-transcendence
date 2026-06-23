@@ -23,7 +23,7 @@ export class PlayerState {
 
 	public setupSocketListeners() {
 		this.socket.on("player_play_card_hand", (body) => {
-			this.playCardHand(this.socket, body);
+			this.playCardHand(body);
 		});
 
 		this.socket.on("player_skip_turn", (body) => {
@@ -35,7 +35,6 @@ export class PlayerState {
 		for (let i = 0; i < cards.length; i++) {
 			this.cards.push(cards[i]);
 		}
-		this.socket.emit('collect_cards', JSON.stringify(cards));
 	}
 
 	public hasThreeDiamonds(): boolean {
@@ -73,31 +72,31 @@ export class PlayerState {
 	}
 
 	// Returns if player has finished all his cards
-	private playCardHand(socket: Socket, body: string) {
+	private playCardHand(body: string) {
 		if (this.gameStateRef.isPlayerTurn(this) === false) {
-			socket.emit('player_play_card_hand', 'failure: not ur turn');
+			this.socket.emit('player_play_card_hand', 'failure: not ur turn');
 			return;
 		}
 		const cardHand = JSON.parse(body) as CardHandTransmit;
 		if (cardHand.handType === HandType.None || (cardHand.handType === HandType.Pentuple && cardHand.pentupleType === PentupleType.None)) {
-			socket.emit('player_play_card_hand', 'failure: cardhand is not even a thing');
+			this.socket.emit('player_play_card_hand', 'failure: cardhand is not even a thing');
 			return ;
 		}
 		if (this.cardHeapRef.isCardHandPlayable(cardHand) == false) {
-			socket.emit('player_play_card_hand', 'failure: cardhand is not playable');
+			this.socket.emit('player_play_card_hand', 'failure: cardhand is not playable');
 			return ;
 		}
 		for (let i = 0; i < cardHand.cards.length; i++) {
 			if (this.cards.findIndex((card: CardTransmit) => card.rank === cardHand.cards[i].rank && card.suite === cardHand.cards[i].suite ) == -1) {
-				socket.emit('player_play_card_hand', 'failure: cardhand not in playerState cards');
+				this.socket.emit('player_play_card_hand', 'failure: cardhand not in playerState cards');
 				return ;
 			}
 		}
-		socket.emit('player_play_card_hand', 'success');
+		this.socket.emit('player_play_card_hand', 'success');
 		this.cardHeapRef.receiveCardHand(cardHand);
 		this.removeCards(cardHand.cards);
 
-		if (this.cards.length === 0) { // preferably want this in GameState since it's literally ending the game lol
+		if (this.cards.length === 0) {
 			this.gameStateRef.endGame(this)
 		}
 		this.gameStateRef.nextPlayerTurn();
