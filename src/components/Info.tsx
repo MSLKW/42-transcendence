@@ -22,34 +22,37 @@ export const InfoButton = ({ call }: InfoProps) => {
 export const InfoLightbox = ({ dismiss }: InfoProps) => {
 	const contAreaWidth = useSceneStore((scene) => scene.contAreaWidth);
 	const contAreaHeight = useSceneStore((scene) => scene.contAreaHeight);
-	
+
     return (
-		<div style={{ width: contAreaWidth, height: contAreaHeight }}
+		<section style={{ width: contAreaWidth, height: contAreaHeight }}
 			className="
 				absolute z-1 inset-0 left-0
 				w-full h-full
 				flex place-content-center place-items-center
 				"
 		>
-			<button className='btn-lightbox' onClick={dismiss}/>
+			<button tabIndex={-1} className='btn-lightbox' onClick={dismiss}/>
 			<div className="
 				z-0
 				w-[calc(100%-130px)] h-[calc(100%-130px)]
 				"
 			>
-				<div className="
-					border border-n2 rounded-3xl
-					w-full h-full
-					overflow-scroll
-					"
-				>
-					<div className="
-						w-full h-[2000px]
-						bg-linear-to-b from-a2 to-b2 
-						p-10
-						text-n6
-						flex flex-col justify-between
+				<div
+					tabIndex={-1}
+					className="
+						border border-n2 rounded-3xl
+						w-full h-full
+						overflow-scroll
 						"
+				>
+					<div 
+						className="
+							w-full h-[2000px]
+							bg-linear-to-b from-a2 to-b2 
+							p-10
+							text-n6
+							flex flex-col justify-between
+							"
 					>
 						<p>Start of info section</p>
 						<p>End of info section</p>
@@ -66,6 +69,6 @@ export const InfoLightbox = ({ dismiss }: InfoProps) => {
 			>
 					<CloseIcon />
 			</button>
-		</div>
+		</section>
 	);
 }

@@ -9,8 +9,8 @@ interface CreateAccountProps {
 export const CreateAccountButton = ({ call }: CreateAccountProps) => {
 	return (
 		<button
-			className="btn-clear"
 			onClick={call}
+			className="btn-clear"
 		>
 			<u>CREATE ACCOUNT</u>
 		</button>
@@ -21,7 +21,7 @@ export const CreateAccountLightbox = ({ dismiss }: CreateAccountProps) => {
 	const contAreaHeight = useSceneStore((scene) => scene.contAreaHeight);
 	
 	return (
-		<div style={{ width: contAreaWidth, height: contAreaHeight }}
+		<section style={{ width: contAreaWidth, height: contAreaHeight }}
 			className="
 				absolute z-1 inset-0 left-0
 				w-full h-full
@@ -77,6 +77,6 @@ export const CreateAccountLightbox = ({ dismiss }: CreateAccountProps) => {
 			>
 					<CloseIcon />
 			</button>
-		</div>
+		</section>
 	);
 }

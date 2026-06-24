@@ -12,6 +12,6 @@ export const useSceneStore = create<SceneState>((set) => ({
 	contAreaWidth: 320,
 	contAreaHeight: 320,
 
-	setContAreaWidth: (width) => set({ contAreaWidth: width }),
-	setContAreaHeight: (height) => set({ contAreaHeight: height }),
+	setContAreaWidth: (contAreaWidth) => set({ contAreaWidth }),
+	setContAreaHeight: (contAreaHeight) => set({ contAreaHeight }),
 }));

@@ -14,7 +14,7 @@ export const Login = () => {
 	const [showLightbox, setShowLightbox] = useState({
 		info: false,
 		signIn: false,
-		createAccount: true,
+		createAccount: false,
 	});
 
 	const toggleLightbox = (key: keyof typeof showLightbox, value: boolean) => {
@@ -46,7 +46,7 @@ export const Login = () => {
 	}, []);
 	
 	return (
-		<>
+		<main>
 			{ showStats && <div className="cont-three"><Canvas><Stats /></Canvas></div> }
 			<section ref={containerRef} className="cont-area">
 				<div className="z-0 flex flex-col w-full h-full">
@@ -79,6 +79,6 @@ export const Login = () => {
 				{ showLightbox["info"] && <InfoLightbox dismiss={() => toggleLightbox("info", false)} /> }
 				{ showLightbox["createAccount"] && <CreateAccountLightbox dismiss={() => toggleLightbox("createAccount", false)} /> }
 			</section>
-		</>
+		</main>
 	);
 }
