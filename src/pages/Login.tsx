@@ -3,6 +3,7 @@ import { Canvas } from "@react-three/fiber";
 import { Stats } from "@react-three/drei";
 import { useDevStore } from "../store/useDevStore";
 import { Info } from "../icons/Info";
+import { Close } from "../icons/Close";
 
 export const Login = () => {
 	const showFrame = useDevStore((state) => state.showFrame);
@@ -76,26 +77,26 @@ export const Login = () => {
 					<div className="
 						z-0
 						w-[calc(100%-130px)] h-[calc(100%-130px)]
+						border border-n2 rounded-3xl
 						overflow-scroll
 						relative
 					">
 						<div className="
-							z-0
+							w-full h-[2000px]
 							bg-linear-to-b from-a2 to-b2 
-							border border-n2 rounded-md
+							p-10
+							text-n6
+							flex flex-col justify-between
 						">
-							<div className="w-full h-[2000px] flex flex-col justify-between p-10 text-n6">
-								<p>Start of info section</p>
-								<p>End of info section</p>
-							</div>
+							<p>Start of info section</p>
+							<p>End of info section</p>
 						</div>
 					</div>
 					<button data-tip="Close"
-						className="
-							btn-icon
+						className="btn-icon
 							absolute z-1 top-0 right-0 translate-x-[-39px] translate-y-[41px]"
 						onClick={() => togglePopWindow('info', false)}>
-							<Info />
+							<Close />
 					</button>
 				</div>
 			}
