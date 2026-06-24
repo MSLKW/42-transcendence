@@ -9,7 +9,7 @@ interface DevState {
 } 
 
 export const useDevStore = create<DevState>((set) => ({
-	showFrame: false,
+	showFrame: true,
 	showStats: false,
 
 	setShowFrame: () => set((state) => ({ showFrame: !state.showFrame })),

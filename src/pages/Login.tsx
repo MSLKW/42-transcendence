@@ -2,14 +2,14 @@ import { useEffect, useState, useRef } from "react";
 import { Canvas } from "@react-three/fiber";
 import { Stats } from "@react-three/drei";
 import { useDevStore } from "../store/useDevStore";
-import { Info } from "../icons/Info";
-import { Close } from "../icons/Close";
+import { useSceneStore } from "../store/useSceneStore";
+import { InfoButton, InfoLightbox } from "../components/Info";
 
 export const Login = () => {
 	const showFrame = useDevStore((state) => state.showFrame);
 	const showStats = useDevStore((state) => state.showStats);
-	const [contAreaWidth, setContAreaWidth] = useState(0);
-	const [contAreaHeight, setContAreaHeight] = useState(0);
+	const setContAreaWidth = useSceneStore((state) => state.setContAreaWidth);
+	const setContAreaHeight = useSceneStore((state) => state.setContAreaHeight);
 	const containerRef = useRef(null);
 	const [showPopWindow, setShowPopWindow] = useState({
 		info: true,
@@ -47,13 +47,13 @@ export const Login = () => {
 	
 	return (
 		<section ref={containerRef} className={`cont-area ${showFrame ? "border" : ""}`}>
-			{showStats && <div className="cont-three"><Canvas><Stats /></Canvas></div>}
+			{ showStats && <div className="cont-three"><Canvas><Stats /></Canvas></div> }
 			<div className="z-0 flex flex-col w-full h-full">
 				<div className={`
 					cont-row basis-12.5 shrink ${showFrame ? "border" : ""}
 					justify-end
 				`}>
-					<button className="btn-icon" data-tip="Info" onClick={() => togglePopWindow('info', true)}><Info /></button>
+					<InfoButton call={() => togglePopWindow('info', true)}/>
 				</div>
 				<div className={`cont-row min-h-10 flex-3 ${showFrame ? "border" : ""}`}/>
 				<div className={`cont-row basis-17.5 shrink flex flex-wrap justify-center items-center gap-5 ${showFrame ? "border" : ""}`}>
@@ -65,41 +65,7 @@ export const Login = () => {
 				</div>
 				<div className={`cont-row min-h-5 flex-1 ${showFrame ? "border" : ""}`} />
 			</div>
-			{showPopWindow["info"] &&
-				<div style={{ width: contAreaWidth, height: contAreaHeight }}
-					className={`
-						absolute z-1 inset-0 left-0
-						w-full h-full
-						border-a4 ${showFrame ? "border" : ""}
-						flex place-content-center place-items-center
-				`}>
-					<button className='btn-lightbox' onClick={() => togglePopWindow('info', false)}/>
-					<div className="
-						z-0
-						w-[calc(100%-130px)] h-[calc(100%-130px)]
-						border border-n2 rounded-3xl
-						overflow-scroll
-						relative
-					">
-						<div className="
-							w-full h-[2000px]
-							bg-linear-to-b from-a2 to-b2 
-							p-10
-							text-n6
-							flex flex-col justify-between
-						">
-							<p>Start of info section</p>
-							<p>End of info section</p>
-						</div>
-					</div>
-					<button data-tip="Close"
-						className="btn-icon
-							absolute z-1 top-0 right-0 translate-x-[-39px] translate-y-[41px]"
-						onClick={() => togglePopWindow('info', false)}>
-							<Close />
-					</button>
-				</div>
-			}
+			{ showPopWindow["info"] && <InfoLightbox dismiss={() => togglePopWindow('info', false)} /> }
 		</section>
 	);
 }
