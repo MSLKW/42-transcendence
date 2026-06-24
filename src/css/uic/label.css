@@ -1,0 +1,7 @@
+label {
+	@apply
+		text-lg text-n6
+		w-full h-full
+		flex items-center justify-end
+		;
+}

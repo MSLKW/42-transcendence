@@ -1,5 +1,4 @@
 import { useSceneStore } from "../store/useSceneStore";
-import { useDevStore } from "../store/useDevStore";
 import { InfoIcon } from "../icons/InfoIcon";
 import { CloseIcon } from "../icons/CloseIcon";
 
@@ -11,7 +10,7 @@ interface InfoProps {
 export const InfoButton = ({ call }: InfoProps) => {
 	return (
 		<button
-			className="btn-icon" 
+			className="btn-icon"
 			data-tip="Info"
 			onClick={call}
 		>
@@ -23,40 +22,48 @@ export const InfoButton = ({ call }: InfoProps) => {
 export const InfoLightbox = ({ dismiss }: InfoProps) => {
 	const contAreaWidth = useSceneStore((scene) => scene.contAreaWidth);
 	const contAreaHeight = useSceneStore((scene) => scene.contAreaHeight);
-	const showFrame = useDevStore((state) => state.showFrame);
 	
     return (
 		<div style={{ width: contAreaWidth, height: contAreaHeight }}
-			className={`
+			className="
 				absolute z-1 inset-0 left-0
 				w-full h-full
-				border-a4 ${showFrame ? "border" : ""}
 				flex place-content-center place-items-center
-				text-white
-		`}>
+				"
+		>
 			<button className='btn-lightbox' onClick={dismiss}/>
 			<div className="
 				z-0
-				w-[calc(100%-129px)] h-[calc(100%-131px)]
-				border border-n2 rounded-3xl
-				overflow-scroll
-				relative
-			">
+				w-[calc(100%-130px)] h-[calc(100%-130px)]
+				"
+			>
 				<div className="
-					w-full h-[2000px]
-					bg-linear-to-b from-a2 to-b2 
-					p-10
-					text-n6
-					flex flex-col justify-between
-				">
-					<p>Start of info section</p>
-					<p>End of info section</p>
+					border border-n2 rounded-3xl
+					w-full h-full
+					overflow-scroll
+					"
+				>
+					<div className="
+						w-full h-[2000px]
+						bg-linear-to-b from-a2 to-b2 
+						p-10
+						text-n6
+						flex flex-col justify-between
+						"
+					>
+						<p>Start of info section</p>
+						<p>End of info section</p>
+					</div>
 				</div>
 			</div>
-			<button data-tip="Close"
-				className="btn-icon
-					absolute z-1 top-0 right-0 -translate-x-9.75 translate-y-10.25"
-				onClick={dismiss}>
+			<button
+				data-tip="Close"
+				onClick={dismiss}
+				className="
+					btn-icon
+					absolute z-1 top-0 right-0 -translate-x-10 translate-y-10
+				"
+			>
 					<CloseIcon />
 			</button>
 		</div>

@@ -1,6 +1,8 @@
 @import "tailwindcss";
 @import "./css/base/typography.css";
 @import "./css/uic/button.css";
+@import "./css/uic/label.css";
+@import "./css/uic/input.css";
 @import "./css/uic/ul.css";
 
 @theme {
@@ -46,6 +48,7 @@
 	--color-r4: #f65e5f;
 	--color-r5: #f9a49f;
 	--color-r6: #fddcda;
+	--color-f0: #f65e5f;
 
 	--background-image-big2: radial-gradient(
 		circle,
@@ -58,17 +61,23 @@
 
 @utility cont-area {
 	@apply
-		w-screen /* min-w-80 */
+		w-screen
 		h-screen min-h-80
 		p-10
-		border-r4 
+		border-f0
 		;
 }
 @utility cont-row {
-	@apply flex w-full border-c4;
+	@apply flex w-full;
 }
 @utility cont-three {
-	@apply absolute pointer-events-none;
+	@apply
+		z-[-1]
+		absolute
+		w-screen
+		h-screen
+		pointer-events-none
+		;
 }
 
 html,
@@ -80,7 +89,9 @@ body,
         font-sans
         ;
 }
-
 html {
 	@apply bg-big2;
+}
+html.debug-mode * {
+	outline: 1px solid var(--color-f0) !important;
 }

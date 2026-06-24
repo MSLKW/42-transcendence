@@ -4,8 +4,13 @@ import { useDevStore } from './store/useDevStore';
 export default function Dev() {
 	const setScene = useGameStore((state) => state.setScene);
 	const resetGame = useGameStore((state) => state.resetGame);
-	const showFrame = useDevStore((state) => state.setShowFrame);
-	const showStats = useDevStore((state) => state.setShowStats);
+	const setShowFrame = useDevStore((state) => state.setShowFrame);
+	const setShowStats = useDevStore((state) => state.setShowStats);
+
+	const toggleFrame = () => {
+		document.documentElement.classList.toggle('debug-mode');
+		setShowFrame;
+	}
 
 	return (
 		<section className="w-full h-fit">
@@ -19,8 +24,8 @@ export default function Dev() {
 				<li><button type="button" onClick={() => resetGame()}>Reset</button></li>
 			</ul>
 			<ul className="ul-dev">
-				<li><button type="button" onClick={showFrame}>Frame</button></li>
-				<li><button type="button" onClick={showStats}>Stats</button></li>
+				<li><button type="button" onClick={toggleFrame}>Frame</button></li>
+				<li><button type="button" onClick={setShowStats}>Stats</button></li>
 			</ul>
 		</section>
 	);

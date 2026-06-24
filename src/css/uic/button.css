@@ -2,6 +2,7 @@ button {
 	@apply
 		transition-all duration-100 ease-in-out
 		cursor-pointer
+		block
 		;
 
 	&:hover:not(:disabled) {

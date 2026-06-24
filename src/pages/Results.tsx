@@ -4,13 +4,17 @@ import { Stats } from "@react-three/drei";
 import { useDevStore } from "../store/useDevStore";
 
 export const Results = () => {
-	const showFrame = useDevStore((state) => state.showFrame);
 	const showStats = useDevStore((state) => state.showStats);
 	
-	useEffect(() => { window.scrollTo({ top: 0, behavior: 'smooth', })}, []);
+	useEffect(() => {
+		window.scrollTo({
+			top: 0,
+			behavior: 'smooth',
+		})
+	}, []);
 	
 	return (
-		<section className={`cont-area ${showFrame ? "border" : ""}`}>
+		<section className="cont-area">
 			{showStats && <div className="cont-three"><Canvas><Stats /></Canvas></div>}
 			<h1>Results</h1>
 		</section>

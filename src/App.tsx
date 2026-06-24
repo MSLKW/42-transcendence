@@ -6,7 +6,7 @@ import { Gameplay } from "./pages/Gameplay";
 import { R3F } from "./pages/R3F";
 import { Results } from "./pages/Results";
 
-function App() {
+export default function App() {
 	const currentScene = useGameStore((state) => state.currentScene);
 
 	return (
@@ -18,7 +18,5 @@ function App() {
 			{currentScene === 'R3F' && <R3F />}
 			{currentScene === 'RESULTS' && <Results />}
 		</>
-	)
+	);
 }
-
-export default App
