@@ -11,7 +11,7 @@ export const Login = () => {
 	const [contAreaHeight, setContAreaHeight] = useState(0);
 	const containerRef = useRef(null);
 	const [showPopWindow, setShowPopWindow] = useState({
-		info: false,
+		info: true,
 		signIn: false,
 		createAccount: false,
 	});
@@ -68,16 +68,35 @@ export const Login = () => {
 				<div style={{ width: contAreaWidth, height: contAreaHeight }}
 					className={`
 						absolute z-1 inset-0 left-0
-						h-full
+						w-full h-full
 						border-a4 ${showFrame ? "border" : ""}
+						flex place-content-center place-items-center
 				`}>
 					<button className='btn-lightbox' onClick={() => togglePopWindow('info', false)}/>
-					<div className="z-0 w-[calc(100%-100px]] h-[calc(100%-100px)] m-12.5 border border-n2 rounded-md overflow-scroll">
-						<div className="w-full h-[2000px] bg-linear-to-b from-a2 to-b2 flex flex-col justify-between p-5 text-n6">
-							<p>Start of info section</p>
-							<p>End of info section</p>
+					<div className="
+						z-0
+						w-[calc(100%-130px)] h-[calc(100%-130px)]
+						overflow-scroll
+						relative
+					">
+						<div className="
+							z-0
+							bg-linear-to-b from-a2 to-b2 
+							border border-n2 rounded-md
+						">
+							<div className="w-full h-[2000px] flex flex-col justify-between p-10 text-n6">
+								<p>Start of info section</p>
+								<p>End of info section</p>
+							</div>
 						</div>
 					</div>
+					<button data-tip="Close"
+						className="
+							btn-icon
+							absolute z-1 top-0 right-0 translate-x-[-39px] translate-y-[41px]"
+						onClick={() => togglePopWindow('info', false)}>
+							<Info />
+					</button>
 				</div>
 			}
 		</section>
