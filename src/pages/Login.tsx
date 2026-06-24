@@ -1,6 +1,7 @@
 import { useEffect, useState, useRef } from "react";
 import { Canvas } from "@react-three/fiber";
 import { Stats } from "@react-three/drei";
+import { useGameStore } from "../store/useGameStore";
 import { useDevStore } from "../store/useDevStore";
 import { useSceneStore } from "../store/useSceneStore";
 import { InfoButton, InfoLightbox } from "../components/Info";
@@ -8,6 +9,7 @@ import { CreateAccountButton, CreateAccountLightbox } from "../components/Create
 import { SignInButton, SignInLightbox } from "../components/SignIn";
 
 export const Login = () => {
+	const setCurrentScene = useGameStore((state) => state.setCurrentScene);
 	const showStats = useDevStore((state) => state.showStats);
 	const setContAreaWidth = useSceneStore((state) => state.setContAreaWidth);
 	const setContAreaHeight = useSceneStore((state) => state.setContAreaHeight);
@@ -66,8 +68,7 @@ export const Login = () => {
 						"
 					>
 						<SignInButton call={() => toggleLightbox("signIn", true)}/>
-						{/* <button className="btn-text">SIGN IN</button> */}
-						<button className="btn-text">PLAY AS GUEST</button>
+						<button onClick={() => setCurrentScene("HOME")} className="btn-text">PLAY AS GUEST</button>
 					</div>
 					<div className="
 						cont-row basis-17.5 shrink

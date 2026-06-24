@@ -25,7 +25,7 @@ interface GameState {
 	winStreak: number;
 	achievements: Record<AchievementId, { unlockedAt: number } | null>;
 
-	setScene: (scene: GameScene) => void;
+	setCurrentScene: (scene: GameScene) => void;
 	setPlayerName: (name: string) => void;
 	setPlayerAvatar: (avatar: string) => void;
 	incTotalPlayed: () => void;
@@ -58,7 +58,7 @@ export const useGameStore = create<GameState>() (
 				MASTER_COLLECTOR: null,
 			},
 
-			setScene: (scene) => set({ currentScene: scene }),
+			setCurrentScene: (scene) => set({ currentScene: scene }),
 			setPlayerName: (name) => set({ playerName: name }),
 			setPlayerAvatar: (avatar) => set({ playerAvatar: avatar }),
 			incTotalPlayed: () => set((state) => ({ totalPlayed: state.totalPlayed + 1 })),
