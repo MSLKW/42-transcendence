@@ -8,8 +8,8 @@ export default function Dev() {
 	const showStats = useDevStore((state) => state.setShowStats);
 
 	return (
-		<section className="w-full h-15">
-			<ul className="ul-dev">
+		<section className="w-full h-fit">
+			<ul className="ul-dev flex-wrap gap-x-5">
 				<li><button type="button" onClick={() => setScene('LOGIN')}>Login</button></li>
 				<li><button type="button" onClick={() => setScene('HOME')}>Home</button></li>
 				<li><button type="button" onClick={() => setScene('LOBBY')}>Lobby</button></li>

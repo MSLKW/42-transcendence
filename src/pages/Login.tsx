@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState, useRef } from "react";
 import { Canvas } from "@react-three/fiber";
 import { Stats } from "@react-three/drei";
 import { useDevStore } from "../store/useDevStore";
@@ -7,21 +7,55 @@ import { Info } from "../icons/Info";
 export const Login = () => {
 	const showFrame = useDevStore((state) => state.showFrame);
 	const showStats = useDevStore((state) => state.showStats);
+	const [contAreaWidth, setContAreaWidth] = useState(0);
+	const [contAreaHeight, setContAreaHeight] = useState(0);
+	const containerRef = useRef(null);
+	const [showPopWindow, setShowPopWindow] = useState({
+		info: false,
+		signIn: false,
+		createAccount: false,
+	});
 
-	useEffect(() => { window.scrollTo({ top: 0, behavior: 'smooth', })}, []);
+	const togglePopWindow = (key: keyof typeof showPopWindow, value: boolean) => {
+		setShowPopWindow(() => ({
+			...showPopWindow,
+			[key]: value,
+		}));
+	}
+
+	useEffect(() => {
+		window.scrollTo({
+			top: 0,
+			behavior: 'smooth',
+		});
+	}, []);
+	
+	useEffect(() => {
+		if (!containerRef.current)
+			return;
+
+		const observer = new ResizeObserver((entries) => {
+			for (let entry of entries) {
+				setContAreaWidth(entry.target.scrollWidth);
+				setContAreaHeight(entry.target.scrollHeight);
+			}
+		});
+		observer.observe(containerRef.current);
+		return () => observer.disconnect();
+	}, []);
 	
 	return (
-		<section className={`cont-area ${showFrame ? "border" : ""}`}>
-			{showStats && <div className="cont-three"><Canvas><Stats /></Canvas></div>}
-			<div className="flex flex-col w-full h-full">
+		<section ref={containerRef} className={`cont-area ${showFrame ? "border" : ""}`}>
+			{showStats && <div className="cont-three overflow-clip leading-0"><Canvas><Stats /></Canvas></div>}
+			<div className="z-0 flex flex-col w-full h-full overflow-clip leading-0">
 				<div className={`
 					cont-row basis-12.5 shrink ${showFrame ? "border" : ""}
 					justify-end
 				`}>
-					<button className="btn-icon" data-tip="Info"><Info /></button>
+					<button className="btn-icon" data-tip="Info" onClick={() => togglePopWindow('info', true)}><Info /></button>
 				</div>
 				<div className={`cont-row min-h-10 flex-3 ${showFrame ? "border" : ""}`}/>
-				<div className={`cont-row basis-17.5 shrink flex justify-center items-center gap-5 ${showFrame ? "border" : ""}`}>
+				<div className={`cont-row basis-17.5 shrink flex flex-wrap justify-center items-center gap-5 ${showFrame ? "border" : ""}`}>
 					<button className="btn-text">SIGN IN</button>
 					<button className="btn-text">PLAY AS GUEST</button>
 				</div>
@@ -30,6 +64,22 @@ export const Login = () => {
 				</div>
 				<div className={`cont-row min-h-5 flex-1 ${showFrame ? "border" : ""}`} />
 			</div>
+			{showPopWindow["info"] &&
+				<div style={{ width: contAreaWidth, height: contAreaHeight }}
+					className={`
+						absolute z-1 inset-0 left-0
+						h-full
+						border-a4 ${showFrame ? "border" : ""}
+				`}>
+					<button className='btn-lightbox' onClick={() => togglePopWindow('info', false)}/>
+					<div className="z-0 w-[calc(100%-100px]] h-[calc(100%-100px)] m-12.5 border border-n2 rounded-md overflow-scroll">
+						<div className="w-full h-[2000px] bg-linear-to-b from-a2 to-b2 flex flex-col justify-between p-5 text-n6">
+							<p>Start of info section</p>
+							<p>End of info section</p>
+						</div>
+					</div>
+				</div>
+			}
 		</section>
 	);
 }

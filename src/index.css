@@ -58,8 +58,8 @@
 
 @utility cont-area {
 	@apply
-		w-screen min-w-80
-		h-screen min-h-80 
+		w-screen /* min-w-80 */
+		h-screen min-h-80
 		p-5
 		border-r4 
 		;
