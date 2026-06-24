@@ -6,6 +6,7 @@ import { useSceneStore } from "../store/useSceneStore";
 import { useDevStore } from "../store/useDevStore";
 import { InfoButton, InfoLightbox } from "../components/Info";
 import { BackIcon } from "../icons/BackIcon";
+import { SettingsIcon } from "../icons/SettingsIcon";
 
 export const Home = () => {
 	const setCurrentScene = useGameStore((state) => state.setCurrentScene);
@@ -57,10 +58,8 @@ export const Home = () => {
 						"
 					>
 						<div className="flex gap-5 bg-n1 border border-n2 rounded-3xl">
-							<button>
-								<BackIcon />
-							</button>
-							<button>Settings</button>
+							<button><BackIcon /></button>
+							<button><SettingsIcon /></button>
 						</div>
 						<InfoButton call={() => toggleLightbox("info", true)}/>
 					</div>

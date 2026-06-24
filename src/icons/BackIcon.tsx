@@ -13,4 +13,3 @@ export const BackIcon = () => (
         />
     </svg>
 );
-
