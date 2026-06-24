@@ -71,6 +71,13 @@ button {
 		text-n6
 		border-a4
 		;
+
+	&:focus {
+		@apply
+			text-b5
+			outline-none
+			;
+	}
 }
 
 @utility btn-lightbox {
