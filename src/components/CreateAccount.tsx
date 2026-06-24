@@ -29,7 +29,7 @@ export const CreateAccountLightbox = ({ dismiss }: CreateAccountProps) => {
 				"
 		>
 			<button className='btn-lightbox' onClick={dismiss}/>
-			<div className="z-0 w-max h-max">
+			<div className="z-0 w-max h-max relative">
 				<div className="
 					bg-n1 p-10
 					border border-n2 rounded-3xl
@@ -66,17 +66,17 @@ export const CreateAccountLightbox = ({ dismiss }: CreateAccountProps) => {
 						CREATE ACCOUNT
 					</button>
 				</div>
-			</div>
-			<button
-				data-tip="Close"
-				className="
-					btn-icon
-					absolute z-1 top-0 right-0 -translate-x-10 translate-y-10
-					"
-				onClick={dismiss}
-			>
+				<button
+					data-tip="Close"
+					className="
+						btn-icon
+						absolute z-1 top-0 right-0 translate-x-6.5 -translate-y-6.5
+						"
+					onClick={dismiss}
+				>
 					<CloseIcon />
-			</button>
+				</button>
+			</div>
 		</section>
 	);
 }
