@@ -1,25 +1,24 @@
-import { useEffect, useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Canvas } from "@react-three/fiber";
 import { Stats } from "@react-three/drei";
 import { useGameStore } from "../store/useGameStore";
-import { useDevStore } from "../store/useDevStore";
 import { useSceneStore } from "../store/useSceneStore";
+import { useDevStore } from "../store/useDevStore";
 import { InfoButton, InfoLightbox } from "../components/Info";
 import { CreateAccountButton, CreateAccountLightbox } from "../components/CreateAccount";
 import { SignInButton, SignInLightbox } from "../components/SignIn";
 
 export const Login = () => {
 	const setCurrentScene = useGameStore((state) => state.setCurrentScene);
-	const showStats = useDevStore((state) => state.showStats);
 	const setContAreaWidth = useSceneStore((state) => state.setContAreaWidth);
 	const setContAreaHeight = useSceneStore((state) => state.setContAreaHeight);
+	const showStats = useDevStore((state) => state.showStats);
 	const containerRef = useRef(null);
 	const [showLightbox, setShowLightbox] = useState({
 		info: false,
 		signIn: false,
 		createAccount: false,
 	});
-
 	const toggleLightbox = (key: keyof typeof showLightbox, value: boolean) => {
 		setShowLightbox(() => ({
 			...showLightbox,
