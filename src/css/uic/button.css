@@ -54,6 +54,14 @@ button {
 		text-[clamp(0.5rem,4vw,1rem)]
 		text-n0
 		;
+	
+	&:focus {
+		@apply
+            bg-b5
+			border-b4
+            outline-none
+			;
+	}
 }
 @utility btn-clear {
 	@apply
