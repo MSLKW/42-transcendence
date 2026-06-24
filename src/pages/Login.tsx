@@ -14,7 +14,7 @@ export const Login = () => {
 	const [showLightbox, setShowLightbox] = useState({
 		info: false,
 		signIn: false,
-		createAccount: true,
+		createAccount: false,
 	});
 
 	const toggleLightbox = (key: keyof typeof showLightbox, value: boolean) => {

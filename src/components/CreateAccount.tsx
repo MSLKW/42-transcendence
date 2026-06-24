@@ -28,7 +28,7 @@ export const CreateAccountLightbox = ({ dismiss }: CreateAccountProps) => {
 				flex place-content-center place-items-center
 				"
 		>
-			<button className='btn-lightbox' onClick={dismiss}/>
+			<button tabIndex={-1} className='btn-lightbox' onClick={dismiss}/>
 			<div className="z-0 w-max h-max relative">
 				<div className="
 					bg-n1 p-10

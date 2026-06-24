@@ -43,6 +43,15 @@ button {
 	&:hover::after {
 		@apply scale-100 opacity-100;
 	}
+
+	&:focus {
+		@apply
+			outline-2
+			outline-solid
+			outline-b5
+			outline-offset-2
+			;
+	}
 }
 @utility btn-text {
 	@apply
