@@ -19,7 +19,7 @@ export const CreateAccountButton = ({ call }: CreateAccountProps) => {
 export const CreateAccountLightbox = ({ dismiss }: CreateAccountProps) => {
 	const contAreaWidth = useSceneStore((scene) => scene.contAreaWidth);
 	const contAreaHeight = useSceneStore((scene) => scene.contAreaHeight);
-	
+
 	return (
 		<section style={{ width: contAreaWidth, height: contAreaHeight }}
 			className="

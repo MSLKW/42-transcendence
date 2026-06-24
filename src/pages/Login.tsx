@@ -5,6 +5,7 @@ import { useDevStore } from "../store/useDevStore";
 import { useSceneStore } from "../store/useSceneStore";
 import { InfoButton, InfoLightbox } from "../components/Info";
 import { CreateAccountButton, CreateAccountLightbox } from "../components/CreateAccount";
+import { SignInButton, SignInLightbox } from "../components/SignIn";
 
 export const Login = () => {
 	const showStats = useDevStore((state) => state.showStats);
@@ -64,7 +65,8 @@ export const Login = () => {
 						justify-center items-center gap-5
 						"
 					>
-						<button className="btn-text">SIGN IN</button>
+						<SignInButton call={() => toggleLightbox("signIn", true)}/>
+						{/* <button className="btn-text">SIGN IN</button> */}
 						<button className="btn-text">PLAY AS GUEST</button>
 					</div>
 					<div className="
@@ -78,6 +80,7 @@ export const Login = () => {
 				</div>
 				{ showLightbox["info"] && <InfoLightbox dismiss={() => toggleLightbox("info", false)} /> }
 				{ showLightbox["createAccount"] && <CreateAccountLightbox dismiss={() => toggleLightbox("createAccount", false)} /> }
+				{ showLightbox["signIn"] && <SignInLightbox dismiss={() => toggleLightbox("signIn", false)} /> }
 			</section>
 		</main>
 	);
