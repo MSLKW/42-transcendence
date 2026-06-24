@@ -60,7 +60,7 @@
 	@apply
 		w-screen /* min-w-80 */
 		h-screen min-h-80
-		p-5
+		p-10
 		border-r4 
 		;
 }

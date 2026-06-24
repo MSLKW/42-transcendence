@@ -46,8 +46,8 @@ export const Login = () => {
 	
 	return (
 		<section ref={containerRef} className={`cont-area ${showFrame ? "border" : ""}`}>
-			{showStats && <div className="cont-three overflow-clip leading-0"><Canvas><Stats /></Canvas></div>}
-			<div className="z-0 flex flex-col w-full h-full overflow-clip leading-0">
+			{showStats && <div className="cont-three"><Canvas><Stats /></Canvas></div>}
+			<div className="z-0 flex flex-col w-full h-full">
 				<div className={`
 					cont-row basis-12.5 shrink ${showFrame ? "border" : ""}
 					justify-end
