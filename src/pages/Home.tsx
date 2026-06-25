@@ -26,6 +26,7 @@ export const Home = () => {
 			[key]: value,
 		}));
 	}
+	const focusRef = useRef<HTMLButtonElement | null>(null);
 
 	useEffect(() => {
 		window.scrollTo({
@@ -33,7 +34,6 @@ export const Home = () => {
 			behavior: 'smooth',
 		})
 	}, []);
-	
 	useEffect(() => {
 		if (!containerRef.current)
 			return;
@@ -46,6 +46,11 @@ export const Home = () => {
 		});
 		observer.observe(containerRef.current);
 		return () => observer.disconnect();
+	}, []);
+	useEffect(() => {
+		if (focusRef.current) {
+			focusRef.current.focus();
+		}
 	}, []);
 
 	return (
@@ -76,8 +81,7 @@ export const Home = () => {
 							px-10 py-5 mx-auto
 							"
 						>
-							<button className="btn-card">JOIN PARTY</button>
-							<button className="btn-card">4 PLAYERS</button>
+							<button ref={focusRef} className="btn-card">4 PLAYERS</button>
 							<button className="btn-card">3 PLAYERS</button>
 							<button className="btn-card">2 PLAYERS</button>
 						</div>

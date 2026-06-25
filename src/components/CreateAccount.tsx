@@ -1,3 +1,4 @@
+import { useEffect, useRef } from "react";
 import { useSceneStore } from "../store/useSceneStore";
 import { CloseButton } from "../components/CloseButton";
 
@@ -19,6 +20,13 @@ export const CreateAccountButton = ({ call }: CreateAccountProps) => {
 export const CreateAccountLightbox = ({ dismiss }: CreateAccountProps) => {
 	const contAreaWidth = useSceneStore((scene) => scene.contAreaWidth);
 	const contAreaHeight = useSceneStore((scene) => scene.contAreaHeight);
+	const focusRef = useRef<HTMLInputElement | null>(null);
+
+	useEffect(() => {
+		if (focusRef.current) {
+			focusRef.current.focus();
+		}
+	}, []);
 
 	return (
 		<section style={{ width: contAreaWidth, height: contAreaHeight }}
@@ -38,6 +46,7 @@ export const CreateAccountLightbox = ({ dismiss }: CreateAccountProps) => {
 					<div className="grid grid-cols-[75px_1fr] gap-5 w-full">
 						<label htmlFor="email">Email</label>
 						<input
+							ref={focusRef}
 							id="email"
 							type="email"
 							placeholder="Enter your email"

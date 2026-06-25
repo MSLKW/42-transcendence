@@ -1,3 +1,4 @@
+import { useEffect, useRef } from "react";
 import { useSceneStore } from "../store/useSceneStore";
 import { CloseButton } from "../components/CloseButton";
 
@@ -7,8 +8,17 @@ interface SignInProps {
 }
 
 export const SignInButton = ({ call }: SignInProps) => {
+	const focusRef = useRef<HTMLButtonElement | null>(null);
+
+	useEffect(() => {
+		if (focusRef.current) {
+			focusRef.current.focus();
+		}
+	}, []);
+
 	return (
 		<button
+			ref={focusRef}
 			onClick={call}
 			className="btn-text"
 		>
@@ -19,6 +29,13 @@ export const SignInButton = ({ call }: SignInProps) => {
 export const SignInLightbox = ({ dismiss }: SignInProps) => {
 	const contAreaWidth = useSceneStore((scene) => scene.contAreaWidth);
 	const contAreaHeight = useSceneStore((scene) => scene.contAreaHeight);
+	const focusRef = useRef<HTMLInputElement | null>(null);
+
+	useEffect(() => {
+		if (focusRef.current) {
+			focusRef.current.focus();
+		}
+	}, []);
 
 	return (
 		<section style={{ width: contAreaWidth, height: contAreaHeight }}
@@ -38,6 +55,7 @@ export const SignInLightbox = ({ dismiss }: SignInProps) => {
 					<div className="grid grid-cols-[75px_1fr] gap-5 w-full">
 						<label htmlFor="email">Email</label>
 						<input
+							ref={focusRef}
 							id="email"
 							type="email"
 							placeholder="Enter your email"
@@ -48,7 +66,7 @@ export const SignInLightbox = ({ dismiss }: SignInProps) => {
 						<input
 							id="password"
 							type="password"
-							placeholder="At least 8 characters"
+							placeholder="Enter your password"
 						/>
 					</div>
 					<button

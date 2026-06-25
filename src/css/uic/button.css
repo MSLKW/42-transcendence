@@ -16,6 +16,9 @@ button {
 		rounded-3xl
 		relative
 		;
+	&:focus {
+		@apply scale-105;
+	}
 	&::after {
 		content: attr(data-tip);
 		@apply
@@ -31,6 +34,7 @@ button {
 			transition-all ease-out duration-50
 			;
 	}
+	&:focus::after,
 	&:hover::after {
 		@apply scale-100 opacity-100;
 	}
@@ -61,6 +65,7 @@ button {
             bg-b5
 			border-b4
             outline-none
+			scale-105
 			;
 	}
 }
@@ -79,6 +84,7 @@ button {
 		@apply
 			text-b5
 			outline-none
+			scale-105
 			;
 	}
 }
@@ -107,6 +113,7 @@ button {
 			outline-solid
 			outline-b5
 			outline-offset-5
+			scale-105
 			;
 	}
 }
