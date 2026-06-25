@@ -1,5 +1,5 @@
 import { useSceneStore } from "../store/useSceneStore";
-import { CloseIcon } from "../icons/CloseIcon";
+import { CloseButton } from "../components/CloseButton";
 
 interface CreateAccountProps {
 	call?: () => void;
@@ -66,16 +66,9 @@ export const CreateAccountLightbox = ({ dismiss }: CreateAccountProps) => {
 						CREATE ACCOUNT
 					</button>
 				</div>
-				<button
-					data-tip="Close"
-					className="
-						btn-icon
-						absolute z-1 top-0 right-0 translate-x-6.5 -translate-y-6.5
-						"
-					onClick={dismiss}
-				>
-					<CloseIcon />
-				</button>
+				<div className="absolute z-1 top-0 right-0 translate-x-6.5 -translate-y-6.5">
+					<CloseButton dismiss={dismiss} />
+				</div>
 			</div>
 		</section>
 	);

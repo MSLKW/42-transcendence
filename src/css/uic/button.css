@@ -20,7 +20,7 @@ button {
 		content: attr(data-tip);
 		@apply
 			w-max
-			absolute top-[calc(100%+10px)] -translate-x-1/2
+			absolute top-[calc(100%+15px)] -translate-x-1/2
 			bg-n1
 			border border-n2
 			rounded-lg
