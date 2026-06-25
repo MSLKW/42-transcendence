@@ -7,7 +7,8 @@ import { useDevStore } from "../store/useDevStore";
 import { BackButton } from "../components/BackButton";
 import { InfoButton, InfoLightbox } from "../components/Info";
 import { SettingsButton, SettingsLightbox } from "../components/Settings";
-import { AddIcon } from "../icons/AddIcon";
+import { AvatarPlayer } from "../components/Avatar";
+import { JoinParty } from "../components/Party";
 
 export const Home = () => {
 	const setCurrentScene = useGameStore((state) => state.setCurrentScene);
@@ -92,10 +93,8 @@ export const Home = () => {
 						p-10
 						"
 					>
-						<div className="w-[80px] h-[100px] bg-a5 border border-a6 rounded-lg" />
-						<div className="w-[80px] h-[100px] bg-n1 border border-n2 rounded-lg flex justify-center place-items-center">
-							<AddIcon />
-						</div>
+						<AvatarPlayer />
+						<JoinParty />
 					</div>
 				</div>
 				{ showLightbox["info"] && <InfoLightbox dismiss={() => toggleLightbox("info", false)} /> }
