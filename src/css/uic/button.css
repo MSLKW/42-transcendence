@@ -29,20 +29,30 @@ button {
 		content: attr(data-tip);
 		@apply
 			w-max
-			absolute top-[calc(100%+15px)] -translate-x-1/2
+			absolute -translate-x-1/2
 			bg-n1
 			border border-n2
 			rounded-lg
 			text-n6
 			px-5
 			pointer-events-none
-			origin-top scale-0 opacity-0
+			scale-0 opacity-0
 			transition-all ease-out duration-50
 			;
 	}
 	&:focus::after,
 	&:hover::after {
 		@apply scale-100 opacity-100;
+	}
+}
+@utility btn-tip-up {
+	&::after {
+		@apply bottom-[calc(100%+15px)] origin-bottom;
+	}
+}
+@utility btn-tip-down {
+	&::after {
+		@apply top-[calc(100%+15px)] origin-top;
 	}
 }
 @utility btn-text {

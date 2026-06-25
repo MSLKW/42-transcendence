@@ -10,7 +10,7 @@ export const CloseButton = ({ dismiss }: CloseButtonProps) => {
 			data-tip="Close"
 			onClick={dismiss}
 			className="
-				btn-icon
+				btn-icon btn-tip-down
 				bg-n1
 				border border-n2
 			"

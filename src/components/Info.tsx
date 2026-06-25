@@ -10,7 +10,7 @@ interface InfoProps {
 export const InfoButton = ({ call }: InfoProps) => {
 	return (
 		<button
-			className="btn-icon bg-n1 border border-n2"
+			className="btn-icon btn-tip-down bg-n1 border border-n2"
 			data-tip="Info"
 			onClick={call}
 		>

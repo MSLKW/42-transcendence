@@ -10,7 +10,7 @@ interface SettingsProps {
 export const SettingsButton = ({ call }: SettingsProps) => {
     return (
         <button
-            className="btn-icon"
+            className="btn-icon btn-tip-down"
             data-tip="Settings"
             onClick={call}
         >
