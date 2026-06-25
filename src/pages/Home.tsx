@@ -4,10 +4,9 @@ import { Stats } from "@react-three/drei";
 import { useGameStore } from "../store/useGameStore";
 import { useSceneStore } from "../store/useSceneStore";
 import { useDevStore } from "../store/useDevStore";
-import { InfoButton, InfoLightbox } from "../components/Info";
-// import { BackIcon } from "../icons/BackIcon";
 import { BackButton } from "../components/BackButton";
-import { SettingsIcon } from "../icons/SettingsIcon";
+import { InfoButton, InfoLightbox } from "../components/Info";
+import { SettingsButton, SettingsLightbox } from "../components/Settings";
 
 export const Home = () => {
 	const setCurrentScene = useGameStore((state) => state.setCurrentScene);
@@ -61,9 +60,9 @@ export const Home = () => {
 					>
 						<div className="flex gap-0 bg-n1 border border-n2 rounded-3xl">
 							<BackButton scene={() => setCurrentScene("LOGIN")} />
-							<button className="btn-icon"><SettingsIcon /></button>
+							<SettingsButton call={() => toggleLightbox("settings", true)} />
 						</div>
-						<InfoButton call={() => toggleLightbox("info", true)}/>
+						<InfoButton call={() => toggleLightbox("info", true)} />
 					</div>
 					<div tabIndex={-1} className="
 						flex w-full min-h-10 h-full flex-3
@@ -77,9 +76,9 @@ export const Home = () => {
 							"
 						>
 							<button className="btn-card">JOIN PARTY</button>
-							<button className="btn-card">BIG 2 CLASSIC</button>
+							<button className="btn-card">4 PLAYERS</button>
 							<button className="btn-card">3 PLAYERS</button>
-							<button className="btn-card">DUEL</button>
+							<button className="btn-card">2 PLAYERS</button>
 						</div>
 					</div>
 					<div className="
@@ -93,6 +92,7 @@ export const Home = () => {
 					</div>
 				</div>
 				{ showLightbox["info"] && <InfoLightbox dismiss={() => toggleLightbox("info", false)} /> }
+				{ showLightbox["settings"] && <SettingsLightbox dismiss={() => toggleLightbox("settings", false)} /> }
 			</section>
 		</main>
 	);
