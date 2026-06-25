@@ -70,9 +70,11 @@ button {
 	}
 	&:focus {
 		@apply
-            bg-b5
 			border-b4
-            outline-none
+			outline-2
+			outline-solid
+			outline-b5
+			outline-offset-5
 			scale-105
 			;
 	}
@@ -83,15 +85,17 @@ button {
 		aspect-5/1
 		text-[clamp(0.5rem,4vw,1rem)]
 		text-n6
-		border-a4
+		border-a4 rounded-3xl
 		;
 	&:hover:not(:disabled) {
 		@apply scale-105;
 	}
 	&:focus {
 		@apply
-			text-b5
-			outline-none
+			outline-2
+			outline-solid
+			outline-b5
+			outline-offset-5
 			scale-105
 			;
 	}
