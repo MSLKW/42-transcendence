@@ -50,20 +50,92 @@ export const Home = () => {
 	return (
 		<main>
 			{showStats && <div className="cont-three"><Canvas><Stats /></Canvas></div>}
-			<section ref={containerRef} className="cont-area">
-				<div className="z-0 flex flex-col w-full h-full">
+			<section ref={containerRef} className="cont-area p-0">
+				<div className="z-0 flex flex-col w-full h-full justify-between">
 					<div className="
 						cont-row basis-12.5 shrink
+						p-10
 						justify-between
 						"
 					>
-						<div className="flex gap-5 bg-n1 border border-n2 rounded-3xl">
+						<div className="flex gap-0 bg-n1 border border-n2 rounded-3xl">
 							<button><BackIcon /></button>
 							<button><SettingsIcon /></button>
 						</div>
 						<InfoButton call={() => toggleLightbox("info", true)}/>
 					</div>
+					<div className="
+						cont-row min-h-10 h-full flex-3
+						overflow-scroll
+						"
+					>
+						{/* flex place-content-center place-items-center gap-10 */}
+						<div className="
+							w-max
+							flex place-items-center gap-10
+							overflow-visible
+							"
+						>
+							<button className="btn-card">JOIN PARTY</button>
+							<button className="btn-card">BIG 2 CLASSIC</button>
+							<button className="btn-card">3 PLAYERS</button>
+							<button className="btn-card">DUEL</button>
+						</div>
+					</div>
+					<div className="
+						cont-row basis-20 shrink
+						gap-10
+						p-10
+						"
+					>
+						<div className="w-[80px] h-[100px] bg-a5 border border-a6 rounded-lg" />
+						<div className="w-[80px] h-[100px] bg-a5 border border-a6 rounded-lg" />
+					</div>
 				</div>
+				{/* <div className="
+					z-[-1] absolute top-0
+					cont-row min-h-10 h-full flex-3
+					overflow-scroll
+					"
+				>
+					<div className="
+						w-full
+						flex place-content-center place-items-center gap-10
+						overflow-visible
+						"
+					>
+						<button className="
+							flex-none
+							bg-linear-to-b from-b4 to-b5
+							border border-b6 rounded-3xl
+							w-50 min-h-75
+							"
+						/>
+						<button className="
+							flex-none
+							bg-linear-to-b from-b4 to-b5
+							border border-b6 rounded-3xl
+							w-full min-w-50 max-w-[400px]
+							h-full min-h-75 max-h-[600px]
+							aspect-auto
+							"
+						/>
+						<button className="
+							flex-none
+							bg-linear-to-b from-b4 to-b5
+							border border-b6 rounded-3xl
+							w-50 h-75
+							"
+						/>
+						<button className="
+							flex-none
+							bg-linear-to-b from-b4 to-b5
+							border border-b6 rounded-3xl
+							w-50 h-75
+							"
+						/>
+					</div>
+				</div> */}
 				{ showLightbox["info"] && <InfoLightbox dismiss={() => toggleLightbox("info", false)} /> }
 			</section>
 		</main>
