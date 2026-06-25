@@ -7,6 +7,7 @@ import { useDevStore } from "../store/useDevStore";
 import { BackButton } from "../components/BackButton";
 import { InfoButton, InfoLightbox } from "../components/Info";
 import { SettingsButton, SettingsLightbox } from "../components/Settings";
+import { AddIcon } from "../icons/AddIcon";
 
 export const Home = () => {
 	const setCurrentScene = useGameStore((state) => state.setCurrentScene);
@@ -72,7 +73,7 @@ export const Home = () => {
 					>
 						<div className="
 							flex place-items-center gap-10
-							px-10 mx-auto
+							px-10 py-5 mx-auto
 							"
 						>
 							<button className="btn-card">JOIN PARTY</button>
@@ -88,7 +89,9 @@ export const Home = () => {
 						"
 					>
 						<div className="w-[80px] h-[100px] bg-a5 border border-a6 rounded-lg" />
-						<div className="w-[80px] h-[100px] bg-a5 border border-a6 rounded-lg" />
+						<div className="w-[80px] h-[100px] bg-n1 border border-n2 rounded-lg flex justify-center place-items-center">
+							<AddIcon />
+						</div>
 					</div>
 				</div>
 				{ showLightbox["info"] && <InfoLightbox dismiss={() => toggleLightbox("info", false)} /> }
