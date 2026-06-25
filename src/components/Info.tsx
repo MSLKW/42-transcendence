@@ -1,6 +1,6 @@
 import { useSceneStore } from "../store/useSceneStore";
 import { InfoIcon } from "../icons/InfoIcon";
-import { CloseIcon } from "../icons/CloseIcon";
+import { CloseButton } from "./CloseButton";
 
 interface InfoProps {
 	call?: () => void;
@@ -59,18 +59,7 @@ export const InfoLightbox = ({ dismiss }: InfoProps) => {
 					</div>
 				</div>
 			</div>
-			<button
-				data-tip="Close"
-				onClick={dismiss}
-				className="
-					btn-icon
-					absolute z-1 top-0 right-0 -translate-x-10 translate-y-10
-					bg-n1
-					border border-n2
-				"
-			>
-					<CloseIcon />
-			</button>
+			<CloseButton dismiss={dismiss}/>
 		</section>
 	);
 }
