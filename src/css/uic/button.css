@@ -17,7 +17,13 @@ button {
 		relative
 		;
 	&:focus {
-		@apply scale-105;
+		@apply
+			scale-105
+			outline-2
+			outline-solid
+			outline-b5
+			outline-offset-5
+			;
 	}
 	&::after {
 		content: attr(data-tip);
@@ -37,14 +43,6 @@ button {
 	&:focus::after,
 	&:hover::after {
 		@apply scale-100 opacity-100;
-	}
-	&:focus {
-		@apply
-			outline-2
-			outline-solid
-			outline-b5
-			outline-offset-5
-			;
 	}
 }
 @utility btn-text {
@@ -85,6 +83,20 @@ button {
 			text-b5
 			outline-none
 			scale-105
+			;
+	}
+}
+@utility btn-avatar {
+	@apply
+		aspect-square
+		;
+	&:focus {
+		@apply
+			scale-105
+			outline-2
+			outline-solid
+			outline-b5
+			outline-offset-5
 			;
 	}
 }
