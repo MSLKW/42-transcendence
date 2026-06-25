@@ -67,6 +67,7 @@ export const Home = () => {
 					<div className="
 						flex w-full min-h-10 h-full flex-3
 						overflow-x-auto
+						snap-x snap-mandatory
 						"
 					>
 						<div className="
@@ -90,50 +91,6 @@ export const Home = () => {
 						<div className="w-[80px] h-[100px] bg-a5 border border-a6 rounded-lg" />
 					</div>
 				</div>
-				{/* <div className="
-					z-[-1] absolute top-0
-					cont-row min-h-10 h-full flex-3
-					overflow-scroll
-					"
-				>
-					<div className="
-						w-full
-						flex place-content-center place-items-center gap-10
-						overflow-visible
-						"
-					>
-						<button className="
-							flex-none
-							bg-linear-to-b from-b4 to-b5
-							border border-b6 rounded-3xl
-							w-50 min-h-75
-							"
-						/>
-						<button className="
-							flex-none
-							bg-linear-to-b from-b4 to-b5
-							border border-b6 rounded-3xl
-							w-full min-w-50 max-w-[400px]
-							h-full min-h-75 max-h-[600px]
-							aspect-auto
-							"
-						/>
-						<button className="
-							flex-none
-							bg-linear-to-b from-b4 to-b5
-							border border-b6 rounded-3xl
-							w-50 h-75
-							"
-						/>
-						<button className="
-							flex-none
-							bg-linear-to-b from-b4 to-b5
-							border border-b6 rounded-3xl
-							w-50 h-75
-							"
-						/>
-					</div>
-				</div> */}
 				{ showLightbox["info"] && <InfoLightbox dismiss={() => toggleLightbox("info", false)} /> }
 			</section>
 		</main>

@@ -98,6 +98,7 @@ button {
 		border border-b6 rounded-3xl
 		h-full min-h-50 max-h-150
 		aspect-2/3
+		snap-center
 		;
 	&:hover:not(:disabled) {
 		@apply scale-105;
