@@ -62,13 +62,14 @@
 @utility cont-area {
 	@apply
 		w-screen
-		h-screen min-h-80
+		h-screen min-h-130
 		p-10
 		border-f0
 		;
 }
 @utility cont-row {
-	@apply flex w-full;
+	@apply flex w-full
+	;
 }
 @utility cont-three {
 	@apply

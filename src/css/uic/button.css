@@ -41,7 +41,7 @@ button {
 			outline-2
 			outline-solid
 			outline-b5
-			outline-offset-2
+			outline-offset-5
 			;
 	}
 }
@@ -94,16 +94,10 @@ button {
 
 @utility btn-card {
 	@apply
-		/* flex-none
 		bg-linear-to-b from-b4 to-b5
 		border border-b6 rounded-3xl
-		w-50 min-h-75 */
-		flex-none
-		bg-linear-to-b from-b4 to-b5
-		border border-b6 rounded-3xl
-		w-full min-w-50 max-w-[400px]
-		h-full min-h-75 max-h-[600px]
-		aspect-auto
+		h-full min-h-50 max-h-150
+		aspect-2/3
 		;
 	&:hover:not(:disabled) {
 		@apply scale-105;

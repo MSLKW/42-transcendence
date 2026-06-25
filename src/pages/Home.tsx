@@ -65,15 +65,13 @@ export const Home = () => {
 						<InfoButton call={() => toggleLightbox("info", true)}/>
 					</div>
 					<div className="
-						cont-row min-h-10 h-full flex-3
-						overflow-scroll
+						flex w-full min-h-10 h-full flex-3
+						overflow-x-auto
 						"
 					>
-						{/* flex place-content-center place-items-center gap-10 */}
 						<div className="
-							w-max
 							flex place-items-center gap-10
-							overflow-visible
+							px-10 mx-auto
 							"
 						>
 							<button className="btn-card">JOIN PARTY</button>
