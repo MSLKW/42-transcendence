@@ -10,7 +10,7 @@ interface InfoProps {
 export const InfoButton = ({ call }: InfoProps) => {
 	return (
 		<button
-			className="btn-icon"
+			className="btn-icon bg-n1 border border-n2"
 			data-tip="Info"
 			onClick={call}
 		>
@@ -65,6 +65,8 @@ export const InfoLightbox = ({ dismiss }: InfoProps) => {
 				className="
 					btn-icon
 					absolute z-1 top-0 right-0 -translate-x-10 translate-y-10
+					bg-n1
+					border border-n2
 				"
 			>
 					<CloseIcon />

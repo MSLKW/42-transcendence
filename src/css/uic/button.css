@@ -13,8 +13,6 @@ button {
 	@apply
 		h-full min-h-10 max-h-12.5
 		aspect-square
-		bg-n1
-		border border-n2
 		rounded-3xl
 		relative
 		;

@@ -59,12 +59,12 @@ export const Home = () => {
 						"
 					>
 						<div className="flex gap-0 bg-n1 border border-n2 rounded-3xl">
-							<button><BackIcon /></button>
-							<button><SettingsIcon /></button>
+							<button className="btn-icon"><BackIcon /></button>
+							<button className="btn-icon"><SettingsIcon /></button>
 						</div>
 						<InfoButton call={() => toggleLightbox("info", true)}/>
 					</div>
-					<div className="
+					<div tabIndex={-1} className="
 						flex w-full min-h-10 h-full flex-3
 						overflow-x-auto
 						snap-x snap-mandatory
