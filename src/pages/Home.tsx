@@ -82,9 +82,9 @@ export const Home = () => {
 							px-10 py-5 mx-auto
 							"
 						>
-							<button ref={focusRef} className="btn-card">4 PLAYERS</button>
-							<button className="btn-card">3 PLAYERS</button>
-							<button className="btn-card">2 PLAYERS</button>
+							<button ref={focusRef} className="btn-card" onClick={() => setCurrentScene("LOBBY")}>4 PLAYERS</button>
+							<button className="btn-card" onClick={() => setCurrentScene("LOBBY")}>3 PLAYERS</button>
+							<button className="btn-card" onClick={() => setCurrentScene("LOBBY")}>2 PLAYERS</button>
 						</div>
 					</div>
 					<div className="
