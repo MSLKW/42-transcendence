@@ -3,7 +3,7 @@ import { ChatIcon } from "../icons/ChatIcon";
 export const AvatarPlayer = () => {
 	return (
 		<div className="
-			w-20 h-25
+			h-full max-h-25 aspect-8/10
 			relative
 		">
 			<div className="w-full h-full flex flex-col">

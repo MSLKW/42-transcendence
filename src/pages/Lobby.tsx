@@ -53,7 +53,16 @@ export const Lobby = () => {
 					<AvatarPlayer />
 					<div className="flex place-items-center gap-10">
 						<AvatarPlayer />
-						<button className="w-40 h-10 bg-n6 border border-n5 rounded-3xl">START</button>
+						<button
+							className="
+								w-40 h-10
+								bg-n6
+								border border-n5 rounded-3xl
+								"
+							onClick={() => setCurrentScene("R3F")}
+						>
+							START
+						</button>
 						<AvatarPlayer />
 					</div>
 					<AvatarPlayer />

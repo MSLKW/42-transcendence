@@ -1,0 +1,53 @@
+@utility cont-bg {
+	@apply
+		z-[-1] absolute
+		w-screen h-screen
+		pointer-events-none
+		overflow-clip
+		;
+}
+@utility cont-main {
+	@apply
+		z-0 absolute
+		w-screen h-screen
+		;
+}
+@utility cont-main-canvas {
+	@apply
+		z-0
+		w-full h-full
+		;
+}
+@utility cont-main-body {
+	@apply
+		z-1 absolute top-0 left-0
+		w-full h-full
+		pointer-events-none
+		;
+}
+@utility cont-overlay {
+	@apply
+		w-screen h-screen
+		pointer-events-none
+		p-[clamp(0px,10vh,40px)]
+		flex flex-col
+		;
+}
+@utility cont-overlay-header {
+	@apply
+		z-1
+		flex-1 max-h-12.5 h-full
+		;
+}
+@utility cont-overlay-body {
+	@apply
+		z-1
+		flex-2 h-full
+		;
+}
+@utility cont-overlay-footer {
+	@apply
+		z-1
+		flex-1 max-h-25 h-full
+		;
+}
