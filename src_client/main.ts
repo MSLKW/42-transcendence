@@ -7,11 +7,13 @@ import { io } from 'socket.io-client'
 import { CardHeap } from './CardHeap.ts';
 import { Player } from './Player.ts';
 import { OrbitControls } from 'three/examples/jsm/Addons.js';
-import { Opponent } from './Opponent.ts'
+import { Opponent } from './Opponent.ts';
+import { GameStatus } from './GameStatus.ts';
 
 export const scene = new THREE.Scene();
 export const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 100);
 export const renderer = new THREE.WebGLRenderer();
+export const gameStatus = new GameStatus();
 
 renderer.setSize(window.innerWidth, window.innerHeight);
 const container = document.getElementById('threejs-canvas');

@@ -1,11 +1,11 @@
 import { io, Socket } from 'socket.io-client';
 import * as THREE from 'three';
-import { CardTransmit, CardHandTransmit, GameStateTransmit } from '../src_shared/Types.ts';
+import { CardTransmit, GameEndStatsTransmit, GameStateTransmit } from '../src_shared/Types.ts';
 import { CardHand } from './CardHand.ts';
 import { Card } from './Card.ts';
 import { CardManager } from './CardManager.ts';
 import { CardHeap } from './CardHeap.ts';
-import { scene, renderer, camera } from './main.ts';
+import { scene, renderer, camera, gameStatus } from './main.ts';
 
 export class Player {
 	private	socket: Socket;
@@ -46,14 +46,23 @@ export class Player {
 		this.isPlayerTurn(false);
 	}
 
+	public getPlayerId() {
+		return (this.playerId);
+	}
+
 	private setupListeners() {
 		this.socket.on('game_start', (status) => {
 			console.log(`Start Game: ${status}`);
+			this.startGameButton.disabled = true;
 		});
 		
 		this.socket.on('game_end', (body) => {
+			const gameEndStats = JSON.parse(body) as GameEndStatsTransmit;
 			this.cardManager.reset();
 			this.cardHeapRef.reset();
+			this.startGameButton.disabled = false;
+			gameStatus.setGameStats(gameEndStats, this);
+			gameStatus.setLightboxActive(true);
 			console.log(body);
 		})
 		
