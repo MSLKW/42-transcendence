@@ -40,4 +40,10 @@ export class CardDeckState {
 		this.cards.splice(0, i);
 		return (dealCards);
 	}
+
+	public reset() {
+		this.cards.length = 0;
+		this.initCards();
+		this.shuffleCards();
+	}
 }

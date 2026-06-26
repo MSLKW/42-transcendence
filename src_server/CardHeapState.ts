@@ -57,6 +57,11 @@ export class CardHeapState {
 		return (false);
 	}
 
+	public reset() {
+		this.cardHands.length = 0;
+		this.currentHandType = HandType.None;
+	}
+
 	public transmit() {
 		return (this.cardHands)
 	}

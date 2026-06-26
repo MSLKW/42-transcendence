@@ -37,6 +37,11 @@ export class Opponent {
 			}
 		});
 
+		this.socket.on('game_end', (body) => {
+			this.cardManager.reset();
+			console.log(body);
+		})
+
 		this.socket.on("player_game_state", (gameStateJSON) => {
 			const gameState = JSON.parse(gameStateJSON) as GameStateTransmit;
 

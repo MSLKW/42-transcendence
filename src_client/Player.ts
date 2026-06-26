@@ -52,6 +52,8 @@ export class Player {
 		});
 		
 		this.socket.on('game_end', (body) => {
+			this.cardManager.reset();
+			this.cardHeapRef.reset();
 			console.log(body);
 		})
 		

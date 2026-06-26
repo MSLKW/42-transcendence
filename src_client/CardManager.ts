@@ -157,6 +157,18 @@ export class CardManager {
 		}
 	}
 
+	public reset() {
+		for (let i = 0; i < this.cards.length; i++) {
+			this.cards[i].dispose();
+		}
+		this.selectedCards.disposeCards();
+		this.cards.length = 0;
+		this.slots = this.calculateSlots(this.cards, this.boundSpace);
+		this.selectedSlots = this.calculateSlots(this.selectedCards.cards, this.selectedBoundSpace);
+		this.updateCardObjects(this.cards, this.slots);
+		this.updateCardObjects(this.selectedCards.cards, this.selectedSlots);
+	}
+
 	// transmit to server
 	public selectedCardsToJSON(): string {
 		return (JSON.stringify(this.selectedCards));

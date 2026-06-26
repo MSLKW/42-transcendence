@@ -59,6 +59,11 @@ export type GameStateTransmit = {
 	isPlayerTurn: boolean
 }
 
+export type GameEndStatsTransmit = {
+	winnerPlayerId: string,
+	playerFinalCardAmounts: Record<string, number>
+}
+
 export type PlayerSeatOrderTransmit = {
 	playerId: string,
 	seatOrder: Record<string, number>

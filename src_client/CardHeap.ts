@@ -4,12 +4,13 @@ import { CardHandTransmit } from '../src_shared/Types.ts';
 import { Card } from './Card.ts';
 
 export class CardHeap {
+	private originalPosition: THREE.Vector3;
 	private position: THREE.Vector3;
 	private cardHands: Array<CardHand>;
-	// some pos for card to be stacked ontop of
-	// 
+
 	constructor(position: THREE.Vector3) {
-		this.position = position;
+		this.originalPosition = position;
+		this.position = this.originalPosition;
 		this.cardHands = [];
 	}
 
@@ -39,5 +40,13 @@ export class CardHeap {
 			}
 			this.receiveCardHand(cardHand);
 		}
+	}
+
+	public reset() {
+		for (let i = 0; i < this.cardHands.length; i++) {
+			this.cardHands[i].disposeCards();
+		}
+		this.cardHands.length = 0;
+		this.position = this.originalPosition;
 	}
 }

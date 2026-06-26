@@ -3,7 +3,7 @@ import { io } from './server.js';
 import { PlayerState } from './PlayerState.js';
 import { CardDeckState } from './CardDeckState.js'
 import { CardHeapState } from './CardHeapState.js'
-import { GameStateTransmit, PlayerSeatOrderTransmit } from '../src_shared/Types.js';
+import { GameStateTransmit, PlayerSeatOrderTransmit, GameEndStatsTransmit } from '../src_shared/Types.js';
 
 export class GameState {
 	private players: Array<PlayerState>;
@@ -157,7 +157,18 @@ export class GameState {
 
 	public endGame(player: PlayerState) {
 		console.log(`Game Ended | Winner is Player<${player.playerId}>`);
-		io.to("game").emit("game_end", `Player<${player.playerId}> won the game!`);
+		// reset stuff
+		// calculate game end stats
+		// send game end stats
+		const gameEndStats: GameEndStatsTransmit = {
+			winnerPlayerId: player.playerId,
+			playerFinalCardAmounts: this.playerCardsAmount(),
+		}
+		this.cardHeap.reset();
+		this.cardDeck.reset();
+		this.playerTurnIndex = -1;
+		this.isGameStarted = false;
+		io.to("game").emit("game_end", JSON.stringify(gameEndStats));
 	}
 
 	// For reconnecting player state

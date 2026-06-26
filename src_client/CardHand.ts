@@ -43,6 +43,7 @@ export class CardHand {
 		for (let i = 0; i < this.cards.length; i++) {
 			this.cards[i].dispose();
 		}
+		this.cards.length = 0;
 	}
 
 	// Sorts the cards by descending from rank first, then suite if the rank is the same
