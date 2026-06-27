@@ -13,6 +13,7 @@ export class Card {
 	private	backMaterial: THREE.MeshBasicMaterial;
 	private	frontMesh: THREE.Mesh;
 	private	backMesh: THREE.Mesh;
+	public isHover: boolean;
 
 	public	object: THREE.Group;
 	public	rank: CardRank;
@@ -21,6 +22,8 @@ export class Card {
 	constructor(rank: CardRank, suite: CardSuite ) {
 		this.rank = rank;
 		this.suite = suite;
+
+		this.isHover = false;
 
 		// Load texture based on rank and suite
 		// this.frontTexture = this.getTexture(this.rank, this.suite);
@@ -60,7 +63,7 @@ export class Card {
 		this.frontMaterial.needsUpdate = true;
 	}
 	
-	public static pushCards(cardsA: Array<Card>, cardsB: Array<Card>)
+	public static transferCards(cardsA: Array<Card>, cardsB: Array<Card>)
 	{
 		cardsA.forEach((card: Card) => {
 			cardsB.push(card);

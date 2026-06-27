@@ -120,15 +120,30 @@ export class Player {
 		renderer.domElement.addEventListener('click', (event) => {
 			this.eventClick(event);
 		});
+
+		window.addEventListener('pointermove', (event) => {
+			this.eventHover(event);
+		})
 	}
 
 	private eventClick(event: PointerEvent) {
 		const canvas = renderer.domElement.getBoundingClientRect();
-		const mouse = new THREE.Vector2();
-		mouse.x = ((event.clientX - canvas.left) / canvas.width) * 2 - 1;
-		mouse.y = -((event.clientY - canvas.top) / canvas.height) * 2 + 1;
+		const mouse = new THREE.Vector2(
+			((event.clientX - canvas.left) / canvas.width) * 2 - 1,
+			-((event.clientY - canvas.top) / canvas.height) * 2 + 1
+		);
 		this.raycaster.setFromCamera(mouse, camera);
 		this.cardManager.interactCard(this.raycaster);
+	}
+
+	private eventHover(event: PointerEvent) {
+		const canvas = renderer.domElement.getBoundingClientRect();
+		const mouse = new THREE.Vector2(
+			((event.clientX - canvas.left) / canvas.width) * 2 - 1,
+			-((event.clientY - canvas.top) / canvas.height) * 2 + 1
+		);
+		this.raycaster.setFromCamera(mouse, camera);
+		this.cardManager.hoverCard(this.raycaster);
 	}
 
 	private isPlayerTurn(isTurn: boolean) {

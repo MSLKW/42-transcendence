@@ -1,6 +1,8 @@
 import * as THREE from 'three';
 import { Card } from './Card.ts';
 import { CardHand } from './CardHand.ts';
+import { outlinePass } from './main.ts';
+import { outline } from 'three/examples/jsm/tsl/display/OutlineNode.js';
 
 export class CardManager {
 	private position: THREE.Vector3;
@@ -106,6 +108,7 @@ export class CardManager {
 				card.object.position.copy(slot);
 				card.object.rotation.copy(this.rotation);
 				this.applyFanEffect(card.object, 40, 1, normalizedIndex);
+				this.applyHoverEffect(card);
 				// console.log(`updated card object rank: ${card.rank} suite: ${card.suite} position: ${card.object.position.x},${card.object.position.y},${card.object.position.z} index: ${normalizedIndex}`);
 			}
 		}
@@ -123,6 +126,35 @@ export class CardManager {
 		object.translateZ(THREE.MathUtils.lerp(0, 0.1, normalizedIndex));
 	}
 
+	private applyHoverEffect(card: Card) {
+		// const higlightableObjects: Array<THREE.Object3D> = [];
+		const index = outlinePass.selectedObjects.indexOf(card.object);
+		if (card.isHover === true) {
+			if (index === -1) {
+				outlinePass.selectedObjects.push(card.object);
+			}
+			card.object.translateY(0.5);
+			card.object.translateZ(0.1);
+		}
+		else if (card.isHover === false && index !== -1) {
+			outlinePass.selectedObjects.splice(index, 1);
+		}
+	}
+
+	// private applyCurveEffect(object: THREE.Object3D, rotation: number, position: number, normalizedIndex: number) {
+	// 	const curveRotationStart = (rotation / 2) * (Math.PI / 180);
+	// 	const curveRotationEnd = -(rotation / 2) * (Math.PI / 180);
+
+	// 	const curvePositionStart = -(position / 2);
+	// 	const curvePositionEnd = position / 2;
+
+	// 	object.rotateY(THREE.MathUtils.lerp(curveRotationStart, curveRotationEnd, normalizedIndex));
+	// 	object.translateZ(
+	// 		THREE.MathUtils.lerp(curvePositionEnd, curvePositionStart, Math.sin(normalizedIndex * Math.PI)) +
+	// 		THREE.MathUtils.lerp(curvePositionStart * 4, curvePositionEnd * 4, normalizedIndex)
+	// 	);
+	// }
+
 	// update card position via slot for selected card
 	public interactCard(raycaster: THREE.Raycaster) {
 		let cardObjects = Card.getCardObjects(this.cards);
@@ -139,10 +171,23 @@ export class CardManager {
 		}
 	}
 
+	public hoverCard(raycaster: THREE.Raycaster) {
+		for (let i = 0; i < this.cards.length; i++) {
+			this.cards[i].isHover = false;
+		}
+		let cardObjects = Card.getCardObjects(this.cards);
+		let intersected = raycaster.intersectObjects(cardObjects);
+		if (intersected.length > 0) {
+			let card: Card = intersected[0].object.userData.instance;
+			card.isHover = true;
+		}
+		this.updateCardObjects(this.cards, this.slots);
+	}
+
 	private	selectCard(card: Card) {
 		if (this.selectedCards.receiveCard(card) == true) {
-			console.log(`card selected: ${card.rank}, ${card.suite}`);
 			this.removeCard(card);
+			card.isHover = false;
 			this.selectedSlots = this.calculateSlots(this.selectedCards.cards, this.selectedBoundSpace, new THREE.Vector3(0, 3, 0));
 			this.updateCardObjects(this.selectedCards.cards, this.selectedSlots);
 		}
@@ -151,7 +196,7 @@ export class CardManager {
 	private deselectCard(card: Card) {
 		if (this.selectedCards.removeCard(card)) {
 			this.receiveCard(card);
-			console.log(`Card deselected: ${card.rank}, ${card.suite}`);
+			card.isHover = false;
 			this.selectedSlots = this.calculateSlots(this.selectedCards.cards, this.selectedBoundSpace, new THREE.Vector3(0, 3, 0));
 			this.updateCardObjects(this.selectedCards.cards, this.selectedSlots);
 		}

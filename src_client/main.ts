@@ -9,11 +9,40 @@ import { Player } from './Player.ts';
 import { OrbitControls } from 'three/examples/jsm/Addons.js';
 import { Opponent } from './Opponent.ts';
 import { GameStatus } from './GameStatus.ts';
+import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
+import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
+import { OutlinePass } from 'three/addons/postprocessing/OutlinePass.js';
+import { OutputPass } from 'three/examples/jsm/Addons.js';
+import { effect } from 'zod/v3';
+
+const resolution = new THREE.Vector2(window.innerWidth, window.innerHeight)
 
 export const scene = new THREE.Scene();
-export const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 100);
+export const camera = new THREE.PerspectiveCamera(75, resolution.x / resolution.y, 0.1, 100);
 export const renderer = new THREE.WebGLRenderer();
 export const gameStatus = new GameStatus();
+
+const effectComposer = new EffectComposer(renderer);
+const renderPass = new RenderPass(scene, camera);
+export const outlinePass = new OutlinePass(new THREE.Vector2(resolution.x, resolution.y), scene, camera);
+const outputPass = new OutputPass();
+
+const pixelRatio = Math.min(window.devicePixelRatio, 2);
+renderer.setPixelRatio(pixelRatio);
+effectComposer.setPixelRatio(pixelRatio);
+
+effectComposer.setSize(window.innerWidth, window.innerHeight);
+outlinePass.visibleEdgeColor.set("#ffffff");
+outlinePass.hiddenEdgeColor.set("#ffffff");
+outlinePass.edgeStrength = 5.0;
+outlinePass.edgeThickness = 1.0;
+outlinePass.edgeGlow = 1.0;
+outlinePass.overlayMaterial.blending = THREE.NormalBlending;
+outlinePass.overlayMaterial.needsUpdate = true;
+
+effectComposer.addPass(renderPass);
+effectComposer.addPass(outlinePass);
+effectComposer.addPass(outputPass);
 
 renderer.setSize(window.innerWidth, window.innerHeight);
 const container = document.getElementById('threejs-canvas');
@@ -59,6 +88,11 @@ function resize() {
 	camera.updateProjectionMatrix();
 
 	renderer.setSize(width, height);
+	effectComposer.setSize(width, height);
+
+	const pixelRatio = Math.min(window.devicePixelRatio, 2);
+	renderer.setPixelRatio(pixelRatio);
+	effectComposer.setPixelRatio(pixelRatio);
 }
 window.addEventListener('resize', resize);
 
@@ -136,7 +170,8 @@ function tablePosition(seatIndex: number, isPlayer: boolean): [THREE.Vector3, TH
 
 function animate(time: DOMHighResTimeStamp) {
 	orbitControls.update();
-	renderer.render(scene, camera);
+	// renderer.render(scene, camera);
+	effectComposer.render();
 	// console.log(renderer.info.render.calls);
 }
 renderer.setAnimationLoop(animate);
