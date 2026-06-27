@@ -27,7 +27,6 @@ export const Home = () => {
 			[key]: value,
 		}));
 	}
-	const focusRef = useRef<HTMLButtonElement | null>(null);
 
 	useEffect(() => {
 		window.scrollTo({
@@ -47,11 +46,6 @@ export const Home = () => {
 		});
 		observer.observe(containerRef.current);
 		return () => observer.disconnect();
-	}, []);
-	useEffect(() => {
-		if (focusRef.current) {
-			focusRef.current.focus();
-		}
 	}, []);
 
 	return (
@@ -84,7 +78,7 @@ export const Home = () => {
 							w-full h-full
 							flex-5
 		 				">
-		 					<button className="btn-card" onClick={() => setCurrentScene("LOBBY")} ref={focusRef}>4 PLAYERS</button>
+		 					<button className="btn-card" onClick={() => setCurrentScene("LOBBY")}>4 PLAYERS</button>
 		 					<button className="btn-card" onClick={() => setCurrentScene("LOBBY")}>3 PLAYERS</button>
 		 					<button className="btn-card" onClick={() => setCurrentScene("LOBBY")}>2 PLAYERS</button>
 		 				</div>

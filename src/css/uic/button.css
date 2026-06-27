@@ -3,11 +3,10 @@ button {
 		transition-all duration-100 ease-in-out
 		cursor-pointer
 		pointer-events-auto
-		block
+
+		disabled:opacity-50
+		disabled:cursor-default
 		;
-	&:disabled {
-		@apply opacity-50 cursor-default;
-	}
 }
 
 @utility btn-icon {
@@ -16,16 +15,17 @@ button {
 		aspect-square
 		rounded-3xl
 		relative
+		text-b5
+
+		hover:not-disabled:scale-105
+
+		focus:outline-2
+		focus:outline-solid
+		focus:outline-b5
+		focus:outline-offset-5
+
+		active:hover:not-disabled:scale-100
 		;
-	&:focus {
-		@apply
-			scale-105
-			outline-2
-			outline-solid
-			outline-b5
-			outline-offset-5
-			;
-	}
 	&::after {
 		content: attr(data-tip);
 		@apply
@@ -61,45 +61,40 @@ button {
 		w-full min-w-12.5 max-w-62.5
 		aspect-5/1
 		bg-n6
-		border border-n5
-		rounded-3xl
+		border border-n5 rounded-3xl
 		text-[clamp(0.5rem,4vw,1rem)]
 		text-n0
+
+		hover:not-disabled:bg-b5
+		hover:not-disabled:scale-105
+
+		focus:outline-2
+		focus:outline-solid
+		focus:outline-b5
+		focus:outline-offset-5
+
+		active:hover:not-disabled:scale-100
 		;
-	&:focus
-	&:hover:not(:disabled) {
-		@apply scale-105;
-	}
-	&:focus {
-		@apply
-			border-b4
-			outline-2
-			outline-solid
-			outline-b5
-			outline-offset-5
-			;
-	}
 }
 @utility btn-clear {
 	@apply
 		w-full min-w-12.5 max-w-62.5
 		aspect-5/1
+		bg-none
+		border-none border-a4 rounded-3xl
 		text-[clamp(0.5rem,4vw,1rem)]
 		text-n6
-		border-a4 rounded-3xl
+
+		hover:not-disabled:text-b5
+		hover:not-disabled:scale-105
+
+		focus:outline-2
+		focus:outline-solid
+		focus:outline-b5
+		focus:outline-offset-5
+
+		active:hover:not-disabled:scale-100
 		;
-	&:focus,
-	&:hover:not(:disabled) {
-		@apply scale-105;
-	}
-	&:focus {
-		@apply
-			outline-2
-			outline-solid
-			outline-b5
-			outline-offset-5
-			;
-	}
 }
 @utility btn-avatar {
 	@apply
@@ -118,7 +113,8 @@ button {
 
 @utility btn-lightbox {
 	@apply
-		-z-1 absolute w-full h-full
+		-z-1 absolute
+		w-full h-full
 		backdrop-blur-sm bg-n0/50 hover:bg-n0/25
 		;
 }
@@ -132,22 +128,18 @@ button {
 		snap-center
 		text-[clamp(0px,3vh,24px)]
 		p-[clamp(0px,2vh,50px)]
+
+		hover:not-disabled:from-b4
+		hover:not-disabled:to-b5
+		hover:not-disabled:scale-105
+
+		focus:outline-2
+		focus:outline-solid
+		focus:outline-b5
+		focus:outline-offset-5
+
+		active:hover:not-disabled:scale-100
 		;
-	&:focus,
-	&:hover:not(:disabled) {
-		@apply
-			from-b4 to-b5
-			scale-105
-			;
-	}
-	&:focus {
-		@apply
-			outline-2
-			outline-solid
-			outline-b5
-			outline-offset-5
-			;
-	}
 }
 
 @utility btn-party {
@@ -156,18 +148,18 @@ button {
 		aspect-8/10
 		bg-n1
 		border border-n2 rounded-[clamp(0px,2vh,8px)]
-		p-2.5
+		p-3
+		text-b5
+
+		hover:not-disabled:from-b4
+		hover:not-disabled:to-b5
+		hover:not-disabled:scale-105
+
+		focus:outline-2
+		focus:outline-solid
+		focus:outline-b5
+		focus:outline-offset-5
+
+		active:hover:not-disabled:scale-100
 		;
-	&:focus,
-	&:hover:not(:disabled) {
-		@apply scale-105;
-	}
-	&:focus {
-		@apply
-			outline-2
-			outline-solid
-			outline-b5
-			outline-offset-5
-			;
-	}
 }

@@ -55,8 +55,7 @@ export const Login = () => {
 					<div className="
 						cont-row basis-12.5 shrink
 						justify-end
-						"
-					>
+					">
 						<InfoButton call={() => toggleLightbox("info", true)}/>
 					</div>
 					<div className="cont-row min-h-10 flex-3"/>
@@ -64,16 +63,14 @@ export const Login = () => {
 						basis-17.5 shrink
 						flex flex-wrap
 						justify-center items-center gap-5
-						"
-					>
+					">
 						<SignInButton call={() => toggleLightbox("signIn", true)}/>
 						<button onClick={() => setCurrentScene("HOME")} className="btn-text">PLAY AS GUEST</button>
 					</div>
 					<div className="
 						cont-row basis-17.5 shrink
 						flex justify-center items-center
-						"
-					>
+					">
 						<CreateAccountButton call={() => toggleLightbox("createAccount", true)}/>
 					</div>
 					<div className="cont-row min-h-5 flex-1" />

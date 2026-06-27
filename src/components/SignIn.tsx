@@ -8,17 +8,8 @@ interface SignInProps {
 }
 
 export const SignInButton = ({ call }: SignInProps) => {
-	const focusRef = useRef<HTMLButtonElement | null>(null);
-
-	useEffect(() => {
-		if (focusRef.current) {
-			focusRef.current.focus();
-		}
-	}, []);
-
 	return (
 		<button
-			ref={focusRef}
 			onClick={call}
 			className="btn-text"
 		>
