@@ -2,6 +2,7 @@ button {
 	@apply
 		transition-all duration-100 ease-in-out
 		cursor-pointer
+		pointer-events-auto
 		block
 		;
 	&:disabled {
@@ -11,7 +12,7 @@ button {
 
 @utility btn-icon {
 	@apply
-		h-full min-h-10 max-h-12.5
+		h-full max-h-12.5
 		aspect-square
 		rounded-3xl
 		relative
@@ -65,6 +66,7 @@ button {
 		text-[clamp(0.5rem,4vw,1rem)]
 		text-n0
 		;
+	&:focus
 	&:hover:not(:disabled) {
 		@apply scale-105;
 	}
@@ -75,7 +77,6 @@ button {
 			outline-solid
 			outline-b5
 			outline-offset-5
-			scale-105
 			;
 	}
 }
@@ -87,6 +88,7 @@ button {
 		text-n6
 		border-a4 rounded-3xl
 		;
+	&:focus,
 	&:hover:not(:disabled) {
 		@apply scale-105;
 	}
@@ -96,7 +98,6 @@ button {
 			outline-solid
 			outline-b5
 			outline-offset-5
-			scale-105
 			;
 	}
 }
@@ -124,12 +125,40 @@ button {
 
 @utility btn-card {
 	@apply
-		bg-linear-to-b from-b4 to-b5
-		border border-b6 rounded-3xl
-		h-full min-h-50 max-h-150
+		bg-linear-to-b from-b3 to-b5
+		border border-b6 rounded-[clamp(0px,2vh,24px)]
+		h-full max-h-150
 		aspect-2/3
 		snap-center
+		text-[clamp(0px,3vh,24px)]
+		p-[clamp(0px,2vh,50px)]
 		;
+	&:focus,
+	&:hover:not(:disabled) {
+		@apply
+			from-b4 to-b5
+			scale-105
+			;
+	}
+	&:focus {
+		@apply
+			outline-2
+			outline-solid
+			outline-b5
+			outline-offset-5
+			;
+	}
+}
+
+@utility btn-party {
+	@apply
+		h-full min-h-0 max-h-25
+		aspect-8/10
+		bg-n1
+		border border-n2 rounded-[clamp(0px,2vh,8px)]
+		p-2.5
+		;
+	&:focus,
 	&:hover:not(:disabled) {
 		@apply scale-105;
 	}
@@ -139,7 +168,6 @@ button {
 			outline-solid
 			outline-b5
 			outline-offset-5
-			scale-105
 			;
 	}
 }

@@ -1,8 +1,10 @@
 import { useEffect, useRef } from "react";
 import type { Mesh } from "three";
 import { Canvas, useFrame } from "@react-three/fiber";
-import { Stats, PerspectiveCamera, OrbitControls } from "@react-three/drei";
+import { Stats, PerspectiveCamera, OrbitControls, AdaptiveDpr } from "@react-three/drei";
+import { useSceneStore } from "../store/useSceneStore";
 import { useDevStore } from "../store/useDevStore";
+import { AddIcon } from "../icons/AddIcon";
 
 function RotatingSphere() {
 	const sphereRef = useRef<Mesh | null>(null);
@@ -30,12 +32,36 @@ function UIButton() {
 			border border-n2 rounded-3xl
 			hover:scale-150
 			pointer-events-auto
-		"/>
+		">
+			<AddIcon />
+		</button>
+	);
+}
+export const StripeBg = () => {
+	return (
+		<section className="cont-bg">
+			<svg
+				width="100vw"
+				height="100vh"
+				viewBox="0 0 100 100"
+				preserveAspectRatio="xMidYMid slice"
+			>
+				<polygon
+					points="50,0 100,0 50,100, 0,100"
+					fill="var(--color-a1)"
+					stroke="var(--color-a2)"
+					strokeWidth="0.1"
+				/>
+			</svg>
+		</section>
 	);
 }
 
 export const R3F = () => {
 	const showStats = useDevStore((state) => state.showStats);
+	const containerRef = useRef(null);
+	const setContAreaWidth = useSceneStore((state) => state.setContAreaWidth);
+	const setContAreaHeight = useSceneStore((state) => state.setContAreaHeight);
 
 	useEffect(() => {
 		window.scrollTo({
@@ -44,26 +70,27 @@ export const R3F = () => {
 		})}
 	, []);
 
+	useEffect(() => {
+		if (!containerRef.current)
+			return;
+
+		const observer = new ResizeObserver((entries) => {
+			for (let entry of entries) {
+				setContAreaWidth(entry.target.scrollWidth);
+				setContAreaHeight(entry.target.scrollHeight);
+			}
+		});
+		observer.observe(containerRef.current);
+		return () => observer.disconnect();
+	}, []);
+
 	return (
 		<>
-			<section className="cont-bg">
-				<svg
-					width="100vw"
-					height="100vh"
-					viewBox="0 0 100 100"
-					preserveAspectRatio="xMidYMid slice"
-				>
-					<polygon
-						points="50,0 100,0 50,100, 0,100"
-						fill="var(--color-a1)"
-						stroke="var(--color-a2)"
-						strokeWidth="0.1"
-					/>
-				</svg>
-			</section>
-			<main className="cont-main">
+			<StripeBg />
+			<section ref={containerRef} className="cont-main">
 				<Canvas className="cont-main-canvas">
 					{showStats && <Stats />}
+					<AdaptiveDpr />
 					<ambientLight intensity={0.5}/>
 					<RotatingSphere />
 					<PerspectiveCamera makeDefault position={[0, 0, 2.25]} />
@@ -79,17 +106,17 @@ export const R3F = () => {
 						<UIButton />
 					</div>
 				</div>
-			</main>
+			</section>
 			<section className="cont-overlay">
 				<header className="cont-overlay-header flex justify-end">
 					<UIButton />
 				</header>
-				<div className="cont-overlay-body flex flex-col place-content-center place-items-center">
+				<main className="cont-overlay-body flex flex-col place-content-center place-items-center">
 					<UIButton />
 					<UIButton />
 					<UIButton />
 					<UIButton />
-				</div>
+				</main>
 				<footer className="cont-overlay-footer flex place-items-center">
 					<UIButton />
 				</footer>

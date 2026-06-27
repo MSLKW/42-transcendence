@@ -1,53 +1,65 @@
 @utility cont-bg {
 	@apply
-		z-[-1] absolute
+		z-[-1]
+		absolute top-0 left-0
 		w-screen h-screen
+		/* min-h-80 */
 		pointer-events-none
 		overflow-clip
 		;
 }
 @utility cont-main {
 	@apply
-		z-0 absolute
-		w-screen h-screen
-		;
-}
-@utility cont-main-canvas {
-	@apply
 		z-0
-		w-full h-full
-		;
-}
-@utility cont-main-body {
-	@apply
-		z-1 absolute top-0 left-0
-		w-full h-full
-		pointer-events-none
+		w-screen h-screen
+		/* min-h-80 */
+		pointer-events-auto
 		;
 }
 @utility cont-overlay {
 	@apply
+		z-1
+		absolute top-0 left-0
 		w-screen h-screen
+		/* min-h-80 */
 		pointer-events-none
 		p-[clamp(0px,10vh,40px)]
 		flex flex-col
 		;
 }
-@utility cont-overlay-header {
+
+@utility cont-main-canvas {
+	@apply
+		z-0
+		w-full h-full
+		pointer-events-auto
+		;
+}
+@utility cont-main-body {
 	@apply
 		z-1
+		absolute top-0 left-0
+		w-full h-full
+		/* min-h-80 */
+		pointer-events-none
+		;
+}
+
+@utility cont-overlay-header {
+	@apply
+		z-2
 		flex-1 max-h-12.5 h-full
 		;
 }
 @utility cont-overlay-body {
 	@apply
 		z-1
-		flex-2 h-full
+		flex-4 h-[calc(100%-230px)]
 		;
 }
 @utility cont-overlay-footer {
 	@apply
-		z-1
+		z-2
 		flex-1 max-h-25 h-full
 		;
 }

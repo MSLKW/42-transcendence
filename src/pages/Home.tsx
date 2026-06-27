@@ -55,51 +55,48 @@ export const Home = () => {
 	}, []);
 
 	return (
-		<main>
-			{showStats && <div className="cont-three"><Canvas><Stats /></Canvas></div>}
-			<section ref={containerRef} className="cont-area p-0">
-				<div className="z-0 flex flex-col w-full h-full justify-between">
-					<div className="
-						cont-row basis-12.5 shrink
-						p-10
-						justify-between
-						"
-					>
-						<div className="flex gap-0 bg-n1 border border-n2 rounded-3xl">
-							<BackButton scene={() => setCurrentScene("LOGIN")} />
-							<SettingsButton call={() => toggleLightbox("settings", true)} />
-						</div>
-						<InfoButton call={() => toggleLightbox("info", true)} />
-					</div>
-					<div tabIndex={-1} className="
-						flex w-full min-h-10 h-full flex-3
-						overflow-x-auto
-						snap-x snap-mandatory
-						"
-					>
-						<div className="
-							flex place-items-center gap-10
-							px-10 py-5 mx-auto
-							"
-						>
-							<button ref={focusRef} className="btn-card" onClick={() => setCurrentScene("LOBBY")}>4 PLAYERS</button>
-							<button className="btn-card" onClick={() => setCurrentScene("LOBBY")}>3 PLAYERS</button>
-							<button className="btn-card" onClick={() => setCurrentScene("LOBBY")}>2 PLAYERS</button>
-						</div>
-					</div>
-					<div className="
-						cont-row basis-20 shrink
-						gap-10
-						p-10
-						"
-					>
-						<AvatarPlayer />
-						<JoinParty />
-					</div>
-				</div>
-				{ showLightbox["info"] && <InfoLightbox dismiss={() => toggleLightbox("info", false)} /> }
-				{ showLightbox["settings"] && <SettingsLightbox dismiss={() => toggleLightbox("settings", false)} /> }
+		<>
+			<section className="cont-bg">
 			</section>
-		</main>
+			<section ref={containerRef} className="cont-main">
+				<Canvas className="cont-main-canvas">
+					{showStats && <Stats />}
+				</Canvas>
+			</section>
+			<section className="cont-overlay">
+				<header className="cont-overlay-header flex justify-between flex-1">
+					<div className="flex bg-n1 border border-n2 rounded-3xl">
+	 					<BackButton scene={() => setCurrentScene("LOGIN")} />
+	 					<SettingsButton call={() => toggleLightbox("settings", true)} />
+	 				</div>
+	 				<InfoButton call={() => toggleLightbox("info", true)} />
+				</header>
+				<main className="cont-overlay-body">
+					<div tabIndex={-1} className="
+						absolute top-0 left-0
+						pt-[clamp(0px,25vh,250px)] pb-[clamp(0px,32vh,300px)]
+		 				flex w-full h-full
+		 				overflow-x-auto
+		 				snap-x snap-mandatory
+		 			">
+		 				<div className="
+		 					flex place-content-center-safe place-items-center gap-10
+							w-full h-full
+							flex-5
+		 				">
+		 					<button className="btn-card" onClick={() => setCurrentScene("LOBBY")} ref={focusRef}>4 PLAYERS</button>
+		 					<button className="btn-card" onClick={() => setCurrentScene("LOBBY")}>3 PLAYERS</button>
+		 					<button className="btn-card" onClick={() => setCurrentScene("LOBBY")}>2 PLAYERS</button>
+		 				</div>
+		 			</div>
+				</main>
+				<footer className="cont-overlay-footer flex gap-10 flex-1">
+	 				<AvatarPlayer />
+	 				<JoinParty />
+				</footer>
+			</section>
+	 		{ showLightbox["info"] && <InfoLightbox dismiss={() => toggleLightbox("info", false)} /> }
+	 		{ showLightbox["settings"] && <SettingsLightbox dismiss={() => toggleLightbox("settings", false)} /> }
+		</>
 	);
 }
