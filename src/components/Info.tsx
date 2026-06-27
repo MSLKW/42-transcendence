@@ -16,7 +16,7 @@ export const InfoButton = ({ call }: InfoProps) => {
 				btn-icon
 				bg-n1
 				border border-n2
-				btn-tip-down 
+				btn-tip-down
 		">
 			<InfoIcon />
 		</button>

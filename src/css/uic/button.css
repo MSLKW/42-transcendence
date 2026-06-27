@@ -144,15 +144,14 @@ button {
 
 @utility btn-party {
 	@apply
-		h-full min-h-0 max-h-25
+		h-full max-h-25
 		aspect-8/10
 		bg-n1
 		border border-n2 rounded-[clamp(0px,2vh,8px)]
 		p-3
 		text-b5
+		relative
 
-		hover:not-disabled:from-b4
-		hover:not-disabled:to-b5
 		hover:not-disabled:scale-105
 
 		focus:outline-2
@@ -162,4 +161,23 @@ button {
 
 		active:hover:not-disabled:scale-100
 		;
+	&::after {
+		content: attr(data-tip);
+		@apply
+			w-max
+			absolute -translate-x-1/2
+			bg-n1
+			border border-n2
+			rounded-lg
+			text-n6
+			px-5
+			pointer-events-none
+			scale-0 opacity-0
+			transition-all ease-out duration-50
+			;
+	}
+	&:focus::after,
+	&:hover::after {
+		@apply scale-100 opacity-100;
+	}
 }
