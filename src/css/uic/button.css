@@ -11,8 +11,8 @@ button {
 
 @utility btn-icon {
 	@apply
-		h-full max-h-12.5
-		aspect-square
+		w-12.5
+		h-12.5
 		rounded-3xl
 		relative
 		text-b5
@@ -45,6 +45,13 @@ button {
 	&:hover::after {
 		@apply scale-100 opacity-100;
 	}
+}
+@utility btn-icon-border {
+	@apply
+		bg-n1
+		border border-n2
+		rounded-3xl
+		;
 }
 @utility btn-tip-up {
 	&::after {

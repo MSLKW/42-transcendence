@@ -30,15 +30,15 @@ export const Lobby = () => {
 	}, []);
 
 	return (
-		<main>
-			{showStats && <div className="cont-three"><Canvas><Stats /></Canvas></div>}
-			<section ref={containerRef} className="cont-area relative">
-				<div className="
-					absolute w-[calc(100%-80px)]
-					flex justify-between
-					"
-				>
-					<div className="flex gap-0 bg-n1 border border-n2 rounded-3xl">
+		<>
+			<section ref={containerRef} className="cont-main">
+				<Canvas className="cont-main-canvas">
+					{showStats && <Stats />}
+				</Canvas>
+			</section>
+			<section className="cont-overlay">
+				<header className="cont-overlay-header flex justify-between">
+					<div className="flex gap-0 btn-icon-border">
 						<BackButton scene={() => setCurrentScene("HOME")} />
 						<SettingsButton call={() => toggleLightbox("settings", true)} />
 						<button className="bg-n1 border border-n2 w-12.5 aspect-square rounded-3xl" />
@@ -48,10 +48,13 @@ export const Lobby = () => {
 						<button className="bg-n1 border border-n2 w-12.5 aspect-square rounded-3xl" />
 						<button className="bg-n1 border border-n2 w-12.5 aspect-square rounded-3xl" />
 					</div>
-				</div>
-				<div className="cont-row flex-1 h-full flex flex-col justify-center place-items-center">
+				</header>
+				<main className="
+					cont-overlay-body
+					flex flex-col justify-center place-items-center gap-20
+				">
 					<AvatarPlayer />
-					<div className="flex place-items-center gap-10">
+					<div className="flex place-items-center gap-20">
 						<AvatarPlayer />
 						<button
 							className="
@@ -66,12 +69,12 @@ export const Lobby = () => {
 						<AvatarPlayer />
 					</div>
 					<AvatarPlayer />
-				</div>
-				<div className="absolute bottom-10">
+				</main>
+				<footer className="cont-overlay-bottom">
 					<AvatarPlayer />
-				</div>
+				</footer>
 			</section>
 			{ showLightbox["settings"] && <SettingsLightbox dismiss={() => toggleLightbox("settings", false)} /> }
-		</main>
+		</>
 	);
 }
