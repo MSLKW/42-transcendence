@@ -1,8 +1,11 @@
 import { useState } from "react";
 import { ChatButton } from "./ChatButton"
 
-export const AvatarPlayer = () => {
-	const [showChat, setShowChat] = useState(true);
+interface AvatarProps {
+	showChatButton?: boolean,
+}
+
+export const AvatarPlayer = ({ showChatButton }: AvatarProps) => {
 	return (
 		<div className="
 			w-20 h-25
@@ -26,7 +29,7 @@ export const AvatarPlayer = () => {
 			">
 				<p>Player</p>
 			</div>
-			{showChat &&
+			{showChatButton &&
 				<div className="
 					absolute top-0 right-0 translate-x-1/2 -translate-y-1/2
 					z-1

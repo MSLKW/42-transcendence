@@ -71,7 +71,7 @@ export const Lobby = () => {
 					<AvatarPlayer />
 				</main>
 				<footer className="cont-overlay-bottom">
-					<AvatarPlayer />
+					<AvatarPlayer showChatButton={true} />
 				</footer>
 			</section>
 			{ showLightbox["settings"] && <SettingsLightbox dismiss={() => toggleLightbox("settings", false)} /> }
