@@ -51,6 +51,11 @@ button {
 		@apply bottom-[calc(100%+15px)] origin-bottom;
 	}
 }
+@utility btn-tip-up-2 {
+	&::after {
+		@apply bottom-[calc(100%+40px)] origin-bottom;
+	}
+}
 @utility btn-tip-down {
 	&::after {
 		@apply top-[calc(100%+15px)] origin-top;
