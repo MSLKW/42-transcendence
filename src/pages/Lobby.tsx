@@ -6,6 +6,7 @@ import { useDevStore } from "../store/useDevStore";
 import { BackButton } from "../components/BackButton";
 import { SettingsButton, SettingsLightbox } from "../components/Settings";
 import { RankButton, RankLightbox } from "../components/RankButton";
+import { YeahButton, HmmmButton, WoahButton } from "../components/EmojiButtons";
 import { AvatarPlayer } from "../components/Avatar";
 
 export const Lobby = () => {
@@ -48,17 +49,17 @@ export const Lobby = () => {
 						<RankButton call={(e) => toggleLightbox("rank", true, e)} />
 					</div>
 					<div className="flex gap-0 bg-n1 border border-n2 rounded-3xl">
-						<button className="bg-n1 border border-n2 w-12.5 aspect-square rounded-3xl" />
-						<button className="bg-n1 border border-n2 w-12.5 aspect-square rounded-3xl" />
-						<button className="bg-n1 border border-n2 w-12.5 aspect-square rounded-3xl" />
+						<YeahButton />
+						<HmmmButton />
+						<WoahButton />
 					</div>
 				</header>
 				<main className="
 					cont-overlay-body
-					flex flex-col justify-center place-items-center gap-20
+					flex flex-col justify-center place-items-center gap-[clamp(0.25rem,5vh+0.5rem,5rem)]
 				">
 					<AvatarPlayer />
-					<div className="flex place-items-center gap-20">
+					<div className="flex place-items-center gap-[clamp(0.25rem,5vw+0.5rem,5rem)]">
 						<AvatarPlayer />
 						<button
 							className="btn-text"
