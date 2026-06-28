@@ -43,12 +43,12 @@ export const Lobby = () => {
 			</section>
 			<section className="cont-overlay">
 				<header className="cont-overlay-header flex justify-between">
-					<div className="flex gap-0 btn-icon-border">
+					<div className="flex btn-icon-border">
 						<BackButton scene={() => setCurrentScene("HOME")} />
 						<SettingsButton call={(e) => toggleLightbox("settings", true, e)} />
 						<RankButton call={(e) => toggleLightbox("rank", true, e)} />
 					</div>
-					<div className="flex gap-0 bg-n1 border border-n2 rounded-3xl">
+					<div className="flex btn-icon-border">
 						<YeahButton />
 						<HmmmButton />
 						<WoahButton />
@@ -56,10 +56,10 @@ export const Lobby = () => {
 				</header>
 				<main className="
 					cont-overlay-body
-					flex flex-col justify-center place-items-center gap-[clamp(0.25rem,5vh+0.5rem,5rem)]
+					flex flex-col justify-center place-items-center gap-[clamp(0.25rem,10vh+0.25rem,10rem)]
 				">
 					<AvatarPlayer />
-					<div className="flex place-items-center gap-[clamp(0.25rem,5vw+0.5rem,5rem)]">
+					<div className="flex place-items-center gap-[clamp(0.25rem,10vw+0.25rem,10rem)]">
 						<AvatarPlayer />
 						<button
 							className="btn-text"

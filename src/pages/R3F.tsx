@@ -1,38 +1,25 @@
 import { useState, useEffect, useRef } from "react";
-import type { Mesh } from "three";
-import { Canvas, useFrame } from "@react-three/fiber";
+import { Canvas } from "@react-three/fiber";
 import { Stats, PerspectiveCamera, OrbitControls, AdaptiveDpr } from "@react-three/drei";
+import { useGameStore } from "../store/useGameStore";
 import { useSceneStore } from "../store/useSceneStore";
 import { useDevStore } from "../store/useDevStore";
-import { StripeBg } from "../components/StripeBg";
+import { SphereBg } from "../components/SphereBg";
+import { BackButton } from "../components/BackButton";
+import { SettingsButton, SettingsLightbox } from "../components/Settings";
+import { RankButton, RankLightbox } from "../components/RankButton";
 import { AvatarPlayer } from "../components/Avatar";
-import { InfoButton, InfoLightbox } from "../components/Info";
-
-function RotatingSphere() {
-	const sphereRef = useRef<Mesh | null>(null);
-
-	useFrame((_state, delta) => {
-		if (!sphereRef.current)
-			return;
-		sphereRef.current.rotation.y += 0.2 * delta;
-		sphereRef.current.rotation.x += 0.1 * delta;
-	});
-
-	return (
-		<mesh ref={sphereRef}>
-			<sphereGeometry args={[1,16,16]} />
-			<meshStandardMaterial color="gold" wireframe />
-		</mesh>
-	);
-}
+import { YeahButton, HmmmButton, WoahButton } from "../components/EmojiButtons";
 
 export const R3F = () => {
+	const setCurrentScene = useGameStore((state) => state.setCurrentScene);
 	const showStats = useDevStore((state) => state.showStats);
 	const containerRef = useRef(null);
 	const setContAreaWidth = useSceneStore((state) => state.setContAreaWidth);
 	const setContAreaHeight = useSceneStore((state) => state.setContAreaHeight);
 	const [showLightbox, setShowLightbox] = useState({
-		info: false,
+		settings: false,
+		rank: false,
 	});
 	const toggleLightbox = (key: keyof typeof showLightbox, value: boolean, e?: React.MouseEvent<HTMLButtonElement>) => {
 		if (e)
@@ -67,32 +54,45 @@ export const R3F = () => {
 	return (
 		<>
 		<div className="cont">
-			<StripeBg />
+			{/* <StripeBg /> */}
 			<section ref={containerRef} className="cont-main">
 				<Canvas className="cont-main-canvas">
 					{showStats && <Stats />}
 					<AdaptiveDpr />
 					<ambientLight intensity={0.5}/>
-					<RotatingSphere />
+					<SphereBg />
 					<PerspectiveCamera makeDefault position={[0, 0, 2.25]} />
 					<OrbitControls enableZoom={false}/>
 				</Canvas>
 				<div className="cont-main-body" />
 			</section>
 			<section className="cont-overlay">
-				<header className="cont-overlay-header flex justify-end">
-					<InfoButton call={(e) => toggleLightbox("info", true, e)}/>
+				<header className="
+					cont-overlay-header
+					flex place-content-between
+				">
+					<div className="flex btn-icon-border">
+						<BackButton scene={() => setCurrentScene("LOBBY")} />
+						<SettingsButton call={(e) => toggleLightbox("settings", true, e)} />
+						<RankButton call={(e) => toggleLightbox("rank", true, e)} />
+					</div>
+					<div className="flex btn-icon-border">
+						<YeahButton />
+						<HmmmButton />
+						<WoahButton />
+					</div>
 				</header>
 				<main className="cont-overlay-body flex">
 					<div className="w-full h-full">
 					</div>
 				</main>
 				<footer className="cont-overlay-footer flex place-items-center">
-					<AvatarPlayer />
+					<AvatarPlayer showChatButton={true}/>
 				</footer>
 			</section>
+			{ showLightbox["settings"] && <SettingsLightbox dismiss={() => toggleLightbox("settings", false)} /> }
+			{ showLightbox["rank"] && <RankLightbox dismiss={() => toggleLightbox("rank", false)} /> }
 		</div>
-		{ showLightbox["info"] && <InfoLightbox dismiss={() => toggleLightbox("info", false)} /> }
 		</>
 	);
 }

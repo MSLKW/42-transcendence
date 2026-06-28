@@ -70,8 +70,8 @@ button {
 }
 @utility btn-text {
 	@apply
-		h-12.5
-		aspect-5/1
+		w-[clamp(5rem,15vw+0.5rem,15.625rem)]
+		h-[clamp(1.875rem,5vh+0.5rem,3.125rem)]
 		bg-n6
 		border border-n5 rounded-3xl
 		text-base
