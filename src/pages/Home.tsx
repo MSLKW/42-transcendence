@@ -5,6 +5,7 @@ import { useGameStore } from "../store/useGameStore";
 import { useSceneStore } from "../store/useSceneStore";
 import { useDevStore } from "../store/useDevStore";
 import { BackButton } from "../components/BackButton";
+import { StripeBg } from "../components/StripeBg";
 import { InfoButton, InfoLightbox } from "../components/Info";
 import { SettingsButton, SettingsLightbox } from "../components/Settings";
 import { AvatarPlayer } from "../components/Avatar";
@@ -51,7 +52,7 @@ export const Home = () => {
 
 	return (
 		<>
-			{/* <StripeBg /> */}
+			<StripeBg />
 			<section ref={containerRef} className="cont-main">
 				<Canvas className="cont-main-canvas">
 					{showStats && <Stats />}

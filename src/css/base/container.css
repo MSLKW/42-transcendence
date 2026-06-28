@@ -1,15 +1,26 @@
+@utility cont {
+	@apply
+		w-full
+		h-full
+		flex place-content-center place-items-center
+		relative
+}
+
 @utility cont-bg {
 	@apply
-		z-[-1] absolute top-0 left-0
-		w-full min-w-80 max-w-360
-		h-full min-h-120 max-h-360
+		absolute top-1/2 left-1/2 -translate-y-1/2 -translate-x-1/2
+		z-[-1]
+		/* w-full min-w-80 max-w-360 */
+		/* h-full min-h-120 max-h-360 */
+		w-screen h-screen
 		pointer-events-none
 		overflow-hidden
 		;
 }
 @utility cont-main {
 	@apply
-		z-0 block
+		block
+		z-0
 		w-full min-w-80 max-w-360
 		h-full min-h-120 max-h-360
 		relative
@@ -17,7 +28,8 @@
 }
 @utility cont-overlay {
 	@apply
-		z-1 absolute top-0 left-0
+		absolute top-1/2 left-1/2 -translate-y-1/2 -translate-x-1/2
+		z-1
 		w-full min-w-80 max-w-360
 		h-full min-h-120 max-h-360
 		pointer-events-none
@@ -43,6 +55,7 @@
 
 @utility cont-overlay-header {
 	@apply
+		w-full
 		min-h-7.5 max-h-12.5 h-full
 		flex-1
 		;
@@ -56,6 +69,7 @@
 }
 @utility cont-overlay-footer {
 	@apply
+		w-full
 		min-h-18.75 max-h-25 h-full
 		flex-1
 		;

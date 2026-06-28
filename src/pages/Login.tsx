@@ -4,6 +4,7 @@ import { Stats } from "@react-three/drei";
 import { useGameStore } from "../store/useGameStore";
 import { useSceneStore } from "../store/useSceneStore";
 import { useDevStore } from "../store/useDevStore";
+import { StripeBg } from "../components/StripeBg";
 import { InfoButton, InfoLightbox } from "../components/Info";
 import { CreateAccountButton, CreateAccountLightbox } from "../components/CreateAccount";
 import { SignInButton, SignInLightbox } from "../components/SignIn";
@@ -49,7 +50,7 @@ export const Login = () => {
 	
 	return (
 		<>
-			{/* <StripeBg /> */}
+			<StripeBg />
 			<section ref={containerRef} className="cont-main">
 				<Canvas className="cont-main-canvas">
 					{showStats && <Stats />}

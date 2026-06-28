@@ -4,8 +4,9 @@ import { Canvas, useFrame } from "@react-three/fiber";
 import { Stats, PerspectiveCamera, OrbitControls, AdaptiveDpr } from "@react-three/drei";
 import { useSceneStore } from "../store/useSceneStore";
 import { useDevStore } from "../store/useDevStore";
-import { AddIcon } from "../icons/AddIcon";
-import { JoinParty } from "../components/Party";
+import { StripeBg } from "../components/StripeBg";
+import { AvatarPlayer } from "../components/Avatar";
+import { InfoButton } from "../components/Info";
 
 function RotatingSphere() {
 	const sphereRef = useRef<Mesh | null>(null);
@@ -22,39 +23,6 @@ function RotatingSphere() {
 			<sphereGeometry args={[1,16,16]} />
 			<meshStandardMaterial color="gold" wireframe />
 		</mesh>
-	);
-}
-function UIButton() {
-	return (
-		<button className="
-			aspect-square
-			h-full min-h-7.5 max-h-12.5
-			bg-n1
-			border border-n2 rounded-3xl
-			hover:scale-150
-			pointer-events-auto
-		">
-			<AddIcon />
-		</button>
-	);
-}
-export const StripeBg = () => {
-	return (
-		<section className="cont-bg">
-			<svg
-				width="100vw"
-				height="100vh"
-				viewBox="0 0 100 100"
-				preserveAspectRatio="xMidYMid slice"
-			>
-				<polygon
-					points="50,0 100,0 50,100, 0,100"
-					fill="var(--color-a1)"
-					stroke="var(--color-a2)"
-					strokeWidth="0.1"
-				/>
-			</svg>
-		</section>
 	);
 }
 
@@ -86,7 +54,7 @@ export const R3F = () => {
 	}, []);
 
 	return (
-		<>
+		<div className="cont">
 			<StripeBg />
 			<section ref={containerRef} className="cont-main">
 				<Canvas className="cont-main-canvas">
@@ -97,31 +65,20 @@ export const R3F = () => {
 					<PerspectiveCamera makeDefault position={[0, 0, 2.25]} />
 					<OrbitControls enableZoom={false}/>
 				</Canvas>
-				<div className="cont-main-body flex place-content-evenly place-items-center">
-					<div className="w-full h-full flex flex-col place-content-between place-items-center">
-						<UIButton />
-						<UIButton />
-					</div>
-					<div className="w-full h-full flex flex-col place-content-between place-items-center">
-						<UIButton />
-						<UIButton />
-					</div>
-				</div>
+				<div className="cont-main-body" />
 			</section>
 			<section className="cont-overlay">
 				<header className="cont-overlay-header flex justify-end">
-					<UIButton />
+					<InfoButton />
 				</header>
-				<main className="cont-overlay-body flex flex-col place-content-center place-items-center">
-					<UIButton />
-					<UIButton />
-					<UIButton />
-					<UIButton />
+				<main className="cont-overlay-body flex">
+					<div className="w-full h-full">
+					</div>
 				</main>
 				<footer className="cont-overlay-footer flex place-items-center">
-					<JoinParty />
+					<AvatarPlayer />
 				</footer>
 			</section>
-		</>
+		</div>
 	);
 }
