@@ -28,7 +28,7 @@ export const RankLightbox = ({ dismiss }: RankProps) => {
             w-screen h-screen
             flex place-content-center place-items-center
         ">
-            {/* <button tabIndex={-1} className='btn-lightbox' onClick={dismiss}/> */}
+            <button tabIndex={-1} className='btn-lightbox-no-blur' onClick={dismiss}/>
             <div style={{ width: contAreaWidth, height: contAreaHeight }}
                 className="
                     z-0

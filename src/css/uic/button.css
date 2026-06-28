@@ -133,6 +133,12 @@ button {
 		backdrop-blur-lg
 		;
 }
+@utility btn-lightbox-no-blur {
+	@apply
+		-z-1 absolute
+		w-full h-full
+		;
+}
 
 @utility btn-card {
 	@apply
