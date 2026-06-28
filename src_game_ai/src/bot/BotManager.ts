@@ -11,7 +11,7 @@ export class BotManager {
 
 	addBot(serverUrl: string): string
 	{
-		let id = randomUUID();
+		const id = randomUUID();
 		this.bots.push(new Bot(id, serverUrl));
 		return id;
 	}
