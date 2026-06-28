@@ -58,6 +58,7 @@ export const CreateAccountLightbox = ({ dismiss }: CreateAccountProps) => {
 							id="email"
 							type="email"
 							placeholder="Enter your email"
+							className="input-form"
 						/>
 					</div>
 					<div className="grid grid-cols-[5rem_1fr] gap-5 w-full">
@@ -66,6 +67,7 @@ export const CreateAccountLightbox = ({ dismiss }: CreateAccountProps) => {
 							id="password"
 							type="password"
 							placeholder="At least 8 characters"
+							className="input-form"
 						/>
 					</div>
 					<div className="grid grid-cols-[5rem_1fr] gap-5 w-full">
@@ -74,6 +76,7 @@ export const CreateAccountLightbox = ({ dismiss }: CreateAccountProps) => {
 							id="confirm"
 							type="password"
 							placeholder="Confirm your password"
+							className="input-form"
 						/>
 					</div>
 					<button

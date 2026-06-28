@@ -9,6 +9,7 @@ import { StripeBg } from "../components/StripeBg";
 import { InfoButton, InfoLightbox } from "../components/Info";
 import { SettingsButton, SettingsLightbox } from "../components/Settings";
 import { AvatarPlayer } from "../components/Avatar";
+import { ChatLightbox } from "../components/Chat";
 import { JoinParty } from "../components/Party";
 
 export const Home = () => {
@@ -18,9 +19,9 @@ export const Home = () => {
 	const showStats = useDevStore((state) => state.showStats);
 	const containerRef = useRef(null);
 	const [showLightbox, setShowLightbox] = useState({
+		settings: false,
 		info: false,
 		chat: false,
-		settings: false,
 	});
 	const toggleLightbox = (key: keyof typeof showLightbox, value: boolean, e?: React.MouseEvent<HTMLButtonElement>) => {
 		if (e)
@@ -89,12 +90,13 @@ export const Home = () => {
 		 			</div>
 				</main>
 				<footer className="cont-overlay-footer flex gap-10">
-	 				<AvatarPlayer showChatButton={true}/>
+	 				<AvatarPlayer showChatButton={true} call={(e) => toggleLightbox("chat", true, e)}/>
 	 				<JoinParty />
 				</footer>
 			</section>
 	 		{ showLightbox["info"] && <InfoLightbox dismiss={() => toggleLightbox("info", false)} /> }
 	 		{ showLightbox["settings"] && <SettingsLightbox dismiss={() => toggleLightbox("settings", false)} /> }
+	 		{ showLightbox["chat"] && <ChatLightbox dismiss={() => toggleLightbox("chat", false)} /> }
 		</>
 	);
 }

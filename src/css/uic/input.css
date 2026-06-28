@@ -1,21 +1,33 @@
-input {
+@utility input-form {
 	@apply
-		bg-n6 w-full h-5 rounded-sm p-5
+		bg-n6
+		w-full h-5
+		rounded-sm
+		p-5
 		pointer-events-auto
+
+		placeholder:text-n4
+		placeholder:italic
+
+		focus:outline-none
+		focus:bg-b5
+		focus:text-n0
+
+		focus:placeholder:text-n3
 		;
 }
-input::placeholder {
-	@apply text-n4 italic;
-}
-input:focus {
-	@apply 
-		outline-none
-		bg-b5
-		text-black
-		;
-}
-input:focus::placeholder {
+
+@utility input-chat {
 	@apply
-		text-transparent
+		z-0
+		w-full h-12.5
+		bg-n6
+		border border-n5 rounded-3xl
+		pl-5 pr-25
+		text-n0
+		pointer-events-auto
+
+		focus:outline-none
+		focus:border-n5
 		;
 }

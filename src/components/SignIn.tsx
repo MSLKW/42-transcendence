@@ -17,6 +17,7 @@ export const SignInButton = ({ call }: SignInProps) => {
 		</button>
 	);
 }
+
 export const SignInLightbox = ({ dismiss }: SignInProps) => {
 	const contAreaWidth = useSceneStore((scene) => scene.contAreaWidth);
 	const contAreaHeight = useSceneStore((scene) => scene.contAreaHeight);
@@ -57,6 +58,7 @@ export const SignInLightbox = ({ dismiss }: SignInProps) => {
 							id="email"
 							type="email"
 							placeholder="Enter your email"
+							className="input-form"
 						/>
 					</div>
 					<div className="grid grid-cols-[5rem_1fr] gap-5 w-full">
@@ -65,6 +67,7 @@ export const SignInLightbox = ({ dismiss }: SignInProps) => {
 							id="password"
 							type="password"
 							placeholder="Enter your password"
+							className="input-form"
 						/>
 					</div>
 					<button

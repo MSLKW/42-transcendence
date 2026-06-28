@@ -1,11 +1,11 @@
-import { useState } from "react";
-import { ChatButton } from "./ChatButton"
+import { ChatButton } from "./Chat"
 
 interface AvatarProps {
+	call?: (e: React.MouseEvent<HTMLButtonElement>) => void;
 	showChatButton?: boolean,
 }
 
-export const AvatarPlayer = ({ showChatButton }: AvatarProps) => {
+export const AvatarPlayer = ({ showChatButton, call }: AvatarProps) => {
 	return (
 		<div className="btn-avatar">
 			<div className="
@@ -31,7 +31,7 @@ export const AvatarPlayer = ({ showChatButton }: AvatarProps) => {
 					absolute top-0 right-0 translate-x-1/2 -translate-y-1/2
 					z-1
 				">
-					<ChatButton />
+					<ChatButton call={call}/>
 				</div>
 			}
 		</div>
