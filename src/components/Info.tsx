@@ -3,7 +3,7 @@ import { InfoIcon } from "../icons/InfoIcon";
 import { CloseButton } from "./CloseButton";
 
 interface InfoProps {
-	call?: () => void;
+	call?: (e: React.MouseEvent<HTMLButtonElement>) => void;
 	dismiss?: () => void;
 }
 

@@ -34,7 +34,9 @@ export const R3F = () => {
 	const [showLightbox, setShowLightbox] = useState({
 		info: false,
 	});
-	const toggleLightbox = (key: keyof typeof showLightbox, value: boolean) => {
+	const toggleLightbox = (key: keyof typeof showLightbox, value: boolean, e?: React.MouseEvent<HTMLButtonElement>) => {
+		if (e)
+			e.currentTarget.blur();
 		setShowLightbox(() => ({
 			...showLightbox,
 			[key]: value,
@@ -79,7 +81,7 @@ export const R3F = () => {
 			</section>
 			<section className="cont-overlay">
 				<header className="cont-overlay-header flex justify-end">
-					<InfoButton call={() => toggleLightbox("info", true)}/>
+					<InfoButton call={(e) => toggleLightbox("info", true, e)}/>
 				</header>
 				<main className="cont-overlay-body flex">
 					<div className="w-full h-full">

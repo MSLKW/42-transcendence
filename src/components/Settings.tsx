@@ -3,7 +3,7 @@ import { SettingsIcon } from "../icons/SettingsIcon";
 import { CloseButton } from "./CloseButton";
 
 interface SettingsProps {
-	call?: () => void;
+	call?: (e: React.MouseEvent<HTMLButtonElement>) => void;
 	dismiss?: () => void;
 }
 

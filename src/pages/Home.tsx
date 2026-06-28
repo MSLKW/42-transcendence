@@ -22,7 +22,9 @@ export const Home = () => {
 		chat: false,
 		settings: false,
 	});
-	const toggleLightbox = (key: keyof typeof showLightbox, value: boolean) => {
+	const toggleLightbox = (key: keyof typeof showLightbox, value: boolean, e?: React.MouseEvent<HTMLButtonElement>) => {
+		if (e)
+			e.currentTarget.blur();
 		setShowLightbox(() => ({
 			...showLightbox,
 			[key]: value,
@@ -62,9 +64,9 @@ export const Home = () => {
 				<header className="cont-overlay-header flex justify-between">
 					<div className="flex bg-n1 border border-n2 rounded-3xl">
 	 					<BackButton scene={() => setCurrentScene("LOGIN")} />
-	 					<SettingsButton call={() => toggleLightbox("settings", true)} />
+	 					<SettingsButton call={(e) => toggleLightbox("settings", true, e)} />
 	 				</div>
-	 				<InfoButton call={() => toggleLightbox("info", true)} />
+	 				<InfoButton call={(e) => toggleLightbox("info", true, e)} />
 				</header>
 				<main className="cont-overlay-body">
 					<div tabIndex={-1} className="
@@ -87,7 +89,7 @@ export const Home = () => {
 		 			</div>
 				</main>
 				<footer className="cont-overlay-footer flex gap-10">
-	 				<AvatarPlayer />
+	 				<AvatarPlayer showChatButton={true}/>
 	 				<JoinParty />
 				</footer>
 			</section>

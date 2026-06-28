@@ -5,6 +5,7 @@ import { useGameStore } from "../store/useGameStore";
 import { useDevStore } from "../store/useDevStore";
 import { BackButton } from "../components/BackButton";
 import { SettingsButton, SettingsLightbox } from "../components/Settings";
+import { RankButton, RankLightbox } from "../components/RankButton";
 import { AvatarPlayer } from "../components/Avatar";
 
 export const Lobby = () => {
@@ -14,8 +15,11 @@ export const Lobby = () => {
 	const [showLightbox, setShowLightbox] = useState({
 		chat: false,
 		settings: false,
+		rank: false,
 	});
-	const toggleLightbox = (key: keyof typeof showLightbox, value: boolean) => {
+	const toggleLightbox = (key: keyof typeof showLightbox, value: boolean, e?: React.MouseEvent<HTMLButtonElement>) => {
+		if (e)
+			e.currentTarget.blur();
 		setShowLightbox(() => ({
 			...showLightbox,
 			[key]: value,
@@ -40,8 +44,8 @@ export const Lobby = () => {
 				<header className="cont-overlay-header flex justify-between">
 					<div className="flex gap-0 btn-icon-border">
 						<BackButton scene={() => setCurrentScene("HOME")} />
-						<SettingsButton call={() => toggleLightbox("settings", true)} />
-						<button className="bg-n1 border border-n2 w-12.5 aspect-square rounded-3xl" />
+						<SettingsButton call={(e) => toggleLightbox("settings", true, e)} />
+						<RankButton call={(e) => toggleLightbox("rank", true, e)} />
 					</div>
 					<div className="flex gap-0 bg-n1 border border-n2 rounded-3xl">
 						<button className="bg-n1 border border-n2 w-12.5 aspect-square rounded-3xl" />
@@ -57,11 +61,7 @@ export const Lobby = () => {
 					<div className="flex place-items-center gap-20">
 						<AvatarPlayer />
 						<button
-							className="
-								w-40 h-10
-								bg-n6
-								border border-n5 rounded-3xl
-								"
+							className="btn-text"
 							onClick={() => setCurrentScene("R3F")}
 						>
 							START
@@ -75,6 +75,7 @@ export const Lobby = () => {
 				</footer>
 			</section>
 			{ showLightbox["settings"] && <SettingsLightbox dismiss={() => toggleLightbox("settings", false)} /> }
+			{ showLightbox["rank"] && <RankLightbox dismiss={() => toggleLightbox("rank", false)} /> }
 		</>
 	);
 }

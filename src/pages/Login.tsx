@@ -20,7 +20,9 @@ export const Login = () => {
 		signIn: false,
 		createAccount: false,
 	});
-	const toggleLightbox = (key: keyof typeof showLightbox, value: boolean) => {
+	const toggleLightbox = (key: keyof typeof showLightbox, value: boolean, e?: React.MouseEvent<HTMLButtonElement>) => {
+		if (e)
+			e.currentTarget.blur();
 		setShowLightbox(() => ({
 			...showLightbox,
 			[key]: value,
@@ -58,7 +60,7 @@ export const Login = () => {
 			</section>
 			<section className="cont-overlay">
 				<header className="cont-overlay-header flex place-content-end">
-	 				<InfoButton call={() => toggleLightbox("info", true)}/>
+	 				<InfoButton call={(e) => toggleLightbox("info", true, e)}/>
 				</header>
 				<main className="cont-overlay-body">
 				</main>
@@ -73,14 +75,14 @@ export const Login = () => {
 						gap-7.5
 						flex-wrap
 					">
-						<SignInButton call={() => toggleLightbox("signIn", true)}/>
+						<SignInButton call={(e) => toggleLightbox("signIn", true, e)}/>
 						<button onClick={() => setCurrentScene("HOME")} className="btn-text">PLAY AS GUEST</button>
 					</div>
 					<div className="
 						w-full h-full
 						flex place-content-center place-items-center
 					">
-						<CreateAccountButton call={() => toggleLightbox("createAccount", true)}/>
+						<CreateAccountButton call={(e) => toggleLightbox("createAccount", true, e)}/>
 					</div>
 				</footer>
 	 			<div className="w-full h-full min-h-5 flex flex-1" />

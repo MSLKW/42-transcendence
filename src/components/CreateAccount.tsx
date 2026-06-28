@@ -3,7 +3,7 @@ import { useSceneStore } from "../store/useSceneStore";
 import { CloseButton } from "../components/CloseButton";
 
 interface CreateAccountProps {
-	call?: () => void;
+	call?: (e: React.MouseEvent<HTMLButtonElement>) => void;
 	dismiss?: () => void;
 }
 
