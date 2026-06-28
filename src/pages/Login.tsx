@@ -48,37 +48,44 @@ export const Login = () => {
 	}, []);
 	
 	return (
-		<main>
-			{ showStats && <div className="cont-three"><Canvas><Stats /></Canvas></div> }
-			<section ref={containerRef} className="cont-area">
-				<div className="z-0 flex flex-col w-full h-full">
+		<>
+			{/* <StripeBg /> */}
+			<section ref={containerRef} className="cont-main">
+				<Canvas className="cont-main-canvas">
+					{showStats && <Stats />}
+				</Canvas>
+				<div className="cont-main-body">
+				</div>
+			</section>
+			<section className="cont-overlay">
+				<header className="cont-overlay-header flex justify-end">
+	 				<InfoButton call={() => toggleLightbox("info", true)}/>
+				</header>
+				<main className="cont-overlay-body">
+				</main>
+				<footer className="
+					cont-overlay-footer
+					flex flex-col place-content-center place-items-center gap-[clamp(0px,2vh,20px)]
+				">
 					<div className="
-						cont-row basis-12.5 shrink
-						justify-end
-					">
-						<InfoButton call={() => toggleLightbox("info", true)}/>
-					</div>
-					<div className="cont-row min-h-10 flex-3"/>
-					<div className="
-						basis-17.5 shrink
-						flex flex-wrap
-						justify-center items-center gap-5
+						w-full h-full
+						flex place-content-center place-items-center gap-5
 					">
 						<SignInButton call={() => toggleLightbox("signIn", true)}/>
 						<button onClick={() => setCurrentScene("HOME")} className="btn-text">PLAY AS GUEST</button>
 					</div>
 					<div className="
-						cont-row basis-17.5 shrink
-						flex justify-center items-center
+						w-full h-full
+						flex place-content-center place-items-center
 					">
 						<CreateAccountButton call={() => toggleLightbox("createAccount", true)}/>
 					</div>
-					<div className="cont-row min-h-5 flex-1" />
-				</div>
-				{ showLightbox["info"] && <InfoLightbox dismiss={() => toggleLightbox("info", false)} /> }
-				{ showLightbox["createAccount"] && <CreateAccountLightbox dismiss={() => toggleLightbox("createAccount", false)} /> }
-				{ showLightbox["signIn"] && <SignInLightbox dismiss={() => toggleLightbox("signIn", false)} /> }
+				</footer>
+	 			<div className="w-full h-full min-h-5 flex flex-1" />
 			</section>
-		</main>
+			{ showLightbox["info"] && <InfoLightbox dismiss={() => toggleLightbox("info", false)} /> }
+			{ showLightbox["createAccount"] && <CreateAccountLightbox dismiss={() => toggleLightbox("createAccount", false)} /> }
+			{ showLightbox["signIn"] && <SignInLightbox dismiss={() => toggleLightbox("signIn", false)} /> }
+		</>
 	);
 }

@@ -58,12 +58,14 @@ button {
 }
 @utility btn-text {
 	@apply
-		w-full min-w-12.5 max-w-62.5
+		h-[clamp(0px,10vh,50px)]
 		aspect-5/1
 		bg-n6
-		border border-n5 rounded-3xl
-		text-[clamp(0.5rem,4vw,1rem)]
+		border border-n5 rounded-[clamp(0px,2.5vh,24px)]
+		text-[clamp(0rem,4vh,1rem)]
 		text-n0
+		relative
+		flex place-content-center place-items-center
 
 		hover:not-disabled:bg-b5
 		hover:not-disabled:scale-105
@@ -78,12 +80,14 @@ button {
 }
 @utility btn-clear {
 	@apply
-		w-full min-w-12.5 max-w-62.5
-		aspect-5/1
+		h-full max-h-12.5
+		aspect-7/1
 		bg-none
-		border-none border-a4 rounded-3xl
-		text-[clamp(0.5rem,4vw,1rem)]
+		border-none border-a4 rounded-[clamp(0px,2.5vh,24px)]
+		text-[clamp(0rem,4vh,1rem)]
 		text-n6
+		relative
+		flex place-content-center place-items-center
 
 		hover:not-disabled:text-b5
 		hover:not-disabled:scale-105

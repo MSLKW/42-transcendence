@@ -1,65 +1,62 @@
 @utility cont-bg {
 	@apply
-		z-[-1]
-		absolute top-0 left-0
-		w-screen h-screen
-		/* min-h-80 */
+		z-[-1] absolute top-0 left-0
+		w-full min-w-80 max-w-360
+		h-full min-h-120 max-h-360
 		pointer-events-none
-		overflow-clip
+		overflow-hidden
 		;
 }
 @utility cont-main {
 	@apply
-		z-0
-		w-screen h-screen
-		/* min-h-80 */
-		pointer-events-auto
+		z-0 block
+		w-full min-w-80 max-w-360
+		h-full min-h-120 max-h-360
+		relative
 		;
 }
 @utility cont-overlay {
 	@apply
-		z-1
-		absolute top-0 left-0
-		w-screen h-screen
-		/* min-h-80 */
+		z-1 absolute top-0 left-0
+		w-full min-w-80 max-w-360
+		h-full min-h-120 max-h-360
 		pointer-events-none
-		p-[clamp(0px,10vh,40px)]
 		flex flex-col
+		p-12.5
 		;
 }
 
 @utility cont-main-canvas {
 	@apply
-		z-0
+		z-0 absolute top-0 left-0
 		w-full h-full
 		pointer-events-auto
 		;
 }
 @utility cont-main-body {
 	@apply
-		z-1
-		absolute top-0 left-0
+		z-1 absolute top-0 left-0
 		w-full h-full
-		/* min-h-80 */
 		pointer-events-none
 		;
 }
 
 @utility cont-overlay-header {
 	@apply
-		z-2
-		flex-1 max-h-12.5 h-full
+		min-h-7.5 max-h-12.5 h-full
+		flex-1
 		;
 }
 @utility cont-overlay-body {
 	@apply
-		z-1
-		flex-4 h-[calc(100%-230px)]
+		w-full
+		h-full
+		flex-4
 		;
 }
 @utility cont-overlay-footer {
 	@apply
-		z-2
-		flex-1 max-h-25 h-full
+		min-h-18.75 max-h-25 h-full
+		flex-1
 		;
 }

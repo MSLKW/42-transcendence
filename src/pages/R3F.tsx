@@ -5,6 +5,7 @@ import { Stats, PerspectiveCamera, OrbitControls, AdaptiveDpr } from "@react-thr
 import { useSceneStore } from "../store/useSceneStore";
 import { useDevStore } from "../store/useDevStore";
 import { AddIcon } from "../icons/AddIcon";
+import { JoinParty } from "../components/Party";
 
 function RotatingSphere() {
 	const sphereRef = useRef<Mesh | null>(null);
@@ -26,8 +27,8 @@ function RotatingSphere() {
 function UIButton() {
 	return (
 		<button className="
-			h-full min-h-0 max-h-12.5
 			aspect-square
+			h-full min-h-7.5 max-h-12.5
 			bg-n1
 			border border-n2 rounded-3xl
 			hover:scale-150
@@ -118,7 +119,7 @@ export const R3F = () => {
 					<UIButton />
 				</main>
 				<footer className="cont-overlay-footer flex place-items-center">
-					<UIButton />
+					<JoinParty />
 				</footer>
 			</section>
 		</>

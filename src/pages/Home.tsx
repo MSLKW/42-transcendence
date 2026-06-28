@@ -34,6 +34,7 @@ export const Home = () => {
 			behavior: 'smooth',
 		})
 	}, []);
+	
 	useEffect(() => {
 		if (!containerRef.current)
 			return;
@@ -50,8 +51,7 @@ export const Home = () => {
 
 	return (
 		<>
-			<section className="cont-bg">
-			</section>
+			{/* <StripeBg /> */}
 			<section ref={containerRef} className="cont-main">
 				<Canvas className="cont-main-canvas">
 					{showStats && <Stats />}
