@@ -8,8 +8,9 @@ import { SphereBg } from "../components/SphereBg";
 import { BackButton } from "../components/BackButton";
 import { SettingsButton, SettingsLightbox } from "../components/Settings";
 import { RankButton, RankLightbox } from "../components/RankButton";
-import { AvatarPlayer } from "../components/Avatar";
 import { YeahButton, HmmmButton, WoahButton } from "../components/EmojiButtons";
+import { AvatarPlayer } from "../components/Avatar";
+import { ChatLightbox } from "../components/Chat";
 
 export const R3F = () => {
 	const setCurrentScene = useGameStore((state) => state.setCurrentScene);
@@ -20,6 +21,7 @@ export const R3F = () => {
 	const [showLightbox, setShowLightbox] = useState({
 		settings: false,
 		rank: false,
+		chat: false,
 	});
 	const toggleLightbox = (key: keyof typeof showLightbox, value: boolean, e?: React.MouseEvent<HTMLButtonElement>) => {
 		if (e)
@@ -87,11 +89,12 @@ export const R3F = () => {
 					</div>
 				</main>
 				<footer className="cont-overlay-footer flex place-items-center">
-					<AvatarPlayer showChatButton={true}/>
+					<AvatarPlayer showChatButton={true} call={(e) => toggleLightbox("chat", true, e)}/>
 				</footer>
 			</section>
 			{ showLightbox["settings"] && <SettingsLightbox dismiss={() => toggleLightbox("settings", false)} /> }
 			{ showLightbox["rank"] && <RankLightbox dismiss={() => toggleLightbox("rank", false)} /> }
+			{ showLightbox["chat"] && <ChatLightbox dismiss={() => toggleLightbox("chat", false)} /> }
 		</div>
 		</>
 	);

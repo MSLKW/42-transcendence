@@ -32,12 +32,12 @@ export const ChatLightbox = ({ dismiss }: ChatProps) => {
 			<div style={{ width: contAreaWidth, height: contAreaHeight }}
 				className="
 					z-0
-					flex place-content-end place-items-end pr-12.5 pb-12.5
+					flex place-content-end place-items-end pr-12.5 pb-17.5
 					w-full h-full
 					pointer-events-none
 			">
 				<div className="
-					w-[clamp(15rem,50vw+1rem,30rem)] h-[clamp(15rem,50vh+1rem,30rem)]
+					w-[clamp(12.5rem,65vw+1rem,30rem)] h-[clamp(20rem,50vh+1rem,30rem)]
 					relative
 				">
 					<div tabIndex={-1}
@@ -46,7 +46,7 @@ export const ChatLightbox = ({ dismiss }: ChatProps) => {
 							w-full h-[calc(100%-50px)]
 							overflow-scroll
 							pointer-events-auto
-							mb-2
+							mb-5
 					">
 						<div className="
 							w-full h-[2000px]
@@ -61,14 +61,7 @@ export const ChatLightbox = ({ dismiss }: ChatProps) => {
 					</div>
 					<div className="w-full h-12.5 relative">
 						<input className="input-chat"/>
-						<button className="
-							z-1
-							absolute right-0.5 top-1/2 -translate-y-1/2
-							w-20 h-11.5
-							border border-b4 rounded-3xl
-							bg-b5
-							text-sm
-						">
+						<button className="btn-send">
 								SEND
 						</button>
 					</div>

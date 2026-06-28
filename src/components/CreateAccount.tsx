@@ -81,7 +81,7 @@ export const CreateAccountLightbox = ({ dismiss }: CreateAccountProps) => {
 					</div>
 					<button
 						type="submit"
-						className="btn-text mt-7.5"
+						className="btn-white mt-7.5"
 					>
 						CREATE ACCOUNT
 					</button>

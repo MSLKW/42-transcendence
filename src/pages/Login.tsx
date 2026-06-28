@@ -76,7 +76,7 @@ export const Login = () => {
 						flex-wrap
 					">
 						<SignInButton call={(e) => toggleLightbox("signIn", true, e)}/>
-						<button onClick={() => setCurrentScene("HOME")} className="btn-text">PLAY AS GUEST</button>
+						<button onClick={() => setCurrentScene("HOME")} className="btn-white">PLAY AS GUEST</button>
 					</div>
 					<div className="
 						w-full h-full

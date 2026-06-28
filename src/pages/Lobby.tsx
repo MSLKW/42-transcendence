@@ -9,6 +9,8 @@ import { SettingsButton, SettingsLightbox } from "../components/Settings";
 import { RankButton, RankLightbox } from "../components/RankButton";
 import { YeahButton, HmmmButton, WoahButton } from "../components/EmojiButtons";
 import { AvatarPlayer } from "../components/Avatar";
+import { ChatLightbox } from "../components/Chat";
+import { JoinParty } from "../components/Party";
 
 export const Lobby = () => {
 	const setCurrentScene = useGameStore((state) => state.setCurrentScene);
@@ -68,7 +70,7 @@ export const Lobby = () => {
 					<div className="flex place-items-center gap-[clamp(0.25rem,10vw+0.25rem,10rem)]">
 						<AvatarPlayer />
 						<button
-							className="btn-text"
+							className="btn-white"
 							onClick={() => setCurrentScene("R3F")}
 						>
 							START
@@ -77,12 +79,14 @@ export const Lobby = () => {
 					</div>
 					<AvatarPlayer />
 				</main>
-				<footer className="cont-overlay-bottom">
-					<AvatarPlayer showChatButton={true} />
+				<footer className="cont-overlay-bottom flex gap-10">
+					<AvatarPlayer showChatButton={true} call={(e) => toggleLightbox("chat", true, e)}/>
+					<JoinParty />
 				</footer>
 			</section>
 			{ showLightbox["settings"] && <SettingsLightbox dismiss={() => toggleLightbox("settings", false)} /> }
 			{ showLightbox["rank"] && <RankLightbox dismiss={() => toggleLightbox("rank", false)} /> }
+			{ showLightbox["chat"] && <ChatLightbox dismiss={() => toggleLightbox("chat", false)} /> }
 		</>
 	);
 }

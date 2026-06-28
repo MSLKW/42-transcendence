@@ -11,7 +11,7 @@ export const SignInButton = ({ call }: SignInProps) => {
 	return (
 		<button
 			onClick={call}
-			className="btn-text"
+			className="btn-white"
 		>
 			SIGN IN
 		</button>
@@ -46,7 +46,7 @@ export const SignInLightbox = ({ dismiss }: SignInProps) => {
 					bg-n1
 					border border-n2 rounded-3xl
 					flex flex-col place-content-center place-items-center
-					gap-2
+					gap-5
 					p-10
 					relative
 					pointer-events-auto
@@ -72,7 +72,7 @@ export const SignInLightbox = ({ dismiss }: SignInProps) => {
 					</div>
 					<button
 						type="submit"
-						className="btn-text mt-7.5"
+						className="btn-white mt-7.5"
 					>
 						SIGN IN
 					</button>
