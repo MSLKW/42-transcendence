@@ -17,6 +17,7 @@ export const CreateAccountButton = ({ call }: CreateAccountProps) => {
 		</button>
 	);
 }
+
 export const CreateAccountLightbox = ({ dismiss }: CreateAccountProps) => {
 	const contAreaWidth = useSceneStore((scene) => scene.contAreaWidth);
 	const contAreaHeight = useSceneStore((scene) => scene.contAreaHeight);
@@ -29,21 +30,28 @@ export const CreateAccountLightbox = ({ dismiss }: CreateAccountProps) => {
 	}, []);
 
 	return (
-		<section style={{ width: contAreaWidth, height: contAreaHeight }}
-			className="
-				absolute z-1 inset-0 left-0
-				w-full h-full
-				flex place-content-center place-items-center
-				"
-		>
+		<section className="
+			absolute z-1 top-0 left-0
+			w-screen h-screen
+			flex place-content-center place-items-center
+		">
 			<button tabIndex={-1} className='btn-lightbox' onClick={dismiss}/>
-			<div className="z-0 w-max h-max relative">
+			<div style={{ width: contAreaWidth, height: contAreaHeight }} 
+				className="
+					z-0
+					flex place-content-center place-items-center
+					pointer-events-none
+			">
 				<div className="
-					bg-n1 p-10
+					bg-n1
 					border border-n2 rounded-3xl
-					flex flex-col place-content-center place-items-center gap-2
+					flex flex-col place-content-center place-items-center
+					gap-2
+					p-10
+					relative
+					pointer-events-auto
 				">
-					<div className="grid grid-cols-[75px_1fr] gap-5 w-full">
+					<div className="grid grid-cols-[5rem_1fr] gap-5 w-full">
 						<label htmlFor="email">Email</label>
 						<input
 							ref={focusRef}
@@ -52,7 +60,7 @@ export const CreateAccountLightbox = ({ dismiss }: CreateAccountProps) => {
 							placeholder="Enter your email"
 						/>
 					</div>
-					<div className="grid grid-cols-[75px_1fr] gap-5 w-full">
+					<div className="grid grid-cols-[5rem_1fr] gap-5 w-full">
 						<label htmlFor="password">Password</label>
 						<input
 							id="password"
@@ -60,7 +68,7 @@ export const CreateAccountLightbox = ({ dismiss }: CreateAccountProps) => {
 							placeholder="At least 8 characters"
 						/>
 					</div>
-					<div className="grid grid-cols-[75px_1fr] gap-5 w-full">
+					<div className="grid grid-cols-[5rem_1fr] gap-5 w-full">
 						<label htmlFor="confirm">Confirm</label>
 						<input
 							id="confirm"
@@ -74,9 +82,13 @@ export const CreateAccountLightbox = ({ dismiss }: CreateAccountProps) => {
 					>
 						CREATE ACCOUNT
 					</button>
-				</div>
-				<div className="absolute z-1 top-0 right-0 translate-x-6.5 -translate-y-6.5">
-					<CloseButton dismiss={dismiss} />
+					<div className="
+						absolute top-0 right-0 translate-x-1/2 -translate-y-1/2
+						z-1
+						w-12.5 h-12.5
+					">
+						<CloseButton dismiss={dismiss} />
+					</div>
 				</div>
 			</div>
 		</section>

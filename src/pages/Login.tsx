@@ -55,22 +55,23 @@ export const Login = () => {
 				<Canvas className="cont-main-canvas">
 					{showStats && <Stats />}
 				</Canvas>
-				<div className="cont-main-body">
-				</div>
 			</section>
 			<section className="cont-overlay">
-				<header className="cont-overlay-header flex justify-end">
+				<header className="cont-overlay-header flex place-content-end">
 	 				<InfoButton call={() => toggleLightbox("info", true)}/>
 				</header>
 				<main className="cont-overlay-body">
 				</main>
 				<footer className="
 					cont-overlay-footer
-					flex flex-col place-content-center place-items-center gap-[clamp(0px,2vh,20px)]
+					flex flex-col place-content-center place-items-center
+					gap-7.5
 				">
 					<div className="
 						w-full h-full
-						flex place-content-center place-items-center gap-5
+						flex place-content-center place-items-center
+						gap-7.5
+						flex-wrap
 					">
 						<SignInButton call={() => toggleLightbox("signIn", true)}/>
 						<button onClick={() => setCurrentScene("HOME")} className="btn-text">PLAY AS GUEST</button>

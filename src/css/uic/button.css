@@ -63,11 +63,11 @@ button {
 }
 @utility btn-text {
 	@apply
-		h-[clamp(0px,10vh,50px)]
+		h-12.5
 		aspect-5/1
 		bg-n6
-		border border-n5 rounded-[clamp(0px,2.5vh,24px)]
-		text-[clamp(0rem,4vh,1rem)]
+		border border-n5 rounded-3xl
+		text-base
 		text-n0
 		relative
 		flex place-content-center place-items-center
@@ -85,11 +85,10 @@ button {
 }
 @utility btn-clear {
 	@apply
-		h-full max-h-12.5
-		aspect-7/1
-		bg-none
-		border-none border-a4 rounded-[clamp(0px,2.5vh,24px)]
-		text-[clamp(0rem,4vh,1rem)]
+		h-12.5
+		aspect-5/1
+		rounded-3xl
+		text-base
 		text-n6
 		relative
 		flex place-content-center place-items-center
@@ -124,7 +123,7 @@ button {
 	@apply
 		-z-1 absolute
 		w-full h-full
-		backdrop-blur-sm bg-n0/50 hover:bg-n0/25
+		backdrop-blur-lg
 		;
 }
 

@@ -1,5 +1,8 @@
 input {
-	@apply bg-n6 w-full h-5 rounded-sm p-5;
+	@apply
+		bg-n6 w-full h-5 rounded-sm p-5
+		pointer-events-auto
+		;
 }
 input::placeholder {
 	@apply text-n4 italic;

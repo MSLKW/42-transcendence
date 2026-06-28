@@ -59,7 +59,7 @@ export const Home = () => {
 				</Canvas>
 			</section>
 			<section className="cont-overlay">
-				<header className="cont-overlay-header flex justify-between flex-1">
+				<header className="cont-overlay-header flex justify-between">
 					<div className="flex bg-n1 border border-n2 rounded-3xl">
 	 					<BackButton scene={() => setCurrentScene("LOGIN")} />
 	 					<SettingsButton call={() => toggleLightbox("settings", true)} />
@@ -69,8 +69,9 @@ export const Home = () => {
 				<main className="cont-overlay-body">
 					<div tabIndex={-1} className="
 						absolute top-0 left-0
-						pt-[clamp(0px,25vh,250px)] pb-[clamp(0px,32vh,300px)]
-		 				flex w-full h-full
+						w-full h-full
+						pt-[clamp(8rem,25vh,16rem)] pb-[clamp(10rem,32vh,20rem)]
+		 				flex
 		 				overflow-x-auto
 		 				snap-x snap-mandatory
 		 			">
@@ -85,7 +86,7 @@ export const Home = () => {
 		 				</div>
 		 			</div>
 				</main>
-				<footer className="cont-overlay-footer flex gap-10 flex-1">
+				<footer className="cont-overlay-footer flex gap-10">
 	 				<AvatarPlayer />
 	 				<JoinParty />
 				</footer>

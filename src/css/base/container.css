@@ -10,8 +10,6 @@
 	@apply
 		absolute top-1/2 left-1/2 -translate-y-1/2 -translate-x-1/2
 		z-[-1]
-		/* w-full min-w-80 max-w-360 */
-		/* h-full min-h-120 max-h-360 */
 		w-screen h-screen
 		pointer-events-none
 		overflow-hidden

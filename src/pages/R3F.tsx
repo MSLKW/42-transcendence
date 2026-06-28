@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useState, useEffect, useRef } from "react";
 import type { Mesh } from "three";
 import { Canvas, useFrame } from "@react-three/fiber";
 import { Stats, PerspectiveCamera, OrbitControls, AdaptiveDpr } from "@react-three/drei";
@@ -6,7 +6,7 @@ import { useSceneStore } from "../store/useSceneStore";
 import { useDevStore } from "../store/useDevStore";
 import { StripeBg } from "../components/StripeBg";
 import { AvatarPlayer } from "../components/Avatar";
-import { InfoButton } from "../components/Info";
+import { InfoButton, InfoLightbox } from "../components/Info";
 
 function RotatingSphere() {
 	const sphereRef = useRef<Mesh | null>(null);
@@ -31,6 +31,15 @@ export const R3F = () => {
 	const containerRef = useRef(null);
 	const setContAreaWidth = useSceneStore((state) => state.setContAreaWidth);
 	const setContAreaHeight = useSceneStore((state) => state.setContAreaHeight);
+	const [showLightbox, setShowLightbox] = useState({
+		info: false,
+	});
+	const toggleLightbox = (key: keyof typeof showLightbox, value: boolean) => {
+		setShowLightbox(() => ({
+			...showLightbox,
+			[key]: value,
+		}));
+	}
 
 	useEffect(() => {
 		window.scrollTo({
@@ -54,6 +63,7 @@ export const R3F = () => {
 	}, []);
 
 	return (
+		<>
 		<div className="cont">
 			<StripeBg />
 			<section ref={containerRef} className="cont-main">
@@ -69,7 +79,7 @@ export const R3F = () => {
 			</section>
 			<section className="cont-overlay">
 				<header className="cont-overlay-header flex justify-end">
-					<InfoButton />
+					<InfoButton call={() => toggleLightbox("info", true)}/>
 				</header>
 				<main className="cont-overlay-body flex">
 					<div className="w-full h-full">
@@ -80,5 +90,7 @@ export const R3F = () => {
 				</footer>
 			</section>
 		</div>
+		{ showLightbox["info"] && <InfoLightbox dismiss={() => toggleLightbox("info", false)} /> }
+		</>
 	);
 }
