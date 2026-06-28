@@ -21,18 +21,19 @@
 		z-0
 		w-full min-w-80 max-w-360
 		h-full min-h-120 max-h-360
+		mx-auto
 		relative
 		;
 }
 @utility cont-overlay {
 	@apply
-		absolute top-1/2 left-1/2 -translate-y-1/2 -translate-x-1/2
+		absolute top-0 left-1/2 -translate-x-1/2
 		z-1
 		w-full min-w-80 max-w-360
 		h-full min-h-120 max-h-360
 		pointer-events-none
 		flex flex-col
-		p-12.5
+		p-[clamp(1.875rem,5vh+0.5rem,3.125rem)]
 		;
 }
 
@@ -54,21 +55,18 @@
 @utility cont-overlay-header {
 	@apply
 		w-full
-		min-h-7.5 max-h-12.5 h-full
-		flex-1
+		h-fit
 		;
 }
 @utility cont-overlay-body {
 	@apply
 		w-full
 		h-full
-		flex-4
 		;
 }
 @utility cont-overlay-footer {
 	@apply
 		w-full
-		min-h-18.75 max-h-25 h-full
-		flex-1
+		h-fit
 		;
 }

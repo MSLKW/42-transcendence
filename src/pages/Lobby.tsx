@@ -1,8 +1,9 @@
 import { useState, useRef, useEffect } from "react";
 import { Canvas } from "@react-three/fiber";
-import { Stats } from "@react-three/drei";
+import { Stats, PerspectiveCamera, OrbitControls, AdaptiveDpr } from "@react-three/drei";
 import { useGameStore } from "../store/useGameStore";
 import { useDevStore } from "../store/useDevStore";
+import { SphereBg } from "../components/SphereBg";
 import { BackButton } from "../components/BackButton";
 import { SettingsButton, SettingsLightbox } from "../components/Settings";
 import { RankButton, RankLightbox } from "../components/RankButton";
@@ -39,6 +40,11 @@ export const Lobby = () => {
 			<section ref={containerRef} className="cont-main">
 				<Canvas className="cont-main-canvas">
 					{showStats && <Stats />}
+					<AdaptiveDpr />
+					<ambientLight intensity={0.5}/>
+					<SphereBg />
+					<PerspectiveCamera makeDefault position={[0, 0, 2.25]} />
+					<OrbitControls enableZoom={false}/>
 				</Canvas>
 			</section>
 			<section className="cont-overlay">

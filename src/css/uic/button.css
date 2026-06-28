@@ -11,8 +11,8 @@ button {
 
 @utility btn-icon {
 	@apply
-		w-12.5
-		h-12.5
+		h-[clamp(1.875rem,5vh+0.5rem,3.125rem)]
+		aspect-square
 		rounded-3xl
 		relative
 		text-b5
@@ -48,6 +48,7 @@ button {
 }
 @utility btn-icon-border {
 	@apply
+		h-[clamp(1.875rem,5vh+0.5rem,3.125rem)]
 		bg-n1
 		border border-n2
 		rounded-3xl
@@ -70,7 +71,7 @@ button {
 }
 @utility btn-text {
 	@apply
-		w-[clamp(5rem,15vw+0.5rem,15.625rem)]
+		w-[clamp(5rem,25vw+0.5rem,15.625rem)]
 		h-[clamp(1.875rem,5vh+0.5rem,3.125rem)]
 		bg-n6
 		border border-n5 rounded-3xl
@@ -111,20 +112,6 @@ button {
 		active:hover:not-disabled:scale-100
 		;
 }
-@utility btn-avatar {
-	@apply
-		aspect-square
-		;
-	&:focus {
-		@apply
-			scale-105
-			outline-2
-			outline-solid
-			outline-b5
-			outline-offset-5
-			;
-	}
-}
 
 @utility btn-lightbox {
 	@apply
@@ -163,6 +150,22 @@ button {
 		;
 }
 
+@utility btn-avatar {
+	@apply
+		h-[clamp(0.25rem,10vh+0.25rem,6.25rem)]
+		aspect-4/5
+		relative
+		;
+	&:focus {
+		@apply
+			scale-105
+			outline-2
+			outline-solid
+			outline-b5
+			outline-offset-5
+			;
+	}
+}
 @utility btn-party {
 	@apply
 		h-full max-h-25

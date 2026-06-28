@@ -7,10 +7,7 @@ interface AvatarProps {
 
 export const AvatarPlayer = ({ showChatButton }: AvatarProps) => {
 	return (
-		<div className="
-			w-20 h-25
-			relative
-		">
+		<div className="btn-avatar">
 			<div className="
 				w-full h-4/5
 				bg-a5
