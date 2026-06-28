@@ -22,8 +22,12 @@ export const ChatLightbox = ({ dismiss }: ChatProps) => {
 	const contAreaWidth = useSceneStore((scene) => scene.contAreaWidth);
 	const contAreaHeight = useSceneStore((scene) => scene.contAreaHeight);
 
+	const handleSend = (e?: React.MouseEvent<HTMLButtonElement>) => {
+		if (e)
+			e.currentTarget.blur();
+	}
+
 	return (
-		// flex place-content-center place-items-center
 		<section className="
 			absolute z-1 top-0 left-0
 			w-screen h-screen
@@ -61,7 +65,7 @@ export const ChatLightbox = ({ dismiss }: ChatProps) => {
 					</div>
 					<div className="w-full h-12.5 relative">
 						<input className="input-chat"/>
-						<button className="btn-send">
+						<button className="btn-send" onClick={(e) => {handleSend(e)}}>
 								SEND
 						</button>
 					</div>

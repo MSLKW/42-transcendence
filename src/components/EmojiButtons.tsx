@@ -1,8 +1,14 @@
 import { YeahIcon, HmmmIcon, WoahIcon } from "../icons/EmojiIcons";
 
 export const YeahButton = () => {
+	const handleSend = (e?: React.MouseEvent<HTMLButtonElement>) => {
+		if (e)
+			e.currentTarget.blur();
+	}
+
 	return (
 		<button data-tip="Yeah!"
+			onClick={(e) => {handleSend(e)}}
 			className="btn-icon btn-tip-down"
 		>
 			<YeahIcon />
@@ -11,8 +17,14 @@ export const YeahButton = () => {
 }
 
 export const HmmmButton = () => {
+	const handleSend = (e?: React.MouseEvent<HTMLButtonElement>) => {
+		if (e)
+			e.currentTarget.blur();
+	}
+
 	return (
 		<button data-tip="Hmmm..."
+			onClick={(e) => {handleSend(e)}}
 			className="btn-icon btn-tip-down"
 		>
 			<HmmmIcon />
@@ -21,8 +33,14 @@ export const HmmmButton = () => {
 }
 
 export const WoahButton = () => {
+	const handleSend = (e?: React.MouseEvent<HTMLButtonElement>) => {
+		if (e)
+			e.currentTarget.blur();
+	}
+
 	return (
 		<button data-tip="~Woah~"
+			onClick={(e) => {handleSend(e)}}
 			className="btn-icon btn-tip-down"
 		>
 			<WoahIcon />
