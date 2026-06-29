@@ -2,6 +2,7 @@ import { useState, useRef, useEffect } from "react";
 import { Canvas } from "@react-three/fiber";
 import { Stats, PerspectiveCamera, OrbitControls, AdaptiveDpr } from "@react-three/drei";
 import { useGameStore } from "../store/useGameStore";
+import { useSceneStore } from "../store/useSceneStore";
 import { useDevStore } from "../store/useDevStore";
 import { SphereBg } from "../components/SphereBg";
 import { BackButton } from "../components/BackButton";
@@ -14,6 +15,8 @@ import { JoinParty } from "../components/Party";
 
 export const Lobby = () => {
 	const setCurrentScene = useGameStore((state) => state.setCurrentScene);
+	const setContAreaWidth = useSceneStore((state) => state.setContAreaWidth);
+	const setContAreaHeight = useSceneStore((state) => state.setContAreaHeight);
 	const showStats = useDevStore((state) => state.showStats);
 	const containerRef = useRef(null);
 	const [showLightbox, setShowLightbox] = useState({
@@ -35,6 +38,20 @@ export const Lobby = () => {
 			top: 0,
 			behavior: 'smooth',
 		})
+	}, []);
+
+	useEffect(() => {
+		if (!containerRef.current)
+			return;
+
+		const observer = new ResizeObserver((entries) => {
+			for (let entry of entries) {
+				setContAreaWidth(entry.target.scrollWidth);
+				setContAreaHeight(entry.target.scrollHeight);
+			}
+		});
+		observer.observe(containerRef.current);
+		return () => observer.disconnect();
 	}, []);
 
 	return (
@@ -64,10 +81,14 @@ export const Lobby = () => {
 				</header>
 				<main className="
 					cont-overlay-body
-					flex flex-col justify-center place-items-center gap-[clamp(0.25rem,10vh+0.25rem,10rem)]
+					flex flex-col place-content-evenly place-items-evenly
 				">
 					<AvatarPlayer playerName="Void"/>
-					<div className="flex place-items-center gap-[clamp(0.25rem,10vw+0.25rem,10rem)]">
+					{/* flex place-content-evenly place-items-center */}
+					<div className="
+						w-full
+						grid grid-cols-3 place-items-center
+					">
 						<AvatarPlayer
 							showChatButton={false}
 							playerName="Null"
@@ -85,13 +106,13 @@ export const Lobby = () => {
 					</div>
 					<AvatarPlayer
 						showChatButton={true}
+						call={(e) => toggleLightbox("chat", true, e)}
 						playerName="Azrul"
 					/>
 				</main>
 				<footer className="cont-overlay-footer flex gap-10">
 					<AvatarPlayer
 						showChatButton={false}
-						call={(e) => toggleLightbox("chat", true, e)}
 						playerName="Spectator"
 					/>
 					<JoinParty />

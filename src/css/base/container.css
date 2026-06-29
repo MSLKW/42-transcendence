@@ -67,6 +67,6 @@
 @utility cont-overlay-footer {
 	@apply
 		w-full
-		h-fit min-h-27.5
+		h-fit
 		;
 }

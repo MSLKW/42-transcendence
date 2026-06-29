@@ -169,26 +169,10 @@ button {
 		;
 }
 
-@utility btn-avatar {
-	@apply
-		w-20
-		h-[clamp(0.25rem,5vh+0.25rem,7.5rem)]
-		relative
-		;
-	&:focus {
-		@apply
-			scale-105
-			outline-2
-			outline-solid
-			outline-b5
-			outline-offset-5
-			;
-	}
-}
 @utility btn-party {
 	@apply
-		w-20
-		h-full max-h-30
+		h-full
+		aspect-4/5
 		bg-n1
 		border border-n2 rounded-[clamp(0px,2vh,8px)]
 		p-3

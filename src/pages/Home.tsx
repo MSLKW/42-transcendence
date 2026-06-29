@@ -73,7 +73,7 @@ export const Home = () => {
 					<div tabIndex={-1} className="
 						absolute top-0 left-0
 						w-full h-full
-						pt-[clamp(8rem,25vh,16rem)] pb-[clamp(10rem,32vh,20rem)]
+						pt-[clamp(5rem,25vh,20rem)] pb-[clamp(12rem,32vh,20rem)]
 		 				flex
 		 				overflow-x-auto
 		 				snap-x snap-mandatory
