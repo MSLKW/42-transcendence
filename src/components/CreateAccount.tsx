@@ -46,8 +46,8 @@ export const CreateAccountLightbox = ({ dismiss }: CreateAccountProps) => {
 					bg-n1
 					border border-n2 rounded-3xl
 					flex flex-col place-content-center place-items-center
-					gap-2.5 sm:gap-5
-					p-10
+					gap-2.5 sm:gap-3
+					p-[clamp(1rem,5vw+0.25rem,2.5rem)]
 					relative
 					pointer-events-auto
 				">
@@ -81,7 +81,7 @@ export const CreateAccountLightbox = ({ dismiss }: CreateAccountProps) => {
 					</div>
 					<button
 						type="submit"
-						className="btn-white mt-7.5"
+						className="btn-white mt-5"
 					>
 						CREATE ACCOUNT
 					</button>

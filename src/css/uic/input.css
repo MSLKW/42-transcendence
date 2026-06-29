@@ -2,9 +2,9 @@
 	@apply
 		bg-n6
 		w-full
-		h-5
+		h-[clamp(1rem,2vh+0.3125rem,1.25rem)]
 		rounded-sm
-		p-5
+		p-[clamp(1rem,2vh+0.3125rem,1.25rem)]
 		pointer-events-auto
 
 		placeholder:text-n4
