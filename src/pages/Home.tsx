@@ -73,7 +73,7 @@ export const Home = () => {
 					<div tabIndex={-1} className="
 						absolute top-0 left-0
 						w-full h-full
-						pt-[clamp(5rem,25vh,20rem)] pb-[clamp(12rem,32vh,20rem)]
+						pt-[clamp(5rem,25vh,20rem)] pb-[clamp(10rem,32vh,20rem)]
 		 				flex
 		 				overflow-x-auto
 		 				snap-x snap-mandatory
@@ -89,19 +89,11 @@ export const Home = () => {
 		 				</div>
 		 			</div>
 				</main>
-				<footer className="cont-overlay-footer">
-				{/* <footer className="cont-overlay-footer relative"> */}
-					{/* <div tabIndex={-1} className="
-						absolute bottom-0 left-0
+				<footer className="cont-overlay-footer pointer-events-auto">
+					<div tabIndex={-1} className="
 						w-full h-full
-						flex gap-10
-						overflow-x-auto
-						snap-x snap-mandatory
-					"> */}
-					<div className="
-						flex gap-10
-						overflow-x-auto overflow-y-visible
-						snap-x snap-mandatory
+						flex gap-[clamp(0.25rem,5vw+0.125rem,2.5rem)]
+						sm:overflow-x-visible overflow-x-scroll
 					">
 						<AvatarPlayer
 							showChatButton={true}

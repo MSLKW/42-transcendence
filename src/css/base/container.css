@@ -31,9 +31,9 @@
 		z-1
 		w-full min-w-80 max-w-360
 		h-full min-h-120 max-h-360
-		pointer-events-none
 		flex flex-col
-		p-[clamp(1.875rem,5vh+0.5rem,3.125rem)]
+		p-[clamp(0.125rem,5vw+0.125rem,3.125rem)]
+		pointer-events-none
 		;
 }
 
@@ -67,7 +67,6 @@
 @utility cont-overlay-footer {
 	@apply
 		w-full
-		/* h-fit */
 		h-max
 		;
 }

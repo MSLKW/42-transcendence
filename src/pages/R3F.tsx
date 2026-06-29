@@ -56,7 +56,6 @@ export const R3F = () => {
 	return (
 		<>
 		<div className="cont">
-			{/* <StripeBg /> */}
 			<section ref={containerRef} className="cont-main">
 				<Canvas className="cont-main-canvas">
 					{showStats && <Stats />}
@@ -66,11 +65,20 @@ export const R3F = () => {
 					<PerspectiveCamera makeDefault position={[0, 0, 2.25]} />
 					<OrbitControls enableZoom={false}/>
 				</Canvas>
-				<div className="cont-main-body" />
+				{/* <div className="cont-main-body flex flex-col place-content-start place-items-center">
+					<div className="w-full bg-d4 pt-12.5">
+						<AvatarPlayer />
+					</div>
+					<div className="px-10 w-full flex place-content-between bg-r4">
+						<AvatarPlayer />
+						<AvatarPlayer />
+					</div>
+				</div> */}
 			</section>
 			<section className="cont-overlay">
 				<header className="
 					cont-overlay-header
+					z-1
 					flex place-content-between
 				">
 					<div className="flex btn-icon-border">
@@ -84,8 +92,15 @@ export const R3F = () => {
 						<WoahButton />
 					</div>
 				</header>
-				<main className="cont-overlay-body flex">
-					<div className="w-full h-full">
+				<main className="cont-overlay-body z-0">
+					<div className="absolute left-[30%] top-[5%]">
+						<AvatarPlayer playerName="Max"/>
+					</div>
+					<div className="absolute left-[5%] top-[20%]">
+						<AvatarPlayer playerName="Jeremy"/>
+					</div>
+					<div className="absolute right-[5%] top-[20%]">
+						<AvatarPlayer playerName="Aisyah"/>
 					</div>
 				</main>
 				<footer className="cont-overlay-footer flex place-items-center">

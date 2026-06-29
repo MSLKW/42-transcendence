@@ -25,20 +25,19 @@ export const AvatarPlayer = ({ showChatButton, call, playerName = "Player" }: Av
 
 					{showChatButton &&
 						<div className="
-							absolute top-0 right-0 translate-x-1/2 -translate-y-1/2
+							absolute top-0 right-0 translate-x-1/2 sm:-translate-y-1/2
 							z-1
 						">
 							<ChatButton call={call}/>
 						</div>
 					}
 				</div>
-				{/* absolute -bottom-8 */}
 				<div className="
 					w-max min-w-[clamp(2.5rem,7.5vh+0.5rem,5rem)] max-w-32.5
 					h-fit
 					bg-n1
 					border border-n2 rounded-lg
-					text-[clamp(0.5rem,2vh+0.25rem,1rem)]
+					text-[clamp(0.25rem,1.5vh+0.125rem,1rem)]
 					text-n6
 					truncate
 					flex place-content-center place-items-center

@@ -84,7 +84,6 @@ export const Lobby = () => {
 					flex flex-col place-content-evenly place-items-evenly
 				">
 					<AvatarPlayer playerName="Void"/>
-					{/* flex place-content-evenly place-items-center */}
 					<div className="
 						w-full
 						grid grid-cols-3 place-items-center

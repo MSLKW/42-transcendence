@@ -17,7 +17,7 @@ export const Login = () => {
 	const containerRef = useRef(null);
 	const [showLightbox, setShowLightbox] = useState({
 		info: false,
-		signIn: true,
+		signIn: false,
 		createAccount: false,
 	});
 	const toggleLightbox = (key: keyof typeof showLightbox, value: boolean, e?: React.MouseEvent<HTMLButtonElement>) => {

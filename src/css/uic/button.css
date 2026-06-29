@@ -71,7 +71,7 @@ button {
 }
 @utility btn-white {
 	@apply
-		w-[clamp(9rem,25vw+0.5rem,15.625rem)]
+		w-[clamp(5rem,25vw+0.5rem,15.625rem)]
 		h-[clamp(1.875rem,5vh+0.5rem,3.125rem)]
 		bg-n6
 		border border-n5 rounded-3xl
@@ -148,10 +148,10 @@ button {
 
 @utility btn-card {
 	@apply
-		bg-linear-to-b from-b3 to-b5
-		border border-b6 rounded-[clamp(0px,2vh,24px)]
 		h-full max-h-150
 		aspect-2/3
+		bg-linear-to-b from-b3 to-b5
+		border border-b6 rounded-[clamp(0px,2vh,24px)]
 		snap-center
 		text-[clamp(0px,3vh,24px)]
 		p-[clamp(0px,2vh,50px)]
@@ -171,13 +171,14 @@ button {
 
 @utility btn-party {
 	@apply
-		h-full
+		h-full max-h-50
 		aspect-4/5
 		bg-n1
 		border border-n2 rounded-[clamp(0px,2vh,8px)]
-		p-3
+		snap-center
 		text-b5
-		relative
+		p-3
+		/* relative */
 
 		hover:not-disabled:scale-105
 
