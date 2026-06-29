@@ -208,3 +208,22 @@ button {
 		@apply scale-100 opacity-100;
 	}
 }
+
+@utility btn-sort {
+	@apply
+		w-full h-full
+		bg-n1
+		border border-n2 rounded-xl
+		text-n6
+		text-sm
+
+		hover:not-disabled:scale-105
+
+		focus:outline-2
+		focus:outline-solid
+		focus:outline-b5
+		focus:outline-offset-5
+
+		active:hover:not-disabled:scale-100
+		;
+}

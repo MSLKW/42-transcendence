@@ -5,14 +5,14 @@ import { useDevStore } from "../store/useDevStore";
 
 export const Results = () => {
 	const showStats = useDevStore((state) => state.showStats);
-	
+
 	useEffect(() => {
 		window.scrollTo({
 			top: 0,
 			behavior: 'smooth',
 		})
 	}, []);
-	
+
 	return (
 		<section className="cont-area">
 			{showStats && <div className="cont-three"><Canvas><Stats /></Canvas></div>}

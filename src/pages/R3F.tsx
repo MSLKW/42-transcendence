@@ -31,6 +31,10 @@ export const R3F = () => {
 			[key]: value,
 		}));
 	}
+	const handleSort = (e?: React.MouseEvent<HTMLButtonElement>) => {
+		if (e)
+			e.currentTarget.blur();
+	}
 
 	useEffect(() => {
 		window.scrollTo({
@@ -55,7 +59,6 @@ export const R3F = () => {
 
 	return (
 		<>
-		{/* <div className="cont"> */}
 			<section ref={containerRef} className="cont-canvas">
 				<Canvas>
 					{showStats && <Stats />}
@@ -99,14 +102,22 @@ export const R3F = () => {
 						/>
 					</div>
 				</main>
-				<footer className="flex place-items-center">
+				<footer className="flex place-content-between place-items-center">
 					<AvatarPlayer cornerButton="chat" call={(e) => toggleLightbox("chat", true, e)}/>
+					<div className="
+						w-20 h-full
+						flex flex-col place-content-between
+						gap-3
+					">
+						<button className="btn-sort" onClick={(e) => handleSort(e)}>RANK</button>
+						<button className="btn-sort" onClick={(e) => handleSort(e)}>SUIT</button>
+						<button className="btn-sort" onClick={(e) => handleSort(e)}>FLEX</button>
+					</div>
 				</footer>
 			</section>
 			{ showLightbox["settings"] && <SettingsLightbox dismiss={() => toggleLightbox("settings", false)} /> }
 			{ showLightbox["rank"] && <RankLightbox dismiss={() => toggleLightbox("rank", false)} /> }
 			{ showLightbox["chat"] && <ChatLightbox dismiss={() => toggleLightbox("chat", false)} /> }
-		{/* </div> */}
 		</>
 	);
 }
