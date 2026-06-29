@@ -89,7 +89,6 @@ export const Lobby = () => {
 						grid grid-cols-3 place-items-center
 					">
 						<AvatarPlayer
-							showChatButton={false}
 							playerName="Null"
 						/>
 						<button
@@ -99,19 +98,17 @@ export const Lobby = () => {
 							START
 						</button>
 						<AvatarPlayer
-							showChatButton={false}
 							playerName="Undefined"
 						/>
 					</div>
 					<AvatarPlayer
-						showChatButton={true}
+						cornerButton="chat"
 						call={(e) => toggleLightbox("chat", true, e)}
 						playerName="Azrul"
 					/>
 				</main>
 				<footer className="cont-overlay-footer flex gap-10">
 					<AvatarPlayer
-						showChatButton={false}
 						playerName="Spectator"
 					/>
 					<JoinParty />

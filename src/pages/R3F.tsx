@@ -65,15 +65,6 @@ export const R3F = () => {
 					<PerspectiveCamera makeDefault position={[0, 0, 2.25]} />
 					<OrbitControls enableZoom={false}/>
 				</Canvas>
-				{/* <div className="cont-main-body flex flex-col place-content-start place-items-center">
-					<div className="w-full bg-d4 pt-12.5">
-						<AvatarPlayer />
-					</div>
-					<div className="px-10 w-full flex place-content-between bg-r4">
-						<AvatarPlayer />
-						<AvatarPlayer />
-					</div>
-				</div> */}
 			</section>
 			<section className="cont-overlay">
 				<header className="
@@ -94,17 +85,26 @@ export const R3F = () => {
 				</header>
 				<main className="cont-overlay-body z-0">
 					<div className="absolute left-[30%] top-[5%]">
-						<AvatarPlayer playerName="Max"/>
+						<AvatarPlayer
+							cornerButton="cards"
+							playerName="Max"
+						/>
 					</div>
 					<div className="absolute left-[5%] top-[20%]">
-						<AvatarPlayer playerName="Jeremy"/>
+						<AvatarPlayer
+							cornerButton="cards"
+							playerName="Jeremy"
+						/>
 					</div>
 					<div className="absolute right-[5%] top-[20%]">
-						<AvatarPlayer playerName="Aisyah"/>
+						<AvatarPlayer
+							cornerButton="cards"
+							playerName="Aisyah"
+						/>
 					</div>
 				</main>
 				<footer className="cont-overlay-footer flex place-items-center">
-					<AvatarPlayer showChatButton={true} call={(e) => toggleLightbox("chat", true, e)}/>
+					<AvatarPlayer cornerButton="chat" call={(e) => toggleLightbox("chat", true, e)}/>
 				</footer>
 			</section>
 			{ showLightbox["settings"] && <SettingsLightbox dismiss={() => toggleLightbox("settings", false)} /> }

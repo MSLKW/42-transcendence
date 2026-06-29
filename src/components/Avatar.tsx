@@ -2,11 +2,11 @@ import { ChatButton } from "./Chat"
 
 interface AvatarProps {
 	call?: (e: React.MouseEvent<HTMLButtonElement>) => void,
-	showChatButton?: boolean;
+	cornerButton?: string;
 	playerName?: string;
 }
 
-export const AvatarPlayer = ({ showChatButton, call, playerName = "Player" }: AvatarProps) => {
+export const AvatarPlayer = ({ cornerButton, call, playerName = "Player" }: AvatarProps) => {
 	return (
 		<>
 			<div className="
@@ -22,13 +22,26 @@ export const AvatarPlayer = ({ showChatButton, call, playerName = "Player" }: Av
 					flex place-content-center place-items-center
 					relative
 				">
-
-					{showChatButton &&
+					{cornerButton === "chat" &&
 						<div className="
 							absolute top-0 right-0 translate-x-1/2 sm:-translate-y-1/2
 							z-1
 						">
 							<ChatButton call={call}/>
+						</div>
+					}
+					{cornerButton === "cards" &&
+						<div className="
+							absolute top-0 right-0 translate-x-1/2 -translate-y-1/2
+							z-1
+							bg-n1
+							border border-n2 rounded-2xl
+							text-sm
+							text-n6
+							w-7.5 h-7.5
+							flex place-content-center place-items-center
+						">
+							<p>13</p>
 						</div>
 					}
 				</div>

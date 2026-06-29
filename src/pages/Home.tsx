@@ -96,20 +96,17 @@ export const Home = () => {
 						sm:overflow-x-visible overflow-x-scroll
 					">
 						<AvatarPlayer
-							showChatButton={true}
+							cornerButton="chat"
 							call={(e) => toggleLightbox("chat", true, e)}
 							playerName="Azrul"
 						/>
 						<AvatarPlayer
-							showChatButton={false}
 							playerName="Max"
 						/>
 						<AvatarPlayer
-							showChatButton={false}
 							playerName="Jeremy"
 						/>
 						<AvatarPlayer
-							showChatButton={false}
 							playerName="Aisyah"
 						/>
 						<JoinParty />
