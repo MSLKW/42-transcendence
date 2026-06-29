@@ -102,10 +102,13 @@ export const R3F = () => {
 						/>
 					</div>
 					<div className="
-						absolute left-1/2 top-[35%] -translate-x-1/2
+						absolute left-1/2 top-[32.5%] -translate-x-1/2
 					">
 						<div className="
-							bg-n1 border border-n2 rounded-3xl text-n6
+							bg-n1
+							border border-n2 rounded-3xl
+							text-n6
+							text-sm
 							px-5 py-2
 						">
 							<p>STRAIGHT</p>

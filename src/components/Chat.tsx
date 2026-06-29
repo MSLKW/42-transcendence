@@ -36,7 +36,7 @@ export const ChatLightbox = ({ dismiss }: ChatProps) => {
 			<div style={{ width: contAreaWidth, height: contAreaHeight }}
 				className="
 					z-0
-					flex place-content-end place-items-end pr-12.5 pb-17.5
+					flex place-content-end place-items-end pr-12.5 pb-13.5
 					w-full h-full
 					mx-auto
 					pointer-events-none
@@ -51,7 +51,7 @@ export const ChatLightbox = ({ dismiss }: ChatProps) => {
 							w-full h-[calc(100%-50px)]
 							overflow-scroll
 							pointer-events-auto
-							mb-5
+							mb-2
 					">
 						<div className="
 							w-full h-[2000px]

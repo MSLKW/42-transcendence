@@ -18,7 +18,7 @@ export const AvatarPlayer = ({ cornerButton, call, playerName = "Player" }: Avat
 					h-[clamp(2.5rem,7.5vh+0.5rem,5rem)]
 					aspect-square
 					bg-a5
-					border border-a6 rounded-lg
+					border border-a6 rounded-sm
 					flex place-content-center place-items-center
 					relative
 				">
@@ -49,7 +49,7 @@ export const AvatarPlayer = ({ cornerButton, call, playerName = "Player" }: Avat
 					w-max min-w-[clamp(2.5rem,7.5vh+0.5rem,5rem)] max-w-32.5
 					h-fit
 					bg-n1
-					border border-n2 rounded-lg
+					border border-n2 rounded-3xl
 					text-[clamp(0.25rem,1.5vh+0.125rem,1rem)]
 					text-n6
 					truncate

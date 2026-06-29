@@ -9,7 +9,8 @@ interface RankProps {
 
 export const RankButton = ({ call }: RankProps) => {
     return (
-        <button data-tip="Rank List"
+        <button
+            data-tip="Rank List"
 			onClick={call}
             className="btn-icon btn-tip-down"
         >

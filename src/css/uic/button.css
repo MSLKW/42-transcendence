@@ -213,7 +213,7 @@ button {
 	@apply
 		w-full h-full
 		bg-n1
-		border border-n2 rounded-xl
+		border border-n2 rounded-3xl
 		text-n6
 		text-sm
 

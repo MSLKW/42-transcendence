@@ -4,9 +4,9 @@ import { Stats } from "@react-three/drei";
 import { useGameStore } from "../store/useGameStore";
 import { useSceneStore } from "../store/useSceneStore";
 import { useDevStore } from "../store/useDevStore";
-import { BackButton } from "../components/BackButton";
 import { StripeBg } from "../components/StripeBg";
 import { InfoButton, InfoLightbox } from "../components/Info";
+import { SignOutButton } from "../components/SignOutButton";
 import { SettingsButton, SettingsLightbox } from "../components/Settings";
 import { AvatarPlayer } from "../components/Avatar";
 import { ChatLightbox } from "../components/Chat";
@@ -64,7 +64,7 @@ export const Home = () => {
 			<section className="cont-body">
 				<header className="flex justify-between">
 					<div className="flex bg-n1 border border-n2 rounded-3xl">
-	 					<BackButton scene={() => setCurrentScene("LOGIN")} />
+	 					<SignOutButton />
 	 					<SettingsButton call={(e) => toggleLightbox("settings", true, e)} />
 	 				</div>
 	 				<InfoButton call={(e) => toggleLightbox("info", true, e)} />
