@@ -4,6 +4,8 @@ import { AIController } from "../ai/AIController";
 import { CardHandTransmit, GameStateTransmit } from "../Types";
 import { logger } from "../utils/logger";
 
+type CardHand = CardHandTransmit;
+
 export class Bot {
 	private state:	GameState;
 	private ai:		AIController;
@@ -11,7 +13,7 @@ export class Bot {
 
 	constructor(private id: string, private serverUrl: string) {
 		this.state = new GameState();
-		this.ai = new AIController(this.state);
+		this.ai = new AIController();
 	}
 
 	start(): void
@@ -32,24 +34,37 @@ export class Bot {
 
 		this.state.initPlayerCards(gameTransmit.playerCards);
 		logger.info(this.id, this.state.playerCards);
-
-		logger.info(this.id, this.state.possibleCardHands["flush"]);
-		logger.info(this.id, this.state.possibleCardHands["straight"]);
-		logger.info(this.id, this.state.possibleCardHands["straight_flush"]);
 		if (gameTransmit.isPlayerTurn)
 			this.playCardHand();
 	}
 
 	private playCardHand = () =>
 	{
-		logger.info(this.id, "skipping turn");
-		this.socket?.emit("player_skip_turn");
+		const cardHand: CardHand | null = this.ai.decide(this.id, this.state);
+
+		if (cardHand == null)
+		{
+			logger.info(this.id, "skipping turn");
+			this.socket?.emit("player_skip_turn");
+		}
+		else
+		{
+			cardHand.playerId = this.id;
+			logger.info(this.id, "attempting to play", cardHand);
+			this.socket?.emit("player_play_card_hand", JSON.stringify(cardHand));
+			this.state.setLastMove(cardHand);
+			this.state.removeCards(cardHand);
+		}
 	}
 	
 	private checkOpponentMove = (cardHandJSON: string) =>
 	{
 		const opponentMove = JSON.parse(cardHandJSON) as CardHandTransmit;
-		logger.info(this.id, "opponent played:", opponentMove);
+		if (opponentMove.playerId != this.id)
+		{
+			logger.info(this.id, "opponent played:", opponentMove);
+			this.state.setLastMove(opponentMove);
+		}
 	}
 	
 	private disconnect = (reason: string) =>

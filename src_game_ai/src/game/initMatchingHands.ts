@@ -84,7 +84,7 @@ function createFourOfAKinds(state: GameState, quadHandTemp: CardHand, index: num
 			continue ;
 		const fourOfAKindHand: CardHand = {
 			...quadHandTemp,
-			cards: [...quadHandTemp.cards, state.playerCards[i]]
+			cards: [state.playerCards[i], ...quadHandTemp.cards]
 		};
 		state.possibleCardHands["four_of_a_kind"].push(fourOfAKindHand);
 	}
