@@ -89,25 +89,39 @@ export const Home = () => {
 		 				</div>
 		 			</div>
 				</main>
-				<footer className="cont-overlay-footer flex gap-10">
-	 				<AvatarPlayer
-						showChatButton={true}
-						call={(e) => toggleLightbox("chat", true, e)}
-						playerName="Azrul"
-					/>
-	 				<AvatarPlayer
-						showChatButton={false}
-						playerName="Max"
-					/>
-	 				<AvatarPlayer
-						showChatButton={false}
-						playerName="Jeremy"
-					/>
-	 				<AvatarPlayer
-						showChatButton={false}
-						playerName="Aisyah"
-					/>
-	 				<JoinParty />
+				<footer className="cont-overlay-footer">
+				{/* <footer className="cont-overlay-footer relative"> */}
+					{/* <div tabIndex={-1} className="
+						absolute bottom-0 left-0
+						w-full h-full
+						flex gap-10
+						overflow-x-auto
+						snap-x snap-mandatory
+					"> */}
+					<div className="
+						flex gap-10
+						overflow-x-auto overflow-y-visible
+						snap-x snap-mandatory
+					">
+						<AvatarPlayer
+							showChatButton={true}
+							call={(e) => toggleLightbox("chat", true, e)}
+							playerName="Azrul"
+						/>
+						<AvatarPlayer
+							showChatButton={false}
+							playerName="Max"
+						/>
+						<AvatarPlayer
+							showChatButton={false}
+							playerName="Jeremy"
+						/>
+						<AvatarPlayer
+							showChatButton={false}
+							playerName="Aisyah"
+						/>
+						<JoinParty />
+					</div>
 				</footer>
 			</section>
 	 		{ showLightbox["info"] && <InfoLightbox dismiss={() => toggleLightbox("info", false)} /> }

@@ -46,12 +46,12 @@ export const SignInLightbox = ({ dismiss }: SignInProps) => {
 					bg-n1
 					border border-n2 rounded-3xl
 					flex flex-col place-content-center place-items-center
-					gap-5
+					gap-2.5 sm:gap-5
 					p-10
 					relative
 					pointer-events-auto
 				">
-					<div className="grid grid-cols-[5rem_1fr] gap-5 w-full">
+					<div className="grid grid-cols-1 sm:grid-cols-[5rem_1fr] gap-1 sm:gap-5 w-full">
 						<label htmlFor="email">Email</label>
 						<input
 							ref={focusRef}
@@ -61,7 +61,7 @@ export const SignInLightbox = ({ dismiss }: SignInProps) => {
 							className="input-form"
 						/>
 					</div>
-					<div className="grid grid-cols-[5rem_1fr] gap-5 w-full">
+					<div className="grid grid-cols-1 sm:grid-cols-[5rem_1fr] gap-1 sm:gap-5 w-full">
 						<label htmlFor="password">Password</label>
 						<input
 							id="password"

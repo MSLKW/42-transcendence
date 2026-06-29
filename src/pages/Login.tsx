@@ -17,7 +17,7 @@ export const Login = () => {
 	const containerRef = useRef(null);
 	const [showLightbox, setShowLightbox] = useState({
 		info: false,
-		signIn: false,
+		signIn: true,
 		createAccount: false,
 	});
 	const toggleLightbox = (key: keyof typeof showLightbox, value: boolean, e?: React.MouseEvent<HTMLButtonElement>) => {
@@ -67,7 +67,7 @@ export const Login = () => {
 				<footer className="
 					cont-overlay-footer
 					flex flex-col place-content-center place-items-center
-					gap-7.5
+					gap-5
 				">
 					<div className="
 						w-full h-full

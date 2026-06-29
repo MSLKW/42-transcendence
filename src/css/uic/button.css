@@ -71,11 +71,11 @@ button {
 }
 @utility btn-white {
 	@apply
-		w-[clamp(5rem,25vw+0.5rem,15.625rem)]
+		w-[clamp(9rem,25vw+0.5rem,15.625rem)]
 		h-[clamp(1.875rem,5vh+0.5rem,3.125rem)]
 		bg-n6
 		border border-n5 rounded-3xl
-		text-base
+		text-[clamp(0.5rem,2vw+0.25rem,1rem)]
 		text-n0
 		relative
 		flex place-content-center place-items-center
@@ -96,7 +96,7 @@ button {
 		h-12.5
 		aspect-5/1
 		rounded-3xl
-		text-base
+		text-[clamp(0.5rem,2vw+0.25rem,1rem)]
 		text-n6
 		relative
 		flex place-content-center place-items-center

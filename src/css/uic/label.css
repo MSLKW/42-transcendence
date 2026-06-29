@@ -1,7 +1,7 @@
 label {
 	@apply
-		text-lg text-n6
+		text-[clamp(0.5625rem,2.5vw+0.28125rem,1.125rem)] text-n6
 		w-full h-full
-		flex items-center justify-end
+		flex items-center sm:justify-end
 		;
 }
