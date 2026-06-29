@@ -1,72 +1,38 @@
-@utility cont {
-	@apply
-		w-full
-		h-full
-		flex place-content-center place-items-center
-		relative
-}
-
 @utility cont-bg {
 	@apply
-		absolute top-1/2 left-1/2 -translate-y-1/2 -translate-x-1/2
 		z-[-1]
+		absolute top-0 left-1/2 -translate-x-1/2
 		w-screen h-screen
 		pointer-events-none
-		overflow-hidden
 		;
 }
-@utility cont-main {
+@utility cont-canvas {
 	@apply
-		block
 		z-0
+		absolute top-0 left-1/2 -translate-x-1/2
 		w-full min-w-80 max-w-360
 		h-full min-h-120 max-h-360
-		mx-auto
-		relative
 		;
 }
-@utility cont-overlay {
+@utility cont-body {
 	@apply
-		absolute top-0 left-1/2 -translate-x-1/2
 		z-1
 		w-full min-w-80 max-w-360
 		h-full min-h-120 max-h-360
-		flex flex-col
+		mx-auto
 		p-[clamp(0.125rem,5vw+0.125rem,3.125rem)]
+		flex flex-col
+		relative
 		pointer-events-none
 		;
 }
 
-@utility cont-main-canvas {
-	@apply
-		z-0 absolute top-0 left-0
-		w-full h-full
-		pointer-events-auto
-		;
+header {
+	@apply w-full h-fit z-1;
 }
-@utility cont-main-body {
-	@apply
-		z-1 absolute top-0 left-0
-		w-full h-full
-		pointer-events-none
-		;
+main {
+	@apply w-full h-full z-0;
 }
-
-@utility cont-overlay-header {
-	@apply
-		w-full
-		h-fit
-		;
-}
-@utility cont-overlay-body {
-	@apply
-		w-full
-		h-full
-		;
-}
-@utility cont-overlay-footer {
-	@apply
-		w-full
-		h-max
-		;
+footer {
+	@apply w-full h-max z-1;
 }

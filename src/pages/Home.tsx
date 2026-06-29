@@ -56,20 +56,20 @@ export const Home = () => {
 	return (
 		<>
 			<StripeBg />
-			<section ref={containerRef} className="cont-main">
-				<Canvas className="cont-main-canvas">
+			<section ref={containerRef} className="cont-canvas">
+				<Canvas>
 					{showStats && <Stats />}
 				</Canvas>
 			</section>
-			<section className="cont-overlay">
-				<header className="cont-overlay-header flex justify-between">
+			<section className="cont-body">
+				<header className="flex justify-between">
 					<div className="flex bg-n1 border border-n2 rounded-3xl">
 	 					<BackButton scene={() => setCurrentScene("LOGIN")} />
 	 					<SettingsButton call={(e) => toggleLightbox("settings", true, e)} />
 	 				</div>
 	 				<InfoButton call={(e) => toggleLightbox("info", true, e)} />
 				</header>
-				<main className="cont-overlay-body">
+				<main>
 					<div tabIndex={-1} className="
 						absolute top-0 left-0
 						w-full h-full
@@ -89,7 +89,7 @@ export const Home = () => {
 		 				</div>
 		 			</div>
 				</main>
-				<footer className="cont-overlay-footer pointer-events-auto">
+				<footer className="pointer-events-auto">
 					<div tabIndex={-1} className="
 						w-full h-full
 						flex gap-[clamp(0.25rem,5vw+0.125rem,2.5rem)]

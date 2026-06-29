@@ -53,19 +53,17 @@ export const Login = () => {
 	return (
 		<>
 			<StripeBg />
-			<section ref={containerRef} className="cont-main">
-				<Canvas className="cont-main-canvas">
+			<section ref={containerRef} className="cont-canvas">
+				<Canvas>
 					{showStats && <Stats />}
 				</Canvas>
 			</section>
-			<section className="cont-overlay">
-				<header className="cont-overlay-header flex place-content-end">
+			<section className="cont-body">
+				<header className="flex place-content-end">
 	 				<InfoButton call={(e) => toggleLightbox("info", true, e)}/>
 				</header>
-				<main className="cont-overlay-body">
-				</main>
+				<main />
 				<footer className="
-					cont-overlay-footer
 					flex flex-col place-content-center place-items-center
 					gap-5
 				">

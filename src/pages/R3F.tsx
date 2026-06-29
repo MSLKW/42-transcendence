@@ -55,9 +55,9 @@ export const R3F = () => {
 
 	return (
 		<>
-		<div className="cont">
-			<section ref={containerRef} className="cont-main">
-				<Canvas className="cont-main-canvas">
+		{/* <div className="cont"> */}
+			<section ref={containerRef} className="cont-canvas">
+				<Canvas>
 					{showStats && <Stats />}
 					<AdaptiveDpr />
 					<ambientLight intensity={0.5}/>
@@ -66,12 +66,8 @@ export const R3F = () => {
 					<OrbitControls enableZoom={false}/>
 				</Canvas>
 			</section>
-			<section className="cont-overlay">
-				<header className="
-					cont-overlay-header
-					z-1
-					flex place-content-between
-				">
+			<section className="cont-body">
+				<header className="flex place-content-between">
 					<div className="flex btn-icon-border">
 						<BackButton scene={() => setCurrentScene("LOBBY")} />
 						<SettingsButton call={(e) => toggleLightbox("settings", true, e)} />
@@ -83,7 +79,7 @@ export const R3F = () => {
 						<WoahButton />
 					</div>
 				</header>
-				<main className="cont-overlay-body z-0">
+				<main>
 					<div className="absolute left-[30%] top-[5%]">
 						<AvatarPlayer
 							cornerButton="cards"
@@ -103,14 +99,14 @@ export const R3F = () => {
 						/>
 					</div>
 				</main>
-				<footer className="cont-overlay-footer flex place-items-center">
+				<footer className="flex place-items-center">
 					<AvatarPlayer cornerButton="chat" call={(e) => toggleLightbox("chat", true, e)}/>
 				</footer>
 			</section>
 			{ showLightbox["settings"] && <SettingsLightbox dismiss={() => toggleLightbox("settings", false)} /> }
 			{ showLightbox["rank"] && <RankLightbox dismiss={() => toggleLightbox("rank", false)} /> }
 			{ showLightbox["chat"] && <ChatLightbox dismiss={() => toggleLightbox("chat", false)} /> }
-		</div>
+		{/* </div> */}
 		</>
 	);
 }

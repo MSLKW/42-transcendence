@@ -56,8 +56,8 @@ export const Lobby = () => {
 
 	return (
 		<>
-			<section ref={containerRef} className="cont-main">
-				<Canvas className="cont-main-canvas">
+			<section ref={containerRef} className="cont-canvas">
+				<Canvas>
 					{showStats && <Stats />}
 					<AdaptiveDpr />
 					<ambientLight intensity={0.5}/>
@@ -66,8 +66,8 @@ export const Lobby = () => {
 					<OrbitControls enableZoom={false}/>
 				</Canvas>
 			</section>
-			<section className="cont-overlay">
-				<header className="cont-overlay-header flex justify-between">
+			<section className="cont-body">
+				<header className="flex justify-between">
 					<div className="flex btn-icon-border">
 						<BackButton scene={() => setCurrentScene("HOME")} />
 						<SettingsButton call={(e) => toggleLightbox("settings", true, e)} />
@@ -79,10 +79,7 @@ export const Lobby = () => {
 						<WoahButton />
 					</div>
 				</header>
-				<main className="
-					cont-overlay-body
-					flex flex-col place-content-evenly place-items-evenly
-				">
+				<main className="flex flex-col place-content-evenly place-items-evenly">
 					<AvatarPlayer playerName="Void"/>
 					<div className="
 						w-full
@@ -107,7 +104,7 @@ export const Lobby = () => {
 						playerName="Azrul"
 					/>
 				</main>
-				<footer className="cont-overlay-footer flex gap-10">
+				<footer className="flex gap-10">
 					<AvatarPlayer
 						playerName="Spectator"
 					/>

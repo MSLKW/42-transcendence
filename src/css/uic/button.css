@@ -71,7 +71,7 @@ button {
 }
 @utility btn-white {
 	@apply
-		w-[clamp(5rem,25vw+0.5rem,15.625rem)]
+		w-[clamp(5rem,30vw+0.5rem,15.625rem)]
 		h-[clamp(1.875rem,5vh+0.5rem,3.125rem)]
 		bg-n6
 		border border-n5 rounded-3xl
@@ -178,7 +178,6 @@ button {
 		snap-center
 		text-b5
 		p-3
-		/* relative */
 
 		hover:not-disabled:scale-105
 
