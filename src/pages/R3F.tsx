@@ -101,6 +101,16 @@ export const R3F = () => {
 							playerName="Aisyah"
 						/>
 					</div>
+					<div className="
+						absolute left-1/2 top-[35%] -translate-x-1/2
+					">
+						<div className="
+							bg-n1 border border-n2 rounded-3xl text-n6
+							px-5 py-2
+						">
+							<p>STRAIGHT</p>
+						</div>
+					</div>
 				</main>
 				<footer className="flex place-content-between place-items-center">
 					<AvatarPlayer cornerButton="chat" call={(e) => toggleLightbox("chat", true, e)}/>
