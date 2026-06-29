@@ -90,7 +90,23 @@ export const Home = () => {
 		 			</div>
 				</main>
 				<footer className="cont-overlay-footer flex gap-10">
-	 				<AvatarPlayer showChatButton={true} call={(e) => toggleLightbox("chat", true, e)}/>
+	 				<AvatarPlayer
+						showChatButton={true}
+						call={(e) => toggleLightbox("chat", true, e)}
+						playerName="Azrul"
+					/>
+	 				<AvatarPlayer
+						showChatButton={false}
+						playerName="Max"
+					/>
+	 				<AvatarPlayer
+						showChatButton={false}
+						playerName="Jeremy"
+					/>
+	 				<AvatarPlayer
+						showChatButton={false}
+						playerName="Aisyah"
+					/>
 	 				<JoinParty />
 				</footer>
 			</section>

@@ -171,8 +171,8 @@ button {
 
 @utility btn-avatar {
 	@apply
-		h-[clamp(0.25rem,10vh+0.25rem,6.25rem)]
-		aspect-4/5
+		w-20
+		h-[clamp(0.25rem,5vh+0.25rem,7.5rem)]
 		relative
 		;
 	&:focus {
@@ -187,8 +187,8 @@ button {
 }
 @utility btn-party {
 	@apply
-		h-full max-h-25
-		aspect-8/10
+		w-20
+		h-full max-h-30
 		bg-n1
 		border border-n2 rounded-[clamp(0px,2vh,8px)]
 		p-3

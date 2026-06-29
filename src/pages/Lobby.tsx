@@ -66,21 +66,34 @@ export const Lobby = () => {
 					cont-overlay-body
 					flex flex-col justify-center place-items-center gap-[clamp(0.25rem,10vh+0.25rem,10rem)]
 				">
-					<AvatarPlayer />
+					<AvatarPlayer playerName="Void"/>
 					<div className="flex place-items-center gap-[clamp(0.25rem,10vw+0.25rem,10rem)]">
-						<AvatarPlayer />
+						<AvatarPlayer
+							showChatButton={false}
+							playerName="Null"
+						/>
 						<button
 							className="btn-white"
 							onClick={() => setCurrentScene("R3F")}
 						>
 							START
 						</button>
-						<AvatarPlayer />
+						<AvatarPlayer
+							showChatButton={false}
+							playerName="Undefined"
+						/>
 					</div>
-					<AvatarPlayer />
+					<AvatarPlayer
+						showChatButton={true}
+						playerName="Azrul"
+					/>
 				</main>
-				<footer className="cont-overlay-bottom flex gap-10">
-					<AvatarPlayer showChatButton={true} call={(e) => toggleLightbox("chat", true, e)}/>
+				<footer className="cont-overlay-footer flex gap-10">
+					<AvatarPlayer
+						showChatButton={false}
+						call={(e) => toggleLightbox("chat", true, e)}
+						playerName="Spectator"
+					/>
 					<JoinParty />
 				</footer>
 			</section>

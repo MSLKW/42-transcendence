@@ -38,6 +38,7 @@ export const ChatLightbox = ({ dismiss }: ChatProps) => {
 					z-0
 					flex place-content-end place-items-end pr-12.5 pb-17.5
 					w-full h-full
+					mx-auto
 					pointer-events-none
 			">
 				<div className="
