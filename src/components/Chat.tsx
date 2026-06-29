@@ -1,6 +1,6 @@
 import { useSceneStore } from "../store/useSceneStore";
 import { ChatIcon } from "../icons/ChatIcon";
-import { CloseButton } from "./CloseButton";
+import { PinButton } from "./PinButton";
 
 interface ChatProps {
 	call?: (e: React.MouseEvent<HTMLButtonElement>) => void;
@@ -75,7 +75,7 @@ export const ChatLightbox = ({ dismiss }: ChatProps) => {
 						z-1
 						w-12.5 h-12.5
 					">
-						<CloseButton dismiss={dismiss}/>
+						<PinButton/>
 					</div>
 				</div>
 			</div>
