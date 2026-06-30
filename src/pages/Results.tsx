@@ -14,14 +14,16 @@ import { NextGameButton } from "../components/NextGameButton";
 export const ResultsWindow = () => {
 	return (
 		<div className="
-			w-150 h-150
+			w-full min-w-30 max-w-150
+			h-full min-h-30 max-h-150
 			bg-n1
-			border border-n2 rounded-3xl
+			border border-n2 rounded-[clamp(0.25rem,3vw+0.125rem,1.5rem)]
 			relative
 		">
 			<div className="
-				w-full h-full
-				p-10
+				w-full
+				h-full
+				p-[clamp(0.25rem,5vh+0.125rem,2.5rem)]
 				text-n6
 				flex flex-col justify-between
 			">
@@ -102,7 +104,7 @@ export const Results = () => {
 						<WoahButton />
 					</div>
 				</header>
-				<main className="flex place-content-center place-items-center">
+				<main className="flex place-content-center place-items-center p-[clamp(0.5rem,4vh+0.25rem,2.5rem)]">
 					<ResultsWindow />
 				</main>
 				<footer />
