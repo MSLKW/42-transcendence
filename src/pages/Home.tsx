@@ -10,7 +10,7 @@ import { SignOutButton } from "../components/SignOutButton";
 import { SettingsButton, SettingsLightbox } from "../components/Settings";
 import { AvatarPlayer } from "../components/Avatar";
 import { ChatLightbox } from "../components/Chat";
-import { JoinParty } from "../components/Party";
+import { JoinParty, PartyLightbox } from "../components/Party";
 
 export const Home = () => {
 	const setCurrentScene = useGameStore((state) => state.setCurrentScene);
@@ -22,6 +22,7 @@ export const Home = () => {
 		settings: false,
 		info: false,
 		chat: false,
+		party: false,
 	});
 	const toggleLightbox = (key: keyof typeof showLightbox, value: boolean, e?: React.MouseEvent<HTMLButtonElement>) => {
 		if (e)
@@ -86,6 +87,7 @@ export const Home = () => {
 		 					<button className="btn-card" onClick={() => setCurrentScene("LOBBY")}>4 PLAYERS</button>
 		 					<button className="btn-card" onClick={() => setCurrentScene("LOBBY")}>3 PLAYERS</button>
 		 					<button className="btn-card" onClick={() => setCurrentScene("LOBBY")}>2 PLAYERS</button>
+		 					<button className="btn-card" onClick={() => setCurrentScene("LOBBY")}>TUTORIAL</button>
 		 				</div>
 		 			</div>
 				</main>
@@ -109,13 +111,16 @@ export const Home = () => {
 						<AvatarPlayer
 							playerName="Aisyah"
 						/>
-						<JoinParty />
+						<JoinParty
+							call={(e) => toggleLightbox("party", true, e)}
+						/>
 					</div>
 				</footer>
 			</section>
 	 		{ showLightbox["info"] && <InfoLightbox dismiss={() => toggleLightbox("info", false)} /> }
 	 		{ showLightbox["settings"] && <SettingsLightbox dismiss={() => toggleLightbox("settings", false)} /> }
 	 		{ showLightbox["chat"] && <ChatLightbox dismiss={() => toggleLightbox("chat", false)} /> }
+	 		{ showLightbox["party"] && <PartyLightbox dismiss={() => toggleLightbox("party", false)} /> }
 		</>
 	);
 }

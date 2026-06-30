@@ -11,7 +11,7 @@ import { RankButton, RankLightbox } from "../components/RankButton";
 import { YeahButton, HmmmButton, WoahButton } from "../components/EmojiButtons";
 import { AvatarPlayer } from "../components/Avatar";
 import { ChatLightbox } from "../components/Chat";
-import { JoinParty } from "../components/Party";
+import { JoinParty, PartyLightbox } from "../components/Party";
 
 export const Lobby = () => {
 	const setCurrentScene = useGameStore((state) => state.setCurrentScene);
@@ -20,9 +20,10 @@ export const Lobby = () => {
 	const showStats = useDevStore((state) => state.showStats);
 	const containerRef = useRef(null);
 	const [showLightbox, setShowLightbox] = useState({
-		chat: false,
 		settings: false,
 		rank: false,
+		chat: false,
+		party: false,
 	});
 	const toggleLightbox = (key: keyof typeof showLightbox, value: boolean, e?: React.MouseEvent<HTMLButtonElement>) => {
 		if (e)
@@ -108,12 +109,15 @@ export const Lobby = () => {
 					<AvatarPlayer
 						playerName="Spectator"
 					/>
-					<JoinParty />
+					<JoinParty 
+						call={(e) => toggleLightbox("party", true, e)}
+					/>
 				</footer>
 			</section>
 			{ showLightbox["settings"] && <SettingsLightbox dismiss={() => toggleLightbox("settings", false)} /> }
 			{ showLightbox["rank"] && <RankLightbox dismiss={() => toggleLightbox("rank", false)} /> }
 			{ showLightbox["chat"] && <ChatLightbox dismiss={() => toggleLightbox("chat", false)} /> }
+			{ showLightbox["party"] && <PartyLightbox dismiss={() => toggleLightbox("party", false)} /> }
 		</>
 	);
 }

@@ -1,12 +1,90 @@
+import { useRef } from "react";
+import { useSceneStore } from "../store/useSceneStore";
 import { AddIcon } from "../icons/AddIcon";
+import { PinButton } from "./PinButton";
 
-export const JoinParty = () => {
+interface PartyProps {
+	call?: (e: React.MouseEvent<HTMLButtonElement>) => void;
+	dismiss?: () => void;
+}
+
+export const JoinParty = ({ call }: PartyProps) => {
 	return (
 		<button
 			data-tip="Add / Join Party"
+			onClick={call}
 			className="btn-party btn-tip-up-2
 		">
 			<AddIcon />
 		</button>
+	);
+}
+
+export const PartyLightbox = ({ dismiss }: PartyProps) => {
+	const contAreaWidth = useSceneStore((scene) => scene.contAreaWidth);
+	const contAreaHeight = useSceneStore((scene) => scene.contAreaHeight);
+	const focusRef = useRef<HTMLInputElement | null>(null);
+
+	return (
+		<section className="
+			absolute z-1 top-0 left-0
+			w-screen h-screen
+		">
+			<button tabIndex={-1} className='btn-lightbox-no-blur' onClick={dismiss}/>
+			<div style={{ width: contAreaWidth, height: contAreaHeight }}
+				className="
+					flex place-content-end place-items-end pb-11 pr-11
+					z-0
+					w-full h-full
+					mx-auto
+					pointer-events-none
+			">
+				<div className="
+					w-max h-max
+					relative
+				">
+					<div className="
+						w-full h-full
+						bg-n1
+						border border-n2 rounded-3xl
+						p-7.5
+						flex flex-col gap-5
+						text-n6
+						pointer-events-auto
+					">
+						<div className="
+							flex flex-col gap-1
+							text-[clamp(0.5625rem,2.5vw+0.28125rem,1.125rem)]
+						">
+							<p>Waiting for players...</p>
+							<p>
+								<span>Code to share: </span>
+								<span className="tracking-[0.25rem]">
+									<b>ABCD1234</b>
+								</span>
+							</p>
+						</div>
+						<hr className="text-a5"/>
+						<div className="flex flex-col gap-3">
+							<label htmlFor="party-code">Or join a party:</label>
+							<input
+								ref={focusRef}
+								id="party-code"
+								type="text"
+								placeholder="Enter code"
+								className="input-form"
+							/>
+						</div>
+					</div>
+					<div className="
+						absolute top-0 left-0 -translate-y-1/2 -translate-x-1/2
+						z-1
+						w-12.5 h-12.5
+					">
+						<PinButton/>
+					</div>
+				</div>
+			</div>
+		</section>
 	);
 }

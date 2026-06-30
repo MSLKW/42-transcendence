@@ -52,7 +52,12 @@ export const SignInLightbox = ({ dismiss }: SignInProps) => {
 					pointer-events-auto
 				">
 					<div className="grid grid-cols-1 sm:grid-cols-[5rem_1fr] gap-1 sm:gap-5 w-full">
-						<label htmlFor="email">Email</label>
+						<label 
+							htmlFor="email"
+							className="sm:justify-end"
+						>
+							Email
+						</label>
 						<input
 							ref={focusRef}
 							id="email"
@@ -62,7 +67,12 @@ export const SignInLightbox = ({ dismiss }: SignInProps) => {
 						/>
 					</div>
 					<div className="grid grid-cols-1 sm:grid-cols-[5rem_1fr] gap-1 sm:gap-5 w-full">
-						<label htmlFor="password">Password</label>
+						<label
+							htmlFor="password"
+							className="sm:justify-end"
+						>
+							Password
+						</label>
 						<input
 							id="password"
 							type="password"

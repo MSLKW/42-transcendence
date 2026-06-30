@@ -9,7 +9,8 @@ interface ChatProps {
 
 export const ChatButton = ({ call }: ChatProps) => {
 	return (
-		<button data-tip="Chat"
+		<button
+			data-tip="Chat"
 			onClick={call}
 			className="btn-icon btn-icon-border btn-tip-up"
 		>
