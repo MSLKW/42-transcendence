@@ -13,6 +13,7 @@ import { TutorialIcon } from "../icons/TutorialIcon";
 import { AvatarPlayer } from "../components/Avatar";
 import { ChatLightbox } from "../components/Chat";
 import { JoinParty, PartyLightbox } from "../components/Party";
+import { SmallLogo } from "../components/Logo";
 
 interface HomeProps {
 	cardType: string;
@@ -56,7 +57,7 @@ export const HomeCards = ({ cardType }: HomeProps) => {
 					<TutorialIcon />
 				</div>
 			}
-			<h3>{cardType}</h3>
+			<p className="text-n0 text-[clamp(0.5rem,4vw+0.25rem,1.5rem)]">{cardType}</p>
 		</button>
 	);
 }
@@ -140,8 +141,13 @@ export const Home = () => {
 		 				</div>
 		 			</div>
 				</main>
-				<footer className="pointer-events-auto">
+				<footer className="
+					pointer-events-auto
+					flex place-content-between place-items-center
+					relative
+				">
 					<div tabIndex={-1} className="
+						z-1
 						w-full h-full
 						flex gap-[clamp(0.25rem,5vw+0.125rem,2.5rem)]
 						sm:overflow-x-visible overflow-x-scroll
@@ -164,6 +170,7 @@ export const Home = () => {
 							call={(e) => toggleLightbox("party", true, e)}
 						/>
 					</div>
+					<SmallLogo />
 				</footer>
 			</section>
 	 		{ showLightbox["info"] && <InfoLightbox dismiss={() => toggleLightbox("info", false)} /> }

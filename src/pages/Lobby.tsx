@@ -12,6 +12,7 @@ import { YeahButton, HmmmButton, WoahButton } from "../components/EmojiButtons";
 import { AvatarPlayer } from "../components/Avatar";
 import { ChatLightbox } from "../components/Chat";
 import { JoinParty, PartyLightbox } from "../components/Party";
+import { SmallLogo } from "../components/Logo";
 
 export const Lobby = () => {
 	const setCurrentScene = useGameStore((state) => state.setCurrentScene);
@@ -105,13 +106,18 @@ export const Lobby = () => {
 						playerName="Azrul"
 					/>
 				</main>
-				<footer className="flex gap-10">
+				<footer className="
+					flex
+					gap-10
+					relative
+				">
 					<AvatarPlayer
 						playerName="Spectator"
 					/>
 					<JoinParty 
 						call={(e) => toggleLightbox("party", true, e)}
 					/>
+					<SmallLogo />
 				</footer>
 			</section>
 			{ showLightbox["settings"] && <SettingsLightbox dismiss={() => toggleLightbox("settings", false)} /> }
