@@ -56,7 +56,7 @@ export const HomeCards = ({ cardType }: HomeProps) => {
 					<TutorialIcon />
 				</div>
 			}
-			<h2>{cardType}</h2>
+			<h3>{cardType}</h3>
 		</button>
 	);
 }

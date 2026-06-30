@@ -6,6 +6,7 @@ import { useSceneStore } from "../store/useSceneStore";
 import { useDevStore } from "../store/useDevStore";
 import { StripeBg } from "../components/StripeBg";
 import { SphereBg } from "../components/SphereBg";
+import { BigLogo } from "../components/Logo";
 import { InfoButton, InfoLightbox } from "../components/Info";
 import { CreateAccountButton, CreateAccountLightbox } from "../components/CreateAccount";
 import { SignInButton, SignInLightbox } from "../components/SignIn";
@@ -68,15 +69,18 @@ export const Login = () => {
 				<header className="flex place-content-end">
 	 				<InfoButton call={(e) => toggleLightbox("info", true, e)}/>
 				</header>
-				<main />
+				<main>
+					<BigLogo />
+				</main>
 				<footer className="
 					flex flex-col place-content-center place-items-center
-					gap-5
+					gap-[clamp(0.125rem,2vh+0.06125rem,1.25rem)]
+					pb-[clamp(0.25rem,5vh+0.125rem,5rem)]
 				">
 					<div className="
 						w-full h-full
 						flex place-content-center place-items-center
-						gap-7.5
+						gap-[clamp(0.5rem,3vw+0.25rem,1.875rem)]
 						flex-wrap
 					">
 						<SignInButton call={(e) => toggleLightbox("signIn", true, e)}/>
