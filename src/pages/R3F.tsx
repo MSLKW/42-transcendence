@@ -108,9 +108,9 @@ export const R3F = () => {
 							bg-n1
 							border border-n2 rounded-3xl
 							text-n6
-							text-[clamp(0.5rem,2vw+0.25rem,0.875rem)]
+							text-[clamp(0.5rem,2vw+0.25rem,1rem)]
 							px-[clamp(0.25rem,2vw+0.125rem,1.25rem)]
-							py-[clamp(0.125rem,1vh+0.0625rem,0.5rem)]
+							py-[clamp(0.0625rem,0.5vh+0.03125rem,0.5rem)]
 						">
 							<p>Straight</p>
 						</div>
@@ -119,13 +119,13 @@ export const R3F = () => {
 				<footer className="flex place-content-between place-items-center">
 					<AvatarPlayer cornerButton="chat" call={(e) => toggleLightbox("chat", true, e)}/>
 					<div className="
-						w-20 h-full
+						w-[clamp(1rem,10vw+0.5rem,5rem)] h-full
 						flex flex-col place-content-between
-						gap-3
+						gap-[clamp(0.25rem,1vh+0.125rem,0.75rem)]
 					">
-						<button className="btn-sort" onClick={(e) => handleSort(e)}>RANK</button>
-						<button className="btn-sort" onClick={(e) => handleSort(e)}>SUIT</button>
-						<button className="btn-sort" onClick={(e) => handleSort(e)}>FLEX</button>
+						<button className="btn-sort" onClick={(e) => handleSort(e)}>Rank</button>
+						<button className="btn-sort" onClick={(e) => handleSort(e)}>Suit</button>
+						<button className="btn-sort" onClick={(e) => handleSort(e)}>Flex</button>
 					</div>
 				</footer>
 			</section>

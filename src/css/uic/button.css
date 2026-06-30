@@ -216,7 +216,7 @@ button {
 		bg-n1
 		border border-n2 rounded-3xl
 		text-n6
-		text-sm
+		text-[clamp(0.25rem,2vw+0.125rem,1rem)]
 
 		hover:not-disabled:scale-105
 
