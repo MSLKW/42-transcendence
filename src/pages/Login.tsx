@@ -1,10 +1,11 @@
 import { useState, useRef, useEffect } from "react";
 import { Canvas } from "@react-three/fiber";
-import { Stats } from "@react-three/drei";
+import { Stats, PerspectiveCamera, OrbitControls, AdaptiveDpr } from "@react-three/drei";
 import { useGameStore } from "../store/useGameStore";
 import { useSceneStore } from "../store/useSceneStore";
 import { useDevStore } from "../store/useDevStore";
 import { StripeBg } from "../components/StripeBg";
+import { SphereBg } from "../components/SphereBg";
 import { InfoButton, InfoLightbox } from "../components/Info";
 import { CreateAccountButton, CreateAccountLightbox } from "../components/CreateAccount";
 import { SignInButton, SignInLightbox } from "../components/SignIn";
@@ -56,6 +57,11 @@ export const Login = () => {
 			<section ref={containerRef} className="cont-canvas">
 				<Canvas>
 					{showStats && <Stats />}
+					<AdaptiveDpr />
+					<ambientLight intensity={0.5}/>
+					<SphereBg />
+					<PerspectiveCamera makeDefault position={[0, 0, 2.25]} />
+					<OrbitControls enableZoom={false}/>
 				</Canvas>
 			</section>
 			<section className="cont-body">
