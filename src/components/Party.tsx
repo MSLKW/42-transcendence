@@ -57,17 +57,19 @@ export const PartyLightbox = ({ dismiss }: PartyProps) => {
 							flex flex-col gap-[clamp(0.125rem,2vw+0.0625rem,0.25rem)]
 							text-[clamp(0.5625rem,2.5vw+0.28125rem,1.125rem)]
 						">
-							<p>Waiting for players...</p>
+							<p><b>Join your party</b></p>
 							<p>
 								<span>Code to share: </span>
 								<span className="tracking-[0.25rem]">
-									<b>ABCD1234</b>
+									<i>ABCD1234</i>
 								</span>
 							</p>
 						</div>
 						<hr className="text-a5"/>
 						<div className="flex flex-col gap-[clamp(0.125rem,2vw+0.0625rem,0.75rem)]">
-							<label htmlFor="party-code">Or join a party:</label>
+							<label htmlFor="party-code">
+								<b>Join another party</b>
+							</label>
 							<input
 								ref={focusRef}
 								id="party-code"

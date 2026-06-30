@@ -37,7 +37,8 @@ export const ChatLightbox = ({ dismiss }: ChatProps) => {
 			<div style={{ width: contAreaWidth, height: contAreaHeight }}
 				className="
 					z-0
-					flex place-content-end place-items-end pr-12.5 pb-13.5
+					flex place-content-end place-items-end
+					pb-[clamp(0.125rem,3.5vw+0.0625rem,3.125rem)] pr-[clamp(0.125rem,3.5vw+0.0625rem,3.125rem)]
 					w-full h-full
 					mx-auto
 					pointer-events-none

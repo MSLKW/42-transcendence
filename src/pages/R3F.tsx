@@ -108,10 +108,11 @@ export const R3F = () => {
 							bg-n1
 							border border-n2 rounded-3xl
 							text-n6
-							text-sm
-							px-5 py-2
+							text-[clamp(0.5rem,2vw+0.25rem,0.875rem)]
+							px-[clamp(0.25rem,2vw+0.125rem,1.25rem)]
+							py-[clamp(0.125rem,1vh+0.0625rem,0.5rem)]
 						">
-							<p>STRAIGHT</p>
+							<p>Straight</p>
 						</div>
 					</div>
 				</main>
