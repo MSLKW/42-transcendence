@@ -8,12 +8,10 @@ import { SphereBg } from "../components/SphereBg";
 import { BackButton } from "../components/BackButton";
 import { SettingsButton, SettingsLightbox } from "../components/Settings";
 import { YeahButton, HmmmButton, WoahButton } from "../components/EmojiButtons";
-import { AvatarPlayer } from "../components/Avatar";
 import { ChatLightbox } from "../components/Chat";
+import { NextGameButton } from "../components/NextGameButton";
 
 export const ResultsWindow = () => {
-	const setCurrentScene = useGameStore((state) => state.setCurrentScene);
-
 	return (
 		<div className="
 			w-150 h-150
@@ -34,12 +32,7 @@ export const ResultsWindow = () => {
 				absolute top-0 right-0 -translate-y-1/2 translate-x-1/2
 				z-1
 			">
-				<button
-					data-tip="Next Game"
-					onClick={() => setCurrentScene("R3F")} 
-					className="btn-icon btn-icon-border btn-tip-down"
-				>
-				</button>
+				<NextGameButton />
 			</div>
 		</div>
 	)

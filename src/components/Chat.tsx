@@ -57,7 +57,7 @@ export const ChatLightbox = ({ dismiss }: ChatProps) => {
 						<div className="
 							w-full h-[2000px]
 							bg-n1
-							p-10
+							p-[clamp(0.25rem,5vw+0.125rem,2.5rem)]
 							text-n6
 							flex flex-col justify-between
 						">
@@ -65,7 +65,7 @@ export const ChatLightbox = ({ dismiss }: ChatProps) => {
 							<p>End of chat section</p>
 						</div>
 					</div>
-					<div className="w-full h-12.5 relative">
+					<div className="w-full h-max relative">
 						<input className="input-chat"/>
 						<button className="btn-send" onClick={(e) => {handleSend(e)}}>
 								SEND

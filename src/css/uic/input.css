@@ -23,7 +23,8 @@
 @utility input-chat {
 	@apply
 		z-0
-		w-full h-12.5
+		w-full
+		h-[clamp(2rem,5vh+0.5rem,3.125rem)]
 		bg-n6
 		border border-n5 rounded-3xl
 		pl-5 pr-25

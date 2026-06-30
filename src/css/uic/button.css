@@ -116,10 +116,11 @@ button {
 	@apply
 		z-1
 		absolute right-0.5 top-1/2 -translate-y-1/2
-		w-20 h-11.5
+		w-[clamp(4rem,10vw+2rem,5rem)]
+		h-[clamp(0.5rem,5vh+0.25rem,2.875rem)]
 		border border-b4 rounded-3xl
 		bg-b5
-		text-sm
+		text-[clamp(0.25rem,2vw+0.125rem,0.75rem)]
 
 		hover:not-disabled:scale-105
 

@@ -83,6 +83,7 @@ export const Home = () => {
 		 					flex place-content-center-safe place-items-center gap-10
 							w-full h-full
 							flex-5
+							pointer-events-auto
 		 				">
 		 					<button className="btn-card" onClick={() => setCurrentScene("LOBBY")}>4 PLAYERS</button>
 		 					<button className="btn-card" onClick={() => setCurrentScene("LOBBY")}>3 PLAYERS</button>
