@@ -157,6 +157,7 @@ button {
 		snap-center
 		text-[clamp(0px,3vh,24px)]
 		p-[clamp(0px,2vh,50px)]
+		flex flex-col place-content-between
 
 		hover:not-disabled:from-b4
 		hover:not-disabled:to-b5
