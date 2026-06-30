@@ -33,7 +33,8 @@ export const PartyLightbox = ({ dismiss }: PartyProps) => {
 			<button tabIndex={-1} className='btn-lightbox-no-blur' onClick={dismiss}/>
 			<div style={{ width: contAreaWidth, height: contAreaHeight }}
 				className="
-					flex place-content-end place-items-end pb-11 pr-11
+					flex place-content-end place-items-end
+					pb-[clamp(0.125rem,3.5vw+0.0625rem,3.125rem)] pr-[clamp(0.125rem,3.5vw+0.0625rem,3.125rem)]
 					z-0
 					w-full h-full
 					mx-auto
@@ -46,14 +47,14 @@ export const PartyLightbox = ({ dismiss }: PartyProps) => {
 					<div className="
 						w-full h-full
 						bg-n1
-						border border-n2 rounded-3xl
-						p-7.5
-						flex flex-col gap-5
+						border border-n2 rounded-[clamp(0.125rem,2vw+0.0625rem,1.5rem)]
+						p-[clamp(0.25rem,2vw+0.125rem,1.875rem)]
+						flex flex-col gap-[clamp(0.25rem,2vw+0.125rem,1.25rem)]
 						text-n6
 						pointer-events-auto
 					">
 						<div className="
-							flex flex-col gap-1
+							flex flex-col gap-[clamp(0.125rem,2vw+0.0625rem,0.25rem)]
 							text-[clamp(0.5625rem,2.5vw+0.28125rem,1.125rem)]
 						">
 							<p>Waiting for players...</p>
@@ -65,7 +66,7 @@ export const PartyLightbox = ({ dismiss }: PartyProps) => {
 							</p>
 						</div>
 						<hr className="text-a5"/>
-						<div className="flex flex-col gap-3">
+						<div className="flex flex-col gap-[clamp(0.125rem,2vw+0.0625rem,0.75rem)]">
 							<label htmlFor="party-code">Or join a party:</label>
 							<input
 								ref={focusRef}
