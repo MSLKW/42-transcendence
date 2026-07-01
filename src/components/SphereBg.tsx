@@ -8,8 +8,8 @@ export const SphereBg = () => {
 	useFrame((_state, delta) => {
 		if (!sphereRef.current)
 			return;
-		sphereRef.current.rotation.y += 0.2 * delta;
-		sphereRef.current.rotation.x += 0.1 * delta;
+		sphereRef.current.rotation.y += 0.025 * delta;
+		sphereRef.current.rotation.x += 0.0125 * delta;
 	});
 
 	return (

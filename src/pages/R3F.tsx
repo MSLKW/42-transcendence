@@ -18,6 +18,7 @@ export const R3F = () => {
 	const containerRef = useRef(null);
 	const setContAreaWidth = useSceneStore((state) => state.setContAreaWidth);
 	const setContAreaHeight = useSceneStore((state) => state.setContAreaHeight);
+	const [sortType, setSortType] = useState("Flex");
 	const [showLightbox, setShowLightbox] = useState({
 		settings: false,
 		rank: false,
@@ -31,9 +32,10 @@ export const R3F = () => {
 			[key]: value,
 		}));
 	}
-	const handleSort = (e?: React.MouseEvent<HTMLButtonElement>) => {
+	const handleSort = (e?: React.MouseEvent<HTMLButtonElement>, type: string) => {
 		if (e)
 			e.currentTarget.blur();
+		setSortType(type);
 	}
 
 	useEffect(() => {
@@ -122,11 +124,32 @@ export const R3F = () => {
 					<div className="
 						w-[clamp(1rem,10vw+0.5rem,5rem)] h-full
 						flex flex-col place-content-between
-						gap-[clamp(0.25rem,1vh+0.125rem,0.75rem)]
+						gap-[clamp(0.25rem,2vh+0.125rem,0.75rem)]
 					">
-						<button className="btn-sort" onClick={(e) => handleSort(e)}>Rank</button>
-						<button className="btn-sort" onClick={(e) => handleSort(e)}>Suit</button>
-						<button className="btn-sort" onClick={(e) => handleSort(e)}>Flex</button>
+						<button
+							onClick={(e) => handleSort(e, "Rank")}
+							className={`btn-sort
+								${sortType === "Rank" ? "outline-2" : "outline-none"}
+								`}
+						>
+							Rank
+						</button>
+						<button
+							onClick={(e) => handleSort(e, "Suit")}
+							className={`btn-sort
+								${sortType === "Suit" ? "outline-2" : "outline-none"}
+								`}
+						>
+							Suit
+						</button>
+						<button
+							onClick={(e) => handleSort(e, "Flex")}
+							className={`btn-sort
+								${sortType === "Flex" ? "outline-2" : "outline-none"}
+								`}
+						>
+							Flex
+						</button>
 					</div>
 				</footer>
 			</section>

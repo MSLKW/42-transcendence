@@ -1,8 +1,8 @@
 @utility input-form {
 	@apply
-		bg-n6
 		w-full
 		h-[clamp(1rem,2vh+0.3125rem,1.25rem)]
+		bg-n6
 		rounded-sm
 		p-[clamp(1rem,2vh+0.3125rem,1.25rem)]
 		pointer-events-auto
@@ -24,7 +24,7 @@
 	@apply
 		z-0
 		w-full
-		h-[clamp(2rem,5vh+0.5rem,3.125rem)]
+		h-[clamp(1rem,5vh+0.3125rem,2rem)]
 		bg-n6
 		border border-n5 rounded-3xl
 		pl-5 pr-25

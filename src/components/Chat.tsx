@@ -101,6 +101,7 @@ export const ChatLightbox = ({ dismiss }: ChatProps) => {
 						p-[clamp(0.25rem,5vw+0.125rem,1rem)]
 						flex flex-col place-content-start place-items-center
 						gap-3
+						pointer-events-auto
 					">
 						<div tabIndex={-1}
 							className="
@@ -134,7 +135,6 @@ export const ChatLightbox = ({ dismiss }: ChatProps) => {
 							w-full h-max
 							flex place-content-between place-items-center
 							gap-3
-							pointer-events-auto
 						">
 							<input className="input-chat"/>
 							<SendButton />
