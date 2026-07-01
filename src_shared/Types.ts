@@ -15,7 +15,7 @@ export enum CardRank {
 	Two
 }
 
-export enum CardSuite {
+export enum CardSuit {
 	Diamond,
 	Club,
 	Heart,
@@ -24,7 +24,7 @@ export enum CardSuite {
 
 export interface CardTransmit {
 	rank: CardRank;
-	suite: CardSuite;
+	suit: CardSuit;
 }
 
 export enum HandType {

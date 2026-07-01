@@ -29,7 +29,7 @@ export class Opponent {
 				for (let i = 0; i < cardHandTransmit.cards.length; i++) {
 					let card = this.cardManager.removeCardByIndex(0);
 					if (card)  {
-						card.setCardRankSuite(cardHandTransmit.cards[i].rank, cardHandTransmit.cards[i].suite);
+						card.setCardRankSuit(cardHandTransmit.cards[i].rank, cardHandTransmit.cards[i].suit);
 						cardHand.receiveCard(card);
 					}
 				}

@@ -109,7 +109,7 @@ export class CardManager {
 				card.object.rotation.copy(this.rotation);
 				this.applyFanEffect(card.object, 40, 1, normalizedIndex);
 				this.applyHoverEffect(card);
-				// console.log(`updated card object rank: ${card.rank} suite: ${card.suite} position: ${card.object.position.x},${card.object.position.y},${card.object.position.z} index: ${normalizedIndex}`);
+				// console.log(`updated card object rank: ${card.rank} suit: ${card.suit} position: ${card.object.position.x},${card.object.position.y},${card.object.position.z} index: ${normalizedIndex}`);
 			}
 		}
 	}

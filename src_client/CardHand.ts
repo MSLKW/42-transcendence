@@ -1,5 +1,5 @@
 import { Card } from './Card.ts';
-import { HandType, PentupleType, CardRank, CardSuite, CardHandTransmit} from '../src_shared/Types.ts'
+import { HandType, PentupleType, CardRank, CardSuit, CardHandTransmit} from '../src_shared/Types.ts'
 
 export class CardHand {
 	public readonly	cards: Array<Card>;
@@ -46,10 +46,10 @@ export class CardHand {
 		this.cards.length = 0;
 	}
 
-	// Sorts the cards by descending from rank first, then suite if the rank is the same
+	// Sorts the cards by descending from rank first, then suit if the rank is the same
 	public sortCards(a: Card, b: Card) {
 		if (b.rank - a.rank === 0)
-			return (b.suite - a.suite);
+			return (b.suit - a.suit);
 		return (b.rank - a.rank);
 	}
 
@@ -120,9 +120,9 @@ export class CardHand {
 	private isFlush(): boolean  {
 		if (this.cards.length !== 5)
 			return (false);
-		let suite: CardSuite = this.cards[0].suite;
+		let suit: CardSuit = this.cards[0].suit;
 		for (let i = 1; i < 5; i++) {
-			if (this.cards[i].suite !== suite)
+			if (this.cards[i].suit !== suit)
 				return (false)
 		}
 		return (true);

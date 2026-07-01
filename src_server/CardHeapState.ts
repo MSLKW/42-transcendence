@@ -30,22 +30,16 @@ export class CardHeapState {
 		if (other.handType === HandType.Single || other.handType === HandType.Double || other.handType === HandType.Triple) {
 			if (other.cards[0].rank > topCardHand.cards[0].rank)
 				return (true);
-			else if (other.cards[0].rank === topCardHand.cards[0].rank && other.cards[0].suite > topCardHand.cards[0].suite)
+			else if (other.cards[0].rank === topCardHand.cards[0].rank && other.cards[0].suit > topCardHand.cards[0].suit)
 				return (true);
 		}
 		else if (other.handType === HandType.Pentuple) {
 			if (other.pentupleType > topCardHand.pentupleType)
 				return (true);
-			if (other.pentupleType === PentupleType.Straight || other.pentupleType === PentupleType.StraightFlush) {
+			if (other.pentupleType === PentupleType.Straight || other.pentupleType === PentupleType.Flush || other.pentupleType === PentupleType.StraightFlush) {
 				if (other.cards[0].rank > topCardHand.cards[0].rank)
 					return (true);
-				else if (other.cards[0].rank === topCardHand.cards[0].rank && other.cards[0].suite > topCardHand.cards[0].suite)
-					return (true);
-			}
-			else if (other.pentupleType === PentupleType.Flush) {
-				if (other.cards[0].suite > topCardHand.cards[0].suite)
-					return (true);
-				else if (other.cards[0].suite === topCardHand.cards[0].suite && other.cards[0].rank > topCardHand.cards[0].rank)
+				else if (other.cards[0].rank === topCardHand.cards[0].rank && other.cards[0].suit > topCardHand.cards[0].suit)
 					return (true);
 			}
 			else if (other.pentupleType === PentupleType.FullHouse || other.pentupleType === PentupleType.FourOfAKind) {

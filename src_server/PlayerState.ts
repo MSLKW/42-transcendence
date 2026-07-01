@@ -1,5 +1,5 @@
 import { Socket } from 'socket.io';
-import { CardTransmit, CardRank, CardSuite, CardHandTransmit, HandType, PentupleType } from '../src_shared/Types.js';
+import { CardTransmit, CardRank, CardSuit, CardHandTransmit, HandType, PentupleType } from '../src_shared/Types.js';
 import { GameState } from './GameState.js';
 import { CardHeapState } from './CardHeapState.js';
 import { io } from './server.js';
@@ -38,7 +38,7 @@ export class PlayerState {
 	}
 
 	public hasThreeDiamonds(): boolean {
-		const card = this.cards.find((card) => card.rank === CardRank.Three && card.suite === CardSuite.Diamond);
+		const card = this.cards.find((card) => card.rank === CardRank.Three && card.suit === CardSuit.Diamond);
 		if (card)
 			return (true);
 		return (false);
@@ -46,7 +46,7 @@ export class PlayerState {
 
 	private removeCard(card: CardTransmit) {
 		for (let i = 0; i < this.cards.length; i++) {
-			if (this.cards[i].rank === card.rank && this.cards[i].suite === card.suite) {
+			if (this.cards[i].rank === card.rank && this.cards[i].suit === card.suit) {
 				this.cards.splice(i, 1);
 				break ;
 			}
@@ -78,6 +78,9 @@ export class PlayerState {
 			return;
 		}
 		const cardHand = JSON.parse(body) as CardHandTransmit;
+		// evaluate cardhand cards pentuple type again
+		// if doesn't compare properly, reject
+		// resort cards to descending
 		if (cardHand.handType === HandType.None || (cardHand.handType === HandType.Pentuple && cardHand.pentupleType === PentupleType.None)) {
 			this.socket.emit('player_play_card_hand', 'failure: cardhand is not even a thing');
 			return ;
@@ -87,7 +90,7 @@ export class PlayerState {
 			return ;
 		}
 		for (let i = 0; i < cardHand.cards.length; i++) {
-			if (this.cards.findIndex((card: CardTransmit) => card.rank === cardHand.cards[i].rank && card.suite === cardHand.cards[i].suite ) == -1) {
+			if (this.cards.findIndex((card: CardTransmit) => card.rank === cardHand.cards[i].rank && card.suit === cardHand.cards[i].suit ) == -1) {
 				this.socket.emit('player_play_card_hand', 'failure: cardhand not in playerState cards');
 				return ;
 			}

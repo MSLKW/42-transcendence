@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { CardHandTransmit, CardRank, CardSuite, CardTransmit, HandType, PentupleType, PlayerSeatOrderTransmit } from '../src_shared/Types.ts';
+import { CardHandTransmit, CardRank, CardSuit, CardTransmit, HandType, PentupleType, PlayerSeatOrderTransmit } from '../src_shared/Types.ts';
 import { Card } from './Card.ts';
 import { CardManager } from './CardManager.ts';
 import { CardHand } from './CardHand.ts';

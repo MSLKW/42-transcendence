@@ -12,11 +12,11 @@ export class CardDeckState {
 	}
 
 	private initCards() {
-		for (let suite = 0; suite < 4; suite++) {
+		for (let suit = 0; suit < 4; suit++) {
 			for (let rank = 0; rank < 13; rank++) {
 				let card: CardTransmit = {
 					rank: rank,
-					suite: suite,
+					suit: suit,
 				}
 				this.cards.push(card);
 			}

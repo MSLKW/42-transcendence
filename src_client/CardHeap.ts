@@ -35,7 +35,7 @@ export class CardHeap {
 			let cardHand = new CardHand(cardHands[i].playerId);
 			for (let j = 0; j < cardHands[i].cards.length; j++) {
 				let cardTransmit = cardHands[i].cards[j]
-				const card = new Card(cardTransmit.rank, cardTransmit.suite);
+				const card = new Card(cardTransmit.rank, cardTransmit.suit);
 				cardHand.receiveCard(card);
 			}
 			this.receiveCardHand(cardHand);

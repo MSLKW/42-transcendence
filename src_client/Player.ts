@@ -18,7 +18,7 @@ export class Player {
 	private skipTurnButton: HTMLButtonElement;
 	private startGameButton: HTMLButtonElement;
 	private sortCardsByRankButton: HTMLButtonElement;
-	private sortCardsBySuiteButton: HTMLButtonElement
+	private sortCardsBySuitButton: HTMLButtonElement
 
 	constructor(socket: Socket, playerId: string, cardHeapRef: CardHeap) {
 		this.socket = socket;
@@ -30,7 +30,7 @@ export class Player {
 		this.skipTurnButton = document.getElementById('skip-turn-button') as HTMLButtonElement;
 		this.startGameButton = document.getElementById('start-game-button') as HTMLButtonElement;
 		this.sortCardsByRankButton = document.getElementById('sort-cards-by-rank-button') as HTMLButtonElement;
-		this.sortCardsBySuiteButton = document.getElementById('sort-cards-by-suite-button') as HTMLButtonElement;
+		this.sortCardsBySuitButton = document.getElementById('sort-cards-by-suit-button') as HTMLButtonElement;
 
 		this.cardManager = new CardManager(this.playerId);
 
@@ -38,7 +38,7 @@ export class Player {
 			this.skipTurnButton === undefined || 
 			this.startGameButton === undefined ||
 			this.sortCardsByRankButton === undefined ||
-			this.sortCardsBySuiteButton === undefined) {
+			this.sortCardsBySuitButton === undefined) {
 			console.error("Player could not get HTML buttons");
 			return ;
 		}
@@ -113,8 +113,8 @@ export class Player {
 			this.cardManager.sortCards((a, b) => a.rank - b.rank);
 		});
 
-		this.sortCardsBySuiteButton.addEventListener('click', () => {
-			this.cardManager.sortCards((a, b) => a.suite - b.suite);
+		this.sortCardsBySuitButton.addEventListener('click', () => {
+			this.cardManager.sortCards((a, b) => a.suit - b.suit);
 		});
 
 		renderer.domElement.addEventListener('click', (event) => {
@@ -159,7 +159,7 @@ export class Player {
 
 	private collectCards(cardTransmits: Array<CardTransmit>) {
 		for (let i = 0; i < cardTransmits.length; i++) {
-			let card = new Card(cardTransmits[i].rank, cardTransmits[i].suite);
+			let card = new Card(cardTransmits[i].rank, cardTransmits[i].suit);
 			this.cardManager.receiveCard(card);
 		}
 	}
