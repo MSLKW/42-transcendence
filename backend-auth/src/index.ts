@@ -4,6 +4,7 @@ import { FileUserStore } from "./store/fileUserStore";
 import { FileSessionStore } from "./store/fileSessionStore";
 import { signupHandler } from "./handlers/signup";
 import { signinHandler } from "./handlers/signin";
+import { guestHandler } from "./handlers/guest";
 import { logoutHandler } from "./handlers/logout";
 import { validateSessionHandler } from "./handlers/validateSession";
 
@@ -16,6 +17,7 @@ const sessionStore = new FileSessionStore();
 
 app.post("/signup", signupHandler(userStore));
 app.post("/signin", signinHandler(userStore, sessionStore));
+app.post("/guest", guestHandler(sessionStore));
 app.delete("/logout", logoutHandler(sessionStore));
 app.get("/validate", validateSessionHandler(sessionStore));
 
