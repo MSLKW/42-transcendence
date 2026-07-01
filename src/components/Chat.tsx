@@ -1,6 +1,7 @@
 import { useSceneStore } from "../store/useSceneStore";
 import { ChatIcon } from "../icons/ChatIcon";
 import { PinButton } from "./PinButton";
+import { SendButton } from "../components/SendButton";
 
 interface ChatProps {
 	call?: (e: React.MouseEvent<HTMLButtonElement>) => void;
@@ -23,11 +24,6 @@ export const ChatLightbox = ({ dismiss }: ChatProps) => {
 	const contAreaWidth = useSceneStore((scene) => scene.contAreaWidth);
 	const contAreaHeight = useSceneStore((scene) => scene.contAreaHeight);
 
-	const handleSend = (e?: React.MouseEvent<HTMLButtonElement>) => {
-		if (e)
-			e.currentTarget.blur();
-	}
-
 	return (
 		<section className="
 			absolute z-1 top-0 left-0
@@ -45,32 +41,44 @@ export const ChatLightbox = ({ dismiss }: ChatProps) => {
 			">
 				<div className="
 					w-[clamp(12.5rem,65vw+1rem,30rem)] h-[clamp(20rem,50vh+1rem,30rem)]
+					flex flex-col place-content-between place-items-center
+					gap-3
 					relative
 				">
-					<div tabIndex={-1}
-						className="
-							border border-n2 rounded-[clamp(0px,2vh,24px)]
-							w-full h-[calc(100%-50px)]
-							overflow-scroll
-							pointer-events-auto
-							mb-2
+					<div className="
+						w-full h-full
+						bg-n1
+						border border-n2 rounded-[clamp(0.25rem,5vh+0.125rem,2rem)]
+						p-[clamp(0.25rem,5vw+0.125rem,1rem)]
+						flex flex-col place-content-start place-items-center
+						gap-3
 					">
-						<div className="
-							w-full h-[2000px]
-							bg-n1
-							p-[clamp(0.25rem,5vw+0.125rem,2.5rem)]
-							text-n6
-							flex flex-col justify-between
+						<div tabIndex={-1}
+							className="
+								w-full h-[calc(100%-50px)]
+								overflow-scroll
+								pointer-events-auto
 						">
-							<p>Start of chat section</p>
-							<p>End of chat section</p>
+							<div className="
+								w-full h-[2000px]
+								text-n6
+								p-7.5
+								flex flex-col justify-between
+							">
+								<p>Start of chat section</p>
+								<p>End of chat section</p>
+							</div>
 						</div>
-					</div>
-					<div className="w-full h-max relative">
-						<input className="input-chat"/>
-						<button className="btn-send" onClick={(e) => {handleSend(e)}}>
-								SEND
-						</button>
+						<hr className="w-full h-[0.3rem] text-n2"/>
+						<div className="
+							w-full h-max
+							flex place-content-between place-items-center
+							gap-3
+							pointer-events-auto
+						">
+							<input className="input-chat"/>
+							<SendButton />
+						</div>
 					</div>
 					<div className="
 						absolute top-0 left-0 -translate-y-1/2 -translate-x-1/2
