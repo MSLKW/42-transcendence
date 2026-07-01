@@ -70,7 +70,7 @@ export const Home = () => {
 	const [showLightbox, setShowLightbox] = useState({
 		settings: false,
 		info: false,
-		chat: false,
+		chat: true,
 		party: false,
 	});
 	const toggleLightbox = (key: keyof typeof showLightbox, value: boolean, e?: React.MouseEvent<HTMLButtonElement>) => {
@@ -153,9 +153,9 @@ export const Home = () => {
 						sm:overflow-x-visible overflow-x-auto
 					">
 						<AvatarPlayer
+							playerName="Azrul"
 							cornerButton="chat"
 							call={(e) => toggleLightbox("chat", true, e)}
-							playerName="Azrul"
 						/>
 						<AvatarPlayer
 							playerName="Max"

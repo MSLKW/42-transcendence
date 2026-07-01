@@ -2,10 +2,14 @@ import { useSceneStore } from "../store/useSceneStore";
 import { ChatIcon } from "../icons/ChatIcon";
 import { PinButton } from "./PinButton";
 import { SendButton } from "../components/SendButton";
+import { AvatarImage } from "./Avatar";
 
 interface ChatProps {
 	call?: (e: React.MouseEvent<HTMLButtonElement>) => void;
 	dismiss?: () => void;
+	senderId?: number;
+	senderName?: string;
+	message?: string;
 }
 
 export const ChatButton = ({ call }: ChatProps) => {
@@ -17,6 +21,30 @@ export const ChatButton = ({ call }: ChatProps) => {
 		>
 			<ChatIcon />
 		</button>
+	);
+}
+
+export const ChatBubble = ({ senderId, senderName, message }: ChatProps) => {
+	return (
+		<>
+			{senderId === 0 ? (
+				<div className="flex place-content-end place-items-start gap-5">
+					<div className="flex flex-col gap-1 text-right bg-a3 border border-a4 rounded-xl px-5 py-3">
+						<p className="text-b5 font-bold">{senderName}</p>
+						<p>{message}</p>
+					</div>
+					<AvatarImage />
+				</div>
+			) : (
+				<div className="flex place-content-start place-items-start gap-5">
+					<AvatarImage />
+					<div className="flex flex-col gap-1 text-left bg-a3 border border-a4 rounded-xl px-5 py-3">
+						<p className="text-b5 font-bold">{senderName}</p>
+						<p>{message}</p>
+					</div>
+				</div>
+			)}
+		</>
 	);
 }
 
@@ -60,13 +88,17 @@ export const ChatLightbox = ({ dismiss }: ChatProps) => {
 								pointer-events-auto
 						">
 							<div className="
-								w-full h-[2000px]
+								w-full h-fit
 								text-n6
 								p-7.5
-								flex flex-col justify-between
+								flex flex-col gap-5
 							">
-								<p>Start of chat section</p>
-								<p>End of chat section</p>
+								<ChatBubble senderId={0} senderName="Azrul" message="Sup Max!"/>
+								<ChatBubble senderId={1} senderName="Max" message="Hey. How's the website coming along?"/>
+								<ChatBubble senderId={0} senderName="Azrul" message="It's coming along great! Just need to finish up the last few details"/>
+								<ChatBubble senderId={2} senderName="Jeremy" message="Yo check out the cpu bots i just made... ~Beep boop~"/>
+								<ChatBubble senderId={3} senderName="Aisyah" message="Guys... I'm done with my Inception!"/>
+								<ChatBubble senderId={3} senderName="Aisyah" message="Also soooo excited for this SQL talk!!!"/>
 							</div>
 						</div>
 						<hr className="w-full h-[0.3rem] text-n2"/>

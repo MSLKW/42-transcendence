@@ -6,44 +6,50 @@ interface AvatarProps {
 	playerName?: string;
 }
 
-export const AvatarPlayer = ({ cornerButton, call, playerName = "Player" }: AvatarProps) => {
+export const AvatarImage = ({ cornerButton, call }: AvatarProps) => {
+	return (
+		<div className="
+			w-[clamp(2.5rem,7.5vh+0.5rem,5rem)]
+			aspect-square
+			bg-a5
+			border border-a6 rounded-sm
+			flex place-content-center place-items-center
+			relative
+		">
+			{cornerButton === "chat" &&
+				<div className="
+					absolute top-0 right-0 translate-x-1/2 sm:-translate-y-1/2
+					z-1
+				">
+					<ChatButton call={call}/>
+				</div>
+			}
+			{cornerButton === "cards" &&
+				<div className="
+					absolute top-0 right-0 translate-x-1/2 -translate-y-1/2
+					z-1
+					bg-n1
+					border border-n2 rounded-2xl
+					text-sm
+					text-n6
+					w-7.5 h-7.5
+					flex place-content-center place-items-center
+				">
+					<p>13</p>
+				</div>
+			}
+		</div>
+	)
+}
+
+export const AvatarPlayer = ({ cornerButton = "none", playerName = "Player", call }: AvatarProps) => {
 	return (
 		<>
 			<div className="
 				flex flex-col place-items-center
 				gap-1
 			">
-				<div className="
-					h-[clamp(2.5rem,7.5vh+0.5rem,5rem)]
-					aspect-square
-					bg-a5
-					border border-a6 rounded-sm
-					flex place-content-center place-items-center
-					relative
-				">
-					{cornerButton === "chat" &&
-						<div className="
-							absolute top-0 right-0 translate-x-1/2 sm:-translate-y-1/2
-							z-1
-						">
-							<ChatButton call={call}/>
-						</div>
-					}
-					{cornerButton === "cards" &&
-						<div className="
-							absolute top-0 right-0 translate-x-1/2 -translate-y-1/2
-							z-1
-							bg-n1
-							border border-n2 rounded-2xl
-							text-sm
-							text-n6
-							w-7.5 h-7.5
-							flex place-content-center place-items-center
-						">
-							<p>13</p>
-						</div>
-					}
-				</div>
+				<AvatarImage cornerButton={cornerButton} call={call} />
 				<div className="
 					w-max min-w-[clamp(2.5rem,7.5vh+0.5rem,5rem)] max-w-32.5
 					h-fit
