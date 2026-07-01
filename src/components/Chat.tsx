@@ -48,6 +48,27 @@ export const ChatBubble = ({ senderId, senderName, message }: ChatProps) => {
 	);
 }
 
+export const ChatReport = ({ message }: ChatProps) => {
+	return (
+		<div className="
+			w-full h-max
+			flex place-content-center place-items-center justify-center
+		">
+			<div className="
+				w-max h-max
+				bg-n2
+				border border-n3 rounded-3xl
+				text-n6
+				text-[clamp(0.25rem,2vw+0.125rem,0.75rem)]
+				px-[clamp(0.25rem,2vw+0.125rem,1.25rem)]
+				py-[clamp(0.0625rem,0.5vh+0.03125rem,0.5rem)]
+			">
+				<p>{message}</p>
+			</div>
+		</div>
+	);
+}
+
 export const ChatLightbox = ({ dismiss }: ChatProps) => {
 	const contAreaWidth = useSceneStore((scene) => scene.contAreaWidth);
 	const contAreaHeight = useSceneStore((scene) => scene.contAreaHeight);
@@ -93,12 +114,19 @@ export const ChatLightbox = ({ dismiss }: ChatProps) => {
 								p-7.5
 								flex flex-col gap-5
 							">
+								<ChatReport message="1 person in chat" />
+								<ChatReport message="Max has joined your party!" />
 								<ChatBubble senderId={0} senderName="Azrul" message="Sup Max!"/>
 								<ChatBubble senderId={1} senderName="Max" message="Hey. How's the website coming along?"/>
 								<ChatBubble senderId={0} senderName="Azrul" message="It's coming along great! Just need to finish up the last few details"/>
+								<ChatReport message="Jeremy has joined your party!" />
 								<ChatBubble senderId={2} senderName="Jeremy" message="Yo check out the cpu bots i just made... ~Beep boop~"/>
+								<ChatReport message="Aisyah has joined your party!" />
 								<ChatBubble senderId={3} senderName="Aisyah" message="Guys... I'm done with my Inception!"/>
 								<ChatBubble senderId={3} senderName="Aisyah" message="Also soooo excited for this SQL talk!!!"/>
+								<ChatReport message="Max has left the party" />
+								<ChatReport message="Jeremy has left the party" />
+								<ChatReport message="Aisyah has left the party" />
 							</div>
 						</div>
 						<hr className="w-full h-[0.3rem] text-n2"/>
