@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { CardRank, CardSuite, CardTransmit } from '../src_shared/Types.ts';
+import { CardRank, CardSuit, CardTransmit } from '../src_shared/Types.ts';
 import { scene } from './main.ts'
 
 export class Card {
@@ -17,17 +17,17 @@ export class Card {
 
 	public	object: THREE.Group;
 	public	rank: CardRank;
-	public	suite: CardSuite;
+	public	suit: CardSuit;
 
-	constructor(rank: CardRank, suite: CardSuite ) {
+	constructor(rank: CardRank, suit: CardSuit ) {
 		this.rank = rank;
-		this.suite = suite;
+		this.suit = suit;
 
 		this.isHover = false;
 
-		// Load texture based on rank and suite
-		// this.frontTexture = this.getTexture(this.rank, this.suite);
-		this.frontTexture = this.getFrontTexture(this.rank, this.suite);
+		// Load texture based on rank and suit
+		// this.frontTexture = this.getTexture(this.rank, this.suit);
+		this.frontTexture = this.getFrontTexture(this.rank, this.suit);
 		this.backTexture = Card.backTexture;
 
 		this.frontMaterial = new THREE.MeshBasicMaterial({color: 0xffffff, map: this.frontTexture, side: THREE.FrontSide });
@@ -51,14 +51,14 @@ export class Card {
 		this.object.removeFromParent();
 	}
 
-	public setCardRankSuite(rank: CardRank | undefined, suite: CardSuite | undefined) {
+	public setCardRankSuit(rank: CardRank | undefined, suit: CardSuit | undefined) {
 		if (rank) {
 			this.rank = rank;
 		}
-		if (suite) {
-			this.suite = suite;
+		if (suit) {
+			this.suit = suit;
 		}
-		this.frontTexture = this.getFrontTexture(this.rank, this.suite);
+		this.frontTexture = this.getFrontTexture(this.rank, this.suit);
 		this.frontMaterial.map = this.frontTexture;
 		this.frontMaterial.needsUpdate = true;
 	}
@@ -103,15 +103,15 @@ export class Card {
 		return (textureAtlas);
 	}
 
-	private getFrontTexture(rank: CardRank, suite: CardSuite): THREE.Texture {
+	private getFrontTexture(rank: CardRank, suit: CardSuit): THREE.Texture {
 		let texture: THREE.Texture = this.backTexture; // replace with ? front texture
 		const col = 13;
 		let y: number = 0;
-		switch (suite) {
-			case CardSuite.Spade: y = 0; break ;
-			case CardSuite.Heart: y = 3; break ;
-			case CardSuite.Club: y = 2; break ;
-			case CardSuite.Diamond: y = 1; break ;
+		switch (suit) {
+			case CardSuit.Spade: y = 0; break ;
+			case CardSuit.Heart: y = 3; break ;
+			case CardSuit.Club: y = 2; break ;
+			case CardSuit.Diamond: y = 1; break ;
 		}
 		switch (rank) {
 			case CardRank.Two: texture = Card.frontTextureAtlas[y * col + 0]; break ;
@@ -134,7 +134,7 @@ export class Card {
 	public toJSON(): CardTransmit {
 		return {
 			rank: this.rank,
-			suite: this.suite
+			suit: this.suit
 		}
 	}
 }
