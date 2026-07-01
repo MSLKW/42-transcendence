@@ -5,12 +5,12 @@ export const BigLogo = () => {
 			flex flex-col place-content-end place-items-center
 			gap-[clamp(2.5rem,10vh+1.25rem,7.5rem)]
 			p-[clamp(2rem,7.5vh+0.125rem,7.5rem)]
+			pointer-events-none
 		">
 			<div className="
 				flex
 				gap-[clamp(1.25rem,4vw+0.625rem,2.5rem)]
 				leading-0
-				pointer-events-auto
 			">
 				<h2 className="
 					flex
@@ -23,7 +23,6 @@ export const BigLogo = () => {
 			<h3 className="
 				text-center
 				text-b5
-				pointer-events-auto
 				whitespace-nowrap
 			">
 				A 42 TRANSCENDENCE PROJECT
@@ -40,11 +39,11 @@ export const SmallLogo = () => {
 			w-full h-full
 			flex flex-col place-content-end place-items-end
 			gap-[clamp(1.5rem,2vw+0.75rem,2rem)]
+			pointer-events-none
 		">
 			<div className="
 				flex
 				leading-0
-				pointer-events-auto
 			">
 				<h5 className="
 					flex
@@ -57,7 +56,6 @@ export const SmallLogo = () => {
 			<h6 className="
 				text-right
 				text-b5
-				pointer-events-auto
 				whitespace-nowrap
 			">
 				A 42 TRANSCENDENCE PROJECT

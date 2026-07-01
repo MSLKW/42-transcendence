@@ -12,7 +12,6 @@ export const AvatarPlayer = ({ cornerButton, call, playerName = "Player" }: Avat
 			<div className="
 				flex flex-col place-items-center
 				gap-1
-				relative
 			">
 				<div className="
 					h-[clamp(2.5rem,7.5vh+0.5rem,5rem)]

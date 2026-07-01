@@ -174,7 +174,7 @@ button {
 
 @utility btn-party {
 	@apply
-		h-full max-h-50
+		h-[clamp(4rem,7.5vw+2rem,5.625rem)]
 		aspect-4/5
 		bg-n1
 		border border-n2 rounded-[clamp(0px,2vh,8px)]

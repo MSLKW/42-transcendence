@@ -10,6 +10,7 @@ import { BigLogo } from "../components/Logo";
 import { InfoButton, InfoLightbox } from "../components/Info";
 import { CreateAccountButton, CreateAccountLightbox } from "../components/CreateAccount";
 import { SignInButton, SignInLightbox } from "../components/SignIn";
+import { Card } from "../components/Card";
 
 export const Login = () => {
 	const setCurrentScene = useGameStore((state) => state.setCurrentScene);
@@ -59,8 +60,10 @@ export const Login = () => {
 				<Canvas>
 					{showStats && <Stats />}
 					<AdaptiveDpr />
-					<ambientLight intensity={0.5}/>
+					{/* <ambientLight intensity={0.5}/> */}
+					<directionalLight position={[-1, 1.5, 5]} intensity={1} />
 					<SphereBg />
+					<Card />
 					<PerspectiveCamera makeDefault position={[0, 0, 2.25]} />
 					<OrbitControls enableZoom={false}/>
 				</Canvas>

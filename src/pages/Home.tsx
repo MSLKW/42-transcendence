@@ -148,9 +148,9 @@ export const Home = () => {
 				">
 					<div tabIndex={-1} className="
 						z-1
-						w-full h-full
-						flex gap-[clamp(0.25rem,5vw+0.125rem,2.5rem)]
-						sm:overflow-x-visible overflow-x-scroll
+						flex
+						gap-[clamp(0.25rem,3vw+0.125rem,2.5rem)]
+						sm:overflow-x-visible overflow-x-auto
 					">
 						<AvatarPlayer
 							cornerButton="chat"

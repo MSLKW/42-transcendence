@@ -10,13 +10,39 @@ interface PartyProps {
 
 export const JoinParty = ({ call }: PartyProps) => {
 	return (
-		<button
-			data-tip="Add / Join Party"
-			onClick={call}
-			className="btn-party btn-tip-up-2
+		<div className="
+			flex flex-col place-items-center
+			gap-1
 		">
-			<AddIcon />
-		</button>
+			<button
+				data-tip="Add / Join Party"
+				onClick={call}
+				className="
+					btn-tip-up-2
+					h-[clamp(2.5rem,7.5vh+0.5rem,5rem)]
+					aspect-square
+					bg-n1
+					border border-n2 rounded-sm
+					text-b5
+					p-3
+					flex place-content-center place-items-center
+			">
+				<AddIcon />
+			</button>
+			<div className="
+				w-max min-w-[clamp(2.5rem,7.5vh+0.5rem,5rem)] max-w-32.5
+				h-fit
+				bg-n1
+				border border-n2 rounded-3xl
+				text-[clamp(0.25rem,1.5vh+0.125rem,1rem)]
+				text-n6
+				truncate
+				flex place-content-center place-items-center
+				px-[clamp(0.625rem,1vh+0.3125rem,1.25rem)]
+			">
+				<p>Add</p>
+			</div>
+		</div>
 	);
 }
 
@@ -57,9 +83,9 @@ export const PartyLightbox = ({ dismiss }: PartyProps) => {
 							flex flex-col gap-[clamp(0.125rem,2vw+0.0625rem,0.25rem)]
 							text-[clamp(0.5625rem,2.5vw+0.28125rem,1.125rem)]
 						">
-							<p><b>Join your party</b></p>
+							<p><b>Invite others</b></p>
 							<p>
-								<span>Code to share: </span>
+								<span>Share Code: </span>
 								<span className="tracking-[0.25rem]">
 									<i>ABCD1234</i>
 								</span>

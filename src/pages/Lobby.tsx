@@ -62,7 +62,8 @@ export const Lobby = () => {
 				<Canvas>
 					{showStats && <Stats />}
 					<AdaptiveDpr />
-					<ambientLight intensity={0.5}/>
+					{/* <ambientLight intensity={0.5}/> */}
+					<directionalLight position={[0, 0, 5]} intensity={1} />
 					<SphereBg />
 					<PerspectiveCamera makeDefault position={[0, 0, 2.25]} />
 					<OrbitControls enableZoom={false}/>
@@ -107,16 +108,23 @@ export const Lobby = () => {
 					/>
 				</main>
 				<footer className="
-					flex
-					gap-10
+					pointer-events-auto
+					flex place-content-between place-items-center
 					relative
 				">
-					<AvatarPlayer
-						playerName="Spectator"
-					/>
-					<JoinParty 
-						call={(e) => toggleLightbox("party", true, e)}
-					/>
+					<div tabIndex={-1} className="
+						z-1
+						flex
+						gap-[clamp(0.25rem,3vw+0.125rem,2.5rem)]
+						sm:overflow-x-visible overflow-x-auto
+					">
+						<AvatarPlayer
+							playerName="Spectator"
+						/>
+						<JoinParty 
+							call={(e) => toggleLightbox("party", true, e)}
+						/>
+					</div>
 					<SmallLogo />
 				</footer>
 			</section>

@@ -63,7 +63,8 @@ export const R3F = () => {
 				<Canvas>
 					{showStats && <Stats />}
 					<AdaptiveDpr />
-					<ambientLight intensity={0.5}/>
+					{/* <ambientLight intensity={0.5}/> */}
+					<directionalLight position={[0, 0, 5]} intensity={1} />
 					<SphereBg />
 					<PerspectiveCamera makeDefault position={[0, 0, 2.25]} />
 					<OrbitControls enableZoom={false}/>
