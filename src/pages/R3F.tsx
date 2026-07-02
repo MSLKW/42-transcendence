@@ -77,7 +77,6 @@ export const R3F = () => {
 					<div className="flex btn-icon-border">
 						<BackButton scene={() => setCurrentScene("LOBBY")} />
 						<SettingsButton call={(e) => toggleLightbox("settings", true, e)} />
-						<RankButton call={(e) => toggleLightbox("rank", true, e)} />
 					</div>
 					<div className="flex btn-icon-border">
 						<YeahButton />
@@ -115,7 +114,8 @@ export const R3F = () => {
 							px-[clamp(0.25rem,2vw+0.125rem,1.25rem)]
 							py-[clamp(0.0625rem,0.5vh+0.03125rem,0.5rem)]
 						">
-							<p>Straight</p>
+							<button>Straight</button>
+							<RankButton call={(e) => toggleLightbox("rank", true, e)} />
 						</div>
 					</div>
 				</main>
