@@ -21,7 +21,7 @@ export const R3F = () => {
 	const setContAreaHeight = useSceneStore((state) => state.setContAreaHeight);
 	const [showLightbox, setShowLightbox] = useState({
 		settings: false,
-		rank: false,
+		rank: true,
 		chat: false,
 	});
 	const toggleLightbox = (key: keyof typeof showLightbox, value: boolean, e?: React.MouseEvent<HTMLButtonElement>) => {
@@ -80,7 +80,7 @@ export const R3F = () => {
 					</div>
 				</header>
 				<main>
-					<div className="absolute left-[30%] top-[5%]">
+					<div className="absolute left-[25%] top-[5%]">
 						<AvatarPlayer
 							cornerButton="cards"
 							playerName="Max"

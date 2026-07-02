@@ -1,6 +1,8 @@
 import { useSceneStore } from "../store/useSceneStore";
 import { RankIcon } from "../icons/RankIcon";
 import { PinButton } from "./PinButton";
+import { RankArrowIcon } from "../icons/RankArrowIcon";
+import { SpadesIcon, HeartsIcon, ClubsIcon, DiamondsIcon } from "../icons/SuitsIcons"
 
 interface RankProps {
 	call?: (e: React.MouseEvent<HTMLButtonElement>) => void;
@@ -23,6 +25,7 @@ export const RankButton = ({ call }: RankProps) => {
 				h-full
 				text-n6
 				px-[clamp(0.25rem,2vw+0.125rem,1.25rem)]
+				relative
 			">
 				<p>Straight</p>
 			</div>
@@ -34,23 +37,76 @@ export const RankButton = ({ call }: RankProps) => {
 }
 
 export const RankLightbox = ({ dismiss }: RankProps) => {
-	const contAreaWidth = useSceneStore((scene) => scene.contAreaWidth);
-	const contAreaHeight = useSceneStore((scene) => scene.contAreaHeight);
-
 	return (
 		<section className="
-			absolute z-1 top-0 left-0
+			absolute left-0 top-0
+			z-1
 			w-screen h-screen
-			flex place-content-center place-items-center
 		">
 			<button tabIndex={-1} className='btn-lightbox-no-blur' onClick={dismiss}/>
-			<div style={{ width: contAreaWidth, height: contAreaHeight }}
-				className="
-					z-0
-					flex place-content-center place-items-center
-					pointer-events-none
+			<div className="
+				z-0
+				w-fit h-fit
+				absolute top-[37.5%] left-1/2 -translate-x-1/2
+				border border-n2 rounded-3xl
+				flex
+				overflow-hidden
 			">
 				<div className="
+					w-fit
+					h-fit
+					flex items-stretch
+					bg-n1
+				">
+					<div className="
+						w-[30px]
+						ml-5
+						text-b5
+					">
+						<RankArrowIcon />
+					</div>
+					<div className="
+						flex flex-col
+						gap-3
+						p-5
+						text-n6 text-right whitespace-nowrap
+					">
+						<p>Straight Flush</p>
+						<p>4 of a Kind + 1</p>
+						<p>Full House</p>
+						<p>Flush</p>
+						<p className="text-b5">Straight</p>
+						<hr className="text-n2"/>
+						<p>Triple</p>
+						<p>Double</p>
+						<p>High Card</p>
+						<p>Open</p>
+					</div>
+				</div>
+				<div className="
+					flex items-stretch
+					bg-n6
+				">
+					<div className="
+						h-full
+						flex flex-col place-content-between
+						p-5
+					">
+						<SpadesIcon />
+						<HeartsIcon />
+						<ClubsIcon />
+						<DiamondsIcon />
+					</div>
+					<div className="
+						w-[30px]
+						mr-5
+						text-b4
+					">
+						<RankArrowIcon />
+					</div>
+				</div>
+			</div>
+				{/* <div className="
 					w-[80%] h-[80%]
 					relative
 				">
@@ -78,9 +134,8 @@ export const RankLightbox = ({ dismiss }: RankProps) => {
 						w-12.5 h-12.5
 					">
 						<PinButton />
-					</div>
-				</div>
-			</div>
+					</div>*/}
+			{/* </div> */}
 		</section>
 	);
 }
