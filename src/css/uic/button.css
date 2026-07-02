@@ -48,6 +48,45 @@ button {
 		@apply scale-100 opacity-100;
 	}
 }
+@utility btn-emoji {
+	@apply
+		h-[clamp(1.875rem,5vh+0.5rem,3.125rem)]
+		aspect-square
+		rounded-3xl
+		relative
+		text-[clamp(0.5rem,2vw+0.25rem,1rem)]
+		text-b5
+
+		hover:not-disabled:scale-105
+
+		focus:outline-2
+		focus:outline-solid
+		focus:outline-b5
+		focus:outline-offset-5
+
+		active:hover:not-disabled:scale-100
+		;
+	&::after {
+		content: attr(data-tip);
+		@apply
+			w-max
+			absolute top-1/2 -translate-y-1/2
+			bg-n1
+			border border-n2
+			rounded-lg
+			text-n6
+			text-[clamp(0.4375rem,2vw+0.21875rem,1rem)]
+			px-[clamp(0.3125rem,1vw+0.15625rem,1.25rem)]
+			pointer-events-none
+			scale-0 opacity-0
+			transition-all ease-out duration-50
+			;
+	}
+	&:focus::after,
+	&:hover::after {
+		@apply scale-100 opacity-100;
+	}
+}
 @utility btn-icon-border {
 	@apply
 		h-[clamp(1.875rem,5vh+0.5rem,3.125rem)]

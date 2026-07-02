@@ -8,7 +8,7 @@ import { SphereBg } from "../components/SphereBg";
 import { BackButton } from "../components/BackButton";
 import { SettingsButton, SettingsLightbox } from "../components/Settings";
 import { RankButton, RankLightbox } from "../components/RankButton";
-import { YeahButton, HmmmButton, WoahButton } from "../components/EmojiButtons";
+import { EmojiButton } from "../components/EmojiButtons";
 import { AvatarPlayer } from "../components/Avatar";
 import { ChatLightbox } from "../components/Chat";
 import { SortButtons } from "../components/SortButtons";
@@ -74,9 +74,7 @@ export const R3F = () => {
 						<SettingsButton call={(e) => toggleLightbox("settings", true, e)} />
 					</div>
 					<div className="flex btn-icon-border">
-						<YeahButton />
-						<HmmmButton />
-						<WoahButton />
+						<EmojiButton />
 					</div>
 				</header>
 				<main>
