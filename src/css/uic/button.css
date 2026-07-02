@@ -71,6 +71,11 @@ button {
 		@apply top-[calc(100%+15px)] origin-top;
 	}
 }
+@utility btn-tip-left {
+	&::after {
+		@apply right-[calc(100%+15px)] origin-right;
+	}
+}
 @utility btn-white {
 	@apply
 		w-[clamp(5rem,30vw+0.5rem,15.625rem)]
@@ -220,6 +225,7 @@ button {
 		border border-n2 rounded-3xl
 		text-n6
 		text-[clamp(0.25rem,2vw+0.125rem,1rem)]
+		relative
 		outline-solid
 		outline-b5
 		outline-offset-5
@@ -231,4 +237,25 @@ button {
 
 		active:hover:not-disabled:scale-100
 		;
+
+	&::after {
+		content: attr(data-tip);
+		@apply
+			w-max
+			absolute top-1/2 -translate-y-1/2
+			bg-n1
+			border border-n2
+			rounded-lg
+			text-n6
+			text-[clamp(0.4375rem,2vw+0.21875rem,1rem)]
+			px-[clamp(0.3125rem,1vw+0.15625rem,1.25rem)]
+			pointer-events-none
+			scale-0 opacity-0
+			transition-all ease-out duration-50
+			;
+	}
+	&:focus::after,
+	&:hover::after {
+		@apply scale-100 opacity-100;
+	}
 }
