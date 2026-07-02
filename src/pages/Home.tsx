@@ -70,7 +70,7 @@ export const Home = () => {
 	const [showLightbox, setShowLightbox] = useState({
 		settings: false,
 		info: false,
-		chat: true,
+		chat: false,
 		party: false,
 	});
 	const toggleLightbox = (key: keyof typeof showLightbox, value: boolean, e?: React.MouseEvent<HTMLButtonElement>) => {

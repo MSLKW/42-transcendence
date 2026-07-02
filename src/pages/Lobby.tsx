@@ -7,7 +7,6 @@ import { useDevStore } from "../store/useDevStore";
 import { SphereBg } from "../components/SphereBg";
 import { BackButton } from "../components/BackButton";
 import { SettingsButton, SettingsLightbox } from "../components/Settings";
-import { RankButton, RankLightbox } from "../components/RankButton";
 import { YeahButton, HmmmButton, WoahButton } from "../components/EmojiButtons";
 import { AvatarPlayer } from "../components/Avatar";
 import { ChatLightbox } from "../components/Chat";
@@ -22,7 +21,6 @@ export const Lobby = () => {
 	const containerRef = useRef(null);
 	const [showLightbox, setShowLightbox] = useState({
 		settings: false,
-		rank: false,
 		chat: false,
 		party: false,
 	});
@@ -74,7 +72,6 @@ export const Lobby = () => {
 					<div className="flex btn-icon-border">
 						<BackButton scene={() => setCurrentScene("HOME")} />
 						<SettingsButton call={(e) => toggleLightbox("settings", true, e)} />
-						<RankButton call={(e) => toggleLightbox("rank", true, e)} />
 					</div>
 					<div className="flex btn-icon-border">
 						<YeahButton />
@@ -129,7 +126,6 @@ export const Lobby = () => {
 				</footer>
 			</section>
 			{ showLightbox["settings"] && <SettingsLightbox dismiss={() => toggleLightbox("settings", false)} /> }
-			{ showLightbox["rank"] && <RankLightbox dismiss={() => toggleLightbox("rank", false)} /> }
 			{ showLightbox["chat"] && <ChatLightbox dismiss={() => toggleLightbox("chat", false)} /> }
 			{ showLightbox["party"] && <PartyLightbox dismiss={() => toggleLightbox("party", false)} /> }
 		</>
