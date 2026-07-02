@@ -103,6 +103,13 @@ export const R3F = () => {
 					">
 						<RankButton call={(e) => toggleLightbox("rank", true, e)} />
 					</div>
+					<div className="
+						absolute left-1/2 top-[65%] -translate-x-1/2
+						flex gap-10
+					">
+						<button className="btn-white">PASS</button>
+						<button className="btn-white">PLAY</button>
+					</div>
 				</main>
 				<footer className="flex place-content-between place-items-center">
 					<AvatarPlayer cornerButton="chat" call={(e) => toggleLightbox("chat", true, e)}/>
