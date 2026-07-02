@@ -111,7 +111,10 @@ export const R3F = () => {
 					</div>
 				</main>
 				<footer className="flex place-content-between place-items-center">
-					<AvatarPlayer cornerButton="chat" call={(e) => toggleLightbox("chat", true, e)}/>
+					<AvatarPlayer
+						cornerButton="cards"
+						call={(e) => toggleLightbox("chat", true, e)}
+					/>
 					<div className="
 						w-[clamp(1rem,10vw+0.5rem,5rem)] h-full
 						flex flex-col place-content-between
