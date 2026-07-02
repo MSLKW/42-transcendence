@@ -106,17 +106,7 @@ export const R3F = () => {
 					<div className="
 						absolute left-1/2 top-[32.5%] -translate-x-1/2
 					">
-						<div className="
-							bg-n1
-							border border-n2 rounded-3xl
-							text-n6
-							text-[clamp(0.5rem,2vw+0.25rem,1rem)]
-							px-[clamp(0.25rem,2vw+0.125rem,1.25rem)]
-							py-[clamp(0.0625rem,0.5vh+0.03125rem,0.5rem)]
-						">
-							<button>Straight</button>
-							<RankButton call={(e) => toggleLightbox("rank", true, e)} />
-						</div>
+						<RankButton call={(e) => toggleLightbox("rank", true, e)} />
 					</div>
 				</main>
 				<footer className="flex place-content-between place-items-center">
