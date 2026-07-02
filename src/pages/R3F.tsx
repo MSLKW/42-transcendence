@@ -11,6 +11,7 @@ import { RankButton, RankLightbox } from "../components/RankButton";
 import { YeahButton, HmmmButton, WoahButton } from "../components/EmojiButtons";
 import { AvatarPlayer } from "../components/Avatar";
 import { ChatLightbox } from "../components/Chat";
+import { SortButtons } from "../components/SortButtons";
 
 export const R3F = () => {
 	const setCurrentScene = useGameStore((state) => state.setCurrentScene);
@@ -18,7 +19,6 @@ export const R3F = () => {
 	const containerRef = useRef(null);
 	const setContAreaWidth = useSceneStore((state) => state.setContAreaWidth);
 	const setContAreaHeight = useSceneStore((state) => state.setContAreaHeight);
-	const [sortType, setSortType] = useState("Flex");
 	const [showLightbox, setShowLightbox] = useState({
 		settings: false,
 		rank: false,
@@ -31,11 +31,6 @@ export const R3F = () => {
 			...showLightbox,
 			[key]: value,
 		}));
-	}
-	const handleSort = (e?: React.MouseEvent<HTMLButtonElement>, type: string) => {
-		if (e)
-			e.currentTarget.blur();
-		setSortType(type);
 	}
 
 	useEffect(() => {
@@ -116,30 +111,7 @@ export const R3F = () => {
 						flex flex-col place-content-between
 						gap-[clamp(0.25rem,2vh+0.125rem,0.75rem)]
 					">
-						<button
-							onClick={(e) => handleSort(e, "Rank")}
-							className={`btn-sort
-								${sortType === "Rank" ? "outline-2" : "outline-none"}
-								`}
-						>
-							Rank
-						</button>
-						<button
-							onClick={(e) => handleSort(e, "Suit")}
-							className={`btn-sort
-								${sortType === "Suit" ? "outline-2" : "outline-none"}
-								`}
-						>
-							Suit
-						</button>
-						<button
-							onClick={(e) => handleSort(e, "Flex")}
-							className={`btn-sort
-								${sortType === "Flex" ? "outline-2" : "outline-none"}
-								`}
-						>
-							Flex
-						</button>
+						<SortButtons />
 					</div>
 				</footer>
 			</section>
