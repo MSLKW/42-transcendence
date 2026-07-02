@@ -17,7 +17,7 @@ export const ChatButton = ({ call }: ChatProps) => {
 		<button
 			data-tip="Chat"
 			onClick={call}
-			className="btn-icon btn-icon-border btn-tip-up"
+			className="btn-icon btn-tip-down"
 		>
 			<ChatIcon />
 		</button>

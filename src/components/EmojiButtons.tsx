@@ -50,8 +50,10 @@ export const WoahButton = () => {
 
 export const EmojiButton = () => {
 	return (
-		<div className="group relative inline-block">
-			<button className="btn-icon btn-icon-border" />
+		<div className="group relative flex gap-5">
+			<button className="btn-icon">
+				<YeahIcon />
+			</button>
 			<div className="
 				absolute
 				invisible opacity-0 group-hover:visible group-hover:opacity-100

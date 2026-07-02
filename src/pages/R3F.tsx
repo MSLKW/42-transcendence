@@ -10,7 +10,7 @@ import { SettingsButton, SettingsLightbox } from "../components/Settings";
 import { RankButton, RankLightbox } from "../components/RankButton";
 import { EmojiButton } from "../components/EmojiButtons";
 import { AvatarPlayer } from "../components/Avatar";
-import { ChatLightbox } from "../components/Chat";
+import { ChatButton, ChatLightbox } from "../components/Chat";
 import { SortButtons } from "../components/SortButtons";
 
 export const R3F = () => {
@@ -74,6 +74,7 @@ export const R3F = () => {
 						<SettingsButton call={(e) => toggleLightbox("settings", true, e)} />
 					</div>
 					<div className="flex btn-icon-border">
+						<ChatButton call={(e) => toggleLightbox("chat", true, e)} />
 						<EmojiButton />
 					</div>
 				</header>
