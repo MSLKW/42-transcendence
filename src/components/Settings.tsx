@@ -1,4 +1,4 @@
-import { useSceneStore } from "../store/useSceneStore";
+import { useState } from "react";
 import { SettingsIcon } from "../icons/SettingsIcon";
 import { CloseButton } from "./CloseButton";
 
@@ -19,8 +19,10 @@ export const SettingsButton = ({ call }: SettingsProps) => {
 }
 
 export const SettingsLightbox = ({ dismiss }: SettingsProps) => {
-	const contAreaWidth = useSceneStore((scene) => scene.contAreaWidth);
-	const contAreaHeight = useSceneStore((scene) => scene.contAreaHeight);
+	const autoPassOptions = ["1s", "3s", "5s", "10s", "15s", "30s", "42s", "1 min", "2 mins", "No Limit"];
+	const [autoPassValue, setAutoPassValue] = useState(6);
+	const [fxLevel, setFXLevel] = useState(75);
+	const [musicLevel, setMusicLevel] = useState(50);
 
 	return (
 		<section className="
@@ -40,10 +42,10 @@ export const SettingsLightbox = ({ dismiss }: SettingsProps) => {
 				<div className="
 					w-full h-full
 					grid grid-cols-2 grid-rows-4
-					border border-n2
 				">
 					<div className="
 						col-span-1
+						border-b border-r border-n2
 						flex flex-col gap-5 content-stretch
 						p-8
 					">
@@ -54,15 +56,27 @@ export const SettingsLightbox = ({ dismiss }: SettingsProps) => {
 					<div className="
 						col-span-1
 						flex flex-col gap-5
+						border-b border-n2
 						p-8
 					">
 						<p>Auto Pass</p>
-						<p>Time: 60s</p>
-						<input type="range" />
+						<label htmlFor="autoPassSlider" className="gap-2">
+							Time: {autoPassOptions[autoPassValue]}
+						</label>
+						<input
+							type="range"
+							id="autoPassSlider"
+							min="0"
+							max={autoPassOptions.length - 1}
+							value={autoPassValue}
+							step="1"
+							onChange={(e) => setAutoPassValue(parseInt(e.target.value, 10))}
+						/>
 					</div>
 					<div className="
 						col-span-1
 						flex flex-col gap-5
+						border-b border-r border-n2
 						p-8
 					">
 						<p>Game ends...</p>
@@ -78,6 +92,7 @@ export const SettingsLightbox = ({ dismiss }: SettingsProps) => {
 					<div className="
 						col-span-1
 						flex flex-col gap-5
+						border-b border-n2
 						p-8
 					">
 						<p>Calculate score based on...</p>
@@ -93,6 +108,7 @@ export const SettingsLightbox = ({ dismiss }: SettingsProps) => {
 					<div className="
 						col-span-1
 						flex flex-col gap-5
+						border-b border-r border-n2
 						p-8
 					">
 						<p>Cards</p>
@@ -108,6 +124,7 @@ export const SettingsLightbox = ({ dismiss }: SettingsProps) => {
 					<div className="
 						col-span-1
 						flex flex-col space-y-5
+						border-b border-n2
 						p-8
 					">
 						<p>Colors</p>
@@ -120,22 +137,45 @@ export const SettingsLightbox = ({ dismiss }: SettingsProps) => {
 							<span>Alt</span>
 						</label>
 					</div>
-					{/* <div className="
+					<div className="
 						col-span-2 row-span-1
 						h-fit
 						flex place-content-between place-items-center
+						gap-x-5
 						p-8
 					">
-						<p>Audio</p>
-						<div className="group flex gap-5">
-							<input type="radio" id="RadioFX"/>
-							<label htmlFor="RadioFX">FX</label>
+						<p className="mr-3">Audio</p>
+						<div className="flex flex-col gap-5">
+							<label htmlFor="fxSlider">
+								FX: {fxLevel}%
+							</label>
+							<input
+								type="range"
+								id="fxSlider"
+								min={0}
+								max={100}
+								step={1}
+								value={fxLevel}
+								onChange={(e) => {setFXLevel(parseFloat(e.target.value))}}
+								className="w-full"
+							/>
 						</div>
-						<div className="group flex gap-5">
-							<input type="radio" id="RadioMusic"/>
-							<label htmlFor="RadioMusic">Music</label>
+						<div className="flex flex-col gap-5">
+							<label htmlFor="musicSlider">
+								Music: {musicLevel}%
+							</label>
+							<input
+								type="range"
+								id="musicSlider"
+								min={0}
+								max={100}
+								step={1}
+								value={musicLevel}
+								onChange={(e) => {setMusicLevel(parseFloat(e.target.value))}}
+								className="w-full"
+							/>
 						</div>
-					</div> */}
+					</div>
 				</div>
 				<div className="
 					absolute top-0 right-0 -translate-y-1/2 translate-x-1/2
