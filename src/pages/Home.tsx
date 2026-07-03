@@ -69,7 +69,7 @@ export const Home = () => {
 	const showStats = useDevStore((state) => state.showStats);
 	const containerRef = useRef(null);
 	const [showLightbox, setShowLightbox] = useState({
-		settings: false,
+		settings: true,
 		info: false,
 		chat: false,
 		party: false,
