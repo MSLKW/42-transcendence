@@ -68,3 +68,8 @@ export type PlayerSeatOrderTransmit = {
 	playerId: string,
 	seatOrder: Record<string, number>
 }
+
+export type statusTransmit = {
+	success: boolean,
+	message: string
+}

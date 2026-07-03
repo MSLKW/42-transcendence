@@ -1,8 +1,9 @@
 import { Socket } from 'socket.io';
-import { CardTransmit, CardRank, CardSuit, CardHandTransmit, HandType, PentupleType } from '../src_shared/Types.js';
+import { CardTransmit, CardRank, CardSuit, CardHandTransmit, HandType, PentupleType, statusTransmit } from '../src_shared/Types.js';
 import { GameState } from './GameState.js';
 import { CardHeapState } from './CardHeapState.js';
 import { io } from './server.js';
+import { CardHandState } from './CardHandState.js';
 
 export class PlayerState {
 	public	socket: Socket;
@@ -23,7 +24,7 @@ export class PlayerState {
 
 	public setupSocketListeners() {
 		this.socket.on("player_play_card_hand", (body) => {
-			this.playCardHand(body);
+			this.socket.emit('player_play_card_hand', this.playCardHand(body));
 		});
 
 		this.socket.on("player_skip_turn", (body) => {
@@ -72,30 +73,35 @@ export class PlayerState {
 	}
 
 	// Returns if player has finished all his cards
-	private playCardHand(body: string) {
+	private playCardHand(body: string): statusTransmit {
+		const status: statusTransmit = {
+			success: false,
+			message: ""
+		};
 		if (this.gameStateRef.isPlayerTurn(this) === false) {
-			this.socket.emit('player_play_card_hand', 'failure: not ur turn');
-			return;
+			status.message = "Not your turn";
+			return (status);
 		}
-		const cardHand = JSON.parse(body) as CardHandTransmit;
-		// evaluate cardhand cards pentuple type again
-		// if doesn't compare properly, reject
-		// resort cards to descending
+		const cardHandTransmit = JSON.parse(body) as CardHandTransmit;
+		const cardHand = new CardHandState(cardHandTransmit.cards, cardHandTransmit.playerId);
+		if (cardHand.compareTypes(cardHandTransmit) === false) {
+			status.message = "handtype or pentuple type send by client is inaccurate";
+			return (status);
+		}
 		if (cardHand.handType === HandType.None || (cardHand.handType === HandType.Pentuple && cardHand.pentupleType === PentupleType.None)) {
-			this.socket.emit('player_play_card_hand', 'failure: cardhand is not even a thing');
-			return ;
-		}
-		if (this.cardHeapRef.isCardHandPlayable(cardHand) == false) {
-			this.socket.emit('player_play_card_hand', 'failure: cardhand is not playable');
-			return ;
+			status.message = "cardhand is not even a thing";
+			return (status);
 		}
 		for (let i = 0; i < cardHand.cards.length; i++) {
 			if (this.cards.findIndex((card: CardTransmit) => card.rank === cardHand.cards[i].rank && card.suit === cardHand.cards[i].suit ) == -1) {
-				this.socket.emit('player_play_card_hand', 'failure: cardhand not in playerState cards');
-				return ;
+				status.message = "cardhand cards not in playerState cards";
+				return (status);
 			}
 		}
-		this.socket.emit('player_play_card_hand', 'success');
+		if (this.cardHeapRef.isCardHandPlayable(cardHand) == false) {
+			status.message = "cardhand is not playable";
+			return (status);
+		}
 		this.cardHeapRef.receiveCardHand(cardHand);
 		this.removeCards(cardHand.cards);
 
@@ -103,5 +109,8 @@ export class PlayerState {
 			this.gameStateRef.endGame(this)
 		}
 		this.gameStateRef.nextPlayerTurn();
+		status.success = true;
+		status.message = "Successfully played a card hand";
+		return (status);
 	}
 }

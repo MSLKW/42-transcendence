@@ -1,22 +1,23 @@
 import { CardHandTransmit, HandType, PentupleType } from "../src_shared/Types.js";
 import { PlayerState } from "./PlayerState.js";
+import { CardHandState } from "./CardHandState.js";
 import { io } from "./server.js";
 
 export class CardHeapState {
-	private cardHands: Array<CardHandTransmit>;
+	private cardHands: Array<CardHandState>;
 	private currentHandType: HandType = HandType.None;
 
 	constructor() {
 		this.cardHands = [];
 	}
 
-	public receiveCardHand(cardHand: CardHandTransmit) {
+	public receiveCardHand(cardHand: CardHandState) {
 		this.cardHands.push(cardHand);
 		this.currentHandType = cardHand.handType;
 		io.to("game").emit("opponent_play_card_hand", JSON.stringify(cardHand));
 	}
 
-	public isCardHandPlayable(other: CardHandTransmit): boolean {
+	public isCardHandPlayable(other: CardHandState): boolean {
 		const topCardHand = this.cardHands.at(this.cardHands.length - 1);
 		if (topCardHand === undefined) {
 			return (true);

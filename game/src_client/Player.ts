@@ -1,6 +1,6 @@
 import { io, Socket } from 'socket.io-client';
 import * as THREE from 'three';
-import { CardTransmit, GameEndStatsTransmit, GameStateTransmit } from '../src_shared/Types.ts';
+import { CardTransmit, GameEndStatsTransmit, GameStateTransmit, statusTransmit } from '../src_shared/Types.ts';
 import { CardHand } from './CardHand.ts';
 import { Card } from './Card.ts';
 import { CardManager } from './CardManager.ts';
@@ -66,14 +66,14 @@ export class Player {
 			console.log(body);
 		})
 		
-		this.socket.on('player_play_card_hand', (status) => {
-			if (status === 'success') {
+		this.socket.on('player_play_card_hand', (status: statusTransmit) => {
+			if (status.success === true) {
 				const cardHand = this.cardManager.sendSelectedCards();
 				this.cardHeapRef.receiveCardHand(cardHand);
 				this.isPlayerTurn(false);
 			}
 			else {
-				console.log(`playCardHand status: ${status}`);
+				console.log(`playCardHand error message: ${status.message}`);
 			}
 		});
 		
