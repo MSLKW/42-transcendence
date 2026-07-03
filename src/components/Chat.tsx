@@ -100,7 +100,7 @@ export const ChatLightbox = ({ dismiss }: ChatProps) => {
 						border border-n2 rounded-[clamp(0.25rem,5vh+0.125rem,2rem)]
 						p-[clamp(0.25rem,5vw+0.125rem,1rem)]
 						flex flex-col place-content-start place-items-center
-						gap-3
+						gap-5		
 						pointer-events-auto
 					">
 						<div tabIndex={-1}

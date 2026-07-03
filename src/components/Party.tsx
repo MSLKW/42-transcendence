@@ -2,6 +2,7 @@ import { useRef } from "react";
 import { useSceneStore } from "../store/useSceneStore";
 import { AddIcon } from "../icons/AddIcon";
 import { PinButton } from "./PinButton";
+import { SendButton } from "./SendButton";
 
 interface PartyProps {
 	call?: (e: React.MouseEvent<HTMLButtonElement>) => void;
@@ -96,13 +97,20 @@ export const PartyLightbox = ({ dismiss }: PartyProps) => {
 							<label htmlFor="party-code">
 								<b>Join another party</b>
 							</label>
-							<input
-								ref={focusRef}
-								id="party-code"
-								type="text"
-								placeholder="Enter code"
-								className="input-form"
-							/>
+							<div className="
+								w-60 h-max
+								flex place-content-center place-items-center
+								gap-3
+							">
+								<input
+									ref={focusRef}
+									id="party-code"
+									type="text"
+									placeholder="Enter code"
+									className="input-chat"
+								/>
+								<SendButton />
+							</div>
 						</div>
 					</div>
 					<div className="

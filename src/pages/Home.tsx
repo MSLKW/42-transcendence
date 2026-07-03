@@ -120,8 +120,8 @@ export const Home = () => {
 						<InfoButton call={(e) => toggleLightbox("info", true, e)} />
 	 				</div>
 	 				<div className="flex btn-icon-border">
-						<ChatButton call={(e) => toggleLightbox("chat", true, e)} />
 						<EmojiButton />
+						<ChatButton call={(e) => toggleLightbox("chat", true, e)} />
 					</div>
 				</header>
 				<main>

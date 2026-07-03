@@ -1,9 +1,9 @@
 @utility input-form {
 	@apply
 		w-full
-		h-[clamp(1rem,2vh+0.3125rem,1.25rem)]
+		h-[clamp(1rem,5vh+0.3125rem,2rem)]
 		bg-n6
-		rounded-sm
+		border border-n5 rounded-3xl
 		p-[clamp(1rem,2vh+0.3125rem,1.25rem)]
 		pointer-events-auto
 
@@ -27,7 +27,7 @@
 		h-[clamp(1rem,5vh+0.3125rem,2rem)]
 		bg-n6
 		border border-n5 rounded-3xl
-		pl-5 pr-25
+		px-5
 		text-n0
 		pointer-events-auto
 
