@@ -30,10 +30,10 @@ export const AvatarImage = ({ cornerButton, activePlayer }: AvatarProps) => {
 					<p>13</p>
 				</div>
 			}
-			<div
+			{/* <div
 				// key={animationKey}
 				className="w-full h-full bg-b5 animate-turn-wipe"
-			/>
+			/> */}
 		</div>
 	)
 }

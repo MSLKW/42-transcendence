@@ -2,6 +2,7 @@ import { useState, useRef, useEffect } from "react";
 import { Canvas } from "@react-three/fiber";
 import { Stats } from "@react-three/drei";
 import { useSceneStore } from "../store/useSceneStore";
+import { usePlayerStore } from "../store/usePlayerStore";
 import { useDevStore } from "../store/useDevStore";
 import { StripeBg } from "../components/StripeBg";
 import { InfoButton, InfoLightbox } from "../components/Info";
@@ -103,6 +104,8 @@ export const Home = () => {
 		return () => observer.disconnect();
 	}, []);
 
+	const partyCount = usePlayerStore((state) => state.partyCount);
+
 	return (
 		<>
 			<StripeBg />
@@ -157,9 +160,9 @@ export const Home = () => {
 						sm:overflow-x-visible overflow-x-auto
 					">
 						<AvatarPlayer playerName="Azrul" />
-						<AvatarPlayer playerName="Max" />
-						<AvatarPlayer playerName="Jeremy" />
-						<AvatarPlayer playerName="Aisyah" />
+						{partyCount >= 2 && <AvatarPlayer playerName="Max" />}
+						{partyCount >= 3 && <AvatarPlayer playerName="Jeremy" />}
+						{partyCount >= 4 && <AvatarPlayer playerName="Aisyah" />}
 						<JoinParty call={(e) => toggleLightbox("party", true, e)} />
 					</div>
 					<SmallLogo />

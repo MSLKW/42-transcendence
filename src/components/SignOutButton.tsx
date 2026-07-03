@@ -1,8 +1,8 @@
-import { useGameStore } from "../store/useGameStore";
+import { useSceneStore } from "../store/useSceneStore";
 import { SignOutIcon } from "../icons/SignOutIcon";
 
 export const SignOutButton = () => {
-    const setCurrentScene = useGameStore((state) => state.setCurrentScene);
+    const setCurrentScene = useSceneStore((state) => state.setCurrentScene);
 
     return (
         <button
