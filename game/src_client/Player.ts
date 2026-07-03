@@ -43,7 +43,7 @@ export class Player {
 			return ;
 		}
 		this.setupListeners();
-		this.isPlayerTurn(false);
+		this.setPlayerTurnUI(false);
 	}
 
 	public getPlayerId() {
@@ -51,9 +51,11 @@ export class Player {
 	}
 
 	private setupListeners() {
-		this.socket.on('game_start', (status) => {
-			console.log(`Start Game: ${status}`);
-			this.startGameButton.disabled = true;
+		this.socket.on('game_start', (status: statusTransmit) => {
+			if (status.success === true) {
+				this.startGameButton.disabled = true;
+			}
+			console.log(`Start Game: ${status.success}`);
 		});
 		
 		this.socket.on('game_end', (body) => {
@@ -70,21 +72,25 @@ export class Player {
 			if (status.success === true) {
 				const cardHand = this.cardManager.sendSelectedCards();
 				this.cardHeapRef.receiveCardHand(cardHand);
-				this.isPlayerTurn(false);
-			}
-			else {
-				console.log(`playCardHand error message: ${status.message}`);
+				this.setPlayerTurnUI(false);
+			} else {
+				console.log(`player_play_card_hand error: ${status.message}`);
 			}
 		});
 		
-		this.socket.on('player_turn', () => {
-			this.isPlayerTurn(true);
-			console.log('This player\'s is our turn!');
+		this.socket.on('player_turn', (playerId) => {
+			if (this.playerId === playerId) {
+				this.setPlayerTurnUI(true);
+			}
+			console.log(`It is now Player<${playerId}>'s turn!`);
 		});
 
-		this.socket.on('player_skip_turn', (status) => {
-			if (status == "success") {
-				this.isPlayerTurn(false);
+		this.socket.on('player_skip_turn', (status: statusTransmit) => {
+			if (status.success === true) {
+				this.setPlayerTurnUI(false);
+			}
+			else {
+				console.log(`player_skip_turn message: ${status.message}`);
 			}
 		})
 
@@ -93,7 +99,7 @@ export class Player {
 
 			this.cardHeapRef.sync(gameState.cardHeap);
 			this.collectCards(gameState.playerCards);
-			this.isPlayerTurn(gameState.isPlayerTurn);
+			this.setPlayerTurnUI(gameState.isPlayerTurn);
 		});
 
 		this.sendCardsButton.addEventListener('click', () => {
@@ -146,7 +152,7 @@ export class Player {
 		this.cardManager.hoverCard(this.raycaster);
 	}
 
-	private isPlayerTurn(isTurn: boolean) {
+	private setPlayerTurnUI(isTurn: boolean) {
 		if (isTurn === true) {
 			this.sendCardsButton.disabled = false;
 			this.skipTurnButton.disabled = false;

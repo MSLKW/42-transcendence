@@ -60,16 +60,17 @@ export class PlayerState {
 		}
 	}
 
-	public turnSignal() {
-		this.socket.emit('player_turn');
-	}
-
 	public skipTurn() {
+		const status: statusTransmit = {
+			success: false,
+			message: "It's not the player's turn"
+		}
 		if (this.gameStateRef.isPlayerTurn(this)) {
 			this.gameStateRef.nextPlayerTurn();
-			this.socket.emit("player_skip_turn", "success");
+			status.success = true;
+			status.message = "Player has successfully skipped their turn";
 		}
-		this.socket.emit("player_skip_turn", "false");
+		this.socket.emit("player_skip_turn", status);
 	}
 
 	// Returns if player has finished all his cards

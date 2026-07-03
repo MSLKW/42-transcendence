@@ -3,7 +3,7 @@ import { io } from './server.js';
 import { PlayerState } from './PlayerState.js';
 import { CardDeckState } from './CardDeckState.js'
 import { CardHeapState } from './CardHeapState.js'
-import { GameStateTransmit, PlayerSeatOrderTransmit, GameEndStatsTransmit } from '../src_shared/Types.js';
+import { GameStateTransmit, PlayerSeatOrderTransmit, GameEndStatsTransmit, statusTransmit } from '../src_shared/Types.js';
 
 export class GameState {
 	private players: Array<PlayerState>;
@@ -58,12 +58,7 @@ export class GameState {
 
 		// pref only let the host do it or smth
 		socket.on("game_start", (body) => {
-			if (this.startGame() == true) {
-				socket.emit("game_start", 'success');
-			}
-			else {
-				socket.emit("game_start", 'failure');
-			}
+			socket.emit("game_start", this.startGame());
 		})
 
 		const index = this.players.findIndex((player) => player.playerId === playerId);
@@ -105,7 +100,7 @@ export class GameState {
 			console.log('Player is missing for player turn');
 			return ;
 		}
-		player.turnSignal();
+		io.to("game").emit("player_turn", player.playerId);
 	}
 
 	public nextPlayerTurn() {
@@ -130,14 +125,18 @@ export class GameState {
 		return (playerCardsAmount);
 	}
 
-	public startGame(): boolean {
-		if (this.isGameStarted == true)
-			return (false);
-		console.log("Game Started");
+	public startGame(): statusTransmit {
+		const status: statusTransmit = {
+			success: false,
+			message: ""
+		}
+		if (this.isGameStarted == true) {
+			status.message = "Game has already started"
+			return (status);
+		}
 		for (let i = 0; i < this.players.length; i++) {
 			this.players[i].collectCards(this.cardDeck.dealCards(Math.floor(this.cardDeck.size / this.players.length)));
 		}
-		this.isGameStarted = true;
 		for (let i = 0; i < this.players.length; i++) {
 			if (this.players[i].hasThreeDiamonds()) {
 				this.playerTurnIndex = i;
@@ -152,7 +151,11 @@ export class GameState {
 			this.players[i].socket.emit("player_game_state", JSON.stringify(this.transmit(this.players[i])));
 		}
 		// this.playerTurnEvent();
-		return (true);
+		this.isGameStarted = true;
+		console.log("Game Started");
+		status.success = true;
+		status.message = "Game has successfully started";
+		return (status);
 	}
 
 	public endGame(player: PlayerState) {
