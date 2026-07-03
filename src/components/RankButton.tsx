@@ -100,7 +100,7 @@ export const RankLightbox = ({ dismiss }: RankProps) => {
 					<div className="
 						w-[30px]
 						mr-5
-						text-b4
+						text-b3
 					">
 						<RankArrowIcon />
 					</div>

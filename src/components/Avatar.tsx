@@ -1,12 +1,11 @@
-import { ChatButton } from "./Chat"
-
 interface AvatarProps {
 	call?: (e: React.MouseEvent<HTMLButtonElement>) => void,
 	cornerButton?: string;
 	playerName?: string;
+	activePlayer: number;
 }
 
-export const AvatarImage = ({ cornerButton, call }: AvatarProps) => {
+export const AvatarImage = ({ cornerButton, activePlayer }: AvatarProps) => {
 	return (
 		<div className="
 			w-[clamp(2.5rem,7.5vh+0.5rem,5rem)]
@@ -16,15 +15,7 @@ export const AvatarImage = ({ cornerButton, call }: AvatarProps) => {
 			flex place-content-center place-items-center
 			relative
 		">
-			{cornerButton === "chat" &&
-				<div className="
-					absolute top-0 right-0 translate-x-1/2 sm:-translate-y-1/2
-					z-1
-				">
-					<ChatButton call={call}/>
-				</div>
-			}
-			{cornerButton === "cards" &&
+			{cornerButton === "cardsLeft" &&
 				<div className="
 					absolute top-0 right-0 translate-x-1/2 -translate-y-1/2
 					z-1
@@ -38,18 +29,19 @@ export const AvatarImage = ({ cornerButton, call }: AvatarProps) => {
 					<p>13</p>
 				</div>
 			}
+			<div className="w-full h-full bg-b5 animate-turn-wipe"/>
 		</div>
 	)
 }
 
-export const AvatarPlayer = ({ cornerButton = "none", playerName = "Player", call }: AvatarProps) => {
+export const AvatarPlayer = ({ cornerButton = "none", playerName = "Player", activePlayer = -1 }: AvatarProps) => {
 	return (
 		<>
 			<div className="
 				flex flex-col place-items-center
 				gap-1
 			">
-				<AvatarImage cornerButton={cornerButton} call={call} />
+				<AvatarImage cornerButton={cornerButton} activePlayer={activePlayer} />
 				<div className="
 					w-max min-w-[clamp(2.5rem,7.5vh+0.5rem,5rem)] max-w-32.5
 					h-fit

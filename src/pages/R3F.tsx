@@ -32,6 +32,20 @@ export const R3F = () => {
 			[key]: value,
 		}));
 	}
+	const [activePlayer, setActivePlayer] = useState<number>(0);
+	const [animationKey, setAnimationKey] = useState<number>(0);
+	const nextTurn = () => {
+		setActivePlayer((prev) => (prev + 1) % 4);
+		setAnimationKey((prev) => prev + 1);
+	}
+	useEffect(() => {
+		const timer = setTimeout(() => {
+			nextTurn();
+			console.log("activePlayer:", activePlayer);
+		}, 1000);
+
+		return () => clearTimeout(timer);
+	}, [activePlayer]);
 
 	useEffect(() => {
 		window.scrollTo({
@@ -81,20 +95,23 @@ export const R3F = () => {
 				<main>
 					<div className="absolute left-[25%] top-[5%]">
 						<AvatarPlayer
-							cornerButton="cards"
+							cornerButton="cardsLeft"
 							playerName="Max"
+							activePlayer={activePlayer}
 						/>
 					</div>
 					<div className="absolute left-[5%] top-[20%]">
 						<AvatarPlayer
-							cornerButton="cards"
+							cornerButton="cardsLeft"
 							playerName="Jeremy"
+							activePlayer={activePlayer}
 						/>
 					</div>
 					<div className="absolute right-[5%] top-[20%]">
 						<AvatarPlayer
-							cornerButton="cards"
+							cornerButton="cardsLeft"
 							playerName="Aisyah"
+							activePlayer={activePlayer}
 						/>
 					</div>
 					<div className="
@@ -106,14 +123,15 @@ export const R3F = () => {
 						absolute left-1/2 top-[65%] -translate-x-1/2
 						flex gap-10
 					">
-						<button className="btn-white">PASS</button>
-						<button className="btn-white">PLAY</button>
+						<button onClick={nextTurn} className="btn-white">PASS</button>
+						<button onClick={nextTurn} className="btn-white">PLAY</button>
 					</div>
 				</main>
 				<footer className="flex place-content-between place-items-center">
 					<AvatarPlayer
-						cornerButton="cards"
+						cornerButton="cardsLeft"
 						call={(e) => toggleLightbox("chat", true, e)}
+						activePlayer={activePlayer}
 					/>
 					<div className="
 						w-[clamp(1rem,10vw+0.5rem,5rem)] h-full
@@ -124,6 +142,7 @@ export const R3F = () => {
 					</div>
 				</footer>
 			</section>
+			
 			{ showLightbox["settings"] && <SettingsLightbox dismiss={() => toggleLightbox("settings", false)} /> }
 			{ showLightbox["rank"] && <RankLightbox dismiss={() => toggleLightbox("rank", false)} /> }
 			{ showLightbox["chat"] && <ChatLightbox dismiss={() => toggleLightbox("chat", false)} /> }

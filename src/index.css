@@ -5,6 +5,7 @@
 @import "./css/uic/label.css";
 @import "./css/uic/input.css";
 @import "./css/uic/ul.css";
+@import "./css/animation/turn.css";
 
 @theme {
 	--color-n0: #191b1c;

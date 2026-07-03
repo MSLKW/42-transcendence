@@ -24,6 +24,7 @@ interface GameState {
 	totalWins: number;
 	winStreak: number;
 	achievements: Record<AchievementId, { unlockedAt: number } | null>;
+	activePlayer: number;
 
 	setCurrentScene: (scene: GameScene) => void;
 	setPlayerName: (name: string) => void;
@@ -34,6 +35,7 @@ interface GameState {
 	resetWinStreak: () => void;
 	unlockAchievement: (id: AchievementId) => void;
 	resetGame: () => void;
+	setActivePlayer: () => void;
 }
 
 export const useGameStore = create<GameState>() (
@@ -57,6 +59,7 @@ export const useGameStore = create<GameState>() (
 				WIN_STREAK_10: null,
 				MASTER_COLLECTOR: null,
 			},
+			activePlayer: 0,
 
 			setCurrentScene: (scene) => set({ currentScene: scene }),
 			setPlayerName: (name) => set({ playerName: name }),
@@ -95,6 +98,7 @@ export const useGameStore = create<GameState>() (
 				},
 				currentScene: "LOGIN",
 			}),
+			setActivePlayer: () => set((state) => ({ activePlayer: state.activePlayer + 1})),
 		}),
 		{
 			name: 'game-session-storage',
