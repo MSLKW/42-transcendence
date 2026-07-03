@@ -1,10 +1,10 @@
 import { useEffect } from "react";
-import { useGameStore } from "./store/useGameStore";
+import { useSceneStore } from "./store/useSceneStore";
 import { useDevStore } from "./store/useDevStore";
 
 export default function Dev() {
-	const setCurrentScene = useGameStore((state) => state.setCurrentScene);
-	const resetGame = useGameStore((state) => state.resetGame);
+	const setCurrentScene = useSceneStore((state) => state.setCurrentScene);
+	const resetGame = useSceneStore((state) => state.resetGame);
 	const showFrame = useDevStore((state) => state.showFrame);
 	const setShowFrame = useDevStore((state) => state.setShowFrame);
 	const setShowStats = useDevStore((state) => state.setShowStats);

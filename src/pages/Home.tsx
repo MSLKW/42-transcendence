@@ -1,7 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import { Canvas } from "@react-three/fiber";
 import { Stats } from "@react-three/drei";
-import { useGameStore } from "../store/useGameStore";
 import { useSceneStore } from "../store/useSceneStore";
 import { useDevStore } from "../store/useDevStore";
 import { StripeBg } from "../components/StripeBg";
@@ -21,7 +20,7 @@ interface HomeProps {
 }
 
 export const HomeCards = ({ cardType }: HomeProps) => {
-	const setCurrentScene = useGameStore((state) => state.setCurrentScene);
+	const setCurrentScene = useSceneStore((state) => state.setCurrentScene);
 
 	return (
 		<button

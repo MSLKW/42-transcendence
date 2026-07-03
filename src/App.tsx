@@ -1,4 +1,4 @@
-import { useGameStore } from "./store/useGameStore";
+import { useSceneStore } from "./store/useSceneStore";
 import { Login } from "./pages/Login";
 import { Home } from "./pages/Home";
 import { Lobby } from "./pages/Lobby";
@@ -7,7 +7,7 @@ import { R3F } from "./pages/R3F";
 import { Results } from "./pages/Results";
 
 export default function App() {
-	const currentScene = useGameStore((state) => state.currentScene);
+	const currentScene = useSceneStore((state) => state.currentScene);
 
 	return (
 		<>

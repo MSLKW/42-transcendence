@@ -2,10 +2,11 @@ interface AvatarProps {
 	call?: (e: React.MouseEvent<HTMLButtonElement>) => void,
 	cornerButton?: string;
 	playerName?: string;
-	activePlayer: number;
+	activePlayer?: number;
 }
 
 export const AvatarImage = ({ cornerButton, activePlayer }: AvatarProps) => {
+	// const isActive = activePlayer === index;
 	return (
 		<div className="
 			w-[clamp(2.5rem,7.5vh+0.5rem,5rem)]
@@ -29,7 +30,10 @@ export const AvatarImage = ({ cornerButton, activePlayer }: AvatarProps) => {
 					<p>13</p>
 				</div>
 			}
-			<div className="w-full h-full bg-b5 animate-turn-wipe"/>
+			<div
+				// key={animationKey}
+				className="w-full h-full bg-b5 animate-turn-wipe"
+			/>
 		</div>
 	)
 }

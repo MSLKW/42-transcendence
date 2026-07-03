@@ -1,7 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { Canvas } from "@react-three/fiber";
 import { Stats, PerspectiveCamera, OrbitControls, AdaptiveDpr } from "@react-three/drei";
-import { useGameStore } from "../store/useGameStore";
 import { useSceneStore } from "../store/useSceneStore";
 import { useDevStore } from "../store/useDevStore";
 import { SphereBg } from "../components/SphereBg";
@@ -14,7 +13,7 @@ import { ChatButton, ChatLightbox } from "../components/Chat";
 import { SortButtons } from "../components/SortButtons";
 
 export const R3F = () => {
-	const setCurrentScene = useGameStore((state) => state.setCurrentScene);
+	const setCurrentScene = useSceneStore((state) => state.setCurrentScene);
 	const showStats = useDevStore((state) => state.showStats);
 	const containerRef = useRef(null);
 	const setContAreaWidth = useSceneStore((state) => state.setContAreaWidth);

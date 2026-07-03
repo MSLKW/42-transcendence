@@ -72,7 +72,7 @@ export const RankLightbox = ({ dismiss }: RankProps) => {
 						text-n6 text-right whitespace-nowrap
 					">
 						<p>Straight Flush</p>
-						<p>4 of a Kind + 1</p>
+						<p>4 of a Kind</p>
 						<p>Full House</p>
 						<p>Flush</p>
 						<p className="text-b5">Straight</p>

@@ -1,7 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import { Canvas } from "@react-three/fiber";
 import { Stats, PerspectiveCamera, OrbitControls, AdaptiveDpr } from "@react-three/drei";
-import { useGameStore } from "../store/useGameStore";
 import { useSceneStore } from "../store/useSceneStore";
 import { useDevStore } from "../store/useDevStore";
 import { StripeBg } from "../components/StripeBg";
@@ -13,7 +12,7 @@ import { SignInButton, SignInLightbox } from "../components/SignIn";
 import { Card } from "../components/Card";
 
 export const Login = () => {
-	const setCurrentScene = useGameStore((state) => state.setCurrentScene);
+	const setCurrentScene = useSceneStore((state) => state.setCurrentScene);
 	const setContAreaWidth = useSceneStore((state) => state.setContAreaWidth);
 	const setContAreaHeight = useSceneStore((state) => state.setContAreaHeight);
 	const showStats = useDevStore((state) => state.showStats);

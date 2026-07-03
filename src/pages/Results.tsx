@@ -1,7 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import { Canvas } from "@react-three/fiber";
 import { Stats, PerspectiveCamera, OrbitControls, AdaptiveDpr } from "@react-three/drei";
-import { useGameStore } from "../store/useGameStore";
 import { useSceneStore } from "../store/useSceneStore";
 import { useDevStore } from "../store/useDevStore";
 import { SphereBg } from "../components/SphereBg";
@@ -41,7 +40,7 @@ export const ResultsWindow = () => {
 }
 
 export const Results = () => {
-	const setCurrentScene = useGameStore((state) => state.setCurrentScene);
+	const setCurrentScene = useSceneStore((state) => state.setCurrentScene);
 	const showStats = useDevStore((state) => state.showStats);
 	const containerRef = useRef(null);
 	const setContAreaWidth = useSceneStore((state) => state.setContAreaWidth);
