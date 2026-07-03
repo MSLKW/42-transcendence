@@ -23,6 +23,16 @@ export const SettingsLightbox = ({ dismiss }: SettingsProps) => {
 	const [autoPassValue, setAutoPassValue] = useState(6);
 	const [fxLevel, setFXLevel] = useState(75);
 	const [musicLevel, setMusicLevel] = useState(50);
+	const [allowThrees, setAllowThrees] = useState(false);
+	const handleAllowThrees = () => {
+		const newState = !allowThrees;
+		setAllowThrees(newState);
+	}
+	const [allow2SpadeFinish, setAllow2SpadeFinish] = useState(false);
+	const handleAllow2SpadeFinish = () => {
+		const newState = !allow2SpadeFinish;
+		setAllow2SpadeFinish(newState);
+	}
 
 	return (
 		<section className="
@@ -33,7 +43,7 @@ export const SettingsLightbox = ({ dismiss }: SettingsProps) => {
 			<button tabIndex={-1} className='btn-lightbox' onClick={dismiss}/>
 			<div className="
 				z-0
-				w-150 h-fit
+				w-170 h-fit
 				bg-n1
 				border border-n2 rounded-3xl
 				relative
@@ -50,8 +60,22 @@ export const SettingsLightbox = ({ dismiss }: SettingsProps) => {
 						p-8
 					">
 						<p>Rules</p>
-						<p>Allow Three of a Kind</p>
-						<p>Allow Finish with 2 of Spades</p>
+						<label className="gap-5">
+							<input
+								type="checkbox"
+								checked={allowThrees}
+								onChange={handleAllowThrees}
+							/>
+							<span>Allow Three of a Kind</span>
+						</label>
+						<label className="gap-5">
+							<input
+								type="checkbox"
+								checked={allow2SpadeFinish}
+								onChange={handleAllow2SpadeFinish}
+							/>
+							<span>Allow Finish with 2 of Spades</span>
+						</label>
 					</div>
 					<div className="
 						col-span-1
@@ -138,16 +162,14 @@ export const SettingsLightbox = ({ dismiss }: SettingsProps) => {
 						</label>
 					</div>
 					<div className="
-						col-span-2 row-span-1
-						h-fit
+						col-span-1
 						flex place-content-between place-items-center
-						gap-x-5
 						p-8
+						border-r border-n2
 					">
-						<p className="mr-3">Audio</p>
 						<div className="flex flex-col gap-5">
 							<label htmlFor="fxSlider">
-								FX: {fxLevel}%
+								Sound FX: {fxLevel}%
 							</label>
 							<input
 								type="range"
@@ -160,6 +182,12 @@ export const SettingsLightbox = ({ dismiss }: SettingsProps) => {
 								className="w-full"
 							/>
 						</div>
+					</div>
+					<div className="
+						col-span-1
+						flex place-content-between place-items-center
+						p-8
+					">
 						<div className="flex flex-col gap-5">
 							<label htmlFor="musicSlider">
 								Music: {musicLevel}%
