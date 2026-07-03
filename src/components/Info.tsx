@@ -12,7 +12,7 @@ export const InfoButton = ({ call }: InfoProps) => {
 		<button
 			data-tip="Info"
 			onClick={call}
-			className="btn-icon btn-icon-border btn-tip-down"
+			className="btn-icon btn-tip-down"
 		>
 			<InfoIcon />
 		</button>

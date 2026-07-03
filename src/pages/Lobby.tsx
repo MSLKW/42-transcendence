@@ -7,9 +7,10 @@ import { useDevStore } from "../store/useDevStore";
 import { SphereBg } from "../components/SphereBg";
 import { BackButton } from "../components/BackButton";
 import { SettingsButton, SettingsLightbox } from "../components/Settings";
-import { YeahButton, HmmmButton, WoahButton } from "../components/EmojiButtons";
+import { InfoButton, InfoLightbox } from "../components/Info";
+import { EmojiButton } from "../components/EmojiButtons";
 import { AvatarPlayer } from "../components/Avatar";
-import { ChatLightbox } from "../components/Chat";
+import { ChatButton, ChatLightbox } from "../components/Chat";
 import { JoinParty, PartyLightbox } from "../components/Party";
 import { SmallLogo } from "../components/Logo";
 
@@ -21,6 +22,7 @@ export const Lobby = () => {
 	const containerRef = useRef(null);
 	const [showLightbox, setShowLightbox] = useState({
 		settings: false,
+		info: false,
 		chat: false,
 		party: false,
 	});
@@ -72,11 +74,11 @@ export const Lobby = () => {
 					<div className="flex btn-icon-border">
 						<BackButton scene={() => setCurrentScene("HOME")} />
 						<SettingsButton call={(e) => toggleLightbox("settings", true, e)} />
+						<InfoButton call={(e) => toggleLightbox("info", true, e)} />
 					</div>
 					<div className="flex btn-icon-border">
-						<YeahButton />
-						<HmmmButton />
-						<WoahButton />
+						<EmojiButton />
+						<ChatButton call={(e) => toggleLightbox("chat", true, e)} />
 					</div>
 				</header>
 				<main className="flex flex-col place-content-evenly place-items-evenly">
@@ -85,24 +87,16 @@ export const Lobby = () => {
 						w-full
 						grid grid-cols-3 place-items-center
 					">
-						<AvatarPlayer
-							playerName="Null"
-						/>
+						<AvatarPlayer playerName="Null" />
 						<button
 							className="btn-white"
 							onClick={() => setCurrentScene("R3F")}
 						>
 							START
 						</button>
-						<AvatarPlayer
-							playerName="Undefined"
-						/>
+						<AvatarPlayer playerName="Undefined" />
 					</div>
-					<AvatarPlayer
-						cornerButton="chat"
-						call={(e) => toggleLightbox("chat", true, e)}
-						playerName="Azrul"
-					/>
+					<AvatarPlayer playerName="Azrul" />
 				</main>
 				<footer className="
 					pointer-events-auto
@@ -126,6 +120,7 @@ export const Lobby = () => {
 				</footer>
 			</section>
 			{ showLightbox["settings"] && <SettingsLightbox dismiss={() => toggleLightbox("settings", false)} /> }
+			{ showLightbox["info"] && <InfoLightbox dismiss={() => toggleLightbox("info", false)} /> }
 			{ showLightbox["chat"] && <ChatLightbox dismiss={() => toggleLightbox("chat", false)} /> }
 			{ showLightbox["party"] && <PartyLightbox dismiss={() => toggleLightbox("party", false)} /> }
 		</>

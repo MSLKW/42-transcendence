@@ -69,8 +69,10 @@ export const Login = () => {
 				</Canvas>
 			</section>
 			<section className="cont-body">
-				<header className="flex place-content-end">
-	 				<InfoButton call={(e) => toggleLightbox("info", true, e)}/>
+				<header className="flex">
+					<div className="btn-icon-border">
+						<InfoButton call={(e) => toggleLightbox("info", true, e)}/>
+					</div>
 				</header>
 				<main>
 					<BigLogo />

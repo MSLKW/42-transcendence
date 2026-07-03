@@ -11,8 +11,9 @@ import { SettingsButton, SettingsLightbox } from "../components/Settings";
 import { PersonIcon } from "../icons/PersonIcon";
 import { TutorialIcon } from "../icons/TutorialIcon";
 import { AvatarPlayer } from "../components/Avatar";
-import { ChatLightbox } from "../components/Chat";
+import { ChatButton, ChatLightbox } from "../components/Chat";
 import { JoinParty, PartyLightbox } from "../components/Party";
+import { EmojiButton } from "../components/EmojiButtons";
 import { SmallLogo } from "../components/Logo";
 
 interface HomeProps {
@@ -116,8 +117,12 @@ export const Home = () => {
 					<div className="flex bg-n1 border border-n2 rounded-3xl">
 	 					<SignOutButton />
 	 					<SettingsButton call={(e) => toggleLightbox("settings", true, e)} />
+						<InfoButton call={(e) => toggleLightbox("info", true, e)} />
 	 				</div>
-	 				<InfoButton call={(e) => toggleLightbox("info", true, e)} />
+	 				<div className="flex btn-icon-border">
+						<ChatButton call={(e) => toggleLightbox("chat", true, e)} />
+						<EmojiButton />
+					</div>
 				</header>
 				<main>
 					<div tabIndex={-1} className="
@@ -152,23 +157,11 @@ export const Home = () => {
 						gap-[clamp(0.25rem,3vw+0.125rem,2.5rem)]
 						sm:overflow-x-visible overflow-x-auto
 					">
-						<AvatarPlayer
-							playerName="Azrul"
-							cornerButton="chat"
-							call={(e) => toggleLightbox("chat", true, e)}
-						/>
-						<AvatarPlayer
-							playerName="Max"
-						/>
-						<AvatarPlayer
-							playerName="Jeremy"
-						/>
-						<AvatarPlayer
-							playerName="Aisyah"
-						/>
-						<JoinParty
-							call={(e) => toggleLightbox("party", true, e)}
-						/>
+						<AvatarPlayer playerName="Azrul" />
+						<AvatarPlayer playerName="Max" />
+						<AvatarPlayer playerName="Jeremy" />
+						<AvatarPlayer playerName="Aisyah" />
+						<JoinParty call={(e) => toggleLightbox("party", true, e)} />
 					</div>
 					<SmallLogo />
 				</footer>

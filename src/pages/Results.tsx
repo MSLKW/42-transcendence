@@ -7,8 +7,8 @@ import { useDevStore } from "../store/useDevStore";
 import { SphereBg } from "../components/SphereBg";
 import { BackButton } from "../components/BackButton";
 import { SettingsButton, SettingsLightbox } from "../components/Settings";
-import { YeahButton, HmmmButton, WoahButton } from "../components/EmojiButtons";
-import { ChatLightbox } from "../components/Chat";
+import { EmojiButton } from "../components/EmojiButtons";
+import { ChatButton, ChatLightbox } from "../components/Chat";
 import { NextGameButton } from "../components/NextGameButton";
 
 export const ResultsWindow = () => {
@@ -99,9 +99,8 @@ export const Results = () => {
 						<SettingsButton call={(e) => toggleLightbox("settings", true, e)} />
 					</div>
 					<div className="flex btn-icon-border">
-						<YeahButton />
-						<HmmmButton />
-						<WoahButton />
+						<EmojiButton />
+						<ChatButton call={(e) => toggleLightbox("chat", true, e)}/>
 					</div>
 				</header>
 				<main className="flex place-content-center place-items-center p-[clamp(0.5rem,4vh+0.25rem,2.5rem)]">

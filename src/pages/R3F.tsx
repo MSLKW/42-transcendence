@@ -21,7 +21,7 @@ export const R3F = () => {
 	const setContAreaHeight = useSceneStore((state) => state.setContAreaHeight);
 	const [showLightbox, setShowLightbox] = useState({
 		settings: false,
-		rank: true,
+		rank: false,
 		chat: false,
 	});
 	const toggleLightbox = (key: keyof typeof showLightbox, value: boolean, e?: React.MouseEvent<HTMLButtonElement>) => {
@@ -74,8 +74,8 @@ export const R3F = () => {
 						<SettingsButton call={(e) => toggleLightbox("settings", true, e)} />
 					</div>
 					<div className="flex btn-icon-border">
-						<ChatButton call={(e) => toggleLightbox("chat", true, e)} />
 						<EmojiButton />
+						<ChatButton call={(e) => toggleLightbox("chat", true, e)} />
 					</div>
 				</header>
 				<main>
