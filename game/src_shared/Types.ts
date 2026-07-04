@@ -73,3 +73,8 @@ export type statusTransmit = {
 	success: boolean,
 	message: string
 }
+
+export type playerTurnTransmit = {
+	playerId: string,
+	timer: number
+}

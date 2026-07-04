@@ -3,7 +3,7 @@ import { io } from './server.js';
 import { PlayerState } from './PlayerState.js';
 import { CardDeckState } from './CardDeckState.js'
 import { CardHeapState } from './CardHeapState.js'
-import { GameStateTransmit, PlayerSeatOrderTransmit, GameEndStatsTransmit, statusTransmit } from '../src_shared/Types.js';
+import { GameStateTransmit, PlayerSeatOrderTransmit, GameEndStatsTransmit, statusTransmit, playerTurnTransmit } from '../src_shared/Types.js';
 
 export class GameState {
 	private players: Array<PlayerState>;
@@ -11,6 +11,8 @@ export class GameState {
 	public	cardHeap: CardHeapState;
 	private isGameStarted: boolean;
 	private	playerTurnIndex: number;
+	private playerTurnTimeoutId: NodeJS.Timeout | undefined;
+	private turnTimerInSeconds: number;
 
 	constructor() {
 		this.players = [];
@@ -18,6 +20,8 @@ export class GameState {
 		this.cardHeap = new CardHeapState();
 		this.isGameStarted = false;
 		this.playerTurnIndex = -1;
+		this.playerTurnTimeoutId = undefined;
+		this.turnTimerInSeconds = 15;
 
 		io.on("connection", (socket) => {
 			this.connectPlayer(socket);
@@ -100,7 +104,23 @@ export class GameState {
 			console.log('Player is missing for player turn');
 			return ;
 		}
-		io.to("game").emit("player_turn", player.playerId);
+		const playerTurnTransmit: playerTurnTransmit = {
+			playerId: player.playerId,
+			timer: this.turnTimerInSeconds
+		}
+		this.playerTurnTimeoutId = setTimeout(() => {this.playerTimeout(player)}, this.turnTimerInSeconds * 1000);
+		io.to("game").emit("player_turn", playerTurnTransmit);
+	}
+
+	private playerTimeout(player: PlayerState) {
+		console.log(`Timing out player<${player.playerId}>`)
+		const status: statusTransmit = {
+			success: true,
+			message: "Timer ran out"
+		}
+		player.socket.emit("player_skip_turn", status);
+		clearTimeout(this.playerTurnTimeoutId);
+		this.nextPlayerTurn();
 	}
 
 	public nextPlayerTurn() {

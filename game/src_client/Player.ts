@@ -1,6 +1,6 @@
 import { io, Socket } from 'socket.io-client';
 import * as THREE from 'three';
-import { CardTransmit, GameEndStatsTransmit, GameStateTransmit, statusTransmit } from '../src_shared/Types.ts';
+import { CardTransmit, GameEndStatsTransmit, GameStateTransmit, playerTurnTransmit, statusTransmit } from '../src_shared/Types.ts';
 import { CardHand } from './CardHand.ts';
 import { Card } from './Card.ts';
 import { CardManager } from './CardManager.ts';
@@ -78,11 +78,11 @@ export class Player {
 			}
 		});
 		
-		this.socket.on('player_turn', (playerId) => {
-			if (this.playerId === playerId) {
+		this.socket.on('player_turn', (playerTurn: playerTurnTransmit) => {
+			if (this.playerId === playerTurn.playerId) {
 				this.setPlayerTurnUI(true);
 			}
-			console.log(`It is now Player<${playerId}>'s turn!`);
+			console.log(`It is now Player<${playerTurn.playerId}>'s turn! Timer is set at ${playerTurn.timer} seconds!`);
 		});
 
 		this.socket.on('player_skip_turn', (status: statusTransmit) => {
