@@ -8,7 +8,7 @@ import { CardHandState } from './CardHandState.js';
 export class PlayerState {
 	public	socket: Socket;
 	public	playerId: string;
-	public cards: Array<CardTransmit>;
+	public	cards: Array<CardTransmit>;
 	private gameStateRef: GameState;
 	private cardHeapRef: CardHeapState;
 

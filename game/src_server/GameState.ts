@@ -12,8 +12,15 @@ export class GameState {
 	private isGameStarted: boolean;
 	private	playerTurnIndex: number;
 	private playerTurnTimeoutId: NodeJS.Timeout | undefined;
-	private turnTimerInSeconds: number;
 
+	// Game Settings
+	private turnTimerInSeconds: number;
+	private playersInGameLimit: number; // Players allowed in the game
+	private totalPlayersLimit: number; // Players allowed in the lobby
+	// Play until last player or when the first player finishes
+	// if play until last player finishes, will score based on finishing ranking?
+	// if play until first player finishes, will score based on cards held by the losers
+	
 	constructor() {
 		this.players = [];
 		this.cardDeck = new CardDeckState();
@@ -21,7 +28,9 @@ export class GameState {
 		this.isGameStarted = false;
 		this.playerTurnIndex = -1;
 		this.playerTurnTimeoutId = undefined;
-		this.turnTimerInSeconds = 15;
+		this.turnTimerInSeconds = 0;
+		this.playersInGameLimit = 4;
+		this.totalPlayersLimit = 8;
 
 		io.on("connection", (socket) => {
 			this.connectPlayer(socket);
@@ -29,14 +38,6 @@ export class GameState {
 	}
 
 	private getSeatOrder() {
-		/*
-		seatOrder: {
-			playerId0: 0
-			playerId1: 1
-			playerId2: 2
-			playerId3: 3
-		}
-		*/
 		const seatOrder: Record<string, number> = {};
 		for (let i = 0; i < this.players.length; i++) {
 			seatOrder[this.players[i].playerId] = i;
@@ -66,7 +67,7 @@ export class GameState {
 		})
 
 		const index = this.players.findIndex((player) => player.playerId === playerId);
-		if (index == -1 && this.players.length < 4 && this.isGameStarted == false) {
+		if (index == -1 && this.players.length < this.playersInGameLimit && this.isGameStarted == false) {
 			console.log(`Player<${playerId}> has connected`);
 			const player = new PlayerState(playerId, socket, this);
 			this.players.push(player);
@@ -108,7 +109,9 @@ export class GameState {
 			playerId: player.playerId,
 			timer: this.turnTimerInSeconds
 		}
-		this.playerTurnTimeoutId = setTimeout(() => {this.playerTimeout(player)}, this.turnTimerInSeconds * 1000);
+		if (this.turnTimerInSeconds > 0) {
+			this.playerTurnTimeoutId = setTimeout(() => {this.playerTimeout(player)}, this.turnTimerInSeconds * 1000);
+		}
 		io.to("game").emit("player_turn", playerTurnTransmit);
 	}
 
@@ -119,11 +122,12 @@ export class GameState {
 			message: "Timer ran out"
 		}
 		player.socket.emit("player_skip_turn", status);
-		clearTimeout(this.playerTurnTimeoutId);
 		this.nextPlayerTurn();
 	}
 
 	public nextPlayerTurn() {
+		clearTimeout(this.playerTurnTimeoutId);
+		this.playerTurnTimeoutId = undefined;
 		this.playerTurnIndex++;
 		if (this.playerTurnIndex >= this.players.length)
 			this.playerTurnIndex = 0;
@@ -170,7 +174,7 @@ export class GameState {
 		for (let i = 0; i < this.players.length; i++) {
 			this.players[i].socket.emit("player_game_state", JSON.stringify(this.transmit(this.players[i])));
 		}
-		// this.playerTurnEvent();
+		this.playerTurnEvent();
 		this.isGameStarted = true;
 		console.log("Game Started");
 		status.success = true;
@@ -180,9 +184,6 @@ export class GameState {
 
 	public endGame(player: PlayerState) {
 		console.log(`Game Ended | Winner is Player<${player.playerId}>`);
-		// reset stuff
-		// calculate game end stats
-		// send game end stats
 		const gameEndStats: GameEndStatsTransmit = {
 			winnerPlayerId: player.playerId,
 			playerFinalCardAmounts: this.playerCardsAmount(),
