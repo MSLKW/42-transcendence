@@ -1,0 +1,25 @@
+networks:
+  transcendence:
+    name : transcendence
+    driver: bridge
+
+volumes:
+  postgresql_data:
+    name: postgresql_data
+    driver: local
+    driver_opts:  
+      type: none
+      o: bind
+      device: /home/aimokhta/data/postgresql_data
+
+services:
+  postgresql:
+    image: postgresql:database
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRESQL_USER: ${POSTGRESQL_USER}
+      POSTGRESQL_DB: ${POSTGRESQL_DB}
+    volumes:
+      - postgresql_data:/var/lib/postgresql/data
+      - ../secrets/postgresql_password.txt:/run/secrets/postgresql_password:ro
