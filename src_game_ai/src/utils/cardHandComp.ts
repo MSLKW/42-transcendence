@@ -11,11 +11,11 @@ export function cardHandComp(a: CardHand, b: CardHand): number
 		return (a.pentupleType - b.pentupleType);
 	if (a.pentupleType == PentupleType.Flush)
 	{
-		if (a.cards[0].suite == b.cards[0].suite)
+		if (a.cards[0].suit == b.cards[0].suit)
 			return (a.cards[a.cards.length - 1].rank - b.cards[b.cards.length - 1].rank);
-		return (a.cards[a.cards.length - 1].suite - b.cards[b.cards.length - 1].suite);
+		return (a.cards[a.cards.length - 1].suit - b.cards[b.cards.length - 1].suit);
 	}
 	if (a.cards[a.cards.length - 1].rank == b.cards[b.cards.length - 1].rank)
-		return (a.cards[a.cards.length - 1].suite - b.cards[b.cards.length - 1].suite);
+		return (a.cards[a.cards.length - 1].suit - b.cards[b.cards.length - 1].suit);
 	return (a.cards[a.cards.length - 1].rank - b.cards[b.cards.length - 1].rank);
 }

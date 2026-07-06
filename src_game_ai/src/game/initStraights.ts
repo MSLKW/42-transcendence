@@ -37,7 +37,7 @@ function addStraight(state: GameState, temp: Card[]): void
 			pentupleType: PentupleType.Straight,
 			playerId: "placeholder"
 	};
-	if (temp.every(card => card.suite == temp[0].suite))
+	if (temp.every(card => card.suit == temp[0].suit))
 	{
 		straight.pentupleType = PentupleType.StraightFlush;
 		state.possibleCardHands["straight_flush"].push(straight);

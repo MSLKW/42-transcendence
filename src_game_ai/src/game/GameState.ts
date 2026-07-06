@@ -50,7 +50,6 @@ export class GameState
 		initFullHouses(this);
 		initStraights(this); //straights and straigh flushes
 
-		this.playerCards.sort(this.suitComp);
 		initFlushes(this); //ignores straight flushes
 		
 		for (const key in this.possibleCardHands)
@@ -86,15 +85,15 @@ export class GameState
 	private rankComp = (a: Card, b: Card) =>
 	{
 		if (a.rank == b.rank)
-			return a.suite - b.suite;
+			return a.suit - b.suit;
 		return a.rank - b.rank;
 	}
 
 	private suitComp = (a: Card, b: Card) =>
 	{
-		if (a.suite == b.suite)
+		if (a.suit == b.suit)
 			return a.rank - b.rank;
-		return a.suite - b.suite;
+		return a.suit - b.suit;
 	}
 
 	private normalizeCardHand(cardHand: CardHand): CardHand

@@ -15,7 +15,7 @@ export enum CardRank {
 	Two
 }
 
-export enum CardSuite {
+export enum CardSuit {
 	Diamond,
 	Club,
 	Heart,
@@ -24,7 +24,7 @@ export enum CardSuite {
 
 export interface CardTransmit {
 	rank: CardRank;
-	suite: CardSuite;
+	suit: CardSuit;
 }
 
 export enum HandType {
@@ -57,6 +57,11 @@ export type GameStateTransmit = {
 	playerCardsAmount: Record<string, number>,
 	playerCards: Array<CardTransmit>,
 	isPlayerTurn: boolean
+}
+
+export type GameEndStatsTransmit = {
+	winnerPlayerId: string,
+	playerFinalCardAmounts: Record<string, number>
 }
 
 export type PlayerSeatOrderTransmit = {

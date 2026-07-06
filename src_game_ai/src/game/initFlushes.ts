@@ -19,7 +19,7 @@ function recursiveSearch(state: GameState, temp: Card[], i: number): void
 	}
 	while (i < state.playerCards.length - 4 + temp.length)
 	{
-		if (temp.length == 0 || state.playerCards[i].suite == temp[0].suite)
+		if (temp.length == 0 || state.playerCards[i].suit == temp[0].suit)
 		{
 			temp.push(state.playerCards[i]);
 			recursiveSearch(state, temp, i + 1);
