@@ -21,10 +21,6 @@ export const SettingsButton = ({ call }: SettingsProps) => {
 }
 
 export const SettingsLightbox = ({ dismiss }: SettingsProps) => {
-	const autoPassOptions = ["1s", "3s", "5s", "10s", "15s", "30s", "42s", "1 min", "2 mins", "No Limit"];
-	const [autoPassValue, setAutoPassValue] = useState(6);
-	const [fxLevel, setFXLevel] = useState(75);
-	const [musicLevel, setMusicLevel] = useState(50);
 	const [allowThrees, setAllowThrees] = useState(false);
 	const handleAllowThrees = () => {
 		const newState = !allowThrees;
@@ -35,7 +31,14 @@ export const SettingsLightbox = ({ dismiss }: SettingsProps) => {
 		const newState = !allow2SpadeFinish;
 		setAllow2SpadeFinish(newState);
 	}
-	const [gameEnds, setGameEnds] = useState(1);
+	const autoPassOptions = ["1s", "3s", "5s", "10s", "15s", "30s", "42s", "1 min", "2 mins", "No Limit"];
+	const [autoPassValue, setAutoPassValue] = useState(6);
+	const [gameEnds, setGameEnds] = useState(0);
+	const [calculateScore, setCalculateScore] = useState(0);
+	const [pCardLook, setPCardLook] = useState(0);
+	const [uiColors, setUIColors] = useState(0);
+	const [fxLevel, setFXLevel] = useState(75);
+	const [musicLevel, setMusicLevel] = useState(50);
 
 	return (
 		<section className="
@@ -53,50 +56,53 @@ export const SettingsLightbox = ({ dismiss }: SettingsProps) => {
 			">
 				<div className="
 					w-full h-full
-					grid grid-cols-2 grid-rows-4
+					grid grid-cols-1 md:grid-cols-2 grid-rows-auto
+					max-h-[90vh] overflow-scroll
 				">
 					<div className="
-						col-span-1
-						border-b border-r border-n2
+						col-span-2
+						border-b border-n2
 						flex flex-col
 						gap-5
 						p-8
 					">
 						<h2>Rules</h2>
-						<label className="gap-5">
-							<ToggleButton 
-								checked={allowThrees}
-								onChange={handleAllowThrees}
-							/>
-							<span>Allow Three of a Kind</span>
-						</label>
-						<label className="gap-5">
-							<ToggleButton 
-								checked={allow2SpadeFinish}
-								onChange={handleAllow2SpadeFinish}
-							/>
-							<span>Allow Finish with 2 of Spades</span>
-						</label>
-					</div>
-					<div className="
-						col-span-1
-						flex flex-col gap-5
-						border-b border-n2
-						p-8
-					">
-						<h2>Auto Pass</h2>
-						<label htmlFor="autoPassSlider" className="gap-2">
-							Time: {autoPassOptions[autoPassValue]}
-						</label>
-						<input
-							type="range"
-							id="autoPassSlider"
-							min="0"
-							max={autoPassOptions.length - 1}
-							value={autoPassValue}
-							step="1"
-							onChange={(e) => setAutoPassValue(parseInt(e.target.value, 10))}
-						/>
+						<div className="flex gap-10">
+							<div className="flex flex-col gap-5">
+								<label className="gap-5 cursor-pointer">
+									<ToggleButton 
+										checked={allowThrees}
+										onChange={handleAllowThrees}
+									/>
+									<span>Allow Three of a Kind</span>
+								</label>
+								<label className="gap-5 cursor-pointer">
+									<ToggleButton 
+										checked={allow2SpadeFinish}
+										onChange={handleAllow2SpadeFinish}
+									/>
+									<span>Allow Finish with 2 of Spades</span>
+								</label>
+							</div>
+							<div className="
+								flex flex-col
+								gap-5
+							">
+								<label htmlFor="autoPassSlider">
+									<h2>Auto Pass Time: {autoPassOptions[autoPassValue]}</h2>
+								</label>
+								<input
+									type="range"
+									id="autoPassSlider"
+									min="0"
+									max={autoPassOptions.length - 1}
+									step="1"
+									value={autoPassValue}
+									onChange={(e) => setAutoPassValue(parseInt(e.target.value, 10))}
+									className="accent-b5 cursor-pointer"
+								/>
+							</div>
+						</div>
 					</div>
 					<div className="
 						col-span-1
@@ -104,17 +110,17 @@ export const SettingsLightbox = ({ dismiss }: SettingsProps) => {
 						border-b border-r border-n2
 						p-8
 					">
-						<h2>Game ends...</h2>
-						<label className="flex gap-5">
+						<h2>Game Ends...</h2>
+						<label className="flex gap-5 cursor-pointer">
 							<RadioButton
 								name="game-ends"
-								value="first-plauer"
+								value="first-player"
 								onChange={() => setGameEnds(0)}
 								checked={gameEnds === 0}
 							/>
 							<span>When first player finish</span>
 						</label>
-						<label className="flex gap-5">
+						<label className="flex gap-5 cursor-pointer">
 							<RadioButton
 								name="game-ends"
 								value="last-hand"
@@ -130,13 +136,23 @@ export const SettingsLightbox = ({ dismiss }: SettingsProps) => {
 						border-b border-n2
 						p-8
 					">
-						<h2>Calculate score based on...</h2>
-						<label className="flex gap-5">
-							<input type="radio" name="calculate-score" value="number"/>
+						<h2>Calculate Score Based On...</h2>
+						<label className="flex gap-5 cursor-pointer">
+							<RadioButton
+								name="calculate-score"
+								value="number"
+								onChange={() => setCalculateScore(0)}
+								checked={calculateScore === 0}
+							/>
 							<span>Number of cards</span>
 						</label>
-						<label className="flex gap-5">
-							<input type="radio" name="calculate-score" value="value"/>
+						<label className="flex gap-5 cursor-pointer">
+							<RadioButton
+								name="calculate-score"
+								value="value"
+								onChange={() => setCalculateScore(1)}
+								checked={calculateScore === 1}
+							/>
 							<span>Value of cards</span>
 						</label>
 					</div>
@@ -146,13 +162,23 @@ export const SettingsLightbox = ({ dismiss }: SettingsProps) => {
 						border-b border-r border-n2
 						p-8
 					">
-						<h2>Cards</h2>
-						<label className="flex gap-5">
-							<input type="radio" name="cards" value="modern"/>
+						<h2>Playing Cards Look</h2>
+						<label className="flex gap-5 cursor-pointer">
+							<RadioButton
+								name="pCardLook"
+								value="modern"
+								onChange={() => setPCardLook(0)}
+								checked={pCardLook === 0}
+							/>
 							<span>Modern</span>
 						</label>
-						<label className="flex gap-5">
-							<input type="radio" name="cards" value="classic"/>
+						<label className="flex gap-5 cursor-pointer">
+							<RadioButton
+								name="pCardLook"
+								value="classic"
+								onChange={() => setPCardLook(1)}
+								checked={pCardLook === 1}
+							/>
 							<span>Classic</span>
 						</label>
 					</div>
@@ -162,60 +188,66 @@ export const SettingsLightbox = ({ dismiss }: SettingsProps) => {
 						border-b border-n2
 						p-8
 					">
-						<h2>Colors</h2>
-						<label className="flex gap-5">
-							<input type="radio" name="colors" value="main"/>
+						<h2>UI Colors</h2>
+						<label className="flex gap-5 cursor-pointer">
+							<RadioButton
+								name="UIColors"
+								value="main"
+								onChange={() => setUIColors(0)}
+								checked={uiColors === 0}
+							/>
 							<span>Main</span>
 						</label>
-						<label className="flex gap-5">
-							<input type="radio" name="colors" value="alt"/>
+						<label className="flex gap-5 cursor-pointer">
+							<RadioButton
+								name="UIColors"
+								value="alt"
+								onChange={() => setUIColors(1)}
+								checked={uiColors === 1}
+							/>
 							<span>Alt</span>
 						</label>
 					</div>
 					<div className="
 						col-span-1
-						flex place-content-between place-items-center
-						p-8
 						border-r border-n2
+						flex flex-col
+						gap-5
+						p-8
 					">
-						<div className="flex flex-col gap-5">
-							<h2>Sound FX</h2>
-							<label htmlFor="fxSlider">
-								Level: {fxLevel}%
-							</label>
-							<input
-								type="range"
-								id="fxSlider"
-								min={0}
-								max={100}
-								step={1}
-								value={fxLevel}
-								onChange={(e) => {setFXLevel(parseFloat(e.target.value))}}
-								className="w-full"
-							/>
-						</div>
+						<label htmlFor="fxSlider">
+							<h2>Sound FX: {fxLevel}%</h2>
+						</label>
+						<input
+							type="range"
+							id="fxSlider"
+							min={0}
+							max={100}
+							step={1}
+							value={fxLevel}
+							onChange={(e) => {setFXLevel(parseFloat(e.target.value))}}
+							className="accent-b5 cursor-pointer"
+						/>
 					</div>
 					<div className="
 						col-span-1
-						flex place-content-between place-items-center
+						flex flex-col
+						gap-5
 						p-8
 					">
-						<div className="flex flex-col gap-5">
-							<h2>Music</h2>
-							<label htmlFor="musicSlider">
-								Level: {musicLevel}%
-							</label>
-							<input
-								type="range"
-								id="musicSlider"
-								min={0}
-								max={100}
-								step={1}
-								value={musicLevel}
-								onChange={(e) => {setMusicLevel(parseFloat(e.target.value))}}
-								className="w-full"
-							/>
-						</div>
+						<label htmlFor="musicSlider">
+							<h2>Music: {musicLevel}%</h2>
+						</label>
+						<input
+							type="range"
+							id="musicSlider"
+							min={0}
+							max={100}
+							step={1}
+							value={musicLevel}
+							onChange={(e) => {setMusicLevel(parseFloat(e.target.value))}}
+							className="accent-b5 cursor-pointer"
+						/>
 					</div>
 				</div>
 				<div className="

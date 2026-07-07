@@ -1,8 +1,8 @@
 h2 {
 	@apply
-		text-2xl
+		text-xl
 		text-n6
-		font-normal
+		font-semibold
 		tracking-wide
 		;
 }

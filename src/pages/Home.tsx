@@ -58,7 +58,7 @@ export const HomeCards = ({ cardType }: HomeProps) => {
 					<TutorialIcon />
 				</div>
 			}
-			<p className="text-n0 text-[clamp(0.5rem,4vw+0.25rem,1.5rem)]">{cardType}</p>
+			<h1 className="text-n0 text-[clamp(0.5rem,4vw+0.25rem,1.5rem)]">{cardType}</h1>
 		</button>
 	);
 }

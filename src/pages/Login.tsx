@@ -9,7 +9,7 @@ import { BigLogo } from "../components/Logo";
 import { InfoButton, InfoLightbox } from "../components/Info";
 import { CreateAccountButton, CreateAccountLightbox } from "../components/CreateAccount";
 import { SignInButton, SignInLightbox } from "../components/SignIn";
-import { Card } from "../components/Card";
+import { Card } from "../components/PCard";
 
 export const Login = () => {
 	const setCurrentScene = useSceneStore((state) => state.setCurrentScene);
