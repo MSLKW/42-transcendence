@@ -28,6 +28,11 @@ services:
     restart: unless-stopped
     expose:
       - "${DATABASE_PORT}"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${PRISMA_USER} -d ${DATABASE_NAME}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
     environment:
       POSTGRES_USER: ${PRISMA_USER}
       POSTGRES_PASSWORD_FILE: /run/secrets/database_password
@@ -40,40 +45,51 @@ services:
     networks:
       - transcendence
   
-#           BACKEND = Prisma + Socket.io + Node.js
+#           BACKEND = Prisma + Socket.io + Node.js + Express.js
   backend:
     container_name: backend
-    build: ./services/backend/.
-    # command: npm run start
-    image: backend:aisyah
+    build: ./services/backend/. # gets the built (main application), built once only -> efficient + saves CPU and disk space. 
+    image: backend:aisyah       # identical image as prisma_studio, with different command -> "npm run start"
+    pull_policy: build          # This forces local builds, ignoring Docker Hub
     restart: unless-stopped
     ports:
       - "${BACKEND_PORT}:${BACKEND_PORT}"
     environment:
       PORT: ${BACKEND_PORT}
-      # DATABASE_URL: postgresql://${PRISMA_USER}:${PRISMA_PASSWORD}@database:${DATABASE_PORT}/${DATABASE_NAME}?schema=public    # Prisma picks up this connection string directly
+      # DATABASE_URL: -> defined in entrypoint.sh
     env_file:
       - .env
-    depends_on:
-      - database
     volumes:
       - ../secrets/database_password.txt:/run/secrets/database_password:ro
     networks:
       - transcendence
+    depends_on:
+      database:
+        condition: service_healthy
 
-# #         VISUAL DATA BROWSER = Prisma Studio
-#   prisma_studio:
-#     container_name: prisma_studio
-#     build: ./services/backend/.
-#     ports:
-#       - "${PRISMA_PORT}:${PRISMA_PORT}"
-#     command: npx prisma studio --port ${PRISMA_PORT} --hostname {PRISMA_HOSTNAME}
-#     depends_on:
-#       - database
-#     networks:
-#       - transcendence
-#     volumes:
-#       - ../secrets/database_password.txt:/run/secrets/database_password:ro
+
+#         VISUAL DATA BROWSER = Prisma Studio
+#         command in docker compose => overwrites Dockerfile's CMD
+#         entrypoint in docker compose => overwrites Dockerfile's ENTRYPOINT
+  prisma_studio:
+    container_name: prisma_studio
+    image: backend:aisyah   # just referencing the backend's image (reuse only), with different command -> docker-compose's command:
+    pull_policy: build      # This forces local builds, ignoring Docker Hub
+    entrypoint: "/usr/local/bin/prisma_studio-entrypoint.sh"
+    command: npx prisma studio --port ${PRISMA_STUDIO_PORT} --hostname 0.0.0.0   # hardcode 0.0.0.0 (required for Docker containers)
+    ports:
+      - "${PRISMA_STUDIO_PORT}:${PRISMA_STUDIO_PORT}"
+    env_file:
+      - .env
+    volumes:
+      - ../secrets/database_password.txt:/run/secrets/database_password:ro
+    networks:
+      - transcendence
+    depends_on:
+      database:
+        condition: service_healthy
+      # backend:
+      #   condition: service_completed_successfully => cannot => If backend finishes (or crashes), your prisma_studio will stop. Prisma Studio is a utility, not a service that depends on the backend finishing.
 
 
 

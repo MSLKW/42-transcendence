@@ -15,9 +15,9 @@ FROM node:24.18.0-bookworm-slim
       #   - BACKEND_PORT=${BACKEND_PORT}    # Passes the value into the Dockerfile
 
 
-# postgresql-client = a package containing command-line tools that allow your backend container to "talk" to your PostgreSQL database container.
-# Connectivity Testing (pg_isready): 
+# postgresql-client => a package containing command-line tools that allow your backend container to "talk" to your PostgreSQL database container.
 # Install system dependencies required by Prisma Client
+# contains: Connectivity Testing (pg_isready)
 RUN apt-get update && apt-get install -y openssl postgresql-client && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
@@ -34,11 +34,18 @@ RUN npx prisma generate
 COPY . .
 
 # Put all the main commands in the script file
-COPY ./tools/entrypoint.sh /usr/local/bin/entrypoint.sh
-RUN chmod +x /usr/local/bin/entrypoint.sh
+## for backend
+COPY ./tools/backend-entrypoint.sh /usr/local/bin/backend-entrypoint.sh
+RUN chmod +x /usr/local/bin/backend-entrypoint.sh
+## for prisma_studio
+COPY ./tools/prisma_studio-entrypoint.sh /usr/local/bin/prisma_studio-entrypoint.sh
+RUN chmod +x /usr/local/bin/prisma_studio-entrypoint.sh
 
 # Use the script as the entrypoint
-ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
+ENTRYPOINT ["/usr/local/bin/backend-entrypoint.sh"]
+CMD ["npm", "run", "start"] 
+# npm => The Ecosystem (npm): When you use Node.js, you get npm (Node Package Manager). This is the tool that downloads all your "building blocks" (libraries).
+# run start => tell Node.js to execute 'start' in package.json
 
 # These are already inside entrypoint.sh
 # # Pushes database changes on boot, then launches from the tools folder
