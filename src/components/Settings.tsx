@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useGameStore } from "../store/useGameStore";
 import { SettingsIcon } from "../icons/SettingsIcon";
 import { CloseButton } from "./CloseButton";
 import { ToggleButton } from "./ToggleButton";
@@ -21,6 +22,7 @@ export const SettingsButton = ({ call }: SettingsProps) => {
 }
 
 export const SettingsLightbox = ({ dismiss }: SettingsProps) => {
+	const gameStarted = useGameStore((state) => state.gameStarted);
 	const [allowThrees, setAllowThrees] = useState(false);
 	const handleAllowThrees = () => {
 		const newState = !allowThrees;
@@ -57,9 +59,10 @@ export const SettingsLightbox = ({ dismiss }: SettingsProps) => {
 				<div className="
 					w-full h-full
 					grid grid-cols-1 md:grid-cols-2 grid-rows-auto
+					pb-8
 					max-h-[90vh] overflow-scroll
 				">
-					<div className="col-span-2 pl-8 pt-8">
+					<div className="col-span-full md:grid-cols-2 row-span-1 pl-8 pt-8">
 						<h1>Game Settings</h1>
 					</div>
 					<div className="
@@ -99,6 +102,7 @@ export const SettingsLightbox = ({ dismiss }: SettingsProps) => {
 							max={autoPassOptions.length - 1}
 							step="1"
 							value={autoPassValue}
+							disabled={gameStarted}
 							onChange={(e) => setAutoPassValue(parseInt(e.target.value, 10))}
 							className="accent-b5 cursor-pointer"
 						/>
@@ -106,8 +110,7 @@ export const SettingsLightbox = ({ dismiss }: SettingsProps) => {
 					<div className="
 						col-span-1
 						flex flex-col gap-2
-						border-b border-n2
-						pl-8 pr-8 pt-5 pb-8
+						px-8 pt-5 mb-3 md:mb-0
 					">
 						<h2>Game Ends...</h2>
 						<label className="flex gap-5 cursor-pointer">
@@ -132,8 +135,7 @@ export const SettingsLightbox = ({ dismiss }: SettingsProps) => {
 					<div className="
 						col-span-1
 						flex flex-col gap-2
-						border-b border-n2
-						pl-8 pr-8 pt-5 pb-8
+						px-8 pt-5
 					">
 						<h2>Calculate Score Based On...</h2>
 						<label className="flex gap-5 cursor-pointer">
@@ -155,11 +157,11 @@ export const SettingsLightbox = ({ dismiss }: SettingsProps) => {
 							<span>Value of cards</span>
 						</label>
 					</div>
+					<hr className="col-span-full m-8 text-a4"/>
 					<div className="
 						col-span-1
 						flex flex-col gap-2
-						border-b border-n2
-						p-8
+						px-8 mb-8 md:mb-0
 					">
 						<h2>Playing Cards Look</h2>
 						<label className="flex gap-5 cursor-pointer">
@@ -184,8 +186,7 @@ export const SettingsLightbox = ({ dismiss }: SettingsProps) => {
 					<div className="
 						col-span-1
 						flex flex-col gap-2
-						border-b border-n2
-						p-8
+						px-8
 					">
 						<h2>UI Colors</h2>
 						<label className="flex gap-5 cursor-pointer">
@@ -207,11 +208,12 @@ export const SettingsLightbox = ({ dismiss }: SettingsProps) => {
 							<span>Alt</span>
 						</label>
 					</div>
+					<hr className="col-span-full m-8 text-a4"/>
 					<div className="
 						col-span-1
 						flex flex-col
 						gap-5
-						p-8
+						px-8 mb-8 md:mb-0
 					">
 						<label htmlFor="fxSlider">
 							<h2>Sound FX: {fxLevel}%</h2>
@@ -231,7 +233,7 @@ export const SettingsLightbox = ({ dismiss }: SettingsProps) => {
 						col-span-1
 						flex flex-col
 						gap-5
-						p-8
+						px-8
 					">
 						<label htmlFor="musicSlider">
 							<h2>Music: {musicLevel}%</h2>

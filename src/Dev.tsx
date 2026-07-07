@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import { useSceneStore } from "./store/useSceneStore";
 import { usePlayerStore } from "./store/usePlayerStore";
 import { useDevStore } from "./store/useDevStore";
+import { useGameStore } from "./store/useGameStore";
 
 export default function Dev() {
 	const currentScene = useSceneStore((state) => state.currentScene);
@@ -20,10 +21,12 @@ export default function Dev() {
 			document.documentElement.classList.remove('debug-mode');
 	}, [showFrame]);
 
+	const gameStarted = useGameStore((state) => state.gameStarted);
 	const test = usePlayerStore((state) => state.test);
 	useEffect(() => {
 		console.log("partyCount", partyCount);
-	}, [currentScene]);
+		console.log("gameStarted", gameStarted);
+	}, [currentScene, gameStarted]);
 
 	const handleParty1 = () => {
 		setPartyCount(1);
@@ -58,6 +61,9 @@ export default function Dev() {
 				<li><button type="button" tabIndex={-1} onClick={handleParty2}>Party 2</button></li>
 				<li><button type="button" tabIndex={-1} onClick={handleParty3}>Party 3</button></li>
 				<li><button type="button" tabIndex={-1} onClick={handleParty4}>Party 4</button></li>
+			</ul>
+			<ul className="ul-dev">
+				<span>gameStarted:{gameStarted}</span>
 			</ul>
 		</section>
 	);

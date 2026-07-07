@@ -11,6 +11,7 @@ import { EmojiButton } from "../components/EmojiButtons";
 import { AvatarPlayer } from "../components/Avatar";
 import { ChatButton, ChatLightbox } from "../components/Chat";
 import { SortButtons } from "../components/SortButtons";
+import { useGameStore } from "../store/useGameStore";
 
 export const R3F = () => {
 	const setCurrentScene = useSceneStore((state) => state.setCurrentScene);
@@ -40,18 +41,23 @@ export const R3F = () => {
 	useEffect(() => {
 		const timer = setTimeout(() => {
 			nextTurn();
-			console.log("activePlayer:", activePlayer);
+			// console.log("activePlayer:", activePlayer);
 		}, 1000);
 
 		return () => clearTimeout(timer);
 	}, [activePlayer]);
 
+	const setGameStarted = useGameStore((state) => state.setGameStarted);
 	useEffect(() => {
-		window.scrollTo({
-			top: 0,
-			behavior: 'smooth',
-		})}
-	, []);
+		setGameStarted(true);
+	}, []);
+
+	// useEffect(() => {
+	// 	window.scrollTo({
+	// 		top: 0,
+	// 		behavior: 'smooth',
+	// 	})
+	// }, []);
 
 	useEffect(() => {
 		if (!containerRef.current)
