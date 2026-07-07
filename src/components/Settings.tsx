@@ -23,24 +23,25 @@ export const SettingsButton = ({ call }: SettingsProps) => {
 
 export const SettingsLightbox = ({ dismiss }: SettingsProps) => {
 	const gameStarted = useGameStore((state) => state.gameStarted);
-	const [allowThrees, setAllowThrees] = useState(false);
-	const handleAllowThrees = () => {
-		const newState = !allowThrees;
-		setAllowThrees(newState);
-	}
-	const [allow2SpadeFinish, setAllow2SpadeFinish] = useState(false);
-	const handleAllow2SpadeFinish = () => {
-		const newState = !allow2SpadeFinish;
-		setAllow2SpadeFinish(newState);
-	}
-	const autoPassOptions = ["1s", "3s", "5s", "10s", "15s", "30s", "42s", "1 min", "2 mins", "No Limit"];
-	const [autoPassValue, setAutoPassValue] = useState(6);
-	const [gameEnds, setGameEnds] = useState(0);
-	const [calculateScore, setCalculateScore] = useState(0);
-	const [pCardLook, setPCardLook] = useState(0);
-	const [uiColors, setUIColors] = useState(0);
-	const [fxLevel, setFXLevel] = useState(75);
-	const [musicLevel, setMusicLevel] = useState(50);
+	const allowThrees = useGameStore((state) => state.allowThrees);
+	const setAllowThrees = useGameStore((state) => state.setAllowThrees);
+	const allow2SpadesFinish = useGameStore((state) => state.allow2SpadesFinish);
+	const setAllow2SpadesFinish = useGameStore((state) => state.setAllow2SpadesFinish);
+	const autoPassValue = useGameStore((state) => state.autoPassValue);
+	const setAutoPassValue = useGameStore((state) => state.setAutoPassValue);
+	const autoPassText = useGameStore((state) => state.autoPassText);
+	const gameEndCondition = useGameStore((state) => state.gameEndCondition);
+	const setGameEndCondition = useGameStore((state) => state.setGameEndCondition);
+	const scoreCalculation = useGameStore((state) => state.scoreCalculation);
+	const setScoreCalculation = useGameStore((state) => state.setScoreCalculation);
+	const pCardLook = useGameStore((state) => state.pCardLook);
+	const setPCardLook = useGameStore((state) => state.setPCardLook);
+	const uiColors = useGameStore((state) => state.uiColors);
+	const setUIColors = useGameStore((state) => state.setUIColors);
+	const fxLevel = useGameStore((state) => state.fxLevel);
+	const setFXLevel = useGameStore((state) => state.setFXLevel);
+	const mxLevel = useGameStore((state) => state.mxLevel);
+	const setMXLevel = useGameStore((state) => state.setMXLevel);
 
 	return (
 		<section className="
@@ -78,7 +79,7 @@ export const SettingsLightbox = ({ dismiss }: SettingsProps) => {
 						`}>
 							<ToggleButton 
 								checked={allowThrees}
-								onChange={handleAllowThrees}
+								onChange={setAllowThrees}
 								disabled={gameStarted}
 							/>
 							<span>Allow Three of a Kind</span>
@@ -89,8 +90,8 @@ export const SettingsLightbox = ({ dismiss }: SettingsProps) => {
 							${gameStarted ? "opacity-50" : ""}
 						`}>
 							<ToggleButton 
-								checked={allow2SpadeFinish}
-								onChange={handleAllow2SpadeFinish}
+								checked={allow2SpadesFinish}
+								onChange={setAllow2SpadesFinish}
 								disabled={gameStarted}
 							/>
 							<span>Allow Finish with 2 of Spades</span>
@@ -103,13 +104,13 @@ export const SettingsLightbox = ({ dismiss }: SettingsProps) => {
 						px-8 py-5
 					">
 						<label htmlFor="autoPassSlider">
-							<h2>Auto Pass Time: {autoPassOptions[autoPassValue]}</h2>
+							<h2>Auto Pass Time: {autoPassText[autoPassValue]}</h2>
 						</label>
 						<input
 							type="range"
 							id="autoPassSlider"
 							min="0"
-							max={autoPassOptions.length - 1}
+							max={autoPassText.length - 1}
 							step="1"
 							value={autoPassValue}
 							disabled={gameStarted}
@@ -131,8 +132,8 @@ export const SettingsLightbox = ({ dismiss }: SettingsProps) => {
 							<RadioButton
 								name="game-ends"
 								value="first-player"
-								onChange={() => setGameEnds(0)}
-								checked={gameEnds === 0}
+								onChange={() => setGameEndCondition(0)}
+								checked={gameEndCondition === 0}
 								disabled={gameStarted}
 							/>
 							<span>When first player finish</span>
@@ -145,8 +146,8 @@ export const SettingsLightbox = ({ dismiss }: SettingsProps) => {
 							<RadioButton
 								name="game-ends"
 								value="last-hand"
-								onChange={() => setGameEnds(1)}
-								checked={gameEnds === 1}
+								onChange={() => setGameEndCondition(1)}
+								checked={gameEndCondition === 1}
 								disabled={gameStarted}
 							/>
 							<span>Until last hand remain</span>
@@ -166,8 +167,8 @@ export const SettingsLightbox = ({ dismiss }: SettingsProps) => {
 							<RadioButton
 								name="calculate-score"
 								value="number"
-								onChange={() => setCalculateScore(0)}
-								checked={calculateScore === 0}
+								onChange={() => setScoreCalculation(0)}
+								checked={scoreCalculation === 0}
 								disabled={gameStarted}
 							/>
 							<span>Number of cards</span>
@@ -180,8 +181,8 @@ export const SettingsLightbox = ({ dismiss }: SettingsProps) => {
 							<RadioButton
 								name="calculate-score"
 								value="value"
-								onChange={() => setCalculateScore(1)}
-								checked={calculateScore === 1}
+								onChange={() => setScoreCalculation(1)}
+								checked={scoreCalculation === 1}
 								disabled={gameStarted}
 							/>
 							<span>Value of cards</span>
@@ -266,7 +267,7 @@ export const SettingsLightbox = ({ dismiss }: SettingsProps) => {
 						px-8
 					">
 						<label htmlFor="musicSlider">
-							<h2>Music: {musicLevel}%</h2>
+							<h2>Music: {mxLevel}%</h2>
 						</label>
 						<input
 							type="range"
@@ -274,8 +275,8 @@ export const SettingsLightbox = ({ dismiss }: SettingsProps) => {
 							min={0}
 							max={100}
 							step={1}
-							value={musicLevel}
-							onChange={(e) => {setMusicLevel(parseFloat(e.target.value))}}
+							value={mxLevel}
+							onChange={(e) => {setMXLevel(parseFloat(e.target.value))}}
 							className="accent-b5 cursor-pointer"
 						/>
 					</div>
