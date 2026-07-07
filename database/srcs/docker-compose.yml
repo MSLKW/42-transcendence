@@ -1,3 +1,11 @@
+# NOTES:
+# ports: 
+  # - ${ENV_VARIABLE:-DEFAULT}
+# Docker Compose processes the file in stages, rather than reading it line-by-line from top to bottom.
+# therefore, can have env_file at the bottom
+# environment overrides .env if vars exits in both, both can co-exist in docker-compose
+
+
 networks:
   transcendence:
     name : transcendence
@@ -13,13 +21,63 @@ volumes:
       device: /home/aimokhta/data/postgresql_data
 
 services:
-  postgresql:
-    image: postgresql:database
-    ports:
-      - "5432:5432"
+#           DATABASE = PostgreSQL
+  database:
+    container_name: database
+    image: postgres:17-bookworm     # No Dockerfile needed here!
+    restart: unless-stopped
+    expose:
+      - "${DATABASE_PORT}"
     environment:
-      POSTGRESQL_USER: ${POSTGRESQL_USER}
-      POSTGRESQL_DB: ${POSTGRESQL_DB}
+      POSTGRES_USER: ${PRISMA_USER}
+      POSTGRES_PASSWORD_FILE: /run/secrets/database_password
+      POSTGRES_DB: ${DATABASE_NAME}
+    env_file:
+      - .env
     volumes:
       - postgresql_data:/var/lib/postgresql/data
-      - ../secrets/postgresql_password.txt:/run/secrets/postgresql_password:ro
+      - ../secrets/database_password.txt:/run/secrets/database_password:ro
+    networks:
+      - transcendence
+  
+# #           BACKEND = Prisma + Socket.io + Node.js
+#   backend:
+#     container_name: backend
+#     build: ./services/backend/.
+#       # context: ./services/backend/.
+#       # args:
+#       #   - BACKEND_PORT=${BACKEND_PORT}    # Passes the value into the Dockerfile
+#     image: backend:aisyah
+#     restart: unless-stopped
+#     ports:
+#       - "${BACKEND_PORT}:${BACKEND_PORT}"
+#     environment:
+#       PORT: ${BACKEND_PORT}
+#       # DATABASE_URL: postgresql://${PRISMA_USER}:${PRISMA_PASSWORD}@database:${DATABASE_PORT}/${DATABASE_NAME}?schema=public    # Prisma picks up this connection string directly
+#     env_file:
+#       - .env
+#     depends_on:
+#       - database
+#     volumes:
+#       - ../secrets/database_password.txt:/run/secrets/database_password:ro
+#     networks:
+#       - transcendence
+
+# #         VISUAL DATA BROWSER = Prisma Studio
+#   prisma_studio:
+#     container_name: prisma_studio
+#     build: ./services/backend/.
+#     ports:
+#       - "${PRISMA_PORT}:${PRISMA_PORT}"
+#     # environment:
+#     #   DATABASE_URL: postgresql://${PRISMA_USER}:${PRISMA_PASSWORD}@database:${DATABASE_PORT}/${DATABASE_NAME}?schema=public    # Prisma picks up this connection string directly
+#     command: npx prisma studio --port ${PRISMA_PORT} --hostname {PRISMA_HOSTNAME}
+#     depends_on:
+#       - database
+#     networks:
+#       - transcendence
+#     volumes:
+#       - ../secrets/database_password.txt:/run/secrets/database_password:ro
+
+
+
