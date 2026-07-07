@@ -19,7 +19,39 @@ export const SettingsButton = ({ call }: SettingsProps) => {
 	);
 }
 
+interface RadioButtonProps {
+	name: string,
+	value: string,
+	onChange: () => void,
+	checked: boolean,
+}
 
+export const RadioButton = ({ name, value, onChange, checked }: RadioButtonProps) => {
+	return (
+		<>
+			<input
+				type="radio"
+				name={name}
+				value={value}
+				onChange={onChange}
+				className="sr-only peer"
+			/>
+			<div className="
+				h-6 aspect-square
+				border border-n6 rounded-full
+				p-1.25
+				peer-focus-visible:border-b5
+				outline-b5 peer-focus-visible:outline-1
+			">
+				<div className={`
+					h-full w-full rounded-full bg-b5
+					transition-all duration-200 ease-in-out
+					${checked ? "scale-100" : "scale-0"}
+				`}/>
+			</div>
+		</>
+	);
+}
 
 export const SettingsLightbox = ({ dismiss }: SettingsProps) => {
 	const autoPassOptions = ["1s", "3s", "5s", "10s", "15s", "30s", "42s", "1 min", "2 mins", "No Limit"];
@@ -36,6 +68,7 @@ export const SettingsLightbox = ({ dismiss }: SettingsProps) => {
 		const newState = !allow2SpadeFinish;
 		setAllow2SpadeFinish(newState);
 	}
+	const [gameEnds, setGameEnds] = useState(1);
 
 	return (
 		<section className="
@@ -104,13 +137,23 @@ export const SettingsLightbox = ({ dismiss }: SettingsProps) => {
 						border-b border-r border-n2
 						p-8
 					">
-						<p>Game ends...</p>
+						<h2>Game ends...</h2>
 						<label className="flex gap-5">
-							<input type="radio" name="game-ends" value="first"/>
+							<RadioButton
+								name="game-ends"
+								value="first-plauer"
+								onChange={() => setGameEnds(0)}
+								checked={gameEnds === 0}
+							/>
 							<span>When first player finish</span>
 						</label>
 						<label className="flex gap-5">
-							<input type="radio" name="game-ends" value="last"/>
+							<RadioButton
+								name="game-ends"
+								value="last-hand"
+								onChange={() => setGameEnds(1)}
+								checked={gameEnds === 1}
+							/>
 							<span>Until last hand remain</span>
 						</label>
 					</div>

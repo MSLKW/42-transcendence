@@ -1,9 +1,22 @@
 h2 {
 	@apply
 		text-2xl
-		font-medium
+		text-n6
+		font-normal
+		tracking-wide
 		;
 }
+p {
+	@apply
+		text-base
+		text-n6
+		font-normal
+		tracking-wider
+		;
+}
+
+
+
 h4 {
 	@apply
 		text-[clamp(0.5rem,8vh+0.25rem,4rem)]
