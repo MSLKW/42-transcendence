@@ -12,24 +12,23 @@ interface RankProps {
 export const RankButton = ({ call }: RankProps) => {
 	return (
 		<button
-			data-tip="Rank List"
+			data-tip="View Rank List"
 			onClick={call}
 			className="
 				w-max
 				h-max
-				btn-icon-border btn-tip-down
+				btn-rank btn-icon-border btn-tip-up
 				flex place-content-between place-items-center
 		">
 			<div className="
 				w-full
 				h-full
-				text-n6
 				px-[clamp(0.25rem,2vw+0.125rem,1.25rem)]
 				relative
 			">
 				<p>Straight</p>
 			</div>
-			<div className="h-[40px] aspect-square text-b5">
+			<div className="h-10 aspect-square text-b5">
 				<RankIcon />
 			</div>
 		</button>
