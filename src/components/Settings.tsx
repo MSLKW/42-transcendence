@@ -2,6 +2,7 @@ import { useState } from "react";
 import { SettingsIcon } from "../icons/SettingsIcon";
 import { CloseButton } from "./CloseButton";
 import { ToggleButton } from "./ToggleButton";
+import { RadioButton } from "./RadioButton";
 
 interface SettingsProps {
 	call?: (e: React.MouseEvent<HTMLButtonElement>) => void;
@@ -16,40 +17,6 @@ export const SettingsButton = ({ call }: SettingsProps) => {
 		>
 			<SettingsIcon />
 		</button>
-	);
-}
-
-interface RadioButtonProps {
-	name: string,
-	value: string,
-	onChange: () => void,
-	checked: boolean,
-}
-
-export const RadioButton = ({ name, value, onChange, checked }: RadioButtonProps) => {
-	return (
-		<>
-			<input
-				type="radio"
-				name={name}
-				value={value}
-				onChange={onChange}
-				className="sr-only peer"
-			/>
-			<div className="
-				h-6 aspect-square
-				border border-n6 rounded-full
-				p-1.25
-				peer-focus-visible:border-b5
-				outline-b5 peer-focus-visible:outline-1
-			">
-				<div className={`
-					h-full w-full rounded-full bg-b5
-					transition-all duration-200 ease-in-out
-					${checked ? "scale-100" : "scale-0"}
-				`}/>
-			</div>
-		</>
 	);
 }
 
@@ -117,7 +84,7 @@ export const SettingsLightbox = ({ dismiss }: SettingsProps) => {
 						border-b border-n2
 						p-8
 					">
-						<p>Auto Pass</p>
+						<h2>Auto Pass</h2>
 						<label htmlFor="autoPassSlider" className="gap-2">
 							Time: {autoPassOptions[autoPassValue]}
 						</label>
@@ -163,7 +130,7 @@ export const SettingsLightbox = ({ dismiss }: SettingsProps) => {
 						border-b border-n2
 						p-8
 					">
-						<p>Calculate score based on...</p>
+						<h2>Calculate score based on...</h2>
 						<label className="flex gap-5">
 							<input type="radio" name="calculate-score" value="number"/>
 							<span>Number of cards</span>
@@ -179,7 +146,7 @@ export const SettingsLightbox = ({ dismiss }: SettingsProps) => {
 						border-b border-r border-n2
 						p-8
 					">
-						<p>Cards</p>
+						<h2>Cards</h2>
 						<label className="flex gap-5">
 							<input type="radio" name="cards" value="modern"/>
 							<span>Modern</span>
@@ -195,7 +162,7 @@ export const SettingsLightbox = ({ dismiss }: SettingsProps) => {
 						border-b border-n2
 						p-8
 					">
-						<p>Colors</p>
+						<h2>Colors</h2>
 						<label className="flex gap-5">
 							<input type="radio" name="colors" value="main"/>
 							<span>Main</span>
@@ -212,8 +179,9 @@ export const SettingsLightbox = ({ dismiss }: SettingsProps) => {
 						border-r border-n2
 					">
 						<div className="flex flex-col gap-5">
+							<h2>Sound FX</h2>
 							<label htmlFor="fxSlider">
-								Sound FX: {fxLevel}%
+								Level: {fxLevel}%
 							</label>
 							<input
 								type="range"
@@ -233,8 +201,9 @@ export const SettingsLightbox = ({ dismiss }: SettingsProps) => {
 						p-8
 					">
 						<div className="flex flex-col gap-5">
+							<h2>Music</h2>
 							<label htmlFor="musicSlider">
-								Music: {musicLevel}%
+								Level: {musicLevel}%
 							</label>
 							<input
 								type="range"
