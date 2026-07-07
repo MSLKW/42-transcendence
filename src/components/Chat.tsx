@@ -96,7 +96,7 @@ export const ChatLightbox = ({ dismiss }: ChatProps) => {
 				">
 					<div className="
 						w-full h-full
-						bg-n1
+						bg-linear-to-b from-n0 to-n1
 						border border-n2 rounded-[clamp(0.25rem,5vh+0.125rem,2rem)]
 						p-[clamp(0.25rem,5vw+0.125rem,1rem)]
 						flex flex-col place-content-start place-items-center

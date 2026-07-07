@@ -38,7 +38,8 @@ export const SignInLightbox = ({ dismiss }: SignInProps) => {
 			<button tabIndex={-1} className='btn-lightbox' onClick={dismiss}/>
 			<div className="
 				z-0
-				bg-n1 border border-n2 rounded-3xl
+				bg-linear-to-b from-n0 to-n1
+				border border-n2 rounded-3xl
 				p-[clamp(1rem,5vw+0.25rem,2.5rem)]
 				flex flex-col place-content-center place-items-center
 				gap-2.5 sm:gap-3

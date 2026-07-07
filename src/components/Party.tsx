@@ -73,7 +73,7 @@ export const PartyLightbox = ({ dismiss }: PartyProps) => {
 				">
 					<div className="
 						w-full h-full
-						bg-n1
+						bg-linear-to-b from-n0 to-n1
 						border border-n2 rounded-[clamp(0.125rem,2vw+0.0625rem,1.5rem)]
 						p-[clamp(0.25rem,2vw+0.125rem,1.875rem)]
 						flex flex-col gap-[clamp(0.25rem,2vw+0.125rem,1.25rem)]

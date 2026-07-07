@@ -49,66 +49,65 @@ export const SettingsLightbox = ({ dismiss }: SettingsProps) => {
 			<button tabIndex={-1} className='btn-lightbox' onClick={dismiss}/>
 			<div className="
 				z-0
-				bg-n1
+				text-n6
+				bg-linear-to-b from-n0 to-n1
 				border border-n2 rounded-3xl
 				relative
-				text-white
 			">
 				<div className="
 					w-full h-full
 					grid grid-cols-1 md:grid-cols-2 grid-rows-auto
 					max-h-[90vh] overflow-scroll
 				">
-					<div className="
-						col-span-2
-						border-b border-n2
-						flex flex-col
-						gap-5
-						p-8
-					">
-						<h2>Rules</h2>
-						<div className="flex gap-10">
-							<div className="flex flex-col gap-5">
-								<label className="gap-5 cursor-pointer">
-									<ToggleButton 
-										checked={allowThrees}
-										onChange={handleAllowThrees}
-									/>
-									<span>Allow Three of a Kind</span>
-								</label>
-								<label className="gap-5 cursor-pointer">
-									<ToggleButton 
-										checked={allow2SpadeFinish}
-										onChange={handleAllow2SpadeFinish}
-									/>
-									<span>Allow Finish with 2 of Spades</span>
-								</label>
-							</div>
-							<div className="
-								flex flex-col
-								gap-5
-							">
-								<label htmlFor="autoPassSlider">
-									<h2>Auto Pass Time: {autoPassOptions[autoPassValue]}</h2>
-								</label>
-								<input
-									type="range"
-									id="autoPassSlider"
-									min="0"
-									max={autoPassOptions.length - 1}
-									step="1"
-									value={autoPassValue}
-									onChange={(e) => setAutoPassValue(parseInt(e.target.value, 10))}
-									className="accent-b5 cursor-pointer"
-								/>
-							</div>
-						</div>
+					<div className="col-span-2 pl-8 pt-8">
+						<h1>Game Settings</h1>
 					</div>
 					<div className="
 						col-span-1
-						flex flex-col gap-5
-						border-b border-r border-n2
-						p-8
+						flex flex-col
+						gap-2
+						px-8 py-5
+					">
+						<label className="gap-5 cursor-pointer">
+							<ToggleButton 
+								checked={allowThrees}
+								onChange={handleAllowThrees}
+							/>
+							<span>Allow Three of a Kind</span>
+						</label>
+						<label className="gap-5 cursor-pointer">
+							<ToggleButton 
+								checked={allow2SpadeFinish}
+								onChange={handleAllow2SpadeFinish}
+							/>
+							<span>Allow Finish with 2 of Spades</span>
+						</label>
+					</div>
+					<div className="
+						col-span-1
+						flex flex-col place-content-start
+						gap-5
+						px-8 py-5
+					">
+						<label htmlFor="autoPassSlider">
+							<h2>Auto Pass Time: {autoPassOptions[autoPassValue]}</h2>
+						</label>
+						<input
+							type="range"
+							id="autoPassSlider"
+							min="0"
+							max={autoPassOptions.length - 1}
+							step="1"
+							value={autoPassValue}
+							onChange={(e) => setAutoPassValue(parseInt(e.target.value, 10))}
+							className="accent-b5 cursor-pointer"
+						/>
+					</div>
+					<div className="
+						col-span-1
+						flex flex-col gap-2
+						border-b border-n2
+						pl-8 pr-8 pt-5 pb-8
 					">
 						<h2>Game Ends...</h2>
 						<label className="flex gap-5 cursor-pointer">
@@ -132,9 +131,9 @@ export const SettingsLightbox = ({ dismiss }: SettingsProps) => {
 					</div>
 					<div className="
 						col-span-1
-						flex flex-col gap-5
+						flex flex-col gap-2
 						border-b border-n2
-						p-8
+						pl-8 pr-8 pt-5 pb-8
 					">
 						<h2>Calculate Score Based On...</h2>
 						<label className="flex gap-5 cursor-pointer">
@@ -158,8 +157,8 @@ export const SettingsLightbox = ({ dismiss }: SettingsProps) => {
 					</div>
 					<div className="
 						col-span-1
-						flex flex-col gap-5
-						border-b border-r border-n2
+						flex flex-col gap-2
+						border-b border-n2
 						p-8
 					">
 						<h2>Playing Cards Look</h2>
@@ -184,7 +183,7 @@ export const SettingsLightbox = ({ dismiss }: SettingsProps) => {
 					</div>
 					<div className="
 						col-span-1
-						flex flex-col space-y-5
+						flex flex-col gap-2
 						border-b border-n2
 						p-8
 					">
@@ -210,7 +209,6 @@ export const SettingsLightbox = ({ dismiss }: SettingsProps) => {
 					</div>
 					<div className="
 						col-span-1
-						border-r border-n2
 						flex flex-col
 						gap-5
 						p-8
