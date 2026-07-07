@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { SettingsIcon } from "../icons/SettingsIcon";
 import { CloseButton } from "./CloseButton";
+import { ToggleButton } from "./ToggleButton";
 
 interface SettingsProps {
 	call?: (e: React.MouseEvent<HTMLButtonElement>) => void;
@@ -15,8 +16,10 @@ export const SettingsButton = ({ call }: SettingsProps) => {
 		>
 			<SettingsIcon />
 		</button>
-	)
+	);
 }
+
+
 
 export const SettingsLightbox = ({ dismiss }: SettingsProps) => {
 	const autoPassOptions = ["1s", "3s", "5s", "10s", "15s", "30s", "42s", "1 min", "2 mins", "No Limit"];
@@ -43,7 +46,6 @@ export const SettingsLightbox = ({ dismiss }: SettingsProps) => {
 			<button tabIndex={-1} className='btn-lightbox' onClick={dismiss}/>
 			<div className="
 				z-0
-				w-170 h-fit
 				bg-n1
 				border border-n2 rounded-3xl
 				relative
@@ -56,21 +58,20 @@ export const SettingsLightbox = ({ dismiss }: SettingsProps) => {
 					<div className="
 						col-span-1
 						border-b border-r border-n2
-						flex flex-col gap-5 content-stretch
+						flex flex-col
+						gap-5
 						p-8
 					">
-						<p>Rules</p>
+						<h2>Rules</h2>
 						<label className="gap-5">
-							<input
-								type="checkbox"
+							<ToggleButton 
 								checked={allowThrees}
 								onChange={handleAllowThrees}
 							/>
 							<span>Allow Three of a Kind</span>
 						</label>
 						<label className="gap-5">
-							<input
-								type="checkbox"
+							<ToggleButton 
 								checked={allow2SpadeFinish}
 								onChange={handleAllow2SpadeFinish}
 							/>

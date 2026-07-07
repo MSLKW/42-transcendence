@@ -1,32 +1,39 @@
 export const BigLogo = () => {
 	return (
 		<div className="
-			w-full h-full
-			flex flex-col place-content-end place-items-center
-			gap-[clamp(2.5rem,10vh+1.25rem,7.5rem)]
-			p-[clamp(2rem,7.5vh+0.125rem,7.5rem)]
-			pointer-events-none
+			flex flex-col place-content-center place-items-center
 		">
 			<div className="
+				gap-[clamp(0.5rem,2.308vh-0.192rem,1.25rem)]
 				flex
-				gap-[clamp(1.25rem,4vw+0.625rem,2.5rem)]
-				leading-0
 			">
-				<h2 className="
-					flex
-					tracking-[clamp(1.25rem,5vw+0.625rem,5rem)]
+				<span className="
+					text-[clamp(4rem,5.714vw+2.857rem,8rem)]
+					font-thin
+					text-n6
+					leading-[clamp(7.5rem,7.692vh+5.192rem,10rem)]
+					tracking-[clamp(2rem,4.286vmin+1.143rem,5rem)]
 				">
 					BIG
-				</h2>
-				<h1>2</h1>
+				</span>
+				<span className="
+					text-[clamp(8rem,11.429vw+5.714rem,16rem)]
+					font-extrabold
+					text-n6
+					leading-[clamp(7rem,7.692vh+4.692rem,9.5rem)]
+				">
+					2
+				</span>
 			</div>
-			<h3 className="
-				text-center
+			<span className="
+				text-[clamp(1rem,0.714vw+0.857rem,1.5rem)]
 				text-b5
+				font-extralight
+				tracking-widest
 				whitespace-nowrap
 			">
 				A 42 TRANSCENDENCE PROJECT
-			</h3>
+			</span>
 		</div>
 	);
 }

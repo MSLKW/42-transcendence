@@ -25,18 +25,28 @@ const faceGeometry = new THREE.ExtrudeGeometry(createCardShape(0.92, 1.32, 0.04)
 	bevelEnabled: false,
 });
 
-export const Card = () => {
+interface CardProps {
+	position?: [number, number, number],
+	rotation?: [number, number, number],
+	color?: string,
+}
+
+export const Card = ({ position = [0,0,0], rotation = [0,0,0], color = "gold" }: CardProps) => {
 	return (
 		// <mesh>
 		// 	<boxGeometry />
 		// 	<meshBasicMaterial visible={false} />
 		// </mesh>
-
-		<mesh geometry={borderGeometry}>
+		
+		<mesh
+			geometry={borderGeometry}
+			position={position}
+			rotation={rotation}
+		>
 			<meshStandardMaterial
-				color="gold"
+				color={color}
 				roughness={0.2}
-				metalness={0.5}
+				metalness={0.2}
 			/>
 		</mesh>
 	);

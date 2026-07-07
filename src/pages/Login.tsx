@@ -19,7 +19,7 @@ export const Login = () => {
 	const containerRef = useRef(null);
 	const [showLightbox, setShowLightbox] = useState({
 		info: false,
-		signIn: false,
+		signIn: true,
 		createAccount: false,
 	});
 	const toggleLightbox = (key: keyof typeof showLightbox, value: boolean, e?: React.MouseEvent<HTMLButtonElement>) => {
@@ -59,13 +59,24 @@ export const Login = () => {
 				<Canvas>
 					{showStats && <Stats />}
 					<AdaptiveDpr />
-					{/* <ambientLight intensity={0.5}/> */}
-					<directionalLight position={[-1, 1.5, 5]} intensity={1} />
-					<SphereBg />
-					<Card />
+					<ambientLight intensity={0.5}/>
+					<directionalLight position={[0, 5, 5]} intensity={0.5} />
+					<Card
+						position={[0,0.25,0]}
+						rotation={[-Math.PI/4,0,0]}
+						color="gold"
+					/>
+					{/* <SphereBg /> */}
 					<PerspectiveCamera makeDefault position={[0, 0, 2.25]} />
 					<OrbitControls enableZoom={false}/>
 				</Canvas>
+				<main className="
+					absolute top-0
+					flex place-content-center
+					pointer-events-none
+				">
+					<BigLogo />
+				</main>
 			</section>
 			<section className="cont-body">
 				<header className="flex">
@@ -73,31 +84,28 @@ export const Login = () => {
 						<InfoButton call={(e) => toggleLightbox("info", true, e)}/>
 					</div>
 				</header>
-				<main>
-					<BigLogo />
-				</main>
+				{/* <header className="flex"> */}
+					{/* <div className="flex bg-n1 border border-n2 rounded-3xl"> */}
+						{/* <InfoButton call={(e) => toggleLightbox("info", true, e)}/> */}
+					{/* </div> */}
+				{/* </header> */}
+				<div className="h-full"/>
 				<footer className="
 					flex flex-col place-content-center place-items-center
-					gap-[clamp(0.125rem,2vh+0.06125rem,1.25rem)]
-					pb-[clamp(0.25rem,5vh+0.125rem,5rem)]
+					gap-[clamp(0.75rem,2.308vh+0.058rem,1.5rem)]
 				">
 					<div className="
-						w-full h-full
 						flex place-content-center place-items-center
-						gap-[clamp(0.5rem,3vw+0.25rem,1.875rem)]
+						gap-[clamp(0.75rem,2.308vh+0.058rem,1.5rem)]
 						flex-wrap
 					">
 						<SignInButton call={(e) => toggleLightbox("signIn", true, e)}/>
 						<button onClick={() => setCurrentScene("HOME")} className="btn-white">PLAY AS GUEST</button>
 					</div>
-					<div className="
-						w-full h-full
-						flex place-content-center place-items-center
-					">
-						<CreateAccountButton call={(e) => toggleLightbox("createAccount", true, e)}/>
-					</div>
+					<CreateAccountButton call={(e) => toggleLightbox("createAccount", true, e)}/>
 				</footer>
-	 			<div className="w-full h-full min-h-5 flex flex-1" />
+				<div className="h-[clamp(0rem,30.769vh-9.231rem,10rem)]"/>
+				{/* <div className="h-1/7"/> */}
 			</section>
 			{ showLightbox["info"] && <InfoLightbox dismiss={() => toggleLightbox("info", false)} /> }
 			{ showLightbox["createAccount"] && <CreateAccountLightbox dismiss={() => toggleLightbox("createAccount", false)} /> }

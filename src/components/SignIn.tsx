@@ -36,63 +36,48 @@ export const SignInLightbox = ({ dismiss }: SignInProps) => {
 			flex place-content-center place-items-center
 		">
 			<button tabIndex={-1} className='btn-lightbox' onClick={dismiss}/>
-			<div style={{ width: contAreaWidth, height: contAreaHeight }} 
-				className="
-					z-0
-					flex place-content-center place-items-center
-					pointer-events-none
+			<div className="
+				z-0
+				bg-n1 border border-n2 rounded-3xl
+				p-[clamp(1rem,5vw+0.25rem,2.5rem)]
+				flex flex-col place-content-center place-items-center
+				gap-2.5 sm:gap-3
+				relative
+				pointer-events-auto
 			">
+				<label htmlFor="email">
+					<span className="w-full text-right pr-5">Email</span>
+					<input
+						ref={focusRef}
+						id="email"
+						type="email"
+						placeholder="Enter your email"
+						className="input-form"
+					/>
+				</label>
+				<label htmlFor="password">
+					<span className="text-right pr-5">
+						Password
+					</span>
+					<input
+						id="password"
+						type="password"
+						placeholder="Enter your password"
+						className="input-form"
+					/>
+				</label>
+				<button
+					type="submit"
+					className="btn-white mt-5"
+				>
+					SIGN IN
+				</button>
 				<div className="
-					bg-n1
-					border border-n2 rounded-3xl
-					flex flex-col place-content-center place-items-center
-					gap-2.5 sm:gap-3
-					p-[clamp(1rem,5vw+0.25rem,2.5rem)]
-					relative
-					pointer-events-auto
+					absolute top-0 right-0 translate-x-1/2 -translate-y-1/2
+					z-1
+					w-12.5 h-12.5
 				">
-					<div className="grid grid-cols-1 sm:grid-cols-[5rem_1fr] gap-1 sm:gap-5 w-full">
-						<label 
-							htmlFor="email"
-							className="sm:justify-end"
-						>
-							Email
-						</label>
-						<input
-							ref={focusRef}
-							id="email"
-							type="email"
-							placeholder="Enter your email"
-							className="input-form"
-						/>
-					</div>
-					<div className="grid grid-cols-1 sm:grid-cols-[5rem_1fr] gap-1 sm:gap-5 w-full">
-						<label
-							htmlFor="password"
-							className="sm:justify-end"
-						>
-							Password
-						</label>
-						<input
-							id="password"
-							type="password"
-							placeholder="Enter your password"
-							className="input-form"
-						/>
-					</div>
-					<button
-						type="submit"
-						className="btn-white mt-5"
-					>
-						SIGN IN
-					</button>
-					<div className="
-						absolute top-0 right-0 translate-x-1/2 -translate-y-1/2
-						z-1
-						w-12.5 h-12.5
-					">
-						<CloseButton dismiss={dismiss} />
-					</div>
+					<CloseButton dismiss={dismiss} />
 				</div>
 			</div>
 		</section>

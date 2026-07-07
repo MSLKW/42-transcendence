@@ -14,9 +14,14 @@ export const Gameplay = () => {
 	}, []);
 	
 	return (
-		<section className="cont-area">
-			{showStats && <div className="cont-three"><Canvas><Stats /></Canvas></div>}
-			<h1>Gameplay</h1>
+		<section className="h-full">
+			<span className="
+				text-[clamp(8rem,11.429vmin+5.714rem,16rem)]
+				font-extrabold
+				text-n6
+			">
+				Gameplay
+			</span>
 		</section>
 	);
 }

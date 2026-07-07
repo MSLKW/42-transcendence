@@ -1,0 +1,20 @@
+@utility hw-5/1 {
+	@apply
+		h-[clamp(2.25rem,1.071vw+2.036rem,3rem)]
+		aspect-5/1
+		;
+}
+
+@utility hw-6/1 {
+	@apply
+		h-[clamp(2.25rem,1.071vw+2.036rem,3rem)]
+		aspect-6/1
+		;
+}
+
+@utility hw-1/1 {
+	@apply
+		h-[clamp(2rem,3.077vh+1.077rem,3rem)]
+		aspect-square
+		;
+}
