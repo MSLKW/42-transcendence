@@ -6,7 +6,7 @@
 #    By: aimokhta <aimokhta@student.42kl.edu.my>    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2026/06/16 09:31:30 by aimokhta          #+#    #+#              #
-#    Updated: 2026/07/07 13:27:11 by aimokhta         ###   ########.fr        #
+#    Updated: 2026/07/07 15:39:38 by aimokhta         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -21,7 +21,7 @@ RESET = \033[0K\033[0m  			#\033[0K for reset background colour
 all:
 	@mkdir -p /home/aimokhta/data/postgresql_data
 	@echo "${PURPLE}\n🛠️  Building and launching containers...\n${RESET}"
-	@docker compose -f ./srcs/docker-compose.yml up --build -d database
+	@docker compose -f ./srcs/docker-compose.yml up --build -d
 
 down:
 # Docker removes the containers & networks, keeps built images saved on your disk.

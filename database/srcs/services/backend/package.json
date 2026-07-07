@@ -1,0 +1,21 @@
+{
+  "name": "database-backend",
+  "version": "1.0.0",
+  "description": "The backend engine for transcendence's database",
+  "main": "tools/index.js",
+  "scripts": {
+    "start": "node tools/server.js",
+    "dev": "nodemon tools/server.js",
+    "generate": "prisma generate",
+    "push": "prisma db push"
+  },
+  "dependencies": {
+    "express": "^4.21.0",
+    "@prisma/client": "^5.15.0",
+    "socket.io": "^4.7.5"
+  },
+  "devDependencies": {
+    "prisma": "^5.15.0",
+    "nodemon": "^3.1.0"
+  }
+}
