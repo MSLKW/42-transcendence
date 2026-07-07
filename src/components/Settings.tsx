@@ -71,17 +71,27 @@ export const SettingsLightbox = ({ dismiss }: SettingsProps) => {
 						gap-2
 						px-8 py-5
 					">
-						<label className="gap-5 cursor-pointer">
+						<label className={`
+							gap-5
+							cursor-pointer
+							${gameStarted ? "opacity-50" : ""}
+						`}>
 							<ToggleButton 
 								checked={allowThrees}
 								onChange={handleAllowThrees}
+								disabled={gameStarted}
 							/>
 							<span>Allow Three of a Kind</span>
 						</label>
-						<label className="gap-5 cursor-pointer">
+						<label className={`
+							gap-5
+							cursor-pointer
+							${gameStarted ? "opacity-50" : ""}
+						`}>
 							<ToggleButton 
 								checked={allow2SpadeFinish}
 								onChange={handleAllow2SpadeFinish}
+								disabled={gameStarted}
 							/>
 							<span>Allow Finish with 2 of Spades</span>
 						</label>
@@ -113,21 +123,31 @@ export const SettingsLightbox = ({ dismiss }: SettingsProps) => {
 						px-8 pt-5 mb-3 md:mb-0
 					">
 						<h2>Game Ends...</h2>
-						<label className="flex gap-5 cursor-pointer">
+						<label className={`
+							gap-5
+							cursor-pointer
+							${gameStarted ? "opacity-50" : ""}
+						`}>
 							<RadioButton
 								name="game-ends"
 								value="first-player"
 								onChange={() => setGameEnds(0)}
 								checked={gameEnds === 0}
+								disabled={gameStarted}
 							/>
 							<span>When first player finish</span>
 						</label>
-						<label className="flex gap-5 cursor-pointer">
+						<label className={`
+							gap-5
+							cursor-pointer
+							${gameStarted ? "opacity-50" : ""}
+						`}>
 							<RadioButton
 								name="game-ends"
 								value="last-hand"
 								onChange={() => setGameEnds(1)}
 								checked={gameEnds === 1}
+								disabled={gameStarted}
 							/>
 							<span>Until last hand remain</span>
 						</label>
@@ -138,21 +158,31 @@ export const SettingsLightbox = ({ dismiss }: SettingsProps) => {
 						px-8 pt-5
 					">
 						<h2>Calculate Score Based On...</h2>
-						<label className="flex gap-5 cursor-pointer">
+						<label className={`
+							gap-5
+							cursor-pointer
+							${gameStarted ? "opacity-50" : ""}
+						`}>
 							<RadioButton
 								name="calculate-score"
 								value="number"
 								onChange={() => setCalculateScore(0)}
 								checked={calculateScore === 0}
+								disabled={gameStarted}
 							/>
 							<span>Number of cards</span>
 						</label>
-						<label className="flex gap-5 cursor-pointer">
+						<label className={`
+							gap-5
+							cursor-pointer
+							${gameStarted ? "opacity-50" : ""}
+						`}>
 							<RadioButton
 								name="calculate-score"
 								value="value"
 								onChange={() => setCalculateScore(1)}
 								checked={calculateScore === 1}
+								disabled={gameStarted}
 							/>
 							<span>Value of cards</span>
 						</label>
@@ -164,7 +194,7 @@ export const SettingsLightbox = ({ dismiss }: SettingsProps) => {
 						px-8 mb-8 md:mb-0
 					">
 						<h2>Playing Cards Look</h2>
-						<label className="flex gap-5 cursor-pointer">
+						<label className="gap-5 cursor-pointer">
 							<RadioButton
 								name="pCardLook"
 								value="modern"
@@ -173,7 +203,7 @@ export const SettingsLightbox = ({ dismiss }: SettingsProps) => {
 							/>
 							<span>Modern</span>
 						</label>
-						<label className="flex gap-5 cursor-pointer">
+						<label className="gap-5 cursor-pointer">
 							<RadioButton
 								name="pCardLook"
 								value="classic"
@@ -189,7 +219,7 @@ export const SettingsLightbox = ({ dismiss }: SettingsProps) => {
 						px-8
 					">
 						<h2>UI Colors</h2>
-						<label className="flex gap-5 cursor-pointer">
+						<label className="gap-5 cursor-pointer">
 							<RadioButton
 								name="UIColors"
 								value="main"
@@ -198,7 +228,7 @@ export const SettingsLightbox = ({ dismiss }: SettingsProps) => {
 							/>
 							<span>Main</span>
 						</label>
-						<label className="flex gap-5 cursor-pointer">
+						<label className="gap-5 cursor-pointer">
 							<RadioButton
 								name="UIColors"
 								value="alt"

@@ -2,6 +2,7 @@ import { useState, useRef, useEffect } from "react";
 import { Canvas } from "@react-three/fiber";
 import { Stats, PerspectiveCamera, OrbitControls, AdaptiveDpr } from "@react-three/drei";
 import { useSceneStore } from "../store/useSceneStore";
+import { useGameStore } from "../store/useGameStore";
 import { useDevStore } from "../store/useDevStore";
 import { SphereBg } from "../components/SphereBg";
 import { BackButton } from "../components/BackButton";
@@ -57,6 +58,11 @@ export const Results = () => {
 			[key]: value,
 		}));
 	}
+		
+	const setGameStarted = useGameStore((state) => state.setGameStarted);
+	useEffect(() => {
+		setGameStarted(false);
+	}, []);
 
 	useEffect(() => {
 		window.scrollTo({

@@ -1,10 +1,11 @@
 import { useEffect } from "react";
-import { Canvas } from "@react-three/fiber";
-import { Stats } from "@react-three/drei";
-import { useDevStore } from "../store/useDevStore";
+import { useGameStore } from "../store/useGameStore";
 
 export const Gameplay = () => {
-	const showStats = useDevStore((state) => state.showStats);
+	const setGameStarted = useGameStore((state) => state.setGameStarted);
+	useEffect(() => {
+		setGameStarted(true);
+	}, []);
 
 	useEffect(() => {
 		window.scrollTo({

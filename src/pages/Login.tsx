@@ -2,6 +2,7 @@ import { useState, useRef, useEffect } from "react";
 import { Canvas } from "@react-three/fiber";
 import { Stats, PerspectiveCamera, OrbitControls, AdaptiveDpr } from "@react-three/drei";
 import { useSceneStore } from "../store/useSceneStore";
+import { useGameStore } from "../store/useGameStore";
 import { useDevStore } from "../store/useDevStore";
 import { StripeBg } from "../components/StripeBg";
 import { SphereBg } from "../components/SphereBg";
@@ -19,7 +20,7 @@ export const Login = () => {
 	const containerRef = useRef(null);
 	const [showLightbox, setShowLightbox] = useState({
 		info: false,
-		signIn: true,
+		signIn: false,
 		createAccount: false,
 	});
 	const toggleLightbox = (key: keyof typeof showLightbox, value: boolean, e?: React.MouseEvent<HTMLButtonElement>) => {
@@ -30,6 +31,11 @@ export const Login = () => {
 			[key]: value,
 		}));
 	}
+		
+	const setGameStarted = useGameStore((state) => state.setGameStarted);
+	useEffect(() => {
+		setGameStarted(false);
+	}, []);
 
 	useEffect(() => {
 		window.scrollTo({
@@ -66,7 +72,7 @@ export const Login = () => {
 						rotation={[-Math.PI/4,0,0]}
 						color="gold"
 					/>
-					{/* <SphereBg /> */}
+					<SphereBg />
 					<PerspectiveCamera makeDefault position={[0, 0, 2.25]} />
 					<OrbitControls enableZoom={false}/>
 				</Canvas>

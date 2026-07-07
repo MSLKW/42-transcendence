@@ -1,15 +1,19 @@
+import { useGameStore } from "../store/useGameStore";
+
 interface ToggleButtonProps {
 	checked: boolean,
 	onChange: () => void,
+	disabled?: boolean,
 }
 
-export const ToggleButton = ({checked, onChange}: ToggleButtonProps) => {
+export const ToggleButton = ({checked, onChange, disabled}: ToggleButtonProps) => {
 	return (
 		<>
 			<input
 				type="checkbox"
 				checked={checked}
 				onChange={onChange}
+				disabled={disabled}
 				className="sr-only peer"
 			/>
 			<div className={`
@@ -19,6 +23,7 @@ export const ToggleButton = ({checked, onChange}: ToggleButtonProps) => {
 				peer-focus-visible:outline-2 outline-b5 outline-offset-5
 				grid ${checked ? "grid-cols-[1fr_auto_0fr]" : "grid-cols-[0fr_auto_1fr]"}
 				transition-all duration-200 ease-in-out
+				disabled:bg-r4
 			`}>
 				<div className="overflow-hidden"/>
 				<div className={`

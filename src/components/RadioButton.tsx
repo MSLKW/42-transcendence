@@ -3,9 +3,10 @@ interface RadioButtonProps {
 	value: string,
 	onChange: () => void,
 	checked: boolean,
+	disabled?: boolean,
 }
 
-export const RadioButton = ({ name, value, onChange, checked }: RadioButtonProps) => {
+export const RadioButton = ({ name, value, onChange, checked, disabled }: RadioButtonProps) => {
 	return (
 		<>
 			<input
@@ -13,6 +14,7 @@ export const RadioButton = ({ name, value, onChange, checked }: RadioButtonProps
 				name={name}
 				value={value}
 				onChange={onChange}
+				disabled={disabled}
 				className="sr-only peer"
 			/>
 			<div className="
