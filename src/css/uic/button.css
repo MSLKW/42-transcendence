@@ -37,7 +37,7 @@ button {
 		content: attr(data-tip);
 		@apply
 			w-max
-			absolute -translate-x-1/2
+			absolute left-1/2 -translate-x-1/2
 			bg-n1
 			border border-n2
 			rounded-lg

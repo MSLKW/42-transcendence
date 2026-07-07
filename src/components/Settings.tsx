@@ -227,7 +227,10 @@ export const SettingsLightbox = ({ dismiss }: SettingsProps) => {
 								onChange={() => setUIColors(0)}
 								checked={uiColors === 0}
 							/>
-							<span>Main</span>
+							<div className="h-full aspect-1/2 flex border border-n6 overflow-clip">
+								<div className="h-full aspect-square bg-b4"/>
+								<div className="h-full aspect-square bg-a4"/>
+							</div>
 						</label>
 						<label className="gap-5 cursor-pointer">
 							<RadioButton
@@ -236,7 +239,10 @@ export const SettingsLightbox = ({ dismiss }: SettingsProps) => {
 								onChange={() => setUIColors(1)}
 								checked={uiColors === 1}
 							/>
-							<span>Alt</span>
+							<div className="h-full aspect-1/2 flex border border-n6 overflow-clip">
+								<div className="h-full aspect-square bg-d4"/>
+								<div className="h-full aspect-square bg-c4"/>
+							</div>
 						</label>
 					</div>
 					<hr className="col-span-full m-8 text-a4"/>
