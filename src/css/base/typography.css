@@ -21,27 +21,3 @@ p {
 		tracking-wider
 		;
 }
-
-
-
-h4 {
-	@apply
-		text-[clamp(0.5rem,8vh+0.25rem,4rem)]
-		font-extrabold
-		text-n6
-		;
-}
-h5 {
-	@apply
-		text-[clamp(0.125rem,4vh+0.0625rem,2rem)]
-		font-thin
-		text-n6
-		;
-}
-h6 {
-	@apply
-		text-[clamp(0.0625rem,4vh+0.03125rem,0.75rem)]
-		font-extralight
-		text-b5
-		;
-}

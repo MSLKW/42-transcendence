@@ -22,7 +22,7 @@ export default function Dev() {
 	}, [showFrame]);
 
 	const gameStarted = useGameStore((state) => state.gameStarted);
-	const test = usePlayerStore((state) => state.test);
+	// const test = usePlayerStore((state) => state.test);
 	useEffect(() => {
 		console.log("partyCount", partyCount);
 		console.log("gameStarted", gameStarted);
