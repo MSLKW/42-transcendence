@@ -46,11 +46,6 @@ export const Results = () => {
 	const containerRef = useRef(null);
 	const setContAreaWidth = useSceneStore((state) => state.setContAreaWidth);
 	const setContAreaHeight = useSceneStore((state) => state.setContAreaHeight);
-		
-	const setGameStarted = useGameStore((state) => state.setGameStarted);
-	useEffect(() => {
-		setGameStarted(false);
-	}, []);
 
 	useEffect(() => {
 		if (!containerRef.current)

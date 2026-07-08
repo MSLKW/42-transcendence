@@ -1,12 +1,4 @@
-import { useEffect } from "react";
-import { useGameStore } from "../store/useGameStore";
-
 export const Gameplay = () => {
-	const setGameStarted = useGameStore((state) => state.setGameStarted);
-	useEffect(() => {
-		setGameStarted(true);
-	}, []);
-	
 	return (
 		<section className="h-full">
 			<span className="

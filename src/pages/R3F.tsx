@@ -11,7 +11,6 @@ import { EmojiButton } from "../components/EmojiButtons";
 import { AvatarButton } from "../components/Avatar";
 import { ChatButton } from "../components/Chat";
 import { SortButtons } from "../components/SortButtons";
-import { useGameStore } from "../store/useGameStore";
 
 export const R3F = () => {
 	const setCurrentScene = useSceneStore((state) => state.setCurrentScene);
@@ -34,11 +33,6 @@ export const R3F = () => {
 
 		return () => clearTimeout(timer);
 	}, [activePlayer]);
-
-	const setGameStarted = useGameStore((state) => state.setGameStarted);
-	useEffect(() => {
-		setGameStarted(true);
-	}, []);
 
 	useEffect(() => {
 		if (!containerRef.current)

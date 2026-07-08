@@ -2,7 +2,6 @@ import { useRef, useEffect } from "react";
 import { Canvas } from "@react-three/fiber";
 import { Stats } from "@react-three/drei";
 import { useSceneStore } from "../store/useSceneStore";
-import { useGameStore } from "../store/useGameStore";
 import { usePlayerStore } from "../store/usePlayerStore";
 import { useDevStore } from "../store/useDevStore";
 import { StripeBg } from "../components/StripeBg";
@@ -69,11 +68,6 @@ export const Home = () => {
 	const setContAreaHeight = useSceneStore((state) => state.setContAreaHeight);
 	const showStats = useDevStore((state) => state.showStats);
 	const containerRef = useRef(null);
-		
-	const setGameStarted = useGameStore((state) => state.setGameStarted);
-	useEffect(() => {
-		setGameStarted(false);
-	}, []);
 	
 	useEffect(() => {
 		if (!containerRef.current)

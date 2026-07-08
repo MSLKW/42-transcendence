@@ -18,11 +18,6 @@ export const Login = () => {
 	const setContAreaHeight = useSceneStore((state) => state.setContAreaHeight);
 	const showStats = useDevStore((state) => state.showStats);
 	const containerRef = useRef(null);
-
-	const setGameStarted = useGameStore((state) => state.setGameStarted);
-	useEffect(() => {
-		setGameStarted(false);
-	}, []);
 	
 	useEffect(() => {
 		if (!containerRef.current)

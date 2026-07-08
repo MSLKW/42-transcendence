@@ -1,5 +1,6 @@
 import { useEffect } from "react";
 import { useSceneStore } from "./store/useSceneStore";
+import { useGameStore } from "./store/useGameStore";
 import { Login } from "./pages/Login";
 import { Home } from "./pages/Home";
 import { Lobby } from "./pages/Lobby";
@@ -17,14 +18,19 @@ import { RankWindow } from "./components/RankButton";
 
 export default function App() {
 	const currentScene = useSceneStore((state) => state.currentScene);
-	const showWindow = useSceneStore((state) => state.showWindow);
-
 	useEffect(() => {
 		window.scrollTo({
 			top: 0,
 			behavior: 'smooth',
 		});
 	}, [currentScene]);
+	
+	const setGameStarted = useGameStore((state) => state.setGameStarted);
+	useEffect(() => {
+		setGameStarted(currentScene === "R3F" || currentScene === "GAMEPLAY");
+	}, [currentScene]);
+
+	const showWindow = useSceneStore((state) => state.showWindow);
 
 	return (
 		<>
