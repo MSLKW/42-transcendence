@@ -94,7 +94,7 @@ export const CreateAccountWindow = () => {
 					</div>
 					<button
 						type="submit"
-						className="btn-white mt-5"
+						className="btn-white hw-5/1 mt-5"
 					>
 						CREATE ACCOUNT
 					</button>

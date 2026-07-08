@@ -1,4 +1,3 @@
-import { calculateScaleFactor } from "@react-three/drei";
 import { useState } from "react";
 
 interface SortButtonProps {

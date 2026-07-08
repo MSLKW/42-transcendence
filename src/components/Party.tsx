@@ -16,7 +16,7 @@ export const JoinParty = () => {
 				data-tip="Add / Join Party"
 				onClick={() => setShowWindow("party", true)}
 				className="
-					btn-tip-up-2
+					btn-tip-up
 					h-[clamp(2.5rem,7.5vh+0.5rem,5rem)]
 					aspect-square
 					bg-n1
