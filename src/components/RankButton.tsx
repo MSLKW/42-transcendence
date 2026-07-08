@@ -31,7 +31,7 @@ export const RankButton = () => {
 	);
 }
 
-export const RankLightbox = () => {
+export const RankWindow = () => {
 	const setShowWindow = useSceneStore((scene) => scene.setShowWindow);
 
 	return (

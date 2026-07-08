@@ -7,12 +7,12 @@ import { R3F } from "./pages/R3F";
 import { Results } from "./pages/Results";
 import { InfoWindow } from "./components/Info";
 import { StatsWindow } from "./components/StatsWindow";
-import { SignInLightbox } from "./components/SignIn";
-import { CreateAccountLightbox } from "./components/CreateAccount";
-import { SettingsLightbox } from "./components/Settings";
-import { ChatLightbox } from "./components/Chat";
-import { PartyLightbox } from "./components/Party";
-import { RankLightbox } from "./components/RankButton";
+import { SignInWindow } from "./components/SignIn";
+import { CreateAccountWindow } from "./components/CreateAccount";
+import { SettingsWindow } from "./components/Settings";
+import { ChatWindow } from "./components/Chat";
+import { PartyWindow } from "./components/Party";
+import { RankWindow } from "./components/RankButton";
 
 export default function App() {
 	const currentScene = useSceneStore((state) => state.currentScene);
@@ -26,14 +26,14 @@ export default function App() {
 			{ currentScene === 'GAMEPLAY' && <Gameplay /> }
 			{ currentScene === 'R3F' && <R3F /> }
 			{ currentScene === 'RESULTS' && <Results /> }
-			{ showWindow["createAccount"] && <CreateAccountLightbox /> }
-			{ showWindow["signIn"] && <SignInLightbox /> }
+			{ showWindow["createAccount"] && <CreateAccountWindow /> }
+			{ showWindow["signIn"] && <SignInWindow /> }
 			{ showWindow["stats"] && <StatsWindow /> }
 			{ showWindow["info"] && <InfoWindow /> }
-			{ showWindow["settings"] && <SettingsLightbox /> }
-			{ showWindow["chat"] && <ChatLightbox /> }
-			{ showWindow["party"] && <PartyLightbox /> }
-			{ showWindow["rank"] && <RankLightbox /> }
+			{ showWindow["settings"] && <SettingsWindow /> }
+			{ showWindow["chat"] && <ChatWindow /> }
+			{ showWindow["party"] && <PartyWindow /> }
+			{ showWindow["rank"] && <RankWindow /> }
 		</>
 	);
 }

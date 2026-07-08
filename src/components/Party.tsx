@@ -44,7 +44,7 @@ export const JoinParty = () => {
 	);
 }
 
-export const PartyLightbox = () => {
+export const PartyWindow = () => {
 	const contAreaWidth = useSceneStore((scene) => scene.contAreaWidth);
 	const contAreaHeight = useSceneStore((scene) => scene.contAreaHeight);
 	const setShowWindow = useSceneStore((scene) => scene.setShowWindow);

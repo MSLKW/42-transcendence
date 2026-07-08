@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from "react";
+import { useRef, useEffect } from "react";
 import { Canvas } from "@react-three/fiber";
 import { Stats, PerspectiveCamera, OrbitControls, AdaptiveDpr } from "@react-three/drei";
 import { useSceneStore } from "../store/useSceneStore";
@@ -6,9 +6,9 @@ import { useGameStore } from "../store/useGameStore";
 import { useDevStore } from "../store/useDevStore";
 import { SphereBg } from "../components/SphereBg";
 import { BackButton } from "../components/BackButton";
-import { SettingsButton, SettingsLightbox } from "../components/Settings";
+import { SettingsButton } from "../components/Settings";
 import { EmojiButton } from "../components/EmojiButtons";
-import { ChatButton, ChatLightbox } from "../components/Chat";
+import { ChatButton } from "../components/Chat";
 import { NextGameButton } from "../components/NextGameButton";
 
 export const ResultsWindow = () => {
@@ -46,18 +46,6 @@ export const Results = () => {
 	const containerRef = useRef(null);
 	const setContAreaWidth = useSceneStore((state) => state.setContAreaWidth);
 	const setContAreaHeight = useSceneStore((state) => state.setContAreaHeight);
-	const [showLightbox, setShowLightbox] = useState({
-		settings: false,
-		chat: false,
-	});
-	const toggleLightbox = (key: keyof typeof showLightbox, value: boolean, e?: React.MouseEvent<HTMLButtonElement>) => {
-		if (e)
-			e.currentTarget.blur();
-		setShowLightbox(() => ({
-			...showLightbox,
-			[key]: value,
-		}));
-	}
 		
 	const setGameStarted = useGameStore((state) => state.setGameStarted);
 	useEffect(() => {
@@ -101,11 +89,11 @@ export const Results = () => {
 				<header className="flex place-content-between">
 					<div className="flex btn-icon-border">
 						<BackButton scene={() => setCurrentScene("LOBBY")} />
-						<SettingsButton call={(e) => toggleLightbox("settings", true, e)} />
+						<SettingsButton />
 					</div>
 					<div className="flex btn-icon-border">
 						<EmojiButton />
-						<ChatButton call={(e) => toggleLightbox("chat", true, e)}/>
+						<ChatButton />
 					</div>
 				</header>
 				<main className="flex place-content-center place-items-center p-[clamp(0.5rem,4vh+0.25rem,2.5rem)]">
@@ -113,8 +101,6 @@ export const Results = () => {
 				</main>
 				<footer />
 			</section>
-			{ showLightbox["settings"] && <SettingsLightbox dismiss={() => toggleLightbox("settings", false)} /> }
-			{ showLightbox["chat"] && <ChatLightbox dismiss={() => toggleLightbox("chat", false)} /> }
 		</>
 	);
 }

@@ -6,7 +6,7 @@ import { useDevStore } from "../store/useDevStore";
 import { SphereBg } from "../components/SphereBg";
 import { BackButton } from "../components/BackButton";
 import { SettingsButton } from "../components/Settings";
-import { RankButton, RankLightbox } from "../components/RankButton";
+import { RankButton } from "../components/RankButton";
 import { EmojiButton } from "../components/EmojiButtons";
 import { AvatarButton } from "../components/Avatar";
 import { ChatButton } from "../components/Chat";
@@ -19,19 +19,7 @@ export const R3F = () => {
 	const containerRef = useRef(null);
 	const setContAreaWidth = useSceneStore((state) => state.setContAreaWidth);
 	const setContAreaHeight = useSceneStore((state) => state.setContAreaHeight);
-	const [showLightbox, setShowLightbox] = useState({
-		settings: false,
-		rank: false,
-		chat: false,
-	});
-	const toggleLightbox = (key: keyof typeof showLightbox, value: boolean, e?: React.MouseEvent<HTMLButtonElement>) => {
-		if (e)
-			e.currentTarget.blur();
-		setShowLightbox(() => ({
-			...showLightbox,
-			[key]: value,
-		}));
-	}
+	
 	const [activePlayer, setActivePlayer] = useState<number>(0);
 	const [animationKey, setAnimationKey] = useState<number>(0);
 	const nextTurn = () => {
@@ -122,7 +110,7 @@ export const R3F = () => {
 					<div className="
 						absolute left-1/2 top-[32.5%] -translate-x-1/2
 					">
-						<RankButton call={(e) => toggleLightbox("rank", true, e)} />
+						<RankButton />
 					</div>
 					<div className="
 						absolute left-1/2 top-[65%] -translate-x-1/2
@@ -146,7 +134,6 @@ export const R3F = () => {
 					</div>
 				</footer>
 			</section>
-			{/* { showLightbox["rank"] && <RankLightbox dismiss={() => toggleLightbox("rank", false)} /> } */}
 		</>
 	);
 }

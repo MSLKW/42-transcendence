@@ -69,7 +69,7 @@ export const ChatReport = ({ message }: ChatProps) => {
 	);
 }
 
-export const ChatLightbox = () => {
+export const ChatWindow = () => {
 	const contAreaWidth = useSceneStore((scene) => scene.contAreaWidth);
 	const contAreaHeight = useSceneStore((scene) => scene.contAreaHeight);
 	const setShowWindow = useSceneStore((scene) => scene.setShowWindow);

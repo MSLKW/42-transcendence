@@ -2,12 +2,6 @@ import { useEffect, useRef } from "react";
 import { useSceneStore } from "../store/useSceneStore";
 import { CloseButton } from "../components/CloseButton";
 
-interface CreateAccountProps {
-	call?: (e: React.MouseEvent<HTMLButtonElement>) => void;
-	dismiss?: () => void;
-}
-
-// export const CreateAccountButton = ({ call }: CreateAccountProps) => {
 export const CreateAccountButton = () => {
 	const setShowWindow =  useSceneStore((state) => state.setShowWindow);
 	return (
@@ -20,7 +14,7 @@ export const CreateAccountButton = () => {
 	);
 }
 
-export const CreateAccountLightbox = () => {
+export const CreateAccountWindow = () => {
 	const contAreaWidth = useSceneStore((scene) => scene.contAreaWidth);
 	const contAreaHeight = useSceneStore((scene) => scene.contAreaHeight);
 

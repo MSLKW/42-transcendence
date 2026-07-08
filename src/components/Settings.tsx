@@ -18,7 +18,7 @@ export const SettingsButton = () => {
 	);
 }
 
-export const SettingsLightbox = () => {
+export const SettingsWindow = () => {
 	const setShowWindow = useSceneStore((scene) => scene.setShowWindow);
 
 	const gameStarted = useGameStore((state) => state.gameStarted);

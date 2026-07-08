@@ -15,7 +15,7 @@ export const SignInButton = () => {
 	);
 }
 
-export const SignInLightbox = () => {
+export const SignInWindow = () => {
 	const setShowWindow = useSceneStore((scene) => scene.setShowWindow);
 	
 	const focusRef = useRef<HTMLInputElement | null>(null);
