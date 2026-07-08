@@ -51,7 +51,7 @@ export const AvatarButton = ({ cornerButton = "none", playerName = "Player", isA
 				onClick={() => setShowWindow("stats", true)}
 				className="
 					btn-avatar btn-tip-up
-					flex flex-col place-items-center
+					flex flex-col place-content-center place-items-center
 					gap-1
 			">
 				<AvatarImage cornerButton={cornerButton} isActive={isActive} />

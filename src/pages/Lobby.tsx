@@ -18,8 +18,8 @@ export const Lobby = () => {
 	const setContAreaWidth = useSceneStore((state) => state.setContAreaWidth);
 	const setContAreaHeight = useSceneStore((state) => state.setContAreaHeight);
 	const showStats = useDevStore((state) => state.showStats);
+	
 	const containerRef = useRef(null);
-
 	useEffect(() => {
 		if (!containerRef.current)
 			return;
@@ -60,9 +60,11 @@ export const Lobby = () => {
 					</div>
 				</header>
 				<main className="flex flex-col place-content-evenly place-items-evenly">
-					<AvatarButton playerName="Void"/>
+					<div className="w-full h-full grid place-items-center place-content-center">
+						<AvatarButton playerName="Void"/>
+					</div>
 					<div className="
-						w-full
+						w-full h-full
 						grid grid-cols-3 place-items-center
 					">
 						<AvatarButton playerName="Null" />
@@ -74,7 +76,9 @@ export const Lobby = () => {
 						</button>
 						<AvatarButton playerName="Undefined" />
 					</div>
-					<AvatarButton playerName="Azrul" />
+					<div className="w-full h-full grid place-items-center place-content-center">
+						<AvatarButton playerName="Azrul" />
+					</div>
 				</main>
 				<footer className="
 					pointer-events-auto

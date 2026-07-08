@@ -28,7 +28,7 @@ export const HomeCards = ({ cardType }: HomeProps) => {
 			onClick={() => setCurrentScene("LOBBY")}
 			className="btn-card"
 		>
-			{cardType === "4 PLAYERS" &&
+			{ cardType === "4 PLAYERS" &&
 				<div className="w-18.75 h-18.75 flex flex-col place-items-center">
 					<PersonIcon />
 					<div className="flex gap-6">
@@ -38,7 +38,7 @@ export const HomeCards = ({ cardType }: HomeProps) => {
 					<PersonIcon />
 				</div>
 			}
-			{cardType === "3 PLAYERS" &&
+			{ cardType === "3 PLAYERS" &&
 				<div className="w-18.75 h-18.75 flex flex-col place-items-center gap-3">
 					<PersonIcon />
 					<div className="flex gap-3">
@@ -47,13 +47,13 @@ export const HomeCards = ({ cardType }: HomeProps) => {
 					</div>
 				</div>
 			}
-			{cardType === "2 PLAYERS" &&
+			{ cardType === "2 PLAYERS" &&
 				<div className="w-10 h-18.75 flex flex-col place-items-center gap-3">
 					<PersonIcon />
 					<PersonIcon />
 				</div>
 			}
-			{cardType === "TUTORIAL" &&
+			{ cardType === "TUTORIAL" &&
 				<div className="w-15 h-15">
 					<TutorialIcon />
 				</div>

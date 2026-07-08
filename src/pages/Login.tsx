@@ -2,7 +2,6 @@ import { useRef, useEffect } from "react";
 import { Canvas } from "@react-three/fiber";
 import { Stats, PerspectiveCamera, OrbitControls, AdaptiveDpr } from "@react-three/drei";
 import { useSceneStore } from "../store/useSceneStore";
-import { useGameStore } from "../store/useGameStore";
 import { useDevStore } from "../store/useDevStore";
 import { StripeBg } from "../components/StripeBg";
 import { SphereBg } from "../components/SphereBg";
@@ -36,7 +35,7 @@ export const Login = () => {
 	return (
 		<>
 			<StripeBg />
-			<section ref={containerRef} className="cont-canvas">
+			<section className="cont-canvas">
 				<Canvas>
 					{showStats && <Stats />}
 					<AdaptiveDpr />
