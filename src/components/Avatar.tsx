@@ -50,7 +50,7 @@ export const AvatarButton = ({ cornerButton = "none", playerName = "Player", isA
 				data-tip="View Stats"
 				onClick={() => setShowWindow("stats", true)}
 				className="
-					btn-avatar btn-tip-up
+					btn-avatar btn-tip-up h-max w-max
 					flex flex-col place-content-center place-items-center
 					gap-1
 			">
