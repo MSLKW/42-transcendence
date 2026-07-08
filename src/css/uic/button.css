@@ -211,30 +211,6 @@ button {
 		;
 }
 
-@utility btn-card {
-	@apply
-		h-full max-h-150
-		aspect-2/3
-		bg-linear-to-b from-b3 to-b5
-		border border-b6 rounded-[clamp(0px,2vh,24px)]
-		snap-center
-		text-[clamp(0px,3vh,24px)]
-		p-[clamp(0px,2vh,50px)]
-		flex flex-col place-content-between
-
-		hover:not-disabled:from-b4
-		hover:not-disabled:to-b5
-		hover:not-disabled:scale-105
-
-		focus:outline-2
-		focus:outline-solid
-		focus:outline-b5
-		focus:outline-offset-5
-
-		active:hover:not-disabled:scale-100
-		;
-}
-
 @utility btn-avatar {
 	@apply
 		rounded-xs h-full

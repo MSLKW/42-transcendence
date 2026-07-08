@@ -26,35 +26,104 @@ export const HomeCards = ({ cardType }: HomeProps) => {
 	return (
 		<button
 			onClick={() => setCurrentScene("LOBBY")}
-			className="btn-card"
-		>
+			className="
+				h-full max-h-150 aspect-2/3
+				bg-linear-to-b from-b3 to-b5 hover:not-disabled:from-b4 hover:not-disabled:to-b5
+				border border-b6 rounded-[clamp(0.375rem,3.462vmin-0.663rem,1.5rem)]
+				p-[clamp(1.25rem,1.786vmin+0.893rem,2.5rem)]
+				flex flex-col place-content-between
+				hover:not-disabled:scale-105 active:hover:not-disabled:scale-100
+				focus-visible:outline-2 outline-b5 outline-offset-5
+				snap-center
+		">
 			{ cardType === "4 PLAYERS" &&
-				<div className="w-18.75 h-18.75 flex flex-col place-items-center">
-					<PersonIcon />
-					<div className="flex gap-6">
-						<PersonIcon />
+				<div className="
+					w-[clamp(2.5rem,3.571vmin+1.786rem,5rem)] aspect-square
+					grid grid-cols-auto grid-rows-auto
+				">
+					<div className="
+						row-start-1 row-end-1
+						col-start-1 col-end-1
+						h-full aspect-square
+					">
 						<PersonIcon />
 					</div>
-					<PersonIcon />
+					<div className="
+						row-start-1 row-end-1
+						col-start-3 col-end-3
+						h-full aspect-square
+					">
+						<PersonIcon />
+					</div>
+					<div className="
+						row-start-3 row-end-3
+						col-start-1 col-end-1
+						h-full aspect-square
+					">
+						<PersonIcon />
+					</div>
+					<div className="
+						row-start-3 row-end-3
+						col-start-3 col-end-3
+						h-full aspect-square
+					">
+						<PersonIcon />
+					</div>
 				</div>
 			}
 			{ cardType === "3 PLAYERS" &&
-				<div className="w-18.75 h-18.75 flex flex-col place-items-center gap-3">
-					<PersonIcon />
-					<div className="flex gap-3">
+				<div className="
+					w-[clamp(2.5rem,3.571vmin+1.786rem,5rem)] aspect-square
+					grid grid-cols-3 grid-rows-auto
+				">
+					<div className="
+						row-start-1 row-end-1
+						col-start-1 col-end-1
+						h-full aspect-square
+					">
 						<PersonIcon />
+					</div>
+					<div className="
+						row-start-1 row-end-1
+						col-start-3 col-end-3
+						h-full aspect-square
+					">
+						<PersonIcon />
+					</div>
+					<div className="
+						row-start-3 row-end-3
+						col-start-2 col-end-2
+						h-full aspect-square
+					">
 						<PersonIcon />
 					</div>
 				</div>
 			}
 			{ cardType === "2 PLAYERS" &&
-				<div className="w-10 h-18.75 flex flex-col place-items-center gap-3">
-					<PersonIcon />
-					<PersonIcon />
+				<div className="
+					w-[clamp(2.5rem,3.571vmin+1.786rem,5rem)] aspect-square
+					grid grid-cols-1 grid-rows-2
+				">
+					<div className="
+						row-start-1 row-end-1
+						col-start-2 col-end-2
+						h-full aspect-square
+					">
+						<PersonIcon />
+					</div>
+					<div className="
+						row-start-2 row-end-2
+						col-start-1 col-end-1
+						h-full aspect-square
+					">
+						<PersonIcon />
+					</div>
 				</div>
 			}
 			{ cardType === "TUTORIAL" &&
-				<div className="w-15 h-15">
+				<div className="
+					w-[clamp(2.5rem,3.571vmin+1.786rem,5rem)] aspect-square
+				">
 					<TutorialIcon />
 				</div>
 			}
@@ -115,7 +184,7 @@ export const Home = () => {
 		 				snap-x snap-mandatory
 		 			">
 		 				<div className="
-		 					flex place-content-center-safe place-items-center gap-10
+		 					flex place-content-center-safe place-items-center gap-[clamp(1.25rem,1.786vw+0.893rem,2.5rem)]
 							w-full h-full
 							flex-5
 							pointer-events-auto

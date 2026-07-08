@@ -43,7 +43,6 @@ export const SmallLogo = () => {
 			absolute z-0 right-0
 			w-max h-max
 			flex flex-col place-content-center place-items-end
-			gap-[0.25rem]
 			pointer-events-none
 		">
 			<div className="
@@ -60,7 +59,7 @@ export const SmallLogo = () => {
 				</span>
 				<span className="
 					text-[clamp(2.5rem,7.692vmin+0.192rem,5rem)]
-					leading-[clamp(2rem,6.154vmin+0.154rem,4rem)]
+					leading-[clamp(2.25rem,6.154vmin+0.404rem,4.25rem)]
 					font-extrabold text-n6
 				">
 					2
