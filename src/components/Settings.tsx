@@ -1,19 +1,16 @@
-import { useState } from "react";
+import { useSceneStore } from "../store/useSceneStore";
 import { useGameStore } from "../store/useGameStore";
 import { SettingsIcon } from "../icons/SettingsIcon";
 import { CloseButton } from "./CloseButton";
 import { ToggleButton } from "./ToggleButton";
 import { RadioButton } from "./RadioButton";
 
-interface SettingsProps {
-	call?: (e: React.MouseEvent<HTMLButtonElement>) => void;
-	dismiss?: () => void;
-}
+export const SettingsButton = () => {
+	const setShowWindow = useSceneStore((scene) => scene.setShowWindow);
 
-export const SettingsButton = ({ call }: SettingsProps) => {
 	return (
 		<button data-tip="Settings"
-			onClick={call}
+			onClick={() => setShowWindow("settings", true)}
 			className="btn-icon btn-tip-down"
 		>
 			<SettingsIcon />
@@ -21,7 +18,9 @@ export const SettingsButton = ({ call }: SettingsProps) => {
 	);
 }
 
-export const SettingsLightbox = ({ dismiss }: SettingsProps) => {
+export const SettingsLightbox = () => {
+	const setShowWindow = useSceneStore((scene) => scene.setShowWindow);
+
 	const gameStarted = useGameStore((state) => state.gameStarted);
 	const allowThrees = useGameStore((state) => state.allowThrees);
 	const setAllowThrees = useGameStore((state) => state.setAllowThrees);
@@ -49,7 +48,7 @@ export const SettingsLightbox = ({ dismiss }: SettingsProps) => {
 			w-screen h-screen
 			flex place-content-center place-items-center
 		">
-			<button tabIndex={-1} className='btn-lightbox' onClick={dismiss}/>
+			<button tabIndex={-1} className='btn-lightbox' onClick={() => setShowWindow("settings", false)}/>
 			<div className="
 				z-0
 				text-n6
@@ -292,7 +291,7 @@ export const SettingsLightbox = ({ dismiss }: SettingsProps) => {
 					z-1
 					w-12.5 h-12.5
 				">
-					<CloseButton dismiss={dismiss}/>
+					<CloseButton dismiss={() => setShowWindow("settings", false)}/>
 				</div>
 			</div>
 		</section>

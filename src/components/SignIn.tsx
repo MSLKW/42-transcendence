@@ -2,15 +2,12 @@ import { useEffect, useRef } from "react";
 import { useSceneStore } from "../store/useSceneStore";
 import { CloseButton } from "../components/CloseButton";
 
-interface SignInProps {
-	call?: (e: React.MouseEvent<HTMLButtonElement>) => void;
-	dismiss?: () => void;
-}
+export const SignInButton = () => {
+	const setShowWindow = useSceneStore((scene) => scene.setShowWindow);
 
-export const SignInButton = ({ call }: SignInProps) => {
 	return (
 		<button
-			onClick={call}
+			onClick={() => setShowWindow("signIn", true)}
 			className="btn-white"
 		>
 			SIGN IN
@@ -18,11 +15,10 @@ export const SignInButton = ({ call }: SignInProps) => {
 	);
 }
 
-export const SignInLightbox = ({ dismiss }: SignInProps) => {
-	const contAreaWidth = useSceneStore((scene) => scene.contAreaWidth);
-	const contAreaHeight = useSceneStore((scene) => scene.contAreaHeight);
+export const SignInLightbox = () => {
+	const setShowWindow = useSceneStore((scene) => scene.setShowWindow);
+	
 	const focusRef = useRef<HTMLInputElement | null>(null);
-
 	useEffect(() => {
 		if (focusRef.current) {
 			focusRef.current.focus();
@@ -35,7 +31,7 @@ export const SignInLightbox = ({ dismiss }: SignInProps) => {
 			w-screen h-screen
 			flex place-content-center place-items-center
 		">
-			<button tabIndex={-1} className='btn-lightbox' onClick={dismiss}/>
+			<button tabIndex={-1} className='btn-lightbox' onClick={() => setShowWindow("signIn", false)}/>
 			<div className="
 				z-0
 				bg-linear-to-b from-n0 to-n1
@@ -78,7 +74,7 @@ export const SignInLightbox = ({ dismiss }: SignInProps) => {
 					z-1
 					w-12.5 h-12.5
 				">
-					<CloseButton dismiss={dismiss} />
+					<CloseButton dismiss={() => setShowWindow("signIn", false)} />
 				</div>
 			</div>
 		</section>

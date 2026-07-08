@@ -1,4 +1,4 @@
-import { useGameStore } from "../store/useGameStore";
+import { useSceneStore } from "../store/useSceneStore";
 
 interface AvatarProps {
 	call?: (e: React.MouseEvent<HTMLButtonElement>) => void,
@@ -41,12 +41,18 @@ export const AvatarImage = ({ cornerButton, isActive }: AvatarProps) => {
 	)
 }
 
-export const AvatarPlayer = ({ cornerButton = "none", playerName = "Player", isActive = false }: AvatarProps) => {
+export const AvatarButton = ({ cornerButton = "none", playerName = "Player", isActive = false }: AvatarProps) => {
+	const setShowWindow = useSceneStore((state) => state.setShowWindow);
+	
 	return (
 		<>
-			<div className="
-				flex flex-col place-items-center
-				gap-1
+			<button
+				data-tip="View Stats"
+				onClick={() => setShowWindow("stats", true)}
+				className="
+					btn-avatar btn-tip-up
+					flex flex-col place-items-center
+					gap-1
 			">
 				<AvatarImage cornerButton={cornerButton} isActive={isActive} />
 				<div className="
@@ -62,7 +68,7 @@ export const AvatarPlayer = ({ cornerButton = "none", playerName = "Player", isA
 				">
 					<p>{playerName}</p>
 				</div>
-			</div>
+			</button>
 		</>
 	);
 }

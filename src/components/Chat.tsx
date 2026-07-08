@@ -5,18 +5,18 @@ import { SendButton } from "../components/SendButton";
 import { AvatarImage } from "./Avatar";
 
 interface ChatProps {
-	call?: (e: React.MouseEvent<HTMLButtonElement>) => void;
-	dismiss?: () => void;
 	senderId?: number;
 	senderName?: string;
 	message?: string;
 }
 
-export const ChatButton = ({ call }: ChatProps) => {
+export const ChatButton = () => {
+	const setShowWindow = useSceneStore((scene) => scene.setShowWindow);
+
 	return (
 		<button
 			data-tip="Chat"
-			onClick={call}
+			onClick={() => setShowWindow("chat", true)}
 			className="btn-icon btn-tip-down"
 		>
 			<ChatIcon />
@@ -69,16 +69,17 @@ export const ChatReport = ({ message }: ChatProps) => {
 	);
 }
 
-export const ChatLightbox = ({ dismiss }: ChatProps) => {
+export const ChatLightbox = () => {
 	const contAreaWidth = useSceneStore((scene) => scene.contAreaWidth);
 	const contAreaHeight = useSceneStore((scene) => scene.contAreaHeight);
+	const setShowWindow = useSceneStore((scene) => scene.setShowWindow);
 
 	return (
 		<section className="
 			absolute z-1 top-0 left-0
 			w-screen h-screen
 		">
-			<button tabIndex={-1} className='btn-lightbox-no-blur' onClick={dismiss}/>
+			<button tabIndex={-1} className='btn-lightbox-no-blur' onClick={() => setShowWindow("chat", false)}/>
 			<div style={{ width: contAreaWidth, height: contAreaHeight }}
 				className="
 					z-0

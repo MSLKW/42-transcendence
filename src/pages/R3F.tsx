@@ -5,11 +5,11 @@ import { useSceneStore } from "../store/useSceneStore";
 import { useDevStore } from "../store/useDevStore";
 import { SphereBg } from "../components/SphereBg";
 import { BackButton } from "../components/BackButton";
-import { SettingsButton, SettingsLightbox } from "../components/Settings";
+import { SettingsButton } from "../components/Settings";
 import { RankButton, RankLightbox } from "../components/RankButton";
 import { EmojiButton } from "../components/EmojiButtons";
-import { AvatarPlayer } from "../components/Avatar";
-import { ChatButton, ChatLightbox } from "../components/Chat";
+import { AvatarButton } from "../components/Avatar";
+import { ChatButton } from "../components/Chat";
 import { SortButtons } from "../components/SortButtons";
 import { useGameStore } from "../store/useGameStore";
 
@@ -90,30 +90,30 @@ export const R3F = () => {
 				<header className="flex place-content-between">
 					<div className="flex btn-icon-border">
 						<BackButton scene={() => setCurrentScene("LOBBY")} />
-						<SettingsButton call={(e) => toggleLightbox("settings", true, e)} />
+						<SettingsButton />
 					</div>
 					<div className="flex btn-icon-border">
 						<EmojiButton />
-						<ChatButton call={(e) => toggleLightbox("chat", true, e)} />
+						<ChatButton />
 					</div>
 				</header>
 				<main>
 					<div className="absolute left-[25%] top-[5%]">
-						<AvatarPlayer
+						<AvatarButton
 							cornerButton="cardsLeft"
 							playerName="Max"
 							isActive={false}
 						/>
 					</div>
 					<div className="absolute left-[5%] top-[20%]">
-						<AvatarPlayer
+						<AvatarButton
 							cornerButton="cardsLeft"
 							playerName="Jeremy"
 							isActive={false}
 						/>
 					</div>
 					<div className="absolute right-[5%] top-[20%]">
-						<AvatarPlayer
+						<AvatarButton
 							cornerButton="cardsLeft"
 							playerName="Aisyah"
 							isActive={false}
@@ -133,9 +133,8 @@ export const R3F = () => {
 					</div>
 				</main>
 				<footer className="flex place-content-between place-items-center">
-					<AvatarPlayer
+					<AvatarButton
 						cornerButton="cardsLeft"
-						call={(e) => toggleLightbox("chat", true, e)}
 						isActive={true}
 					/>
 					<div className="
@@ -147,10 +146,7 @@ export const R3F = () => {
 					</div>
 				</footer>
 			</section>
-			
-			{ showLightbox["settings"] && <SettingsLightbox dismiss={() => toggleLightbox("settings", false)} /> }
-			{ showLightbox["rank"] && <RankLightbox dismiss={() => toggleLightbox("rank", false)} /> }
-			{ showLightbox["chat"] && <ChatLightbox dismiss={() => toggleLightbox("chat", false)} /> }
+			{/* { showLightbox["rank"] && <RankLightbox dismiss={() => toggleLightbox("rank", false)} /> } */}
 		</>
 	);
 }

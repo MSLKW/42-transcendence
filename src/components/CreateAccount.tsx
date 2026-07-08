@@ -7,10 +7,12 @@ interface CreateAccountProps {
 	dismiss?: () => void;
 }
 
-export const CreateAccountButton = ({ call }: CreateAccountProps) => {
+// export const CreateAccountButton = ({ call }: CreateAccountProps) => {
+export const CreateAccountButton = () => {
+	const setShowWindow =  useSceneStore((state) => state.setShowWindow);
 	return (
 		<button
-			onClick={call}
+			onClick={() => setShowWindow("createAccount", true)}
 			className="btn-clear"
 		>
 			<u>CREATE ACCOUNT</u>
@@ -18,11 +20,13 @@ export const CreateAccountButton = ({ call }: CreateAccountProps) => {
 	);
 }
 
-export const CreateAccountLightbox = ({ dismiss }: CreateAccountProps) => {
+export const CreateAccountLightbox = () => {
 	const contAreaWidth = useSceneStore((scene) => scene.contAreaWidth);
 	const contAreaHeight = useSceneStore((scene) => scene.contAreaHeight);
-	const focusRef = useRef<HTMLInputElement | null>(null);
 
+	const setShowWindow =  useSceneStore((state) => state.setShowWindow);
+
+	const focusRef = useRef<HTMLInputElement | null>(null);
 	useEffect(() => {
 		if (focusRef.current) {
 			focusRef.current.focus();
@@ -35,7 +39,7 @@ export const CreateAccountLightbox = ({ dismiss }: CreateAccountProps) => {
 			w-screen h-screen
 			flex place-content-center place-items-center
 		">
-			<button tabIndex={-1} className='btn-lightbox' onClick={dismiss}/>
+			<button tabIndex={-1} className='btn-lightbox' onClick={() => setShowWindow("createAccount", false)}/>
 			<div style={{ width: contAreaWidth, height: contAreaHeight }} 
 				className="
 					z-0
@@ -105,7 +109,7 @@ export const CreateAccountLightbox = ({ dismiss }: CreateAccountProps) => {
 						z-1
 						w-12.5 h-12.5
 					">
-						<CloseButton dismiss={dismiss} />
+						<CloseButton dismiss={() => setShowWindow("createAccount", false)} />
 					</div>
 				</div>
 			</div>

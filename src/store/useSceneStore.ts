@@ -8,11 +8,13 @@ interface SceneState {
 	currentScene: GameScene;
 	contAreaWidth: number;
 	contAreaHeight: number;
+	showWindow: Record<string, boolean>;
 
 	setCurrentScene: (scene: GameScene) => void;
 	resetGame: () => void;
 	setContAreaWidth: (width: number) => void;
 	setContAreaHeight: (height: number) => void;
+	setShowWindow: (window: string, show: boolean) => void;
 } 
 
 export const useSceneStore = create<SceneState>() (
@@ -21,6 +23,16 @@ export const useSceneStore = create<SceneState>() (
 			currentScene: "LOGIN",
 			contAreaWidth: 320,
 			contAreaHeight: 320,
+			showWindow: {
+				createAccount: false,
+				signIn: false,
+				settings: false,
+				info: false,
+				stats: false,
+				party: false,
+				chat: false,
+				rank: false,
+			},
 
 			setCurrentScene: (scene) => set({ currentScene: scene }),
 			resetGame: () => {
@@ -47,6 +59,14 @@ export const useSceneStore = create<SceneState>() (
 			},
 			setContAreaWidth: (contAreaWidth) => set({ contAreaWidth }),
 			setContAreaHeight: (contAreaHeight) => set({ contAreaHeight }),
+			setShowWindow: (window, show) => set((state) => { 
+				return {
+					showWindow: {
+						...state.showWindow,
+						[window]: show,
+					}
+				}
+			}),
 		}),
 		{
 			name: 'scene-session-storage',

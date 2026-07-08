@@ -2,16 +2,13 @@ import { useSceneStore } from "../store/useSceneStore";
 import { InfoIcon } from "../icons/InfoIcon";
 import { CloseButton } from "./CloseButton";
 
-interface InfoProps {
-	call?: (e: React.MouseEvent<HTMLButtonElement>) => void;
-	dismiss?: () => void;
-}
+export const InfoButton = () => {
+	const setShowWindow = useSceneStore((scene) => scene.setShowWindow);
 
-export const InfoButton = ({ call }: InfoProps) => {
 	return (
 		<button
 			data-tip="Info"
-			onClick={call}
+			onClick={() => setShowWindow("info", true)}
 			className="
 				btn-icon btn-tip-down
 		">
@@ -20,9 +17,10 @@ export const InfoButton = ({ call }: InfoProps) => {
 	)
 }
 
-export const InfoLightbox = ({ dismiss }: InfoProps) => {
+export const InfoWindow = () => {
 	const contAreaWidth = useSceneStore((scene) => scene.contAreaWidth);
 	const contAreaHeight = useSceneStore((scene) => scene.contAreaHeight);
+	const setShowWindow = useSceneStore((scene) => scene.setShowWindow);
 
     return (
 		<section className="
@@ -30,7 +28,7 @@ export const InfoLightbox = ({ dismiss }: InfoProps) => {
 			w-screen h-screen
 			flex place-content-center place-items-center
 		">
-			<button tabIndex={-1} className='btn-lightbox' onClick={dismiss}/>
+			<button tabIndex={-1} className='btn-lightbox' onClick={() => setShowWindow("info", false)}/>
 			<div style={{ width: contAreaWidth, height: contAreaHeight }}
 				className="
 					z-0
@@ -64,7 +62,7 @@ export const InfoLightbox = ({ dismiss }: InfoProps) => {
 						z-1
 						w-12.5 h-12.5
 					">
-						<CloseButton dismiss={dismiss}/>
+						<CloseButton dismiss={() => setShowWindow("info", false)}/>
 					</div>
 				</div>
 			</div>

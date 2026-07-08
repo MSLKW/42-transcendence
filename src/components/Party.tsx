@@ -4,12 +4,9 @@ import { AddIcon } from "../icons/AddIcon";
 import { PinButton } from "./PinButton";
 import { SendButton } from "./SendButton";
 
-interface PartyProps {
-	call?: (e: React.MouseEvent<HTMLButtonElement>) => void;
-	dismiss?: () => void;
-}
+export const JoinParty = () => {
+	const setShowWindow = useSceneStore((scene) => scene.setShowWindow);
 
-export const JoinParty = ({ call }: PartyProps) => {
 	return (
 		<div className="
 			flex flex-col place-items-center
@@ -17,7 +14,7 @@ export const JoinParty = ({ call }: PartyProps) => {
 		">
 			<button
 				data-tip="Add / Join Party"
-				onClick={call}
+				onClick={() => setShowWindow("party", true)}
 				className="
 					btn-tip-up-2
 					h-[clamp(2.5rem,7.5vh+0.5rem,5rem)]
@@ -47,9 +44,11 @@ export const JoinParty = ({ call }: PartyProps) => {
 	);
 }
 
-export const PartyLightbox = ({ dismiss }: PartyProps) => {
+export const PartyLightbox = () => {
 	const contAreaWidth = useSceneStore((scene) => scene.contAreaWidth);
 	const contAreaHeight = useSceneStore((scene) => scene.contAreaHeight);
+	const setShowWindow = useSceneStore((scene) => scene.setShowWindow);
+
 	const focusRef = useRef<HTMLInputElement | null>(null);
 
 	return (
@@ -57,7 +56,7 @@ export const PartyLightbox = ({ dismiss }: PartyProps) => {
 			absolute z-1 top-0 left-0
 			w-screen h-screen
 		">
-			<button tabIndex={-1} className='btn-lightbox-no-blur' onClick={dismiss}/>
+			<button tabIndex={-1} className='btn-lightbox-no-blur' onClick={() => setShowWindow("party", false)}/>
 			<div style={{ width: contAreaWidth, height: contAreaHeight }}
 				className="
 					flex place-content-end place-items-end

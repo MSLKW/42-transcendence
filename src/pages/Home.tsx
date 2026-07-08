@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from "react";
+import { useRef, useEffect } from "react";
 import { Canvas } from "@react-three/fiber";
 import { Stats } from "@react-three/drei";
 import { useSceneStore } from "../store/useSceneStore";
@@ -6,14 +6,14 @@ import { useGameStore } from "../store/useGameStore";
 import { usePlayerStore } from "../store/usePlayerStore";
 import { useDevStore } from "../store/useDevStore";
 import { StripeBg } from "../components/StripeBg";
-import { InfoButton, InfoLightbox } from "../components/Info";
+import { InfoButton } from "../components/Info";
 import { SignOutButton } from "../components/SignOutButton";
-import { SettingsButton, SettingsLightbox } from "../components/Settings";
+import { SettingsButton } from "../components/Settings";
 import { PersonIcon } from "../icons/PersonIcon";
 import { TutorialIcon } from "../icons/TutorialIcon";
-import { AvatarPlayer } from "../components/Avatar";
-import { ChatButton, ChatLightbox } from "../components/Chat";
-import { JoinParty, PartyLightbox } from "../components/Party";
+import { AvatarButton } from "../components/Avatar";
+import { ChatButton } from "../components/Chat";
+import { JoinParty } from "../components/Party";
 import { EmojiButton } from "../components/EmojiButtons";
 import { SmallLogo } from "../components/Logo";
 
@@ -69,20 +69,6 @@ export const Home = () => {
 	const setContAreaHeight = useSceneStore((state) => state.setContAreaHeight);
 	const showStats = useDevStore((state) => state.showStats);
 	const containerRef = useRef(null);
-	const [showLightbox, setShowLightbox] = useState({
-		settings: false,
-		info: false,
-		chat: false,
-		party: false,
-	});
-	const toggleLightbox = (key: keyof typeof showLightbox, value: boolean, e?: React.MouseEvent<HTMLButtonElement>) => {
-		if (e)
-			e.currentTarget.blur();
-		setShowLightbox(() => ({
-			...showLightbox,
-			[key]: value,
-		}));
-	}
 		
 	const setGameStarted = useGameStore((state) => state.setGameStarted);
 	useEffect(() => {
@@ -124,12 +110,12 @@ export const Home = () => {
 				<header className="flex justify-between">
 					<div className="flex bg-n1 border border-n2 rounded-3xl">
 	 					<SignOutButton />
-	 					<SettingsButton call={(e) => toggleLightbox("settings", true, e)} />
-						<InfoButton call={(e) => toggleLightbox("info", true, e)} />
+	 					<SettingsButton />
+						<InfoButton />
 	 				</div>
 	 				<div className="flex btn-icon-border">
 						<EmojiButton />
-						<ChatButton call={(e) => toggleLightbox("chat", true, e)} />
+						<ChatButton />
 					</div>
 				</header>
 				<main>
@@ -165,19 +151,15 @@ export const Home = () => {
 						gap-[clamp(0.25rem,3vw+0.125rem,2.5rem)]
 						sm:overflow-x-visible overflow-x-auto
 					">
-						<AvatarPlayer playerName="Azrul" />
-						{partyCount >= 2 && <AvatarPlayer playerName="Max" />}
-						{partyCount >= 3 && <AvatarPlayer playerName="Jeremy" />}
-						{partyCount >= 4 && <AvatarPlayer playerName="Aisyah" />}
-						<JoinParty call={(e) => toggleLightbox("party", true, e)} />
+						<AvatarButton playerName="Azrul" />
+						{partyCount >= 2 && <AvatarButton playerName="Max" />}
+						{partyCount >= 3 && <AvatarButton playerName="Jeremy" />}
+						{partyCount >= 4 && <AvatarButton playerName="Aisyah" />}
+						<JoinParty />
 					</div>
 					<SmallLogo />
 				</footer>
 			</section>
-	 		{ showLightbox["info"] && <InfoLightbox dismiss={() => toggleLightbox("info", false)} /> }
-	 		{ showLightbox["settings"] && <SettingsLightbox dismiss={() => toggleLightbox("settings", false)} /> }
-	 		{ showLightbox["chat"] && <ChatLightbox dismiss={() => toggleLightbox("chat", false)} /> }
-	 		{ showLightbox["party"] && <PartyLightbox dismiss={() => toggleLightbox("party", false)} /> }
 		</>
 	);
 }

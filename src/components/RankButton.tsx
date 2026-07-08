@@ -1,19 +1,15 @@
 import { useSceneStore } from "../store/useSceneStore";
 import { RankIcon } from "../icons/RankIcon";
-import { PinButton } from "./PinButton";
 import { RankArrowIcon } from "../icons/RankArrowIcon";
 import { SpadesIcon, HeartsIcon, ClubsIcon, DiamondsIcon } from "../icons/SuitsIcons"
 
-interface RankProps {
-	call?: (e: React.MouseEvent<HTMLButtonElement>) => void;
-	dismiss?: () => void;
-}
+export const RankButton = () => {
+	const setShowWindow = useSceneStore((scene) => scene.setShowWindow);
 
-export const RankButton = ({ call }: RankProps) => {
 	return (
 		<button
 			data-tip="View Rank List"
-			onClick={call}
+			onClick={() => setShowWindow("rank", true)}
 			className="
 				w-max
 				h-max
@@ -35,14 +31,16 @@ export const RankButton = ({ call }: RankProps) => {
 	);
 }
 
-export const RankLightbox = ({ dismiss }: RankProps) => {
+export const RankLightbox = () => {
+	const setShowWindow = useSceneStore((scene) => scene.setShowWindow);
+
 	return (
 		<section className="
 			absolute left-0 top-0
 			z-1
 			w-screen h-screen
 		">
-			<button tabIndex={-1} className='btn-lightbox-no-blur' onClick={dismiss}/>
+			<button tabIndex={-1} className='btn-lightbox-no-blur' onClick={() => setShowWindow("rank", false)}/>
 			<div className="
 				z-0
 				w-fit h-fit
@@ -97,7 +95,7 @@ export const RankLightbox = ({ dismiss }: RankProps) => {
 						<DiamondsIcon />
 					</div>
 					<div className="
-						w-[30px]
+						w-7.5
 						mr-5
 						text-b3
 					">
@@ -105,36 +103,6 @@ export const RankLightbox = ({ dismiss }: RankProps) => {
 					</div>
 				</div>
 			</div>
-				{/* <div className="
-					w-[80%] h-[80%]
-					relative
-				">
-					<div tabIndex={-1}
-						className="
-							border border-n2 rounded-[clamp(0px,2vh,24px)]
-							w-full h-full
-							overflow-scroll
-							pointer-events-auto
-					">
-						<div className="
-							w-full h-[2000px]
-							bg-linear-to-b from-a2 to-b2 
-							p-10
-							text-n6
-							flex flex-col justify-between
-						">
-							<p>Start of rank section</p>
-							<p>End of rank section</p>
-						</div>
-					</div>
-					<div className="
-						absolute top-0 right-0 -translate-y-1/2 translate-x-1/2
-						z-1
-						w-12.5 h-12.5
-					">
-						<PinButton />
-					</div>*/}
-			{/* </div> */}
 		</section>
 	);
 }

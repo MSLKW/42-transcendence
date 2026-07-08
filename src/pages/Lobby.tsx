@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from "react";
+import { useRef, useEffect } from "react";
 import { Canvas } from "@react-three/fiber";
 import { Stats, PerspectiveCamera, OrbitControls, AdaptiveDpr } from "@react-three/drei";
 import { useSceneStore } from "../store/useSceneStore";
@@ -6,12 +6,12 @@ import { useGameStore } from "../store/useGameStore";
 import { useDevStore } from "../store/useDevStore";
 import { SphereBg } from "../components/SphereBg";
 import { BackButton } from "../components/BackButton";
-import { SettingsButton, SettingsLightbox } from "../components/Settings";
-import { InfoButton, InfoLightbox } from "../components/Info";
+import { SettingsButton } from "../components/Settings";
+import { InfoButton } from "../components/Info";
 import { EmojiButton } from "../components/EmojiButtons";
-import { AvatarPlayer } from "../components/Avatar";
-import { ChatButton, ChatLightbox } from "../components/Chat";
-import { JoinParty, PartyLightbox } from "../components/Party";
+import { AvatarButton } from "../components/Avatar";
+import { ChatButton } from "../components/Chat";
+import { JoinParty } from "../components/Party";
 import { SmallLogo } from "../components/Logo";
 
 export const Lobby = () => {
@@ -20,20 +20,6 @@ export const Lobby = () => {
 	const setContAreaHeight = useSceneStore((state) => state.setContAreaHeight);
 	const showStats = useDevStore((state) => state.showStats);
 	const containerRef = useRef(null);
-	const [showLightbox, setShowLightbox] = useState({
-		settings: false,
-		info: false,
-		chat: false,
-		party: false,
-	});
-	const toggleLightbox = (key: keyof typeof showLightbox, value: boolean, e?: React.MouseEvent<HTMLButtonElement>) => {
-		if (e)
-			e.currentTarget.blur();
-		setShowLightbox(() => ({
-			...showLightbox,
-			[key]: value,
-		}));
-	}
 	
 	const setGameStarted = useGameStore((state) => state.setGameStarted);
 	useEffect(() => {
@@ -78,30 +64,30 @@ export const Lobby = () => {
 				<header className="flex justify-between">
 					<div className="flex btn-icon-border">
 						<BackButton scene={() => setCurrentScene("HOME")} />
-						<SettingsButton call={(e) => toggleLightbox("settings", true, e)} />
-						<InfoButton call={(e) => toggleLightbox("info", true, e)} />
+						<SettingsButton />
+						<InfoButton />
 					</div>
 					<div className="flex btn-icon-border">
 						<EmojiButton />
-						<ChatButton call={(e) => toggleLightbox("chat", true, e)} />
+						<ChatButton />
 					</div>
 				</header>
 				<main className="flex flex-col place-content-evenly place-items-evenly">
-					<AvatarPlayer playerName="Void"/>
+					<AvatarButton playerName="Void"/>
 					<div className="
 						w-full
 						grid grid-cols-3 place-items-center
 					">
-						<AvatarPlayer playerName="Null" />
+						<AvatarButton playerName="Null" />
 						<button
 							className="btn-white"
 							onClick={() => setCurrentScene("R3F")}
 						>
 							START
 						</button>
-						<AvatarPlayer playerName="Undefined" />
+						<AvatarButton playerName="Undefined" />
 					</div>
-					<AvatarPlayer playerName="Azrul" />
+					<AvatarButton playerName="Azrul" />
 				</main>
 				<footer className="
 					pointer-events-auto
@@ -114,20 +100,14 @@ export const Lobby = () => {
 						gap-[clamp(0.25rem,3vw+0.125rem,2.5rem)]
 						sm:overflow-x-visible overflow-x-auto
 					">
-						<AvatarPlayer
+						<AvatarButton
 							playerName="Spectator"
 						/>
-						<JoinParty 
-							call={(e) => toggleLightbox("party", true, e)}
-						/>
+						<JoinParty />
 					</div>
 					<SmallLogo />
 				</footer>
 			</section>
-			{ showLightbox["settings"] && <SettingsLightbox dismiss={() => toggleLightbox("settings", false)} /> }
-			{ showLightbox["info"] && <InfoLightbox dismiss={() => toggleLightbox("info", false)} /> }
-			{ showLightbox["chat"] && <ChatLightbox dismiss={() => toggleLightbox("chat", false)} /> }
-			{ showLightbox["party"] && <PartyLightbox dismiss={() => toggleLightbox("party", false)} /> }
 		</>
 	);
 }
