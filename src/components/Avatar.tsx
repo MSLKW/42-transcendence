@@ -1,12 +1,13 @@
+import { useGameStore } from "../store/useGameStore";
+
 interface AvatarProps {
 	call?: (e: React.MouseEvent<HTMLButtonElement>) => void,
 	cornerButton?: string;
 	playerName?: string;
-	activePlayer?: number;
+	isActive?: boolean;
 }
 
-export const AvatarImage = ({ cornerButton, activePlayer }: AvatarProps) => {
-	// const isActive = activePlayer === index;
+export const AvatarImage = ({ cornerButton, isActive }: AvatarProps) => {
 	return (
 		<div className="
 			w-[clamp(2.5rem,7.5vh+0.5rem,5rem)]
@@ -30,22 +31,24 @@ export const AvatarImage = ({ cornerButton, activePlayer }: AvatarProps) => {
 					<p>13</p>
 				</div>
 			}
-			{/* <div
-				// key={animationKey}
-				className="w-full h-full bg-b5 animate-turn-wipe"
-			/> */}
+			{isActive &&
+				<div
+					// key={animationKey}
+					className="w-full h-full bg-b5 animate-turn-wipe"
+				/>
+			}
 		</div>
 	)
 }
 
-export const AvatarPlayer = ({ cornerButton = "none", playerName = "Player", activePlayer = -1 }: AvatarProps) => {
+export const AvatarPlayer = ({ cornerButton = "none", playerName = "Player", isActive = false }: AvatarProps) => {
 	return (
 		<>
 			<div className="
 				flex flex-col place-items-center
 				gap-1
 			">
-				<AvatarImage cornerButton={cornerButton} activePlayer={activePlayer} />
+				<AvatarImage cornerButton={cornerButton} isActive={isActive} />
 				<div className="
 					w-max min-w-[clamp(2.5rem,7.5vh+0.5rem,5rem)] max-w-32.5
 					h-fit

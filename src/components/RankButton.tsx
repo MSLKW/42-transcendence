@@ -17,7 +17,7 @@ export const RankButton = ({ call }: RankProps) => {
 			className="
 				w-max
 				h-max
-				btn-rank btn-icon-border btn-tip-up
+				btn-rank btn-icon-border btn-tip-down
 				flex place-content-between place-items-center
 		">
 			<div className="

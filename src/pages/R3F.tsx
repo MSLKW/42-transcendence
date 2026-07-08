@@ -102,21 +102,21 @@ export const R3F = () => {
 						<AvatarPlayer
 							cornerButton="cardsLeft"
 							playerName="Max"
-							activePlayer={activePlayer}
+							isActive={false}
 						/>
 					</div>
 					<div className="absolute left-[5%] top-[20%]">
 						<AvatarPlayer
 							cornerButton="cardsLeft"
 							playerName="Jeremy"
-							activePlayer={activePlayer}
+							isActive={false}
 						/>
 					</div>
 					<div className="absolute right-[5%] top-[20%]">
 						<AvatarPlayer
 							cornerButton="cardsLeft"
 							playerName="Aisyah"
-							activePlayer={activePlayer}
+							isActive={false}
 						/>
 					</div>
 					<div className="
@@ -136,7 +136,7 @@ export const R3F = () => {
 					<AvatarPlayer
 						cornerButton="cardsLeft"
 						call={(e) => toggleLightbox("chat", true, e)}
-						activePlayer={activePlayer}
+						isActive={true}
 					/>
 					<div className="
 						w-[clamp(1rem,10vw+0.5rem,5rem)] h-full
