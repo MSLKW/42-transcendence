@@ -8,15 +8,22 @@ datasource db {
 }
 
 model User {
-  id        Int      @id @default(autoincrement())
-  username  String   @unique
-  wins      Int      @default(0)
-  matches   Match[]
+  id                  String      @id @default(uuid())
+  email               String      @unique
+  username            String?     @unique
+  passwordHash        String
+  createdAt           DateTime    @default(now()) // auto sets time on creation
+  failedLoginAttempts Int         @default(0)     // Starts at 0
+  lockedUntil         DateTime?   
+  sessions            Session[] // many(Session) to one(user) relationship, defined by array, []
 }
 
-model Match {
-  id        Int      @id @default(autoincrement())
-  winnerId  Int
-  player    User     @relation(fields: [winnerId], references: [id])
-  playedAt  DateTime @default(now())
+model Session {
+  token     String    @id @default(uuid())
+  userId    String    // many(Session) to one(User) relationship, defined by not making it unique
+  createdAt DateTime  @default(now())   // Should default to now()
+  expiresAt DateTime  
+  
+  user      User      @relation(fields: [userId], references: [id]) // "many-to-one" relationship (one user can have many sessions).
+  @@index([userId]) // Improves performance for lookups  
 }

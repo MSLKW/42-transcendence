@@ -28,17 +28,18 @@ RUN npm install
 
 # Copy Prisma schema and generate its client binaries
 COPY prisma ./prisma/
-RUN npx prisma generate
+# RUN npx prisma generate
+RUN npm run generate
 
 # Copy the rest of the application files (including the tools directory)
 COPY . .
 
 # Put all the main commands in the script file
 ## for backend
-COPY ./tools/backend-entrypoint.sh /usr/local/bin/backend-entrypoint.sh
+COPY ./scripts/backend-entrypoint.sh /usr/local/bin/backend-entrypoint.sh
 RUN chmod +x /usr/local/bin/backend-entrypoint.sh
 ## for prisma_studio
-COPY ./tools/prisma_studio-entrypoint.sh /usr/local/bin/prisma_studio-entrypoint.sh
+COPY ./scripts/prisma_studio-entrypoint.sh /usr/local/bin/prisma_studio-entrypoint.sh
 RUN chmod +x /usr/local/bin/prisma_studio-entrypoint.sh
 
 # Use the script as the entrypoint

@@ -48,7 +48,7 @@ services:
 #           BACKEND = Prisma + Socket.io + Node.js + Express.js
   backend:
     container_name: backend
-    build: ./services/backend/. # gets the built (main application), built once only -> efficient + saves CPU and disk space. 
+    build: ./backend/. # gets the built (main application), built once only -> efficient + saves CPU and disk space. 
     image: backend:aisyah       # identical image as prisma_studio, with different command -> "npm run start"
     pull_policy: build          # This forces local builds, ignoring Docker Hub
     restart: unless-stopped
