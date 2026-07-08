@@ -1,2 +1,4 @@
 secrets/
-srcs/.env
+.env
+dist/
+node_modules/
