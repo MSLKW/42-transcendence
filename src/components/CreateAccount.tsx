@@ -7,7 +7,7 @@ export const CreateAccountButton = () => {
 	return (
 		<button
 			onClick={() => setShowWindow("createAccount", true)}
-			className="btn-clear"
+			className="btn-clear hw-5/1"
 		>
 			<u>CREATE ACCOUNT</u>
 		</button>

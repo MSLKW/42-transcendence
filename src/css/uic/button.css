@@ -136,7 +136,6 @@ button {
 }
 @utility btn-white {
 	@apply
-		hw-5/1
 		bg-n6
 		border border-n5 rounded-3xl
 		text-lg

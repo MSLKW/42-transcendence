@@ -101,10 +101,10 @@ export const R3F = () => {
 					</div>
 					<div className="
 						absolute left-1/2 top-[65%] -translate-x-1/2
-						flex gap-10
+						flex gap-[clamp(1.25rem,1.786vw+0.893rem,2.5rem)]
 					">
-						<button onClick={nextTurn} className="btn-white">PASS</button>
-						<button onClick={nextTurn} className="btn-white">PLAY</button>
+						<button onClick={nextTurn} className="btn-white hw-4/1">PASS</button>
+						<button onClick={nextTurn} className="btn-white hw-4/1">PLAY</button>
 					</div>
 				</main>
 				<footer className="flex place-content-between place-items-center">

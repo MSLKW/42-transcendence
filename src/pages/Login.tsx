@@ -75,7 +75,7 @@ export const Login = () => {
 						flex-wrap
 					">
 						<SignInButton />
-						<button onClick={() => setCurrentScene("HOME")} className="btn-white">PLAY AS GUEST</button>
+						<button onClick={() => setCurrentScene("HOME")} className="btn-white hw-5/1">PLAY AS GUEST</button>
 					</div>
 					<CreateAccountButton />
 				</footer>

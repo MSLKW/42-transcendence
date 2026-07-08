@@ -8,7 +8,7 @@ export const SignInButton = () => {
 	return (
 		<button
 			onClick={() => setShowWindow("signIn", true)}
-			className="btn-white"
+			className="btn-white hw-5/1"
 		>
 			SIGN IN
 		</button>

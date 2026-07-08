@@ -69,7 +69,7 @@ export const Lobby = () => {
 					">
 						<AvatarButton playerName="Null" />
 						<button
-							className="btn-white"
+							className="btn-white hw-4/1"
 							onClick={() => setCurrentScene("R3F")}
 						>
 							START
