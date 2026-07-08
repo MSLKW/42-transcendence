@@ -6,13 +6,6 @@ export const Gameplay = () => {
 	useEffect(() => {
 		setGameStarted(true);
 	}, []);
-
-	useEffect(() => {
-		window.scrollTo({
-			top: 0,
-			behavior: 'smooth',
-		})
-	}, []);
 	
 	return (
 		<section className="h-full">

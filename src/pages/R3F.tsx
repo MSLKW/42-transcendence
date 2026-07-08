@@ -19,7 +19,7 @@ export const R3F = () => {
 	const containerRef = useRef(null);
 	const setContAreaWidth = useSceneStore((state) => state.setContAreaWidth);
 	const setContAreaHeight = useSceneStore((state) => state.setContAreaHeight);
-	
+
 	const [activePlayer, setActivePlayer] = useState<number>(0);
 	const [animationKey, setAnimationKey] = useState<number>(0);
 	const nextTurn = () => {
@@ -38,13 +38,6 @@ export const R3F = () => {
 	const setGameStarted = useGameStore((state) => state.setGameStarted);
 	useEffect(() => {
 		setGameStarted(true);
-	}, []);
-
-	useEffect(() => {
-		window.scrollTo({
-			top: 0,
-			behavior: 'smooth',
-		})
 	}, []);
 
 	useEffect(() => {

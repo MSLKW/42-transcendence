@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { useSceneStore } from "./store/useSceneStore";
 import { Login } from "./pages/Login";
 import { Home } from "./pages/Home";
@@ -17,6 +18,13 @@ import { RankWindow } from "./components/RankButton";
 export default function App() {
 	const currentScene = useSceneStore((state) => state.currentScene);
 	const showWindow = useSceneStore((state) => state.showWindow);
+
+	useEffect(() => {
+		window.scrollTo({
+			top: 0,
+			behavior: 'smooth',
+		});
+	}, [currentScene]);
 
 	return (
 		<>
