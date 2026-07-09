@@ -1,11 +1,3 @@
-# NOTES:
-# ports: 
-  # - ${ENV_VARIABLE:-DEFAULT}
-# Docker Compose processes the file in stages, rather than reading it line-by-line from top to bottom.
-# therefore, can have env_file at the bottom
-# environment overrides .env if vars exits in both, both can co-exist in docker-compose
-
-
 networks:
   transcendence:
     name : transcendence
@@ -19,6 +11,10 @@ volumes:
       type: none
       o: bind
       device: /home/aimokhta/data/postgresql_data
+
+
+# can have env_file at the bottom => Docker Compose processes the file in stages, rather than reading it line-by-line from top to bottom.
+# environment overrides .env if vars exits in both, both can co-exist in docker-compose
 
 services:
 #           DATABASE = PostgreSQL
@@ -44,6 +40,7 @@ services:
       - ../secrets/database_password.txt:/run/secrets/database_password:ro
     networks:
       - transcendence
+  
   
 #           BACKEND = Prisma + Socket.io + Node.js + Express.js
   backend:
@@ -76,7 +73,10 @@ services:
     image: backend:aisyah   # just referencing the backend's image (reuse only), with different command -> docker-compose's command:
     pull_policy: build      # This forces local builds, ignoring Docker Hub
     entrypoint: "/usr/local/bin/prisma_studio-entrypoint.sh"
-    command: npx prisma studio --port ${PRISMA_STUDIO_PORT} --hostname 0.0.0.0   # hardcode 0.0.0.0 (required for Docker containers)
+    command: npx prisma studio --port ${PRISMA_STUDIO_PORT}
+    environment:            # required for new prisma version, Prisma 7
+      HOST: 0.0.0.0					# hardcode 0.0.0.0 (required for Docker containers)
+      BROWSER: none
     ports:
       - "${PRISMA_STUDIO_PORT}:${PRISMA_STUDIO_PORT}"
     env_file:

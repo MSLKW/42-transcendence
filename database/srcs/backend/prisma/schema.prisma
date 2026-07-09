@@ -1,10 +1,12 @@
 generator client {
   provider = "prisma-client-js"
+  //output   = "./generated"      // if needed only - Tell Prisma to generate files here
 }
 
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL")
+  // The url field is NO LONGER SUPPORTED here in Prisma 7
+  // url      = env("DATABASE_URL")
 }
 
 model User {

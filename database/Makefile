@@ -6,7 +6,7 @@
 #    By: aimokhta <aimokhta@student.42kl.edu.my>    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2026/06/16 09:31:30 by aimokhta          #+#    #+#              #
-#    Updated: 2026/07/07 15:39:38 by aimokhta         ###   ########.fr        #
+#    Updated: 2026/07/09 14:39:04 by aimokhta         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -41,7 +41,7 @@ recreate:
 clean:
 	@echo "${PURPLE}\n🗑️  Removing all containers, volumes, network and images including public base images in Docker...\n${RESET}"
 	@docker compose -f ./srcs/docker-compose.yml down --volumes --rmi all
-	@echo "${PURPLE}\n🗑️  Done removed every single containers, volumes and images in Docker! ${RESET}"
+	@echo "${PURPLE}\n🗑️  Done removed every single containers, volumes and images in Docker! \n${RESET}"
 	
 fclean: clean
 	@sudo rm -rf ~/data

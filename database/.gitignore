@@ -2,3 +2,4 @@ secrets/
 .env
 dist/
 node_modules/
+srcs/backend/package-lock.json

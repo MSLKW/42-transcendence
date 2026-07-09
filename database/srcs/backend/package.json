@@ -2,20 +2,29 @@
   "name": "database-backend",
   "version": "1.0.0",
   "description": "The backend engine for transcendence's database",
-  "main": "src/index.js",
+  "main": "dist/server.js",
   "scripts": {
-    "start": "node src/server.js",
-    "dev": "nodemon src/server.js",
+    "build": "tsc",
+    "start": "node dist/server.js",
+    "dev": "nodemon --exec ts-node src/server.ts",
     "generate": "prisma generate",
     "push": "prisma db push"
   },
   "dependencies": {
-    "express": "^4.21.0",
-    "@prisma/client": "^5.15.0",
-    "socket.io": "^4.7.5"
+    "@prisma/client": "^7.8.0",
+    "express": "^5.2.1",
+    "socket.io": "^4.8.3"
   },
   "devDependencies": {
-    "prisma": "^5.15.0",
-    "nodemon": "^3.1.0"
+    "@types/express": "^5.0.6",
+    "@types/node": "^26.1.1",
+    "nodemon": "^3.1.14",
+    "prisma": "^7.8.0",
+    "ts-node": "^10.9.2",
+    "typescript": "^7.0.2"
+  },
+  "allowScripts": {
+    "prisma@7.8.0": true,
+    "@prisma/engines@7.8.0": true
   }
 }

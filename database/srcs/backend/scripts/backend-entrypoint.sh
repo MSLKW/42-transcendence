@@ -12,11 +12,6 @@ export DB_PASSWORD=$(cat /run/secrets/database_password)
 # Construct the URL using the variable
 export DATABASE_URL="postgresql://${PRISMA_USER}:${DB_PASSWORD}@database:${DATABASE_PORT}/${DATABASE_NAME}?schema=public"
 
-# Run database push and then start the node app
-echo "Pushing schema.prisma into PostgreSQL through Prisma..."
-npx prisma db push
-# node tools/index.js => inside package.json's start
-
 # START THE APP IN THE FOREGROUND
 echo "Starting Node server..."
 exec "$@"
