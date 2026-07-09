@@ -2,7 +2,6 @@ import { useGameStore } from "../store/useGameStore";
 import { useSceneStore } from "../store/useSceneStore";
 
 interface AvatarProps {
-	call?: (e: React.MouseEvent<HTMLButtonElement>) => void,
 	cornerButton?: string;
 	playerName?: string;
 	isActive?: boolean;

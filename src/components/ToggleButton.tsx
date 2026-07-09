@@ -1,5 +1,3 @@
-import { useGameStore } from "../store/useGameStore";
-
 interface ToggleButtonProps {
 	checked: boolean,
 	onChange: () => void,

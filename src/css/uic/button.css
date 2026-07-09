@@ -197,7 +197,7 @@ button {
 		hover:not-disabled:scale-105
 		active:hover:not-disabled:scale-100
 		outline-b5 outline-offset-5
-		focus:outline-2
+		focus-visible:outline-2
 		transition-all duration-200 ease-in-out
 		relative
 		;
