@@ -12,7 +12,7 @@ import { PersonIcon } from "../icons/PersonIcon";
 import { TutorialIcon } from "../icons/TutorialIcon";
 import { AvatarButton } from "../components/Avatar";
 import { ChatButton } from "../components/Chat";
-import { JoinParty } from "../components/Party";
+import { PartyButton } from "../components/Party";
 import { EmojiButton } from "../components/EmojiButtons";
 import { SmallLogo } from "../components/Logo";
 
@@ -236,7 +236,7 @@ export const Home = () => {
 						{ partyCount >= 4 &&
 							<AvatarButton playerName={playerList[3]} />
 						}
-						<JoinParty />
+						<PartyButton />
 					</div>
 					<SmallLogo />
 				</footer>

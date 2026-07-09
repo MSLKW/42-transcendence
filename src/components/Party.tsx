@@ -4,7 +4,7 @@ import { AddIcon } from "../icons/AddIcon";
 import { PinButton } from "./PinButton";
 import { SendButton } from "./SendButton";
 
-export const JoinParty = () => {
+export const PartyButton = () => {
 	const setShowWindow = useSceneStore((scene) => scene.setShowWindow);
 
 	return (

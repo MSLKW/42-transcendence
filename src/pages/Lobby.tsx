@@ -11,7 +11,7 @@ import { InfoButton } from "../components/Info";
 import { EmojiButton } from "../components/EmojiButtons";
 import { AvatarButton } from "../components/Avatar";
 import { ChatButton } from "../components/Chat";
-import { JoinParty } from "../components/Party";
+import { PartyButton } from "../components/Party";
 import { SmallLogo } from "../components/Logo";
 
 export const Lobby = () => {
@@ -36,6 +36,7 @@ export const Lobby = () => {
 	}, []);
 
 	const gameMode = useGameStore((state) => state.gameMode);
+	const partyCount = useGameStore((state) => state.partyCount);
 	const playerList = useGameStore((state) => state.playerList);
 
 	return (
@@ -106,7 +107,15 @@ export const Lobby = () => {
 						gap-[clamp(0.25rem,3vw+0.125rem,2.5rem)]
 						sm:overflow-x-visible overflow-x-auto
 					">
-						<JoinParty />
+						{ partyCount > gameMode && 
+							Array.from({ length: partyCount - gameMode }, (_, index) => {
+								const playerIndex = gameMode + index;
+								return (
+									<AvatarButton playerName={playerList[playerIndex]} />
+								)
+							})
+						}
+						<PartyButton />
 					</div>
 					<SmallLogo />
 				</footer>
