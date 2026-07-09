@@ -7,8 +7,7 @@ interface GameState {
 	playerList: string[];
 	allowThrees: boolean;
 	allow2SpadesFinish: boolean;
-	autoPassValue: number;
-	autoPassText: string[];
+	autoPassIndex: number;
 	gameEndCondition: number;
 	scoreCalculation: number;
 	pCardLook: number;
@@ -21,7 +20,7 @@ interface GameState {
 	setPlayerList: () => void;
 	setAllowThrees: () => void;
 	setAllow2SpadesFinish: () => void;
-	setAutoPassValue: (value: number) => void;
+	setAutoPassIndex: (index: number) => void;
 	setGameEndCondition: (condition: number) => void;
 	setScoreCalculation: (calculate: number) => void;
 	setPCardLook: (look: number) => void;
@@ -38,8 +37,7 @@ export const useGameStore = create<GameState>() (
 			playerList: [""],
 			allowThrees: true,
 			allow2SpadesFinish: true,
-			autoPassValue: 6,
-			autoPassText: ["1s", "3s", "5s", "10s", "15s", "30s", "42s", "1 min", "2 mins", "No Limit"],
+			autoPassIndex: 6,
 			gameEndCondition: 0,
 			scoreCalculation: 1,
 			pCardLook: 0,
@@ -52,7 +50,7 @@ export const useGameStore = create<GameState>() (
 			setPlayerList: () => set(() => ({ playerList: [""] })),
 			setAllowThrees: () => set((state) => ({ allowThrees: !state.allowThrees })),
 			setAllow2SpadesFinish: () => set((state) => ({ allow2SpadesFinish: !state.allow2SpadesFinish })),
-			setAutoPassValue: (value) => set({ autoPassValue: value }),
+			setAutoPassIndex: (index) => set({ autoPassIndex: index }),
 			setGameEndCondition: (condition) => set({ gameEndCondition: condition }),
 			setScoreCalculation: (calculate) => set({ scoreCalculation: calculate }),
 			setPCardLook: (look) => set({ pCardLook: look }),

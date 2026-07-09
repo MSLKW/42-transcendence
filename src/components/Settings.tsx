@@ -26,9 +26,9 @@ export const SettingsWindow = () => {
 	const setAllowThrees = useGameStore((state) => state.setAllowThrees);
 	const allow2SpadesFinish = useGameStore((state) => state.allow2SpadesFinish);
 	const setAllow2SpadesFinish = useGameStore((state) => state.setAllow2SpadesFinish);
-	const autoPassValue = useGameStore((state) => state.autoPassValue);
-	const setAutoPassValue = useGameStore((state) => state.setAutoPassValue);
-	const autoPassText = useGameStore((state) => state.autoPassText);
+	const autoPassIndex = useGameStore((state) => state.autoPassIndex);
+	const setAutoPassIndex = useGameStore((state) => state.setAutoPassIndex);
+	const autoPassText = ["1s", "3s", "5s", "10s", "15s", "30s", "42s", "1 min", "2 mins", "No Limit"];
 	const gameEndCondition = useGameStore((state) => state.gameEndCondition);
 	const setGameEndCondition = useGameStore((state) => state.setGameEndCondition);
 	const scoreCalculation = useGameStore((state) => state.scoreCalculation);
@@ -103,7 +103,7 @@ export const SettingsWindow = () => {
 						px-8 py-5
 					">
 						<label htmlFor="autoPassSlider">
-							<h2>Auto Pass Time: {autoPassText[autoPassValue]}</h2>
+							<h2>Auto Pass Time: {autoPassText[autoPassIndex]}</h2>
 						</label>
 						<input
 							type="range"
@@ -111,9 +111,9 @@ export const SettingsWindow = () => {
 							min="0"
 							max={autoPassText.length - 1}
 							step="1"
-							value={autoPassValue}
+							value={autoPassIndex}
 							disabled={gameStarted}
-							onChange={(e) => setAutoPassValue(parseInt(e.target.value, 10))}
+							onChange={(e) => { setAutoPassIndex(parseInt(e.target.value, 10)) }}
 							className="accent-b5 cursor-pointer"
 						/>
 					</div>

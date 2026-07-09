@@ -12,5 +12,5 @@
 .animate-turn-wipe {
 	mask-image: conic-gradient(transparent var(--wipe-angle), black var(--wipe-angle));
 	-webkit-mask-image: conic-gradient(transparent var(--wipe-angle), black var(--wipe-angle));
-	animation: radialWipe 1s linear infinite;
+	animation: radialWipe var(--wipe-duration, 1s) linear infinite;
 }

@@ -1,3 +1,4 @@
+import { useGameStore } from "../store/useGameStore";
 import { useSceneStore } from "../store/useSceneStore";
 
 interface AvatarProps {
@@ -8,6 +9,10 @@ interface AvatarProps {
 }
 
 export const AvatarImage = ({ cornerButton, isActive }: AvatarProps) => {
+	const autoPassIndex = useGameStore((state) => state.autoPassIndex);
+	const autoPassOptions = [1, 3, 5, 10, 15, 30, 42, 60, 120, -1];
+	const autoPassDuration = autoPassOptions[autoPassIndex];
+
 	return (
 		<div className="
 			w-[clamp(2.5rem,7.5vh+0.5rem,5rem)]
@@ -31,9 +36,9 @@ export const AvatarImage = ({ cornerButton, isActive }: AvatarProps) => {
 					<p>13</p>
 				</div>
 			}
-			{isActive &&
+			{isActive && autoPassDuration != -1 &&
 				<div
-					// key={animationKey}
+					style={{ ["--wipe-duration" as any]: `${autoPassDuration}s` }}
 					className="w-full h-full bg-b5 animate-turn-wipe"
 				/>
 			}
