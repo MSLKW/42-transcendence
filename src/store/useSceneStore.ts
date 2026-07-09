@@ -28,6 +28,7 @@ export const useSceneStore = create<SceneState>() (
 				signIn: false,
 				settings: false,
 				info: false,
+				profile: false,
 				stats: false,
 				party: false,
 				chat: false,

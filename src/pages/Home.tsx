@@ -207,7 +207,7 @@ export const Home = () => {
 						gap-[clamp(0.25rem,3vw+0.125rem,2.5rem)]
 						sm:overflow-x-visible overflow-x-auto
 					">
-						<AvatarButton playerName="Azrul" />
+						<AvatarButton playerName="Azrul" role="self"/>
 						{partyCount >= 2 && <AvatarButton playerName="Max" />}
 						{partyCount >= 3 && <AvatarButton playerName="Jeremy" />}
 						{partyCount >= 4 && <AvatarButton playerName="Aisyah" />}

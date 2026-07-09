@@ -5,6 +5,7 @@ interface AvatarProps {
 	cornerButton?: string;
 	playerName?: string;
 	isActive?: boolean;
+	role?: string;
 }
 
 export const AvatarImage = ({ cornerButton, isActive }: AvatarProps) => {
@@ -45,14 +46,19 @@ export const AvatarImage = ({ cornerButton, isActive }: AvatarProps) => {
 	)
 }
 
-export const AvatarButton = ({ cornerButton = "none", playerName = "Player", isActive = false }: AvatarProps) => {
+export const AvatarButton = ({ cornerButton = "none", playerName = "Player", isActive = false, role = "opponent" }: AvatarProps) => {
 	const setShowWindow = useSceneStore((state) => state.setShowWindow);
 	
 	return (
 		<>
 			<button
-				data-tip="View Stats"
-				onClick={() => setShowWindow("stats", true)}
+				data-tip={ role === "self" ? "Edit Profile" : "View Stats"}
+				onClick={() => {
+					if (role === "self")
+						setShowWindow("profile", true);
+					else
+						setShowWindow("stats", true);
+				}}
 				className="
 					btn-avatar btn-tip-up h-max w-max
 					flex flex-col place-content-center place-items-center

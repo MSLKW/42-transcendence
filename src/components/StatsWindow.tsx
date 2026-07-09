@@ -25,7 +25,7 @@ export const StatsWindow = () => {
 				relative
 			">
 				<div className="
-					flex place-content-evenly
+					flex place-content-evenly place-items-center
 					p-5
 					gap-5
 					border-b border-n2

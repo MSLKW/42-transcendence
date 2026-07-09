@@ -8,6 +8,7 @@ import { Gameplay } from "./pages/Gameplay";
 import { R3F } from "./pages/R3F";
 import { Results } from "./pages/Results";
 import { InfoWindow } from "./components/Info";
+import { ProfileWindow } from "./components/ProfileWindow";
 import { StatsWindow } from "./components/StatsWindow";
 import { SignInWindow } from "./components/SignIn";
 import { CreateAccountWindow } from "./components/CreateAccount";
@@ -42,6 +43,7 @@ export default function App() {
 			{ currentScene === 'RESULTS' && <Results /> }
 			{ showWindow["createAccount"] && <CreateAccountWindow /> }
 			{ showWindow["signIn"] && <SignInWindow /> }
+			{ showWindow["profile"] && <ProfileWindow /> }
 			{ showWindow["stats"] && <StatsWindow /> }
 			{ showWindow["info"] && <InfoWindow /> }
 			{ showWindow["settings"] && <SettingsWindow /> }

@@ -61,7 +61,7 @@ export const Lobby = () => {
 				</header>
 				<main className="flex flex-col place-content-evenly place-items-evenly">
 					<div className="w-full h-full grid place-items-center place-content-center">
-						<AvatarButton playerName="Void"/>
+						<AvatarButton playerName="Void" />
 					</div>
 					<div className="
 						w-full h-full
@@ -77,7 +77,7 @@ export const Lobby = () => {
 						<AvatarButton playerName="Undefined" />
 					</div>
 					<div className="w-full h-full grid place-items-center place-content-center">
-						<AvatarButton playerName="Azrul" />
+						<AvatarButton playerName="Azrul" role="self"/>
 					</div>
 				</main>
 				<footer className="
