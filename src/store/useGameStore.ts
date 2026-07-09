@@ -2,6 +2,7 @@ import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
 interface GameState {
+	gameMode: number;
 	gameStarted: boolean;
 	activePlayer: number;
 	partyCount: number;
@@ -16,6 +17,7 @@ interface GameState {
 	fxLevel: number;
 	mxLevel: number;
 
+	setGameMode: (mode: number) => void;
 	setGameStarted: (started: boolean) => void;
 	setActivePlayer: () => void;
 	setPartyCount: (count: number) => void;
@@ -34,6 +36,7 @@ interface GameState {
 export const useGameStore = create<GameState>() (
 	persist(
 		(set) => ({
+			gameMode: 4,
 			gameStarted: false,
 			activePlayer: 0,
 			partyCount: 1,
@@ -48,6 +51,7 @@ export const useGameStore = create<GameState>() (
 			fxLevel: 75,
 			mxLevel: 50,
 
+			setGameMode: (mode) => set({ gameMode: mode }),
 			setGameStarted: (started) => set({ gameStarted: started }),
 			setActivePlayer: () => set((state) => ({ activePlayer: state.activePlayer + 1 })),
 			setPartyCount: (count) => set({ partyCount: count }),

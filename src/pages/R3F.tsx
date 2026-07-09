@@ -29,7 +29,7 @@ export const R3F = () => {
 	useEffect(() => {
 		const timer = setTimeout(() => {
 			nextTurn();
-			// console.log("activePlayer:", activePlayer);
+			console.log("activePlayer:", activePlayer);
 		}, 1000);
 
 		return () => clearTimeout(timer);

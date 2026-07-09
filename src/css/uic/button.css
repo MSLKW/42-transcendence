@@ -1,11 +1,8 @@
 button {
 	@apply
 		transition-all duration-100 ease-in-out
-		cursor-pointer
-		pointer-events-auto
-
+		pointer-events-auto cursor-pointer disabled:cursor-default
 		disabled:opacity-50
-		disabled:cursor-default
 		;
 }
 
@@ -17,85 +14,56 @@ button {
 		flex
 		;
 }
+
 @utility btn-icon {
 	@apply
-		h-[clamp(2rem,3.077vh+1.077rem,3rem)]
-		aspect-square
-		rounded-3xl
+		h-[clamp(2rem,3.077vh+1.077rem,3rem)] aspect-square
+		rounded-full
 		text-b5
 		hover:not-disabled:scale-105 active:hover:not-disabled:scale-100
 		focus-visible:outline-2 outline-b5 outline-offset-5
 		;
-	&::after {
-		content: attr(data-tip);
-		@apply
-			w-max
-			absolute left-1/2 -translate-x-1/2
-			bg-a2
-			border border-n2 rounded-lg
-			text-n6 text-[clamp(0.4375rem,2vw+0.21875rem,1rem)]
-			px-[clamp(0.3125rem,1vw+0.15625rem,1.25rem)]
-			pointer-events-none
-			scale-0 opacity-0
-			transition-all ease-out duration-50
-			;
-	}
-	&:focus::after,
-	&:hover::after {
-		@apply scale-100 opacity-100;
-	}
 }
+
 @utility btn-rank {
 	@apply
 		hover:not-disabled:scale-105 active:hover:not-disabled:scale-100
 		focus-visible:outline-2 outline-b5 outline-offset-5
 		;
-	&::after {
-		content: attr(data-tip);
-		@apply
-			w-max
-			absolute left-1/2 -translate-x-1/2
-			bg-a2
-			border border-n2
-			rounded-lg
-			text-n6
-			text-[clamp(0.4375rem,2vw+0.21875rem,1rem)]
-			px-[clamp(0.3125rem,1vw+0.15625rem,1.25rem)]
-			pointer-events-none
-			scale-0 opacity-0
-			transition-all ease-out duration-50
-			;
-	}
-	&:focus::after,
-	&:hover::after {
-		@apply scale-100 opacity-100;
-	}
 }
+
 @utility btn-emoji {
 	@apply
-		h-[clamp(1.875rem,5vh+0.5rem,3.125rem)]
-		aspect-square
-		rounded-3xl
-		relative
-		text-[clamp(0.5rem,2vw+0.25rem,1rem)]
+		h-[clamp(1.875rem,5vh+0.5rem,3.125rem)] aspect-square
+		rounded-full
 		text-b5
 		hover:not-disabled:scale-105 active:hover:not-disabled:scale-100
 		focus:outline-2 outline-b5 outline-offset-5
 		;
+}
+
+@utility btn-tip-after {
+	content: attr(data-tip);
+	@apply
+		w-max h-max
+		absolute
+		bg-a2
+		border border-n2 rounded-lg
+		text-n6 text-[clamp(0.4375rem,2vw+0.21875rem,1rem)]
+		px-[clamp(0.3125rem,1vw+0.15625rem,1.25rem)]
+		pointer-events-none
+		scale-0 opacity-0
+		transition-all ease-out duration-50
+		;
+	
+}
+@utility btn-tip-up {
 	&::after {
-		content: attr(data-tip);
 		@apply
-			w-max
-			absolute top-1/2 -translate-y-1/2
-			bg-a2
-			border border-n2
-			rounded-lg
-			text-n6
-			text-[clamp(0.4375rem,2vw+0.21875rem,1rem)]
-			px-[clamp(0.3125rem,1vw+0.15625rem,1.25rem)]
-			pointer-events-none
-			scale-0 opacity-0
-			transition-all ease-out duration-50
+			btn-tip-after
+			origin-bottom
+			bottom-[calc(100%+1rem)]
+			left-1/2 -translate-x-1/2
 			;
 	}
 	&:focus::after,
@@ -103,60 +71,51 @@ button {
 		@apply scale-100 opacity-100;
 	}
 }
-@utility btn-tip-up {
-	&::after {
-		@apply bottom-[calc(100%+1rem)] origin-bottom;
-	}
-}
 @utility btn-tip-down {
 	&::after {
-		@apply top-[calc(100%+1rem)] origin-top;
+		@apply
+			btn-tip-after
+			origin-top
+			top-[calc(100%+1rem)]
+			left-1/2 -translate-x-1/2
+			;
+	}
+	&:focus::after,
+	&:hover::after {
+		@apply scale-100 opacity-100;
 	}
 }
 @utility btn-tip-left {
 	&::after {
-		@apply right-[calc(100%+1rem)] origin-right;
+		@apply
+			btn-tip-after
+			origin-right
+			right-[calc(100%+1rem)]
+			top-1/2 -translate-y-1/2
+			;
+	}
+	&:focus::after,
+	&:hover::after {
+		@apply scale-100 opacity-100;
 	}
 }
 @utility btn-white {
 	@apply
-		bg-n6
-		border border-n5 rounded-3xl
-		text-lg
-		text-n0
-		relative
-		flex place-content-center place-items-center
-
-		hover:not-disabled:bg-b5
-		hover:not-disabled:border-b6
-		hover:not-disabled:scale-105
-
-		focus:outline-2
-		focus:outline-solid
-		focus:outline-b5
-		focus:outline-offset-5
-
-		active:hover:not-disabled:scale-100
+		bg-n6 hover:not-disabled:bg-b5
+		border border-n5 rounded-3xl hover:not-disabled:border-b6
+		text-lg text-n0
+		hover:not-disabled:scale-105 active:hover:not-disabled:scale-100
+		focus-visible:outline-2 outline-b5 outline-offset-5
 		;
 }
 @utility btn-clear {
 	@apply
 		hw-5/1
-		rounded-3xl
+		rounded-full
 		text-lg
-		text-n6
-		relative
-		flex place-content-center place-items-center
-
-		hover:not-disabled:text-b5
-		hover:not-disabled:scale-105
-
-		focus:outline-2
-		focus:outline-solid
-		focus:outline-b5
-		focus:outline-offset-5
-
-		active:hover:not-disabled:scale-100
+		text-n6 hover:not-disabled:text-b5
+		hover:not-disabled:scale-105 active:hover:not-disabled:scale-100
+		focus:outline-2 outline-b5 outline-offset-5
 		;
 }
 @utility btn-send {
@@ -193,62 +152,19 @@ button {
 		hover:not-disabled:scale-105 active:hover:not-disabled:scale-100
 		focus-visible:outline-2 outline-b5 outline-offset-5
 		;
-	&::after {
-		content: attr(data-tip);
-		@apply
-			w-max h-max
-			absolute left-1/2 -translate-x-1/2
-			bg-a2
-			border border-n2 rounded-lg
-			text-n6 text-[clamp(0.4375rem,2vw+0.21875rem,1rem)]
-			px-[clamp(0.3125rem,1vw+0.15625rem,1.25rem)]
-			pointer-events-none
-			scale-0 opacity-0
-			transition-all ease-out duration-50
-			;
-	}
-	&:focus::after,
-	&:hover::after {
-		@apply scale-100 opacity-100;
-	}
 }
 
 @utility btn-party {
 	@apply
-		h-[clamp(4rem,7.5vw+2rem,5.625rem)]
-		aspect-4/5
+		h-[clamp(4rem,7.5vw+2rem,5.625rem)] aspect-4/5
 		bg-n1
 		border border-n2 rounded-[clamp(0px,2vh,8px)]
-		snap-center
 		text-b5
 		p-3
-		outline-solid outline-b5 outline-offset-5
-
-		hover:not-disabled:scale-105
-
-		focus:outline-2
-
-		active:hover:not-disabled:scale-100
+		focus:outline-2 outline-b5 outline-offset-5
+		hover:not-disabled:scale-105 active:hover:not-disabled:scale-100
+		snap-center
 		;
-	&::after {
-		content: attr(data-tip);
-		@apply
-			w-max
-			absolute -translate-x-1/2
-			bg-n1
-			border border-n2
-			rounded-lg
-			text-n6
-			px-5
-			pointer-events-none
-			scale-0 opacity-0
-			transition-all ease-out duration-50
-			;
-	}
-	&:focus::after,
-	&:hover::after {
-		@apply scale-100 opacity-100;
-	}
 }
 
 @utility btn-sort {
@@ -261,23 +177,4 @@ button {
 		focus:outline-2 focus:outline-double outline-b5 outline-offset-5
 		relative
 		;
-
-	&::after {
-		content: attr(data-tip);
-		@apply
-			w-max
-			absolute top-1/2 -translate-y-1/2
-			bg-a2
-			border border-n2 rounded-lg
-			text-n6 text-[clamp(0.4375rem,2vw+0.21875rem,1rem)]
-			px-[clamp(0.3125rem,1vw+0.15625rem,1.25rem)]
-			pointer-events-none
-			scale-0 opacity-0
-			transition-all ease-out duration-50
-			;
-	}
-	&:focus::after,
-	&:hover::after {
-		@apply scale-100 opacity-100;
-	}
 }

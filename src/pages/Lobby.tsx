@@ -35,6 +35,7 @@ export const Lobby = () => {
 		return () => observer.disconnect();
 	}, []);
 
+	const gameMode = useGameStore((state) => state.gameMode);
 	const playerList = useGameStore((state) => state.playerList);
 
 	return (
@@ -63,21 +64,32 @@ export const Lobby = () => {
 					</div>
 				</header>
 				<main className="flex flex-col place-content-evenly place-items-evenly">
-					<div className="w-full h-full grid place-items-center place-content-center">
-						<AvatarButton playerName={playerList[2]} />
-					</div>
-					<div className="
+					<div className={`
 						w-full h-full
-						grid grid-cols-3 place-items-center
-					">
-						<AvatarButton playerName={playerList[1]} />
+						grid ${ gameMode === 3 ? "grid-cols-2" : "grid-cols-1" } grid-rows-1
+						place-content-evenly place-items-center
+					`}>
+						{ gameMode === 4 && <AvatarButton playerName={playerList[2]} /> }
+						{ gameMode === 3 &&
+							<>
+								<AvatarButton playerName={playerList[1]} />
+								<AvatarButton playerName={playerList[2]} />
+							</>
+						}
+						{ gameMode === 2 && <AvatarButton playerName={playerList[1]} /> }
+					</div>
+					<div className={`
+						w-full h-full
+						grid ${gameMode === 4 ? "grid-cols-3" : "grid-cols-1" } place-items-center
+					`}>
+						{ gameMode === 4 && <AvatarButton playerName={playerList[1]} /> }
 						<button
 							className="btn-white hw-4/1"
 							onClick={() => setCurrentScene("R3F")}
 						>
 							START
 						</button>
-						<AvatarButton playerName={playerList[3]} />
+						{ gameMode === 4 && <AvatarButton playerName={playerList[3]} /> }
 					</div>
 					<div className="w-full h-full grid place-items-center place-content-center">
 						<AvatarButton playerName="Azrul" role="self"/>

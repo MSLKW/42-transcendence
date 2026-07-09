@@ -17,20 +17,21 @@ import { EmojiButton } from "../components/EmojiButtons";
 import { SmallLogo } from "../components/Logo";
 
 interface HomeProps {
-	cardType: string;
-	mode?: string;
+	mode?: number;
 }
 
-export const HomeCards = ({ cardType, mode = "lobby" }: HomeProps) => {
+export const HomeCardButton = ({ mode = 4 }: HomeProps) => {
 	const setCurrentScene = useSceneStore((state) => state.setCurrentScene);
+	const setGameMode = useGameStore((state) => state.setGameMode);
 
 	return (
 		<button
 			onClick={() => {
-				if (mode === "lobby")
-					setCurrentScene("LOBBY")
-				else
+				setGameMode(mode);
+				if (mode === 1)
 					setCurrentScene("GAMEPLAY")
+				else
+					setCurrentScene("LOBBY")
 			}}
 			className="
 				h-full max-h-150 aspect-2/3
@@ -42,98 +43,109 @@ export const HomeCards = ({ cardType, mode = "lobby" }: HomeProps) => {
 				focus-visible:outline-2 outline-b5 outline-offset-5
 				snap-center
 		">
-			{ cardType === "4 PLAYERS" &&
-				<div className="
-					w-[clamp(2.5rem,3.571vmin+1.786rem,5rem)] aspect-square
-					grid grid-cols-auto grid-rows-auto
-				">
+			{ mode === 4 &&
+				<>
 					<div className="
-						row-start-1 row-end-1
-						col-start-1 col-end-1
-						h-full aspect-square
+						w-[clamp(2.5rem,3.571vmin+1.786rem,5rem)] aspect-square
+						grid grid-cols-auto grid-rows-auto
 					">
-						<PersonIcon />
+						<div className="
+							row-start-1 row-end-1
+							col-start-1 col-end-1
+							h-full aspect-square
+						">
+							<PersonIcon />
+						</div>
+						<div className="
+							row-start-1 row-end-1
+							col-start-3 col-end-3
+							h-full aspect-square
+						">
+							<PersonIcon />
+						</div>
+						<div className="
+							row-start-3 row-end-3
+							col-start-1 col-end-1
+							h-full aspect-square
+						">
+							<PersonIcon />
+						</div>
+						<div className="
+							row-start-3 row-end-3
+							col-start-3 col-end-3
+							h-full aspect-square
+						">
+							<PersonIcon />
+						</div>
 					</div>
-					<div className="
-						row-start-1 row-end-1
-						col-start-3 col-end-3
-						h-full aspect-square
-					">
-						<PersonIcon />
-					</div>
-					<div className="
-						row-start-3 row-end-3
-						col-start-1 col-end-1
-						h-full aspect-square
-					">
-						<PersonIcon />
-					</div>
-					<div className="
-						row-start-3 row-end-3
-						col-start-3 col-end-3
-						h-full aspect-square
-					">
-						<PersonIcon />
-					</div>
-				</div>
+					<h1 className="text-n0">4 Players</h1>
+				</>
 			}
-			{ cardType === "3 PLAYERS" &&
-				<div className="
-					w-[clamp(2.5rem,3.571vmin+1.786rem,5rem)] aspect-square
-					grid grid-cols-3 grid-rows-auto
-				">
+			{ mode === 3 &&
+				<>
 					<div className="
-						row-start-1 row-end-1
-						col-start-1 col-end-1
-						h-full aspect-square
+						w-[clamp(2.5rem,3.571vmin+1.786rem,5rem)] aspect-square
+						grid grid-cols-3 grid-rows-auto
 					">
-						<PersonIcon />
+						<div className="
+							row-start-1 row-end-1
+							col-start-1 col-end-1
+							h-full aspect-square
+						">
+							<PersonIcon />
+						</div>
+						<div className="
+							row-start-1 row-end-1
+							col-start-3 col-end-3
+							h-full aspect-square
+						">
+							<PersonIcon />
+						</div>
+						<div className="
+							row-start-3 row-end-3
+							col-start-2 col-end-2
+							h-full aspect-square
+						">
+							<PersonIcon />
+						</div>
 					</div>
-					<div className="
-						row-start-1 row-end-1
-						col-start-3 col-end-3
-						h-full aspect-square
-					">
-						<PersonIcon />
-					</div>
-					<div className="
-						row-start-3 row-end-3
-						col-start-2 col-end-2
-						h-full aspect-square
-					">
-						<PersonIcon />
-					</div>
-				</div>
+					<h1 className="text-n0">3 Players</h1>
+				</>
 			}
-			{ cardType === "2 PLAYERS" &&
-				<div className="
-					w-[clamp(2.5rem,3.571vmin+1.786rem,5rem)] aspect-square
-					grid grid-cols-1 grid-rows-2
-				">
+			{ mode === 2 &&
+				<>
 					<div className="
-						row-start-1 row-end-1
-						col-start-2 col-end-2
-						h-full aspect-square
+						w-[clamp(2.5rem,3.571vmin+1.786rem,5rem)] aspect-square
+						grid grid-cols-1 grid-rows-2
 					">
-						<PersonIcon />
+						<div className="
+							row-start-1 row-end-1
+							col-start-2 col-end-2
+							h-full aspect-square
+						">
+							<PersonIcon />
+						</div>
+						<div className="
+							row-start-2 row-end-2
+							col-start-1 col-end-1
+							h-full aspect-square
+						">
+							<PersonIcon />
+						</div>
 					</div>
+					<h1 className="text-n0">2 Players</h1>
+				</>
+			}
+			{ mode === 1 &&
+				<>
 					<div className="
-						row-start-2 row-end-2
-						col-start-1 col-end-1
-						h-full aspect-square
+						w-[clamp(2.5rem,3.571vmin+1.786rem,5rem)] aspect-square
 					">
-						<PersonIcon />
+						<TutorialIcon />
 					</div>
-				</div>
+					<h1 className="text-n0">Tutorial</h1>
+				</>
 			}
-			{ cardType === "TUTORIAL" &&
-				<div className="
-					w-[clamp(2.5rem,3.571vmin+1.786rem,5rem)] aspect-square
-				">
-					<TutorialIcon />
-				</div>
-			}
-			<h1 className="text-n0">{cardType}</h1>
 		</button>
 	);
 }
@@ -196,10 +208,10 @@ export const Home = () => {
 							flex-5
 							pointer-events-auto
 		 				">
-		 					<HomeCards cardType="4 PLAYERS"/>
-		 					<HomeCards cardType="3 PLAYERS"/>
-		 					<HomeCards cardType="2 PLAYERS"/>
-		 					<HomeCards cardType="TUTORIAL" mode="tutorial"/>
+		 					<HomeCardButton mode={4}/>
+		 					<HomeCardButton mode={3}/>
+		 					<HomeCardButton mode={2}/>
+		 					<HomeCardButton mode={1}/>
 		 				</div>
 		 			</div>
 				</main>
