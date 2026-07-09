@@ -11,6 +11,7 @@ import { EmojiButton } from "../components/EmojiButtons";
 import { AvatarButton } from "../components/Avatar";
 import { ChatButton } from "../components/Chat";
 import { SortButtons } from "../components/SortButtons";
+import { useGameStore } from "../store/useGameStore";
 
 export const R3F = () => {
 	const setCurrentScene = useSceneStore((state) => state.setCurrentScene);
@@ -48,6 +49,8 @@ export const R3F = () => {
 		return () => observer.disconnect();
 	}, []);
 
+	const playerList = useGameStore((state) => state.playerList);
+
 	return (
 		<>
 			<section ref={containerRef} className="cont-canvas">
@@ -76,21 +79,21 @@ export const R3F = () => {
 					<div className="absolute left-[25%] top-[5%]">
 						<AvatarButton
 							cornerButton="cardsLeft"
-							playerName="Max"
+							playerName={playerList[2]}
 							isActive={false}
 						/>
 					</div>
 					<div className="absolute left-[5%] top-[20%]">
 						<AvatarButton
 							cornerButton="cardsLeft"
-							playerName="Jeremy"
+							playerName={playerList[1]}
 							isActive={false}
 						/>
 					</div>
 					<div className="absolute right-[5%] top-[20%]">
 						<AvatarButton
 							cornerButton="cardsLeft"
-							playerName="Aisyah"
+							playerName={playerList[3]}
 							isActive={false}
 						/>
 					</div>

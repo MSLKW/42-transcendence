@@ -15,8 +15,6 @@ export type AchievementId =
 	;
 
 interface PlayerState {
-	test: string[];
-	partyCount: number;
 	playerName: string;
 	playerAvatar: string;
 	totalPlayed: number;
@@ -24,7 +22,6 @@ interface PlayerState {
 	winStreak: number;
 	achievements: Record<AchievementId, { unlockedAt: number } | null>;
 
-	setPartyCount: (n: number) => void;
 	setPlayerName: (name: string) => void;
 	setPlayerAvatar: (avatar: string) => void;
 	incTotalPlayed: () => void;
@@ -37,8 +34,6 @@ interface PlayerState {
 export const usePlayerStore = create<PlayerState>() (
 	persist(
 		(set) => ({
-			test: ["Azrul", "Max", "Jeremy", "Aisyah"],
-			partyCount: 0,
 			playerName: "",
 			playerAvatar: "",
 			totalPlayed: 0,
@@ -57,7 +52,6 @@ export const usePlayerStore = create<PlayerState>() (
 				MASTER_COLLECTOR: null,
 			},
 
-			setPartyCount: (num) => set({ partyCount: num }),
 			setPlayerName: (name) => set({ playerName: name }),
 			setPlayerAvatar: (avatar) => set({ playerAvatar: avatar }),
 			incTotalPlayed: () => set((state) => ({ totalPlayed: state.totalPlayed + 1 })),

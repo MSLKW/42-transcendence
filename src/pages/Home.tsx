@@ -2,7 +2,7 @@ import { useRef, useEffect } from "react";
 import { Canvas } from "@react-three/fiber";
 import { Stats } from "@react-three/drei";
 import { useSceneStore } from "../store/useSceneStore";
-import { usePlayerStore } from "../store/usePlayerStore";
+import { useGameStore } from "../store/useGameStore";
 import { useDevStore } from "../store/useDevStore";
 import { StripeBg } from "../components/StripeBg";
 import { InfoButton } from "../components/Info";
@@ -18,14 +18,20 @@ import { SmallLogo } from "../components/Logo";
 
 interface HomeProps {
 	cardType: string;
+	mode?: string;
 }
 
-export const HomeCards = ({ cardType }: HomeProps) => {
+export const HomeCards = ({ cardType, mode = "lobby" }: HomeProps) => {
 	const setCurrentScene = useSceneStore((state) => state.setCurrentScene);
 
 	return (
 		<button
-			onClick={() => setCurrentScene("LOBBY")}
+			onClick={() => {
+				if (mode === "lobby")
+					setCurrentScene("LOBBY")
+				else
+					setCurrentScene("GAMEPLAY")
+			}}
 			className="
 				h-full max-h-150 aspect-2/3
 				bg-linear-to-b from-b3 to-b5 hover:not-disabled:from-b4 hover:not-disabled:to-b5
@@ -152,7 +158,8 @@ export const Home = () => {
 		return () => observer.disconnect();
 	}, []);
 
-	const partyCount = usePlayerStore((state) => state.partyCount);
+	const partyCount = useGameStore((state) => state.partyCount);
+	const playerList = useGameStore((state) => state.playerList);
 
 	return (
 		<>
@@ -192,7 +199,7 @@ export const Home = () => {
 		 					<HomeCards cardType="4 PLAYERS"/>
 		 					<HomeCards cardType="3 PLAYERS"/>
 		 					<HomeCards cardType="2 PLAYERS"/>
-		 					<HomeCards cardType="TUTORIAL"/>
+		 					<HomeCards cardType="TUTORIAL" mode="tutorial"/>
 		 				</div>
 		 			</div>
 				</main>
@@ -208,9 +215,15 @@ export const Home = () => {
 						sm:overflow-x-visible overflow-x-auto
 					">
 						<AvatarButton playerName="Azrul" role="self"/>
-						{partyCount >= 2 && <AvatarButton playerName="Max" />}
-						{partyCount >= 3 && <AvatarButton playerName="Jeremy" />}
-						{partyCount >= 4 && <AvatarButton playerName="Aisyah" />}
+						{ partyCount >= 2 && 
+							<AvatarButton playerName={playerList[1]} />
+						}
+						{ partyCount >= 3 &&
+							<AvatarButton playerName={playerList[2]} />
+						}
+						{ partyCount >= 4 &&
+							<AvatarButton playerName={playerList[3]} />
+						}
 						<JoinParty />
 					</div>
 					<SmallLogo />

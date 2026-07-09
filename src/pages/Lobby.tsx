@@ -2,6 +2,7 @@ import { useRef, useEffect } from "react";
 import { Canvas } from "@react-three/fiber";
 import { Stats, PerspectiveCamera, OrbitControls, AdaptiveDpr } from "@react-three/drei";
 import { useSceneStore } from "../store/useSceneStore";
+import { useGameStore } from "../store/useGameStore";
 import { useDevStore } from "../store/useDevStore";
 import { SphereBg } from "../components/SphereBg";
 import { BackButton } from "../components/BackButton";
@@ -34,6 +35,8 @@ export const Lobby = () => {
 		return () => observer.disconnect();
 	}, []);
 
+	const playerList = useGameStore((state) => state.playerList);
+
 	return (
 		<>
 			<section ref={containerRef} className="cont-canvas">
@@ -61,20 +64,20 @@ export const Lobby = () => {
 				</header>
 				<main className="flex flex-col place-content-evenly place-items-evenly">
 					<div className="w-full h-full grid place-items-center place-content-center">
-						<AvatarButton playerName="Void" />
+						<AvatarButton playerName={playerList[2]} />
 					</div>
 					<div className="
 						w-full h-full
 						grid grid-cols-3 place-items-center
 					">
-						<AvatarButton playerName="Null" />
+						<AvatarButton playerName={playerList[1]} />
 						<button
 							className="btn-white hw-4/1"
 							onClick={() => setCurrentScene("R3F")}
 						>
 							START
 						</button>
-						<AvatarButton playerName="Undefined" />
+						<AvatarButton playerName={playerList[3]} />
 					</div>
 					<div className="w-full h-full grid place-items-center place-content-center">
 						<AvatarButton playerName="Azrul" role="self"/>
@@ -91,9 +94,6 @@ export const Lobby = () => {
 						gap-[clamp(0.25rem,3vw+0.125rem,2.5rem)]
 						sm:overflow-x-visible overflow-x-auto
 					">
-						<AvatarButton
-							playerName="Spectator"
-						/>
 						<JoinParty />
 					</div>
 					<SmallLogo />

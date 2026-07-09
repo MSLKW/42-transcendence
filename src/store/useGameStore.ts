@@ -4,6 +4,7 @@ import { persist } from "zustand/middleware";
 interface GameState {
 	gameStarted: boolean;
 	activePlayer: number;
+	partyCount: number;
 	playerList: string[];
 	allowThrees: boolean;
 	allow2SpadesFinish: boolean;
@@ -17,7 +18,8 @@ interface GameState {
 
 	setGameStarted: (started: boolean) => void;
 	setActivePlayer: () => void;
-	setPlayerList: () => void;
+	setPartyCount: (count: number) => void;
+	setPlayerList: (list: string[]) => void;
 	setAllowThrees: () => void;
 	setAllow2SpadesFinish: () => void;
 	setAutoPassIndex: (index: number) => void;
@@ -34,7 +36,8 @@ export const useGameStore = create<GameState>() (
 		(set) => ({
 			gameStarted: false,
 			activePlayer: 0,
-			playerList: [""],
+			partyCount: 1,
+			playerList: ["Player", "Void", "Null", "Undefined"],
 			allowThrees: true,
 			allow2SpadesFinish: true,
 			autoPassIndex: 6,
@@ -47,7 +50,8 @@ export const useGameStore = create<GameState>() (
 
 			setGameStarted: (started) => set({ gameStarted: started }),
 			setActivePlayer: () => set((state) => ({ activePlayer: state.activePlayer + 1 })),
-			setPlayerList: () => set(() => ({ playerList: [""] })),
+			setPartyCount: (count) => set({ partyCount: count }),
+			setPlayerList: (list) => set({ playerList: list }),
 			setAllowThrees: () => set((state) => ({ allowThrees: !state.allowThrees })),
 			setAllow2SpadesFinish: () => set((state) => ({ allow2SpadesFinish: !state.allow2SpadesFinish })),
 			setAutoPassIndex: (index) => set({ autoPassIndex: index }),
