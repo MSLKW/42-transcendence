@@ -8,17 +8,17 @@ export const JoinParty = () => {
 	const setShowWindow = useSceneStore((scene) => scene.setShowWindow);
 
 	return (
-		<div className="
-			flex flex-col place-items-center
-			gap-1
+		<button 
+			data-tip="Add / Join Party"
+			onClick={() => setShowWindow("party", true)}
+			className="
+				btn-avatar btn-tip-up
+				flex flex-col place-items-center
+				gap-1
 		">
-			<button
-				data-tip="Add / Join Party"
-				onClick={() => setShowWindow("party", true)}
+			<div
 				className="
-					btn-tip-up
-					h-[clamp(2.5rem,7.5vh+0.5rem,5rem)]
-					aspect-square
+					h-[clamp(2.5rem,7.5vh+0.5rem,5rem)] aspect-square
 					bg-n1
 					border border-n2 rounded-sm
 					text-b5
@@ -26,7 +26,7 @@ export const JoinParty = () => {
 					flex place-content-center place-items-center
 			">
 				<AddIcon />
-			</button>
+			</div>
 			<div className="
 				w-max min-w-[clamp(2.5rem,7.5vh+0.5rem,5rem)] max-w-32.5
 				h-fit
@@ -40,7 +40,7 @@ export const JoinParty = () => {
 			">
 				<p>Add</p>
 			</div>
-		</div>
+		</button>
 	);
 }
 

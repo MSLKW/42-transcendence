@@ -154,19 +154,6 @@ button {
 		;
 }
 
-@utility btn-party {
-	@apply
-		h-[clamp(4rem,7.5vw+2rem,5.625rem)] aspect-4/5
-		bg-n1
-		border border-n2 rounded-[clamp(0px,2vh,8px)]
-		text-b5
-		p-3
-		focus:outline-2 outline-b5 outline-offset-5
-		hover:not-disabled:scale-105 active:hover:not-disabled:scale-100
-		snap-center
-		;
-}
-
 @utility btn-sort {
 	@apply
 		w-full h-full
