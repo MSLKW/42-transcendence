@@ -2,21 +2,12 @@
 	@apply
 		hw-6/1
 		bg-n6
-		border border-n5 rounded-3xl
+		border border-n5 rounded-full
 		p-[clamp(1rem,2vh+0.3125rem,1.25rem)]
-		text-n0
+		text-n0 placeholder:text-n4 focus:placeholder:text-n3 placeholder:italic
 		pointer-events-auto
-		
-		focus:outline-2
-		focus:outline-solid
-		focus:outline-b5
-		focus:outline-offset-5
-		
-		placeholder:text-n4
-		placeholder:italic
+		focus:outline-2 outline-b5 outline-offset-5
 		placeholder:text-[clamp(0.5rem,2vh+0.25rem,1rem)]
-
-		focus:placeholder:text-n3
 		;
 }
 
