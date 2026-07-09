@@ -37,6 +37,32 @@ export const AvatarImage = ({ cornerButton, isActive }: AvatarProps) => {
 					<p>13</p>
 				</div>
 			}
+			{cornerButton === "1st" &&
+				<div className="
+					absolute top-0 right-0 translate-x-1/2 -translate-y-1/2
+					z-1
+					bg-b5
+					border border-b6 rounded-full
+					text-sm text-n0
+					w-10 h-10
+					flex place-content-center place-items-center
+				">
+					<p>1st</p>
+				</div>
+			}
+			{ (cornerButton === "2nd" || cornerButton === "3rd" || cornerButton === "4th") &&
+				<div className="
+					absolute top-0 right-0 translate-x-1/2 -translate-y-1/2
+					z-1
+					bg-n1
+					border border-n2 rounded-full
+					text-sm text-n6
+					w-10 h-10
+					flex place-content-center place-items-center
+				">
+					<p>{cornerButton}</p>
+				</div>
+			}
 			{isActive && autoPassDuration != -1 &&
 				<div
 					style={{ ["--wipe-duration" as any]: `${autoPassDuration}s` }}

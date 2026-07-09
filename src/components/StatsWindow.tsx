@@ -50,6 +50,7 @@ export const StatsWindow = () => {
 					grid grid-cols-3
 					place-content-evenly place-items-end
 					divide-x divide-n2
+					text-n6
 				">
 					<div className="
 						w-full h-full

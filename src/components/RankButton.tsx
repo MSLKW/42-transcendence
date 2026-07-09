@@ -17,9 +17,9 @@ export const RankButton = () => {
 				flex place-content-between place-items-center
 		">
 			<div className="
-				w-full
-				h-full
+				h-full w-full
 				px-[clamp(0.25rem,2vw+0.125rem,1.25rem)]
+				text-n6
 				relative
 			">
 				<p>Straight</p>

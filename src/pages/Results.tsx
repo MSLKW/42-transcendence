@@ -109,22 +109,22 @@ export const ResultPlayed = () => {
 
 const GreenTriangle = () => {
   return (
-    <div 
-      className="w-0 h-0 
-                 border-l-[8px] border-l-transparent 
-                 border-r-[8px] border-r-transparent 
-                 border-b-[12px] border-c4" 
+    <div className="
+		w-0 h-0
+		border-l-[8px] border-l-transparent
+		border-r-[8px] border-r-transparent
+		border-b-[12px] border-c4"
     />
   );
 };
 
 const RedTriangle = () => {
   return (
-    <div 
-      className="w-0 h-0 
-                 border-l-[8px] border-l-transparent 
-                 border-r-[8px] border-r-transparent 
-                 border-t-[12px] border-r4" 
+    <div className="
+		w-0 h-0
+		border-l-[8px] border-l-transparent
+		border-r-[8px] border-r-transparent
+		border-t-[12px] border-r4"
     />
   );
 };
@@ -229,25 +229,25 @@ export const ResultsWindow = () => {
 				pt-10 pb-3
 			">
 				<div className="text-center flex flex-col gap-3">
-					<AvatarButton playerIndex={0} />
+					<AvatarButton playerIndex={0} cornerButton="1st"/>
 					<span className="text-b5">+0</span>
 				</div>
 				<div className="text-center flex flex-col gap-3">
-					<AvatarButton playerIndex={1} />
+					<AvatarButton playerIndex={1} cornerButton="2nd" />
 					<span className="text-r4">+6</span>
 				</div>
 				<div className="text-center flex flex-col gap-3">
-					<AvatarButton playerIndex={3} />
+					<AvatarButton playerIndex={3} cornerButton="3rd" />
 					<span className="text-r4">+8</span>
 				</div>
 				<div className="text-center flex flex-col gap-3">
-					<AvatarButton playerIndex={2} />
+					<AvatarButton playerIndex={2} cornerButton="4th" />
 					<span className="text-r4">+15</span>
 				</div>
 			</div>
 			<div className="
 				grid grid-cols-[7.5rem_15rem_7.5rem_7.5rem] grid-rows-[5rem_5rem_5rem_5rem_5rem]
-				text-center
+				text-center text-n6
 				divide-x divide-n2
 			">
 				<ResultRank />

@@ -108,6 +108,7 @@ export const ProfileWindow = () => {
 						grid grid-rows-3
 						place-content-evenly place-items-end
 						divide-y divide-n2
+						text-n6
 					">
 						<div className="
 							w-full h-full

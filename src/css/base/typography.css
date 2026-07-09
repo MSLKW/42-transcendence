@@ -8,7 +8,6 @@ h1 {
 h2 {
 	@apply
 		text-xl
-		text-n6
 		font-semibold
 		tracking-wide
 		;
@@ -16,7 +15,6 @@ h2 {
 p {
 	@apply
 		text-base
-		text-n6
 		font-normal
 		tracking-wider
 		;
