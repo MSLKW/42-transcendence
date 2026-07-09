@@ -3,7 +3,7 @@ import { io } from './server.js';
 import { PlayerState } from './PlayerState.js';
 import { CardDeckState } from './CardDeckState.js'
 import { CardHeapState } from './CardHeapState.js'
-import { GameStateTransmit, PlayerSeatOrderTransmit, GameEndStatsTransmit } from '../src_shared/Types.js';
+import { GameStateTransmit, PlayerSeatOrderTransmit, GameEndStatsTransmit, statusTransmit, playerTurnTransmit } from '../src_shared/Types.js';
 
 export class GameState {
 	private players: Array<PlayerState>;
@@ -11,13 +11,26 @@ export class GameState {
 	public	cardHeap: CardHeapState;
 	private isGameStarted: boolean;
 	private	playerTurnIndex: number;
+	private playerTurnTimeoutId: NodeJS.Timeout | undefined;
 
+	// Game Settings
+	private turnTimerInSeconds: number;
+	private playersInGameLimit: number; // Players allowed in the game
+	private totalPlayersLimit: number; // Players allowed in the lobby
+	// Play until last player or when the first player finishes
+	// if play until last player finishes, will score based on finishing ranking?
+	// if play until first player finishes, will score based on cards held by the losers
+	
 	constructor() {
 		this.players = [];
 		this.cardDeck = new CardDeckState();
 		this.cardHeap = new CardHeapState();
 		this.isGameStarted = false;
 		this.playerTurnIndex = -1;
+		this.playerTurnTimeoutId = undefined;
+		this.turnTimerInSeconds = 0;
+		this.playersInGameLimit = 4;
+		this.totalPlayersLimit = 8;
 
 		io.on("connection", (socket) => {
 			this.connectPlayer(socket);
@@ -25,14 +38,6 @@ export class GameState {
 	}
 
 	private getSeatOrder() {
-		/*
-		seatOrder: {
-			playerId0: 0
-			playerId1: 1
-			playerId2: 2
-			playerId3: 3
-		}
-		*/
 		const seatOrder: Record<string, number> = {};
 		for (let i = 0; i < this.players.length; i++) {
 			seatOrder[this.players[i].playerId] = i;
@@ -58,16 +63,11 @@ export class GameState {
 
 		// pref only let the host do it or smth
 		socket.on("game_start", (body) => {
-			if (this.startGame() == true) {
-				socket.emit("game_start", 'success');
-			}
-			else {
-				socket.emit("game_start", 'failure');
-			}
+			socket.emit("game_start", this.startGame());
 		})
 
 		const index = this.players.findIndex((player) => player.playerId === playerId);
-		if (index == -1 && this.players.length < 4 && this.isGameStarted == false) {
+		if (index == -1 && this.players.length < this.playersInGameLimit && this.isGameStarted == false) {
 			console.log(`Player<${playerId}> has connected`);
 			const player = new PlayerState(playerId, socket, this);
 			this.players.push(player);
@@ -105,10 +105,29 @@ export class GameState {
 			console.log('Player is missing for player turn');
 			return ;
 		}
-		player.turnSignal();
+		const playerTurnTransmit: playerTurnTransmit = {
+			playerId: player.playerId,
+			timer: this.turnTimerInSeconds
+		}
+		if (this.turnTimerInSeconds > 0) {
+			this.playerTurnTimeoutId = setTimeout(() => {this.playerTimeout(player)}, this.turnTimerInSeconds * 1000);
+		}
+		io.to("game").emit("player_turn", playerTurnTransmit);
+	}
+
+	private playerTimeout(player: PlayerState) {
+		console.log(`Timing out player<${player.playerId}>`)
+		const status: statusTransmit = {
+			success: true,
+			message: "Timer ran out"
+		}
+		player.socket.emit("player_skip_turn", status);
+		this.nextPlayerTurn();
 	}
 
 	public nextPlayerTurn() {
+		clearTimeout(this.playerTurnTimeoutId);
+		this.playerTurnTimeoutId = undefined;
 		this.playerTurnIndex++;
 		if (this.playerTurnIndex >= this.players.length)
 			this.playerTurnIndex = 0;
@@ -130,14 +149,18 @@ export class GameState {
 		return (playerCardsAmount);
 	}
 
-	public startGame(): boolean {
-		if (this.isGameStarted == true)
-			return (false);
-		console.log("Game Started");
+	public startGame(): statusTransmit {
+		const status: statusTransmit = {
+			success: false,
+			message: ""
+		}
+		if (this.isGameStarted == true) {
+			status.message = "Game has already started"
+			return (status);
+		}
 		for (let i = 0; i < this.players.length; i++) {
 			this.players[i].collectCards(this.cardDeck.dealCards(Math.floor(this.cardDeck.size / this.players.length)));
 		}
-		this.isGameStarted = true;
 		for (let i = 0; i < this.players.length; i++) {
 			if (this.players[i].hasThreeDiamonds()) {
 				this.playerTurnIndex = i;
@@ -151,15 +174,16 @@ export class GameState {
 		for (let i = 0; i < this.players.length; i++) {
 			this.players[i].socket.emit("player_game_state", JSON.stringify(this.transmit(this.players[i])));
 		}
-		// this.playerTurnEvent();
-		return (true);
+		this.playerTurnEvent();
+		this.isGameStarted = true;
+		console.log("Game Started");
+		status.success = true;
+		status.message = "Game has successfully started";
+		return (status);
 	}
 
 	public endGame(player: PlayerState) {
 		console.log(`Game Ended | Winner is Player<${player.playerId}>`);
-		// reset stuff
-		// calculate game end stats
-		// send game end stats
 		const gameEndStats: GameEndStatsTransmit = {
 			winnerPlayerId: player.playerId,
 			playerFinalCardAmounts: this.playerCardsAmount(),

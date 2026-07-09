@@ -23,7 +23,6 @@ export class Opponent {
 
 		this.socket.on("opponent_play_card_hand", (cardHandTransmitJSON) => {
 			const cardHandTransmit = JSON.parse(cardHandTransmitJSON) as CardHandTransmit;
-			console.log(`opponent_play_card_hand: cardhand id: ${cardHandTransmit.playerId} my id:${this.opponentId}`)
 			if (cardHandTransmit.playerId === this.opponentId) {
 				const cardHand = new CardHand(this.opponentId);
 				for (let i = 0; i < cardHandTransmit.cards.length; i++) {
