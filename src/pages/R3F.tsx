@@ -49,6 +49,7 @@ export const R3F = () => {
 		return () => observer.disconnect();
 	}, []);
 
+	const gameMode = useGameStore((state) => state.gameMode);
 	const playerList = useGameStore((state) => state.playerList);
 
 	return (
@@ -76,27 +77,58 @@ export const R3F = () => {
 					</div>
 				</header>
 				<main>
-					<div className="absolute left-[25%] top-[5%]">
-						<AvatarButton
-							cornerButton="cardsLeft"
-							playerName={playerList[2]}
-							isActive={false}
-						/>
-					</div>
-					<div className="absolute left-[5%] top-[20%]">
-						<AvatarButton
-							cornerButton="cardsLeft"
-							playerName={playerList[1]}
-							isActive={false}
-						/>
-					</div>
-					<div className="absolute right-[5%] top-[20%]">
-						<AvatarButton
-							cornerButton="cardsLeft"
-							playerName={playerList[3]}
-							isActive={false}
-						/>
-					</div>
+					{ gameMode === 4 &&
+						<>
+							<div className="absolute left-[25%] top-[5%]">
+								<AvatarButton
+									cornerButton="cardsLeft"
+									playerName={playerList[2]}
+									isActive={false}
+								/>
+							</div>
+							<div className="absolute left-[5%] top-[20%]">
+								<AvatarButton
+									cornerButton="cardsLeft"
+									playerName={playerList[1]}
+									isActive={false}
+								/>
+							</div>
+							<div className="absolute right-[5%] top-[20%]">
+								<AvatarButton
+									cornerButton="cardsLeft"
+									playerName={playerList[3]}
+									isActive={false}
+								/>
+							</div>
+						</>
+					}
+					{ gameMode === 3 &&
+						<>
+							<div className="absolute left-[5%] top-[20%]">
+								<AvatarButton
+									cornerButton="cardsLeft"
+									playerName={playerList[1]}
+									isActive={false}
+								/>
+							</div>
+							<div className="absolute right-[5%] top-[20%]">
+								<AvatarButton
+									cornerButton="cardsLeft"
+									playerName={playerList[2]}
+									isActive={false}
+								/>
+							</div>
+						</>
+					}
+					{ gameMode === 2 &&
+						<div className="absolute left-[25%] top-[5%]">
+							<AvatarButton
+								cornerButton="cardsLeft"
+								playerName={playerList[1]}
+								isActive={false}
+							/>
+						</div>
+					}
 					<div className="
 						absolute left-1/2 top-[32.5%] -translate-x-1/2
 					">
