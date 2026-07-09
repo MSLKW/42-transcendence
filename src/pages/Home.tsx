@@ -226,15 +226,15 @@ export const Home = () => {
 						gap-[clamp(0.25rem,3vw+0.125rem,2.5rem)]
 						sm:overflow-x-visible overflow-x-auto
 					">
-						<AvatarButton playerName="Azrul" role="self"/>
+						<AvatarButton playerIndex={0} role="self"/>
 						{ partyCount >= 2 && 
-							<AvatarButton playerName={playerList[1]} />
+							<AvatarButton playerIndex={1} />
 						}
 						{ partyCount >= 3 &&
-							<AvatarButton playerName={playerList[2]} />
+							<AvatarButton playerIndex={2} />
 						}
 						{ partyCount >= 4 &&
-							<AvatarButton playerName={playerList[3]} />
+							<AvatarButton playerIndex={3} />
 						}
 						<PartyButton />
 					</div>

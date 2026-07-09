@@ -21,6 +21,7 @@ interface PlayerState {
 	totalWins: number;
 	winStreak: number;
 	achievements: Record<AchievementId, { unlockedAt: number } | null>;
+	playerIndex: number;
 
 	setPlayerName: (name: string) => void;
 	setPlayerAvatar: (avatar: string) => void;
@@ -29,6 +30,7 @@ interface PlayerState {
 	incWinStreak: () => void;
 	resetWinStreak: () => void;
 	unlockAchievement: (id: AchievementId) => void;
+	setPlayerIndex: (index: number) => void;
 }
 
 export const usePlayerStore = create<PlayerState>() (
@@ -51,6 +53,7 @@ export const usePlayerStore = create<PlayerState>() (
 				WIN_STREAK_10: null,
 				MASTER_COLLECTOR: null,
 			},
+			playerIndex: 0,
 
 			setPlayerName: (name) => set({ playerName: name }),
 			setPlayerAvatar: (avatar) => set({ playerAvatar: avatar }),
@@ -68,6 +71,7 @@ export const usePlayerStore = create<PlayerState>() (
 					}
 				};
 			}),
+			setPlayerIndex: (index) => set({ playerIndex: index }),
 		}),
 		{
 			name: 'player-session-storage',

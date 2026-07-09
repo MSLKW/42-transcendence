@@ -1,6 +1,7 @@
 import { useSceneStore } from "../store/useSceneStore";
 import { AvatarButton } from "./Avatar";
 import { CloseButton } from "./CloseButton";
+import { usePlayerStore } from "../store/usePlayerStore";
 
 export const Medal = () => {
 	return (
@@ -10,6 +11,7 @@ export const Medal = () => {
 
 export const StatsWindow = () => {
 	const setShowWindow = useSceneStore((state) => state.setShowWindow);
+	const playerIndex = usePlayerStore((state) => state.playerIndex);
 
 	return (
 		<section className="
@@ -30,7 +32,7 @@ export const StatsWindow = () => {
 					gap-5
 					border-b border-n2
 				">
-					<AvatarButton />
+					<AvatarButton playerIndex={playerIndex}/>
 					<div className="grid grid-cols-5 grid-rows-2 gap-2">
 						<Medal />
 						<Medal />

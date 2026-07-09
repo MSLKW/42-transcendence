@@ -1,6 +1,5 @@
 import { useEffect } from "react";
 import { useSceneStore } from "./store/useSceneStore";
-import { usePlayerStore } from "./store/usePlayerStore";
 import { useDevStore } from "./store/useDevStore";
 import { useGameStore } from "./store/useGameStore";
 

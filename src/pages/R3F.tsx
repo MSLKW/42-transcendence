@@ -82,21 +82,21 @@ export const R3F = () => {
 							<div className="absolute left-[25%] top-[5%]">
 								<AvatarButton
 									cornerButton="cardsLeft"
-									playerName={playerList[2]}
+									playerIndex={2}
 									isActive={false}
 								/>
 							</div>
 							<div className="absolute left-[5%] top-[20%]">
 								<AvatarButton
 									cornerButton="cardsLeft"
-									playerName={playerList[1]}
+									playerIndex={1}
 									isActive={false}
 								/>
 							</div>
 							<div className="absolute right-[5%] top-[20%]">
 								<AvatarButton
 									cornerButton="cardsLeft"
-									playerName={playerList[3]}
+									playerIndex={3}
 									isActive={false}
 								/>
 							</div>
@@ -107,14 +107,14 @@ export const R3F = () => {
 							<div className="absolute left-[5%] top-[20%]">
 								<AvatarButton
 									cornerButton="cardsLeft"
-									playerName={playerList[1]}
+									playerIndex={1}
 									isActive={false}
 								/>
 							</div>
 							<div className="absolute right-[5%] top-[20%]">
 								<AvatarButton
 									cornerButton="cardsLeft"
-									playerName={playerList[2]}
+									playerIndex={2}
 									isActive={false}
 								/>
 							</div>
@@ -124,7 +124,7 @@ export const R3F = () => {
 						<div className="absolute left-[25%] top-[5%]">
 							<AvatarButton
 								cornerButton="cardsLeft"
-								playerName={playerList[1]}
+								playerIndex={1}
 								isActive={false}
 							/>
 						</div>
@@ -145,6 +145,7 @@ export const R3F = () => {
 				<footer className="flex place-content-between place-items-center">
 					<AvatarButton
 						cornerButton="cardsLeft"
+						playerIndex={0}
 						isActive={true}
 					/>
 					<div className="

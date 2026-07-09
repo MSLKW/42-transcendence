@@ -1,9 +1,10 @@
 import { useGameStore } from "../store/useGameStore";
 import { useSceneStore } from "../store/useSceneStore";
+import { usePlayerStore } from "../store/usePlayerStore";
 
 interface AvatarProps {
 	cornerButton?: string;
-	playerName?: string;
+	playerIndex?: number;
 	isActive?: boolean;
 	role?: string;
 }
@@ -46,9 +47,11 @@ export const AvatarImage = ({ cornerButton, isActive }: AvatarProps) => {
 	)
 }
 
-export const AvatarButton = ({ cornerButton = "none", playerName = "Player", isActive = false, role = "opponent" }: AvatarProps) => {
+export const AvatarButton = ({ cornerButton = "none", playerIndex = 0, isActive = false, role = "opponent" }: AvatarProps) => {
 	const setShowWindow = useSceneStore((state) => state.setShowWindow);
-	
+	const playerList = useGameStore((state) => state.playerList);
+	const setPlayerIndex = usePlayerStore((state) => state.setPlayerIndex);
+
 	return (
 		<>
 			<button
@@ -56,8 +59,10 @@ export const AvatarButton = ({ cornerButton = "none", playerName = "Player", isA
 				onClick={() => {
 					if (role === "self")
 						setShowWindow("profile", true);
-					else
+					else {
+						setPlayerIndex(playerIndex);
 						setShowWindow("stats", true);
+					}
 				}}
 				className="
 					btn-avatar btn-tip-up h-max w-max
@@ -76,7 +81,7 @@ export const AvatarButton = ({ cornerButton = "none", playerName = "Player", isA
 					flex place-content-center place-items-center
 					px-[clamp(0.625rem,1vh+0.3125rem,1.25rem)]
 				">
-					<p>{playerName}</p>
+					<p>{playerList[playerIndex]}</p>
 				</div>
 			</button>
 		</>
