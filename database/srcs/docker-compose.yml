@@ -92,4 +92,25 @@ services:
       #   condition: service_completed_successfully => cannot => If backend finishes (or crashes), your prisma_studio will stop. Prisma Studio is a utility, not a service that depends on the backend finishing.
 
 
+#           AUTH BACKEND = separate teammate service + same PostgreSQL
+  authentication:
+    container_name: authentication
+    build: ../../backend-auth/.
+    image: authentication:jeremy
+    pull_policy: build
+    restart: unless-stopped
+    ports:
+      - "${AUTH_PORT}:${AUTH_PORT}"
+    environment:
+      PORT: ${AUTH_PORT}
+    env_file:
+      - .env
+    volumes:
+      - ../secrets/database_password.txt:/run/secrets/database_password:ro
+    networks:
+      - transcendence
+    depends_on:
+      database:
+        condition: service_healthy
+
 
