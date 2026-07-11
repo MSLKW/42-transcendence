@@ -162,7 +162,7 @@ export class GameState {
 			this.players[i].collectCards(this.cardDeck.dealCards(Math.floor(this.cardDeck.size / this.players.length)));
 		}
 		for (let i = 0; i < this.players.length; i++) {
-			if (this.players[i].hasThreeDiamonds()) {
+			if (PlayerState.hasThreeDiamonds(this.players[i].cards)) {
 				this.playerTurnIndex = i;
 				if (this.players.length === 3) { 
 					this.players[i].collectCards(this.cardDeck.dealCards(1));

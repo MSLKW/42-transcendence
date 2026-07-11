@@ -17,6 +17,10 @@ export class CardHeapState {
 		io.to("game").emit("opponent_play_card_hand", cardHand.transmit());
 	}
 
+	public cardHandsAmount() {
+		return (this.cardHands.length);
+	}
+
 	public isCardHandPlayable(other: CardHandState): boolean {
 		const topCardHand = this.cardHands.at(this.cardHands.length - 1);
 		if (topCardHand === undefined) {

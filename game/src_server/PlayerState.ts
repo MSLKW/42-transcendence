@@ -16,7 +16,7 @@ export class PlayerState {
 		this.playerId = playerId;
 		this.cards = [];
 		this.socket = socket;
-		this.gameStateRef = gameState
+		this.gameStateRef = gameState;
 		this.cardHeapRef = gameState.cardHeap;
 
 		this.setupSocketListeners()
@@ -38,8 +38,8 @@ export class PlayerState {
 		}
 	}
 
-	public hasThreeDiamonds(): boolean {
-		const card = this.cards.find((card) => card.rank === CardRank.Three && card.suit === CardSuit.Diamond);
+	public static hasThreeDiamonds(cards: Array<CardTransmit>): boolean {
+		const card = cards.find((card) => card.rank === CardRank.Three && card.suit === CardSuit.Diamond);
 		if (card)
 			return (true);
 		return (false);
@@ -100,6 +100,10 @@ export class PlayerState {
 		}
 		if (this.cardHeapRef.isCardHandPlayable(cardHand) == false) {
 			status.message = "cardhand is not playable";
+			return (status);
+		}
+		if (this.cardHeapRef.cardHandsAmount() === 0 && PlayerState.hasThreeDiamonds(cardHand.cards) === false) {
+			status.message = "first cardhand played must contain three of diamonds";
 			return (status);
 		}
 		this.cardHeapRef.receiveCardHand(cardHand);
