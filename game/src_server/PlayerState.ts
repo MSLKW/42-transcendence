@@ -98,24 +98,41 @@ export class PlayerState {
 				return (status);
 			}
 		}
-		if (this.cardHeapRef.isCardHandPlayable(cardHand) == false) {
-			status.message = "cardhand is not playable";
-			return (status);
-		}
 		if (this.cardHeapRef.cardHandsAmount() === 0 && PlayerState.hasThreeDiamonds(cardHand.cards) === false) {
 			status.message = "first cardhand played must contain three of diamonds";
+			return (status);
+		}
+		if (this.cardHeapRef.isCardHandPlayable(cardHand) == false) {
+			status.message = "cardhand is not playable";
 			return (status);
 		}
 		this.cardHeapRef.receiveCardHand(cardHand);
 		this.removeCards(cardHand.cards);
 
-		if (this.cards.length === 0) {
-			this.gameStateRef.endGame(this)
-		}
-		this.gameStateRef.nextPlayerTurn();
 		status.success = true;
 		status.message = "Successfully played a card hand";
+		if (this.cards.length === 0) {
+			this.gameStateRef.endGame(this)
+			return (status);
+		}
+		this.gameStateRef.nextPlayerTurn();
 		return (status);
+	}
+
+	public calculatePenaltyPoints() {
+		let penaltyPoints: number = 0;
+		const cardAmount = this.cards.length;
+
+		if (cardAmount <= 9) {
+			penaltyPoints = cardAmount;
+		}
+		else if (cardAmount > 9 && cardAmount < 13) {
+			penaltyPoints = cardAmount * 2;
+		}
+		else if (cardAmount > 13) {
+			penaltyPoints = cardAmount * 3;
+		}
+		return (penaltyPoints);
 	}
 
 	public reset() {

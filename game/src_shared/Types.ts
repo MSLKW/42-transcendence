@@ -66,6 +66,7 @@ export type GameStartRequest = {
 export type GameEndStatsTransmit = {
 	winnerPlayerId: string,
 	playerFinalCardAmounts: Record<string, number>
+	playerPenaltyPoints: Record<string, number>
 }
 
 export type PlayerSeatOrderTransmit = {

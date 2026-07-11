@@ -41,6 +41,8 @@ export class CardHeapState {
 		else if (other.handType === HandType.Pentuple) {
 			if (other.pentupleType > topCardHand.pentupleType)
 				return (true);
+			else if (other.pentupleType < topCardHand.pentupleType)
+				return (false);
 			if (other.pentupleType === PentupleType.Straight || other.pentupleType === PentupleType.Flush || other.pentupleType === PentupleType.StraightFlush) {
 				if (other.cards[0].rank > topCardHand.cards[0].rank)
 					return (true);

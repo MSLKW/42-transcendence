@@ -141,12 +141,20 @@ export class GameState {
 		return (false);
 	}
 
-	private playerCardsAmount() {
+	private getPlayerCardsAmount() {
 		const playerCardsAmount: Record<string, number> = {};
 		for (let i = 0; i < this.players.length; i++) {
 			playerCardsAmount[this.players[i].playerId] = this.players[i].cards.length;
 		}
 		return (playerCardsAmount);
+	}
+
+	private getPlayerPenaltyPoints() {
+		const playerPenaltyPoints: Record<string, number> = {};
+		for (let i = 0; i < this.players.length; i++) {
+			playerPenaltyPoints[this.players[i].playerId] = this.players[i].calculatePenaltyPoints();
+		}
+		return (playerPenaltyPoints);
 	}
 
 	public startGame(): statusTransmit {
@@ -186,23 +194,30 @@ export class GameState {
 		console.log(`Game Ended | Winner is Player<${player.playerId}>`);
 		const gameEndStats: GameEndStatsTransmit = {
 			winnerPlayerId: player.playerId,
-			playerFinalCardAmounts: this.playerCardsAmount(),
+			playerFinalCardAmounts: this.getPlayerCardsAmount(),
+			playerPenaltyPoints: this.getPlayerPenaltyPoints()
 		}
+		this.resetGame();
+		this.isGameStarted = false;
+		io.to("game").emit("game_end", gameEndStats);
+	}
+
+	private resetGame() {
 		this.cardHeap.reset();
 		this.cardDeck.reset();
 		for (let i = 0; i < this.players.length; i++) {
 			this.players[i].reset();
 		}
+		clearTimeout(this.playerTurnTimeoutId);
+		this.playerTurnTimeoutId = undefined;
 		this.playerTurnIndex = -1;
-		this.isGameStarted = false;
-		io.to("game").emit("game_end", gameEndStats);
 	}
 
 	// For reconnecting player state
 	public transmit(player: PlayerState) {
 		const transmitObject: GameStateTransmit = {
 			cardHeap: this.cardHeap.transmit(),
-			playerCardsAmount: this.playerCardsAmount(),
+			playerCardsAmount: this.getPlayerCardsAmount(),
 			playerCards: player.cards,
 			isPlayerTurn: this.isPlayerTurn(player)
 		}
