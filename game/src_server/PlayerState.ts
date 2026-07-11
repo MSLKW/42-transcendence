@@ -113,4 +113,8 @@ export class PlayerState {
 		status.message = "Successfully played a card hand";
 		return (status);
 	}
+
+	public reset() {
+		this.cards.length = 0;
+	}
 }

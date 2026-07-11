@@ -190,6 +190,9 @@ export class GameState {
 		}
 		this.cardHeap.reset();
 		this.cardDeck.reset();
+		for (let i = 0; i < this.players.length; i++) {
+			this.players[i].reset();
+		}
 		this.playerTurnIndex = -1;
 		this.isGameStarted = false;
 		io.to("game").emit("game_end", gameEndStats);
