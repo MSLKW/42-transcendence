@@ -119,25 +119,24 @@ if (authId && playerId) {
 		console.log('Socket disconnected')
 	});
 
-	socket.on('player_join', (playerData) => { 
-		const object = JSON.parse(playerData) as PlayerSeatOrderTransmit;
-		console.log(object);
-		if (object.playerId === playerId) {
+	socket.on('player_join', (playerJoin: PlayerSeatOrderTransmit) => { 
+		console.log(playerJoin);
+		if (playerJoin.playerId === playerId) {
 			const player = new Player(socket, playerId, cardHeap);
-			const [pos, rot] = tablePosition(object.seatOrder[playerId], true);
+			const [pos, rot] = tablePosition(playerJoin.seatOrder[playerId], true);
 			player.cardManager.updateManager(pos, rot);
-			const seatOrder: Record<string, number> = object.seatOrder;
+			const seatOrder: Record<string, number> = playerJoin.seatOrder;
 			Object.keys(seatOrder).forEach((id) => {
 				if (id !== playerId ) {
 					const opponent = new Opponent(socket, id, cardHeap);
-					const [pos, rot] = tablePosition(object.seatOrder[id], false);
+					const [pos, rot] = tablePosition(playerJoin.seatOrder[id], false);
 					opponent.cardManager.updateManager(pos, rot);
 				}
 			})
 		}
 		else {
-			const opponent = new Opponent(socket, object.playerId, cardHeap);
-			const [pos, rot] = tablePosition(object.seatOrder[object.playerId], false);
+			const opponent = new Opponent(socket, playerJoin.playerId, cardHeap);
+			const [pos, rot] = tablePosition(playerJoin.seatOrder[playerJoin.playerId], false);
 			opponent.cardManager.updateManager(pos, rot);
 		}
 	});

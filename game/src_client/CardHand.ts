@@ -155,7 +155,7 @@ export class CardHand {
 		return (true);
 	}
 
-	public toJSON(): CardHandTransmit {
+	public transmit(): CardHandTransmit {
 		return {
 			cards: this.cards,
 			handType: this.handType,
