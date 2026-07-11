@@ -52,12 +52,17 @@ export class GameState {
 		const playerId = authId
 
 		socket.on("disconnect", () => {
-			if (this.isGameStarted == false) {
-				const index = this.players.findIndex((player) => player.playerId === playerId);
-				if (index != -1) {
-					this.players.splice(index, 1);
-					console.log(`Player<${playerId}> has disconnected`);
-				}
+			const index = this.players.findIndex((player) => player.playerId === playerId);
+			if (this.isGameStarted === false && index != -1) {
+				this.players.splice(index, 1);
+				console.log(`Player<${playerId}> has disconnected and removed from the game`);
+			}
+			else if (this.isGameStarted === true && index != -1) {
+				const player = this.players[index];
+				player.isDisconnected = true;
+				if (this.turnTimerInSeconds === 0)
+					player.forceSkipTurn();
+				console.log(`Player<${playerId}> has disconnected`);
 			}
 		})
 
@@ -77,6 +82,7 @@ export class GameState {
 			console.log(`Player<${playerId}> has reconnected`);
 			const player = this.players[index];
 			player.socket = socket;
+			player.isDisconnected = false;
 			player.setupSocketListeners();
 			this.playerJoin(player);
 			player.socket.emit("player_game_state", this.transmit(player));
@@ -86,6 +92,7 @@ export class GameState {
 			setTimeout(() => {
 				socket.disconnect(true);
 			}, 1000);
+			socket.removeAllListeners();
 			console.log(`Player<${playerId}> is not allowed to connect`);
 		}
 	}
@@ -101,12 +108,14 @@ export class GameState {
 
 	private playerTurnEvent() {
 		const player = this.players.at(this.playerTurnIndex);
-		if (player === undefined) {
-			console.log('Player is missing for player turn');
+		if (player === undefined || player.isDisconnected === true) {
+			console.log("player has disconnected, going to next player");
+			this.nextPlayerTurn(); // WHEN ALL PLAYERS DISCONNECT, WILL CRASH SERVER CUZ it's stack overflow, gotta implement check
 			return ;
 		}
 		const playerTurnTransmit: playerTurnTransmit = {
 			playerId: player.playerId,
+			skippable: !this.cardHeap.isPlayerLeading(player.playerId),
 			timer: this.turnTimerInSeconds
 		}
 		if (this.turnTimerInSeconds > 0) {
@@ -122,12 +131,16 @@ export class GameState {
 			message: "Timer ran out"
 		}
 		player.socket.emit("player_skip_turn", status);
-		this.nextPlayerTurn();
+		player.forceSkipTurn();
 	}
 
 	public nextPlayerTurn() {
 		clearTimeout(this.playerTurnTimeoutId);
 		this.playerTurnTimeoutId = undefined;
+		const availablePlayer = this.players.find((player) => player.isDisconnected === false)
+		if (availablePlayer === undefined) {
+			return ;
+		}
 		this.playerTurnIndex++;
 		if (this.playerTurnIndex >= this.players.length)
 			this.playerTurnIndex = 0;

@@ -5,15 +5,19 @@ import { io } from "./server.js";
 
 export class CardHeapState {
 	private cardHands: Array<CardHandState>;
-	private currentHandType: HandType = HandType.None;
+	private	leadingPlayerId: string;
+	public	requiresThreeDiamonds: boolean;
 
 	constructor() {
 		this.cardHands = [];
+		this.leadingPlayerId = "";
+		this.requiresThreeDiamonds = true;
 	}
 
 	public receiveCardHand(cardHand: CardHandState) {
 		this.cardHands.push(cardHand);
-		this.currentHandType = cardHand.handType;
+		this.leadingPlayerId = cardHand.playerId;
+		this.requiresThreeDiamonds = false;
 		io.to("game").emit("opponent_play_card_hand", cardHand.transmit());
 	}
 
@@ -21,15 +25,27 @@ export class CardHeapState {
 		return (this.cardHands.length);
 	}
 
+	private getTopCardHand(): CardHandState | undefined {
+		return (this.cardHands.at(this.cardHands.length - 1))
+	}
+
+	public isPlayerLeading(playerId: string): boolean {
+		if (this.leadingPlayerId === "")
+			return (true);
+		return (this.leadingPlayerId === playerId);
+	}
+
+	public resetPlayerLeading() {
+		this.leadingPlayerId = "";
+	}
+
 	public isCardHandPlayable(other: CardHandState): boolean {
-		const topCardHand = this.cardHands.at(this.cardHands.length - 1);
-		if (topCardHand === undefined) {
+		const topCardHand = this.getTopCardHand();
+		if (topCardHand === undefined)
 			return (true);
-		}
-		if (topCardHand.playerId === other.playerId) {
+		if (this.isPlayerLeading(other.playerId))
 			return (true);
-		}
-		if (this.currentHandType !== HandType.None && other.handType !== this.currentHandType)
+		if (other.handType !== topCardHand.handType)
 			return (false);
 		// Comparing
 		if (other.handType === HandType.Single || other.handType === HandType.Double || other.handType === HandType.Triple) {
@@ -60,10 +76,11 @@ export class CardHeapState {
 
 	public reset() {
 		this.cardHands.length = 0;
-		this.currentHandType = HandType.None;
+		this.leadingPlayerId = "";
+		this.requiresThreeDiamonds = true;
 	}
 
-	public transmit() {
+	public transmit(): Array<CardHandTransmit> {
 		return (this.cardHands)
 	}
 }

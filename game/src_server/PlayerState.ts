@@ -1,5 +1,5 @@
 import { Socket } from 'socket.io';
-import { CardTransmit, CardRank, CardSuit, CardHandTransmit, HandType, PentupleType, statusTransmit } from '../src_shared/Types.js';
+import { CardTransmit, CardRank, CardSuit, CardHandTransmit, HandType, PentupleType, statusTransmit as StatusTransmit } from '../src_shared/Types.js';
 import { GameState } from './GameState.js';
 import { CardHeapState } from './CardHeapState.js';
 import { io } from './server.js';
@@ -11,6 +11,7 @@ export class PlayerState {
 	public	cards: Array<CardTransmit>;
 	private gameStateRef: GameState;
 	private cardHeapRef: CardHeapState;
+	public	isDisconnected: boolean;
 
 	constructor(playerId: string, socket: Socket, gameState: GameState) {
 		this.playerId = playerId;
@@ -18,17 +19,26 @@ export class PlayerState {
 		this.socket = socket;
 		this.gameStateRef = gameState;
 		this.cardHeapRef = gameState.cardHeap;
+		this.isDisconnected = false;
 
 		this.setupSocketListeners()
 	}
 
 	public setupSocketListeners() {
 		this.socket.on("player_play_card_hand", (cardHandTransmit: CardHandTransmit) => {
-			this.socket.emit('player_play_card_hand', this.playCardHand(cardHandTransmit));
+			const status: StatusTransmit = this.playCardHand(cardHandTransmit);
+			this.socket.emit('player_play_card_hand', status);
+			if (status.success === true) {
+				if (this.cards.length === 0) {
+					this.gameStateRef.endGame(this)
+					return ;
+				}
+				this.gameStateRef.nextPlayerTurn();
+			}
 		});
 
 		this.socket.on("player_skip_turn", () => {
-			this.skipTurn();
+			this.socket.emit("player_skip_turn", this.skipTurn());
 		})
 	}
 
@@ -60,22 +70,34 @@ export class PlayerState {
 		}
 	}
 
-	public skipTurn() {
-		const status: statusTransmit = {
+	public skipTurn(): StatusTransmit {
+		const status: StatusTransmit = {
 			success: false,
 			message: "It's not the player's turn"
 		}
-		if (this.gameStateRef.isPlayerTurn(this)) {
-			this.gameStateRef.nextPlayerTurn();
-			status.success = true;
-			status.message = "Player has successfully skipped their turn";
+		if (this.gameStateRef.isPlayerTurn(this) === false) {
+			return (status);
 		}
-		this.socket.emit("player_skip_turn", status);
+		if (this.cardHeapRef.isPlayerLeading(this.playerId)) {
+			status.message = "Player is already leading"
+			return (status);
+		}
+		this.gameStateRef.nextPlayerTurn();
+		status.success = true;
+		status.message = "Player has successfully skipped their turn";
+		return (status);
+	}
+
+	public forceSkipTurn() {
+		if (this.cardHeapRef.isPlayerLeading(this.playerId))
+			this.cardHeapRef.resetPlayerLeading();
+		this.cardHeapRef.requiresThreeDiamonds = false;
+		this.gameStateRef.nextPlayerTurn();
 	}
 
 	// Returns if player has finished all his cards
-	private playCardHand(cardHandTransmit: CardHandTransmit): statusTransmit {
-		const status: statusTransmit = {
+	private playCardHand(cardHandTransmit: CardHandTransmit): StatusTransmit {
+		const status: StatusTransmit = {
 			success: false,
 			message: ""
 		};
@@ -98,7 +120,8 @@ export class PlayerState {
 				return (status);
 			}
 		}
-		if (this.cardHeapRef.cardHandsAmount() === 0 && PlayerState.hasThreeDiamonds(cardHand.cards) === false) {
+		// need to fix it so that if a three diamonds player disconnect, then the next player can play anything instead of soft locked
+		if (this.cardHeapRef.requiresThreeDiamonds === true && PlayerState.hasThreeDiamonds(cardHand.cards) === false) {
 			status.message = "first cardhand played must contain three of diamonds";
 			return (status);
 		}
@@ -111,11 +134,6 @@ export class PlayerState {
 
 		status.success = true;
 		status.message = "Successfully played a card hand";
-		if (this.cards.length === 0) {
-			this.gameStateRef.endGame(this)
-			return (status);
-		}
-		this.gameStateRef.nextPlayerTurn();
 		return (status);
 	}
 

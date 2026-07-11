@@ -81,5 +81,6 @@ export type statusTransmit = {
 
 export type playerTurnTransmit = {
 	playerId: string,
+	skippable: boolean,
 	timer: number
 }
