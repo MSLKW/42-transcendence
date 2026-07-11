@@ -3,6 +3,7 @@ import { Card } from './Card.ts';
 import { CardHand } from './CardHand.ts';
 import { outlinePass } from './main.ts';
 import { outline } from 'three/examples/jsm/tsl/display/OutlineNode.js';
+import { CardHandTransmit } from '../src_shared/Types.ts';
 
 export class CardManager {
 	private position: THREE.Vector3;
@@ -10,7 +11,7 @@ export class CardManager {
 	private boundSpace: number;
 	private	slots: Array<THREE.Vector3>;
 	private	cards: Array<Card>;
-	private	selectedCards: CardHand;
+	public	selectedCards: CardHand;
 	private selectedBoundSpace: number;
 	private selectedSlots: Array<THREE.Vector3>;
 	private playerId: string;
@@ -49,7 +50,6 @@ export class CardManager {
 	}
 
 	public removeCardByIndex(index: number): Card | undefined {
-		console.log(this.cards);
 		const card = this.cards.at(index);
 		if (card === undefined) {
 			console.log('Card to remove not found');
@@ -212,11 +212,6 @@ export class CardManager {
 		this.selectedSlots = this.calculateSlots(this.selectedCards.cards, this.selectedBoundSpace);
 		this.updateCardObjects(this.cards, this.slots);
 		this.updateCardObjects(this.selectedCards.cards, this.selectedSlots);
-	}
-
-	// transmit to server
-	public selectedCardsToJSON(): string {
-		return (JSON.stringify(this.selectedCards));
 	}
 
 	public sendSelectedCards(): CardHand {

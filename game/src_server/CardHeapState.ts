@@ -14,7 +14,7 @@ export class CardHeapState {
 	public receiveCardHand(cardHand: CardHandState) {
 		this.cardHands.push(cardHand);
 		this.currentHandType = cardHand.handType;
-		io.to("game").emit("opponent_play_card_hand", JSON.stringify(cardHand));
+		io.to("game").emit("opponent_play_card_hand", cardHand.transmit());
 	}
 
 	public isCardHandPlayable(other: CardHandState): boolean {

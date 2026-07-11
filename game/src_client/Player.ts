@@ -1,6 +1,6 @@
 import { io, Socket } from 'socket.io-client';
 import * as THREE from 'three';
-import { CardTransmit, GameEndStatsTransmit, GameStateTransmit, playerTurnTransmit, statusTransmit } from '../src_shared/Types.ts';
+import { CardTransmit, GameEndStatsTransmit, GameStateTransmit, playerTurnTransmit, statusTransmit, GameStartRequest } from '../src_shared/Types.ts';
 import { CardHand } from './CardHand.ts';
 import { Card } from './Card.ts';
 import { CardManager } from './CardManager.ts';
@@ -58,14 +58,13 @@ export class Player {
 			console.log(`Start Game: ${status.success}`);
 		});
 		
-		this.socket.on('game_end', (body) => {
-			const gameEndStats = JSON.parse(body) as GameEndStatsTransmit;
+		this.socket.on('game_end', (gameEndStats: GameEndStatsTransmit) => {
 			this.cardManager.reset();
 			this.cardHeapRef.reset();
 			this.startGameButton.disabled = false;
 			gameStatus.setGameStats(gameEndStats, this);
 			gameStatus.setLightboxActive(true);
-			console.log(body);
+			console.log(gameEndStats);
 		})
 		
 		this.socket.on('player_play_card_hand', (status: statusTransmit) => {
@@ -94,17 +93,15 @@ export class Player {
 			}
 		})
 
-		this.socket.on("player_game_state", (gameStateJSON) => {
-			const gameState = JSON.parse(gameStateJSON) as GameStateTransmit;
-
+		this.socket.on("player_game_state", (gameState: GameStateTransmit) => {
 			this.cardHeapRef.sync(gameState.cardHeap);
 			this.collectCards(gameState.playerCards);
 			this.setPlayerTurnUI(gameState.isPlayerTurn);
 		});
 
 		this.sendCardsButton.addEventListener('click', () => {
-			const cardsJson: string = this.cardManager.selectedCardsToJSON();
-			this.socket.emit('player_play_card_hand', cardsJson);
+			const cardHandTransmit = this.cardManager.selectedCards.transmit();
+			this.socket.emit('player_play_card_hand', cardHandTransmit);
 		});
 		
 		this.skipTurnButton.addEventListener('click', () => {
@@ -112,7 +109,10 @@ export class Player {
 		});
 		
 		this.startGameButton.addEventListener('click', () => {
-			this.socket.emit('game_start', this.playerId);
+			const gameStartRequest: GameStartRequest = {
+				playerId: this.playerId
+			}
+			this.socket.emit('game_start', gameStartRequest);
 		});
 
 		this.sortCardsByRankButton.addEventListener('click', () => {

@@ -3,7 +3,7 @@ import { io } from './server.js';
 import { PlayerState } from './PlayerState.js';
 import { CardDeckState } from './CardDeckState.js'
 import { CardHeapState } from './CardHeapState.js'
-import { GameStateTransmit, PlayerSeatOrderTransmit, GameEndStatsTransmit, statusTransmit, playerTurnTransmit } from '../src_shared/Types.js';
+import { GameStateTransmit, PlayerSeatOrderTransmit, GameEndStatsTransmit, statusTransmit, playerTurnTransmit, GameStartRequest } from '../src_shared/Types.js';
 
 export class GameState {
 	private players: Array<PlayerState>;
@@ -62,7 +62,7 @@ export class GameState {
 		})
 
 		// pref only let the host do it or smth
-		socket.on("game_start", (body) => {
+		socket.on("game_start", (gameStartRequest: GameStartRequest) => {
 			socket.emit("game_start", this.startGame());
 		})
 
@@ -79,7 +79,7 @@ export class GameState {
 			player.socket = socket;
 			player.setupSocketListeners();
 			this.playerJoin(player);
-			player.socket.emit("player_game_state", JSON.stringify(this.transmit(player)));
+			player.socket.emit("player_game_state", this.transmit(player));
 		}
 		else {
 			socket.emit("graceful_disconnect");
@@ -96,7 +96,7 @@ export class GameState {
 			"seatOrder": this.getSeatOrder()
 		}
 		player.socket.join("game");
-		io.to("game").emit("player_join", JSON.stringify(seatOrderTransmit))
+		io.to("game").emit("player_join", seatOrderTransmit)
 	}
 
 	private playerTurnEvent() {
@@ -172,7 +172,7 @@ export class GameState {
 		if (this.playerTurnIndex === -1)
 			this.playerTurnIndex = 0;
 		for (let i = 0; i < this.players.length; i++) {
-			this.players[i].socket.emit("player_game_state", JSON.stringify(this.transmit(this.players[i])));
+			this.players[i].socket.emit("player_game_state", this.transmit(this.players[i]));
 		}
 		this.playerTurnEvent();
 		this.isGameStarted = true;
@@ -192,7 +192,7 @@ export class GameState {
 		this.cardDeck.reset();
 		this.playerTurnIndex = -1;
 		this.isGameStarted = false;
-		io.to("game").emit("game_end", JSON.stringify(gameEndStats));
+		io.to("game").emit("game_end", gameEndStats);
 	}
 
 	// For reconnecting player state

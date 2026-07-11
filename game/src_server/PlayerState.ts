@@ -23,11 +23,11 @@ export class PlayerState {
 	}
 
 	public setupSocketListeners() {
-		this.socket.on("player_play_card_hand", (body) => {
-			this.socket.emit('player_play_card_hand', this.playCardHand(body));
+		this.socket.on("player_play_card_hand", (cardHandTransmit: CardHandTransmit) => {
+			this.socket.emit('player_play_card_hand', this.playCardHand(cardHandTransmit));
 		});
 
-		this.socket.on("player_skip_turn", (body) => {
+		this.socket.on("player_skip_turn", () => {
 			this.skipTurn();
 		})
 	}
@@ -74,7 +74,7 @@ export class PlayerState {
 	}
 
 	// Returns if player has finished all his cards
-	private playCardHand(body: string): statusTransmit {
+	private playCardHand(cardHandTransmit: CardHandTransmit): statusTransmit {
 		const status: statusTransmit = {
 			success: false,
 			message: ""
@@ -83,7 +83,6 @@ export class PlayerState {
 			status.message = "Not your turn";
 			return (status);
 		}
-		const cardHandTransmit = JSON.parse(body) as CardHandTransmit;
 		const cardHand = new CardHandState(cardHandTransmit.cards, cardHandTransmit.playerId);
 		if (cardHand.compareTypes(cardHandTransmit) === false) {
 			status.message = "handtype or pentuple type send by client is inaccurate";
