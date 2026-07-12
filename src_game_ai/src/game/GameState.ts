@@ -18,7 +18,8 @@ export class GameState
 	opponentCards:		Record<string, Card[]>;
 	possibleCardHands = {} as Record<HandTypeKey, CardHand[]>;
 
-	lastMove:	CardHand;
+	moveHistory:	CardHand[];
+	maxHistory:		number = 20;
 
 	constructor()
 	{
@@ -32,12 +33,7 @@ export class GameState
 		this.possibleCardHands["full_house"] = [];
 		this.possibleCardHands["four_of_a_kind"] = [];
 		this.possibleCardHands["straight_flush"] = [];
-		this.lastMove = {
-			cards: [],
-			handType: 0,
-			pentupleType: 0,
-			playerId: ""
-		};
+		this.moveHistory = [];
 	}
 
 	clearCards(): void
@@ -52,12 +48,7 @@ export class GameState
 		this.possibleCardHands["full_house"] = [];
 		this.possibleCardHands["four_of_a_kind"] = [];
 		this.possibleCardHands["straight_flush"] = [];
-		this.lastMove = {
-			cards: [],
-			handType: 0,
-			pentupleType: 0,
-			playerId: ""
-		};
+		this.moveHistory = [];
 	}
 
 	initPlayerCards(cards: Array<Card>): void
@@ -84,7 +75,9 @@ export class GameState
 
 	setLastMove(cardHand: CardHand)
 	{
-		this.lastMove = this.normalizeCardHand(cardHand);
+		this.moveHistory.push(this.normalizeCardHand(cardHand));
+		if (this.moveHistory.length > this.maxHistory)
+			this.moveHistory.splice(0, 1);
 	}
 
 	removeCards(cardHand: CardHand)

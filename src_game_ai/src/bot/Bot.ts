@@ -14,6 +14,7 @@ export class Bot {
 	private socket:			Socket | null = null;
 	private wins:			number = 0;
 	private gamesPlayed:	number = 0;
+	private maxGames:		number = 1000;
 
 	constructor(private id: string, private serverUrl: string) {
 		this.state = new GameState();
@@ -100,7 +101,7 @@ export class Bot {
 		{
 			logger.info(this.id, "I won");
 			this.wins++;
-			if (this.gamesPlayed != 100000)
+			if (this.gamesPlayed != this.maxGames)
 			{
 				const startRequest: GameStartRequest = {
 					playerId: this.id
@@ -112,7 +113,7 @@ export class Bot {
 		{
 			logger.info(this.id, "I lost");
 		}
-		if (this.gamesPlayed == 100000)
+		if (this.gamesPlayed == this.maxGames)
 			logger.warn(this.id, "I won", this.wins, "times");
 	}
 	

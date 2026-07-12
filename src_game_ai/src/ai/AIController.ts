@@ -12,13 +12,12 @@ export class AIController {
 
 	decide(botId: string, state: GameState): CardHand | null
 	{
-		logger.info(botId, "last move:", state.lastMove);
-		if (state.lastMove.cards.length == 0)
+		if (state.moveHistory.length == 0)
 			return (this.playLead(state, true));
-		else if (state.lastMove.playerId == botId)
+		else if (state.moveHistory.at(-1)!.playerId == botId)
 			return (this.playLead(state, false));
 		else
-			return (this.playFollow(state));
+			return (this.playFollow(botId, state));
 	}
 
 	private playLead(state: GameState, isFirstHand: boolean): CardHand
@@ -40,11 +39,13 @@ export class AIController {
 		return allCardHands[Math.floor(Math.random() * allCardHands.length)];
 	}
 
-	private playFollow(state: GameState): CardHand | null
+	private playFollow(botId: string, state: GameState): CardHand | null
 	{
+		const lastMove = state.moveHistory.at(-1)!;
 		let cardHands: CardHand[] = [];
 
-		switch (state.lastMove.handType)
+		logger.info(botId, "last move:", lastMove);
+		switch (lastMove.handType)
 		{
 			case HandType.Single:
 				cardHands = state.possibleCardHands["single"];
@@ -67,7 +68,7 @@ export class AIController {
 		}
 		const i = upperBound(
 			cardHands,
-			state.lastMove,
+			lastMove,
 			cardHandComp
 		);
 		if (i == cardHands.length)
