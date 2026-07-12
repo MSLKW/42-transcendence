@@ -2,6 +2,7 @@ import { GameState, HandTypeKey } from "../game/GameState";
 import { CardTransmit, CardHandTransmit, HandType, PentupleType } from "../Types";
 import { upperBound } from "../utils/upperBound";
 import { cardHandComp } from "../utils/cardHandComp";
+import { logger } from "../utils/logger";
 
 type Card = CardTransmit;
 type CardHand = CardHandTransmit;
@@ -11,14 +12,16 @@ export class AIController {
 
 	decide(botId: string, state: GameState): CardHand | null
 	{
-		console.info("last move:", state.lastMove);
-		if (state.lastMove.cards.length == 0 || state.lastMove.playerId == botId)
-			return this.playLead(state);
+		logger.info(botId, "last move:", state.lastMove);
+		if (state.lastMove.cards.length == 0)
+			return (this.playLead(state, true));
+		else if (state.lastMove.playerId == botId)
+			return (this.playLead(state, false));
 		else
-			return this.playFollow(state);
+			return (this.playFollow(state));
 	}
 
-	private playLead(state: GameState): CardHand
+	private playLead(state: GameState, isFirstHand: boolean): CardHand
 	{
 		const allCardHands: CardHand[] = [];
 		
@@ -26,6 +29,13 @@ export class AIController {
 		{
 			const handTypeKey = key as HandTypeKey;
 			allCardHands.push(...state.possibleCardHands[handTypeKey]);
+		}
+		if (!isFirstHand)
+			return allCardHands[Math.floor(Math.random() * allCardHands.length)];
+		for (let i = allCardHands.length - 1; i >= 0; i--)
+		{
+			if (!allCardHands[i].cards.some(card => card.rank == 0 && card.suit == 0))
+				allCardHands.splice(i, 1);
 		}
 		return allCardHands[Math.floor(Math.random() * allCardHands.length)];
 	}

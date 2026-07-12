@@ -1,0 +1,12 @@
+Player cards			52 bools
+Opponent1 cards			52 bools
+Opponent2 cards			52 bools
+Opponent3 cards			52 bools
+Unknown cards			52 bools
+
+Player card count		float 0.0 - 1.0
+Opponent1 card count	float 0.0 - 1.0
+Opponent2 card count	float 0.0 - 1.0
+Opponent3 card count	float 0.0 - 1.0
+
+

@@ -40,8 +40,30 @@ export class GameState
 		};
 	}
 
+	clearCards(): void
+	{
+		this.playerCards = [];
+		this.opponentCards = {};
+		this.possibleCardHands["single"] = [];
+		this.possibleCardHands["double"] = [];
+		this.possibleCardHands["triple"] = [];
+		this.possibleCardHands["straight"] = [];
+		this.possibleCardHands["flush"] = [];
+		this.possibleCardHands["full_house"] = [];
+		this.possibleCardHands["four_of_a_kind"] = [];
+		this.possibleCardHands["straight_flush"] = [];
+		this.lastMove = {
+			cards: [],
+			handType: 0,
+			pentupleType: 0,
+			playerId: ""
+		};
+	}
+
 	initPlayerCards(cards: Array<Card>): void
 	{
+		this.clearCards();
+
 		this.playerCards = cards;
 		this.playerCards.sort(this.rankComp);
 
@@ -50,6 +72,7 @@ export class GameState
 		initFullHouses(this);
 		initStraights(this); //straights and straigh flushes
 
+		this.playerCards.sort(this.suitComp);
 		initFlushes(this); //ignores straight flushes
 		
 		for (const key in this.possibleCardHands)
