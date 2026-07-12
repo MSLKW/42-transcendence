@@ -79,7 +79,7 @@ export class Player {
 		
 		this.socket.on('player_turn', (playerTurn: playerTurnTransmit) => {
 			if (this.playerId === playerTurn.playerId) {
-				this.setPlayerTurnUI(true);
+				this.setPlayerTurnUI(true, playerTurn.skippable);
 			}
 			console.log(`It is now Player<${playerTurn.playerId}>'s turn! Timer is set at ${playerTurn.timer} seconds!`);
 		});
@@ -152,10 +152,10 @@ export class Player {
 		this.cardManager.hoverCard(this.raycaster);
 	}
 
-	private setPlayerTurnUI(isTurn: boolean) {
+	private setPlayerTurnUI(isTurn: boolean, skippable: boolean = true) {
 		if (isTurn === true) {
 			this.sendCardsButton.disabled = false;
-			this.skipTurnButton.disabled = false;
+			this.skipTurnButton.disabled = !skippable;
 		}
 		else {
 			this.sendCardsButton.disabled = true;

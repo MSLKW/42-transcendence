@@ -52,12 +52,17 @@ export class GameState {
 		const playerId = authId
 
 		socket.on("disconnect", () => {
-			if (this.isGameStarted == false) {
-				const index = this.players.findIndex((player) => player.playerId === playerId);
-				if (index != -1) {
-					this.players.splice(index, 1);
-					console.log(`Player<${playerId}> has disconnected`);
-				}
+			const index = this.players.findIndex((player) => player.playerId === playerId);
+			if (this.isGameStarted === false && index != -1) {
+				this.players.splice(index, 1);
+				console.log(`Player<${playerId}> has disconnected and removed from the game`);
+			}
+			else if (this.isGameStarted === true && index != -1) {
+				const player = this.players[index];
+				player.isDisconnected = true;
+				if (this.turnTimerInSeconds === 0)
+					player.forceSkipTurn();
+				console.log(`Player<${playerId}> has disconnected`);
 			}
 		})
 
@@ -77,6 +82,7 @@ export class GameState {
 			console.log(`Player<${playerId}> has reconnected`);
 			const player = this.players[index];
 			player.socket = socket;
+			player.isDisconnected = false;
 			player.setupSocketListeners();
 			this.playerJoin(player);
 			player.socket.emit("player_game_state", this.transmit(player));
@@ -86,6 +92,7 @@ export class GameState {
 			setTimeout(() => {
 				socket.disconnect(true);
 			}, 1000);
+			socket.removeAllListeners();
 			console.log(`Player<${playerId}> is not allowed to connect`);
 		}
 	}
@@ -101,12 +108,14 @@ export class GameState {
 
 	private playerTurnEvent() {
 		const player = this.players.at(this.playerTurnIndex);
-		if (player === undefined) {
-			console.log('Player is missing for player turn');
+		if (player === undefined || player.isDisconnected === true) {
+			console.log("player has disconnected, going to next player");
+			this.nextPlayerTurn(); // WHEN ALL PLAYERS DISCONNECT, WILL CRASH SERVER CUZ it's stack overflow, gotta implement check
 			return ;
 		}
 		const playerTurnTransmit: playerTurnTransmit = {
 			playerId: player.playerId,
+			skippable: !this.cardHeap.isPlayerLeading(player.playerId),
 			timer: this.turnTimerInSeconds
 		}
 		if (this.turnTimerInSeconds > 0) {
@@ -122,12 +131,16 @@ export class GameState {
 			message: "Timer ran out"
 		}
 		player.socket.emit("player_skip_turn", status);
-		this.nextPlayerTurn();
+		player.forceSkipTurn();
 	}
 
 	public nextPlayerTurn() {
 		clearTimeout(this.playerTurnTimeoutId);
 		this.playerTurnTimeoutId = undefined;
+		const availablePlayer = this.players.find((player) => player.isDisconnected === false)
+		if (availablePlayer === undefined) {
+			return ;
+		}
 		this.playerTurnIndex++;
 		if (this.playerTurnIndex >= this.players.length)
 			this.playerTurnIndex = 0;
@@ -141,12 +154,20 @@ export class GameState {
 		return (false);
 	}
 
-	private playerCardsAmount() {
+	private getPlayerCardsAmount() {
 		const playerCardsAmount: Record<string, number> = {};
 		for (let i = 0; i < this.players.length; i++) {
 			playerCardsAmount[this.players[i].playerId] = this.players[i].cards.length;
 		}
 		return (playerCardsAmount);
+	}
+
+	private getPlayerPenaltyPoints() {
+		const playerPenaltyPoints: Record<string, number> = {};
+		for (let i = 0; i < this.players.length; i++) {
+			playerPenaltyPoints[this.players[i].playerId] = this.players[i].calculatePenaltyPoints();
+		}
+		return (playerPenaltyPoints);
 	}
 
 	public startGame(): statusTransmit {
@@ -162,7 +183,7 @@ export class GameState {
 			this.players[i].collectCards(this.cardDeck.dealCards(Math.floor(this.cardDeck.size / this.players.length)));
 		}
 		for (let i = 0; i < this.players.length; i++) {
-			if (this.players[i].hasThreeDiamonds()) {
+			if (PlayerState.hasThreeDiamonds(this.players[i].cards)) {
 				this.playerTurnIndex = i;
 				if (this.players.length === 3) { 
 					this.players[i].collectCards(this.cardDeck.dealCards(1));
@@ -186,23 +207,30 @@ export class GameState {
 		console.log(`Game Ended | Winner is Player<${player.playerId}>`);
 		const gameEndStats: GameEndStatsTransmit = {
 			winnerPlayerId: player.playerId,
-			playerFinalCardAmounts: this.playerCardsAmount(),
+			playerFinalCardAmounts: this.getPlayerCardsAmount(),
+			playerPenaltyPoints: this.getPlayerPenaltyPoints()
 		}
+		this.resetGame();
+		this.isGameStarted = false;
+		io.to("game").emit("game_end", gameEndStats);
+	}
+
+	private resetGame() {
 		this.cardHeap.reset();
 		this.cardDeck.reset();
 		for (let i = 0; i < this.players.length; i++) {
 			this.players[i].reset();
 		}
+		clearTimeout(this.playerTurnTimeoutId);
+		this.playerTurnTimeoutId = undefined;
 		this.playerTurnIndex = -1;
-		this.isGameStarted = false;
-		io.to("game").emit("game_end", gameEndStats);
 	}
 
 	// For reconnecting player state
 	public transmit(player: PlayerState) {
 		const transmitObject: GameStateTransmit = {
 			cardHeap: this.cardHeap.transmit(),
-			playerCardsAmount: this.playerCardsAmount(),
+			playerCardsAmount: this.getPlayerCardsAmount(),
 			playerCards: player.cards,
 			isPlayerTurn: this.isPlayerTurn(player)
 		}

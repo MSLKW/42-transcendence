@@ -49,6 +49,6 @@ export class GameStatus {
 		else {
 			this.status.textContent = "Defeat"
 		}
-		this.stats.textContent = JSON.stringify(stats.playerFinalCardAmounts);
+		this.stats.textContent = JSON.stringify(stats);
 	}
 }
