@@ -1,6 +1,6 @@
 import { io, Socket } from "socket.io-client";
 import { GameState } from "../game/GameState";
-import { AIController } from "../ai/AIController";
+import { AAIController } from "../ai/AAIController";
 import { GameStateTransmit, CardHandTransmit, PlayerSeatOrderTransmit,
 		StatusTransmit, PlayerTurnTransmit, GameStartRequest,
 		GameEndStatsTransmit } from "../Types";
@@ -8,17 +8,19 @@ import { logger } from "../utils/logger";
 
 type CardHand = CardHandTransmit;
 
-export class Bot {
+export class Bot
+{
 	private state:			GameState;
-	private ai:				AIController;
+	private ai:				AAIController;
 	private socket:			Socket | null = null;
 	private wins:			number = 0;
 	private gamesPlayed:	number = 0;
 	private maxGames:		number = 1000;
 
-	constructor(private id: string, private serverUrl: string) {
+	constructor(private id: string, private serverUrl: string, ai: AAIController)
+	{
 		this.state = new GameState();
-		this.ai = new AIController();
+		this.ai = ai;
 	}
 
 	start(): void

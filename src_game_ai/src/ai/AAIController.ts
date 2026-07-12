@@ -7,10 +7,10 @@ import { logger } from "../utils/logger";
 type Card = CardTransmit;
 type CardHand = CardHandTransmit;
 
-export class AIController {
+export abstract class AAIController {
 	constructor() {}
 
-	decide(botId: string, state: GameState): CardHand | null
+	public decide(botId: string, state: GameState): CardHand | null
 	{
 		if (state.moveHistory.length == 0)
 			return (this.playLead(state, true));
@@ -19,6 +19,8 @@ export class AIController {
 		else
 			return (this.playFollow(botId, state));
 	}
+
+	protected abstract think(options: CardHand[]): CardHand;
 
 	private playLead(state: GameState, isFirstHand: boolean): CardHand
 	{
@@ -30,13 +32,13 @@ export class AIController {
 			allCardHands.push(...state.possibleCardHands[handTypeKey]);
 		}
 		if (!isFirstHand)
-			return allCardHands[Math.floor(Math.random() * allCardHands.length)];
+			return (this.think(allCardHands));
 		for (let i = allCardHands.length - 1; i >= 0; i--)
 		{
 			if (!allCardHands[i].cards.some(card => card.rank == 0 && card.suit == 0))
 				allCardHands.splice(i, 1);
 		}
-		return allCardHands[Math.floor(Math.random() * allCardHands.length)];
+		return (this.think(allCardHands));
 	}
 
 	private playFollow(botId: string, state: GameState): CardHand | null
@@ -74,6 +76,6 @@ export class AIController {
 		if (i == cardHands.length)
 			return null;
 		const options: CardHand[] = cardHands.slice(i);
-		return (options[Math.floor(Math.random() * options.length)]);
+		return (this.think(options));
 	}
 }
