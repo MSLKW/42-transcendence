@@ -15,7 +15,7 @@ export class Bot
 	private socket:			Socket | null = null;
 	private wins:			number = 0;
 	private gamesPlayed:	number = 0;
-	private maxGames:		number = 1000;
+	private maxGames:		number = 100000;
 
 	constructor(private id: string, private serverUrl: string, ai: AAIController)
 	{
@@ -45,6 +45,7 @@ export class Bot
 				playerId: this.id
 			}
 			this.socket?.emit("game_start", startRequest);
+			console.log(new Date().toTimeString());
 		}
 	}
 
@@ -116,7 +117,11 @@ export class Bot
 			logger.info(this.id, "I lost");
 		}
 		if (this.gamesPlayed == this.maxGames)
+		{
 			logger.warn(this.id, "I won", this.wins, "times");
+			if (stat.winnerPlayerId == this.id)
+				console.log(new Date().toTimeString());
+		}
 	}
 	
 	private disconnect = (reason: string) =>
