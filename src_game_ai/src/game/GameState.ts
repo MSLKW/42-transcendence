@@ -14,16 +14,26 @@ export type HandTypeKey = "single" | "double" | "triple" | "straight" | "flush" 
 
 export class GameState
 {
-	playerCards:		Card[];
+	ownCards:			Card[];
+	players:			Record<string, number>;	
 	opponentCards:		Record<string, Card[]>;
 	possibleCardHands = {} as Record<HandTypeKey, CardHand[]>;
 
-	moveHistory:	CardHand[];
-	maxHistory:		number = 20;
+	moveHistory:		CardHand[];
+	maxHistory:			number = 20;
+	lastCardHand:		CardHand;
+	cardHandsPlayed:	number = 0;
+	turnNumber:			number = 0;
+	
+	currentPlayer:		string = '';
+	turnSkipped:		boolean = false;
 
-	constructor()
+	leader:				number = -1;
+
+	constructor(players: Record<string, number>, ownCards: Array<Card>)
 	{
-		this.playerCards = [];
+		this.players = players;
+		this.ownCards = ownCards;
 		this.opponentCards = {};
 		this.possibleCardHands["single"] = [];
 		this.possibleCardHands["double"] = [];
@@ -33,37 +43,20 @@ export class GameState
 		this.possibleCardHands["full_house"] = [];
 		this.possibleCardHands["four_of_a_kind"] = [];
 		this.possibleCardHands["straight_flush"] = [];
+		
 		this.moveHistory = [];
-	}
+		this.lastCardHand = { cards: [], handType: 0, pentupleType: 0, playerId: ""	};
+	
+		if (Object.keys(players).length == 0 || ownCards.length == 0)
+			return ;
 
-	clearCards(): void
-	{
-		this.playerCards = [];
-		this.opponentCards = {};
-		this.possibleCardHands["single"] = [];
-		this.possibleCardHands["double"] = [];
-		this.possibleCardHands["triple"] = [];
-		this.possibleCardHands["straight"] = [];
-		this.possibleCardHands["flush"] = [];
-		this.possibleCardHands["full_house"] = [];
-		this.possibleCardHands["four_of_a_kind"] = [];
-		this.possibleCardHands["straight_flush"] = [];
-		this.moveHistory = [];
-	}
-
-	initPlayerCards(cards: Array<Card>): void
-	{
-		this.clearCards();
-
-		this.playerCards = cards;
-		this.playerCards.sort(this.rankComp);
-
+		this.ownCards.sort(this.rankComp);
 		initSingles(this);
 		initMatchingHands(this); //doubles, triples, four of a kinds
 		initFullHouses(this);
 		initStraights(this); //straights and straigh flushes
 
-		this.playerCards.sort(this.suitComp);
+		this.ownCards.sort(this.suitComp);
 		initFlushes(this); //ignores straight flushes
 		
 		for (const key in this.possibleCardHands)
@@ -73,11 +66,23 @@ export class GameState
 		}
 	}
 
-	setLastMove(cardHand: CardHand)
+	setLastCardHand(cardHand: CardHand)
 	{
-		this.moveHistory.push(this.normalizeCardHand(cardHand));
-		if (this.moveHistory.length > this.maxHistory)
-			this.moveHistory.splice(0, 1);
+		this.lastCardHand = cardHand;
+		this.recordHistory(cardHand);
+		this.turnSkipped = false;
+		this.cardHandsPlayed++;
+	}
+
+	recordSkippedMove(playerId: string)
+	{
+		const skippedHand: CardHand = {
+			cards: [],
+			handType: 0,
+			pentupleType: 0,
+			playerId: playerId
+		};
+		this.recordHistory(skippedHand);
 	}
 
 	removeCards(cardHand: CardHand)
@@ -96,6 +101,12 @@ export class GameState
 				}
 			}
 		}
+	}
+	private recordHistory(cardHand: CardHand)
+	{
+		this.moveHistory.push(this.normalizeCardHand(cardHand));
+		if (this.moveHistory.length > this.maxHistory)
+			this.moveHistory.splice(0, 1);
 	}
 
 	private rankComp = (a: Card, b: Card) =>

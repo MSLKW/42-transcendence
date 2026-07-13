@@ -17,11 +17,11 @@ function recursiveSearch(state: GameState, temp: Card[], i: number): void
 		addFlush(state, temp);
 		return ;
 	}
-	while (i < state.playerCards.length - 4 + temp.length)
+	while (i < state.ownCards.length - 4 + temp.length)
 	{
-		if (temp.length == 0 || state.playerCards[i].suit == temp[0].suit)
+		if (temp.length == 0 || state.ownCards[i].suit == temp[0].suit)
 		{
-			temp.push(state.playerCards[i]);
+			temp.push(state.ownCards[i]);
 			recursiveSearch(state, temp, i + 1);
 			temp.pop();
 		}

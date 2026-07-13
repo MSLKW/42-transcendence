@@ -10,10 +10,11 @@ export class BotManager {
 		this.bots = [];
 	}
 
-	addBot(id: string, serverUrl: string, ai: AAIController): string
+	addBot(name: string, serverUrl: string, ai: AAIController): string
 	{
+		const id = `${name}-${randomUUID().substring(0, 8)}`;
 		this.bots.push(new Bot(id, serverUrl, ai));
-		return id;
+		return (id);
 	}
 
 	startAll(): void

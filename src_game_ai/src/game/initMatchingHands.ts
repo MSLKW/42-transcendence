@@ -8,12 +8,12 @@ export function initMatchingHands(state: GameState): void
 {
 	let i = 0;
 
-	while (i < state.playerCards.length)
+	while (i < state.ownCards.length)
 	{
-		const one = state.playerCards[i];
-		const two = state.playerCards[i + 1];
-		const three = state.playerCards[i + 2];
-		const four = state.playerCards[i + 3];
+		const one = state.ownCards[i];
+		const two = state.ownCards[i + 1];
+		const three = state.ownCards[i + 2];
+		const four = state.ownCards[i + 3];
 
 		if (four != undefined && one.rank == four.rank)
 		{
@@ -78,13 +78,13 @@ function createTriple(a: Card, b: Card, c: Card): CardHand
 
 function createFourOfAKinds(state: GameState, quadHandTemp: CardHand, index: number)
 {
-	for (let i = 0; i < state.playerCards.length; i++)
+	for (let i = 0; i < state.ownCards.length; i++)
 	{
 		if (i >= index && i < index + 4)
 			continue ;
 		const fourOfAKindHand: CardHand = {
 			...quadHandTemp,
-			cards: [state.playerCards[i], ...quadHandTemp.cards]
+			cards: [state.ownCards[i], ...quadHandTemp.cards]
 		};
 		state.possibleCardHands["four_of_a_kind"].push(fourOfAKindHand);
 	}

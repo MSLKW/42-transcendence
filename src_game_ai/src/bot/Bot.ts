@@ -1,10 +1,17 @@
 import { io, Socket } from "socket.io-client";
 import { GameState } from "../game/GameState";
 import { AAIController } from "../ai/AAIController";
-import { GameStateTransmit, CardHandTransmit, PlayerSeatOrderTransmit,
-		StatusTransmit, PlayerTurnTransmit, GameStartRequest,
-		GameEndStatsTransmit } from "../Types";
 import { logger } from "../utils/logger";
+
+import {
+	GameStateTransmit,
+	CardHandTransmit,
+	PlayerSeatOrderTransmit,
+	StatusTransmit,
+	PlayerTurnTransmit,
+	GameStartRequest,
+	GameEndStatsTransmit
+} from "../Types";
 
 type CardHand = CardHandTransmit;
 
@@ -13,13 +20,16 @@ export class Bot
 	private state:			GameState;
 	private ai:				AAIController;
 	private socket:			Socket | null = null;
+
+	private seatOrder:		PlayerSeatOrderTransmit | null = null;
+
 	private wins:			number = 0;
 	private gamesPlayed:	number = 0;
-	private maxGames:		number = 100000;
+	private maxGames:		number = 1000;
 
 	constructor(private id: string, private serverUrl: string, ai: AAIController)
 	{
-		this.state = new GameState();
+		this.state = new GameState({}, []);
 		this.ai = ai;
 	}
 
@@ -39,6 +49,8 @@ export class Bot
 
 	private	playerJoined = (seatOrder: PlayerSeatOrderTransmit) =>
 	{
+		logger.info(this.id, seatOrder);
+		this.seatOrder = seatOrder;
 		if (seatOrder.seatOrder[this.id] == 3)
 		{	
 			const startRequest: GameStartRequest = {
@@ -51,16 +63,25 @@ export class Bot
 
 	private initGameState = (gameState: GameStateTransmit) =>
 	{
-		this.state.initPlayerCards(gameState.playerCards);
-		logger.info(this.id, this.state.playerCards);
+		this.state = new GameState(this.seatOrder!.seatOrder, gameState.playerCards);
+		logger.verbose(this.id, this.state.ownCards);
 	}
 	
 	private checkTurn = (playerTurn: PlayerTurnTransmit) =>
 	{
-		if (playerTurn.playerId == this.id)
+		if (playerTurn.playerId == this.state.currentPlayer)
+			return ;	
+		if (this.state.turnSkipped && !(this.state.currentPlayer != this.id))
+		{
+			logger.info(this.id, this.state.currentPlayer, "skipped their turn");
+			this.state.recordSkippedMove(this.state.currentPlayer);
+		}
+		this.state.currentPlayer = playerTurn.playerId;
+		if (this.state.currentPlayer == this.id)
 			this.playCardHand();
 		else
-			logger.info(this.id, "Player<" + playerTurn.playerId + ">'s turn");
+			logger.info(this.id, `${this.state.currentPlayer}'s turn`);
+		this.state.turnSkipped = true;
 	}
 
 	private playCardHand = () =>
@@ -69,15 +90,16 @@ export class Bot
 
 		if (cardHand == null)
 		{
-			logger.info(this.id, "skipping turn");
+			logger.verbose(this.id, "skipping turn");
+			this.state.recordSkippedMove(this.id);
 			this.socket?.emit("player_skip_turn");
 		}
 		else
 		{
 			cardHand.playerId = this.id;
-			this.state.setLastMove(cardHand);
+			this.state.setLastCardHand(cardHand);
 			this.state.removeCards(cardHand);
-			logger.info(this.id, "attempting to play", cardHand);
+			logger.verbose(this.id, "attempting to play", cardHand);
 			this.socket?.emit("player_play_card_hand", cardHand);
 		}
 	}
@@ -92,8 +114,8 @@ export class Bot
 	{
 		if (opponentMove.playerId != this.id)
 		{
-			logger.info(this.id, "opponent played:", opponentMove);
-			this.state.setLastMove(opponentMove);
+			logger.verbose(opponentMove.playerId, "played:", opponentMove);
+			this.state.setLastCardHand(opponentMove);
 		}
 	}
 
@@ -102,7 +124,7 @@ export class Bot
 		this.gamesPlayed++;
 		if (stat.winnerPlayerId == this.id)
 		{
-			logger.info(this.id, "I won");
+			logger.verbose(this.id, "I won");
 			this.wins++;
 			if (this.gamesPlayed != this.maxGames)
 			{
@@ -114,11 +136,11 @@ export class Bot
 		}
 		else
 		{
-			logger.info(this.id, "I lost");
+			logger.verbose(this.id, "I lost");
 		}
 		if (this.gamesPlayed == this.maxGames)
 		{
-			logger.warn(this.id, "I won", this.wins, "times");
+			logger.info(this.id, "I won", this.wins, "times");
 			if (stat.winnerPlayerId == this.id)
 				console.log(new Date().toTimeString());
 		}

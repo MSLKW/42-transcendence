@@ -7,14 +7,13 @@ import { logger } from "../utils/logger";
 type Card = CardTransmit;
 type CardHand = CardHandTransmit;
 
-export abstract class AAIController {
-	constructor() {}
-
+export abstract class AAIController
+{
 	public decide(botId: string, state: GameState): CardHand | null
 	{
 		if (state.moveHistory.length == 0)
 			return (this.playLead(state, true));
-		else if (state.moveHistory.at(-1)!.playerId == botId)
+		else if (state.lastCardHand.playerId == botId || state.cardHandsPlayed == 0)
 			return (this.playLead(state, false));
 		else
 			return (this.playFollow(botId, state));
@@ -43,11 +42,10 @@ export abstract class AAIController {
 
 	private playFollow(botId: string, state: GameState): CardHand | null
 	{
-		const lastMove = state.moveHistory.at(-1)!;
 		let cardHands: CardHand[] = [];
 
-		logger.info(botId, "last move:", lastMove);
-		switch (lastMove.handType)
+		logger.verbose(botId, "last move:", state.lastCardHand);
+		switch (state.lastCardHand.handType)
 		{
 			case HandType.Single:
 				cardHands = state.possibleCardHands["single"];
@@ -70,7 +68,7 @@ export abstract class AAIController {
 		}
 		const i = upperBound(
 			cardHands,
-			lastMove,
+			state.lastCardHand,
 			cardHandComp
 		);
 		if (i == cardHands.length)

@@ -6,7 +6,7 @@ type CardHand = CardHandTransmit;
 
 export function initSingles(state: GameState): void
 {
-	state.playerCards.forEach((card: Card) =>
+	state.ownCards.forEach((card: Card) =>
 	{
 		const single: CardHand = {
 			cards: [card],

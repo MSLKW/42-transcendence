@@ -17,11 +17,11 @@ function recursiveSearch(state: GameState, temp: Card[], i: number): void
 		addStraight(state, temp);
 		return ;
 	}
-	while (i < state.playerCards.length - 4 + temp.length)
+	while (i < state.ownCards.length - 4 + temp.length)
 	{
-		if (temp.length == 0 || state.playerCards[i].rank == temp[temp.length - 1].rank + 1)
+		if (temp.length == 0 || state.ownCards[i].rank == temp[temp.length - 1].rank + 1)
 		{
-			temp.push(state.playerCards[i]);
+			temp.push(state.ownCards[i]);
 			recursiveSearch(state, temp, i + 1);
 			temp.pop();
 		}
