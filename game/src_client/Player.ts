@@ -16,7 +16,6 @@ export class Player {
 
 	private sendCardsButton: HTMLButtonElement;
 	private skipTurnButton: HTMLButtonElement;
-	private startGameButton: HTMLButtonElement;
 	private sortCardsByRankButton: HTMLButtonElement;
 	private sortCardsBySuitButton: HTMLButtonElement
 
@@ -28,7 +27,6 @@ export class Player {
 
 		this.sendCardsButton = document.getElementById('send-cards-button') as HTMLButtonElement;
 		this.skipTurnButton = document.getElementById('skip-turn-button') as HTMLButtonElement;
-		this.startGameButton = document.getElementById('start-game-button') as HTMLButtonElement;
 		this.sortCardsByRankButton = document.getElementById('sort-cards-by-rank-button') as HTMLButtonElement;
 		this.sortCardsBySuitButton = document.getElementById('sort-cards-by-suit-button') as HTMLButtonElement;
 
@@ -36,7 +34,6 @@ export class Player {
 
 		if (this.sendCardsButton === undefined || 
 			this.skipTurnButton === undefined || 
-			this.startGameButton === undefined ||
 			this.sortCardsByRankButton === undefined ||
 			this.sortCardsBySuitButton === undefined) {
 			console.error("Player could not get HTML buttons");
@@ -50,18 +47,16 @@ export class Player {
 		return (this.playerId);
 	}
 
+	public setupGameState(gameState: GameStateTransmit) {
+		this.cardHeapRef.sync(gameState.cardHeap);
+		this.collectCards(gameState.playerCards);
+		this.setPlayerTurnUI(gameState.isPlayerTurn);
+	}
+
 	private setupListeners() {
-		this.socket.on('game_start', (status: statusTransmit) => {
-			if (status.success === true) {
-				this.startGameButton.disabled = true;
-			}
-			console.log(`Start Game: ${status.success}`);
-		});
-		
 		this.socket.on('game_end', (gameEndStats: GameEndStatsTransmit) => {
 			this.cardManager.reset();
 			this.cardHeapRef.reset();
-			this.startGameButton.disabled = false;
 			gameStatus.setGameStats(gameEndStats, this);
 			gameStatus.setLightboxActive(true);
 			console.log(gameEndStats);
@@ -93,12 +88,6 @@ export class Player {
 			}
 		})
 
-		this.socket.on("player_game_state", (gameState: GameStateTransmit) => {
-			this.cardHeapRef.sync(gameState.cardHeap);
-			this.collectCards(gameState.playerCards);
-			this.setPlayerTurnUI(gameState.isPlayerTurn);
-		});
-
 		this.sendCardsButton.addEventListener('click', () => {
 			const cardHandTransmit = this.cardManager.selectedCards.transmit();
 			this.socket.emit('player_play_card_hand', cardHandTransmit);
@@ -106,13 +95,6 @@ export class Player {
 		
 		this.skipTurnButton.addEventListener('click', () => {
 			this.socket.emit('player_skip_turn');
-		});
-		
-		this.startGameButton.addEventListener('click', () => {
-			const gameStartRequest: GameStartRequest = {
-				playerId: this.playerId
-			}
-			this.socket.emit('game_start', gameStartRequest);
 		});
 
 		this.sortCardsByRankButton.addEventListener('click', () => {

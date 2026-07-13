@@ -37,13 +37,12 @@ export class Opponent {
 
 		this.socket.on('game_end', (gameEndStats: GameEndStatsTransmit) => {
 			this.cardManager.reset();
-			console.log(gameEndStats);
 		})
+	}
 
-		this.socket.on("player_game_state", (gameState: GameStateTransmit) => {
-			const cardsAmount = gameState.playerCardsAmount[this.opponentId];
+	public setupGameState(gameState: GameStateTransmit) {
+		const cardsAmount = gameState.playerCardsAmount[this.opponentId];
 			this.collectCardsAmount(cardsAmount);
-		});
 	}
 
 	private collectCardsAmount(amount: number) {

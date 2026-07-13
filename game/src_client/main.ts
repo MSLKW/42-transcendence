@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { CardHandTransmit, CardRank, CardSuit, CardTransmit, HandType, PentupleType, PlayerSeatOrderTransmit } from '../src_shared/Types.ts';
+import { CardHandTransmit, CardRank, CardSuit, GameStateTransmit, GameStartRequest, statusTransmit, SeatOrderTransmit } from '../src_shared/Types.ts';
 import { Card } from './Card.ts';
 import { CardManager } from './CardManager.ts';
 import { CardHand } from './CardHand.ts';
@@ -119,26 +119,65 @@ if (authId && playerId) {
 		console.log('Socket disconnected')
 	});
 
-	socket.on('player_join', (playerJoin: PlayerSeatOrderTransmit) => { 
-		console.log(playerJoin);
-		if (playerJoin.playerId === playerId) {
-			const player = new Player(socket, playerId, cardHeap);
-			const [pos, rot] = tablePosition(playerJoin.seatOrder[playerId], true);
-			player.cardManager.updateManager(pos, rot);
-			const seatOrder: Record<string, number> = playerJoin.seatOrder;
-			Object.keys(seatOrder).forEach((id) => {
-				if (id !== playerId ) {
-					const opponent = new Opponent(socket, id, cardHeap);
-					const [pos, rot] = tablePosition(playerJoin.seatOrder[id], false);
-					opponent.cardManager.updateManager(pos, rot);
-				}
-			})
+	const startGameButton = document.getElementById('start-game-button') as HTMLButtonElement;
+	const takeSeatButton = document.getElementById('take-seat-button') as HTMLButtonElement;
+	const leaveSeatButton = document.getElementById('leave-seat-button') as HTMLButtonElement;
+	const takeSeatInput = document.getElementById('take-seat-input') as HTMLInputElement;
+
+	socket.on('game_start_request', (status: statusTransmit) => {
+		if (status.success === true) {
+			startGameButton.disabled = true;
 		}
-		else {
-			const opponent = new Opponent(socket, playerJoin.playerId, cardHeap);
-			const [pos, rot] = tablePosition(playerJoin.seatOrder[playerJoin.playerId], false);
-			opponent.cardManager.updateManager(pos, rot);
+		console.log(`Start Game: ${status.success} | ${status.message}`);
+	});
+
+	startGameButton.addEventListener('click', () => {
+		const gameStartRequest: GameStartRequest = {
+			playerId: playerId
 		}
+		socket.emit('game_start_request', gameStartRequest);
+	});
+
+	socket.on('game_end', () => {
+		startGameButton.disabled = false;
+	});
+
+	takeSeatButton.addEventListener('click', () => {
+		socket.emit("user_seat_take", Number(takeSeatInput.value));
+	});
+
+	socket.on("user_seat_take", (status: statusTransmit) => {
+		console.log(`Take seat: ${status.success} | ${status.message}`);
+	});
+
+	leaveSeatButton.addEventListener('click', () => {
+		socket.emit("user_seat_leave");
+	});
+
+	socket.on("user_seat_leave", (status: statusTransmit) => {
+		console.log(`Left Seat: ${status.success} | ${status.message}`);
+	});
+
+	socket.on("user_seat_update", (seatOrder: SeatOrderTransmit) => {
+		console.log(seatOrder);
+	});
+
+	socket.on("player_game_state", (gameState: GameStateTransmit) => {
+		const seatOrder = gameState.playerSeatOrder;
+		Object.keys(seatOrder).forEach((id) => {
+			if (id === playerId) {
+				const player = new Player(socket, playerId, cardHeap);
+				const [pos, rot] = tablePosition(seatOrder[id], true);
+				player.cardManager.updateManager(pos, rot);
+				player.setupGameState(gameState);
+			}
+			else if (id !== playerId) {
+				const opponent = new Opponent(socket, id, cardHeap);
+				const [pos, rot] = tablePosition(seatOrder[id], false);
+				opponent.cardManager.updateManager(pos, rot);
+				opponent.setupGameState(gameState);
+			}
+		})
 	});
 }
 

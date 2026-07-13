@@ -4,6 +4,7 @@ import { GameState } from './GameState.js';
 import { CardHeapState } from './CardHeapState.js';
 import { io } from './server.js';
 import { CardHandState } from './CardHandState.js';
+import { UserState } from './UserState.js';
 
 export class PlayerState {
 	public	socket: Socket;
@@ -25,6 +26,8 @@ export class PlayerState {
 	}
 
 	public setupSocketListeners() {
+		this.socket.join("game");
+
 		this.socket.on("player_play_card_hand", (cardHandTransmit: CardHandTransmit) => {
 			const status: StatusTransmit = this.playCardHand(cardHandTransmit);
 			this.socket.emit('player_play_card_hand', status);
@@ -40,6 +43,22 @@ export class PlayerState {
 		this.socket.on("player_skip_turn", () => {
 			this.socket.emit("player_skip_turn", this.skipTurn());
 		})
+	}
+
+	public disconnect() {
+		if (this.gameStateRef.isGameStarted === true) {
+			this.isDisconnected = true;
+			if (this.gameStateRef.turnTimerInSeconds === 0)
+				this.forceSkipTurn();
+			console.log(`Player<${this.playerId}> has disconnected`)
+		}
+	}
+
+	public reconnect(user: UserState) {
+		this.socket = user.socket;
+		this.isDisconnected = false;
+		this.setupSocketListeners();
+		this.socket.emit("player_game_state", this.gameStateRef.transmit(this));
 	}
 
 	public collectCards(cards: Array<CardTransmit>) {

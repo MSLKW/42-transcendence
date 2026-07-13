@@ -55,6 +55,7 @@ export interface CardHandTransmit {
 export type GameStateTransmit = {
 	cardHeap: Array<CardHandTransmit>,
 	playerCardsAmount: Record<string, number>,
+	playerSeatOrder: Record<string, number>,
 	playerCards: Array<CardTransmit>,
 	isPlayerTurn: boolean
 }
@@ -69,8 +70,7 @@ export type GameEndStatsTransmit = {
 	playerPenaltyPoints: Record<string, number>
 }
 
-export type PlayerSeatOrderTransmit = {
-	playerId: string,
+export type SeatOrderTransmit = {
 	seatOrder: Record<string, number>
 }
 
