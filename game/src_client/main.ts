@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { CardHandTransmit, CardRank, CardSuit, GameStateTransmit, GameStartRequest, statusTransmit, SeatOrderTransmit } from '../src_shared/Types.ts';
+import { CardHandTransmit, CardRank, CardSuit, GameStateTransmit, GameStartRequest, StatusTransmit, SeatOrderTransmit } from '../src_shared/Types.ts';
 import { Card } from './Card.ts';
 import { CardManager } from './CardManager.ts';
 import { CardHand } from './CardHand.ts';
@@ -124,7 +124,7 @@ if (authId && playerId) {
 	const leaveSeatButton = document.getElementById('leave-seat-button') as HTMLButtonElement;
 	const takeSeatInput = document.getElementById('take-seat-input') as HTMLInputElement;
 
-	socket.on('game_start_request', (status: statusTransmit) => {
+	socket.on('game_start_request', (status: StatusTransmit) => {
 		if (status.success === true) {
 			startGameButton.disabled = true;
 		}
@@ -146,7 +146,7 @@ if (authId && playerId) {
 		socket.emit("user_seat_take", Number(takeSeatInput.value));
 	});
 
-	socket.on("user_seat_take", (status: statusTransmit) => {
+	socket.on("user_seat_take", (status: StatusTransmit) => {
 		console.log(`Take seat: ${status.success} | ${status.message}`);
 	});
 
@@ -154,7 +154,7 @@ if (authId && playerId) {
 		socket.emit("user_seat_leave");
 	});
 
-	socket.on("user_seat_leave", (status: statusTransmit) => {
+	socket.on("user_seat_leave", (status: StatusTransmit) => {
 		console.log(`Left Seat: ${status.success} | ${status.message}`);
 	});
 

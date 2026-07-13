@@ -3,7 +3,7 @@ import { io } from './server.js';
 import { PlayerState } from './PlayerState.js';
 import { CardDeckState } from './CardDeckState.js'
 import { CardHeapState } from './CardHeapState.js'
-import { GameStateTransmit, GameEndStatsTransmit, statusTransmit, playerTurnTransmit, GameStartRequest } from '../src_shared/Types.js';
+import { GameStateTransmit, GameEndStatsTransmit, StatusTransmit, PlayerTurnTransmit, GameStartRequest, SkipTurnTransmit } from '../src_shared/Types.js';
 import { UserState } from './UserState.js';
 
 export class GameState {
@@ -35,8 +35,8 @@ export class GameState {
 	/*
 		@param user: Should be the users who want to play in the game
 	*/
-	public startGame(users: Array<UserState>): statusTransmit {
-		const status: statusTransmit = {
+	public startGame(users: Array<UserState>): StatusTransmit {
+		const status: StatusTransmit = {
 			success: false,
 			message: ""
 		}
@@ -131,7 +131,7 @@ export class GameState {
 			this.nextPlayerTurn();
 			return ;
 		}
-		const playerTurnTransmit: playerTurnTransmit = {
+		const playerTurnTransmit: PlayerTurnTransmit = {
 			playerId: player.playerId,
 			skippable: !this.cardHeap.isPlayerLeading(player.playerId),
 			timer: this.turnTimerInSeconds
@@ -144,12 +144,12 @@ export class GameState {
 
 	private playerTimeout(player: PlayerState) {
 		console.log(`Timing out player<${player.playerId}>`)
-		const status: statusTransmit = {
+		const status: StatusTransmit = {
 			success: true,
 			message: "Timer ran out"
 		}
-		player.socket.emit("player_skip_turn", status);
-		player.forceSkipTurn();
+		player.socket.emit("player_skip_turn_request", status);
+		player.skipTurn();
 	}
 
 	public nextPlayerTurn() {

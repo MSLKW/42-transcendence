@@ -1,5 +1,5 @@
 import { Socket } from 'socket.io';
-import { CardTransmit, CardRank, CardSuit, CardHandTransmit, HandType, PentupleType, statusTransmit as StatusTransmit } from '../src_shared/Types.js';
+import { CardTransmit, CardRank, CardSuit, CardHandTransmit, HandType, PentupleType, StatusTransmit, SkipTurnTransmit } from '../src_shared/Types.js';
 import { GameState } from './GameState.js';
 import { CardHeapState } from './CardHeapState.js';
 import { io } from './server.js';
@@ -40,8 +40,8 @@ export class PlayerState {
 			}
 		});
 
-		this.socket.on("player_skip_turn", () => {
-			this.socket.emit("player_skip_turn", this.skipTurn());
+		this.socket.on("player_skip_turn_request", () => {
+			this.socket.emit("player_skip_turn_request", this.skipTurnRequest());
 		})
 	}
 
@@ -49,7 +49,7 @@ export class PlayerState {
 		if (this.gameStateRef.isGameStarted === true) {
 			this.isDisconnected = true;
 			if (this.gameStateRef.turnTimerInSeconds === 0)
-				this.forceSkipTurn();
+				this.skipTurn();
 			console.log(`Player<${this.playerId}> has disconnected`)
 		}
 	}
@@ -89,7 +89,7 @@ export class PlayerState {
 		}
 	}
 
-	public skipTurn(): StatusTransmit {
+	public skipTurnRequest(): StatusTransmit {
 		const status: StatusTransmit = {
 			success: false,
 			message: "It's not the player's turn"
@@ -101,17 +101,21 @@ export class PlayerState {
 			status.message = "Player is already leading"
 			return (status);
 		}
-		this.gameStateRef.nextPlayerTurn();
+		this.skipTurn();
 		status.success = true;
 		status.message = "Player has successfully skipped their turn";
 		return (status);
 	}
 
-	public forceSkipTurn() {
+	public skipTurn() {
 		if (this.gameStateRef.isPlayerTurn(this) === true) {
 			if (this.cardHeapRef.isPlayerLeading(this.playerId))
 				this.cardHeapRef.resetPlayerLeading();
 			this.cardHeapRef.requiresThreeDiamonds = false;
+			const playerSkipTurn: SkipTurnTransmit = {
+				playerId: this.playerId
+			}
+			io.to("game").emit("player_skip_turn", playerSkipTurn);
 			this.gameStateRef.nextPlayerTurn();
 		}
 	}

@@ -1,7 +1,7 @@
 import { Socket } from 'socket.io';
 import { check } from 'zod';
 import { Lobby } from './Lobby.js';
-import { statusTransmit } from '../src_shared/Types.js';
+import { StatusTransmit } from '../src_shared/Types.js';
 
 export class UserState {
 	public	socket: Socket;
@@ -33,8 +33,8 @@ export class UserState {
 		});
 	}
 
-	private userTakeSeat(selectedSeat: number): statusTransmit {
-		const status: statusTransmit = {
+	private userTakeSeat(selectedSeat: number): StatusTransmit {
+		const status: StatusTransmit = {
 			success: false,
 			message: ""
 		};
@@ -50,8 +50,8 @@ export class UserState {
 		return (status);
 	}
 
-	private userLeaveSeat(): statusTransmit {
-		const status: statusTransmit = {
+	private userLeaveSeat(): StatusTransmit {
+		const status: StatusTransmit = {
 			success: false,
 			message: ""
 		};

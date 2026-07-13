@@ -74,13 +74,17 @@ export type SeatOrderTransmit = {
 	seatOrder: Record<string, number>
 }
 
-export type statusTransmit = {
+export type StatusTransmit = {
 	success: boolean,
 	message: string
 }
 
-export type playerTurnTransmit = {
+export type PlayerTurnTransmit = {
 	playerId: string,
 	skippable: boolean,
 	timer: number
+}
+
+export type SkipTurnTransmit = {
+	playerId: string
 }

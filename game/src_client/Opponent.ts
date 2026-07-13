@@ -19,8 +19,6 @@ export class Opponent {
 		this.cardHeapRef = cardHeapRef;
 		this.cardManager = new CardManager(this.opponentId);
 
-		console.log(`opponent<${this.opponentId}> joined`);
-
 		this.socket.on("opponent_play_card_hand", (cardHandTransmit: CardHandTransmit) => {
 			if (cardHandTransmit.playerId === this.opponentId) {
 				const cardHand = new CardHand(this.opponentId);
