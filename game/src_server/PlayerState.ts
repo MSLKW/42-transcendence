@@ -108,10 +108,12 @@ export class PlayerState {
 	}
 
 	public forceSkipTurn() {
-		if (this.cardHeapRef.isPlayerLeading(this.playerId))
-			this.cardHeapRef.resetPlayerLeading();
-		this.cardHeapRef.requiresThreeDiamonds = false;
-		this.gameStateRef.nextPlayerTurn();
+		if (this.gameStateRef.isPlayerTurn(this) === true) {
+			if (this.cardHeapRef.isPlayerLeading(this.playerId))
+				this.cardHeapRef.resetPlayerLeading();
+			this.cardHeapRef.requiresThreeDiamonds = false;
+			this.gameStateRef.nextPlayerTurn();
+		}
 	}
 
 	// Returns if player has finished all his cards
