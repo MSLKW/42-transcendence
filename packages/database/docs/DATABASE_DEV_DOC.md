@@ -3,6 +3,7 @@ using PostgreSQL
 more documentations coming soon for team's references
 draft only for now, this DEV_DOC is still incomplete
 
+# these are outdated, not updated to the new method of making database as a package rather than a microservice
 
 ## updated dependencies in package.json
 
