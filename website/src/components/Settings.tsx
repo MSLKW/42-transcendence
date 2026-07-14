@@ -1,6 +1,6 @@
 import { useSceneStore } from "../store/useSceneStore";
 import { useGameStore } from "../store/useGameStore";
-import { useSettingsStore } from "../store/SettingsStore";
+import { useSettingsStore, AUTO_PASS_LABELS } from "../store/SettingsStore";
 import { SettingsIcon } from "../icons/SettingsIcon";
 import { CloseButton } from "./CloseButton";
 import { ToggleButton } from "./ToggleButton";
@@ -24,7 +24,7 @@ export const SettingsWindow = () => {
 
 	const gameStarted = useGameStore((state) => state.gameStarted);
 	const {
-		allow3OfAKind, allow2OfSpadesEnd, autoPassIndex, autoPassText, endGameCondition, scoreCalculation, cardStyle, uiColor, fxLevel, mxLevel,
+		allow3OfAKind, allow2OfSpadesEnd, autoPassIndex, endGameCondition, scoreCalculation, cardStyle, uiColor, fxLevel, mxLevel,
 		setSetting, toggleSetting,
 	} = useSettingsStore();
 
@@ -89,13 +89,13 @@ export const SettingsWindow = () => {
 						px-8 py-5
 					">
 						<label htmlFor="autoPassSlider">
-							<h2>Auto Pass Time: {autoPassText[autoPassIndex]}</h2>
+							<h2>Auto Pass Time: {AUTO_PASS_LABELS[autoPassIndex]}</h2>
 						</label>
 						<input
 							type="range"
 							id="autoPassSlider"
 							min="0"
-							max={autoPassText.length - 1}
+							max={AUTO_PASS_LABELS.length - 1}
 							step="1"
 							value={autoPassIndex}
 							disabled={gameStarted}
