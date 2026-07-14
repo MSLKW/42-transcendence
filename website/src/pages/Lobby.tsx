@@ -4,7 +4,7 @@ import { Stats, PerspectiveCamera, OrbitControls, AdaptiveDpr } from "@react-thr
 import { useSceneStore } from "../store/useSceneStore";
 import { useGameStore } from "../store/useGameStore";
 import { useDevStore } from "../store/useDevStore";
-import { SphereBg } from "../components/SphereBg";
+import { SphereBg } from "../components/bg/SphereBg";
 import { BackButton } from "../components/BackButton";
 import { SettingsButton } from "../components/Settings";
 import { InfoButton } from "../components/Info";

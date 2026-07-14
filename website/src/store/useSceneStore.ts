@@ -1,6 +1,7 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import { usePlayerStore } from "./usePlayerStore";
+import { useGameStore } from "./useGameStore";
 
 export type GameScene = "LOGIN" | "HOME" | "LOBBY" | "GAMEPLAY" | "R3F" | "RESULTS";
 
@@ -35,7 +36,10 @@ export const useSceneStore = create<SceneState>() (
 				rank: false,
 			},
 
-			setCurrentScene: (scene) => set({ currentScene: scene }),
+			setCurrentScene: (scene) => {
+				set({ currentScene: scene });
+				useGameStore.getState().setGameStarted(scene === "R3F" || scene === "GAMEPLAY");
+			},
 			resetGame: () => {
 				set({ currentScene: "LOGIN" });
 				usePlayerStore.setState({

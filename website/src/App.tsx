@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { useSceneStore } from "./store/useSceneStore";
-import { useGameStore } from "./store/useGameStore";
+import { StripeBg } from "./components/bg/StripeBg";
 import { Login } from "./pages/Login";
 import { Home } from "./pages/Home";
 import { Lobby } from "./pages/Lobby";
@@ -26,15 +26,11 @@ export default function App() {
 		});
 	}, [currentScene]);
 	
-	const setGameStarted = useGameStore((state) => state.setGameStarted);
-	useEffect(() => {
-		setGameStarted(currentScene === "R3F" || currentScene === "GAMEPLAY");
-	}, [currentScene]);
-
 	const showWindow = useSceneStore((state) => state.showWindow);
 
 	return (
 		<>
+			{ (currentScene === "LOGIN" || currentScene === "HOME") && <StripeBg /> }
 			{ currentScene === 'LOGIN' && <Login /> }
 			{ currentScene === 'HOME' && <Home /> }
 			{ currentScene === 'LOBBY' && <Lobby /> }

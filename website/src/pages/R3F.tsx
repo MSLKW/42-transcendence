@@ -3,7 +3,7 @@ import { Canvas } from "@react-three/fiber";
 import { Stats, PerspectiveCamera, OrbitControls, AdaptiveDpr } from "@react-three/drei";
 import { useSceneStore } from "../store/useSceneStore";
 import { useDevStore } from "../store/useDevStore";
-import { SphereBg } from "../components/SphereBg";
+import { SphereBg } from "../components/bg/SphereBg";
 import { BackButton } from "../components/BackButton";
 import { SettingsButton } from "../components/Settings";
 import { RankButton } from "../components/RankButton";

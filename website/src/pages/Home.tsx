@@ -4,7 +4,6 @@ import { Stats } from "@react-three/drei";
 import { useSceneStore } from "../store/useSceneStore";
 import { useGameStore } from "../store/useGameStore";
 import { useDevStore } from "../store/useDevStore";
-import { StripeBg } from "../components/StripeBg";
 import { InfoButton } from "../components/Info";
 import { SignOutButton } from "../components/SignOutButton";
 import { SettingsButton } from "../components/Settings";
@@ -174,7 +173,6 @@ export const Home = () => {
 
 	return (
 		<>
-			<StripeBg />
 			<section ref={containerRef} className="cont-canvas">
 				<Canvas>
 					{showStats && <Stats />}

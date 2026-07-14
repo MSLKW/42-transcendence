@@ -3,8 +3,7 @@ import { Canvas } from "@react-three/fiber";
 import { Stats, PerspectiveCamera, OrbitControls, AdaptiveDpr } from "@react-three/drei";
 import { useSceneStore } from "../store/useSceneStore";
 import { useDevStore } from "../store/useDevStore";
-import { StripeBg } from "../components/StripeBg";
-import { SphereBg } from "../components/SphereBg";
+import { SphereBg } from "../components/bg/SphereBg";
 import { BigLogo } from "../components/Logo";
 import { InfoButton } from "../components/Info";
 import { CreateAccountButton } from "../components/CreateAccount";
@@ -34,12 +33,11 @@ export const Login = () => {
 	
 	return (
 		<>
-			<StripeBg />
 			<section className="cont-canvas">
 				<Canvas>
 					{showStats && <Stats />}
 					<AdaptiveDpr />
-					<ambientLight intensity={0.5}/>
+					{/* <ambientLight intensity={0.5}/> */}
 					<directionalLight position={[0, 5, 5]} intensity={0.5} />
 					<Card
 						position={[0,0.25,0]}
