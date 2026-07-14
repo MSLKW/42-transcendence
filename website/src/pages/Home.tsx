@@ -1,6 +1,6 @@
 import { useRef, useEffect } from "react";
 import { useSceneStore } from "../store/useSceneStore";
-import { useGameStore } from "../store/useGameStore";
+import { useGameStore } from "../store/GameStore";
 import { usePartyStore } from "../store/PartyStore";
 import { InfoButton } from "../components/Info";
 import { SignOutButton } from "../components/SignOutButton";
@@ -19,12 +19,12 @@ interface HomeProps {
 
 export const HomeCardButton = ({ mode = 4 }: HomeProps) => {
 	const setCurrentScene = useSceneStore((state) => state.setCurrentScene);
-	const setGameMode = useGameStore((state) => state.setGameMode);
+	const setTotalPlayers = useGameStore((state) => state.setTotalPlayers);
 
 	return (
 		<button
 			onClick={() => {
-				setGameMode(mode);
+				setTotalPlayers(mode);
 				if (mode === 1)
 					setCurrentScene("GAMEPLAY")
 				else

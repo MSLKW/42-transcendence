@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { useSceneStore } from "./store/useSceneStore";
 import { useDevStore } from "./store/DevStore";
-import { useGameStore } from "./store/useGameStore";
+import { useGameStore } from "./store/GameStore";
 import { usePartyStore } from "./store/PartyStore";
 
 export default function Dev() {

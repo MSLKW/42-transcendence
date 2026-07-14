@@ -3,6 +3,7 @@ import { persist } from "zustand/middleware";
 
 interface PartyState {
 	partyCount: number;
+	isHost: boolean;
 	nameList: string[];
 	avatarList: string[];
 	badgesList: string[];
@@ -23,6 +24,7 @@ export const usePartyStore = create<PartyState>() (
 	persist(
 		(set) => ({
 			partyCount: 1,
+			isHost: true,
 			nameList: ["Player", "Void", "Null", "Undefined"],
 			avatarList: ["avatar-stock-0", "avatar-stock-1", "avatar-stock-2", "avatar-stock-3"],
 			badgesList: ["Beginner's Luck", "Novice", "Enthusiast", "Big 2 Champion"],

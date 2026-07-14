@@ -31,7 +31,7 @@ export const AvatarSelect = ({ color }: AvatarSelectProps) => {
 
 export const ProfileWindow = () => {
 	const setShowWindow = useSceneStore((state) => state.setShowWindow);
-	const partyList = usePartyStore((state) => state.partyList);
+	const nameList = usePartyStore((state) => state.nameList);
 	
 	const focusRef = useRef<HTMLInputElement | null>(null);
 	useEffect(() => {
@@ -65,7 +65,7 @@ export const ProfileWindow = () => {
 							ref={focusRef}
 							id="name"
 							type="text"
-							value={partyList[0]}
+							value={nameList[0]}
 							onChange={()=>{}}
 							className="
 								bg-n6 h-2.5 w-30

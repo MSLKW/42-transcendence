@@ -1,7 +1,7 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import { usePlayerStore } from "./usePlayerStore";
-import { useGameStore } from "./useGameStore";
+import { useGameStore } from "./GameStore";
 
 export type GameScene = "LOGIN" | "HOME" | "LOBBY" | "GAMEPLAY" | "R3F" | "RESULTS";
 

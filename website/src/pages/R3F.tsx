@@ -7,7 +7,7 @@ import { EmojiButton } from "../components/EmojiButtons";
 import { AvatarButton } from "../components/Avatar";
 import { ChatButton } from "../components/Chat";
 import { SortButtons } from "../components/SortButtons";
-import { useGameStore } from "../store/useGameStore";
+import { useGameStore } from "../store/GameStore";
 
 export const R3F = () => {
 	const setCurrentScene = useSceneStore((state) => state.setCurrentScene);
@@ -42,7 +42,7 @@ export const R3F = () => {
 		return () => observer.disconnect();
 	}, []);
 
-	const gameMode = useGameStore((state) => state.gameMode);
+	const totalPlayers = useGameStore((state) => state.totalPlayers);
 
 	return (
 		<>
@@ -58,7 +58,7 @@ export const R3F = () => {
 					</div>
 				</header>
 				<main>
-					{ gameMode === 4 &&
+					{ totalPlayers === 4 &&
 						<>
 							<div className="absolute left-[25%] top-[5%]">
 								<AvatarButton
@@ -83,7 +83,7 @@ export const R3F = () => {
 							</div>
 						</>
 					}
-					{ gameMode === 3 &&
+					{ totalPlayers === 3 &&
 						<>
 							<div className="absolute left-[5%] top-[20%]">
 								<AvatarButton
@@ -101,7 +101,7 @@ export const R3F = () => {
 							</div>
 						</>
 					}
-					{ gameMode === 2 &&
+					{ totalPlayers === 2 &&
 						<div className="absolute left-[25%] top-[5%]">
 							<AvatarButton
 								cornerButton="cardsLeft"

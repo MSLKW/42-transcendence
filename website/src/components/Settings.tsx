@@ -1,5 +1,5 @@
 import { useSceneStore } from "../store/useSceneStore";
-import { useGameStore } from "../store/useGameStore";
+import { useGameStore } from "../store/GameStore";
 import { useSettingsStore, AUTO_PASS_LABELS } from "../store/SettingsStore";
 import { SettingsIcon } from "../icons/SettingsIcon";
 import { CloseButton } from "./CloseButton";

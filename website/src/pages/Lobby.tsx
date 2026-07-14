@@ -1,6 +1,6 @@
 import { useRef, useEffect } from "react";
 import { useSceneStore } from "../store/useSceneStore";
-import { useGameStore } from "../store/useGameStore";
+import { useGameStore } from "../store/GameStore";
 import { usePartyStore } from "../store/PartyStore";
 import { BackButton } from "../components/BackButton";
 import { SettingsButton } from "../components/Settings";
@@ -31,7 +31,7 @@ export const Lobby = () => {
 		return () => observer.disconnect();
 	}, []);
 
-	const gameMode = useGameStore((state) => state.gameMode);
+	const totalPlayers = useGameStore((state) => state.totalPlayers);
 	const partyCount = usePartyStore((state) => state.partyCount);
 
 	return (
@@ -51,30 +51,30 @@ export const Lobby = () => {
 				<main className="flex flex-col place-content-evenly place-items-evenly">
 					<div className={`
 						w-full h-full
-						grid ${ gameMode === 3 ? "grid-cols-2" : "grid-cols-1" } grid-rows-1
+						grid ${ totalPlayers === 3 ? "grid-cols-2" : "grid-cols-1" } grid-rows-1
 						place-content-evenly place-items-center
 					`}>
-						{ gameMode === 4 && <AvatarButton playerIndex={2} /> }
-						{ gameMode === 3 &&
+						{ totalPlayers === 4 && <AvatarButton playerIndex={2} /> }
+						{ totalPlayers === 3 &&
 							<>
 								<AvatarButton playerIndex={1} />
 								<AvatarButton playerIndex={2} />
 							</>
 						}
-						{ gameMode === 2 && <AvatarButton playerIndex={1} /> }
+						{ totalPlayers === 2 && <AvatarButton playerIndex={1} /> }
 					</div>
 					<div className={`
 						w-full h-full
-						grid ${gameMode === 4 ? "grid-cols-3" : "grid-cols-1" } place-items-center
+						grid ${totalPlayers === 4 ? "grid-cols-3" : "grid-cols-1" } place-items-center
 					`}>
-						{ gameMode === 4 && <AvatarButton playerIndex={1} /> }
+						{ totalPlayers === 4 && <AvatarButton playerIndex={1} /> }
 						<button
 							className="btn-white hw-4/1"
 							onClick={() => setCurrentScene("R3F")}
 						>
 							START
 						</button>
-						{ gameMode === 4 && <AvatarButton playerIndex={3} /> }
+						{ totalPlayers === 4 && <AvatarButton playerIndex={3} /> }
 					</div>
 					<div className="w-full h-full grid place-items-center place-content-center">
 						<AvatarButton playerIndex={0} role="self" />
@@ -91,9 +91,9 @@ export const Lobby = () => {
 						gap-[clamp(0.25rem,3vw+0.125rem,2.5rem)]
 						sm:overflow-x-visible overflow-x-auto
 					">
-						{ partyCount > gameMode && 
-							Array.from({ length: partyCount - gameMode }, (_, index) => {
-								const playerIndex = gameMode + index;
+						{ partyCount > totalPlayers && 
+							Array.from({ length: partyCount - totalPlayers }, (_, index) => {
+								const playerIndex = totalPlayers + index;
 								return (
 									<AvatarButton playerIndex={playerIndex} />
 								)
