@@ -1,5 +1,6 @@
 import { useSceneStore } from "../store/useSceneStore";
 import { useGameStore } from "../store/useGameStore";
+import { useSettingsStore } from "../store/SettingsStore";
 import { SettingsIcon } from "../icons/SettingsIcon";
 import { CloseButton } from "./CloseButton";
 import { ToggleButton } from "./ToggleButton";
@@ -22,25 +23,10 @@ export const SettingsWindow = () => {
 	const setShowWindow = useSceneStore((scene) => scene.setShowWindow);
 
 	const gameStarted = useGameStore((state) => state.gameStarted);
-	const allowThrees = useGameStore((state) => state.allowThrees);
-	const setAllowThrees = useGameStore((state) => state.setAllowThrees);
-	const allow2SpadesFinish = useGameStore((state) => state.allow2SpadesFinish);
-	const setAllow2SpadesFinish = useGameStore((state) => state.setAllow2SpadesFinish);
-	const autoPassIndex = useGameStore((state) => state.autoPassIndex);
-	const setAutoPassIndex = useGameStore((state) => state.setAutoPassIndex);
-	const autoPassText = ["1s", "3s", "5s", "10s", "15s", "30s", "42s", "1 min", "2 mins", "No Limit"];
-	const gameEndCondition = useGameStore((state) => state.gameEndCondition);
-	const setGameEndCondition = useGameStore((state) => state.setGameEndCondition);
-	const scoreCalculation = useGameStore((state) => state.scoreCalculation);
-	const setScoreCalculation = useGameStore((state) => state.setScoreCalculation);
-	const pCardLook = useGameStore((state) => state.pCardLook);
-	const setPCardLook = useGameStore((state) => state.setPCardLook);
-	const uiColors = useGameStore((state) => state.uiColors);
-	const setUIColors = useGameStore((state) => state.setUIColors);
-	const fxLevel = useGameStore((state) => state.fxLevel);
-	const setFXLevel = useGameStore((state) => state.setFXLevel);
-	const mxLevel = useGameStore((state) => state.mxLevel);
-	const setMXLevel = useGameStore((state) => state.setMXLevel);
+	const {
+		allow3OfAKind, allow2OfSpadesEnd, autoPassIndex, autoPassText, endGameCondition, scoreCalculation, cardStyle, uiColor, fxLevel, mxLevel,
+		setSetting, toggleSetting,
+	} = useSettingsStore();
 
 	return (
 		<section className="
@@ -77,8 +63,8 @@ export const SettingsWindow = () => {
 							${gameStarted ? "opacity-50" : ""}
 						`}>
 							<ToggleButton 
-								checked={allowThrees}
-								onChange={setAllowThrees}
+								checked={allow3OfAKind}
+								onChange={() => toggleSetting("allow3OfAKind")}
 								disabled={gameStarted}
 							/>
 							<span>Allow Three of a Kind</span>
@@ -89,11 +75,11 @@ export const SettingsWindow = () => {
 							${gameStarted ? "opacity-50" : ""}
 						`}>
 							<ToggleButton 
-								checked={allow2SpadesFinish}
-								onChange={setAllow2SpadesFinish}
+								checked={allow2OfSpadesEnd}
+								onChange={() => toggleSetting("allow2OfSpadesEnd")}
 								disabled={gameStarted}
 							/>
-							<span>Allow Finish with 2 of Spades</span>
+							<span>Allow Ending with 2 of Spades</span>
 						</label>
 					</div>
 					<div className="
@@ -113,7 +99,7 @@ export const SettingsWindow = () => {
 							step="1"
 							value={autoPassIndex}
 							disabled={gameStarted}
-							onChange={(e) => { setAutoPassIndex(parseInt(e.target.value, 10)) }}
+							onChange={(e) => setSetting("autoPassIndex", parseInt(e.target.value, 10))}
 							className="accent-b5 cursor-pointer"
 						/>
 					</div>
@@ -131,8 +117,8 @@ export const SettingsWindow = () => {
 							<RadioButton
 								name="game-ends"
 								value="first-player"
-								onChange={() => setGameEndCondition(0)}
-								checked={gameEndCondition === 0}
+								onChange={() => setSetting("endGameCondition", 0)}
+								checked={endGameCondition === 0}
 								disabled={gameStarted}
 							/>
 							<span>When first player finish</span>
@@ -145,8 +131,8 @@ export const SettingsWindow = () => {
 							<RadioButton
 								name="game-ends"
 								value="last-hand"
-								onChange={() => setGameEndCondition(1)}
-								checked={gameEndCondition === 1}
+								onChange={() => setSetting("endGameCondition", 1)}
+								checked={endGameCondition === 1}
 								disabled={gameStarted}
 							/>
 							<span>Until last hand remain</span>
@@ -166,7 +152,7 @@ export const SettingsWindow = () => {
 							<RadioButton
 								name="calculate-score"
 								value="number"
-								onChange={() => setScoreCalculation(0)}
+								onChange={() => setSetting("scoreCalculation", 0)}
 								checked={scoreCalculation === 0}
 								disabled={gameStarted}
 							/>
@@ -180,7 +166,7 @@ export const SettingsWindow = () => {
 							<RadioButton
 								name="calculate-score"
 								value="value"
-								onChange={() => setScoreCalculation(1)}
+								onChange={() => setSetting("scoreCalculation", 1)}
 								checked={scoreCalculation === 1}
 								disabled={gameStarted}
 							/>
@@ -193,13 +179,13 @@ export const SettingsWindow = () => {
 						flex flex-col gap-2
 						px-8 mb-8 md:mb-0
 					">
-						<h2>Playing Cards Look</h2>
+						<h2>Playing Card Style</h2>
 						<label className="gap-5 cursor-pointer">
 							<RadioButton
 								name="pCardLook"
 								value="modern"
-								onChange={() => setPCardLook(0)}
-								checked={pCardLook === 0}
+								onChange={() => setSetting("cardStyle", 0)}
+								checked={cardStyle === 0}
 							/>
 							<span>Modern</span>
 						</label>
@@ -207,8 +193,8 @@ export const SettingsWindow = () => {
 							<RadioButton
 								name="pCardLook"
 								value="classic"
-								onChange={() => setPCardLook(1)}
-								checked={pCardLook === 1}
+								onChange={() => setSetting("cardStyle", 1)}
+								checked={cardStyle === 1}
 							/>
 							<span>Classic</span>
 						</label>
@@ -218,13 +204,13 @@ export const SettingsWindow = () => {
 						flex flex-col gap-2
 						px-8
 					">
-						<h2>UI Colors</h2>
+						<h2>UI Color</h2>
 						<label className="gap-5 cursor-pointer">
 							<RadioButton
 								name="UIColors"
 								value="main"
-								onChange={() => setUIColors(0)}
-								checked={uiColors === 0}
+								onChange={() => setSetting("uiColor", 0)}
+								checked={uiColor === 0}
 							/>
 							<div className="h-full aspect-1/2 flex border border-n6 overflow-clip">
 								<div className="h-full aspect-square bg-b4"/>
@@ -235,8 +221,8 @@ export const SettingsWindow = () => {
 							<RadioButton
 								name="UIColors"
 								value="alt"
-								onChange={() => setUIColors(1)}
-								checked={uiColors === 1}
+								onChange={() => setSetting("uiColor", 1)}
+								checked={uiColor === 1}
 							/>
 							<div className="h-full aspect-1/2 flex border border-n6 overflow-clip">
 								<div className="h-full aspect-square bg-d4"/>
@@ -261,7 +247,7 @@ export const SettingsWindow = () => {
 							max={100}
 							step={1}
 							value={fxLevel}
-							onChange={(e) => {setFXLevel(parseFloat(e.target.value))}}
+							onChange={(e) => setSetting("fxLevel", parseFloat(e.target.value))}
 							className="accent-b5 cursor-pointer"
 						/>
 					</div>
@@ -281,7 +267,7 @@ export const SettingsWindow = () => {
 							max={100}
 							step={1}
 							value={mxLevel}
-							onChange={(e) => {setMXLevel(parseFloat(e.target.value))}}
+							onChange={(e) => setSetting("mxLevel", parseFloat(e.target.value))}
 							className="accent-b5 cursor-pointer"
 						/>
 					</div>
