@@ -1,45 +1,31 @@
 import { useEffect } from "react";
 import { useSceneStore } from "./store/useSceneStore";
-import { useDevStore } from "./store/useDevStore";
+import { useDevStore } from "./store/DevStore";
 import { useGameStore } from "./store/useGameStore";
 
 export default function Dev() {
 	const currentScene = useSceneStore((state) => state.currentScene);
 	const setCurrentScene = useSceneStore((state) => state.setCurrentScene);
 	const resetGame = useSceneStore((state) => state.resetGame);
-	const setShowFrame = useDevStore((state) => state.setShowFrame);
-	const setShowStats = useDevStore((state) => state.setShowStats);
-	
-	const showFrame = useDevStore((state) => state.showFrame);
+
+	const { showFrame, toggleFlag } = useDevStore();
 	useEffect(() => {
 		if (showFrame)
-			document.documentElement.classList.add('debug-mode');
+			document.documentElement.classList.add('frame-mode');
 		else
-			document.documentElement.classList.remove('debug-mode');
+			document.documentElement.classList.remove('frame-mode');
 	}, [showFrame]);
 
 	const gameStarted = useGameStore((state) => state.gameStarted);
 	useEffect(() => {
 		console.log("gameStarted", gameStarted);
-	}, [currentScene, gameStarted]);
-
+	}, [currentScene]);
 	const setPartyCount = useGameStore((state) => state.setPartyCount);
 	const setPlayerList = useGameStore((state) => state.setPlayerList);
-	const handleParty1 = () => {
-		setPartyCount(1);
-		setPlayerList(["Azrul", "Void", "Null", "Undefined"]);
-	};
-	const handleParty2 = () => {
-		setPartyCount(2);
-		setPlayerList(["Azrul", "Max", "Null", "Undefined"]);
-	};
-	const handleParty3 = () => {
-		setPartyCount(3);
-		setPlayerList(["Azrul", "Max", "Jeremy", "Undefined"]);
-	};
-	const handleParty4 = () => {
-		setPartyCount(4);
-		setPlayerList(["Azrul", "Max", "Jeremy", "Aisyah"]);
+
+	const handleParty = (count: number, players: string[]) => {
+		setPartyCount(count);
+		setPlayerList(players);
 	};
 
 	return (
@@ -52,16 +38,16 @@ export default function Dev() {
 				<li><button type="button" tabIndex={-1} onClick={() => setCurrentScene('R3F')}>R3F</button></li>
 			</ul>
 			<ul className="ul-dev">
-				<li><button type="button" tabIndex={-1} onClick={setShowFrame}>Frame</button></li>
-				<li><button type="button" tabIndex={-1} onClick={setShowStats}>Stats</button></li>
+				<li><button type="button" tabIndex={-1} onClick={() => toggleFlag("showFrame")}>Frame</button></li>
+				<li><button type="button" tabIndex={-1} onClick={() => toggleFlag("showStats")}>Stats</button></li>
 				<li><button type="button" tabIndex={-1} onClick={() => setCurrentScene('RESULTS')}>Results</button></li>
 				<li><button type="button" tabIndex={-1} onClick={() => resetGame()}>Reset</button></li>
 			</ul>
 			<ul className="ul-dev">
-				<li><button type="button" tabIndex={-1} onClick={handleParty1}>Party 1</button></li>
-				<li><button type="button" tabIndex={-1} onClick={handleParty2}>Party 2</button></li>
-				<li><button type="button" tabIndex={-1} onClick={handleParty3}>Party 3</button></li>
-				<li><button type="button" tabIndex={-1} onClick={handleParty4}>Party 4</button></li>
+				<li><button type="button" tabIndex={-1} onClick={() => handleParty(1, ["Azrul", "Void", "Null", "Undefined"])}>Party 1</button></li>
+				<li><button type="button" tabIndex={-1} onClick={() => handleParty(2, ["Azrul", "Max", "Null", "Undefined"])}>Party 2</button></li>
+				<li><button type="button" tabIndex={-1} onClick={() => handleParty(3, ["Azrul", "Max", "Jeremy", "Undefined"])}>Party 3</button></li>
+				<li><button type="button" tabIndex={-1} onClick={() => handleParty(4, ["Azrul", "Max", "Jeremy", "Aisyah"])}>Party 4</button></li>
 			</ul>
 		</section>
 	);

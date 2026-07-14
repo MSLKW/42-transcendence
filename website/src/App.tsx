@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { Canvas } from "@react-three/fiber";
 import { Stats, PerspectiveCamera, OrbitControls, AdaptiveDpr } from "@react-three/drei";
-import { useDevStore } from "./store/useDevStore";
+import { useDevStore } from "./store/DevStore";
 import { useSceneStore } from "./store/useSceneStore";
 import { StripeBg } from "./components/bg/StripeBg";
 import { SphereBg } from "./components/bg/SphereBg";
@@ -31,31 +31,33 @@ export default function App() {
 		});
 	}, [currentScene]);
 	const showWindow = useSceneStore((state) => state.showWindow);
-	const showStats = useDevStore((state) => state.showStats);
+	const showStats = useDevStore((devStore) => devStore.showStats);
 
 	return (
 		<>
 			{ (currentScene === "LOGIN" || currentScene === "HOME") && <StripeBg /> }
-			{ (currentScene === "LOGIN" || currentScene === "LOBBY" || currentScene === "R3F" || currentScene === "RESULTS") && 
-				<section className="cont-canvas">
-					<Canvas>
-						{showStats && <Stats />}
-						<AdaptiveDpr />
-						<ambientLight intensity={0.5}/>
-						<directionalLight position={[0, 5, 5]} intensity={0.5} />
-						{ currentScene === "LOGIN" &&
-							<Card
+			{showStats && <Stats />}
+			<section className="cont-canvas">
+				<Canvas>
+					{ (currentScene === "LOGIN" || currentScene === "LOBBY" || currentScene === "R3F" || currentScene === "RESULTS") && 
+						<>
+							<AdaptiveDpr />
+							<ambientLight intensity={0.5}/>
+							<directionalLight position={[0, 5, 5]} intensity={0.5} />
+							{ currentScene === "LOGIN" &&
+								<Card
 								position={[0,0.25,0]}
 								rotation={[-Math.PI/4,0,0]}
 								color="gold"
-							/>
-						}
-						<SphereBg />
-						<PerspectiveCamera makeDefault position={[0, 0, 2.25]} />
-						<OrbitControls enableZoom={false}/>
-					</Canvas>
-				</section>
-			}
+								/>
+							}
+							<SphereBg />
+							<PerspectiveCamera makeDefault position={[0, 0, 2.25]} />
+							<OrbitControls enableZoom={false}/>
+						</>
+					}
+				</Canvas>
+			</section>
 			{ currentScene === 'LOGIN' && <Login /> }
 			{ currentScene === 'HOME' && <Home /> }
 			{ currentScene === 'LOBBY' && <Lobby /> }

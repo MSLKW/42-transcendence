@@ -1,20 +1,14 @@
 import { useRef, useEffect } from "react";
-// import { Canvas } from "@react-three/fiber";
-// import { Stats, PerspectiveCamera, OrbitControls, AdaptiveDpr } from "@react-three/drei";
 import { useSceneStore } from "../store/useSceneStore";
-// import { useDevStore } from "../store/useDevStore";
-// import { SphereBg } from "../components/bg/SphereBg";
 import { BigLogo } from "../components/Logo";
 import { InfoButton } from "../components/Info";
 import { CreateAccountButton } from "../components/CreateAccount";
 import { SignInButton } from "../components/SignIn";
-// import { Card } from "../components/PCard";
 
 export const Login = () => {
 	const setCurrentScene = useSceneStore((state) => state.setCurrentScene);
 	const setContAreaWidth = useSceneStore((state) => state.setContAreaWidth);
 	const setContAreaHeight = useSceneStore((state) => state.setContAreaHeight);
-	// const showStats = useDevStore((state) => state.showStats);
 	const containerRef = useRef(null);
 	
 	useEffect(() => {

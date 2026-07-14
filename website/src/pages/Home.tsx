@@ -1,9 +1,6 @@
 import { useRef, useEffect } from "react";
-import { Canvas } from "@react-three/fiber";
-import { Stats } from "@react-three/drei";
 import { useSceneStore } from "../store/useSceneStore";
 import { useGameStore } from "../store/useGameStore";
-import { useDevStore } from "../store/useDevStore";
 import { InfoButton } from "../components/Info";
 import { SignOutButton } from "../components/SignOutButton";
 import { SettingsButton } from "../components/Settings";
@@ -152,7 +149,6 @@ export const HomeCardButton = ({ mode = 4 }: HomeProps) => {
 export const Home = () => {
 	const setContAreaWidth = useSceneStore((state) => state.setContAreaWidth);
 	const setContAreaHeight = useSceneStore((state) => state.setContAreaHeight);
-	const showStats = useDevStore((state) => state.showStats);
 	
 	const containerRef = useRef(null);
 	useEffect(() => {
@@ -173,11 +169,6 @@ export const Home = () => {
 
 	return (
 		<>
-			<section ref={containerRef} className="cont-canvas">
-				<Canvas>
-					{showStats && <Stats />}
-				</Canvas>
-			</section>
 			<section className="cont-body">
 				<header className="flex justify-between">
 					<div className="flex bg-n1 border border-n2 rounded-3xl">

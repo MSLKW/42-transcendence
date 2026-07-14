@@ -89,6 +89,6 @@ export const useSettingsStore = create<SettingsState>()(
 			setSetting: (key, value) => set(() => ({ [key]: value })),
 			toggleSetting: (key) => set((state) => ({ [key]: !state[key] })),
 		}),
-		{ name: 'settings-session-storage' }
+		{ name: 'settings-storage' }
 	)
 );

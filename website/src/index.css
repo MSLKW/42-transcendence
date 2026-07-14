@@ -79,6 +79,6 @@ body,
 html {
 	@apply bg-big2;
 }
-html.debug-mode * {
+html.frame-mode * {
 	outline: 1px solid var(--color-f0) !important;
 }

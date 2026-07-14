@@ -1,22 +1,22 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
-interface DevState {
+interface DevValues {
 	showFrame: boolean;
 	showStats: boolean;
+}
 
-	setShowFrame: () => void;
-	setShowStats: () => void;
-} 
+interface DevState extends DevValues {
+    toggleFlag: (key: keyof DevValues) => void;
+}
 
 export const useDevStore = create<DevState>()(
 	persist(
 		(set) => ({
 			showFrame: false,
 			showStats: false,
-			
-			setShowFrame: () => set((state) => ({ showFrame: !state.showFrame })),
-			setShowStats: () => set((state) => ({ showStats: !state.showStats })),
+
+			toggleFlag: (key) => set((state) => ({ [key]: !state[key] })),
 		}),
 		{
 			name: "dev-storage",
