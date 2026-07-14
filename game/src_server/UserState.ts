@@ -17,7 +17,7 @@ export class UserState {
 		this.seat = -1;
 
 		this.socket.on("user_seat_take", (wantedSeat: number) => {
-			const status = this.userTakeSeat(wantedSeat);
+			const status = this.takeSeat(wantedSeat);
 			this.socket.emit("user_seat_take", status);
 			if (status.success === true) {
 				this.lobbyRef.emitSeatOrder();
@@ -25,7 +25,7 @@ export class UserState {
 		});
 
 		this.socket.on("user_seat_leave", () => {
-			const status = this.userLeaveSeat();
+			const status = this.leaveSeat();
 			this.socket.emit("user_seat_leave", status);
 			if (status.success === true) {
 				this.lobbyRef.emitSeatOrder();
@@ -33,7 +33,7 @@ export class UserState {
 		});
 	}
 
-	private userTakeSeat(selectedSeat: number): StatusTransmit {
+	private takeSeat(selectedSeat: number): StatusTransmit {
 		const status: StatusTransmit = {
 			success: false,
 			message: ""
@@ -43,6 +43,9 @@ export class UserState {
 			status.message = "Selected seat could not be found";
 			return (status);
 		}
+		if (this.seat >= 0) {
+			this.lobbyRef.availableSeats.push(this.seat);
+		}
 		this.seat = this.lobbyRef.availableSeats[seatIndex];
 		this.lobbyRef.availableSeats.splice(seatIndex, 1);
 		status.success = true;
@@ -50,7 +53,7 @@ export class UserState {
 		return (status);
 	}
 
-	private userLeaveSeat(): StatusTransmit {
+	public leaveSeat(): StatusTransmit {
 		const status: StatusTransmit = {
 			success: false,
 			message: ""

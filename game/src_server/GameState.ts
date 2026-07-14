@@ -108,6 +108,14 @@ export class GameState {
 		return (seatOrder);
 	}
 
+	public userInGame(user: UserState): boolean {
+		const player = this.players.find((player) => player.playerId === user.uuid);
+		if (player === undefined) {
+			return (false);
+		}
+		return (true);
+	}
+
 	public playerReconnect(user: UserState) {
 		const player = this.players.find((player) => player.playerId === user.uuid);
 		if (player === undefined) {

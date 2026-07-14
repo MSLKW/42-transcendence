@@ -86,10 +86,11 @@ export class Lobby {
 	private disconnectUser(disconnectedUser: UserState) {
 		const index = this.users.findIndex((user) => user.uuid === disconnectedUser.uuid);
 		if (index >= 0) {
-			if (this.users[index].seat >= 0) {
+			if (this.game.isGameStarted === true && this.game.userInGame(disconnectedUser)) {
 				this.game.playerDisconnect(disconnectedUser);
 			}
 			else {
+				this.users[index].leaveSeat();
 				this.users.splice(index, 1);
 				console.log(`User<${disconnectedUser.uuid}> fully disconnected`);
 			}
