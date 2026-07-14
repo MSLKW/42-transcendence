@@ -1,20 +1,20 @@
 import { useRef, useEffect } from "react";
-import { Canvas } from "@react-three/fiber";
-import { Stats, PerspectiveCamera, OrbitControls, AdaptiveDpr } from "@react-three/drei";
+// import { Canvas } from "@react-three/fiber";
+// import { Stats, PerspectiveCamera, OrbitControls, AdaptiveDpr } from "@react-three/drei";
 import { useSceneStore } from "../store/useSceneStore";
-import { useDevStore } from "../store/useDevStore";
-import { SphereBg } from "../components/bg/SphereBg";
+// import { useDevStore } from "../store/useDevStore";
+// import { SphereBg } from "../components/bg/SphereBg";
 import { BigLogo } from "../components/Logo";
 import { InfoButton } from "../components/Info";
 import { CreateAccountButton } from "../components/CreateAccount";
 import { SignInButton } from "../components/SignIn";
-import { Card } from "../components/PCard";
+// import { Card } from "../components/PCard";
 
 export const Login = () => {
 	const setCurrentScene = useSceneStore((state) => state.setCurrentScene);
 	const setContAreaWidth = useSceneStore((state) => state.setContAreaWidth);
 	const setContAreaHeight = useSceneStore((state) => state.setContAreaHeight);
-	const showStats = useDevStore((state) => state.showStats);
+	// const showStats = useDevStore((state) => state.showStats);
 	const containerRef = useRef(null);
 	
 	useEffect(() => {
@@ -33,29 +33,13 @@ export const Login = () => {
 	
 	return (
 		<>
-			<section className="cont-canvas">
-				<Canvas>
-					{showStats && <Stats />}
-					<AdaptiveDpr />
-					{/* <ambientLight intensity={0.5}/> */}
-					<directionalLight position={[0, 5, 5]} intensity={0.5} />
-					<Card
-						position={[0,0.25,0]}
-						rotation={[-Math.PI/4,0,0]}
-						color="gold"
-					/>
-					<SphereBg />
-					<PerspectiveCamera makeDefault position={[0, 0, 2.25]} />
-					<OrbitControls enableZoom={false}/>
-				</Canvas>
-				<main className="
-					absolute top-0
-					flex place-content-center
-					pointer-events-none
-				">
-					<BigLogo />
-				</main>
-			</section>
+			<main className="
+				absolute top-0
+				flex place-content-center
+				pointer-events-none
+			">
+				<BigLogo />
+			</main>
 			<section className="cont-body">
 				<header className="flex">
 					<div className="btn-icon-border">

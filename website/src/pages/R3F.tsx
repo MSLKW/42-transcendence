@@ -1,9 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import { Canvas } from "@react-three/fiber";
-import { Stats, PerspectiveCamera, OrbitControls, AdaptiveDpr } from "@react-three/drei";
 import { useSceneStore } from "../store/useSceneStore";
-import { useDevStore } from "../store/useDevStore";
-import { SphereBg } from "../components/bg/SphereBg";
 import { BackButton } from "../components/BackButton";
 import { SettingsButton } from "../components/Settings";
 import { RankButton } from "../components/RankButton";
@@ -15,7 +11,6 @@ import { useGameStore } from "../store/useGameStore";
 
 export const R3F = () => {
 	const setCurrentScene = useSceneStore((state) => state.setCurrentScene);
-	const showStats = useDevStore((state) => state.showStats);
 	const containerRef = useRef(null);
 	const setContAreaWidth = useSceneStore((state) => state.setContAreaWidth);
 	const setContAreaHeight = useSceneStore((state) => state.setContAreaHeight);
@@ -51,17 +46,6 @@ export const R3F = () => {
 
 	return (
 		<>
-			<section ref={containerRef} className="cont-canvas">
-				<Canvas>
-					{showStats && <Stats />}
-					<AdaptiveDpr />
-					{/* <ambientLight intensity={0.5}/> */}
-					<directionalLight position={[0, 0, 5]} intensity={1} />
-					<SphereBg />
-					<PerspectiveCamera makeDefault position={[0, 0, 2.25]} />
-					<OrbitControls enableZoom={false}/>
-				</Canvas>
-			</section>
 			<section className="cont-body">
 				<header className="flex place-content-between">
 					<div className="flex btn-icon-border">
