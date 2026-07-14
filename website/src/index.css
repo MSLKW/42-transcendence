@@ -1,0 +1,84 @@
+@import "tailwindcss";
+@import "./css/base/container.css";
+@import "./css/base/clamp.css";
+@import "./css/base/typography.css";
+@import "./css/uic/button.css";
+@import "./css/uic/label.css";
+@import "./css/uic/input.css";
+@import "./css/uic/ul.css";
+@import "./css/animation/turn.css";
+
+@theme {
+	--color-n0: #191b1c;
+	--color-n1: #383b3d;
+	--color-n2: #595f61;
+	--color-n3: #7b8285;
+	--color-n4: #9ba3a8;
+	--color-n5: #c2c9cc;
+	--color-n6: #edeff0;
+	--color-a0: #030a20;
+	--color-a1: #122654;
+	--color-a2: #264690;
+	--color-a3: #4168be;
+	--color-a4: #6c8ccd;
+	--color-a5: #9db2dd;
+	--color-a6: #ced9ee;
+	--color-b0: #1f1605;
+	--color-b1: #443412;
+	--color-b2: #6e5622;
+	--color-b3: #977732;
+	--color-b4: #be9741;
+	--color-b5: #ebbb52;
+	--color-b6: #fbe8c2;
+	--color-c0: #061b10;
+	--color-c1: #163f29;
+	--color-c2: #286646;
+	--color-c3: #3a8d62;
+	--color-c4: #4cb37d;
+	--color-c5: #60de9c;
+	--color-c6: #b9fad3;
+	--color-d0: #220816;
+	--color-d1: #4f1d38;
+	--color-d2: #81355d;
+	--color-d3: #b34c82;
+	--color-d4: #dd69a4;
+	--color-d5: #e8a6c4;
+	--color-d6: #f5dbe6;
+	--color-r0: #2c0305;
+	--color-r1: #610c14;
+	--color-r2: #9d1a25;
+	--color-r3: #d72837;
+	--color-r4: #f65e5f;
+	--color-r5: #f9a49f;
+	--color-r6: #fddcda;
+	--color-f0: #f65e5f;
+
+	--background-image-big2: radial-gradient(
+		circle,
+		var(--color-n1) 0%,
+		var(--color-n0) 100%
+	);
+		
+	--font-sans: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+
+	--text-base: clamp(0.625rem, 0.536vmin + 0.518rem, 1rem);
+	--text-lg: clamp(0.75rem, 0.536vmin + 0.643rem, 1.125rem);
+	--text-xl: clamp(0.875rem, 0.536vmin + 0.768rem, 1.25rem);
+	--text-2xl: clamp(1rem, 0.714vmin + 0.857rem, 1.5rem);
+}
+
+html,
+body,
+#root {
+	@apply 
+        w-screen h-screen
+        m-0 p-0
+        font-sans
+        ;
+}
+html {
+	@apply bg-big2;
+}
+html.debug-mode * {
+	outline: 1px solid var(--color-f0) !important;
+}
