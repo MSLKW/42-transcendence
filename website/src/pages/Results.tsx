@@ -52,7 +52,7 @@ export const ResultRank = () => {
 }
 
 export const ResultPlayed = () => {
-	const playerList = useGameStore((store) => store.playerList);
+	const partyList = useGameStore((store) => store.partyList);
 	return (
 		<>
 			<div className="
@@ -70,7 +70,7 @@ export const ResultPlayed = () => {
 				bg-b2
 			">
 				<AvatarImage />
-				<h2>{playerList[0]}</h2>
+				<h2>{partyList[0]}</h2>
 			</div>
 			<div className="
 				row-start-3 row-end-3
@@ -79,7 +79,7 @@ export const ResultPlayed = () => {
 				h-full w-full
 			">
 				<AvatarImage />
-				<h2>{playerList[1]}</h2>
+				<h2>{partyList[1]}</h2>
 			</div>
 			<div className="
 				row-start-4 row-end-4
@@ -88,7 +88,7 @@ export const ResultPlayed = () => {
 				h-full w-full
 			">
 				<AvatarImage />
-				<h2>{playerList[3]}</h2>
+				<h2>{partyList[3]}</h2>
 			</div>
 			<div className="
 				row-start-5 row-end-5
@@ -97,7 +97,7 @@ export const ResultPlayed = () => {
 				h-full w-full
 			">
 				<AvatarImage />
-				<h2>{playerList[2]}</h2>
+				<h2>{partyList[2]}</h2>
 			</div>
 		</>
 	);

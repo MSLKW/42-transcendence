@@ -74,7 +74,7 @@ export const usePlayerStore = create<PlayerState>() (
 			setPlayerIndex: (index) => set({ playerIndex: index }),
 		}),
 		{
-			name: 'player-session-storage',
+			name: 'player-storage',
 		}
 	)
 );

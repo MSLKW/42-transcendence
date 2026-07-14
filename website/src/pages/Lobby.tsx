@@ -1,6 +1,7 @@
 import { useRef, useEffect } from "react";
 import { useSceneStore } from "../store/useSceneStore";
 import { useGameStore } from "../store/useGameStore";
+import { usePartyStore } from "../store/PartyStore";
 import { BackButton } from "../components/BackButton";
 import { SettingsButton } from "../components/Settings";
 import { InfoButton } from "../components/Info";
@@ -31,7 +32,7 @@ export const Lobby = () => {
 	}, []);
 
 	const gameMode = useGameStore((state) => state.gameMode);
-	const partyCount = useGameStore((state) => state.partyCount);
+	const partyCount = usePartyStore((state) => state.partyCount);
 
 	return (
 		<>

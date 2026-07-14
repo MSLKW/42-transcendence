@@ -1,6 +1,7 @@
 import { useRef, useEffect } from "react";
 import { useSceneStore } from "../store/useSceneStore";
 import { useGameStore } from "../store/useGameStore";
+import { usePartyStore } from "../store/PartyStore";
 import { InfoButton } from "../components/Info";
 import { SignOutButton } from "../components/SignOutButton";
 import { SettingsButton } from "../components/Settings";
@@ -165,7 +166,7 @@ export const Home = () => {
 		return () => observer.disconnect();
 	}, []);
 
-	const partyCount = useGameStore((state) => state.partyCount);
+	const partyCount = usePartyStore((state) => state.partyCount);
 
 	return (
 		<>

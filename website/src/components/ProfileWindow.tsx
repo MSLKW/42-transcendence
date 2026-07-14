@@ -1,8 +1,8 @@
 import { useRef, useEffect } from "react";
+import { usePartyStore } from "../store/PartyStore";
 import { useSceneStore } from "../store/useSceneStore";
 import { CloseButton } from "./CloseButton";
 import { AvatarImage } from "./Avatar";
-import { useGameStore } from "../store/useGameStore";
 
 export const Medal = () => {
 	return (
@@ -31,7 +31,7 @@ export const AvatarSelect = ({ color }: AvatarSelectProps) => {
 
 export const ProfileWindow = () => {
 	const setShowWindow = useSceneStore((state) => state.setShowWindow);
-	const playerList = useGameStore((state) => state.playerList);
+	const partyList = usePartyStore((state) => state.partyList);
 	
 	const focusRef = useRef<HTMLInputElement | null>(null);
 	useEffect(() => {
@@ -65,7 +65,8 @@ export const ProfileWindow = () => {
 							ref={focusRef}
 							id="name"
 							type="text"
-							value={playerList[0]}
+							value={partyList[0]}
+							onChange={()=>{}}
 							className="
 								bg-n6 h-2.5 w-30
 								border border-n5 rounded-full

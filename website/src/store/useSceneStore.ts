@@ -74,7 +74,7 @@ export const useSceneStore = create<SceneState>() (
 			}),
 		}),
 		{
-			name: 'scene-session-storage',
+			name: 'scene-storage',
 		}
 	)
 );

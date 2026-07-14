@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import { useSceneStore } from "./store/useSceneStore";
 import { useDevStore } from "./store/DevStore";
 import { useGameStore } from "./store/useGameStore";
+import { usePartyStore } from "./store/PartyStore";
 
 export default function Dev() {
 	const currentScene = useSceneStore((state) => state.currentScene);
@@ -20,12 +21,12 @@ export default function Dev() {
 	useEffect(() => {
 		console.log("gameStarted", gameStarted);
 	}, [currentScene]);
-	const setPartyCount = useGameStore((state) => state.setPartyCount);
-	const setPlayerList = useGameStore((state) => state.setPlayerList);
+	const setPartyCount = usePartyStore((state) => state.setPartyCount);
+	const setNameList = usePartyStore((state) => state.setNameList);
 
 	const handleParty = (count: number, players: string[]) => {
 		setPartyCount(count);
-		setPlayerList(players);
+		setNameList(players);
 	};
 
 	return (
