@@ -58,18 +58,55 @@
 `<<<<MOST IMPORTANT OF HOW DATABASE AS SHARED LIBRARY <-> MICROSERVICES>>>>`
 - `Use Symlinks`: When you run npm install at the root, npm automatically creates symlinks for your local packages. 
 - allowing your `backend services to import your local packages (packages/*) as if they were installed packages.`
-- daytabse now is the shared library, (Drizzle is a library), not a shared code
+- database now is the shared library, (Drizzle is a library), not a shared code
 <br>
 
 ### 2. Local packages
 
 
+## specified schema for each microservices
+`Master URL (for migration and studio) - for Drizzle only`
+```
+DATABASE_URL=postgresql://admin:password@postgresql-rdbms:5432/big_two_db
+```
+
+`Service-specific`
+```
+// You override the URL specifically for each service
+// each microservice gets a specific DATABASE_URL with a ?schema=... parameter injected by Docker.
+DATABASE_URL=postgresql://admin:password@postgresql-rdbms:5432/big_two_db?schema=auth_service
+```
+
+
+
+npx drizzle-kit studio or npx drizzle-kit push, you are acting as an Administrator. You need to see everything to manage the database structure.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 <!-- --- -->
-## services/auth vs packages/auth-utils
+## backend-services/auth vs packages/auth-utils
 ```
 /packages
   └── auth-utils/      <-- The "Shared Math": Encryption, token verification logic.
-/services
+/backend-services
   └── auth/            <-- The "Active Service": Handles the database, logins, and signups.
 ```
 - If your app is complex, you actually end up with both

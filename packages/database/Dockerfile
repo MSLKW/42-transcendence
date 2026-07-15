@@ -10,7 +10,6 @@ RUN apt-get update && \
 
 # WORKDIR /app
 
-
 # 1. Copy only the package files first
 COPY package*.json ./
 
@@ -18,7 +17,6 @@ COPY package*.json ./
 # if do COPY . . first, npm install will be forced to re-run every time you change a single line of code in your source files
 # Every single time you change a line of code in src/, Docker thinks the whole project has changed. It throws away the cache for the npm install layer and re-downloads your entire node_modules folder.
 # If you change your code but not your dependencies, Docker skips the npm install step entirely. This can save you 1-2 minutes on every single build.
-# RUN npm install
 RUN npm install
 
 # Only then copy the rest of the source code
@@ -28,11 +26,8 @@ COPY . .
 RUN npm run build
 
 # Put all the main commands in the script file
-COPY ./scripts/entrypoint.sh /usr/local/bin/backend-entrypoint.sh
-RUN chmod +x /usr/local/bin/backend-entrypoint.sh
+COPY ./scripts/entrypoint.sh /usr/local/bin/entrypoint.sh
+RUN chmod +x /usr/local/bin/entrypoint.sh
 
 # Use the script as the entrypoint
 ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
-CMD ["npm", "start"] 
-# npm => The Ecosystem (npm): When you use Node.js, you get npm (Node Package Manager). This is the tool that downloads all your "building blocks" (libraries).
-# run start => tell Node.js to execute 'start' in package.json

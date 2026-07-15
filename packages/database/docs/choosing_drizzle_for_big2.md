@@ -70,7 +70,7 @@ services:
       - "5432:5432"
     environment:
       POSTGRES_DB: big_two_db
-      POSTGRES_USER: admin
+      POSTGRES_USER_ADMIN: admin
       POSTGRES_PASSWORD: password
 
   auth-service:

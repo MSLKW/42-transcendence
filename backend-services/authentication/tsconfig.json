@@ -11,7 +11,10 @@
 		"forceConsistentCasingInFileNames": true,
 		"types": ["node"],
 		"incremental": true,
-		"tsBuildInfoFile": "./.tsbuildinfo"
+		"tsBuildInfoFile": "./.tsbuildinfo",
+		"paths": {
+			"@big2/database/*": ["../../packages/database/src/*"]
+		} 
 	},
 	"include": ["src/**/*.ts"]
 }

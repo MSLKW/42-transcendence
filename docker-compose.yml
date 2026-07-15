@@ -1,16 +1,16 @@
 networks:
-  big2:
-    name : big2
+  transcendence:
+    name : ${NETWORK_NAME}
     driver: bridge
 
 volumes:
-  postgresql_data:
-    name: postgresql_data
+  database_volume:
+    name: ${DB_VOLUME_NAME}
     driver: local
     driver_opts:  
       type: none
       o: bind
-      device: ${PWD}/data/postgresql_data
+      device: ${PWD}/data/${DB_VOLUME_NAME}
 
 
 services:
@@ -18,23 +18,30 @@ services:
 #           DATABASE RDBMS = PostgreSQL
   postgresql-rdbms:
     container_name: postgresql-rdbms
-    image: postgres:17-bookworm                 # No Dockerfile needed here!
+    image: postgres:17-bookworm        # No Dockerfile needed here!
     restart: unless-stopped
     expose:
       - "${POSTGRES_PORT}"
-    environment:
+    environment: # Postgres Docker image need them through environment - to specifically overwrite the defaults of the first 3 here
+      POSTGRES_DB: ${POSTGRES_DB}
       POSTGRES_USER: ${POSTGRES_USER}
-      POSTGRES_PASSWORD_FILE: /run/secrets/database_password
-      POSTGRES_DB: ${POSTGRES_DB_NAME}
+      POSTGRES_PASSWORD_FILE: /run/secrets/db_admin_password
+      POSTGRES_AUTH_USER_PASSWORD_FILE: /run/secrets/db_auth_password
+      POSTGRES_WEBSITE_USER_PASSWORD_FILE: /run/secrets/db_website_password
+      POSTGRES_GAME_USER_PASSWORD_FILE: /run/secrets/db_game_password
+      POSTGRES_BOT_USER_PASSWORD_FILE: /run/secrets/db_bot_password
+      POSTGRES_CHAT_USER_PASSWORD_FILE: /run/secrets/db_chat_password
     env_file:
       - .env
     volumes:
-      - postgresql_data:/var/lib/postgresql/data
-      - ../secrets/database_password.txt:/run/secrets/database_password:ro
+      - ${DB_VOLUME_NAME}:/var/lib/postgresql/data                                                              # volume
+      - ../secrets/database_passwords:/run/secrets:ro      # secrets
+      - ./packages/database/init/init.sql:/docker-entrypoint-initdb.d/init.sql:ro                             # to run schema creation script
+      - ./packages/database/scripts:/scripts:ro
     networks:
-      - big2
+      - transcendence
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB_NAME}"]
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER_ADMIN} -d ${POSTGRES_DB}"]
       interval: 5s
       timeout: 5s
       retries: 5
@@ -46,15 +53,17 @@ services:
     container_name: drizzle-orm
     build: ./packages/database/.              # gets the built (main application), built once only -> efficient + saves CPU and disk space. 
     pull_policy: build                        # This forces local builds, ignoring Docker Hub
+    working_dir: /app/packages/database
     restart: unless-stopped
     ports:
       - "${DRIZZLE_STUDIO_PORT}:${DRIZZLE_STUDIO_PORT}"
     env_file:
-      - .env
+      - .env                                  
     volumes:
-      - ../secrets/database_password.txt:/run/secrets/database_password:ro
+      - ../secrets/database_passwords/db_admin_password.txt:/run/secrets/db_admin_password:ro
+    command: npx drizzle-kit studio --port ${DRIZZLE_STUDIO_PORT}
     networks:
-      - big2
+      - transcendence
     depends_on:
       postgresql-rdbms:
         condition: service_healthy
@@ -69,13 +78,16 @@ services:
     ports:
       - "${AUTH_PORT}:${AUTH_PORT}"
     environment:
-      PORT: ${AUTH_PORT}
+      DB_HOST: postgresql-rdbms                           # DB_HOST is a standard industry convention
+      DB_NAME: ${POSTGRES_DB}
+      DB_USER: ${POSTGRES_USER_NAME_AUTH}
     env_file:
-      - .env
+      - .env                                              # Loads global configs
+      - backend-services/authentication/.env              # Loads service-specific configs
     volumes:
-      - ../secrets/database_password.txt:/run/secrets/database_password:ro
+      - ../secrets/database_passwords/db_auth_password.txt:/run/secrets/auth_schema_password:ro # => will be inside auth's .env
     networks:
-      - big2
+      - transcendence
     depends_on:
       postgresql-rdbms:
         condition: service_healthy
