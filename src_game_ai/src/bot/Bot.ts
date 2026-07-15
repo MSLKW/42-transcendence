@@ -29,7 +29,7 @@ export class Bot
 
 	constructor(private id: string, private serverUrl: string, ai: AAIController)
 	{
-		this.state = new GameState({}, []);
+		this.state = new GameState("", {}, []);
 		this.ai = ai;
 	}
 
@@ -63,7 +63,7 @@ export class Bot
 
 	private initGameState = (gameState: GameStateTransmit) =>
 	{
-		this.state = new GameState(this.seatOrder!.seatOrder, gameState.playerCards);
+		this.state = new GameState(this.id, this.seatOrder!.seatOrder, gameState.playerCards);
 		logger.verbose(this.id, this.state.ownCards);
 	}
 	

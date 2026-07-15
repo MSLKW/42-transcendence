@@ -2,7 +2,8 @@ import { Bot } from "./Bot";
 import { randomUUID } from "crypto"; 
 import { AAIController } from "../ai/AAIController";
 
-export class BotManager {
+export class BotManager
+{
 	private bots: Bot[];
 
 	constructor()
@@ -13,6 +14,7 @@ export class BotManager {
 	addBot(name: string, serverUrl: string, ai: AAIController): string
 	{
 		const id = `${name}-${randomUUID().substring(0, 8)}`;
+		
 		this.bots.push(new Bot(id, serverUrl, ai));
 		return (id);
 	}

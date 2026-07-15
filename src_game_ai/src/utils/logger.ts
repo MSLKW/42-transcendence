@@ -7,7 +7,7 @@ enum LogLevel {
 	ERROR,
 }
 
-const CURRENT_LEVEL = LogLevel.WARN;
+const CURRENT_LEVEL = LogLevel.VERBOSE;
 
 function format(args: unknown[]): string {
 	return args
@@ -16,6 +16,11 @@ function format(args: unknown[]): string {
 }
 
 export const logger = {
+	verbose(id: string, ...args: unknown[]) {
+		if (CURRENT_LEVEL <= LogLevel.VERBOSE)
+			console.log(`[bot ${id}]`, format(args));
+	},
+
 	info(id: string, ...args: unknown[]) {
 		if (CURRENT_LEVEL <= LogLevel.INFO)
 			console.log(`[bot ${id}]`, format(args));

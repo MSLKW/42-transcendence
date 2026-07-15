@@ -1,10 +1,14 @@
 import { CardTransmit, CardHandTransmit, PentupleType } from "../Types";
-import { cardHandComp } from "../utils/cardHandComp";
+import { rankComp, suitComp, cardHandComp } from "../utils/cardHandComp";
+import { normalizePlayerSeats } from "./normalizePlayerSeats"
+
 import { initSingles } from "./initSingles";
 import { initMatchingHands } from "./initMatchingHands";
 import { initFullHouses } from "./initFullHouses";
 import { initStraights } from "./initStraights";
 import { initFlushes } from "./initFlushes";
+
+import { normalizeCardHand } from "./normalizeCardHand";
 
 type Card = CardTransmit;
 type CardHand = CardHandTransmit;
@@ -14,10 +18,11 @@ export type HandTypeKey = "single" | "double" | "triple" | "straight" | "flush" 
 
 export class GameState
 {
+	botId:				string;
 	ownCards:			Card[];
-	players:			Record<string, number>;	
-	opponentCards:		Record<string, Card[]>;
-	possibleCardHands = {} as Record<HandTypeKey, CardHand[]>;
+	playerSeats:		Record<string, number>;	
+	opponentCards		= {} as Record<string, Card[]>;
+	possibleCardHands	= {} as Record<HandTypeKey, CardHand[]>;
 
 	moveHistory:		CardHand[];
 	maxHistory:			number = 20;
@@ -30,11 +35,15 @@ export class GameState
 
 	leader:				number = -1;
 
-	constructor(players: Record<string, number>, ownCards: Array<Card>)
+	constructor(botId: string, players: Record<string, number>, ownCards: Array<Card>)
 	{
-		this.players = players;
+		this.botId = botId;
+		this.playerSeats = players;
 		this.ownCards = ownCards;
-		this.opponentCards = {};
+		
+		for (const key in players)
+			this.opponentCards[key] = [];
+
 		this.possibleCardHands["single"] = [];
 		this.possibleCardHands["double"] = [];
 		this.possibleCardHands["triple"] = [];
@@ -50,13 +59,15 @@ export class GameState
 		if (Object.keys(players).length == 0 || ownCards.length == 0)
 			return ;
 
-		this.ownCards.sort(this.rankComp);
+		normalizePlayerSeats(this.playerSeats, this.botId);
+
+		this.ownCards.sort(rankComp);
 		initSingles(this);
 		initMatchingHands(this); //doubles, triples, four of a kinds
 		initFullHouses(this);
-		initStraights(this); //straights and straigh flushes
+		initStraights(this); //straights and straight flushes
 
-		this.ownCards.sort(this.suitComp);
+		this.ownCards.sort(suitComp);
 		initFlushes(this); //ignores straight flushes
 		
 		for (const key in this.possibleCardHands)
@@ -70,6 +81,9 @@ export class GameState
 	{
 		this.lastCardHand = cardHand;
 		this.recordHistory(cardHand);
+
+		if (cardHand.playerId != this.botId)
+			this.opponentCards[cardHand.playerId].push(...cardHand.cards);
 		this.turnSkipped = false;
 		this.cardHandsPlayed++;
 	}
@@ -104,41 +118,8 @@ export class GameState
 	}
 	private recordHistory(cardHand: CardHand)
 	{
-		this.moveHistory.push(this.normalizeCardHand(cardHand));
+		this.moveHistory.push(normalizeCardHand(cardHand));
 		if (this.moveHistory.length > this.maxHistory)
 			this.moveHistory.splice(0, 1);
-	}
-
-	private rankComp = (a: Card, b: Card) =>
-	{
-		if (a.rank == b.rank)
-			return a.suit - b.suit;
-		return a.rank - b.rank;
-	}
-
-	private suitComp = (a: Card, b: Card) =>
-	{
-		if (a.suit == b.suit)
-			return a.rank - b.rank;
-		return a.suit - b.suit;
-	}
-
-	private normalizeCardHand(cardHand: CardHand): CardHand
-	{
-		cardHand.cards.sort(this.rankComp);
-		if (cardHand.pentupleType == PentupleType.FullHouse
-			&& cardHand.cards[0].rank == cardHand.cards[2].rank)
-		{
-			cardHand.cards = [
-				...cardHand.cards.slice(3, 5),
-				...cardHand.cards.slice(0, 3)
-			];
-		}
-		if (cardHand.pentupleType == PentupleType.FourOfAKind
-			&& cardHand.cards[0].rank == cardHand.cards[1].rank)
-		{
-			cardHand.cards = [cardHand.cards[4], ...cardHand.cards.slice(0, 4)];
-		}
-		return cardHand;
 	}
 }
