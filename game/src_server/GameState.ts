@@ -14,6 +14,7 @@ export class GameState {
 	public	isGameStarted: boolean;
 	private	playerTurnIndex: number;
 	private playerTurnTimeoutId: NodeJS.Timeout | undefined;
+	public	gameRoomId: string;
 
 	// Game Settings
 	public	turnTimerInSeconds: number;
@@ -32,6 +33,11 @@ export class GameState {
 		this.playerTurnTimeoutId = undefined;
 		this.turnTimerInSeconds = 0;
 		this.playersInGameLimit = 4;
+		this.gameRoomId = "game";
+	}
+
+	public emit(event: string, payload: any) {
+		io.to(this.gameRoomId).emit(event, payload);
 	}
 
 	public addPlayer(user: UserState) {
@@ -40,7 +46,7 @@ export class GameState {
 	}
 
 	public addSpectator(user: UserState) {
-		user.socket.join("game");
+		user.socket.join(this.gameRoomId);
 		this.spectators.push(user);
 		user.socket.on("disconnect", () => {
 			const index = this.spectators.indexOf(user);
@@ -52,6 +58,7 @@ export class GameState {
 			user.socket.emit("player_game_state", this.transmit(undefined));
 		}
 	}
+	
 	/*
 		@param user: Should be the users who want to play in the game
 	*/
@@ -104,7 +111,7 @@ export class GameState {
 		}
 		this.resetGame();
 		this.isGameStarted = false;
-		io.to("game").emit("game_end", gameEndStats);
+		this.emit("game_end", gameEndStats);
 	}
 
 	private resetGame() {
@@ -166,7 +173,7 @@ export class GameState {
 		if (this.turnTimerInSeconds > 0) {
 			this.playerTurnTimeoutId = setTimeout(() => {this.playerTimeout(player)}, this.turnTimerInSeconds * 1000);
 		}
-		io.to("game").emit("player_turn", playerTurnTransmit);
+		this.emit("player_turn", playerTurnTransmit);
 	}
 
 	private playerTimeout(player: PlayerState) {

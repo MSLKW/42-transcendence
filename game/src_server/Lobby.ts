@@ -11,7 +11,7 @@ export class Lobby {
 	// private whitelist: Array<string>;
 	private playersInGameLimit: number;
 	private totalUsersLimit: number;
-	private lobbyRoomId: string;
+	public	lobbyRoomId: string;
 	public	game: GameState;
 
 	constructor() {
@@ -29,6 +29,10 @@ export class Lobby {
 		io.on("connection", (socket) => {
 			this.connectUser(socket);
 		});
+	}
+
+	public emit(event: string, payload: any) {
+		io.to(this.lobbyRoomId).emit(event, payload);
 	}
 
 	public getSeatOrder() {
@@ -89,7 +93,7 @@ export class Lobby {
 	private connectNewUser(user: UserState) {
 		this.users.push(user);
 		console.log(`User<${user.uuid}> has connected`);
-		io.to(this.lobbyRoomId).emit("user_connect", user.uuid);
+		this.emit("user_connect", user.uuid);
 		// announce new user joined to other users via socket emit
 	}
 
@@ -101,8 +105,8 @@ export class Lobby {
 			}
 			else {
 				this.users[index].leaveSeat();
+				this.emit("user_disconnect", this.users[index].uuid);
 				this.users.splice(index, 1);
-				io.to(this.lobbyRoomId).emit("user_disconnect", this.users[index].uuid);
 				console.log(`User<${disconnectedUser.uuid}> fully disconnected`);
 			}
 		}

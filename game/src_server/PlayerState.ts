@@ -26,7 +26,7 @@ export class PlayerState {
 	}
 
 	public setupSocketListeners() {
-		this.socket.join("game");
+		this.socket.join(this.gameStateRef.gameRoomId);
 
 		this.socket.on("player_play_card_hand_request", (cardHandTransmit: CardHandTransmit) => {
 			const status: StatusTransmit = this.playCardHand(cardHandTransmit);
@@ -50,7 +50,7 @@ export class PlayerState {
 			this.isDisconnected = true;
 			if (this.gameStateRef.turnTimerInSeconds === 0)
 				this.skipTurn();
-			io.to("game").emit("player_disconnect", this.playerId);
+			this.gameStateRef.emit("player_disconnect", this.playerId);
 			console.log(`Player<${this.playerId}> has disconnected`)
 		}
 	}
@@ -60,7 +60,7 @@ export class PlayerState {
 		this.isDisconnected = false;
 		this.setupSocketListeners();
 		this.socket.emit("player_game_state", this.gameStateRef.transmit(this));
-		io.to("game").emit("player_reconnect", this.playerId);
+		this.gameStateRef.emit("player_reconnect", this.playerId);
 	}
 
 	public collectCards(cards: Array<CardTransmit>) {
@@ -117,7 +117,7 @@ export class PlayerState {
 			const playerSkipTurn: SkipTurnTransmit = {
 				playerId: this.playerId
 			}
-			io.to("game").emit("player_skip_turn", playerSkipTurn);
+			this.gameStateRef.emit("player_skip_turn", playerSkipTurn);
 			this.gameStateRef.nextPlayerTurn();
 		}
 	}
@@ -157,6 +157,7 @@ export class PlayerState {
 			return (status);
 		}
 		this.cardHeapRef.receiveCardHand(cardHand);
+		this.gameStateRef.emit("player_play_card_hand", cardHand.transmit());
 		this.removeCards(cardHand.cards);
 
 		status.success = true;

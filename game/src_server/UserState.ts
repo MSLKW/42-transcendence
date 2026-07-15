@@ -15,6 +15,7 @@ export class UserState {
 		const authId = this.socket.handshake.auth.token;
 		this.uuid = this.getUUID(authId);
 		this.seat = -1;
+		this.socket.join(this.lobbyRef.lobbyRoomId);
 
 		this.socket.on("user_seat_take", (wantedSeat: number) => {
 			const status = this.takeSeat(wantedSeat);
