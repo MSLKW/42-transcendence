@@ -9,7 +9,7 @@ import { EmojiButton } from "../components/EmojiButtons";
 import { AvatarButton } from "../components/Avatar";
 import { ChatButton } from "../components/Chat";
 import { PartyButton } from "../components/Party";
-import { SmallLogo } from "../components/Logo";
+import { SmallLogo } from "../components/image/Logo";
 
 export const Lobby = () => {
 	const setCurrentScene = useSceneStore((state) => state.setCurrentScene);

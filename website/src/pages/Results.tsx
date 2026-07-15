@@ -52,7 +52,7 @@ export const ResultRank = () => {
 }
 
 export const ResultPlayed = () => {
-	const { membersData } = usePartyStore();
+	const { members } = usePartyStore();
 	return (
 		<>
 			<div className="
@@ -70,7 +70,7 @@ export const ResultPlayed = () => {
 				bg-b2
 			">
 				<AvatarImage />
-				<h2>{membersData[0].name}</h2>
+				<h2>{members[0].name}</h2>
 			</div>
 			<div className="
 				row-start-3 row-end-3
@@ -79,7 +79,7 @@ export const ResultPlayed = () => {
 				h-full w-full
 			">
 				<AvatarImage />
-				<h2>{membersData[1].name}</h2>
+				<h2>{members[1].name}</h2>
 			</div>
 			<div className="
 				row-start-4 row-end-4
@@ -88,7 +88,7 @@ export const ResultPlayed = () => {
 				h-full w-full
 			">
 				<AvatarImage />
-				<h2>{membersData[3].name}</h2>
+				<h2>{members[3].name}</h2>
 			</div>
 			<div className="
 				row-start-5 row-end-5
@@ -97,7 +97,7 @@ export const ResultPlayed = () => {
 				h-full w-full
 			">
 				<AvatarImage />
-				<h2>{membersData[2].name}</h2>
+				<h2>{members[2].name}</h2>
 			</div>
 		</>
 	);

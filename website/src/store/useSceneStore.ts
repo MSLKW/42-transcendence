@@ -55,8 +55,7 @@ export const useSceneStore = create<SceneState>() (
 				set({ currentScene: "LOGIN" });
 				usePartyStore.setState({
 					partyCount: 1,
-					isHost: false,
-					membersData: [{
+					members: [{
 						name: "Player",
 						avatar: "avatar-stock-0.webp",
 						badge: "Newcomer",
@@ -82,6 +81,7 @@ export const useSceneStore = create<SceneState>() (
 						},
 						isSeated: false,
 						seatNumber: -1,
+						isHost: true,
 						isFriend: ISFRIEND["NA"],
 					}],
 				});

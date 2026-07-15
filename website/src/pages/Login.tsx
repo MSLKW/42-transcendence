@@ -1,6 +1,6 @@
 import { useRef, useEffect } from "react";
 import { useSceneStore } from "../store/useSceneStore";
-import { BigLogo } from "../components/Logo";
+import { BigLogo } from "../components/image/Logo";
 import { InfoButton } from "../components/Info";
 import { CreateAccountButton } from "../components/CreateAccount";
 import { SignInButton } from "../components/SignIn";

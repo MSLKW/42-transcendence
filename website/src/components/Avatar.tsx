@@ -1,6 +1,7 @@
 import { usePartyStore } from "../store/PartyStore";
 import { useSceneStore } from "../store/useSceneStore";
 import { useSettingsStore } from "../store/SettingsStore";
+import { HostIcon } from "../icons/HostIcon";
 
 interface AvatarProps {
 	cornerButton?: string;
@@ -22,6 +23,20 @@ export const AvatarImage = ({ cornerButton, isActive }: AvatarProps) => {
 			flex place-content-center place-items-center
 			relative
 		">
+			{ cornerButton === "host" &&
+				<div className="
+					data-tip-up
+					absolute top-0 right-0 translate-x-1/2 -translate-y-1/2
+					z-1
+					bg-n1
+					border border-n2 rounded-2xl
+					text-a4
+					w-7.5 h-7.5
+					flex place-content-center place-items-center
+				">
+					<HostIcon />
+				</div>
+			}
 			{cornerButton === "cardsLeft" &&
 				<div className="
 					absolute top-0 right-0 translate-x-1/2 -translate-y-1/2
@@ -74,7 +89,7 @@ export const AvatarImage = ({ cornerButton, isActive }: AvatarProps) => {
 
 export const AvatarButton = ({ cornerButton = "none", playerIndex = 0, isActive = false }: AvatarProps) => {
 	const setShowWindow = useSceneStore((state) => state.setShowWindow);
-	const { membersData } = usePartyStore();
+	const { members } = usePartyStore();
 
 	return (
 		<>
@@ -104,7 +119,7 @@ export const AvatarButton = ({ cornerButton = "none", playerIndex = 0, isActive 
 					flex place-content-center place-items-center
 					px-[clamp(0.625rem,1vh+0.3125rem,1.25rem)]
 				">
-					<p>{membersData[playerIndex].name}</p>
+					<p>{members[playerIndex].name}</p>
 				</div>
 			</button>
 		</>

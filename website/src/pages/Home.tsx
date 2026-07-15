@@ -11,7 +11,7 @@ import { AvatarButton } from "../components/Avatar";
 import { ChatButton } from "../components/Chat";
 import { PartyButton } from "../components/Party";
 import { EmojiButton } from "../components/EmojiButtons";
-import { SmallLogo } from "../components/Logo";
+import { SmallLogo } from "../components/image/Logo";
 
 interface HomeProps {
 	gameMode?: number;
@@ -171,7 +171,7 @@ export const Home = () => {
 		return () => observer.disconnect();
 	}, []);
 
-	const partyCount = usePartyStore((state) => state.partyCount);
+	const { partyCount, members } = usePartyStore();
 
 	return (
 		<>
@@ -221,7 +221,7 @@ export const Home = () => {
 						sm:overflow-x-visible overflow-x-auto
 					">
 						{ Array.from({ length: partyCount }).map((_, index) => (
-							<AvatarButton key={index} playerIndex={index}/>
+							<AvatarButton key={index} playerIndex={index} cornerButton={members[index].isHost === true ? "host" : "remove"}/>
 						))}
 						<PartyButton />
 					</div>
