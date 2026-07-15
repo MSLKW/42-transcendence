@@ -14,18 +14,23 @@ import { EmojiButton } from "../components/EmojiButtons";
 import { SmallLogo } from "../components/Logo";
 
 interface HomeProps {
-	mode?: number;
+	gameMode?: number;
 }
 
-export const HomeCardButton = ({ mode = 4 }: HomeProps) => {
+const GAMEMODE_DEV = 1;
+const GAMEMODE_2PLAYERS = 2;
+const GAMEMODE_3PLAYERS = 3;
+const GAMEMODE_4PLAYERS = 4;
+
+export const HomeCardButton = ({ gameMode = 4 }: HomeProps) => {
 	const setCurrentScene = useSceneStore((state) => state.setCurrentScene);
-	const setTotalPlayers = useGameStore((state) => state.setTotalPlayers);
+	const { setGameValue } = useGameStore();
 
 	return (
 		<button
 			onClick={() => {
-				setTotalPlayers(mode);
-				if (mode === 1)
+				setGameValue("totalPlayers", gameMode);
+				if (gameMode === GAMEMODE_DEV)
 					setCurrentScene("GAMEPLAY")
 				else
 					setCurrentScene("LOBBY")
@@ -40,7 +45,7 @@ export const HomeCardButton = ({ mode = 4 }: HomeProps) => {
 				focus-visible:outline-2 outline-b5 outline-offset-5
 				snap-center
 		">
-			{ mode === 4 &&
+			{ gameMode === GAMEMODE_4PLAYERS &&
 				<>
 					<div className="
 						w-[clamp(2.5rem,3.571vmin+1.786rem,5rem)] aspect-square
@@ -78,7 +83,7 @@ export const HomeCardButton = ({ mode = 4 }: HomeProps) => {
 					<h1 className="text-n0">4 Players</h1>
 				</>
 			}
-			{ mode === 3 &&
+			{ gameMode === GAMEMODE_3PLAYERS &&
 				<>
 					<div className="
 						w-[clamp(2.5rem,3.571vmin+1.786rem,5rem)] aspect-square
@@ -109,7 +114,7 @@ export const HomeCardButton = ({ mode = 4 }: HomeProps) => {
 					<h1 className="text-n0">3 Players</h1>
 				</>
 			}
-			{ mode === 2 &&
+			{ gameMode === GAMEMODE_2PLAYERS &&
 				<>
 					<div className="
 						w-[clamp(2.5rem,3.571vmin+1.786rem,5rem)] aspect-square
@@ -133,7 +138,7 @@ export const HomeCardButton = ({ mode = 4 }: HomeProps) => {
 					<h1 className="text-n0">2 Players</h1>
 				</>
 			}
-			{ mode === 1 &&
+			{ gameMode === GAMEMODE_DEV &&
 				<>
 					<div className="
 						w-[clamp(2.5rem,3.571vmin+1.786rem,5rem)] aspect-square
@@ -197,10 +202,10 @@ export const Home = () => {
 							flex-5
 							pointer-events-auto
 		 				">
-		 					<HomeCardButton mode={4}/>
-		 					<HomeCardButton mode={3}/>
-		 					<HomeCardButton mode={2}/>
-		 					<HomeCardButton mode={1}/>
+		 					<HomeCardButton gameMode={GAMEMODE_4PLAYERS}/>
+		 					<HomeCardButton gameMode={GAMEMODE_3PLAYERS}/>
+		 					<HomeCardButton gameMode={GAMEMODE_2PLAYERS}/>
+		 					<HomeCardButton gameMode={GAMEMODE_DEV}/>
 		 				</div>
 		 			</div>
 				</main>
@@ -215,7 +220,7 @@ export const Home = () => {
 						gap-[clamp(0.25rem,3vw+0.125rem,2.5rem)]
 						sm:overflow-x-visible overflow-x-auto
 					">
-						<AvatarButton playerIndex={0} role="self"/>
+						<AvatarButton playerIndex={0}/>
 						{ partyCount >= 2 && <AvatarButton playerIndex={1} /> }
 						{ partyCount >= 3 && <AvatarButton playerIndex={2} /> }
 						{ partyCount >= 4 && <AvatarButton playerIndex={3} /> }

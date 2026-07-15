@@ -1,7 +1,7 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-import { usePlayerStore } from "./usePlayerStore";
-import { useGameStore } from "./GameStore";
+// import { usePlayerStore } from "./PlayerStore";
+// import { useGameStore } from "./GameStore";
 
 export type GameScene = "LOGIN" | "HOME" | "LOBBY" | "GAMEPLAY" | "R3F" | "RESULTS";
 
@@ -38,29 +38,29 @@ export const useSceneStore = create<SceneState>() (
 
 			setCurrentScene: (scene) => {
 				set({ currentScene: scene });
-				useGameStore.getState().setGameStarted(scene === "R3F" || scene === "GAMEPLAY");
+				// useGameStore.getState().setGameStarted(scene === "R3F" || scene === "GAMEPLAY");
 			},
 			resetGame: () => {
 				set({ currentScene: "LOGIN" });
-				usePlayerStore.setState({
-					playerName: "",
-					playerAvatar: "",
-					totalPlayed: 0,
-					totalWins: 0,
-					winStreak: 0,
-					achievements: {
-						FIRST_LOGIN: null,
-						LOGIN_1_WEEK: null,
-						PLAYED_1_GAME: null,
-						PLAYED_10_GAMES: null,
-						PLAYED_42_GAMES: null,
-						FIRST_WIN: null,
-						WIN_STREAK_2: null,
-						WIN_STREAK_5: null,
-						WIN_STREAK_10: null,
-						MASTER_COLLECTOR: null,
-					},
-				});
+				// usePlayerStore.setState({
+				// 	playerName: "",
+				// 	playerAvatar: "",
+				// 	totalPlayed: 0,
+				// 	totalWins: 0,
+				// 	winStreak: 0,
+				// 	achievements: {
+				// 		FIRST_LOGIN: null,
+				// 		LOGIN_1_WEEK: null,
+				// 		PLAYED_1_GAME: null,
+				// 		PLAYED_10_GAMES: null,
+				// 		PLAYED_42_GAMES: null,
+				// 		FIRST_WIN: null,
+				// 		WIN_STREAK_2: null,
+				// 		WIN_STREAK_5: null,
+				// 		WIN_STREAK_10: null,
+				// 		MASTER_COLLECTOR: null,
+				// 	},
+				// });
 			},
 			setContAreaWidth: (contAreaWidth) => set({ contAreaWidth }),
 			setContAreaHeight: (contAreaHeight) => set({ contAreaHeight }),

@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import { useSceneStore } from "./store/useSceneStore";
 import { useDevStore } from "./store/DevStore";
 import { useGameStore } from "./store/GameStore";
-import { usePartyStore } from "./store/PartyStore";
+// import { usePartyStore } from "./store/PartyStore";
 
 export default function Dev() {
 	const currentScene = useSceneStore((state) => state.currentScene);
@@ -21,13 +21,13 @@ export default function Dev() {
 	useEffect(() => {
 		console.log("gameStarted", gameStarted);
 	}, [currentScene]);
-	const setPartyCount = usePartyStore((state) => state.setPartyCount);
-	const setNameList = usePartyStore((state) => state.setNameList);
+	// const setNameList = usePartyStore((partyStore) => partyStore.setNameList);
+	// const { setPartyValue, } = usePartyStore();
 
-	const handleParty = (count: number, players: string[]) => {
-		setPartyCount(count);
-		setNameList(players);
-	};
+	// const handleParty = (count: number, players: string[]) => {
+	// 	setPartyValue("partyCount", count);
+	// 	setNameList(players);
+	// };
 
 	return (
 		<section className="w-full h-fit">
@@ -45,10 +45,10 @@ export default function Dev() {
 				<li><button type="button" tabIndex={-1} onClick={() => resetGame()}>Reset</button></li>
 			</ul>
 			<ul className="ul-dev">
-				<li><button type="button" tabIndex={-1} onClick={() => handleParty(1, ["Azrul", "Void", "Null", "Undefined"])}>Party 1</button></li>
+				{/* <li><button type="button" tabIndex={-1} onClick={() => handleParty(1, ["Azrul", "Void", "Null", "Undefined"])}>Party 1</button></li>
 				<li><button type="button" tabIndex={-1} onClick={() => handleParty(2, ["Azrul", "Max", "Null", "Undefined"])}>Party 2</button></li>
 				<li><button type="button" tabIndex={-1} onClick={() => handleParty(3, ["Azrul", "Max", "Jeremy", "Undefined"])}>Party 3</button></li>
-				<li><button type="button" tabIndex={-1} onClick={() => handleParty(4, ["Azrul", "Max", "Jeremy", "Aisyah"])}>Party 4</button></li>
+				<li><button type="button" tabIndex={-1} onClick={() => handleParty(4, ["Azrul", "Max", "Jeremy", "Aisyah"])}>Party 4</button></li> */}
 			</ul>
 		</section>
 	);

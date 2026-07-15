@@ -16,7 +16,7 @@ export const useDevStore = create<DevState>()(
 			showFrame: false,
 			showStats: false,
 
-			toggleFlag: (key) => set((state) => ({ [key]: !state[key] })),
+			toggleFlag: (key) => set((devStore) => ({ [key]: !devStore[key] })),
 		}),
 		{
 			name: "dev-storage",

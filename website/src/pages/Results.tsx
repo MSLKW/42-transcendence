@@ -1,4 +1,5 @@
 import { useRef, useEffect } from "react";
+import { usePartyStore } from "../store/PartyStore";
 import { useSceneStore } from "../store/useSceneStore";
 import { BackButton } from "../components/BackButton";
 import { SettingsButton } from "../components/Settings";
@@ -6,7 +7,6 @@ import { EmojiButton } from "../components/EmojiButtons";
 import { ChatButton } from "../components/Chat";
 import { NextGameButton } from "../components/NextGameButton";
 import { AvatarImage, AvatarButton } from "../components/Avatar";
-import { useGameStore } from "../store/GameStore";
 
 export const ResultRank = () => {
 	return (
@@ -52,7 +52,7 @@ export const ResultRank = () => {
 }
 
 export const ResultPlayed = () => {
-	const nameList = useGameStore((store) => store.nameList);
+	const { membersData } = usePartyStore();
 	return (
 		<>
 			<div className="
@@ -70,7 +70,7 @@ export const ResultPlayed = () => {
 				bg-b2
 			">
 				<AvatarImage />
-				<h2>{nameList[0]}</h2>
+				<h2>{membersData[0].name}</h2>
 			</div>
 			<div className="
 				row-start-3 row-end-3
@@ -79,7 +79,7 @@ export const ResultPlayed = () => {
 				h-full w-full
 			">
 				<AvatarImage />
-				<h2>{nameList[1]}</h2>
+				<h2>{membersData[1].name}</h2>
 			</div>
 			<div className="
 				row-start-4 row-end-4
@@ -88,7 +88,7 @@ export const ResultPlayed = () => {
 				h-full w-full
 			">
 				<AvatarImage />
-				<h2>{nameList[3]}</h2>
+				<h2>{membersData[3].name}</h2>
 			</div>
 			<div className="
 				row-start-5 row-end-5
@@ -97,7 +97,7 @@ export const ResultPlayed = () => {
 				h-full w-full
 			">
 				<AvatarImage />
-				<h2>{nameList[2]}</h2>
+				<h2>{membersData[2].name}</h2>
 			</div>
 		</>
 	);

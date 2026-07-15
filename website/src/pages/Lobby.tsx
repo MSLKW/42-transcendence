@@ -77,7 +77,7 @@ export const Lobby = () => {
 						{ totalPlayers === 4 && <AvatarButton playerIndex={3} /> }
 					</div>
 					<div className="w-full h-full grid place-items-center place-content-center">
-						<AvatarButton playerIndex={0} role="self" />
+						<AvatarButton playerIndex={0} />
 					</div>
 				</main>
 				<footer className="

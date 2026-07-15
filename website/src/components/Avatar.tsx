@@ -1,5 +1,4 @@
 import { usePartyStore } from "../store/PartyStore";
-import { usePlayerStore } from "../store/usePlayerStore";
 import { useSceneStore } from "../store/useSceneStore";
 import { useSettingsStore } from "../store/SettingsStore";
 
@@ -7,7 +6,6 @@ interface AvatarProps {
 	cornerButton?: string;
 	playerIndex?: number;
 	isActive?: boolean;
-	role?: string;
 }
 
 export const AvatarImage = ({ cornerButton, isActive }: AvatarProps) => {
@@ -74,22 +72,19 @@ export const AvatarImage = ({ cornerButton, isActive }: AvatarProps) => {
 	)
 }
 
-export const AvatarButton = ({ cornerButton = "none", playerIndex = 0, isActive = false, role = "opponent" }: AvatarProps) => {
+export const AvatarButton = ({ cornerButton = "none", playerIndex = 0, isActive = false }: AvatarProps) => {
 	const setShowWindow = useSceneStore((state) => state.setShowWindow);
-	const nameList = usePartyStore((state) => state.nameList);
-	const setPlayerIndex = usePlayerStore((state) => state.setPlayerIndex);
+	const { membersData } = usePartyStore();
 
 	return (
 		<>
 			<button
-				data-tip={ role === "self" ? "Edit Profile" : "View Stats"}
+				data-tip={ playerIndex === 0 ? "Edit Profile" : "View Stats"}
 				onClick={(e) => {
-					if (role === "self")
+					if (playerIndex === 0)
 						setShowWindow("profile", true);
-					else {
-						setPlayerIndex(playerIndex);
+					else
 						setShowWindow("stats", true);
-					}
 					e.currentTarget.blur();
 				}}
 				className="
@@ -109,7 +104,7 @@ export const AvatarButton = ({ cornerButton = "none", playerIndex = 0, isActive 
 					flex place-content-center place-items-center
 					px-[clamp(0.625rem,1vh+0.3125rem,1.25rem)]
 				">
-					<p>{nameList[playerIndex]}</p>
+					<p>{membersData[playerIndex].name}</p>
 				</div>
 			</button>
 		</>

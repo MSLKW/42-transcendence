@@ -1,7 +1,7 @@
 import { useSceneStore } from "../store/useSceneStore";
 import { AvatarButton } from "./Avatar";
 import { CloseButton } from "./CloseButton";
-import { usePlayerStore } from "../store/usePlayerStore";
+import { usePlayerStore } from "../store/PlayerStore";
 
 export const Medal = () => {
 	return (
