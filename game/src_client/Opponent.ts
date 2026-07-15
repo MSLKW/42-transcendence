@@ -19,7 +19,7 @@ export class Opponent {
 		this.cardHeapRef = cardHeapRef;
 		this.cardManager = new CardManager(this.opponentId);
 
-		this.socket.on("opponent_play_card_hand", (cardHandTransmit: CardHandTransmit) => {
+		this.socket.on("player_play_card_hand", (cardHandTransmit: CardHandTransmit) => {
 			if (cardHandTransmit.playerId === this.opponentId) {
 				const cardHand = new CardHand(this.opponentId);
 				for (let i = 0; i < cardHandTransmit.cards.length; i++) {
@@ -40,7 +40,7 @@ export class Opponent {
 
 	public setupGameState(gameState: GameStateTransmit) {
 		const cardsAmount = gameState.playerCardsAmount[this.opponentId];
-			this.collectCardsAmount(cardsAmount);
+		this.collectCardsAmount(cardsAmount);
 	}
 
 	private collectCardsAmount(amount: number) {

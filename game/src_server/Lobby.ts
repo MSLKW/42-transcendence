@@ -11,7 +11,8 @@ export class Lobby {
 	// private whitelist: Array<string>;
 	private playersInGameLimit: number;
 	private totalUsersLimit: number;
-	private game: GameState;
+	private lobbyRoomId: string;
+	public	game: GameState;
 
 	constructor() {
 		this.users = [];
@@ -20,6 +21,7 @@ export class Lobby {
 		this.playersInGameLimit = 4;
 		this.totalUsersLimit = 8;
 		this.game = new GameState();
+		this.lobbyRoomId = "lobby";
 		for (let i = 0; i < this.playersInGameLimit; i++) {
 			this.availableSeats.push(i);
 		}
@@ -58,7 +60,14 @@ export class Lobby {
 		newUser.socket.on("game_start_request", (gameStartRequest: GameStartRequest) => {
 			// check host
 			const usersToPlay = this.users.filter((user) => user.seat >= 0).sort((userA, userB) => userA.seat - userB.seat);
-			newUser.socket.emit("game_start_request", this.game.startGame(usersToPlay));
+			for (let i = 0; i < usersToPlay.length; i++) {
+				this.game.addPlayer(usersToPlay[i]);
+			}
+			const userSpectators = this.users.filter((user) => user.seat === -1);
+			for (let i = 0; i < userSpectators.length; i++) {
+				this.game.addSpectator(userSpectators[i]);
+			}
+			newUser.socket.emit("game_start_request", this.game.startGame());
 		});
 
 		const index = this.users.findIndex((user) => user.uuid === newUser.uuid);
@@ -80,6 +89,7 @@ export class Lobby {
 	private connectNewUser(user: UserState) {
 		this.users.push(user);
 		console.log(`User<${user.uuid}> has connected`);
+		io.to(this.lobbyRoomId).emit("user_connect", user.uuid);
 		// announce new user joined to other users via socket emit
 	}
 
@@ -92,6 +102,7 @@ export class Lobby {
 			else {
 				this.users[index].leaveSeat();
 				this.users.splice(index, 1);
+				io.to(this.lobbyRoomId).emit("user_disconnect", this.users[index].uuid);
 				console.log(`User<${disconnectedUser.uuid}> fully disconnected`);
 			}
 		}

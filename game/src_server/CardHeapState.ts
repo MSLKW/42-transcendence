@@ -18,7 +18,7 @@ export class CardHeapState {
 		this.cardHands.push(cardHand);
 		this.leadingPlayerId = cardHand.playerId;
 		this.requiresThreeDiamonds = false;
-		io.to("game").emit("opponent_play_card_hand", cardHand.transmit());
+		io.to("game").emit("player_play_card_hand", cardHand.transmit());
 	}
 
 	public cardHandsAmount() {

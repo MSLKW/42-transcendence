@@ -48,7 +48,6 @@ export class Player {
 	}
 
 	public setupGameState(gameState: GameStateTransmit) {
-		this.cardHeapRef.sync(gameState.cardHeap);
 		this.collectCards(gameState.playerCards);
 		this.setPlayerTurnUI(gameState.isPlayerTurn);
 	}
@@ -62,12 +61,12 @@ export class Player {
 			console.log(gameEndStats);
 		})
 		
-		this.socket.on('player_play_card_hand', (status: StatusTransmit) => {
+		this.socket.on('player_play_card_hand_request', (status: StatusTransmit) => {
 			if (status.success === true) {
 				const cardHand = this.cardManager.sendSelectedCards();
 				this.cardHeapRef.receiveCardHand(cardHand);
 			} else {
-				console.log(`player_play_card_hand error: ${status.message}`);
+				console.log(`player_play_card_hand_request error: ${status.message}`);
 			}
 		});
 		
@@ -93,7 +92,7 @@ export class Player {
 
 		this.sendCardsButton.addEventListener('click', () => {
 			const cardHandTransmit = this.cardManager.selectedCards.transmit();
-			this.socket.emit('player_play_card_hand', cardHandTransmit);
+			this.socket.emit('player_play_card_hand_request', cardHandTransmit);
 		});
 		
 		this.skipTurnButton.addEventListener('click', () => {

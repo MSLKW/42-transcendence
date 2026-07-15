@@ -28,9 +28,9 @@ export class PlayerState {
 	public setupSocketListeners() {
 		this.socket.join("game");
 
-		this.socket.on("player_play_card_hand", (cardHandTransmit: CardHandTransmit) => {
+		this.socket.on("player_play_card_hand_request", (cardHandTransmit: CardHandTransmit) => {
 			const status: StatusTransmit = this.playCardHand(cardHandTransmit);
-			this.socket.emit('player_play_card_hand', status);
+			this.socket.emit('player_play_card_hand_request', status);
 			if (status.success === true) {
 				if (this.cards.length === 0) {
 					this.gameStateRef.endGame(this)
@@ -50,6 +50,7 @@ export class PlayerState {
 			this.isDisconnected = true;
 			if (this.gameStateRef.turnTimerInSeconds === 0)
 				this.skipTurn();
+			io.to("game").emit("player_disconnect", this.playerId);
 			console.log(`Player<${this.playerId}> has disconnected`)
 		}
 	}
@@ -59,6 +60,7 @@ export class PlayerState {
 		this.isDisconnected = false;
 		this.setupSocketListeners();
 		this.socket.emit("player_game_state", this.gameStateRef.transmit(this));
+		io.to("game").emit("player_reconnect", this.playerId);
 	}
 
 	public collectCards(cards: Array<CardTransmit>) {
@@ -162,7 +164,7 @@ export class PlayerState {
 		return (status);
 	}
 
-	public calculatePenaltyPoints() {
+	public calculatePenaltyPoints(): number {
 		let penaltyPoints: number = 0;
 		const cardAmount = this.cards.length;
 

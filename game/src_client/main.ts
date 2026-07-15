@@ -123,6 +123,7 @@ if (authId && playerId) {
 	const takeSeatButton = document.getElementById('take-seat-button') as HTMLButtonElement;
 	const leaveSeatButton = document.getElementById('leave-seat-button') as HTMLButtonElement;
 	const takeSeatInput = document.getElementById('take-seat-input') as HTMLInputElement;
+	const spectateButton = document.getElementById('spectate-button') as HTMLButtonElement;
 
 	socket.on('game_start_request', (status: StatusTransmit) => {
 		if (status.success === true) {
@@ -140,6 +141,10 @@ if (authId && playerId) {
 
 	socket.on('game_end', () => {
 		startGameButton.disabled = false;
+	});
+
+	spectateButton.addEventListener('click', () => {
+		socket.emit("user_spectate");
 	});
 
 	takeSeatButton.addEventListener('click', () => {
@@ -163,7 +168,10 @@ if (authId && playerId) {
 	});
 
 	socket.on("player_game_state", (gameState: GameStateTransmit) => {
+		startGameButton.disabled = true;
+
 		const seatOrder = gameState.playerSeatOrder;
+		cardHeap.sync(gameState.cardHeap);
 		Object.keys(seatOrder).forEach((id) => {
 			if (id === playerId) {
 				const player = new Player(socket, playerId, cardHeap);

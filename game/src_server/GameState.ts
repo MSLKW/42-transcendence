@@ -3,11 +3,12 @@ import { io } from './server.js';
 import { PlayerState } from './PlayerState.js';
 import { CardDeckState } from './CardDeckState.js'
 import { CardHeapState } from './CardHeapState.js'
-import { GameStateTransmit, GameEndStatsTransmit, StatusTransmit, PlayerTurnTransmit, GameStartRequest, SkipTurnTransmit } from '../src_shared/Types.js';
+import { GameStateTransmit, GameEndStatsTransmit, StatusTransmit, PlayerTurnTransmit, GameStartRequest, SkipTurnTransmit, CardTransmit } from '../src_shared/Types.js';
 import { UserState } from './UserState.js';
 
 export class GameState {
 	private players: Array<PlayerState>;
+	private spectators: Array<UserState>;
 	private cardDeck: CardDeckState;
 	public	cardHeap: CardHeapState;
 	public	isGameStarted: boolean;
@@ -23,6 +24,7 @@ export class GameState {
 	
 	constructor() {
 		this.players = [];
+		this.spectators = [];
 		this.cardDeck = new CardDeckState();
 		this.cardHeap = new CardHeapState();
 		this.isGameStarted = false;
@@ -32,25 +34,39 @@ export class GameState {
 		this.playersInGameLimit = 4;
 	}
 
+	public addPlayer(user: UserState) {
+		const player = new PlayerState(user.uuid, user.socket, this)
+		this.players.push(player);
+	}
+
+	public addSpectator(user: UserState) {
+		user.socket.join("game");
+		this.spectators.push(user);
+		user.socket.on("disconnect", () => {
+			const index = this.spectators.indexOf(user);
+			if (index >= 0) {
+				this.spectators.splice(index, 1);
+			}
+		});
+		if (this.isGameStarted === true) {
+			user.socket.emit("player_game_state", this.transmit(undefined));
+		}
+	}
 	/*
 		@param user: Should be the users who want to play in the game
 	*/
-	public startGame(users: Array<UserState>): StatusTransmit {
+	public startGame(): StatusTransmit {
 		const status: StatusTransmit = {
 			success: false,
 			message: ""
 		}
-		if (users.length === 0) {
+		if (this.players.length === 0) {
 			status.message = "No users to start game";
 			return (status);
 		}
 		if (this.isGameStarted === true) {
 			status.message = "Game has already started"
 			return (status);
-		}
-		for (let i = 0; i < users.length; i++) {
-			const player = new PlayerState(users[i].uuid, users[i].socket, this)
-			this.players.push(player);
 		}
 		for (let i = 0; i < this.players.length; i++) {
 			this.players[i].collectCards(this.cardDeck.dealCards(Math.floor(this.cardDeck.size / this.players.length)));
@@ -67,6 +83,9 @@ export class GameState {
 			this.playerTurnIndex = 0;
 		for (let i = 0; i < this.players.length; i++) {
 			this.players[i].socket.emit("player_game_state", this.transmit(this.players[i]));
+		}
+		for (let i = 0; i < this.spectators.length; i++) {
+			this.spectators[i].socket.emit("player_game_state", this.transmit(undefined));
 		}
 		this.playerTurnEvent();
 		this.isGameStarted = true;
@@ -196,14 +215,17 @@ export class GameState {
 		return (playerPenaltyPoints);
 	}
 
-	// For reconnecting player state
-	public transmit(player: PlayerState) {
+	public transmit(player: PlayerState | undefined) {
 		const transmitObject: GameStateTransmit = {
 			cardHeap: this.cardHeap.transmit(),
 			playerCardsAmount: this.getPlayerCardsAmount(),
 			playerSeatOrder: this.getSeatOrder(),
-			playerCards: player.cards,
-			isPlayerTurn: this.isPlayerTurn(player)
+			playerCards: [],
+			isPlayerTurn: false
+		}
+		if (player !== undefined) {
+			transmitObject.playerCards = player.cards;
+			transmitObject.isPlayerTurn = this.isPlayerTurn(player);
 		}
 		return (transmitObject);
 	}
