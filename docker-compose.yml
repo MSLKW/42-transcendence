@@ -1,6 +1,6 @@
 networks:
-  transcendence:
-    name : transcendence
+  big2:
+    name : big2
     driver: bridge
 
 volumes:
@@ -10,93 +10,60 @@ volumes:
     driver_opts:  
       type: none
       o: bind
-      device: /home/aimokhta/data/postgresql_data
+      device: ${PWD}/data/postgresql_data
 
-
-# can have env_file at the bottom => Docker Compose processes the file in stages, rather than reading it line-by-line from top to bottom.
-# environment overrides .env if vars exits in both, both can co-exist in docker-compose
 
 services:
-#           DATABASE = PostgreSQL
-  database:
-    container_name: database
-    image: postgres:17-bookworm     # No Dockerfile needed here!
+
+#           DATABASE RDBMS = PostgreSQL
+  postgresql-rdbms:
+    container_name: postgresql-rdbms
+    image: postgres:17-bookworm                 # No Dockerfile needed here!
     restart: unless-stopped
     expose:
-      - "${DATABASE_PORT}"
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${PRISMA_USER} -d ${DATABASE_NAME}"]
-      interval: 5s
-      timeout: 5s
-      retries: 5
+      - "${POSTGRES_PORT}"
     environment:
-      POSTGRES_USER: ${PRISMA_USER}
+      POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD_FILE: /run/secrets/database_password
-      POSTGRES_DB: ${DATABASE_NAME}
+      POSTGRES_DB: ${POSTGRES_DB_NAME}
     env_file:
       - .env
     volumes:
       - postgresql_data:/var/lib/postgresql/data
       - ../secrets/database_password.txt:/run/secrets/database_password:ro
     networks:
-      - transcendence
+      - big2
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB_NAME}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
   
   
-#           BACKEND = Prisma + Socket.io + Node.js + Express.js
-  backend:
-    container_name: backend
-    build: ./backend/. # gets the built (main application), built once only -> efficient + saves CPU and disk space. 
-    image: backend:aisyah       # identical image as prisma_studio, with different command -> "npm run start"
-    pull_policy: build          # This forces local builds, ignoring Docker Hub
+#           Drizzle = ORM - a library
+#           DATA BROWSER = Drizzle Studio, Dev-only Database Tool, a CLI tool inside Node environment (thats why node image)
+  drizzle-orm:
+    container_name: drizzle-orm
+    build: ./packages/database/.              # gets the built (main application), built once only -> efficient + saves CPU and disk space. 
+    pull_policy: build                        # This forces local builds, ignoring Docker Hub
     restart: unless-stopped
     ports:
-      - "${BACKEND_PORT}:${BACKEND_PORT}"
-    environment:
-      PORT: ${BACKEND_PORT}
-      # DATABASE_URL: -> defined in entrypoint.sh
+      - "${DRIZZLE_STUDIO_PORT}:${DRIZZLE_STUDIO_PORT}"
     env_file:
       - .env
     volumes:
       - ../secrets/database_password.txt:/run/secrets/database_password:ro
     networks:
-      - transcendence
+      - big2
     depends_on:
-      database:
+      postgresql-rdbms:
         condition: service_healthy
 
-
-#         VISUAL DATA BROWSER = Prisma Studio
-#         command in docker compose => overwrites Dockerfile's CMD
-#         entrypoint in docker compose => overwrites Dockerfile's ENTRYPOINT
-  prisma_studio:
-    container_name: prisma_studio
-    image: backend:aisyah   # just referencing the backend's image (reuse only), with different command -> docker-compose's command:
-    pull_policy: build      # This forces local builds, ignoring Docker Hub
-    entrypoint: "/usr/local/bin/prisma_studio-entrypoint.sh"
-    command: npx prisma studio --port ${PRISMA_STUDIO_PORT}
-    environment:            # required for new prisma version, Prisma 7
-      HOST: 0.0.0.0					# hardcode 0.0.0.0 (required for Docker containers)
-      BROWSER: none
-    ports:
-      - "${PRISMA_STUDIO_PORT}:${PRISMA_STUDIO_PORT}"
-    env_file:
-      - .env
-    volumes:
-      - ../secrets/database_password.txt:/run/secrets/database_password:ro
-    networks:
-      - transcendence
-    depends_on:
-      database:
-        condition: service_healthy
-      # backend:
-      #   condition: service_completed_successfully => cannot => If backend finishes (or crashes), your prisma_studio will stop. Prisma Studio is a utility, not a service that depends on the backend finishing.
-
-
-#           AUTH BACKEND = separate teammate service + same PostgreSQL
-  authentication:
-    container_name: authentication
-    build: ../../backend-auth/.
-    image: authentication:jeremy
+#           AUTHENTICATION
+  auth:
+    container_name: auth
+    build: ./backend-services/authentication/.
+    image: auth:jeremy
     pull_policy: build
     restart: unless-stopped
     ports:
@@ -108,9 +75,26 @@ services:
     volumes:
       - ../secrets/database_password.txt:/run/secrets/database_password:ro
     networks:
-      - transcendence
+      - big2
     depends_on:
-      database:
+      postgresql-rdbms:
         condition: service_healthy
 
 
+#         GAME-FRONTEND
+#         GAME-BACKEND
+#         GAME-BOT
+#         WEBSITE + NGINX (only backend has to be seperate micoservices with seperate 1 responsibiliyty -> PDF)
+#         CHAT
+#         OTHERS (still learning now)
+
+
+# NOTES:
+# env_file placement
+  # can have env_file at the bottom => Docker Compose processes the file in stages, rather than reading it line-by-line from top to bottom.
+  # environment overrides .env if vars exits in both, both can co-exist in docker-compose
+  # image syntax => image: version-tag
+# Drizzle Studio, need HTTPS?
+  # The requirement "HTTPS everywhere" applies to your production application (You must encrypt all traffic between your users and your API Gateway)
+  # No need HTTPS for Drizzle Studio, coz its a local development-only tool, should never be exposed to the public internet. 
+  # Accessing it at http://localhost:(port) is standard and perfectly acceptable for your development environment, keep it out of production entirely to avoid massive security holes

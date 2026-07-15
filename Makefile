@@ -6,7 +6,7 @@
 #    By: aimokhta <aimokhta@student.42kl.edu.my>    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2026/06/16 09:31:30 by aimokhta          #+#    #+#              #
-#    Updated: 2026/07/09 14:39:04 by aimokhta         ###   ########.fr        #
+#    Updated: 2026/07/15 16:38:52 by aimokhta         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -49,4 +49,14 @@ fclean: clean
 
 re: fclean all
 
-.PHONY: all down recreate clean fclean re
+logs:
+	docker logs postgres-rdbms
+	docker logs drizzle-orm
+	docker logs auth
+	docker logs website
+	docker logs game-frontend
+	docker logs game-backend
+	docker logs game-bot
+	docker logs chat
+
+.PHONY: all down recreate clean fclean re logs
