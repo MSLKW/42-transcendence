@@ -220,10 +220,9 @@ export const Home = () => {
 						gap-[clamp(0.25rem,3vw+0.125rem,2.5rem)]
 						sm:overflow-x-visible overflow-x-auto
 					">
-						<AvatarButton playerIndex={0}/>
-						{ partyCount >= 2 && <AvatarButton playerIndex={1} /> }
-						{ partyCount >= 3 && <AvatarButton playerIndex={2} /> }
-						{ partyCount >= 4 && <AvatarButton playerIndex={3} /> }
+						{ Array.from({ length: partyCount }).map((_, index) => (
+							<AvatarButton key={index} playerIndex={index}/>
+						))}
 						<PartyButton />
 					</div>
 					<SmallLogo />

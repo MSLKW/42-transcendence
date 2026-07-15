@@ -2,9 +2,11 @@ import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import type { PlayerData } from "./PlayerStore";
 
-export const ISFRIEND_NA = -1; //self or bot
-export const ISFRIEND_FALSE = 0;
-export const ISFRIEND_TRUE = 1;
+export const ISFRIEND = {
+	NA: -1, //self or bot
+	FALSE: 0,
+	TRUE: 1,
+}
 
 export interface MemberData extends PlayerData {
 	isFriend: number;
@@ -18,7 +20,8 @@ interface PartyValues {
 
 interface PartyState extends PartyValues {
 	setPartyValue: <K extends keyof PartyValues>(key: K, value: PartyValues[K]) => void;
-	setMemberData: (data: PlayerData) => void;
+	addMember: (member: MemberData) => void;
+	removeMember: (member: MemberData) => void;
 	setIsFriend: (name: string, friendStatus: number) => void;
 }
 
@@ -54,7 +57,7 @@ export const usePartyStore = create<PartyState>() (
 					},
 					isSeated: false,
 					seatNumber: -1,
-					isFriend: ISFRIEND_NA,
+					isFriend: ISFRIEND["NA"],
 				},
 				{
 					name: "Void",
@@ -82,7 +85,7 @@ export const usePartyStore = create<PartyState>() (
 					},
 					isSeated: false,
 					seatNumber: -1,
-					isFriend: ISFRIEND_TRUE,
+					isFriend: ISFRIEND["TRUE"],
 				},
 				{
 					name: "Null",
@@ -110,7 +113,7 @@ export const usePartyStore = create<PartyState>() (
 					},
 					isSeated: false,
 					seatNumber: -1,
-					isFriend: ISFRIEND_FALSE,
+					isFriend: ISFRIEND["FALSE"],
 				},
 				{
 					name: "Undefined",
@@ -138,17 +141,27 @@ export const usePartyStore = create<PartyState>() (
 					},
 					isSeated: false,
 					seatNumber: -1,
-					isFriend: ISFRIEND_FALSE,
+					isFriend: ISFRIEND["FALSE"],
 				}
 			],
 
 			setPartyValue: (key, value) => set(() => ({ [key]: value })),
-			setMemberData: (data) => set((partyStore) => {
-				const exists = partyStore.membersData.some((m) => m.name === data.name);
+			addMember: (member) => set((partyStore) => {
+				const exists = partyStore.membersData.some((m) => m.name === member.name);
 				return {
 					membersData: exists
-						? partyStore.membersData.map((m) => m.name === data.name ? { ...m, ...data } : m)
-						: [...partyStore.membersData, { ...data, isFriend: ISFRIEND_FALSE }]
+						? partyStore.membersData.map((m) => m.name === member.name ? { ...m, ...member } : m)
+						: [...partyStore.membersData, { ...member, isFriend: ISFRIEND["FALSE"] }],
+					partyCount: partyStore.partyCount + 1,
+				};
+			}),
+			removeMember: (member) => set((partyStore) => {
+				const exists = partyStore.membersData.some((m) => m.name === member.name);
+				return {
+					membersData: exists
+						? partyStore.membersData.map((m) => m.name === member.name ? { ...m, ...member } : m)
+						: [...partyStore.membersData, { ...member, isFriend: ISFRIEND["FALSE"] }],
+					partyCount: partyStore.partyCount - 1,
 				};
 			}),
 			setIsFriend: (memberName, friendStatus) => set((partyStore) => ({

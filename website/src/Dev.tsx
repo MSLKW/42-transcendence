@@ -1,8 +1,123 @@
 import { useEffect } from "react";
-import { useSceneStore } from "./store/useSceneStore";
 import { useDevStore } from "./store/DevStore";
 import { useGameStore } from "./store/GameStore";
-// import { usePartyStore } from "./store/PartyStore";
+import { usePartyStore, ISFRIEND } from "./store/PartyStore";
+import { useSceneStore } from "./store/useSceneStore";
+
+const TEST_MEMBERS = [
+	{
+		name: "Dev-Azrul",
+		avatar: "avatar-stock-1.webp",
+		badge: "Newcomer",
+		level: 10,
+		xp: 1000,
+		createdAt: "1 July 2026",
+		lastLogin: "1 July 2026",
+		totalPlayed: 10,
+		totalWins: 5,
+		totalLoss: 5,
+		winStreak: 5,
+		achievements: {
+			FIRST_LOGIN: null,
+			LOGIN_1_WEEK: null,
+			PLAYED_1_GAME: null,
+			PLAYED_10_GAMES: null,
+			PLAYED_42_GAMES: null,
+			FIRST_WIN: null,
+			WIN_STREAK_2: null,
+			WIN_STREAK_5: null,
+			WIN_STREAK_10: null,
+			MASTER_COLLECTOR: null,
+		},
+		isSeated: false,
+		seatNumber: -1,
+		isFriend: ISFRIEND["TRUE"],
+	},
+	{
+		name: "Dev-Max",
+		avatar: "avatar-stock-2.webp",
+		badge: "Newcomer",
+		level: 20,
+		xp: 2000,
+		createdAt: "2 July 2026",
+		lastLogin: "2 July 2026",
+		totalPlayed: 20,
+		totalWins: 10,
+		totalLoss: 10,
+		winStreak: 10,
+		achievements: {
+			FIRST_LOGIN: null,
+			LOGIN_1_WEEK: null,
+			PLAYED_1_GAME: null,
+			PLAYED_10_GAMES: null,
+			PLAYED_42_GAMES: null,
+			FIRST_WIN: null,
+			WIN_STREAK_2: null,
+			WIN_STREAK_5: null,
+			WIN_STREAK_10: null,
+			MASTER_COLLECTOR: null,
+		},
+		isSeated: false,
+		seatNumber: -1,
+		isFriend: ISFRIEND["FALSE"],
+	},
+	{
+		name: "Dev-Jeremy",
+		avatar: "avatar-stock-3.webp",
+		badge: "Newcomer",
+		level: 30,
+		xp: 3000,
+		createdAt: "3 July 2026",
+		lastLogin: "3 July 2026",
+		totalPlayed: 30,
+		totalWins: 15,
+		totalLoss: 15,
+		winStreak: 15,
+		achievements: {
+			FIRST_LOGIN: null,
+			LOGIN_1_WEEK: null,
+			PLAYED_1_GAME: null,
+			PLAYED_10_GAMES: null,
+			PLAYED_42_GAMES: null,
+			FIRST_WIN: null,
+			WIN_STREAK_2: null,
+			WIN_STREAK_5: null,
+			WIN_STREAK_10: null,
+			MASTER_COLLECTOR: null,
+		},
+		isSeated: false,
+		seatNumber: -1,
+		isFriend: ISFRIEND["TRUE"],
+	},
+	{
+		name: "Dev-Aisyah",
+		avatar: "avatar-stock-4.webp",
+		badge: "Newcomer",
+		level: 40,
+		xp: 4000,
+		createdAt: "4 July 2026",
+		lastLogin: "4 July 2026",
+		totalPlayed: 40,
+		totalWins: 20,
+		totalLoss: 20,
+		winStreak: 20,
+		achievements: {
+			FIRST_LOGIN: null,
+			LOGIN_1_WEEK: null,
+			PLAYED_1_GAME: null,
+			PLAYED_10_GAMES: null,
+			PLAYED_42_GAMES: null,
+			FIRST_WIN: null,
+			WIN_STREAK_2: null,
+			WIN_STREAK_5: null,
+			WIN_STREAK_10: null,
+			MASTER_COLLECTOR: null,
+		},
+		isSeated: false,
+		seatNumber: -1,
+		isFriend: ISFRIEND["TRUE"],
+	},
+] as const;
 
 export default function Dev() {
 	const currentScene = useSceneStore((state) => state.currentScene);
@@ -21,13 +136,8 @@ export default function Dev() {
 	useEffect(() => {
 		console.log("gameStarted", gameStarted);
 	}, [currentScene]);
-	// const setNameList = usePartyStore((partyStore) => partyStore.setNameList);
-	// const { setPartyValue, } = usePartyStore();
 
-	// const handleParty = (count: number, players: string[]) => {
-	// 	setPartyValue("partyCount", count);
-	// 	setNameList(players);
-	// };
+	const { partyCount, addMember } = usePartyStore();
 
 	return (
 		<section className="w-full h-fit">
@@ -45,10 +155,17 @@ export default function Dev() {
 				<li><button type="button" tabIndex={-1} onClick={() => resetGame()}>Reset</button></li>
 			</ul>
 			<ul className="ul-dev">
-				{/* <li><button type="button" tabIndex={-1} onClick={() => handleParty(1, ["Azrul", "Void", "Null", "Undefined"])}>Party 1</button></li>
-				<li><button type="button" tabIndex={-1} onClick={() => handleParty(2, ["Azrul", "Max", "Null", "Undefined"])}>Party 2</button></li>
-				<li><button type="button" tabIndex={-1} onClick={() => handleParty(3, ["Azrul", "Max", "Jeremy", "Undefined"])}>Party 3</button></li>
-				<li><button type="button" tabIndex={-1} onClick={() => handleParty(4, ["Azrul", "Max", "Jeremy", "Aisyah"])}>Party 4</button></li> */}
+				{ partyCount <= TEST_MEMBERS.length &&
+					<li>
+						<button
+							type="button"
+							tabIndex={-1}
+							onClick={() => addMember(TEST_MEMBERS[partyCount - 1])}
+						>
+							Add "{TEST_MEMBERS[partyCount - 1].name}" As Party Member
+						</button>
+					</li>
+				}
 			</ul>
 		</section>
 	);

@@ -51,9 +51,11 @@ interface PlayerValues {
 	status: number;
 }
 
-export const STATUS_OFFLINE = 0;
-export const STATUS_AVAILABLE = 1;
-export const STATUS_INGAME = 2;
+export const STATUS = {
+	OFFLINE: 0,
+	AVAILABLE: 1,
+	INGAME: 2,
+};
 
 interface PlayerState extends PlayerValues {
 	setPlayerValue: <K extends keyof PlayerValues>(key: K, value: PlayerValues[K]) => void;
@@ -94,7 +96,7 @@ export const usePlayerStore = create<PlayerState>() (
 				isSeated: false,
 				seatNumber: SEATNUMBER_UNSEATED,
 			},
-			status: STATUS_AVAILABLE,
+			status: STATUS["AVAILABLE"],
 
 			setPlayerValue: (key, value) => set(() => ({ [key]: value })),
 			setPlayerDataValue: (key, value) => set((state) => ({
