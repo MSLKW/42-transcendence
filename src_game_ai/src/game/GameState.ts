@@ -22,7 +22,7 @@ export class GameState
 	ownCards:			Card[];
 	playerSeats:		Record<string, number>;	
 	opponentCards		= {} as Record<string, Card[]>;
-	possibleCardHands	= {} as Record<HandTypeKey, CardHand[]>;
+	possibleCardHands	= {} as Record<string, CardHand[]>;
 
 	moveHistory:		CardHand[];
 	maxHistory:			number = 20;
@@ -42,7 +42,10 @@ export class GameState
 		this.ownCards = ownCards;
 		
 		for (const key in players)
-			this.opponentCards[key] = [];
+		{
+			if (key != botId)
+				this.opponentCards[key] = [];
+		}
 
 		this.possibleCardHands["single"] = [];
 		this.possibleCardHands["double"] = [];
@@ -71,10 +74,7 @@ export class GameState
 		initFlushes(this); //ignores straight flushes
 		
 		for (const key in this.possibleCardHands)
-		{
-			const handTypeKey = key as HandTypeKey;
-			this.possibleCardHands[handTypeKey].sort(cardHandComp);
-		}
+			this.possibleCardHands[key].sort(cardHandComp);
 	}
 
 	setLastCardHand(cardHand: CardHand)
@@ -116,10 +116,38 @@ export class GameState
 			}
 		}
 	}
+	
 	private recordHistory(cardHand: CardHand)
 	{
 		this.moveHistory.push(normalizeCardHand(cardHand));
 		if (this.moveHistory.length > this.maxHistory)
 			this.moveHistory.splice(0, 1);
+	}
+
+	encode(): number[]
+	{
+		const encodedState = new Array<number>(519).fill(0);
+
+		const ownCardsEncoded = this.encodeCards(this.ownCards);
+		const opponentCards: number[] = [];
+
+		for (const key in this.opponentCards)
+		{
+			if (key != this.botId)
+				opponentCards.push(...this.encodeCards(this.opponentCards[key]));
+		}
+		return (encodedState);
+	}
+
+	encodeCards(cards: Card[]): number[]
+	{
+		const encodedCards = new Array<number>(52).fill(0);
+
+		for (const card of cards)
+		{
+			const i = card.suit * 13 + card.rank;
+			encodedCards[i] = 1;
+		}
+		return (encodedCards);
 	}
 }
