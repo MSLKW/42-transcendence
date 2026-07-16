@@ -8,8 +8,8 @@ RUN apt-get update && \
     apt-get install -y openssl postgresql-client && \
     rm -rf /var/lib/apt/lists/*
 
-# Set the workdir explicitly to match where you want your app
-WORKDIR /app/packages/database
+# # Set the workdir explicitly to match where you want your app
+# WORKDIR /app/packages/database
 
 # Copy from the context (root) into the container
 # Use the relative path from the context (root)
@@ -25,8 +25,8 @@ RUN npm install
 # Only then copy the rest of the source code
 COPY . .
 
-# Build your TypeScript code (creates the 'dist' folder)
-RUN npm run build
+# # Build your TypeScript code (creates the 'dist' folder)
+# RUN npm run build
 
 # Put all the main commands in the script file
 COPY ./packages/database/scripts/entrypoint.sh /usr/local/bin/entrypoint.sh

@@ -2,15 +2,15 @@
 
 # Wait for the postgresql-rdbms to be ready
 echo "Waiting for postgresql-rdbms..."
-while ! pg_isready -h postgresql-rdbms -p 5432 -U "${POSTGRES_USER}"; do
+while ! pg_isready -h postgresql-rdbms -p 5432 -U "${POSTGRES_USER}"; do  #! Do i have to use auth_user later here?
   sleep 2
 done
 echo "postgresql-rdbms is ready!"
 
 # Read the secret file into a variable
-export DB_PASSWORD=$(cat /run/secrets/database_password)
+# export DB_PASSWORD=$(cat /run/secrets/database_password.txt)
 # Construct the URL using the variable
-export DATABASE_URL="postgresql://${POSTGRES_USER}:${DB_PASSWORD}@postgresql-rdbms:${POSTGRES_PORT}/${POSTGRES_DB}?schema=auth_schema"
+export DATABASE_URL="postgresql://${DB_USER}:${DB_PASSWORD}@${DB_HOST}:${DB_PORT}/${DB_NAME}?schema=auth_schema"
 
 # START THE APP IN THE FOREGROUND
 echo "Starting Node server..."

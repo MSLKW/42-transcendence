@@ -10,7 +10,7 @@ volumes:
     driver_opts:  
       type: none
       o: bind
-      device: ${PWD}/data/${DB_VOLUME_NAME}
+      device: ${HOME}/data/${DB_VOLUME_NAME}
 
 
 services:
@@ -25,17 +25,17 @@ services:
     environment: # Postgres Docker image need them through environment - to specifically overwrite the defaults of the first 3 here
       POSTGRES_DB: ${POSTGRES_DB}
       POSTGRES_USER: ${POSTGRES_USER}
-      POSTGRES_PASSWORD_FILE: /run/secrets/db_admin_password
-      POSTGRES_AUTH_USER_PASSWORD_FILE: /run/secrets/db_auth_password
-      POSTGRES_WEBSITE_USER_PASSWORD_FILE: /run/secrets/db_website_password
-      POSTGRES_GAME_USER_PASSWORD_FILE: /run/secrets/db_game_password
-      POSTGRES_BOT_USER_PASSWORD_FILE: /run/secrets/db_bot_password
-      POSTGRES_CHAT_USER_PASSWORD_FILE: /run/secrets/db_chat_password
+      POSTGRES_PASSWORD_FILE: /run/secrets/db_admin_password.txt
+      POSTGRES_AUTH_USER_PASSWORD_FILE: /run/secrets/db_auth_password.txt
+      POSTGRES_WEBSITE_USER_PASSWORD_FILE: /run/secrets/db_website_password.txt
+      POSTGRES_GAME_USER_PASSWORD_FILE: /run/secrets/db_game_password.txt
+      POSTGRES_BOT_USER_PASSWORD_FILE: /run/secrets/db_bot_password.txt
+      POSTGRES_CHAT_USER_PASSWORD_FILE: /run/secrets/db_chat_password.txt
     env_file:
       - .env
     volumes:
       - database_volume:/var/lib/postgresql/data                                                              # volume
-      - ${PWD}/secrets/database_passwords:/run/secrets:ro      # secrets
+      - ./secrets/database_passwords:/run/secrets:ro      # secrets
       - ./packages/database/init/init.sql:/docker-entrypoint-initdb.d/init.sql:ro                             # to run schema creation script
       - ./packages/database/scripts:/scripts:ro
     networks:
@@ -49,20 +49,22 @@ services:
   
 #           Drizzle = ORM - a library
 #           DATA BROWSER = Drizzle Studio, Dev-only Database Tool, a CLI tool inside Node environment (thats why node image)
-  drizzle-orm:
-    container_name: drizzle-orm
+  drizzle-studio:
+    container_name: drizzle-studio
+    image: drizzle-studio:aisyah
     build: 
       context: .
       dockerfile: ./packages/database/Dockerfile              # gets the built (main application), built once only -> efficient + saves CPU and disk space. 
-    pull_policy: build                        # This forces local builds, ignoring Docker Hub
+    pull_policy: build                                        # This forces local builds, ignoring Docker Hub
     restart: unless-stopped
     ports:
       - "${DRIZZLE_STUDIO_PORT}:${DRIZZLE_STUDIO_PORT}"
     env_file:
       - .env                                  
     volumes:
-      - ${PWD}/secrets/database_passwords/db_admin_password.txt:/run/secrets/db_admin_password:ro
+      - ./secrets/database_passwords/db_admin_password.txt:/run/secrets/db_admin_password.txt:ro
     command: npx drizzle-kit studio --port ${DRIZZLE_STUDIO_PORT}
+    # command: docker exec -it drizzle-orm /bin/sh
     networks:
       - transcendence
     depends_on:
@@ -81,12 +83,15 @@ services:
     environment:
       DB_HOST: postgresql-rdbms                           # DB_HOST is a standard industry convention
       DB_NAME: ${POSTGRES_DB}
-      DB_USER: ${POSTGRES_USER_NAME_AUTH}
+      DB_PORT: ${POSTGRES_PORT}
+      DB_USER: ${POSTGRES_USER}                           # ${POSTGRES_USER_NAME_AUTH}
+      DB_PASSWORD: /run/secrets/db_admin_password.txt     # /run/secrets/db_auth_password.txt
     env_file:
       - .env                                              # Loads global configs
       - backend-services/authentication/.env              # Loads service-specific configs
     volumes:
-      - ${PWD}/secrets/database_passwords/db_auth_password.txt:/run/secrets/auth_schema_password:ro # => will be inside auth's .env
+      - ./secrets/database_passwords/db_auth_password.txt:/run/secrets/db_auth_password.txt:ro # => will be inside auth's .env
+      - ./secrets/database_passwords/db_admin_password.txt:/run/secrets/db_admin_password.txt:ro
     networks:
       - transcendence
     depends_on:

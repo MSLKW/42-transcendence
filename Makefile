@@ -6,7 +6,7 @@
 #    By: aimokhta <aimokhta@student.42kl.edu.my>    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2026/06/16 09:31:30 by aimokhta          #+#    #+#              #
-#    Updated: 2026/07/16 16:43:14 by aimokhta         ###   ########.fr        #
+#    Updated: 2026/07/16 23:50:01 by aimokhta         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -23,7 +23,7 @@ include .env
 export
 
 all:
-	@mkdir -p $(PWD)/data/$(DB_VOLUME_NAME)
+	@mkdir -p $(HOME)/data/$(DB_VOLUME_NAME)
 	@echo "$(PURPLE)\n🛠️  Building and launching containers...\n$(RESET)"
 	@docker compose -f ./docker-compose.yml up --build -d
 
@@ -48,19 +48,19 @@ clean:
 	@echo "$(PURPLE)\n🗑️  Done removed every single containers, volumes and images in Docker! \n$(RESET)"
 	
 fclean: clean
-	@sudo rm -rf $(PWD)/data
+	@sudo rm -rf $(HOME)/data
 	@echo "$(PURPLE)\n🗑️  Removed all volumes on host! $(RESET)\n"
 
 re: fclean all
 
 logs:
 	docker logs postgres-rdbms
-	docker logs drizzle-orm
+	docker logs drizzle-studio
 	docker logs auth
-	docker logs website
-	docker logs game
-	docker logs game-bot
-	docker logs chat
+# 	docker logs website
+# 	docker logs game
+# 	docker logs game-bot
+# 	docker logs chat
 
 # Run this once you are done developing to lock the doors & ready to harden the DB
 harden-db:
