@@ -2,6 +2,7 @@ networks:
   transcendence:
     name : ${NETWORK_NAME}
     driver: bridge
+    external: true        # IMPORTANT: Add this if the network already exists
 
 volumes:
   database_volume:
@@ -12,6 +13,11 @@ volumes:
       o: bind
       device: ${HOME}/data/${DB_VOLUME_NAME}
 
+secrets:
+  db_admin_password:
+    file: ./secrets/database_passwords/db_admin_password.txt
+  db_auth_password:
+    file: ./secrets/database_passwords/db_auth_password.txt
 
 services:
 
@@ -59,12 +65,18 @@ services:
     restart: unless-stopped
     ports:
       - "${DRIZZLE_STUDIO_PORT}:${DRIZZLE_STUDIO_PORT}"
+    environment:
+      DB_HOST: postgresql-rdbms                           # DB_HOST is a standard industry convention
+      DB_NAME: ${POSTGRES_DB}
+      DB_PORT: ${POSTGRES_PORT}
+      DB_USER: ${POSTGRES_USER}                           # ${POSTGRES_USER_NAME_AUTH}
+    secrets:
+      - db_admin_password
     env_file:
       - .env                                  
-    volumes:
-      - ./secrets/database_passwords/db_admin_password.txt:/run/secrets/db_admin_password.txt:ro
-    command: npx drizzle-kit studio --port ${DRIZZLE_STUDIO_PORT}
-    # command: docker exec -it drizzle-orm /bin/sh
+    # volumes:
+    #   - ./secrets/database_passwords/db_admin_password.txt:/run/secrets/db_admin_password.txt:ro
+    command: npx drizzle-kit studio --port ${DRIZZLE_STUDIO_PORT} --host 0.0.0.0
     networks:
       - transcendence
     depends_on:
@@ -74,7 +86,9 @@ services:
 #           AUTHENTICATION
   auth:
     container_name: auth
-    build: ./backend-services/authentication/.
+    build:
+      context: .                                                  # Set this to the project root
+      dockerfile: ./backend-services/authentication/Dockerfile    # Point to the Dockerfile
     image: auth:jeremy
     pull_policy: build
     restart: unless-stopped
@@ -85,7 +99,7 @@ services:
       DB_NAME: ${POSTGRES_DB}
       DB_PORT: ${POSTGRES_PORT}
       DB_USER: ${POSTGRES_USER}                           # ${POSTGRES_USER_NAME_AUTH}
-      DB_PASSWORD: /run/secrets/db_admin_password.txt     # /run/secrets/db_auth_password.txt
+      DB_PASSWORD_FILE: /run/secrets/db_auth_password.txt
     env_file:
       - .env                                              # Loads global configs
       - backend-services/authentication/.env              # Loads service-specific configs

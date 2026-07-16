@@ -6,7 +6,7 @@
 #    By: aimokhta <aimokhta@student.42kl.edu.my>    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2026/06/16 09:31:30 by aimokhta          #+#    #+#              #
-#    Updated: 2026/07/16 23:50:01 by aimokhta         ###   ########.fr        #
+#    Updated: 2026/07/17 03:23:07 by aimokhta         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -54,7 +54,7 @@ fclean: clean
 re: fclean all
 
 logs:
-	docker logs postgres-rdbms
+	docker logs postgresql-rdbms
 	docker logs drizzle-studio
 	docker logs auth
 # 	docker logs website
@@ -62,13 +62,38 @@ logs:
 # 	docker logs game-bot
 # 	docker logs chat
 
-# Run this once you are done developing to lock the doors & ready to harden the DB
 harden-db:
+# Run this once you are done developing to lock the doors & ready to harden the DB
+# This command replaces ${VAR} in the SQL file with actual values from .env
 	@echo "$(PURPLE)Hardening database...\n$(RESET)"
-# 	This command replaces ${VAR} in the SQL file with actual values from .env
 	@cat ./packages/database/scripts/harden.sql | envsubst | docker exec -i postgresql-rdbms psql -U $(POSTGRES_USER_NAME_ADMIN) -d $(POSTGRES_DB_NAME)
 # 	@docker exec -i postgresql-rdbms psql -U $(POSTGRES_USER) -d $(POSTGRES_DB) -f ./packages/database/scripts/harden.sql
 
+nuclear:
+	@docker system prune -a --volumes -f
+# -a: Removes all unused images, not just dangling ones.
+# --volumes: Removes all unused volumes.
+# -f: Forces removal without prompting.
+
+# complete-clean:
+# 1. Stop all running containers
+# 2. Remove all containers
+# 3. Remove all images
+# 4. Remove all volumes
+# 5. Remove all networks
+# 	docker stop $(docker ps -aq)
+# 	docker rm $(docker ps -aq)
+# 	docker rmi $(docker images -q)
+# 	docker volume prune -f
+# 	docker network prune -f
+
+debug-logs:
+# This will force Docker to print the full output of every step, including the exact error message from npm
+	@docker compose build --progress=plain
+
+debug-config:
+# 	to see what docker reads from docker compose
+	@docker compose config 
 
 
-.PHONY: all down recreate clean fclean re logs harden-db
+.PHONY: all down recreate clean fclean re logs harden-db nuclear debug-logs
