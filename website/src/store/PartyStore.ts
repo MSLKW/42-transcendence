@@ -1,12 +1,12 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-import type { PlayerData } from "./PlayerStore";
+import { usePlayerStore, type PlayerData } from "./PlayerStore";
 
 export const ISFRIEND = {
 	NA: -1, //self or bot
 	FALSE: 0,
 	TRUE: 1,
-}
+} as const;
 
 export interface MemberData extends PlayerData {
 	isFriend: number;
@@ -31,7 +31,7 @@ export const usePartyStore = create<PartyState>() (
 			partyCount: 1,
 			members: [
 				{
-					name: "Player",
+					name: null,
 					avatar: "avatar-stock-0.webp",
 					badge: "Newcomer",
 					level: 1,
@@ -60,7 +60,7 @@ export const usePartyStore = create<PartyState>() (
 					isFriend: ISFRIEND.NA,
 				},
 				{
-					name: "Void",
+					name: null,
 					avatar: "avatar-stock-1.webp",
 					badge: "Beginner's Luck",
 					level: 2,
@@ -89,7 +89,7 @@ export const usePartyStore = create<PartyState>() (
 					isFriend: ISFRIEND.TRUE,
 				},
 				{
-					name: "Null",
+					name: null,
 					avatar: "avatar-stock-2.webp",
 					badge: "Enthusiast",
 					level: 3,
@@ -118,7 +118,7 @@ export const usePartyStore = create<PartyState>() (
 					isFriend: ISFRIEND.FALSE,
 				},
 				{
-					name: "Undefined",
+					name: null,
 					avatar: "avatar-stock-3.webp",
 					badge: "Big 2 Champion",
 					level: 4,
@@ -173,3 +173,25 @@ export const usePartyStore = create<PartyState>() (
 		}
 	)
 );
+
+const syncPlayerDataToParty = (newPlayerData: PlayerData) => {
+	const partyStore = usePartyStore.getState();
+	const currentMembers = [...partyStore.members];
+
+	if (currentMembers[0]) {
+		const { isFriend, isHost, ...existingPlayerData } = currentMembers[0];
+
+		if (JSON.stringify(existingPlayerData) === JSON.stringify(newPlayerData))
+			return;
+
+		currentMembers[0] = {
+			...currentMembers[0],
+			...newPlayerData
+		};
+
+		partyStore.setPartyValue("members", currentMembers);
+	}
+};
+
+usePlayerStore.subscribe((state) => syncPlayerDataToParty(state.data));
+syncPlayerDataToParty(usePlayerStore.getState().data);

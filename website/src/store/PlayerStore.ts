@@ -25,7 +25,7 @@ export type ACHIEVEMENT_LABEL =
 	;
 
 export interface PlayerData {
-	name: string;			//"Azrul", "Max"
+	name: string | null;	//"Azrul", "Max", null
 	avatar: string;			//"avatar-stock-0.webp", "avatar-azrulsaleh@me.com.png"
 	badge: BADGE_LABEL;		//"Newcomer", "Beginner's Luck", "Challenger", "Enthusiast", "Risk Taker",  "The Strategist", "Big 2 Champion"
 	level: number;			//1, 42
@@ -44,18 +44,18 @@ export interface PlayerData {
 							//when rendering from non-host pov, offset seat index placement - totalPlayers so client is at the bottom of their screen
 }
 
-export const SEATNUMBER_UNSEATED = -1;
-
-interface PlayerValues {
-	data: PlayerData;
-	status: number;
-}
+export const SEATNUMBER_UNSEATED = -1 as const;
 
 export const STATUS = {
 	OFFLINE: 0,
 	AVAILABLE: 1,
 	INGAME: 2,
-};
+} as const;
+
+interface PlayerValues {
+	data: PlayerData;
+	status: number;
+}
 
 interface PlayerState extends PlayerValues {
 	setPlayerValue: <K extends keyof PlayerValues>(key: K, value: PlayerValues[K]) => void;
@@ -70,7 +70,7 @@ export const usePlayerStore = create<PlayerState>() (
 	persist(
 		(set) => ({
 			data: {
-				name: "Player",
+				name: null,
 				avatar: "avatar-stock-0.webp",
 				badge: "Newcomer",
 				level: 1,

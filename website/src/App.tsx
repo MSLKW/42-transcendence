@@ -2,6 +2,7 @@ import { useRef, useEffect } from "react";
 import { Canvas } from "@react-three/fiber";
 import { Stats, PerspectiveCamera, OrbitControls, AdaptiveDpr } from "@react-three/drei";
 import { useDevStore } from "./store/DevStore";
+import { usePlayerStore } from "./store/PlayerStore";
 import { useSceneStore } from "./store/SceneStore";
 import { StripeBg } from "./components/bg/Stripe";
 import { SphereBg } from "./components/3d/Sphere";
@@ -23,12 +24,16 @@ import { SettingsWindow } from "./window/Settings";
 import { StatsWindow } from "./window/Stats";
 
 export default function App() {
-	const { setContAreaHeight, setContAreaWidth, currentScene, showWindow } = useSceneStore();
+	const { data } = usePlayerStore();
+
+	const { setContAreaHeight, setContAreaWidth, currentScene, showWindow, setShowWindow } = useSceneStore();
 	useEffect(() => {
 		window.scrollTo({
 			top: 0,
 			behavior: 'smooth',
 		});
+		if (!data.name && currentScene != "LOGIN")
+			setShowWindow("profile", true);
 	}, [currentScene]);
 
 	const containerRef = useRef(null);
@@ -45,7 +50,7 @@ export default function App() {
 		observer.observe(containerRef.current);
 		return () => observer.disconnect();
 	}, []);
-	
+
 	const showStats = useDevStore((devStore) => devStore.showStats);
 
 	return (

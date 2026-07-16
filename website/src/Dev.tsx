@@ -120,11 +120,7 @@ const TEST_MEMBERS = [
 ] as const;
 
 export default function Dev() {
-	const currentScene = useSceneStore((state) => state.currentScene);
-	const setCurrentScene = useSceneStore((state) => state.setCurrentScene);
-	const resetGame = useSceneStore((state) => state.resetGame);
-
-	const { showFrame, toggleFlag } = useDevStore();
+	const { showFrame, toggleFlag, resetGame } = useDevStore();
 	useEffect(() => {
 		if (showFrame)
 			document.documentElement.classList.add('frame-mode');
@@ -132,11 +128,12 @@ export default function Dev() {
 			document.documentElement.classList.remove('frame-mode');
 	}, [showFrame]);
 
-	const gameStarted = useGameStore((state) => state.gameStarted);
+	const { currentScene, setCurrentScene } = useSceneStore();
+	const { gameStarted } = useGameStore();
 	useEffect(() => {
 		console.log("gameStarted", gameStarted);
 	}, [currentScene]);
-
+	
 	const { partyCount, addMember } = usePartyStore();
 
 	return (

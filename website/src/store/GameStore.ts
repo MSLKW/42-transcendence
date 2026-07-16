@@ -3,7 +3,7 @@ import { persist } from "zustand/middleware";
 
 interface GameValues {
 	totalPlayers: number;
-	playerOrder: string[];
+	playerOrder: (string | null)[];
 	isReadyToPlay: boolean[];
 	gameStarted: boolean;
 	activePlayer: number;
@@ -19,7 +19,7 @@ export const useGameStore = create<GameState>() (
 	persist(
 		(set) => ({
 			totalPlayers: 4,
-			playerOrder: ["Player", "Void", "Null", "Undefined"],
+			playerOrder: [null, null, null, null],
 			isReadyToPlay: [false, false, false, false],
 			gameStarted: false,
 			activePlayer: 0,

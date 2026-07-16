@@ -1,5 +1,5 @@
 import { useRef, useEffect } from "react";
-import { usePartyStore } from "../store/PartyStore";
+import { usePlayerStore } from "../store/PlayerStore";
 import { useSceneStore } from "../store/SceneStore";
 import { CloseButton } from "../components/button/Close";
 import { AvatarImage } from "../components/image/AvatarImage";
@@ -7,8 +7,8 @@ import { Medal } from "../components/image/Medal";
 import { AvatarSelect } from "../components/button/AvatarSelect";
 
 export const ProfileWindow = () => {
-	const setShowWindow = useSceneStore((state) => state.setShowWindow);
-	const { members } = usePartyStore();
+	const { setShowWindow } = useSceneStore();
+	const { data, setPlayerDataValue } = usePlayerStore();
 	
 	const focusRef = useRef<HTMLInputElement | null>(null);
 	useEffect(() => {
@@ -42,8 +42,8 @@ export const ProfileWindow = () => {
 							ref={focusRef}
 							id="name"
 							type="text"
-							value={members[0].name}
-							onChange={()=>{}}
+							value={data.name ?? ""}
+							onChange={(e)=>{setPlayerDataValue("name", e.target.value)}}
 							className="
 								bg-n6 h-2.5 w-30
 								border border-n5 rounded-full

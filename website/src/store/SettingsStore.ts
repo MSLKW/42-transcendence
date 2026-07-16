@@ -1,7 +1,7 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
-export const AUTO_PASS_LABELS = ["1s", "3s", "5s", "10s", "15s", "30s", "42s", "1 min", "2 mins", "No Limit"];
+export const AUTO_PASS_LABELS = ["1s", "3s", "5s", "10s", "15s", "30s", "42s", "1 min", "2 mins", "No Limit"] as const;
 
 interface SettingsValues {
 	allow3OfAKind: boolean;
