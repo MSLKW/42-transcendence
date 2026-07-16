@@ -12,10 +12,15 @@ export const ProfileWindow = () => {
 	
 	const focusRef = useRef<HTMLInputElement | null>(null);
 	useEffect(() => {
-		if (focusRef.current) {
+		if (!data.name && focusRef.current)
 			focusRef.current.focus();
-		}
 	}, []);
+
+	const handleDismiss = () => {
+		if (!data.name)
+			return;
+		setShowWindow("profile", false);
+	};
 
 	return (
 		<section className="
@@ -23,7 +28,7 @@ export const ProfileWindow = () => {
 			w-screen h-screen
 			flex place-content-center place-items-center
 		">
-			<button tabIndex={-1} className='btn-lightbox' onClick={() => setShowWindow("profile", false)}/>
+			<button tabIndex={-1} className='btn-lightbox' onClick={handleDismiss}/>
 			<div className="
 				w-max h-max rounded-xl
 				bg-linear-to-b from-n0 to-n1
@@ -128,7 +133,7 @@ export const ProfileWindow = () => {
 					z-1
 					w-12.5 h-12.5
 				">
-					<CloseButton dismiss={() => setShowWindow("profile", false)}/>
+					<CloseButton dismiss={handleDismiss}/>
 				</div>
 			</div>
 		</section>
