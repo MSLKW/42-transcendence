@@ -1,6 +1,6 @@
 import { useEffect, useRef } from "react";
-import { useSceneStore } from "../store/useSceneStore";
-import { CloseButton } from "../components/CloseButton";
+import { useSceneStore } from "../store/SceneStore";
+import { CloseButton } from "./button/CloseButton";
 
 export const CreateAccountButton = () => {
 	const setShowWindow =  useSceneStore((state) => state.setShowWindow);

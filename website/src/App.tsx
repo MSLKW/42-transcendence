@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import { Canvas } from "@react-three/fiber";
 import { Stats, PerspectiveCamera, OrbitControls, AdaptiveDpr } from "@react-three/drei";
 import { useDevStore } from "./store/DevStore";
-import { useSceneStore } from "./store/useSceneStore";
+import { useSceneStore } from "./store/SceneStore";
 import { StripeBg } from "./components/bg/StripeBg";
 import { SphereBg } from "./components/bg/SphereBg";
 import { Card } from "./components/PCard";

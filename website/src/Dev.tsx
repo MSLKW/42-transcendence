@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import { useDevStore } from "./store/DevStore";
 import { useGameStore } from "./store/GameStore";
 import { usePartyStore, ISFRIEND } from "./store/PartyStore";
-import { useSceneStore } from "./store/useSceneStore";
+import { useSceneStore } from "./store/SceneStore";
 
 const TEST_MEMBERS = [
 	{
@@ -31,7 +31,7 @@ const TEST_MEMBERS = [
 		},
 		isSeated: false,
 		seatNumber: -1,
-		isFriend: ISFRIEND["TRUE"],
+		isFriend: ISFRIEND.TRUE,
 	},
 	{
 		name: "Dev-Max",
@@ -59,7 +59,7 @@ const TEST_MEMBERS = [
 		},
 		isSeated: false,
 		seatNumber: -1,
-		isFriend: ISFRIEND["FALSE"],
+		isFriend: ISFRIEND.FALSE,
 	},
 	{
 		name: "Dev-Jeremy",
@@ -87,7 +87,7 @@ const TEST_MEMBERS = [
 		},
 		isSeated: false,
 		seatNumber: -1,
-		isFriend: ISFRIEND["TRUE"],
+		isFriend: ISFRIEND.TRUE,
 	},
 	{
 		name: "Dev-Aisyah",
@@ -115,7 +115,7 @@ const TEST_MEMBERS = [
 		},
 		isSeated: false,
 		seatNumber: -1,
-		isFriend: ISFRIEND["TRUE"],
+		isFriend: ISFRIEND.TRUE,
 	},
 ] as const;
 

@@ -2,17 +2,17 @@ import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import { useGameStore } from "./GameStore";
 import { usePartyStore, ISFRIEND } from "./PartyStore";
-import { usePlayerStore, STATUS } from "./PlayerStore";
+import { usePlayerStore, STATUS, SEATNUMBER_UNSEATED } from "./PlayerStore";
 
-export type GameScene = "LOGIN" | "HOME" | "LOBBY" | "GAMEPLAY" | "R3F" | "RESULTS";
+export type SCENES = "LOGIN" | "HOME" | "LOBBY" | "GAMEPLAY" | "R3F" | "RESULTS";
 
 interface SceneState {
-	currentScene: GameScene;
+	currentScene: SCENES;
 	contAreaWidth: number;
 	contAreaHeight: number;
 	showWindow: Record<string, boolean>;
 
-	setCurrentScene: (scene: GameScene) => void;
+	setCurrentScene: (scene: SCENES) => void;
 	resetGame: () => void;
 	setContAreaWidth: (width: number) => void;
 	setContAreaHeight: (height: number) => void;
@@ -43,14 +43,12 @@ export const useSceneStore = create<SceneState>() (
 				set({ currentScene: scene });
 				useGameStore.getState().setGameValue("gameStarted", scene === "R3F" || scene === "GAMEPLAY");
 			},
-			setShowWindow: (window, show) => set((state) => { 
-				return {
-					showWindow: {
-						...state.showWindow,
-						[window]: show,
-					}
+			setShowWindow: (window, show) => set((state) => ({ 
+				showWindow: {
+					...state.showWindow,
+					[window]: show,
 				}
-			}),
+			})),
 			resetGame: () => {
 				set({ currentScene: "LOGIN" });
 				usePartyStore.setState({
@@ -61,8 +59,8 @@ export const useSceneStore = create<SceneState>() (
 						badge: "Newcomer",
 						level: 1,
 						xp: 0,
-						createdAt: "15 July 2026",
-						lastLogin: "15 July 2026",
+						createdAt: new Date(1784110862000).toISOString(),
+						lastLogin: new Date().toISOString(),
 						totalPlayed: 0,
 						totalWins: 0,
 						totalLoss: 0,
@@ -80,9 +78,9 @@ export const useSceneStore = create<SceneState>() (
 							MASTER_COLLECTOR: null,
 						},
 						isSeated: false,
-						seatNumber: -1,
+						seatNumber: SEATNUMBER_UNSEATED,
 						isHost: true,
-						isFriend: ISFRIEND["NA"],
+						isFriend: ISFRIEND.NA,
 					}],
 				});
 				usePlayerStore.setState({
@@ -113,7 +111,7 @@ export const useSceneStore = create<SceneState>() (
 						isSeated: false,
 						seatNumber: -1,
 					},
-					status: STATUS["AVAILABLE"],
+					status: STATUS.AVAILABLE,
 				});
 			},
 		}),

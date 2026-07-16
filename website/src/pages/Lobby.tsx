@@ -1,11 +1,11 @@
 import { useRef, useEffect } from "react";
-import { useSceneStore } from "../store/useSceneStore";
+import { useSceneStore } from "../store/SceneStore";
 import { useGameStore } from "../store/GameStore";
 import { usePartyStore } from "../store/PartyStore";
-import { BackButton } from "../components/BackButton";
+import { BackButton } from "../components/button/BackButton";
 import { SettingsButton } from "../components/Settings";
 import { InfoButton } from "../components/Info";
-import { EmojiButton } from "../components/EmojiButtons";
+import { EmojiButton } from "../components/button/EmojiButtons";
 import { AvatarButton } from "../components/Avatar";
 import { ChatButton } from "../components/Chat";
 import { PartyButton } from "../components/Party";

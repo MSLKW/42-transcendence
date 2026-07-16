@@ -1,5 +1,5 @@
 import { useRef, useEffect } from "react";
-import { useSceneStore } from "../store/useSceneStore";
+import { useSceneStore } from "../store/SceneStore";
 import { BigLogo } from "../components/image/Logo";
 import { InfoButton } from "../components/Info";
 import { CreateAccountButton } from "../components/CreateAccount";

@@ -1,4 +1,4 @@
-import { useSceneStore } from "../store/useSceneStore";
+import { useSceneStore } from "../../store/SceneStore";
 import { SignOutIcon } from "../icons/SignOutIcon";
 
 export const SignOutButton = () => {

@@ -70,7 +70,7 @@ export const usePlayerStore = create<PlayerState>() (
 	persist(
 		(set) => ({
 			data: {
-				name: "Player 0",
+				name: "Player",
 				avatar: "avatar-stock-0.webp",
 				badge: "Newcomer",
 				level: 1,
@@ -96,7 +96,7 @@ export const usePlayerStore = create<PlayerState>() (
 				isSeated: false,
 				seatNumber: SEATNUMBER_UNSEATED,
 			},
-			status: STATUS["AVAILABLE"],
+			status: STATUS.AVAILABLE,
 
 			setPlayerValue: (key, value) => set(() => ({ [key]: value })),
 			setPlayerDataValue: (key, value) => set((state) => ({
@@ -150,4 +150,3 @@ export const usePlayerStore = create<PlayerState>() (
 		}
 	)
 );
-

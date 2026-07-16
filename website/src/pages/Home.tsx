@@ -1,16 +1,16 @@
 import { useRef, useEffect } from "react";
-import { useSceneStore } from "../store/useSceneStore";
+import { useSceneStore } from "../store/SceneStore";
 import { useGameStore } from "../store/GameStore";
 import { usePartyStore } from "../store/PartyStore";
 import { InfoButton } from "../components/Info";
-import { SignOutButton } from "../components/SignOutButton";
+import { SignOutButton } from "../components/button/SignOutButton";
 import { SettingsButton } from "../components/Settings";
-import { PersonIcon } from "../icons/PersonIcon";
-import { TutorialIcon } from "../icons/TutorialIcon";
+import { PersonIcon } from "../components/icons/PersonIcon";
+import { TutorialIcon } from "../components/icons/TutorialIcon";
 import { AvatarButton } from "../components/Avatar";
 import { ChatButton } from "../components/Chat";
 import { PartyButton } from "../components/Party";
-import { EmojiButton } from "../components/EmojiButtons";
+import { EmojiButton } from "../components/button/EmojiButtons";
 import { SmallLogo } from "../components/image/Logo";
 
 interface HomeProps {

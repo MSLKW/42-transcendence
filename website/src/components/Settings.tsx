@@ -1,9 +1,9 @@
-import { useSceneStore } from "../store/useSceneStore";
+import { useSceneStore } from "../store/SceneStore";
 import { useGameStore } from "../store/GameStore";
 import { useSettingsStore, AUTO_PASS_LABELS } from "../store/SettingsStore";
-import { SettingsIcon } from "../icons/SettingsIcon";
-import { CloseButton } from "./CloseButton";
-import { ToggleButton } from "./ToggleButton";
+import { SettingsIcon } from "./icons/SettingsIcon";
+import { CloseButton } from "./button/CloseButton";
+import { ToggleButton } from "./button/ToggleButton";
 import { RadioButton } from "./RadioButton";
 
 export const SettingsButton = () => {

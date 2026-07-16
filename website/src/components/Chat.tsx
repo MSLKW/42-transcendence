@@ -1,6 +1,6 @@
-import { useSceneStore } from "../store/useSceneStore";
-import { ChatIcon } from "../icons/ChatIcon";
-import { PinButton } from "./PinButton";
+import { useSceneStore } from "../store/SceneStore";
+import { ChatIcon } from "./icons/ChatIcon";
+import { PinButton } from "./button/PinButton";
 import { SendButton } from "../components/SendButton";
 import { AvatarImage } from "./Avatar";
 

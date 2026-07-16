@@ -57,7 +57,7 @@ export const usePartyStore = create<PartyState>() (
 					isSeated: false,
 					seatNumber: -1,
 					isHost: true,
-					isFriend: ISFRIEND["NA"],
+					isFriend: ISFRIEND.NA,
 				},
 				{
 					name: "Void",
@@ -86,7 +86,7 @@ export const usePartyStore = create<PartyState>() (
 					isSeated: false,
 					seatNumber: -1,
 					isHost: false,
-					isFriend: ISFRIEND["TRUE"],
+					isFriend: ISFRIEND.TRUE,
 				},
 				{
 					name: "Null",
@@ -115,7 +115,7 @@ export const usePartyStore = create<PartyState>() (
 					isSeated: false,
 					seatNumber: -1,
 					isHost: false,
-					isFriend: ISFRIEND["FALSE"],
+					isFriend: ISFRIEND.FALSE,
 				},
 				{
 					name: "Undefined",
@@ -144,7 +144,7 @@ export const usePartyStore = create<PartyState>() (
 					isSeated: false,
 					seatNumber: -1,
 					isHost: false,
-					isFriend: ISFRIEND["FALSE"],
+					isFriend: ISFRIEND.FALSE,
 				}
 			],
 
@@ -154,19 +154,14 @@ export const usePartyStore = create<PartyState>() (
 				return {
 					members: exists
 						? partyStore.members.map((m) => m.name === member.name ? { ...m, ...member } : m)
-						: [...partyStore.members, { ...member, isFriend: ISFRIEND["FALSE"] }],
+						: [...partyStore.members, { ...member, isFriend: ISFRIEND.FALSE }],
 					partyCount: partyStore.partyCount + 1,
 				};
 			}),
-			removeMember: (member) => set((partyStore) => {
-				const exists = partyStore.members.some((m) => m.name === member.name);
-				return {
-					members: exists
-						? partyStore.members.map((m) => m.name === member.name ? { ...m, ...member } : m)
-						: [...partyStore.members, { ...member, isFriend: ISFRIEND["FALSE"] }],
-					partyCount: partyStore.partyCount - 1,
-				};
-			}),
+			removeMember: (member) => set((partyStore) => ({
+					members: partyStore.members.filter((m) => m.name !== member.name),
+					partyCount: Math.max(1, partyStore.partyCount - 1),
+			})),
 			setIsFriend: (memberName, friendStatus) => set((partyStore) => ({
 				members: partyStore.members.map((m) =>
 					m.name === memberName ? { ...m, isFriend: friendStatus } : m

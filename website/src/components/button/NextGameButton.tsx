@@ -1,5 +1,5 @@
 import { NextGameIcon } from "../icons/NextGameIcon";
-import { useSceneStore } from "../store/useSceneStore";
+import { useSceneStore } from "../../store/SceneStore";
 
 export const NextGameButton = () => {
 	const setCurrentScene = useSceneStore((state) => state.setCurrentScene);

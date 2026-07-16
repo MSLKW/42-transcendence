@@ -1,6 +1,6 @@
-import { useSceneStore } from "../store/useSceneStore";
-import { InfoIcon } from "../icons/InfoIcon";
-import { CloseButton } from "./CloseButton";
+import { useSceneStore } from "../store/SceneStore";
+import { InfoIcon } from "./icons/InfoIcon";
+import { CloseButton } from "./button/CloseButton";
 
 export const InfoButton = () => {
 	const setShowWindow = useSceneStore((scene) => scene.setShowWindow);

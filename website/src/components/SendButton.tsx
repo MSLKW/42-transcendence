@@ -1,4 +1,4 @@
-import { SendIcon } from "../icons/SendIcon";
+import { SendIcon } from "./icons/SendIcon";
 
 export const SendButton = () => {
     const handleSend = (e?: React.MouseEvent<HTMLButtonElement>) => {

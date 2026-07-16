@@ -1,7 +1,7 @@
 import { usePartyStore } from "../store/PartyStore";
-import { useSceneStore } from "../store/useSceneStore";
+import { useSceneStore } from "../store/SceneStore";
 import { useSettingsStore } from "../store/SettingsStore";
-import { HostIcon } from "../icons/HostIcon";
+import { HostIcon } from "./icons/HostIcon";
 
 interface AvatarProps {
 	cornerButton?: string;
