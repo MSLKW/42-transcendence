@@ -1,38 +1,9 @@
 import { useSceneStore } from "../store/SceneStore";
-import { RankIcon } from "./icon/Rank";
-import { RankArrowIcon } from "./icon/RankArrow";
-import { SpadesIcon, HeartsIcon, ClubsIcon, DiamondsIcon } from "./icon/Suits"
-
-export const RankButton = () => {
-	const setShowWindow = useSceneStore((scene) => scene.setShowWindow);
-
-	return (
-		<button
-			data-tip="View Rank List"
-			onClick={() => setShowWindow("rank", true)}
-			className="
-				w-max
-				h-max
-				btn-rank btn-icon-border btn-tip-down
-				flex place-content-between place-items-center
-		">
-			<div className="
-				h-full w-full
-				px-[clamp(0.25rem,2vw+0.125rem,1.25rem)]
-				text-n6
-				relative
-			">
-				<p>Straight</p>
-			</div>
-			<div className="h-10 aspect-square text-b5">
-				<RankIcon />
-			</div>
-		</button>
-	);
-}
+import { RankArrowIcon } from "../components/icon/RankArrow";
+import { SpadesIcon, HeartsIcon, ClubsIcon, DiamondsIcon } from "../components/icon/Suits"
 
 export const RankWindow = () => {
-	const setShowWindow = useSceneStore((scene) => scene.setShowWindow);
+	const { setShowWindow } = useSceneStore();
 
 	return (
 		<section className="

@@ -1,11 +1,8 @@
-import { usePartyStore } from "../store/PartyStore";
-import { useSceneStore } from "../store/SceneStore";
-import { useSettingsStore } from "../store/SettingsStore";
-import { HostIcon } from "./icon/Host";
+import { useSettingsStore } from "../../store/SettingsStore";
+import { HostIcon } from "../icon/Host";
 
 interface AvatarProps {
 	cornerButton?: string;
-	playerIndex?: number;
 	isActive?: boolean;
 }
 
@@ -85,43 +82,4 @@ export const AvatarImage = ({ cornerButton, isActive }: AvatarProps) => {
 			}
 		</div>
 	)
-}
-
-export const AvatarButton = ({ cornerButton = "none", playerIndex = 0, isActive = false }: AvatarProps) => {
-	const setShowWindow = useSceneStore((state) => state.setShowWindow);
-	const { members } = usePartyStore();
-
-	return (
-		<>
-			<button
-				data-tip={ playerIndex === 0 ? "Edit Profile" : "View Stats"}
-				onClick={(e) => {
-					if (playerIndex === 0)
-						setShowWindow("profile", true);
-					else
-						setShowWindow("stats", true);
-					e.currentTarget.blur();
-				}}
-				className="
-					btn-avatar btn-tip-up h-max w-max
-					flex flex-col place-content-center place-items-center
-					gap-1
-			">
-				<AvatarImage cornerButton={cornerButton} isActive={isActive} />
-				<div className="
-					w-max min-w-[clamp(2.5rem,7.5vh+0.5rem,5rem)] max-w-32.5
-					h-fit
-					bg-n1
-					border border-n2 rounded-3xl
-					text-[clamp(0.25rem,1.5vh+0.125rem,1rem)]
-					text-n6
-					truncate
-					flex place-content-center place-items-center
-					px-[clamp(0.625rem,1vh+0.3125rem,1.25rem)]
-				">
-					<p>{members[playerIndex].name}</p>
-				</div>
-			</button>
-		</>
-	);
 }

@@ -1,23 +1,9 @@
-import { useSceneStore } from "../store/SceneStore";
 import { useGameStore } from "../store/GameStore";
+import { useSceneStore } from "../store/SceneStore";
 import { useSettingsStore, AUTO_PASS_LABELS } from "../store/SettingsStore";
-import { SettingsIcon } from "./icon/Settings";
-import { CloseButton } from "./button/Close";
-import { ToggleButton } from "./button/Toggle";
-import { RadioButton } from "./RadioButton";
-
-export const SettingsButton = () => {
-	const setShowWindow = useSceneStore((scene) => scene.setShowWindow);
-
-	return (
-		<button data-tip="Settings"
-			onClick={() => setShowWindow("settings", true)}
-			className="btn-icon btn-tip-down"
-		>
-			<SettingsIcon />
-		</button>
-	);
-}
+import { CloseButton } from "../components/button/Close";
+import { ToggleButton } from "../components/button/Toggle";
+import { RadioButton } from "../components/button/Radio";
 
 export const SettingsWindow = () => {
 	const setShowWindow = useSceneStore((scene) => scene.setShowWindow);

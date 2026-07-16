@@ -1,26 +1,8 @@
 import { useSceneStore } from "../store/SceneStore";
-import { InfoIcon } from "./icon/Info";
-import { CloseButton } from "./button/Close";
-
-export const InfoButton = () => {
-	const setShowWindow = useSceneStore((scene) => scene.setShowWindow);
-
-	return (
-		<button
-			data-tip="Info"
-			onClick={() => setShowWindow("info", true)}
-			className="
-				btn-icon btn-tip-down
-		">
-			<InfoIcon />
-		</button>
-	)
-}
+import { CloseButton } from "../components/button/Close";
 
 export const InfoWindow = () => {
-	const contAreaWidth = useSceneStore((scene) => scene.contAreaWidth);
-	const contAreaHeight = useSceneStore((scene) => scene.contAreaHeight);
-	const setShowWindow = useSceneStore((scene) => scene.setShowWindow);
+	const { contAreaHeight, contAreaWidth, setShowWindow } = useSceneStore();
 
     return (
 		<section className="

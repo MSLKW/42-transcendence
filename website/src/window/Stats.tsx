@@ -1,17 +1,11 @@
 import { useSceneStore } from "../store/SceneStore";
-import { AvatarButton } from "./Avatar";
-import { CloseButton } from "./button/Close";
-import { usePlayerStore } from "../store/PlayerStore";
-
-export const Medal = () => {
-	return (
-		<div className="h-10 aspect-square rounded-full bg-a4" />
-	);
-}
+import { AvatarImage } from "../components/image/AvatarImage";
+import { AvatarName } from "../components/image/AvatarName";
+import { Medal } from "../components/image/Medal";
+import { CloseButton } from "../components/button/Close";
 
 export const StatsWindow = () => {
-	const setShowWindow = useSceneStore((state) => state.setShowWindow);
-	const playerIndex = usePlayerStore((state) => state.playerIndex);
+	const { setShowWindow, playerStatsFocus } = useSceneStore();
 
 	return (
 		<section className="
@@ -32,7 +26,14 @@ export const StatsWindow = () => {
 					gap-5
 					border-b border-n2
 				">
-					<AvatarButton playerIndex={playerIndex}/>
+					<div className="
+						h-max w-max
+						flex flex-col place-content-center place-items-center
+						gap-1
+					">
+						<AvatarImage />
+						<AvatarName playerIndex={playerStatsFocus} />
+					</div>
 					<div className="grid grid-cols-5 grid-rows-2 gap-2">
 						<Medal />
 						<Medal />

@@ -2,11 +2,12 @@ import { useRef, useEffect } from "react";
 import { usePartyStore } from "../store/PartyStore";
 import { useSceneStore } from "../store/SceneStore";
 import { BackButton } from "../components/button/Back";
-import { SettingsButton } from "../components/Settings";
+import { SettingsButton } from "../components/button/Settings";
 import { EmojiButton } from "../components/button/Emoji";
-import { ChatButton } from "../components/Chat";
+import { ChatButton } from "../components/button/Chat";
 import { NextGameButton } from "../components/button/NextGame";
-import { AvatarImage, AvatarButton } from "../components/Avatar";
+import { AvatarButton } from "../components/button/Avatar";
+import { AvatarImage } from "../components/image/AvatarImage";
 
 export const ResultRank = () => {
 	return (

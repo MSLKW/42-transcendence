@@ -1,78 +1,11 @@
 import { useSceneStore } from "../store/SceneStore";
-import { ChatIcon } from "./icon/Chat";
-import { PinButton } from "./button/Pin";
-import { SendButton } from "../components/SendButton";
-import { AvatarImage } from "./Avatar";
-
-interface ChatProps {
-	senderId?: number;
-	senderName?: string;
-	message?: string;
-}
-
-export const ChatButton = () => {
-	const setShowWindow = useSceneStore((scene) => scene.setShowWindow);
-
-	return (
-		<button
-			data-tip="Chat"
-			onClick={() => setShowWindow("chat", true)}
-			className="btn-icon btn-tip-down"
-		>
-			<ChatIcon />
-		</button>
-	);
-}
-
-export const ChatBubble = ({ senderId, senderName, message }: ChatProps) => {
-	return (
-		<>
-			{senderId === 0 ? (
-				<div className="flex place-content-end place-items-start gap-5">
-					<div className="flex flex-col gap-1 text-right bg-a3 border border-a4 rounded-xl px-5 py-3">
-						<p className="text-b5 font-bold">{senderName}</p>
-						<p>{message}</p>
-					</div>
-					<AvatarImage />
-				</div>
-			) : (
-				<div className="flex place-content-start place-items-start gap-5">
-					<AvatarImage />
-					<div className="flex flex-col gap-1 text-left bg-a3 border border-a4 rounded-xl px-5 py-3">
-						<p className="text-b5 font-bold">{senderName}</p>
-						<p>{message}</p>
-					</div>
-				</div>
-			)}
-		</>
-	);
-}
-
-export const ChatReport = ({ message }: ChatProps) => {
-	return (
-		<div className="
-			w-full h-max
-			flex place-content-center place-items-center justify-center
-		">
-			<div className="
-				w-max h-max
-				bg-n2
-				border border-n3 rounded-3xl
-				text-n6
-				text-[clamp(0.25rem,2vw+0.125rem,0.75rem)]
-				px-[clamp(0.25rem,2vw+0.125rem,1.25rem)]
-				py-[clamp(0.0625rem,0.5vh+0.03125rem,0.5rem)]
-			">
-				<p>{message}</p>
-			</div>
-		</div>
-	);
-}
+import { PinButton } from "../components/button/Pin";
+import { SendButton } from "../components/button/Send";
+import { ChatBubble } from "../components/label/ChatBubble"
+import { ChatReport } from "../components/label/ChatReport"
 
 export const ChatWindow = () => {
-	const contAreaWidth = useSceneStore((scene) => scene.contAreaWidth);
-	const contAreaHeight = useSceneStore((scene) => scene.contAreaHeight);
-	const setShowWindow = useSceneStore((scene) => scene.setShowWindow);
+	const { contAreaHeight, contAreaWidth, setShowWindow } = useSceneStore();
 
 	return (
 		<section className="

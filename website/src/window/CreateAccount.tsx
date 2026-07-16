@@ -1,8 +1,8 @@
 import { useState, useRef, useEffect } from "react";
-import { useSceneStore } from "../../store/SceneStore";
-import { ShowPasswordIcon } from "../icon/ShowPassword";
-import { HidePasswordIcon } from "../icon/HidePassword";
-import { CloseButton } from "../button/Close";
+import { useSceneStore } from "../store/SceneStore";
+import { ShowPasswordIcon } from "../components/icon/ShowPassword";
+import { HidePasswordIcon } from "../components/icon/HidePassword";
+import { CloseButton } from "../components/button/Close";
 
 export const CreateAccountWindow = () => {
 	const { contAreaWidth, contAreaHeight, setShowWindow, setCurrentScene } = useSceneStore();

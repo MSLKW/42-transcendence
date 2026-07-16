@@ -1,11 +1,11 @@
 import { useState, useEffect, useRef } from "react";
 import { useSceneStore } from "../store/SceneStore";
 import { BackButton } from "../components/button/Back";
-import { SettingsButton } from "../components/Settings";
-import { RankButton } from "../components/RankButton";
+import { SettingsButton } from "../components/button/Settings";
+import { RankButton } from "../components/button/Rank";
 import { EmojiButton } from "../components/button/Emoji";
-import { AvatarButton } from "../components/Avatar";
-import { ChatButton } from "../components/Chat";
+import { AvatarButton } from "../components/button/Avatar";
+import { ChatButton } from "../components/button/Chat";
 import { SortButtons } from "../components/button/Sort";
 import { useGameStore } from "../store/GameStore";
 

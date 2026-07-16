@@ -11,12 +11,14 @@ interface SceneState {
 	contAreaWidth: number;
 	contAreaHeight: number;
 	showWindow: Record<string, boolean>;
+	playerStatsFocus: number;
 
 	setCurrentScene: (scene: SCENES) => void;
 	resetGame: () => void;
 	setContAreaWidth: (width: number) => void;
 	setContAreaHeight: (height: number) => void;
 	setShowWindow: (window: string, show: boolean) => void;
+	setPlayerStatsFocus: (player: number) => void;
 } 
 
 export const useSceneStore = create<SceneState>() (
@@ -36,6 +38,7 @@ export const useSceneStore = create<SceneState>() (
 				chat: false,
 				rank: false,
 			},
+			playerStatsFocus: 0,
 
 			setContAreaWidth: (contAreaWidth) => set({ contAreaWidth }),
 			setContAreaHeight: (contAreaHeight) => set({ contAreaHeight }),
@@ -114,6 +117,7 @@ export const useSceneStore = create<SceneState>() (
 					status: STATUS.AVAILABLE,
 				});
 			},
+			setPlayerStatsFocus: (player) => set({ playerStatsFocus: player }),
 		}),
 		{
 			name: 'scene-storage',

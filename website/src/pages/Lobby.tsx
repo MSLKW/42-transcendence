@@ -3,12 +3,12 @@ import { useSceneStore } from "../store/SceneStore";
 import { useGameStore } from "../store/GameStore";
 import { usePartyStore } from "../store/PartyStore";
 import { BackButton } from "../components/button/Back";
-import { SettingsButton } from "../components/Settings";
-import { InfoButton } from "../components/Info";
+import { SettingsButton } from "../components/button/Settings";
+import { InfoButton } from "../components/button/Info";
 import { EmojiButton } from "../components/button/Emoji";
-import { AvatarButton } from "../components/Avatar";
-import { ChatButton } from "../components/Chat";
-import { PartyButton } from "../components/Party";
+import { AvatarButton } from "../components/button/Avatar";
+import { ChatButton } from "../components/button/Chat";
+import { PartyButton } from "../components/button/Party";
 import { SmallLogo } from "../components/image/Logo";
 
 export const Lobby = () => {

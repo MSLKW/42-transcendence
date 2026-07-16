@@ -1,33 +1,10 @@
 import { useRef, useEffect } from "react";
 import { usePartyStore } from "../store/PartyStore";
 import { useSceneStore } from "../store/SceneStore";
-import { CloseButton } from "./button/Close";
-import { AvatarImage } from "./Avatar";
-
-export const Medal = () => {
-	return (
-		<button className="
-			h-10 aspect-square rounded-full bg-a4
-			hover:not-disabled:scale-105 active:hover:not-disabled:scale-100
-			focus-visible:outline-2 outline-b5 outline-offset-5
-		" />
-	);
-}
-
-interface AvatarSelectProps {
-	color: string,
-}
-
-export const AvatarSelect = ({ color }: AvatarSelectProps) => {
-	return (
-		<button className={`
-			hover:not-disabled:scale-105 active:hover:not-disabled:scale-100
-			focus-visible:outline-2 outline-b5 outline-offset-5
-			h-20 aspect-square rounded-sm
-			${color}
-		`}/>
-	)
-}
+import { CloseButton } from "../components/button/Close";
+import { AvatarImage } from "../components/image/AvatarImage";
+import { Medal } from "../components/image/Medal";
+import { AvatarSelect } from "../components/button/AvatarSelect";
 
 export const ProfileWindow = () => {
 	const setShowWindow = useSceneStore((state) => state.setShowWindow);
