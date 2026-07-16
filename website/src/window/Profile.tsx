@@ -49,6 +49,10 @@ export const ProfileWindow = () => {
 							type="text"
 							value={data.name ?? ""}
 							onChange={(e)=>{setPlayerDataValue("name", e.target.value)}}
+							onKeyDown={(e) => {
+								if (e.key === "Enter" || e.key === "Escape")
+									e.currentTarget.blur();
+							}}
 							className="
 								bg-n6 h-2.5 w-30
 								border border-n5 rounded-full
