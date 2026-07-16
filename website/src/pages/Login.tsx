@@ -1,27 +1,11 @@
-import { useRef, useEffect } from "react";
 import { useSceneStore } from "../store/SceneStore";
-import { BigLogo } from "../components/image/Logo";
+import { BigLogo } from "../components/label/Logo";
 import { InfoButton } from "../components/button/Info";
 import { CreateAccountButton } from "../components/button/CreateAccount";
 import { SignInButton } from "../components/button/SignIn";
 
 export const Login = () => {
-	const { setContAreaWidth, setContAreaHeight, setCurrentScene } = useSceneStore();
-	
-	const containerRef = useRef(null);
-	useEffect(() => {
-		if (!containerRef.current)
-			return;
-
-		const observer = new ResizeObserver((entries) => {
-			for (let entry of entries) {
-				setContAreaWidth(entry.target.scrollWidth);
-				setContAreaHeight(entry.target.scrollHeight);
-			}
-		});
-		observer.observe(containerRef.current);
-		return () => observer.disconnect();
-	}, []);
+	const { setCurrentScene } = useSceneStore();
 	
 	return (
 		<>

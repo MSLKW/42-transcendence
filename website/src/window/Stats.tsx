@@ -1,6 +1,6 @@
 import { useSceneStore } from "../store/SceneStore";
 import { AvatarImage } from "../components/image/AvatarImage";
-import { AvatarName } from "../components/image/AvatarName";
+import { AvatarName } from "../components/label/AvatarName";
 import { Medal } from "../components/image/Medal";
 import { CloseButton } from "../components/button/Close";
 

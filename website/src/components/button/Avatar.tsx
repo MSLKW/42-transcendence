@@ -1,6 +1,6 @@
 import { useSceneStore } from "../../store/SceneStore";
 import { AvatarImage } from "../image/AvatarImage";
-import { AvatarName } from "../image/AvatarName";
+import { AvatarName } from "../label/AvatarName";
 
 interface AvatarProps {
 	cornerButton?: string;

@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useRef, useEffect } from "react";
 import { Canvas } from "@react-three/fiber";
 import { Stats, PerspectiveCamera, OrbitControls, AdaptiveDpr } from "@react-three/drei";
 import { useDevStore } from "./store/DevStore";
@@ -23,14 +23,29 @@ import { SettingsWindow } from "./window/Settings";
 import { StatsWindow } from "./window/Stats";
 
 export default function App() {
-	const currentScene = useSceneStore((state) => state.currentScene);
+	const { setContAreaHeight, setContAreaWidth, currentScene, showWindow } = useSceneStore();
 	useEffect(() => {
 		window.scrollTo({
 			top: 0,
 			behavior: 'smooth',
 		});
 	}, [currentScene]);
-	const showWindow = useSceneStore((state) => state.showWindow);
+
+	const containerRef = useRef(null);
+	useEffect(() => {
+		if (!containerRef.current)
+			return;
+
+		const observer = new ResizeObserver((entries) => {
+			for (let entry of entries) {
+				setContAreaWidth(entry.target.scrollWidth);
+				setContAreaHeight(entry.target.scrollHeight);
+			}
+		});
+		observer.observe(containerRef.current);
+		return () => observer.disconnect();
+	}, []);
+	
 	const showStats = useDevStore((devStore) => devStore.showStats);
 
 	return (

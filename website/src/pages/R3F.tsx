@@ -10,39 +10,18 @@ import { SortButtons } from "../components/button/Sort";
 import { useGameStore } from "../store/GameStore";
 
 export const R3F = () => {
-	const setCurrentScene = useSceneStore((state) => state.setCurrentScene);
-	const containerRef = useRef(null);
-	const setContAreaWidth = useSceneStore((state) => state.setContAreaWidth);
-	const setContAreaHeight = useSceneStore((state) => state.setContAreaHeight);
+	const { totalPlayers } = useGameStore();
+	const { setCurrentScene } = useSceneStore();
 
 	const [activePlayer, setActivePlayer] = useState<number>(0);
-	const nextTurn = () => {
-		setActivePlayer((prev) => (prev + 1) % 4);
-	}
+	const nextTurn = () => setActivePlayer((prev) => (prev + 1) % 4);
 	useEffect(() => {
 		const timer = setTimeout(() => {
 			nextTurn();
 			console.log("activePlayer:", activePlayer);
 		}, 1000);
-
 		return () => clearTimeout(timer);
 	}, [activePlayer]);
-
-	useEffect(() => {
-		if (!containerRef.current)
-			return;
-
-		const observer = new ResizeObserver((entries) => {
-			for (let entry of entries) {
-				setContAreaWidth(entry.target.scrollWidth);
-				setContAreaHeight(entry.target.scrollHeight);
-			}
-		});
-		observer.observe(containerRef.current);
-		return () => observer.disconnect();
-	}, []);
-
-	const totalPlayers = useGameStore((state) => state.totalPlayers);
 
 	return (
 		<>

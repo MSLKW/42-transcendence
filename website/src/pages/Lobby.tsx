@@ -1,4 +1,3 @@
-import { useRef, useEffect } from "react";
 import { useSceneStore } from "../store/SceneStore";
 import { useGameStore } from "../store/GameStore";
 import { usePartyStore } from "../store/PartyStore";
@@ -9,30 +8,12 @@ import { EmojiButton } from "../components/button/Emoji";
 import { AvatarButton } from "../components/button/Avatar";
 import { ChatButton } from "../components/button/Chat";
 import { PartyButton } from "../components/button/Party";
-import { SmallLogo } from "../components/image/Logo";
+import { SmallLogo } from "../components/label/Logo";
 
 export const Lobby = () => {
-	const setCurrentScene = useSceneStore((state) => state.setCurrentScene);
-	const setContAreaWidth = useSceneStore((state) => state.setContAreaWidth);
-	const setContAreaHeight = useSceneStore((state) => state.setContAreaHeight);
-	
-	const containerRef = useRef(null);
-	useEffect(() => {
-		if (!containerRef.current)
-			return;
-
-		const observer = new ResizeObserver((entries) => {
-			for (let entry of entries) {
-				setContAreaWidth(entry.target.scrollWidth);
-				setContAreaHeight(entry.target.scrollHeight);
-			}
-		});
-		observer.observe(containerRef.current);
-		return () => observer.disconnect();
-	}, []);
-
-	const totalPlayers = useGameStore((state) => state.totalPlayers);
-	const partyCount = usePartyStore((state) => state.partyCount);
+	const { totalPlayers } = useGameStore();
+	const { partyCount } = usePartyStore();
+	const { setCurrentScene } = useSceneStore();
 
 	return (
 		<>

@@ -1,4 +1,3 @@
-import { useRef, useEffect } from "react";
 import { usePartyStore } from "../store/PartyStore";
 import { useSceneStore } from "../store/SceneStore";
 import { BackButton } from "../components/button/Back";
@@ -8,6 +7,8 @@ import { ChatButton } from "../components/button/Chat";
 import { NextGameButton } from "../components/button/NextGame";
 import { AvatarButton } from "../components/button/Avatar";
 import { AvatarImage } from "../components/image/AvatarImage";
+import { RedTriangle } from "../components/image/RedTriangle";
+import { GreenTriangle } from "../components/image/GreenTriangle";
 
 export const ResultRank = () => {
 	return (
@@ -54,6 +55,7 @@ export const ResultRank = () => {
 
 export const ResultPlayed = () => {
 	const { members } = usePartyStore();
+
 	return (
 		<>
 			<div className="
@@ -103,28 +105,6 @@ export const ResultPlayed = () => {
 		</>
 	);
 }
-
-const GreenTriangle = () => {
-  return (
-    <div className="
-		w-0 h-0
-		border-l-[8px] border-l-transparent
-		border-r-[8px] border-r-transparent
-		border-b-[12px] border-c4"
-    />
-  );
-};
-
-const RedTriangle = () => {
-  return (
-    <div className="
-		w-0 h-0
-		border-l-[8px] border-l-transparent
-		border-r-[8px] border-r-transparent
-		border-t-[12px] border-r4"
-    />
-  );
-};
 
 export const ResultChange = () => {
 	return (
@@ -212,7 +192,6 @@ export const ResultTotal = () => {
 	);
 }
 
-
 export const ResultsWindow = () => {
 	return (
 		<div className="
@@ -264,23 +243,6 @@ export const ResultsWindow = () => {
 
 export const Results = () => {
 	const setCurrentScene = useSceneStore((state) => state.setCurrentScene);
-	const containerRef = useRef(null);
-	const setContAreaWidth = useSceneStore((state) => state.setContAreaWidth);
-	const setContAreaHeight = useSceneStore((state) => state.setContAreaHeight);
-
-	useEffect(() => {
-		if (!containerRef.current)
-			return;
-
-		const observer = new ResizeObserver((entries) => {
-			for (let entry of entries) {
-				setContAreaWidth(entry.target.scrollWidth);
-				setContAreaHeight(entry.target.scrollHeight);
-			}
-		});
-		observer.observe(containerRef.current);
-		return () => observer.disconnect();
-	}, []);
 
 	return (
 		<>
