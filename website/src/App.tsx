@@ -16,7 +16,7 @@ import { InfoWindow } from "./components/Info";
 import { ProfileWindow } from "./components/ProfileWindow";
 import { StatsWindow } from "./components/StatsWindow";
 import { SignInWindow } from "./components/SignIn";
-import { CreateAccountWindow } from "./components/CreateAccount";
+import { CreateAccountWindow } from "./components/window/CreateAccountWindow";
 import { SettingsWindow } from "./components/Settings";
 import { ChatWindow } from "./components/Chat";
 import { PartyWindow } from "./components/Party";
