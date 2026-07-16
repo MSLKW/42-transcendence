@@ -1,5 +1,7 @@
 import { useState, useRef, useEffect } from "react";
 import { useSceneStore } from "../../store/SceneStore";
+import { ShowPasswordIcon } from "../icon/ShowPassword";
+import { HidePasswordIcon } from "../icon/HidePassword";
 import { CloseButton } from "../button/Close";
 
 export const CreateAccountWindow = () => {
@@ -13,7 +15,9 @@ export const CreateAccountWindow = () => {
 
 	const [email, setEmail] = useState("");
 	const [password, setPassword] = useState("");
+	const [showPassword, setShowPassword] = useState(false);
 	const [confirmPassword, setConfirmPassword] = useState("");
+	const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 	const [error, setError] = useState<string | null>(null);
 	const [isLoading, setIsLoading] = useState(false);
 
@@ -105,14 +109,28 @@ export const CreateAccountWindow = () => {
 						>
 							Password
 						</label>
-						<input
-							id="password"
-							type="password"
-							placeholder="At least 8 characters"
-							value={password}
-							onChange={(e) => setPassword(e.target.value)}
-							className="input-form"
-						/>
+						<div className="relative">
+							<input
+								id="password"
+								type={showPassword ? "text" : "password"}
+								placeholder="At least 8 characters"
+								value={password}
+								onChange={(e) => setPassword(e.target.value)}
+								className="input-form"
+							/>
+							<button
+								type="button"
+								onClick={() => setShowPassword(!showPassword)}
+								className="
+									absolute right-1 top-1/2 -translate-y-1/2
+									h-[80%] aspect-square
+									text-n0
+									btn-icon
+									rounded-full
+							">
+								{ showPassword ? <ShowPasswordIcon /> : <HidePasswordIcon /> }
+							</button>
+						</div>
 					</div>
 					<div className="grid grid-cols-1 sm:grid-cols-[5rem_1fr] gap-1 sm:gap-5 w-full">
 						<label
@@ -121,14 +139,28 @@ export const CreateAccountWindow = () => {
 						>
 							Confirm
 						</label>
-						<input
-							id="confirm"
-							type="password"
-							placeholder="Confirm your password"
-							value={confirmPassword}
-							onChange={(e) => setConfirmPassword(e.target.value)}
-							className="input-form"
-						/>
+						<div className="relative">
+							<input
+								id="confirm"
+								type={showConfirmPassword ? "text" : "password"}
+								placeholder="Confirm your password"
+								value={confirmPassword}
+								onChange={(e) => setConfirmPassword(e.target.value)}
+								className="input-form"
+							/>
+							<button
+								type="button"
+								onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+								className="
+									absolute right-1 top-1/2 -translate-y-1/2
+									h-[80%] aspect-square
+									text-n0
+									btn-icon
+									rounded-full
+							">
+								{ showConfirmPassword ? <ShowPasswordIcon /> : <HidePasswordIcon /> }
+							</button>
+						</div>
 					</div>
 					<button
 						type="submit"

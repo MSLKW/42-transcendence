@@ -1,4 +1,4 @@
-import { BackIcon } from "../icons/BackIcon";
+import { BackIcon } from "../icon/Back";
 
 interface BackButtonProps {
 	scene?: () => void;

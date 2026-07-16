@@ -1,4 +1,4 @@
-import { NextGameIcon } from "../icons/NextGameIcon";
+import { NextGameIcon } from "../icon/NextGame";
 import { useSceneStore } from "../../store/SceneStore";
 
 export const NextGameButton = () => {

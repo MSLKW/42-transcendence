@@ -1,4 +1,4 @@
-import { CloseIcon } from "../icons/CloseIcon";
+import { CloseIcon } from "../icon/Close";
 
 interface CloseButtonProps {
 	dismiss?: () => void;

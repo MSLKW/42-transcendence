@@ -1,4 +1,4 @@
-import { YeahIcon, HmmmIcon, WoahIcon } from "../icons/EmojiIcons";
+import { YeahIcon, HmmmIcon, WoahIcon } from "../icon/Emoji";
 
 export const YeahButton = () => {
 	const handleSend = (e?: React.MouseEvent<HTMLButtonElement>) => {

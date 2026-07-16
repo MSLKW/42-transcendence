@@ -1,6 +1,6 @@
 import { useRef } from "react";
 import { useSceneStore } from "../store/SceneStore";
-import { AddIcon } from "./icons/AddIcon";
+import { AddIcon } from "./icon/Add";
 import { PinButton } from "./button/Pin";
 import { SendButton } from "./SendButton";
 

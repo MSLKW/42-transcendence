@@ -1,7 +1,7 @@
 import { useSceneStore } from "../store/SceneStore";
-import { RankIcon } from "./icons/RankIcon";
-import { RankArrowIcon } from "./icons/RankArrowIcon";
-import { SpadesIcon, HeartsIcon, ClubsIcon, DiamondsIcon } from "./icons/SuitsIcons"
+import { RankIcon } from "./icon/Rank";
+import { RankArrowIcon } from "./icon/RankArrow";
+import { SpadesIcon, HeartsIcon, ClubsIcon, DiamondsIcon } from "./icon/Suits"
 
 export const RankButton = () => {
 	const setShowWindow = useSceneStore((scene) => scene.setShowWindow);

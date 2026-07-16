@@ -1,5 +1,5 @@
 import { useSceneStore } from "../store/SceneStore";
-import { InfoIcon } from "./icons/InfoIcon";
+import { InfoIcon } from "./icon/Info";
 import { CloseButton } from "./button/Close";
 
 export const InfoButton = () => {

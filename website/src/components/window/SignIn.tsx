@@ -1,5 +1,7 @@
 import { useState, useRef, useEffect } from "react";
 import { useSceneStore } from "../../store/SceneStore";
+import { ShowPasswordIcon } from "../icon/ShowPassword";
+import { HidePasswordIcon } from "../icon/HidePassword";
 import { CloseButton } from "../button/Close";
 
 export const SignInWindow = () => {
@@ -10,9 +12,10 @@ export const SignInWindow = () => {
 		if (focusRef.current)
 			focusRef.current.focus();
 	}, []);
-	
+
 	const [email, setEmail] = useState("");
 	const [password, setPassword] = useState("");
+	const [showPassword, setShowPassword] = useState(false);
 	const [error, setError] = useState<string | null>(null);
 	const [isLoading, setIsLoading] = useState(false);
 
@@ -88,14 +91,28 @@ export const SignInWindow = () => {
 					<span className="text-right pr-5">
 						Password
 					</span>
-					<input
-						id="password"
-						type="password"
-						value={password}
-						placeholder="Enter your password"
-						onChange={(e) => setPassword(e.target.value)}
-						className="input-form"
-					/>
+					<div className="relative">
+						<input
+							id="password"
+							type={showPassword ? "text" : "password"}
+							value={password}
+							placeholder="Enter your password"
+							onChange={(e) => setPassword(e.target.value)}
+							className="input-form w-full"
+						/>
+						<button
+							type="button"
+							onClick={() => setShowPassword(!showPassword)}
+							className="
+								absolute right-1 top-1/2 -translate-y-1/2
+								h-[80%] aspect-square
+								text-n0
+								btn-icon
+								rounded-full
+						">
+							{ showPassword ? <ShowPasswordIcon /> : <HidePasswordIcon /> }
+						</button>
+					</div>
 				</label>
 				<button
 					type="submit"

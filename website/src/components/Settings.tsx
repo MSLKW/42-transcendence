@@ -1,7 +1,7 @@
 import { useSceneStore } from "../store/SceneStore";
 import { useGameStore } from "../store/GameStore";
 import { useSettingsStore, AUTO_PASS_LABELS } from "../store/SettingsStore";
-import { SettingsIcon } from "./icons/SettingsIcon";
+import { SettingsIcon } from "./icon/Settings";
 import { CloseButton } from "./button/Close";
 import { ToggleButton } from "./button/Toggle";
 import { RadioButton } from "./RadioButton";

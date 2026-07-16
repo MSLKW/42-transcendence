@@ -1,4 +1,4 @@
-import { PinIcon } from "../icons/PinIcon";
+import { PinIcon } from "../icon/Pin";
 
 export const PinButton = () => {
     return (
