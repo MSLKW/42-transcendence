@@ -1,14 +1,23 @@
+import { usePlayerStore } from "../../store/PlayerStore";
+
 interface AvatarSelectProps {
+	id: string,
 	color: string,
+	setSelectedAvatar: () => void;
 }
 
-export const AvatarSelect = ({ color }: AvatarSelectProps) => {
+export const AvatarSelect = ({ id, color }: AvatarSelectProps) => {
+	const { data, setPlayerDataValue } = usePlayerStore();
+
 	return (
-		<button className={`
-			hover:not-disabled:scale-105 active:hover:not-disabled:scale-100
-			focus-visible:outline-2 outline-b5 outline-offset-5
-			h-20 aspect-square rounded-sm
-			${color}
+		<button 
+			onClick={() => setPlayerDataValue("avatar", id)}
+			className={`
+				hover:not-disabled:scale-105 active:hover:not-disabled:scale-100
+				focus-visible:outline-2 outline-b5 outline-offset-5
+				h-20 aspect-square rounded-sm
+				${id === data.avatar && "outline-double"}
+				${color}
 		`}/>
 	)
 }

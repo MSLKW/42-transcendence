@@ -1,4 +1,4 @@
-import { useRef, useEffect } from "react";
+import { useState, useRef, useEffect } from "react";
 import { usePlayerStore } from "../store/PlayerStore";
 import { useSceneStore } from "../store/SceneStore";
 import { CloseButton } from "../components/button/Close";
@@ -21,6 +21,8 @@ export const ProfileWindow = () => {
 			return;
 		setShowWindow("profile", false);
 	};
+
+	const [selectedAvatar, setSelectedAvatar] = useState(0);
 
 	return (
 		<section className="
@@ -81,15 +83,15 @@ export const ProfileWindow = () => {
 					w-full
 				">
 					<div className="grid grid-rows-3 grid-cols-3 place-content-center place-items-center gap-5 p-5">
-						<AvatarSelect color="bg-a4" />
-						<AvatarSelect color="bg-b4" />
-						<AvatarSelect color="bg-c4" />
-						<AvatarSelect color="bg-d4" />
-						<AvatarSelect color="bg-a4" />
-						<AvatarSelect color="bg-b4" />
-						<AvatarSelect color="bg-c4" />
-						<AvatarSelect color="bg-d4" />
-						<AvatarSelect color="bg-a4" />
+						<AvatarSelect id="avatar-stock-0.webp" color="bg-a4"/>
+						<AvatarSelect id="avatar-stock-1.webp" color="bg-b4"/>
+						<AvatarSelect id="avatar-stock-2.webp" color="bg-c4"/>
+						<AvatarSelect id="avatar-stock-3.webp" color="bg-d4"/>
+						<AvatarSelect id="avatar-stock-4.webp" color="bg-a4"/>
+						<AvatarSelect id="avatar-stock-5.webp" color="bg-b4"/>
+						<AvatarSelect id="avatar-stock-6.webp" color="bg-c4"/>
+						<AvatarSelect id="avatar-stock-7.webp" color="bg-d4"/>
+						<AvatarSelect id="avatar-stock-8.webp" color="bg-a4"/>
 					</div>
 					<div className="
 						grid grid-rows-3
