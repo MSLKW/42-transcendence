@@ -1,13 +1,13 @@
-import { useSceneStore } from "../../store/SceneStore";
+import { useDevStore } from "../../store/DevStore";
 import { SignOutIcon } from "../icon/SignOut";
 
 export const SignOutButton = () => {
-    const setCurrentScene = useSceneStore((state) => state.setCurrentScene);
+    const { resetGame } = useDevStore();
 
     return (
         <button
             data-tip="Sign Out"
-            onClick={() => setCurrentScene("LOGIN")}
+            onClick={() => resetGame()}
             className="btn-icon btn-tip-down"
         >
                 <SignOutIcon />

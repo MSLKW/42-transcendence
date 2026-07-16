@@ -27,7 +27,7 @@ export const RankWindow = () => {
 					bg-n1
 				">
 					<div className="
-						w-[30px]
+						w-7.5
 						ml-5
 						text-b5
 					">

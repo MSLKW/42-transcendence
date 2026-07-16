@@ -1,3 +1,4 @@
+import { usePartyStore } from "../store/PartyStore";
 import { useSceneStore } from "../store/SceneStore";
 import { AvatarImage } from "../components/image/AvatarImage";
 import { AvatarName } from "../components/label/AvatarName";
@@ -6,6 +7,7 @@ import { CloseButton } from "../components/button/Close";
 
 export const StatsWindow = () => {
 	const { setShowWindow, playerStatsFocus } = useSceneStore();
+	const { members } = usePartyStore();
 
 	return (
 		<section className="
@@ -60,7 +62,7 @@ export const StatsWindow = () => {
 						p-5
 					">
 						<h2>Total Played</h2>
-						<p>42</p>
+						<p>{members[playerStatsFocus].totalPlayed}</p>
 					</div>
 					<div className="
 						w-full h-full
@@ -69,7 +71,7 @@ export const StatsWindow = () => {
 						p-5
 					">
 						<h2>Wins</h2>
-						<p>5</p>
+						<p>{members[playerStatsFocus].totalWins}</p>
 					</div>
 					<div className="
 						w-full h-full
@@ -78,7 +80,7 @@ export const StatsWindow = () => {
 						p-5
 					">
 						<h2>Win Streak</h2>
-						<p>2</p>
+						<p>{members[playerStatsFocus].winStreak}</p>
 					</div>
 				</div>
 				<div className="

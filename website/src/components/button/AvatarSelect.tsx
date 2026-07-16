@@ -3,7 +3,6 @@ import { usePlayerStore } from "../../store/PlayerStore";
 interface AvatarSelectProps {
 	id: string,
 	color: string,
-	setSelectedAvatar: () => void;
 }
 
 export const AvatarSelect = ({ id, color }: AvatarSelectProps) => {

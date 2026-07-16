@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from "react";
+import { useRef, useEffect } from "react";
 import { usePlayerStore } from "../store/PlayerStore";
 import { useSceneStore } from "../store/SceneStore";
 import { CloseButton } from "../components/button/Close";
@@ -21,8 +21,6 @@ export const ProfileWindow = () => {
 			return;
 		setShowWindow("profile", false);
 	};
-
-	const [selectedAvatar, setSelectedAvatar] = useState(0);
 
 	return (
 		<section className="
@@ -50,13 +48,14 @@ export const ProfileWindow = () => {
 							id="name"
 							type="text"
 							value={data.name ?? ""}
+							placeholder="Name"
 							onChange={(e)=>{setPlayerDataValue("name", e.target.value)}}
 							onKeyDown={(e) => {
 								if (e.key === "Enter" || e.key === "Escape")
 									e.currentTarget.blur();
 							}}
 							className="
-								bg-n6 h-2.5 w-30
+								bg-n6 h-2.5 w-42.5
 								border border-n5 rounded-full
 								p-4
 								text-n0 text-center
@@ -107,7 +106,7 @@ export const ProfileWindow = () => {
 						">
 							<div className="text-center">
 								<h2>Total Played</h2>
-								<p>42</p>
+								<p>{data.totalPlayed}</p>
 							</div>
 						</div>
 						<div className="
@@ -118,7 +117,7 @@ export const ProfileWindow = () => {
 						">
 							<div className="text-center">
 								<h2>Wins</h2>
-								<p>5</p>
+								<p>{data.totalWins}</p>
 							</div>
 						</div>
 						<div className="
@@ -129,11 +128,16 @@ export const ProfileWindow = () => {
 						">
 							<div className="text-center">
 								<h2>Win Streak</h2>
-								<p>2</p>
+								<p>{data.winStreak}</p>
 							</div>
 						</div>
 					</div>
 				</div>
+				{ !data.name && 
+					<div className="text-b4 text-sm font-medium mb-2 w-full text-center border-t border-n2 pt-2">
+						<p>Enter your name and choose your avatar</p>
+					</div>
+				}
 				<div className="
 					absolute top-0 right-0 -translate-y-1/2 translate-x-1/2
 					z-1
