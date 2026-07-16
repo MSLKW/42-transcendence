@@ -2,25 +2,28 @@
   // Visit https://aka.ms/tsconfig to read more about this file
   "compilerOptions": {
     // File Layout
-    // "rootDir": "./src",
+    "rootDir": ".",
     "outDir": "./dist",
 
     // Environment Settings
     // See also https://aka.ms/tsconfig/module
     
-    "module": "nodenext",
-    "moduleResolution": "nodenext",
+    // "target": "ES2022",
     "target": "esnext",
+    "module": "esnext",
+    "moduleResolution": "bundler",
+    "types": ["node"],
     // "types": [],
     // For nodejs:
     // "lib": ["esnext"],
-    "types": ["node"],
     // and npm install -D @types/node
 
     // Other Outputs
+    "composite": true,
     "sourceMap": true,
     "declaration": true,
     "declarationMap": true,
+    "esModuleInterop": true,
 
     // Stricter Typechecking Options
     "noUncheckedIndexedAccess": true,

@@ -23,6 +23,6 @@
 		"argon2": "^0.44.0",
 		"dotenv": "^17.4.2",
 		"express": "^5.2.1",
-		"database": "*"
+		"@big2/database": "*"
 	}
 }

@@ -458,3 +458,37 @@ package.json
     relations: This is just a "logical" map. It doesn't change your database table structure; it just helps Drizzle write smarter, more complex SQL queries for you.
 
 
+1. What does src/**/* mean?
+  This is a "glob" pattern used by TypeScript to find files:
+    src/ = Tells the compiler to look inside the src folder.
+    ** = "any number of sub-directories" (recursive).
+    /* = "any file name."
+    .ts (implied) = "only include files ending in .ts."
+  src/**/* basically tells TypeScript: 
+    "Find every single .ts file inside the src folder, 
+    no matter how deep they are buried in sub-folders."
+
+
+
+```
+"compilerOptions": {
+    "target": "esnext",
+    "module": "esnext",            // Change from NodeNext to esnext
+    "moduleResolution": "bundler", // Now this is allowed!
+    // ... rest of your config
+}
+```
+  Why this works:
+  Pairing: When you set module to esnext (or preserve), TypeScript allows you to use the bundler resolution strategy.  
+  The "Bundler" Advantage: 
+    As you noted, the bundler strategy is the modern standard for monorepos because it never requires file extensions on your relative imports. 
+    This will finally allow you to stop adding .js to your internal file paths. 
+  The "Lenient" Path: If you want to avoid .js extensions everywhere, you need to change your tsconfig.json to be less strict. 
+  You can try changing "moduleResolution": "NodeNext" to "moduleResolution": "bundler".
+  The bundler setting is designed specifically for monorepos and modern frontend tools (like Vite/Webpack/Turbopack). 
+  It tells TypeScript: "Don't be so strict about file extensions; just find the module however you can."
+  My advice: If you are using a bundler or a build tool to deploy this, switch moduleResolution to "bundler" in your tsconfig.json. 
+  This usually makes the "weird" inconsistency disappear because it tells TypeScript to stop being so pedantic about the extensions for workspace packages.
+
+
+  
