@@ -71,17 +71,24 @@ export class Bot
 	{
 		if (playerTurn.playerId == this.state.currentPlayer)
 			return ;	
-		if (this.state.turnSkipped && !(this.state.currentPlayer != this.id))
+		if (this.state.turnSkipped)
 		{
-			logger.info(this.id, this.state.currentPlayer, "skipped their turn");
+			logger.verbose(this.id, this.state.currentPlayer, "skipped their turn");
 			this.state.recordSkippedMove(this.state.currentPlayer);
 		}
+		
 		this.state.currentPlayer = playerTurn.playerId;
 		if (this.state.currentPlayer == this.id)
+		{
+			logger.verbose(this.id, "My turn");
+			// logger.verbose(this.id, this.state.encode().join("\n"));
 			this.playCardHand();
+		}
 		else
-			logger.info(this.id, `${this.state.currentPlayer}'s turn`);
-		this.state.turnSkipped = true;
+		{
+			logger.verbose(this.id, `${this.state.currentPlayer}'s turn`);
+			this.state.turnSkipped = true;
+		}
 	}
 
 	private playCardHand = () =>
@@ -91,7 +98,7 @@ export class Bot
 		if (cardHand == null)
 		{
 			logger.verbose(this.id, "skipping turn");
-			this.state.recordSkippedMove(this.id);
+			this.state.turnSkipped = true;
 			this.socket?.emit("player_skip_turn");
 		}
 		else
@@ -100,6 +107,7 @@ export class Bot
 			this.state.setLastCardHand(cardHand);
 			this.state.removeCards(cardHand);
 			logger.verbose(this.id, "attempting to play", cardHand);
+			this.state.turnSkipped = false;
 			this.socket?.emit("player_play_card_hand", cardHand);
 		}
 	}

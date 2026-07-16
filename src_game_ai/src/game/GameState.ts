@@ -84,7 +84,6 @@ export class GameState
 
 		if (cardHand.playerId != this.botId)
 			this.opponentCards[cardHand.playerId].push(...cardHand.cards);
-		this.turnSkipped = false;
 		this.cardHandsPlayed++;
 	}
 
@@ -101,6 +100,15 @@ export class GameState
 
 	removeCards(cardHand: CardHand)
 	{
+		for (let i = 0; i < this.ownCards.length; i++)
+		{
+			if (cardHand.cards.includes(this.ownCards[i]))
+			{
+				this.ownCards.splice(i, 1);
+				i--;
+			}
+
+		}
 		for (const key in this.possibleCardHands)
 		{
 			const handTypeKey = key as HandTypeKey;
@@ -126,20 +134,44 @@ export class GameState
 
 	encode(): number[]
 	{
-		const encodedState = new Array<number>(519).fill(0);
+		const playerCardsEncoded: number[][] = [];
 
-		const ownCardsEncoded = this.encodeCards(this.ownCards);
-		const opponentCards: number[] = [];
-
+		playerCardsEncoded[0] = this.encodeCards(this.ownCards); 
+		let i = 0;
 		for (const key in this.opponentCards)
 		{
 			if (key != this.botId)
-				opponentCards.push(...this.encodeCards(this.opponentCards[key]));
+				playerCardsEncoded[this.playerSeats[key]] = this.encodeCards(this.opponentCards[key]);
+			i++;
 		}
+		while (i < 4)
+		{
+			playerCardsEncoded[i] = new Array<number>(52).fill(0);
+			i++;
+		}
+		
+		const unseenCards = new Array<number>(52)
+		for (let i = 0; i < 52; i++)
+		{
+			unseenCards[i] =
+				playerCardsEncoded[0][i]
+				|| playerCardsEncoded[1][i]
+				|| playerCardsEncoded[2][i]
+				|| playerCardsEncoded[3][i]
+				? 0 : 1;
+		}
+
+		const encodedState: number[] = [
+			...playerCardsEncoded[0],
+			...playerCardsEncoded[1],
+			...playerCardsEncoded[2],
+			...playerCardsEncoded[3],
+			...unseenCards
+		];
 		return (encodedState);
 	}
 
-	encodeCards(cards: Card[]): number[]
+	private encodeCards(cards: Card[]): number[]
 	{
 		const encodedCards = new Array<number>(52).fill(0);
 
