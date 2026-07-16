@@ -1,3 +1,4 @@
+/// <reference types="node" />
 import { defineConfig } from "drizzle-kit";
 import "dotenv/config"; // This automatically loads the local .env
 
