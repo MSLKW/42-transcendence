@@ -1,7 +1,7 @@
 import { useRef, useEffect } from "react";
 import { usePartyStore } from "../store/PartyStore";
 import { useSceneStore } from "../store/SceneStore";
-import { CloseButton } from "./button/CloseButton";
+import { CloseButton } from "./button/Close";
 import { AvatarImage } from "./Avatar";
 
 export const Medal = () => {

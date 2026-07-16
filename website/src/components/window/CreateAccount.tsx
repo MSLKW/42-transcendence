@@ -1,25 +1,21 @@
 import { useState, useRef, useEffect } from "react";
 import { useSceneStore } from "../../store/SceneStore";
-import { CloseButton } from "../button/CloseButton";
+import { CloseButton } from "../button/Close";
 
 export const CreateAccountWindow = () => {
-	const contAreaWidth = useSceneStore((scene) => scene.contAreaWidth);
-	const contAreaHeight = useSceneStore((scene) => scene.contAreaHeight);
+	const { contAreaWidth, contAreaHeight, setShowWindow, setCurrentScene } = useSceneStore();
 
-	const setShowWindow =  useSceneStore((state) => state.setShowWindow);
+	const focusRef = useRef<HTMLInputElement | null>(null);
+	useEffect(() => {
+		if (focusRef.current)
+			focusRef.current.focus();
+	}, []);
 
 	const [email, setEmail] = useState("");
 	const [password, setPassword] = useState("");
 	const [confirmPassword, setConfirmPassword] = useState("");
 	const [error, setError] = useState<string | null>(null);
 	const [isLoading, setIsLoading] = useState(false);
-
-	const focusRef = useRef<HTMLInputElement | null>(null);
-	useEffect(() => {
-		if (focusRef.current) {
-			focusRef.current.focus();
-		}
-	}, []);
 
 	const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
@@ -53,6 +49,7 @@ export const CreateAccountWindow = () => {
 			}
 
 			setShowWindow("createAccount", false);
+			setCurrentScene("HOME");
 		} catch (err) {
 			setError("Something went wrong. Please try again");
 		} finally {
@@ -141,7 +138,7 @@ export const CreateAccountWindow = () => {
 						{ isLoading ? "CREATING..." : "CREATE ACCOUNT" }
 					</button>
 					{error && 
-						<div className="text-r4 text-sm font-medium mb-2">
+						<div className="text-r4 text-sm font-medium mb-2 w-full text-center">
 							{error}
 						</div>
 					}

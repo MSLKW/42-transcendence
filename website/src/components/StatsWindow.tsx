@@ -1,6 +1,6 @@
 import { useSceneStore } from "../store/SceneStore";
 import { AvatarButton } from "./Avatar";
-import { CloseButton } from "./button/CloseButton";
+import { CloseButton } from "./button/Close";
 import { usePlayerStore } from "../store/PlayerStore";
 
 export const Medal = () => {

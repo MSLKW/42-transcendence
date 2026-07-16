@@ -3,14 +3,14 @@ import { useSceneStore } from "../store/SceneStore";
 import { useGameStore } from "../store/GameStore";
 import { usePartyStore } from "../store/PartyStore";
 import { InfoButton } from "../components/Info";
-import { SignOutButton } from "../components/button/SignOutButton";
+import { SignOutButton } from "../components/button/SignOut";
 import { SettingsButton } from "../components/Settings";
 import { PersonIcon } from "../components/icons/PersonIcon";
 import { TutorialIcon } from "../components/icons/TutorialIcon";
 import { AvatarButton } from "../components/Avatar";
 import { ChatButton } from "../components/Chat";
 import { PartyButton } from "../components/Party";
-import { EmojiButton } from "../components/button/EmojiButtons";
+import { EmojiButton } from "../components/button/Emoji";
 import { SmallLogo } from "../components/image/Logo";
 
 interface HomeProps {

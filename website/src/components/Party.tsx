@@ -1,7 +1,7 @@
 import { useRef } from "react";
 import { useSceneStore } from "../store/SceneStore";
 import { AddIcon } from "./icons/AddIcon";
-import { PinButton } from "./button/PinButton";
+import { PinButton } from "./button/Pin";
 import { SendButton } from "./SendButton";
 
 export const PartyButton = () => {

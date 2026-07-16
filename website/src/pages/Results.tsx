@@ -1,11 +1,11 @@
 import { useRef, useEffect } from "react";
 import { usePartyStore } from "../store/PartyStore";
 import { useSceneStore } from "../store/SceneStore";
-import { BackButton } from "../components/button/BackButton";
+import { BackButton } from "../components/button/Back";
 import { SettingsButton } from "../components/Settings";
-import { EmojiButton } from "../components/button/EmojiButtons";
+import { EmojiButton } from "../components/button/Emoji";
 import { ChatButton } from "../components/Chat";
-import { NextGameButton } from "../components/button/NextGameButton";
+import { NextGameButton } from "../components/button/NextGame";
 import { AvatarImage, AvatarButton } from "../components/Avatar";
 
 export const ResultRank = () => {

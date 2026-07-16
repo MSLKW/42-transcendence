@@ -2,15 +2,13 @@ import { useRef, useEffect } from "react";
 import { useSceneStore } from "../store/SceneStore";
 import { BigLogo } from "../components/image/Logo";
 import { InfoButton } from "../components/Info";
-import { CreateAccountButton } from "../components/button/CreateAccountButton";
-import { SignInButton } from "../components/SignIn";
+import { CreateAccountButton } from "../components/button/CreateAccount";
+import { SignInButton } from "../components/button/SignIn";
 
 export const Login = () => {
-	const setCurrentScene = useSceneStore((state) => state.setCurrentScene);
-	const setContAreaWidth = useSceneStore((state) => state.setContAreaWidth);
-	const setContAreaHeight = useSceneStore((state) => state.setContAreaHeight);
-	const containerRef = useRef(null);
+	const { setContAreaWidth, setContAreaHeight, setCurrentScene } = useSceneStore();
 	
+	const containerRef = useRef(null);
 	useEffect(() => {
 		if (!containerRef.current)
 			return;
