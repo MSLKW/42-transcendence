@@ -8,10 +8,13 @@ RUN apt-get update && \
     apt-get install -y openssl postgresql-client && \
     rm -rf /var/lib/apt/lists/*
 
-# WORKDIR /app
+# Set the workdir explicitly to match where you want your app
+WORKDIR /app/packages/database
 
-# 1. Copy only the package files first
+# Copy from the context (root) into the container
+# Use the relative path from the context (root)
 COPY package*.json ./
+COPY ./packages/database/package*.json ./packages/database/
 
 # 2. Install dependencies
 # if do COPY . . first, npm install will be forced to re-run every time you change a single line of code in your source files
@@ -26,7 +29,7 @@ COPY . .
 RUN npm run build
 
 # Put all the main commands in the script file
-COPY ./scripts/entrypoint.sh /usr/local/bin/entrypoint.sh
+COPY ./packages/database/scripts/entrypoint.sh /usr/local/bin/entrypoint.sh
 RUN chmod +x /usr/local/bin/entrypoint.sh
 
 # Use the script as the entrypoint

@@ -39,7 +39,7 @@
 - to tell our package manager, npm, that our project use the monorepo approach (1 github repo for the whole project)
 - we r saying to our package manager, "Hey, don't look for these folders in the online npm registry. Look for them right here on my disk."
 - when we do `npm install` at the root, npm creates `"symlinks" (shortcuts).` 
-- If backend/auth-service needs @big2/database, npm sees that @big2/database exists in packages/database. 
+- If backend/auth-service needs @big2_monorepo/database, npm sees that @big2_monorepo/database exists in packages/database. 
 - Instead of downloading it from the internet, it just creates a link. 
 - This means when you edit the code in packages/database, your auth-service instantly sees the changes. It’s like magic for local development.
 <br>

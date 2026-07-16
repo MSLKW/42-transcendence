@@ -34,14 +34,14 @@ services:
     env_file:
       - .env
     volumes:
-      - ${DB_VOLUME_NAME}:/var/lib/postgresql/data                                                              # volume
-      - ../secrets/database_passwords:/run/secrets:ro      # secrets
+      - database_volume:/var/lib/postgresql/data                                                              # volume
+      - ${PWD}/secrets/database_passwords:/run/secrets:ro      # secrets
       - ./packages/database/init/init.sql:/docker-entrypoint-initdb.d/init.sql:ro                             # to run schema creation script
       - ./packages/database/scripts:/scripts:ro
     networks:
       - transcendence
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER_ADMIN} -d ${POSTGRES_DB}"]
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
       interval: 5s
       timeout: 5s
       retries: 5
@@ -51,16 +51,17 @@ services:
 #           DATA BROWSER = Drizzle Studio, Dev-only Database Tool, a CLI tool inside Node environment (thats why node image)
   drizzle-orm:
     container_name: drizzle-orm
-    build: ./packages/database/.              # gets the built (main application), built once only -> efficient + saves CPU and disk space. 
+    build: 
+      context: .
+      dockerfile: ./packages/database/Dockerfile              # gets the built (main application), built once only -> efficient + saves CPU and disk space. 
     pull_policy: build                        # This forces local builds, ignoring Docker Hub
-    working_dir: /app/packages/database
     restart: unless-stopped
     ports:
       - "${DRIZZLE_STUDIO_PORT}:${DRIZZLE_STUDIO_PORT}"
     env_file:
       - .env                                  
     volumes:
-      - ../secrets/database_passwords/db_admin_password.txt:/run/secrets/db_admin_password:ro
+      - ${PWD}/secrets/database_passwords/db_admin_password.txt:/run/secrets/db_admin_password:ro
     command: npx drizzle-kit studio --port ${DRIZZLE_STUDIO_PORT}
     networks:
       - transcendence
@@ -85,7 +86,7 @@ services:
       - .env                                              # Loads global configs
       - backend-services/authentication/.env              # Loads service-specific configs
     volumes:
-      - ../secrets/database_passwords/db_auth_password.txt:/run/secrets/auth_schema_password:ro # => will be inside auth's .env
+      - ${PWD}/secrets/database_passwords/db_auth_password.txt:/run/secrets/auth_schema_password:ro # => will be inside auth's .env
     networks:
       - transcendence
     depends_on:

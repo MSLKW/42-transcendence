@@ -1,8 +1,8 @@
 import { drizzle } from 'drizzle-orm/node-postgres';
 import fs from 'fs';
-import * as schema from '@big2/database'; 
+import * as schema from '@big2_monorepo/database'; 
 // Drizzle uses the actual imported schema files. 
-// alias maps @big2/database to ../../packages/database/src/auth.schema.ts
+// alias maps @big2_monorepo/database to ../../packages/database/src/auth.schema.ts
 
 
 if (!process.env.DB_PASSWORD_FILE) {

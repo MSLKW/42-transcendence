@@ -1,5 +1,5 @@
 {
-  "name": "big2",
+  "name": "big2_monorepo",
   "private": true,
   "workspaces":[
     "packages/*",

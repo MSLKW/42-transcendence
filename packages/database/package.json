@@ -9,8 +9,10 @@
   },
   "scripts": {
     "build": "tsc",
-    "generate": "drizzle-kit generate",
-    "migrate": "drizzle-kit migrate"
+    "db:generate": "drizzle-kit generate",
+    "db:migrate": "drizzle-kit migrate",
+    "db:studio": "drizzle-kit studio",
+    "db:push": "drizzle-kit push"
   },
   "keywords": [],
   "author": "",

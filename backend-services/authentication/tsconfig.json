@@ -13,7 +13,7 @@
 		"incremental": true,
 		"tsBuildInfoFile": "./.tsbuildinfo",
 		"paths": {
-			"@big2/database": ["../../packages/database/src/auth.schema.ts"]		} 
+			"@big2_monorepo/database": ["../../packages/database/src/auth.schema.ts"]		} 
 	},
 	"include": ["src/**/*.ts"],
 	"references": [

@@ -6,7 +6,7 @@
 #    By: aimokhta <aimokhta@student.42kl.edu.my>    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2026/06/16 09:31:30 by aimokhta          #+#    #+#              #
-#    Updated: 2026/07/16 01:39:20 by aimokhta         ###   ########.fr        #
+#    Updated: 2026/07/16 16:43:14 by aimokhta         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -23,32 +23,32 @@ include .env
 export
 
 all:
-	@mkdir -p /home/aimokhta/data/$(DB_VOLUME_NAME)
+	@mkdir -p $(PWD)/data/$(DB_VOLUME_NAME)
 	@echo "$(PURPLE)\n🛠️  Building and launching containers...\n$(RESET)"
-	@docker compose -f ./srcs/docker-compose.yml up --build -d
+	@docker compose -f ./docker-compose.yml up --build -d
 
 down:
 # Docker removes the containers & networks, keeps built images saved on your disk.
 	@echo "$(PURPLE) Removing everything on Docker except images...\n$(RESET)" 
-	@docker compose -f ./srcs/docker-compose.yml down
+	@docker compose -f ./docker-compose.yml down
 
 up:
 # Start/Resume services (ignoring changes)
 	@echo "$(PURPLE) Starting/Resuming services after down/stop, ignoring changes on Docker...\n$(RESET)"
-	@docker compose -f ./srcs/docker-compose.yml up -d
+	@docker compose -f ./docker-compose.yml up -d
 
 # A "soft" restart that picks up changes but keeps data
 recreate:
 	@echo "$(PURPLE) Starting/Resuming services, picking up changes on docker except on host (volumes)...\n{RESET)"
-	@docker compose -f ./srcs/docker-compose.yml up -d --force-recreate
+	@docker compose -f ./docker-compose.yml up -d --force-recreate
 
 clean:
 	@echo "$(PURPLE)\n🗑️  Removing all containers, volumes, network and images including public base images in Docker...\n$(RESET)"
-	@docker compose -f ./srcs/docker-compose.yml down --volumes --rmi all
+	@docker compose -f ./docker-compose.yml down --volumes --rmi all
 	@echo "$(PURPLE)\n🗑️  Done removed every single containers, volumes and images in Docker! \n$(RESET)"
 	
 fclean: clean
-	@sudo rm -rf /home/aimokhta/data
+	@sudo rm -rf $(PWD)/data
 	@echo "$(PURPLE)\n🗑️  Removed all volumes on host! $(RESET)\n"
 
 re: fclean all

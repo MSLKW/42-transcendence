@@ -1,5 +1,5 @@
 import { eq } from "drizzle-orm";
-import { users } from "@big2/database"; 	// the database package
+import { users } from "@big2_monorepo/database"; 	// the database package
 import { db } from "../db/db"; 				// the drizzle database connection instance
 import { User } from "../models/user";
 import { UserStore } from "./userStore";
