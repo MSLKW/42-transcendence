@@ -60,7 +60,6 @@ interface PlayerValues {
 interface PlayerState extends PlayerValues {
 	setPlayerValue: <K extends keyof PlayerValues>(key: K, value: PlayerValues[K]) => void;
 	setPlayerDataValue: <K extends keyof PlayerData>(key: K, value: PlayerData[K]) => void;
-	addXP: (xp: number) => void;
 	incTotalWins: () => void;
 	incTotalLoss: () => void;
 	unlockAchievement: (id: ACHIEVEMENT_LABEL) => void;
@@ -105,32 +104,32 @@ export const usePlayerStore = create<PlayerState>() (
 					[key]: value
 				}
 			})),
-			addXP: (xp) => set((playerStore) => {
-				const newXP = playerStore.data.xp + xp;
+			incTotalWins: () => set((playerStore) => {
+				const newXP = playerStore.data.xp + 420;
 				return {
 					data: {
 						...playerStore.data,
+						totalWins: playerStore.data.totalWins + 1,
+						winStreak: playerStore.data.winStreak + 1,
+						totalPlayed: playerStore.data.totalPlayed + 1,
 						xp: newXP,
 						level: Math.floor(newXP / 1000) + 1,
 					}
 				}
 			}),
-			incTotalWins: () => set((playerStore) => ({
-				data: {
-					...playerStore.data,
-					totalWins: playerStore.data.totalWins + 1,
-					winStreak: playerStore.data.winStreak + 1,
-					totalPlayed: playerStore.data.totalPlayed + 1,
+			incTotalLoss: () => set((playerStore) => {
+				const newXP = playerStore.data.xp + 67;
+				return {
+					data: {
+						...playerStore.data,
+						totalLoss: playerStore.data.totalLoss + 1,
+						winStreak: 0,
+						totalPlayed: playerStore.data.totalPlayed + 1,
+						xp: newXP,
+						level: Math.floor(newXP / 1000) + 1,
+					}
 				}
-			})),
-			incTotalLoss: () => set((playerStore) => ({
-				data: {
-					...playerStore.data,
-					totalLoss: playerStore.data.totalLoss + 1,
-					winStreak: 0,
-					totalPlayed: playerStore.data.totalPlayed + 1,
-				}
-			})),
+			}),
 			unlockAchievement: (id) => set((playerStore) => {
 				if (playerStore.data.achievements[id])
 					return {};

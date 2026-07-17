@@ -1,4 +1,4 @@
-import { useRef, useEffect } from "react";
+import { useState, useRef, useEffect } from "react";
 import { usePlayerStore } from "../store/PlayerStore";
 import { useSceneStore } from "../store/SceneStore";
 import { BadgeWindow } from "./Badge";
@@ -112,6 +112,11 @@ export const PlayerStatsModule = () => {
 export const PlayerDataModule = () => {
 	const { data } = usePlayerStore();
 	const { showWindow, setShowWindow } = useSceneStore();
+	const [ xpProgress, setXPProgress ] = useState(0);
+	useEffect(() => {
+		const percentage = (data.xp / (data.level * 1000)) * 100
+		setXPProgress(percentage);
+	}, [data.xp]);
 
 	return (
 		<div className="
@@ -134,10 +139,12 @@ export const PlayerDataModule = () => {
 						border border-b5 self-center
 						mt-1
 					">
-						<div className="
-							bg-b5 
-							w-[50%] h-full rounded-full
-							"/>
+						<div 
+							style={{ width: `${xpProgress}%` }}
+							className="
+								bg-b5 
+								h-full rounded-full
+						"/>
 					</div>
 				</div>
 			</div>

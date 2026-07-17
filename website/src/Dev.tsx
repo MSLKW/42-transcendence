@@ -3,6 +3,7 @@ import { useDevStore } from "./store/DevStore";
 import { useGameStore } from "./store/GameStore";
 import { usePartyStore, ISFRIEND } from "./store/PartyStore";
 import { useSceneStore } from "./store/SceneStore";
+import { usePlayerStore } from "./store/PlayerStore";
 
 export default function Dev() {
 	const { showFrame, toggleFlag, resetGame } = useDevStore();
@@ -20,6 +21,7 @@ export default function Dev() {
 	}, [currentScene]);
 	
 	const { partyCount, addMember } = usePartyStore();
+	const { incTotalWins, incTotalLoss } = usePlayerStore();
 
 	return (
 		<section className="w-full h-fit text-r4">
@@ -48,6 +50,10 @@ export default function Dev() {
 						</button>
 					</li>
 				}
+			</ul>
+			<ul className="flex place-content-evenly">
+				<li><button type="button" tabIndex={-1} onClick={() => incTotalWins()}>Win Round</button></li>
+				<li><button type="button" tabIndex={-1} onClick={() => incTotalLoss()}>Lose Round</button></li>
 			</ul>
 		</section>
 	);
