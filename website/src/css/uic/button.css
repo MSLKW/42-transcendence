@@ -43,63 +43,6 @@ button {
 		;
 }
 
-@utility btn-tip-after {
-	content: attr(data-tip);
-	@apply
-		w-max h-max
-		absolute
-		bg-a2
-		border border-n2 rounded-lg
-		text-n6 text-[clamp(0.4375rem,2vw+0.21875rem,1rem)]
-		px-[clamp(0.3125rem,1vw+0.15625rem,1.25rem)]
-		pointer-events-none
-		scale-0 opacity-0
-		transition-all ease-out duration-50
-		;
-	
-}
-@utility btn-tip-up {
-	&::after {
-		@apply
-			btn-tip-after
-			origin-bottom
-			bottom-[calc(100%+1rem)]
-			left-1/2 -translate-x-1/2
-			;
-	}
-	&:focus::after,
-	&:hover::after {
-		@apply scale-100 opacity-100;
-	}
-}
-@utility btn-tip-down {
-	&::after {
-		@apply
-			btn-tip-after
-			origin-top
-			top-[calc(100%+1rem)]
-			left-1/2 -translate-x-1/2
-			;
-	}
-	&:focus::after,
-	&:hover::after {
-		@apply scale-100 opacity-100;
-	}
-}
-@utility btn-tip-left {
-	&::after {
-		@apply
-			btn-tip-after
-			origin-right
-			right-[calc(100%+1rem)]
-			top-1/2 -translate-y-1/2
-			;
-	}
-	&:focus::after,
-	&:hover::after {
-		@apply scale-100 opacity-100;
-	}
-}
 @utility btn-white {
 	@apply
 		bg-n6 hover:not-disabled:bg-b5
@@ -107,43 +50,6 @@ button {
 		text-lg text-n0
 		hover:not-disabled:scale-105 active:hover:not-disabled:scale-100
 		focus-visible:outline-2
-		;
-}
-@utility btn-clear {
-	@apply
-		hw-5/1
-		rounded-full
-		text-lg
-		text-n6 hover:not-disabled:text-b5
-		hover:not-disabled:scale-105 active:hover:not-disabled:scale-100
-		focus:outline-2
-		;
-}
-@utility btn-send {
-	@apply
-		z-1
-		absolute right-0.5 top-1/2 -translate-y-1/2
-		w-[clamp(4rem,10vw+2rem,5rem)]
-		h-[clamp(0.5rem,5vh+0.25rem,2.875rem)]
-		border border-b4 rounded-3xl
-		bg-b5
-		text-[clamp(0.25rem,2vw+0.125rem,0.75rem)]
-		hover:not-disabled:scale-105 active:hover:not-disabled:scale-100
-		focus-visible:outline-2
-		;
-}
-
-@utility btn-lightbox {
-	@apply
-		-z-1 absolute
-		w-full h-full
-		backdrop-blur-xs
-		;
-}
-@utility btn-lightbox-no-blur {
-	@apply
-		-z-1 absolute
-		w-full h-full
 		;
 }
 

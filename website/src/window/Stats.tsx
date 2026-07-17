@@ -1,13 +1,13 @@
 import { usePartyStore } from "../store/PartyStore";
 import { useSceneStore } from "../store/SceneStore";
-import { CloseButton } from "../components/button/Close";
+import { CloseModule } from "../modules/Close";
 import { LightboxButton } from "../components/button/Lightbox";
 import { AvatarImage } from "../components/image/AvatarImage";
 import { Medal } from "../components/image/Medal";
 import { AvatarName } from "../components/label/AvatarName";
 
 export const StatsWindow = () => {
-	const { setShowWindow, playerStatsFocus } = useSceneStore();
+	const { playerStatsFocus } = useSceneStore();
 	const { members } = usePartyStore();
 
 	return (
@@ -84,13 +84,7 @@ export const StatsWindow = () => {
 						<p>{members[playerStatsFocus].winStreak}</p>
 					</div>
 				</div>
-				<div className="
-					absolute top-0 right-0 -translate-y-1/2 translate-x-1/2
-					z-1
-					w-12.5 h-12.5
-				">
-					<CloseButton dismiss={() => setShowWindow("stats", false)}/>
-				</div>
+				<CloseModule dismiss="stats" />
 			</div>
 		</section>
 	);

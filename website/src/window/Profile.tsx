@@ -1,8 +1,7 @@
 import { useRef, useEffect } from "react";
 import { usePlayerStore } from "../store/PlayerStore";
-import { useSceneStore } from "../store/SceneStore";
 import { AvatarSelectButton } from "../components/button/AvatarSelect";
-import { CloseButton } from "../components/button/Close";
+import { CloseModule } from "../modules/Close";
 import { LightboxButton } from "../components/button/Lightbox";
 import { AvatarImage } from "../components/image/AvatarImage";
 import { Medal } from "../components/image/Medal";
@@ -73,7 +72,7 @@ export const AvatarSelectModule = () => {
 	);
 }
 
-export const MedalModule = () => {
+export const MedalsModule = () => {
 	return (
 		<div className="
 			grid grid-cols-5 grid-rows-2
@@ -131,23 +130,6 @@ export const PlayerStatsModule = () => {
 	);
 }
 
-interface CloseModuleProps {
-	dismiss: string,
-}
-export const CloseModule = ({ dismiss }: CloseModuleProps) => {
-	const { setShowWindow } = useSceneStore();
-
-	return (
-		<div className="
-			absolute top-0 right-0 -translate-y-1/2 translate-x-1/2
-			z-1
-			w-12.5 h-12.5
-		">
-			<CloseButton dismiss={() => setShowWindow(dismiss, false)}/>
-		</div>
-	);
-}
-
 export const ProfileWindow = () => {
 	const { data } = usePlayerStore();
 
@@ -168,7 +150,7 @@ export const ProfileWindow = () => {
 				<div className="divide-y divide-n2">
 					<AvatarNameModule />
 					<AvatarSelectModule />
-					<MedalModule />
+					<MedalsModule />
 					<PlayerStatsModule />
 					{ !data.name && 
 						<div className="text-b4 text-sm font-medium w-full text-center">

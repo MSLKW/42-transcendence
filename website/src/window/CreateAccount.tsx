@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect } from "react";
 import { useSceneStore } from "../store/SceneStore";
+import { CloseModule } from "../modules/Close";
 import { LightboxButton } from "../components/button/Lightbox";
-import { CloseButton } from "../components/button/Close";
 import { ShowPasswordIcon } from "../components/icon/ShowPassword";
 import { HidePasswordIcon } from "../components/icon/HidePassword";
 
@@ -180,13 +180,7 @@ export const CreateAccountWindow = () => {
 							{error}
 						</div>
 					}
-					<div className="
-						absolute top-0 right-0 translate-x-1/2 -translate-y-1/2
-						z-1
-						w-12.5 h-12.5
-					">
-						<CloseButton dismiss={() => setShowWindow("createAccount", false)} />
-					</div>
+					<CloseModule dismiss="createAccount" />
 				</form>
 			</div>
 		</section>

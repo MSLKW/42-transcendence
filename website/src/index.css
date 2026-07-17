@@ -1,10 +1,11 @@
 @import "tailwindcss";
-@import "./css/base/container.css";
 @import "./css/base/clamp.css";
+@import "./css/base/container.css";
 @import "./css/base/typography.css";
 @import "./css/uic/button.css";
-@import "./css/uic/label.css";
 @import "./css/uic/input.css";
+@import "./css/uic/label.css";
+@import "./css/uic/tip.css";
 @import "./css/uic/ul.css";
 @import "./css/animation/turn.css";
 

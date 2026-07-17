@@ -1,14 +1,12 @@
 import { useGameStore } from "../store/GameStore";
-import { useSceneStore } from "../store/SceneStore";
 import { useSettingsStore, AUTO_PASS_LABELS } from "../store/SettingsStore";
-import { CloseButton } from "../components/button/Close";
+import { CloseModule } from "../modules/Close";
 import { LightboxButton } from "../components/button/Lightbox";
 import { RadioButton } from "../components/button/Radio";
 import { ToggleButton } from "../components/button/Toggle";
 
 export const SettingsWindow = () => {
 	const { gameStarted } = useGameStore();
-	const { setShowWindow } = useSceneStore();
 	const {
 		allow3OfAKind, allow2OfSpadesEnd, autoPassIndex, endGameCondition, scoreCalculation, cardStyle, uiColor, fxLevel, mxLevel,
 		setSetting, toggleSetting,
@@ -263,8 +261,8 @@ export const SettingsWindow = () => {
 					z-1
 					w-12.5 h-12.5
 				">
-					<CloseButton dismiss={() => setShowWindow("settings", false)}/>
 				</div>
+				<CloseModule dismiss="settings" />
 			</div>
 		</section>
 	);

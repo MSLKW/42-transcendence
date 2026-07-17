@@ -1,9 +1,9 @@
 import { useSceneStore } from "../store/SceneStore";
-import { CloseButton } from "../components/button/Close";
+import { CloseModule } from "../modules/Close";
 import { LightboxButton } from "../components/button/Lightbox";
 
 export const InfoWindow = () => {
-	const { contAreaHeight, contAreaWidth, setShowWindow } = useSceneStore();
+	const { contAreaHeight, contAreaWidth } = useSceneStore();
 
     return (
 		<section className="
@@ -40,13 +40,7 @@ export const InfoWindow = () => {
 							<p>End of info section</p>
 						</div>
 					</div>
-					<div className="
-						absolute top-0 right-0 -translate-y-1/2 translate-x-1/2
-						z-1
-						w-12.5 h-12.5
-					">
-						<CloseButton dismiss={() => setShowWindow("info", false)}/>
-					</div>
+					<CloseModule dismiss="info" />
 				</div>
 			</div>
 		</section>

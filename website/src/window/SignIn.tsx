@@ -1,9 +1,9 @@
 import { useState, useRef, useEffect } from "react";
 import { useSceneStore } from "../store/SceneStore";
+import { CloseModule } from "../modules/Close";
+import { LightboxButton } from "../components/button/Lightbox";
 import { ShowPasswordIcon } from "../components/icon/ShowPassword";
 import { HidePasswordIcon } from "../components/icon/HidePassword";
-import { CloseButton } from "../components/button/Close";
-import { LightboxButton } from "../components/button/Lightbox";
 
 export const SignInWindow = () => {
 	const { setShowWindow, setCurrentScene } = useSceneStore();
@@ -131,13 +131,7 @@ export const SignInWindow = () => {
 						{error}
 					</div>
 				}
-				<div className="
-					absolute top-0 right-0 translate-x-1/2 -translate-y-1/2
-					z-1
-					w-12.5 h-12.5
-				">
-					<CloseButton dismiss={() => setShowWindow("signIn", false)} />
-				</div>
+				<CloseModule dismiss="signIn" />
 			</form>
 		</section>
 	);

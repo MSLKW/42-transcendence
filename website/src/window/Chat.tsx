@@ -10,8 +10,10 @@ export const ChatWindow = () => {
 
 	return (
 		<section className="
-			absolute z-1 top-0 left-0
-			w-screen h-screen
+			absolute z-1
+			top-0
+			left-0
+			h-screen w-screen
 		">
 			<LightboxButton dismiss="chat" blur={true} />
 			<div style={{ width: contAreaWidth, height: contAreaHeight }}
