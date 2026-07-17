@@ -1,10 +1,11 @@
 import { useRef } from "react";
 import { useSceneStore } from "../store/SceneStore";
+import { LightboxButton } from "../components/button/Lightbox";
 import { PinButton } from "../components/button/Pin";
 import { SendButton } from "../components/button/Send";
 
 export const PartyWindow = () => {
-	const { contAreaHeight, contAreaWidth, setShowWindow } = useSceneStore();
+	const { contAreaHeight, contAreaWidth } = useSceneStore();
 	const focusRef = useRef<HTMLInputElement | null>(null);
 
 	return (
@@ -12,7 +13,7 @@ export const PartyWindow = () => {
 			absolute z-1 top-0 left-0
 			w-screen h-screen
 		">
-			<button tabIndex={-1} className='btn-lightbox-no-blur' onClick={() => setShowWindow("party", false)}/>
+			<LightboxButton dismiss="party" blur={true} />
 			<div style={{ width: contAreaWidth, height: contAreaHeight }}
 				className="
 					flex place-content-end place-items-end

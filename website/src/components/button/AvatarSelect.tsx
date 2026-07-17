@@ -1,11 +1,11 @@
 import { usePlayerStore } from "../../store/PlayerStore";
 
-interface AvatarSelectProps {
+interface AvatarSelectButtonProps {
 	id: string,
 	color: string,
 }
 
-export const AvatarSelect = ({ id, color }: AvatarSelectProps) => {
+export const AvatarSelectButton = ({ id, color }: AvatarSelectButtonProps) => {
 	const { data, setPlayerDataValue } = usePlayerStore();
 
 	return (

@@ -1,9 +1,10 @@
 import { usePartyStore } from "../store/PartyStore";
 import { useSceneStore } from "../store/SceneStore";
-import { AvatarImage } from "../components/image/AvatarImage";
-import { AvatarName } from "../components/label/AvatarName";
-import { Medal } from "../components/image/Medal";
 import { CloseButton } from "../components/button/Close";
+import { LightboxButton } from "../components/button/Lightbox";
+import { AvatarImage } from "../components/image/AvatarImage";
+import { Medal } from "../components/image/Medal";
+import { AvatarName } from "../components/label/AvatarName";
 
 export const StatsWindow = () => {
 	const { setShowWindow, playerStatsFocus } = useSceneStore();
@@ -15,7 +16,7 @@ export const StatsWindow = () => {
 			w-screen h-screen
 			flex place-content-center place-items-center
 		">
-			<button tabIndex={-1} className='btn-lightbox' onClick={() => setShowWindow("stats", false)}/>
+			<LightboxButton dismiss="stats" blur={true} />
 			<div className="
 				w-max h-max rounded-xl
 				bg-linear-to-b from-n0 to-n1

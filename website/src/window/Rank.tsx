@@ -1,17 +1,15 @@
-import { useSceneStore } from "../store/SceneStore";
+import { LightboxButton } from "../components/button/Lightbox";
 import { RankArrowIcon } from "../components/icon/RankArrow";
 import { SpadesIcon, HeartsIcon, ClubsIcon, DiamondsIcon } from "../components/icon/Suits"
 
 export const RankWindow = () => {
-	const { setShowWindow } = useSceneStore();
-
 	return (
 		<section className="
 			absolute left-0 top-0
 			z-1
 			w-screen h-screen
 		">
-			<button tabIndex={-1} className='btn-lightbox-no-blur' onClick={() => setShowWindow("rank", false)}/>
+			<LightboxButton dismiss="rank" blur={true} />
 			<div className="
 				z-0
 				w-fit h-fit

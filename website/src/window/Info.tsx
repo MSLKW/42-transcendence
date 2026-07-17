@@ -1,5 +1,6 @@
 import { useSceneStore } from "../store/SceneStore";
 import { CloseButton } from "../components/button/Close";
+import { LightboxButton } from "../components/button/Lightbox";
 
 export const InfoWindow = () => {
 	const { contAreaHeight, contAreaWidth, setShowWindow } = useSceneStore();
@@ -10,7 +11,7 @@ export const InfoWindow = () => {
 			w-screen h-screen
 			flex place-content-center place-items-center
 		">
-			<button tabIndex={-1} className='btn-lightbox' onClick={() => setShowWindow("info", false)}/>
+			<LightboxButton dismiss="info" blur={true} />
 			<div style={{ width: contAreaWidth, height: contAreaHeight }}
 				className="
 					z-0

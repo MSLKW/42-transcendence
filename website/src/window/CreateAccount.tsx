@@ -1,8 +1,9 @@
 import { useState, useRef, useEffect } from "react";
 import { useSceneStore } from "../store/SceneStore";
+import { LightboxButton } from "../components/button/Lightbox";
+import { CloseButton } from "../components/button/Close";
 import { ShowPasswordIcon } from "../components/icon/ShowPassword";
 import { HidePasswordIcon } from "../components/icon/HidePassword";
-import { CloseButton } from "../components/button/Close";
 
 export const CreateAccountWindow = () => {
 	const { contAreaWidth, contAreaHeight, setShowWindow, setCurrentScene } = useSceneStore();
@@ -72,7 +73,7 @@ export const CreateAccountWindow = () => {
 			w-screen h-screen
 			flex place-content-center place-items-center
 		">
-			<button type="button" tabIndex={-1} className='btn-lightbox' onClick={() => setShowWindow("createAccount", false)}/>
+			<LightboxButton dismiss="createAccount" blur={true} />
 			<div style={{ width: contAreaWidth, height: contAreaHeight }} 
 				className="
 					z-0

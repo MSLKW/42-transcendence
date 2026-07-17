@@ -1,18 +1,19 @@
 import { useSceneStore } from "../store/SceneStore";
 import { PinButton } from "../components/button/Pin";
+import { LightboxButton } from "../components/button/Lightbox";
 import { SendButton } from "../components/button/Send";
 import { ChatBubble } from "../components/label/ChatBubble"
 import { ChatReport } from "../components/label/ChatReport"
 
 export const ChatWindow = () => {
-	const { contAreaHeight, contAreaWidth, setShowWindow } = useSceneStore();
+	const { contAreaHeight, contAreaWidth } = useSceneStore();
 
 	return (
 		<section className="
 			absolute z-1 top-0 left-0
 			w-screen h-screen
 		">
-			<button tabIndex={-1} className='btn-lightbox-no-blur' onClick={() => setShowWindow("chat", false)}/>
+			<LightboxButton dismiss="chat" blur={true} />
 			<div style={{ width: contAreaWidth, height: contAreaHeight }}
 				className="
 					z-0

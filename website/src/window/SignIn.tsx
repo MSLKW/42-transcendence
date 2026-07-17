@@ -3,6 +3,7 @@ import { useSceneStore } from "../store/SceneStore";
 import { ShowPasswordIcon } from "../components/icon/ShowPassword";
 import { HidePasswordIcon } from "../components/icon/HidePassword";
 import { CloseButton } from "../components/button/Close";
+import { LightboxButton } from "../components/button/Lightbox";
 
 export const SignInWindow = () => {
 	const { setShowWindow, setCurrentScene } = useSceneStore();
@@ -67,7 +68,7 @@ export const SignInWindow = () => {
 			w-screen h-screen
 			flex place-content-center place-items-center
 		">
-			<button tabIndex={-1} className='btn-lightbox' onClick={() => setShowWindow("signIn", false)}/>
+			<LightboxButton dismiss="signIn" blur={true} />
 			<form 
 				onSubmit={handleSubmit}
 				className="
