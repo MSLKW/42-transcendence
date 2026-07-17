@@ -99,13 +99,15 @@ window.addEventListener('resize', resize);
 // temp for playerid, should use cookies or smth else
 const urlParams = new URLSearchParams(window.location.search);
 const playerId = urlParams.get('id');
+const sessionId = urlParams.get('sessionId');
 const authId = playerId; // get authId from authentication server
 
 const cardHeap = new CardHeap(new THREE.Vector3(0, 0.6, 0));
 if (authId && playerId) {
 	const socket = io('http://localhost:3000', {
 		auth: {
-			token: authId
+			token: authId,
+			lobbyId: sessionId
 		}
 	})
 

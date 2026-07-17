@@ -1,34 +1,29 @@
 import { Socket } from 'socket.io';
-import { io } from './server.js';
+import { io, kickSocket } from './server.js';
 import { UserState } from './UserState.js';
 import { GameState } from './GameState.js';
-import { GameStartRequest, SeatOrderTransmit } from '../src_shared/Types.js';
+import { GameStartRequest, SeatOrderTransmit, StatusTransmit } from '../src_shared/Types.js';
 
 export class Lobby {
+	private hostUUID: string;
 	private users: Array<UserState>;
 	public	availableSeats: Array<number>;
-	// private hostUUID: string;
-	// private whitelist: Array<string>;
-	private playersInGameLimit: number;
+	private whitelist: Array<string>;
 	private totalUsersLimit: number;
 	public	lobbyRoomId: string;
 	public	game: GameState;
 
-	constructor() {
+	constructor(hostUUID: string, whitelist: Array<string>, playersLimit: number, sessionId: string) {
+		this.hostUUID = hostUUID;
 		this.users = [];
-		// this.whitelist = [];
+		this.whitelist = whitelist;
 		this.availableSeats = [];
-		this.playersInGameLimit = 4;
 		this.totalUsersLimit = 8;
-		this.game = new GameState();
-		this.lobbyRoomId = "lobby";
-		for (let i = 0; i < this.playersInGameLimit; i++) {
+		this.game = new GameState(playersLimit, sessionId);
+		this.lobbyRoomId = "lobby" + sessionId;
+		for (let i = 0; i < playersLimit; i++) {
 			this.availableSeats.push(i);
 		}
-
-		io.on("connection", (socket) => {
-			this.connectUser(socket);
-		});
 	}
 
 	public emit(event: string, payload: any) {
@@ -50,19 +45,24 @@ export class Lobby {
 		const seatOrder: SeatOrderTransmit = {
 			seatOrder: this.getSeatOrder()
 		}
-		for (let i = 0; i < this.users.length; i++) {
-			this.users[i].socket.emit("user_seat_update", seatOrder);
-		}
+		this.emit("user_seat_update", seatOrder);
 	}
 
-	private connectUser(socket: Socket) {
-		const newUser = new UserState(socket, this);
+	public connectUser(socket: Socket, uuid: string) {
+		const newUser = new UserState(socket, uuid, this);
 		newUser.socket.on("disconnect", () => {
 			this.disconnectUser(newUser);
 		});
 
 		newUser.socket.on("game_start_request", (gameStartRequest: GameStartRequest) => {
-			// check host
+			if (this.hostUUID !== newUser.uuid) {
+				const status: StatusTransmit = {
+					success: false,
+					message: "Not the host"
+				}
+				newUser.socket.emit("game_start_request", status);
+				return ;
+			}
 			const usersToPlay = this.users.filter((user) => user.seat >= 0).sort((userA, userB) => userA.seat - userB.seat);
 			for (let i = 0; i < usersToPlay.length; i++) {
 				this.game.addPlayer(usersToPlay[i]);
@@ -75,7 +75,7 @@ export class Lobby {
 		});
 
 		const index = this.users.findIndex((user) => user.uuid === newUser.uuid);
-		if (index === -1 && this.users.length < this.totalUsersLimit) {
+		if (index === -1 && this.users.length < this.totalUsersLimit && this.whitelist.indexOf(newUser.uuid) >= 0) {
 			this.connectNewUser(newUser);
 		}
 		else if (index >= 0) {
@@ -86,7 +86,8 @@ export class Lobby {
 			this.game.playerReconnect(reconnectedUser);
 		}
 		else {
-			this.kickUser(newUser);
+			kickSocket(newUser.socket);
+			console.log(`User<${newUser.uuid}> is not allowed to connect`);
 		}
 	}
 
@@ -94,7 +95,6 @@ export class Lobby {
 		this.users.push(user);
 		console.log(`User<${user.uuid}> has connected`);
 		this.emit("user_connect", user.uuid);
-		// announce new user joined to other users via socket emit
 	}
 
 	private disconnectUser(disconnectedUser: UserState) {
@@ -113,14 +113,5 @@ export class Lobby {
 		else {
 			console.log(`Disconnecting user is not found in users`);
 		}
-	}
-
-	private kickUser(user: UserState) {
-		user.socket.emit("graceful_disconnect");
-		setTimeout(() => {
-			user.socket.disconnect(true);
-		}, 1000);
-		user.socket.removeAllListeners();
-		console.log(`Player<${user.uuid}> is not allowed to connect`);
 	}
 }

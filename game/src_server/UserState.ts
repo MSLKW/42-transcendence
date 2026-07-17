@@ -9,11 +9,10 @@ export class UserState {
 	public	seat: number;
 	public	lobbyRef: Lobby;
 
-	constructor(socket: Socket, lobbyRef: Lobby) {
+	constructor(socket: Socket, uuid: string, lobbyRef: Lobby) {
 		this.socket = socket;
 		this.lobbyRef = lobbyRef;
-		const authId = this.socket.handshake.auth.token;
-		this.uuid = this.getUUID(authId);
+		this.uuid = uuid;
 		this.seat = -1;
 		this.socket.join(this.lobbyRef.lobbyRoomId);
 
@@ -74,11 +73,5 @@ export class UserState {
 		status.success = true;
 		status.message = "User successfully left the seat";
 		return (status);
-	}
-
-	private getUUID(authId: string): string {
-		// Get associated player uuid from checking with authentication service
-		// if auth service doesn't return player uuid, means that the player is not authenticated, raise some error
-		return (authId);
 	}
 }
