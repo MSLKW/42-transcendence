@@ -55,6 +55,7 @@ export default function Dev() {
 
 const TEST_MEMBERS = [
 	{
+		uuid: "12345678901234567890123456789012",
 		name: "Dev-Azrul",
 		avatar: "avatar-stock-1.webp",
 		badge: "Newcomer",
@@ -78,12 +79,12 @@ const TEST_MEMBERS = [
 			WIN_STREAK_10: null,
 			MASTER_COLLECTOR: null,
 		},
-		isSeated: false,
 		seatNumber: -1,
 		isFriend: ISFRIEND.TRUE,
 		isHost: false,
 	},
 	{
+		uuid: "12345678901234567890123456789012",
 		name: "Dev-Max",
 		avatar: "avatar-stock-2.webp",
 		badge: "Newcomer",
@@ -107,12 +108,12 @@ const TEST_MEMBERS = [
 			WIN_STREAK_10: null,
 			MASTER_COLLECTOR: null,
 		},
-		isSeated: false,
 		seatNumber: -1,
 		isFriend: ISFRIEND.FALSE,
 		isHost: false,
 	},
 	{
+		uuid: "12345678901234567890123456789012",
 		name: "Dev-Jeremy",
 		avatar: "avatar-stock-3.webp",
 		badge: "Newcomer",
@@ -136,12 +137,12 @@ const TEST_MEMBERS = [
 			WIN_STREAK_10: null,
 			MASTER_COLLECTOR: null,
 		},
-		isSeated: false,
 		seatNumber: -1,
 		isFriend: ISFRIEND.TRUE,
 		isHost: false,
 	},
 	{
+		uuid: "12345678901234567890123456789012",
 		name: "Dev-Aisyah",
 		avatar: "avatar-stock-4.webp",
 		badge: "Newcomer",
@@ -165,7 +166,6 @@ const TEST_MEMBERS = [
 			WIN_STREAK_10: null,
 			MASTER_COLLECTOR: null,
 		},
-		isSeated: false,
 		seatNumber: -1,
 		isFriend: ISFRIEND.TRUE,
 		isHost: false,

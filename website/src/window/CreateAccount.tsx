@@ -29,6 +29,11 @@ export const CreateAccountWindow = () => {
 			setError("All fields are required");
 			return;
 		}
+		const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+		if (!emailRegex.test(email)) {
+			setError("Please enter a valid email address");
+			return;
+		}
 		if (password.length < 8) {
 			setError("Password must be at least 8 characters");
 			return;
@@ -39,7 +44,7 @@ export const CreateAccountWindow = () => {
 		}
 		try {
 			setIsLoading(true);
-			const response = await fetch("/signup", {
+			const response = await fetch("/api/auth/signup", {
 				method: "POST",
 				headers: {
 					"Content-Type": "application/json",
@@ -95,7 +100,7 @@ export const CreateAccountWindow = () => {
 						<input
 							ref={focusRef}
 							id="email"
-							type="email"
+							type="text"
 							placeholder="Enter your email"
 							value={email}
 							onChange={(e) => setEmail(e.target.value)}
@@ -170,7 +175,7 @@ export const CreateAccountWindow = () => {
 						{ isLoading ? "CREATING..." : "CREATE ACCOUNT" }
 					</button>
 					{error && 
-						<div className="text-r4 text-sm font-medium mb-2 w-full text-center">
+						<div className="text-r4 text-sm font-medium mt-5 w-full text-center">
 							{error}
 						</div>
 					}

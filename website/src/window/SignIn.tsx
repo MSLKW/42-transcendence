@@ -27,11 +27,16 @@ export const SignInWindow = () => {
 			setError("All fields are required");
 			return;
 		}
+		const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+		if (!emailRegex.test(email)) {
+			setError("Please enter a valid email address");
+			return;
+		}
 
 		try {
 			setIsLoading(true);
 
-			const response = await fetch("/signin", {
+			const response = await fetch("/api/auth/signin", {
 				method: "POST",
 				headers: {
 					"Content-Type": "application/json",
@@ -75,19 +80,19 @@ export const SignInWindow = () => {
 					relative
 					pointer-events-auto
 			">
-				<label htmlFor="email">
-					<span className="w-full text-right pr-5">Email</span>
+				<label htmlFor="email" className="w-full flex place-content-between">
+					<span className="text-right pr-5">Email</span>
 					<input
 						ref={focusRef}
 						id="email"
-						type="email"
+						type="text"
 						value={email}
 						placeholder="Enter your email"
 						onChange={(e) => setEmail(e.target.value)}
 						className="input-form"
 					/>
 				</label>
-				<label htmlFor="password">
+				<label htmlFor="password" className="w-full flex place-content-between">
 					<span className="text-right pr-5">
 						Password
 					</span>
@@ -121,7 +126,7 @@ export const SignInWindow = () => {
 					{ isLoading ? "SIGNING IN...": "SIGN IN" }
 				</button>
 				{ error && 
-					<div className="text-r4 text-sm font-medium mb-2 w-full text-center">
+					<div className="text-r4 text-sm font-medium mt-5 w-full text-center">
 						{error}
 					</div>
 				}

@@ -27,6 +27,7 @@ export const useDevStore = create<DevState>()(
 				});
 				usePlayerStore.setState({
 					data: {
+						uuid: "12345678901234567890123456789012",
 						name: null,
 						avatar: "avatar-stock-0.webp",
 						badge: "Newcomer",
@@ -50,7 +51,6 @@ export const useDevStore = create<DevState>()(
 							WIN_STREAK_10: null,
 							MASTER_COLLECTOR: null,
 						},
-						isSeated: false,
 						seatNumber: -1,
 					},
 					status: STATUS.AVAILABLE,
@@ -58,6 +58,7 @@ export const useDevStore = create<DevState>()(
 				usePartyStore.setState({
 					partyCount: 1,
 					members: [{
+						uuid: "12345678901234567890123456789012",
 						name: null,
 						avatar: "avatar-stock-0.webp",
 						badge: "Newcomer",
@@ -81,7 +82,6 @@ export const useDevStore = create<DevState>()(
 							WIN_STREAK_10: null,
 							MASTER_COLLECTOR: null,
 						},
-						isSeated: false,
 						seatNumber: SEATNUMBER_UNSEATED,
 						isHost: true,
 						isFriend: ISFRIEND.NA,
