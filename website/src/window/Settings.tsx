@@ -26,6 +26,7 @@ export const SettingsWindow = () => {
 				border border-n2 rounded-3xl
 				relative
 			">
+				<CloseModule dismiss="settings" />
 				<div className="
 					w-full h-full
 					grid grid-cols-1 md:grid-cols-2 grid-rows-auto
@@ -256,13 +257,6 @@ export const SettingsWindow = () => {
 						/>
 					</div>
 				</div>
-				<div className="
-					absolute top-0 right-0 -translate-y-1/2 translate-x-1/2
-					z-1
-					w-12.5 h-12.5
-				">
-				</div>
-				<CloseModule dismiss="settings" />
 			</div>
 		</section>
 	);

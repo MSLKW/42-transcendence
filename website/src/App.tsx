@@ -84,15 +84,15 @@ export default function App() {
 			{ currentScene === 'GAMEPLAY' && <Gameplay /> }
 			{ currentScene === 'R3F' && <R3F /> }
 			{ currentScene === 'RESULTS' && <Results /> }
-			{ showWindow["createAccount"] && <CreateAccountWindow /> }
-			{ showWindow["signIn"] && <SignInWindow /> }
-			{ showWindow["profile"] && <ProfileWindow /> }
-			{ showWindow["stats"] && <StatsWindow /> }
-			{ showWindow["info"] && <InfoWindow /> }
-			{ showWindow["settings"] && <SettingsWindow /> }
 			{ showWindow["chat"] && <ChatWindow /> }
+			{ showWindow["createAccount"] && <CreateAccountWindow /> }
+			{ showWindow["info"] && <InfoWindow /> }
 			{ showWindow["party"] && <PartyWindow /> }
+			{ showWindow["profile"] && <ProfileWindow /> }
 			{ showWindow["rank"] && <RankWindow /> }
+			{ showWindow["settings"] && <SettingsWindow /> }
+			{ showWindow["signIn"] && <SignInWindow /> }
+			{ showWindow["stats"] && <StatsWindow /> }
 		</>
 	);
 }

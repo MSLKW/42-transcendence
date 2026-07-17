@@ -1,10 +1,12 @@
 import { useRef, useEffect } from "react";
 import { usePlayerStore } from "../store/PlayerStore";
-import { AvatarSelectButton } from "../components/button/AvatarSelect";
+import { useSceneStore } from "../store/SceneStore";
+import { BadgeWindow } from "./Badge";
 import { CloseModule } from "../modules/Close";
+import { MedalsModule } from "../modules/Medals";
+import { AvatarSelectButton } from "../components/button/AvatarSelect";
 import { LightboxButton } from "../components/button/Lightbox";
 import { AvatarImage } from "../components/image/AvatarImage";
-import { Medal } from "../components/image/Medal";
 
 export const AvatarNameModule = () => {
 	const { data, setPlayerDataValue } = usePlayerStore();
@@ -20,7 +22,6 @@ export const AvatarNameModule = () => {
 			flex place-content-evenly place-items-center
 			p-5
 			gap-5
-			border-b border-n2
 		">
 			<div className="flex flex-col gap-3 place-content-center place-items-center">
 				<AvatarImage />
@@ -72,28 +73,6 @@ export const AvatarSelectModule = () => {
 	);
 }
 
-export const MedalsModule = () => {
-	return (
-		<div className="
-			grid grid-cols-5 grid-rows-2
-			place-content-center place-items-center
-			gap-5
-			p-5
-		">
-			<Medal />
-			<Medal />
-			<Medal />
-			<Medal />
-			<Medal />
-			<Medal />
-			<Medal />
-			<Medal />
-			<Medal />
-			<Medal />
-		</div>
-	);
-}
-
 export const PlayerStatsModule = () => {
 	const { data } = usePlayerStore();
 
@@ -130,25 +109,97 @@ export const PlayerStatsModule = () => {
 	);
 }
 
+export const PlayerDataModule = () => {
+	const { data } = usePlayerStore();
+	const { showWindow, setShowWindow } = useSceneStore();
+
+	return (
+		<div className="
+			w-full
+			space-y-4
+			p-5
+			text-n6
+		">
+			<div className="
+				grid grid-cols-[5rem_1fr]
+				place-content-start place-items-start
+			">
+				<label>Level {data.level}</label>
+				<div className="text-sm text-center w-full">
+					<span>XP: {data.xp} / {data.level * 1000}</span>
+					<div className="
+						h-2
+						rounded-full
+						bg-a0
+						border border-b5 self-center
+						mt-1
+					">
+						<div className="
+							bg-b5 
+							w-[50%] h-full rounded-full
+							"/>
+					</div>
+				</div>
+			</div>
+			<div className="
+				w-full
+				grid grid-cols-1
+				place-content-center place-items-center
+			">
+				<div className="relative w-full">
+					<button
+						type="button"
+						onClick={() => setShowWindow("badge", true)}
+						className="
+							w-full
+							bg-n6
+							border border-n5 rounded-full
+							text-sm
+							self-center
+					">
+						<span className="
+							text-n0
+							pl-1 pr-3 py-1
+							flex justify-between items-center
+						">
+							<span className="px-3">{data.badge}</span>
+							<span className="text-xs">▼</span>
+						</span>
+					</button>
+					{ showWindow["badge"] && <BadgeWindow /> }
+				</div>
+			</div>
+			<div>
+				<p className="text-sm text-a5">Last Login: {data.lastLogin}</p>
+				<p className="text-sm text-a5">Joined: {data.createdAt}</p>
+			</div>
+		</div>
+	);
+}
+
 export const ProfileWindow = () => {
 	const { data } = usePlayerStore();
 
 	return (
 		<section className="
-			absolute z-1 top-0 left-0
-			w-screen h-screen
+			absolute z-1
+			top-0 left-0
+			h-screen w-screen
 			flex place-content-center place-items-center
 		">
 			<LightboxButton dismiss={data.name ? "profile" : ""} blur={true} />
 			<div className="
-				w-120 h-max
+				h-fit w-120
 				bg-linear-to-b from-n0 to-n1
 				border border-n1 rounded-xl
 				relative
 			">
-				<CloseModule dismiss={data.name ? "profile" : ""}/>
+				<CloseModule dismiss={data.name ? "profile" : ""} />
 				<div className="divide-y divide-n2">
-					<AvatarNameModule />
+					<div className="flex">
+						<AvatarNameModule />
+						<PlayerDataModule />
+					</div>
 					<AvatarSelectModule />
 					<MedalsModule />
 					<PlayerStatsModule />

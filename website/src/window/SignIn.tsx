@@ -81,6 +81,7 @@ export const SignInWindow = () => {
 					relative
 					pointer-events-auto
 			">
+				<CloseModule dismiss="signIn" />
 				<label htmlFor="email" className="w-full flex place-content-between">
 					<span className="text-right pr-5">Email</span>
 					<input
@@ -131,7 +132,6 @@ export const SignInWindow = () => {
 						{error}
 					</div>
 				}
-				<CloseModule dismiss="signIn" />
 			</form>
 		</section>
 	);

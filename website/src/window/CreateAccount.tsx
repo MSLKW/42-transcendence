@@ -91,6 +91,7 @@ export const CreateAccountWindow = () => {
 						relative
 						pointer-events-auto
 				">
+					<CloseModule dismiss="createAccount" />
 					<div className="grid grid-cols-1 sm:grid-cols-[5rem_1fr] gap-1 sm:gap-5 w-full">
 						<label
 							htmlFor="email"
@@ -180,7 +181,6 @@ export const CreateAccountWindow = () => {
 							{error}
 						</div>
 					}
-					<CloseModule dismiss="createAccount" />
 				</form>
 			</div>
 		</section>

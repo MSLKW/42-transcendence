@@ -1,15 +1,15 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
-export type BADGE_LABEL =
-	| "Newcomer"
-	| "Beginner's Luck"
-	| "Challenger"
-	| "Enthusiast"
-	| "Risk Taker"
-	| "The Strategist"
-	| "Big 2 Champion"
-	;
+export const BADGE_LABEL = [
+	"Newcomer",
+	"Beginner's Luck",
+	"Challenger",
+	"Enthusiast",
+	"Risk Taker",
+	"The Strategist",
+	"Big 2 Champion",
+] as const;
 
 export type ACHIEVEMENT_LABEL =
 	| "FIRST_LOGIN"
@@ -28,7 +28,7 @@ export interface PlayerData {
 	uuid: string;			//"12345678901234567890123456789012"
 	name: string | null;	//"Azrul", "Max", null
 	avatar: string;			//"avatar-stock-0.webp", "avatar-12345678901234567890123456789012.png"
-	badge: BADGE_LABEL;		//"Newcomer", "Beginner's Luck", "Challenger", "Enthusiast", "Risk Taker",  "The Strategist", "Big 2 Champion"
+	badge: string;			//"Newcomer", "Beginner's Luck", "Challenger", "Enthusiast", "Risk Taker",  "The Strategist", "Big 2 Champion"
 	level: number;			//1, 42
 	xp: number;				//0, 1000000
 	createdAt: string;		//"15 July 2026", "n/a"
@@ -73,7 +73,7 @@ export const usePlayerStore = create<PlayerState>() (
 				uuid: "12345678901234567890123456789012",
 				name: null,
 				avatar: "avatar-stock-0.webp",
-				badge: "Newcomer",
+				badge: BADGE_LABEL[0],
 				level: 1,
 				xp: 0,
 				createdAt: new Date(1784110862000).toISOString(),

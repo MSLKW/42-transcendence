@@ -23,6 +23,7 @@ export const StatsWindow = () => {
 				border border-n1
 				relative
 			">
+				<CloseModule dismiss="stats" />
 				<div className="
 					flex place-content-evenly place-items-center
 					p-5
@@ -84,7 +85,6 @@ export const StatsWindow = () => {
 						<p>{members[playerStatsFocus].winStreak}</p>
 					</div>
 				</div>
-				<CloseModule dismiss="stats" />
 			</div>
 		</section>
 	);

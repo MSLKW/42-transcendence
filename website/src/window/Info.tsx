@@ -22,6 +22,7 @@ export const InfoWindow = () => {
 					w-[80%] h-[80%]
 					relative
 				">
+					<CloseModule dismiss="info" />
 					<div tabIndex={-1}
 						className="
 							border border-n2 rounded-3xl
@@ -40,7 +41,6 @@ export const InfoWindow = () => {
 							<p>End of info section</p>
 						</div>
 					</div>
-					<CloseModule dismiss="info" />
 				</div>
 			</div>
 		</section>

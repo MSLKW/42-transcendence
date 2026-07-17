@@ -22,21 +22,21 @@ export default function Dev() {
 	const { partyCount, addMember } = usePartyStore();
 
 	return (
-		<section className="w-full h-fit">
-			<ul className="ul-dev flex-wrap gap-x-5">
+		<section className="w-full h-fit text-r4">
+			<ul className="flex place-content-evenly">
 				<li><button type="button" tabIndex={-1} onClick={() => setCurrentScene('LOGIN')}>Login</button></li>
 				<li><button type="button" tabIndex={-1} onClick={() => setCurrentScene('HOME')}>Home</button></li>
 				<li><button type="button" tabIndex={-1} onClick={() => setCurrentScene('LOBBY')}>Lobby</button></li>
 				<li><button type="button" tabIndex={-1} onClick={() => setCurrentScene('GAMEPLAY')}>Gameplay</button></li>
 				<li><button type="button" tabIndex={-1} onClick={() => setCurrentScene('R3F')}>R3F</button></li>
 			</ul>
-			<ul className="ul-dev">
+			<ul className="flex place-content-evenly">
 				<li><button type="button" tabIndex={-1} onClick={() => toggleFlag("showFrame")}>Frame</button></li>
 				<li><button type="button" tabIndex={-1} onClick={() => toggleFlag("showStats")}>Stats</button></li>
 				<li><button type="button" tabIndex={-1} onClick={() => setCurrentScene('RESULTS')}>Results</button></li>
 				<li><button type="button" tabIndex={-1} onClick={() => resetGame()}>Reset</button></li>
 			</ul>
-			<ul className="ul-dev">
+			<ul className="flex place-content-evenly">
 				{ partyCount <= TEST_MEMBERS.length &&
 					<li>
 						<button

@@ -24,6 +24,19 @@ export const useDevStore = create<DevState>()(
 			resetGame: () => {
 				useSceneStore.setState({
 					currentScene: "LOGIN",
+					showWindow: {
+						badge: false,
+						createAccount: false,
+						signIn: false,
+						settings: false,
+						info: false,
+						profile: false,
+						stats: false,
+						party: false,
+						chat: false,
+						rank: false,
+					},
+					playerStatsFocus: 0,
 				});
 				usePlayerStore.setState({
 					data: {

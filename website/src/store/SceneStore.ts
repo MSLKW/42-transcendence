@@ -2,7 +2,7 @@ import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import { useGameStore } from "./GameStore";
 
-export type SCENES = "LOGIN" | "HOME" | "LOBBY" | "GAMEPLAY" | "R3F" | "RESULTS";
+export type SCENES = "BADGE" | "LOGIN" | "HOME" | "LOBBY" | "GAMEPLAY" | "R3F" | "RESULTS";
 
 interface SceneState {
 	currentScene: SCENES;
@@ -25,6 +25,7 @@ export const useSceneStore = create<SceneState>() (
 			contAreaHeight: 320,
 			currentScene: "LOGIN",
 			showWindow: {
+				badge: false,
 				createAccount: false,
 				signIn: false,
 				settings: false,
