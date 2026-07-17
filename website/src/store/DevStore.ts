@@ -36,7 +36,6 @@ export const useDevStore = create<DevState>()(
 						chat: false,
 						rank: false,
 					},
-					playerStatsFocus: 0,
 				});
 				usePlayerStore.setState({
 					data: {
@@ -70,6 +69,7 @@ export const useDevStore = create<DevState>()(
 				});
 				usePartyStore.setState({
 					partyCount: 1,
+					playerFocus: 0,
 					members: [{
 						uuid: "12345678901234567890123456789012",
 						name: null,

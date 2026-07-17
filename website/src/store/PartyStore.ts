@@ -15,6 +15,7 @@ export interface MemberData extends PlayerData {
 
 interface PartyValues {
 	partyCount: number;			//minimum of 1. no max limit (members can be spectator and not play)
+	playerFocus: number;
 	members: MemberData[];
 }
 
@@ -29,6 +30,7 @@ export const usePartyStore = create<PartyState>() (
 	persist(
 		(set) => ({
 			partyCount: 1,
+			playerFocus: 0,
 			members: [
 				{
 					uuid: "12345678901234567891234567890012",

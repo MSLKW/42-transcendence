@@ -1,9 +1,9 @@
-import { useState, useRef, useEffect } from "react";
+import { useRef, useEffect } from "react";
 import { usePlayerStore } from "../store/PlayerStore";
-import { useSceneStore } from "../store/SceneStore";
-import { BadgeWindow } from "./Badge";
 import { CloseModule } from "../modules/Close";
 import { MedalsModule } from "../modules/Medals";
+import { PlayerDataModule } from "../modules/PlayerData";
+import { PlayerStatsModule } from "../modules/PlayerStats";
 import { AvatarSelectButton } from "../components/button/AvatarSelect";
 import { LightboxButton } from "../components/button/Lightbox";
 import { AvatarImage } from "../components/image/AvatarImage";
@@ -23,7 +23,11 @@ export const AvatarNameModule = () => {
 			p-5
 			gap-5
 		">
-			<div className="flex flex-col gap-3 place-content-center place-items-center">
+			<div className="
+				flex flex-col
+				place-content-center place-items-center
+				gap-3
+			">
 				<AvatarImage />
 				<input
 					ref={focusRef}
@@ -69,117 +73,6 @@ export const AvatarSelectModule = () => {
 			<AvatarSelectButton id="avatar-stock-9.webp" color="bg-r4"/>
 			<AvatarSelectButton id="avatar-stock-10.webp" color="bg-a4"/>
 			<AvatarSelectButton id="avatar-stock-11.webp" color="bg-b4"/>
-		</div>
-	);
-}
-
-export const PlayerStatsModule = () => {
-	const { data } = usePlayerStore();
-
-	return (
-		<div className="
-			flex
-			place-content-evenly place-items-end
-			divide-x divide-n2
-			text-n6
-			text-center
-		">
-			<div className="
-				w-full h-full
-				p-5
-			">
-				<h2>Total Played</h2>
-				<p>{data.totalPlayed}</p>
-			</div>
-			<div className="
-				w-full h-full
-				p-5
-			">
-				<h2>Total Wins</h2>
-				<p>{data.totalWins}</p>
-			</div>
-			<div className="
-				w-full h-full
-				p-5
-			">
-				<h2>Win Streak</h2>
-				<p>{data.winStreak}</p>
-			</div>
-		</div>
-	);
-}
-
-export const PlayerDataModule = () => {
-	const { data } = usePlayerStore();
-	const { showWindow, setShowWindow } = useSceneStore();
-	const [ xpProgress, setXPProgress ] = useState(0);
-	useEffect(() => {
-		const percentage = (data.xp / (data.level * 1000)) * 100
-		setXPProgress(percentage);
-	}, [data.xp]);
-
-	return (
-		<div className="
-			w-full
-			space-y-4
-			p-5
-			text-n6
-		">
-			<div className="
-				grid grid-cols-[5rem_1fr]
-				place-content-start place-items-start
-			">
-				<label>Level {data.level}</label>
-				<div className="text-sm text-center w-full">
-					<span>XP: {data.xp} / {data.level * 1000}</span>
-					<div className="
-						h-2
-						rounded-full
-						bg-a0
-						border border-b5 self-center
-						mt-1
-					">
-						<div 
-							style={{ width: `${xpProgress}%` }}
-							className="
-								bg-b5 
-								h-full rounded-full
-						"/>
-					</div>
-				</div>
-			</div>
-			<div className="
-				w-full
-				grid grid-cols-1
-				place-content-center place-items-center
-			">
-				<div className="relative w-full">
-					<button
-						type="button"
-						onClick={() => setShowWindow("badge", true)}
-						className="
-							w-full
-							bg-n6
-							border border-n5 rounded-full
-							text-sm
-							self-center
-					">
-						<span className="
-							text-n0
-							pl-1 pr-3 py-1
-							flex justify-between items-center
-						">
-							<span className="px-3">{data.badge}</span>
-							<span className="text-xs">▼</span>
-						</span>
-					</button>
-					{ showWindow["badge"] && <BadgeWindow /> }
-				</div>
-			</div>
-			<div>
-				<p className="text-sm text-a5">Last Login: {data.lastLogin}</p>
-				<p className="text-sm text-a5">Joined: {data.createdAt}</p>
-			</div>
 		</div>
 	);
 }

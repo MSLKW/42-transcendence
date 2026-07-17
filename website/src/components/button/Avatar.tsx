@@ -1,3 +1,4 @@
+import { usePartyStore } from "../../store/PartyStore";
 import { useSceneStore } from "../../store/SceneStore";
 import { AvatarImage } from "../image/AvatarImage";
 import { AvatarName } from "../label/AvatarName";
@@ -9,18 +10,19 @@ interface AvatarProps {
 }
 
 export const AvatarButton = ({ cornerButton = "none", playerIndex = 0, isActive = false }: AvatarProps) => {
-	const { setShowWindow, setPlayerStatsFocus } = useSceneStore();
+	const { setPartyValue } = usePartyStore();
+	const { setShowWindow } = useSceneStore();
 
 	return (
 		<>
 			<button
 				data-tip={ playerIndex === 0 ? "Edit Profile" : "View Stats"}
 				onClick={(e) => {
+					setPartyValue("playerFocus", playerIndex);
 					if (playerIndex === 0)
 						setShowWindow("profile", true);
 					else
 						setShowWindow("stats", true);
-					setPlayerStatsFocus(playerIndex);
 					e.currentTarget.blur();
 				}}
 				className="
