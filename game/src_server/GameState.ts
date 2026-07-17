@@ -136,8 +136,8 @@ export class GameState {
 		return (seatOrder);
 	}
 
-	public userInGame(user: UserState): boolean {
-		const player = this.players.find((player) => player.playerId === user.uuid);
+	public uuidInGame(uuid: string): boolean {
+		const player = this.players.find((player) => player.playerId === uuid);
 		if (player === undefined) {
 			return (false);
 		}
@@ -222,6 +222,15 @@ export class GameState {
 			playerPenaltyPoints[this.players[i].playerId] = this.players[i].calculatePenaltyPoints();
 		}
 		return (playerPenaltyPoints);
+	}
+
+	public getDisconnectedPlayers(): number {
+		let disconnectedPlayers = 0;
+		for (let i = 0; i < this.players.length; i++) {
+			if (this.players[i].isDisconnected === true)
+				disconnectedPlayers++;
+		}
+		return (disconnectedPlayers);
 	}
 
 	public transmit(player: PlayerState | undefined) {

@@ -61,6 +61,7 @@ export class PlayerState {
 		this.setupSocketListeners();
 		this.socket.emit("player_game_state", this.gameStateRef.transmit(this));
 		this.gameStateRef.emit("player_reconnect", this.playerId);
+		console.log(`Player<${user.uuid}> has reconnected`);
 	}
 
 	public collectCards(cards: Array<CardTransmit>) {

@@ -32,12 +32,22 @@ export class LobbyManager {
 		return (sessionId);
 	}
 
-	public createLobby(hostUUID: string, whitelist: Array<string>, playersLimit: number): string {
+	public createLobby(hostUuid: string, whitelist: Array<string>, playersLimit: number): string {
 		const sessionId = this.getSessionId();
-		const lobby = new Lobby(hostUUID, whitelist, playersLimit, sessionId);
-		console.log(`Lobby<${sessionId}> created with host ${hostUUID} and whitelist: ${whitelist} `);
+		const lobby = new Lobby(hostUuid, whitelist, playersLimit, sessionId);
+		lobby.events.on("lobby:inactive", () => {
+			this.deleteLobby(lobby);
+		})
+		console.log(`Lobby<${sessionId}> created with host ${hostUuid} and whitelist: ${whitelist} `);
 		this.lobbies[sessionId] = lobby;
 		return (sessionId);
+	}
+
+	public deleteLobby(lobby: Lobby) {
+		if (this.lobbies[lobby.sessionId] === undefined)
+			return ;
+		delete(this.lobbies[lobby.sessionId]);
+		console.log(`Deleted Lobby<${lobby.sessionId}>`);
 	}
 
 	private authenticateSocket(authId: string): string {

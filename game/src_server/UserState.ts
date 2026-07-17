@@ -2,12 +2,14 @@ import { Socket } from 'socket.io';
 import { check } from 'zod';
 import { Lobby } from './Lobby.js';
 import { StatusTransmit } from '../src_shared/Types.js';
+import { kickSocket } from './server.js';
 
 export class UserState {
 	public	socket: Socket;
 	public	uuid: string;
 	public	seat: number;
 	public	lobbyRef: Lobby;
+	private inactivityTimeout: NodeJS.Timeout;
 
 	constructor(socket: Socket, uuid: string, lobbyRef: Lobby) {
 		this.socket = socket;
@@ -15,6 +17,14 @@ export class UserState {
 		this.uuid = uuid;
 		this.seat = -1;
 		this.socket.join(this.lobbyRef.lobbyRoomId);
+		this.inactivityTimeout = setTimeout(() => {
+			kickSocket(this.socket);
+			console.log(`Inactivity timed out User<${this.uuid}>`);
+		}, 10 * 60 * 1000);
+
+		socket.onAny(() => {
+			this.inactivityTimeout.refresh();
+		});
 
 		this.socket.on("user_seat_take", (wantedSeat: number) => {
 			const status = this.takeSeat(wantedSeat);

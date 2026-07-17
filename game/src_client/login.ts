@@ -19,7 +19,7 @@ loginButton?.addEventListener('click', () => {
 	window.location.href = url.href;
 });
 
-const whitelisted: Array<string> = []
+const whitelisted: Array<string> = [];
 
 whitelistButton?.addEventListener('click', () => {
 	const whitelistedUUID = whitelistInput.value;
@@ -33,7 +33,7 @@ interface createLobbyResponse {
 }
 
 interface createLobbyPayload {
-	hostUUID: string;
+	hostUuid: string;
 	playersLimit: number;
 	whitelist: Array<string>;
 }
@@ -49,7 +49,7 @@ createLobbyButton?.addEventListener('click', () => {
 
 async function createLobbyAsync(): Promise<createLobbyResponse> {
 	const data: createLobbyPayload = {
-		hostUUID: playerId.value,
+		hostUuid: playerId.value,
 		playersLimit: 4,
 		whitelist: whitelisted
 	};

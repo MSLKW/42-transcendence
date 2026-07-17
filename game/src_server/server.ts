@@ -28,7 +28,7 @@ export const io = new Server(httpServer);
 const lobbyManager = new LobbyManager();
 
 const lobbyRequestSchema = z.object({
-	hostUUID: z.string().min(1), // will be replaced with z.uuid
+	hostUuid: z.string().min(1), // will be replaced with z.uuid
 	playersLimit: z.number(),
 	whitelist: z.array(z.string())
 });
@@ -38,7 +38,7 @@ type LobbyRequest = z.infer<typeof lobbyRequestSchema>;
 /*
 	Exposed internally for party manager to request
 	{
-		"hostUUID": "",
+		"hostUuid": "",
 		"playersLimit": 4,
 		"whitelist": ["id1", "id2", "id3"]
 	}
@@ -47,7 +47,7 @@ app.post('/api/game/lobby', (req, res) => {
 	try {
 		const payload: LobbyRequest = lobbyRequestSchema.parse(req.body);
 
-		const sessionId = lobbyManager.createLobby(payload.hostUUID, payload.whitelist, payload.playersLimit);
+		const sessionId = lobbyManager.createLobby(payload.hostUuid, payload.whitelist, payload.playersLimit);
 		return (res.status(200).json({ sessionId: sessionId }));
 	} 
 	catch(error) {
@@ -62,5 +62,5 @@ export function kickSocket(socket: Socket) {
 	setTimeout(() => {
 		socket.disconnect(true);
 	}, 1000);
-	socket.removeAllListeners();
+	// socket.removeAllListeners();
 }
