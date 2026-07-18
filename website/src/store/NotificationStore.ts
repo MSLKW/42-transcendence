@@ -1,35 +1,40 @@
 import { create } from "zustand";
 
 interface NotificationValues {
+	id: number
 	message: string;
 	isError: boolean;
 	isTimed: boolean;
-	call: () => void;
+	onAccept?: () => void;
+	onIgnore?: () => void;
 }
 
 interface NotificationState extends NotificationValues {
-	setMessage: (msg: string) => void;
-	setIsError: (error: boolean) => void;
-	setIsTimed: (timed: boolean) => void;
-	// setCall: (func: Function) => void;
-	setNotification: (msg: string, error?: boolean, timed?: boolean) => void;
+	setNotification: (
+		msg: string,
+		error: boolean,
+		timed: boolean,
+		onAccept?: () => void,
+		onIgnore?: () => void,
+	) => void;
 }
 
 export const useNotificationStore = create<NotificationState>()(
 	(set) => ({
-		message: "hello",
+		id: 0,
+		message: "Welcome to Big 2!",
 		isError: false,
 		isTimed: true,
-		call: () => {},
+		onAccept: undefined,
+		onIgnore: undefined,
 
-		setMessage: (msg) => set({ message: msg }),
-		setIsError: (error) => set({ isError: error }),
-		setIsTimed: (timed) => set({ isTimed: timed }),
-		// setCall: (func) => set({ call: func }),
-		setNotification: (msg, error, timed) => set({
+		setNotification: (msg, error, timed, onAccept, onIgnore) => set((notificationStore) => ({
+			id: notificationStore.id + 1,
 			message: msg,
 			isError: error,
 			isTimed: timed,
-		}),
+			onAccept,
+			onIgnore,
+		})),
 	}),
 );

@@ -1,50 +1,69 @@
-import { useState, useEffect } from "react";
+import { useState, useRef, useEffect } from "react";
 import { createPortal } from "react-dom";
 import { useNotificationStore } from "../store/NotificationStore";
 import { useSceneStore } from "../store/SceneStore";
 
 export const NotificationWindow = () => {
-	const { message, isError, isTimed, call } = useNotificationStore();
+	const { message, isError, isTimed, onAccept, onIgnore } = useNotificationStore();
 	const { setShowWindow } = useSceneStore();
 	const [ isExiting, setIsExiting ] = useState(false);
 	const [ animateProgress, setAnimateProgress ] = useState(false);
+	const isClosing = useRef(false);
+	const manualUnmountTimer = useRef<number>(0);
+	const exitAnimationTimer = useRef<number>(0);
+	const autoUnmountTimer = useRef<number>(0);
+	const animationFrame = useRef<number>(0);
 	
-	const handleClose = () => {
+	const handleClose = (callbackAction?: () => void) => {
+		if (isClosing.current)
+			return;
+		isClosing.current = true;
+
+		callbackAction?.();
+
+		cancelAnimationFrame(animationFrame.current);
+		clearTimeout(exitAnimationTimer.current);
+		clearTimeout(autoUnmountTimer.current);
+
 		setIsExiting(true);
-		setTimeout(() => {
-			if (call)
-				call();
+
+		manualUnmountTimer.current = window.setTimeout(() => {
 			setShowWindow("notification", false);
 		}, 500);
 	};
 
-	useEffect(() => {
-		setIsExiting(false);
-		setAnimateProgress(false);
+	const handleAccept = () => {
+		handleClose(onAccept);
+	};
 
+	const handleIgnore = () => {
+		handleClose(onIgnore);
+	};
+
+	useEffect(() => {
 		if (!isTimed)
 			return;
 
-		const startTimer = setTimeout(() => {
+		animationFrame.current = requestAnimationFrame(() => {
 			setAnimateProgress(true);
-		}, 10);
+		});
 
-		const closeTimer = setTimeout(() => {
+		exitAnimationTimer.current = window.setTimeout(() => {
 			setIsExiting(true);
 		}, 5000);
-
-		const unmountTimer = setTimeout(() => {
-			if (call)
-				call();
+		
+		autoUnmountTimer.current = window.setTimeout(() => {
+			onAccept?.();
 			setShowWindow("notification", false);
 		}, 5500);
 
 		return () => {
-			clearTimeout(startTimer);
-			clearTimeout(closeTimer);
-			clearTimeout(unmountTimer);
+			clearTimeout(manualUnmountTimer.current);
+			clearTimeout(exitAnimationTimer.current);
+			clearTimeout(autoUnmountTimer.current);
+			cancelAnimationFrame(animationFrame.current);
 		};
-	}, [message, isTimed, call, setShowWindow]);
+	}, [isTimed, onAccept, setShowWindow]);
 
 	return createPortal(
 		<div
@@ -56,14 +75,14 @@ export const NotificationWindow = () => {
 				${ isExiting ? "animate-slide-out" : "animate-slide-in" }
 		`}>
 			<button
-				onClick={handleClose}
+				type="button"
+				onClick={isTimed ? handleIgnore : undefined}
 				className={`
 					min-w-50
 					bg-n0
 					border border-n1 rounded-full
 					py-5 px-10
-					${ !isTimed ? "cursor-pointer select-none" : "" }
-					relative
+					relative cursor-pointer
 			`}>
 				<span className={`
 					relative z-1
@@ -72,19 +91,21 @@ export const NotificationWindow = () => {
 				`}>
 					{message}
 				</span>
-				{ isTimed && 
+				{ isTimed &&
 					<div className="
 						absolute top-0 left-0
 						h-full w-full rounded-full
 						overflow-hidden
 					">
 						<div
-							style={{ transitionDuration: "5000ms" }}
+							style={{
+								transitionDuration: "5000ms"
+							}}
 							className={`
 								h-full rounded-full
 								${ animateProgress ? "w-0" : "w-full" }
-								${ isError ? "bg-r4" : "bg-a2" } opacity-30
-								transition-all ease-linear
+								${ isError ? "bg-r4" : "bg-a2" } opacity-20
+								transition-[width] ease-linear
 						`}/>
 					</div>
 				}
@@ -97,7 +118,7 @@ export const NotificationWindow = () => {
 				">
 					<button
 						type="button"
-						onClick={handleClose}
+						onClick={handleAccept}
 						className="
 							w-full p-2
 							bg-n6 hover:not-disabled:bg-b4
@@ -108,7 +129,7 @@ export const NotificationWindow = () => {
 					</button>
 					<button
 						type="button"
-						onClick={handleClose}
+						onClick={handleIgnore}
 						className="
 							w-full p-2
 							bg-n6 hover:not-disabled:bg-r4

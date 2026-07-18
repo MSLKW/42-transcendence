@@ -23,6 +23,7 @@ import { RankWindow } from "./window/Rank";
 import { SignInWindow } from "./window/SignIn";
 import { SettingsWindow } from "./window/Settings";
 import { StatsWindow } from "./window/Stats";
+import { useNotificationStore } from "./store/NotificationStore";
 
 export default function App() {
 	const { data } = usePlayerStore();
@@ -53,6 +54,8 @@ export default function App() {
 	}, []);
 
 	const showStats = useDevStore((devStore) => devStore.showStats);
+
+	const { id } = useNotificationStore();
 
 	return (
 		<>
@@ -88,7 +91,7 @@ export default function App() {
 			{ showWindow["chat"] && <ChatWindow /> }
 			{ showWindow["createAccount"] && <CreateAccountWindow /> }
 			{ showWindow["info"] && <InfoWindow /> }
-			{ showWindow["notification"] && <NotificationWindow /> }
+			{ showWindow["notification"] && <NotificationWindow key={id}/> }
 			{ showWindow["party"] && <PartyWindow /> }
 			{ showWindow["profile"] && <ProfileWindow /> }
 			{ showWindow["rank"] && <RankWindow /> }

@@ -8,7 +8,7 @@ import { HidePasswordIcon } from "../components/icon/HidePassword";
 
 export const SignInWindow = () => {
 	const { setShowWindow, setCurrentScene } = useSceneStore();
-	const { setMessage, setIsError, setIsTimed, setNotification } = useNotificationStore();
+	const { setNotification } = useNotificationStore();
 
 	const focusRef = useRef<HTMLInputElement | null>(null);
 	useEffect(() => {
@@ -31,7 +31,7 @@ export const SignInWindow = () => {
 		}
 		const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 		if (!emailRegex.test(email)) {
-			setNotification("Please enter a valid email address", true, false);
+			setNotification("Please enter a valid email address", true, true);
 			setShowWindow("notification", true);
 			return;
 		}
@@ -56,9 +56,7 @@ export const SignInWindow = () => {
 			setCurrentScene("HOME");
 		} catch (err) {
 			const errorMsg = err instanceof Error ? err.message : "Something went wrong. Please try again";
-			setMessage(errorMsg);
-			setIsError(true);
-			setIsTimed(true);
+			setNotification(errorMsg, true, true);
 			setShowWindow("notification", true);
 		} finally {
 			setIsLoading(false);
@@ -105,6 +103,7 @@ export const SignInWindow = () => {
 						<input
 							id="password"
 							type={showPassword ? "text" : "password"}
+							autoComplete="current-password"
 							value={password}
 							placeholder="Enter your password"
 							onChange={(e) => setPassword(e.target.value)}
@@ -126,6 +125,7 @@ export const SignInWindow = () => {
 				</label>
 				<button
 					type="submit"
+					disabled={isLoading}
 					className="btn-white hw-5/1 mt-5"
 				>
 					{ isLoading ? "SIGNING IN...": "SIGN IN" }
