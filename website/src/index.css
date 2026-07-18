@@ -6,6 +6,7 @@
 @import "./css/uic/input.css";
 @import "./css/uic/label.css";
 @import "./css/uic/tip.css";
+@import "./css/animation/notification.css";
 @import "./css/animation/turn.css";
 
 @theme {

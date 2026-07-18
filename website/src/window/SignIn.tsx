@@ -19,15 +19,12 @@ export const SignInWindow = () => {
 	const [email, setEmail] = useState("");
 	const [password, setPassword] = useState("");
 	const [showPassword, setShowPassword] = useState(false);
-	const [error, setError] = useState<string | null>(null);
 	const [isLoading, setIsLoading] = useState(false);
 
 	const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
-		setError(null);
 
 		if (!email || !password) {
-			setError("All fields are required");
 			setMessage("All fields are required");
 			setIsError(true);
 			setIsTimed(true);
@@ -36,7 +33,10 @@ export const SignInWindow = () => {
 		}
 		const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 		if (!emailRegex.test(email)) {
-			setError("Please enter a valid email address");
+			setMessage("Please enter a valid email address");
+			setIsError(true);
+			setIsTimed(true);
+			setShowWindow("notification", true);
 			return;
 		}
 
@@ -60,7 +60,6 @@ export const SignInWindow = () => {
 			setCurrentScene("HOME");
 		} catch (err) {
 			const errorMsg = err instanceof Error ? err.message : "Something went wrong. Please try again";
-			setError(errorMsg);
 			setMessage(errorMsg);
 			setIsError(true);
 			setIsTimed(true);
@@ -135,11 +134,6 @@ export const SignInWindow = () => {
 				>
 					{ isLoading ? "SIGNING IN...": "SIGN IN" }
 				</button>
-				{ error && 
-					<div className="text-r4 text-sm font-medium mt-5 w-full text-center">
-						{error}
-					</div>
-				}
 			</form>
 		</section>
 	);
