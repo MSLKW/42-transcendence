@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect } from "react";
+import { useNotificationStore } from "../store/NotificationStore";
 import { useSceneStore } from "../store/SceneStore";
 import { CloseModule } from "../modules/Close";
 import { LightboxButton } from "../components/button/Lightbox";
@@ -7,6 +8,7 @@ import { HidePasswordIcon } from "../components/icon/HidePassword";
 
 export const SignInWindow = () => {
 	const { setShowWindow, setCurrentScene } = useSceneStore();
+	const { setMessage, setIsError, setIsTimed } = useNotificationStore();
 
 	const focusRef = useRef<HTMLInputElement | null>(null);
 	useEffect(() => {
@@ -26,6 +28,10 @@ export const SignInWindow = () => {
 
 		if (!email || !password) {
 			setError("All fields are required");
+			setMessage("All fields are required");
+			setIsError(true);
+			setIsTimed(true);
+			setShowWindow("notification", true);
 			return;
 		}
 		const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -53,10 +59,12 @@ export const SignInWindow = () => {
 			setShowWindow("signIn", false);
 			setCurrentScene("HOME");
 		} catch (err) {
-			if (err instanceof Error)
-				setError(err.message);
-			else
-				setError("Something went wrong. Please try again");
+			const errorMsg = err instanceof Error ? err.message : "Something went wrong. Please try again";
+			setError(errorMsg);
+			setMessage(errorMsg);
+			setIsError(true);
+			setIsTimed(true);
+			setShowWindow("notification", true);
 		} finally {
 			setIsLoading(false);
 		}

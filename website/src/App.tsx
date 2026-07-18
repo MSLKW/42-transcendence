@@ -16,6 +16,7 @@ import { Results } from "./pages/Results";
 import { ChatWindow } from "./window/Chat";
 import { CreateAccountWindow } from "./window/CreateAccount";
 import { InfoWindow } from "./window/Info";
+import { NotificationWindow } from "./window/Notification";
 import { PartyWindow } from "./window/Party";
 import { ProfileWindow } from "./window/Profile";
 import { RankWindow } from "./window/Rank";
@@ -87,6 +88,7 @@ export default function App() {
 			{ showWindow["chat"] && <ChatWindow /> }
 			{ showWindow["createAccount"] && <CreateAccountWindow /> }
 			{ showWindow["info"] && <InfoWindow /> }
+			{ showWindow["notification"] && <NotificationWindow /> }
 			{ showWindow["party"] && <PartyWindow /> }
 			{ showWindow["profile"] && <ProfileWindow /> }
 			{ showWindow["rank"] && <RankWindow /> }
