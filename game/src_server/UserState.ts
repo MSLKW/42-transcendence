@@ -41,12 +41,6 @@ export class UserState {
 				this.lobbyRef.emitSeatOrder();
 			}
 		});
-
-		this.socket.on("user_spectate", () => {
-			if (this.lobbyRef.game.isGameStarted === true) {
-				this.lobbyRef.game.addSpectator(this);
-			}
-		})
 	}
 
 	private takeSeat(selectedSeat: number): StatusTransmit {

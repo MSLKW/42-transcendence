@@ -30,7 +30,7 @@ export class PlayerState {
 
 		this.socket.on("player_play_card_hand_request", (cardHandTransmit: CardHandTransmit) => {
 			const status: StatusTransmit = this.playCardHand(cardHandTransmit);
-			this.socket.emit('player_play_card_hand_request', status);
+			this.socket.emit("player_play_card_hand_request", status);
 			if (status.success === true) {
 				if (this.cards.length === 0) {
 					this.gameStateRef.endGame(this)
@@ -46,21 +46,17 @@ export class PlayerState {
 	}
 
 	public disconnect() {
-		if (this.gameStateRef.isGameStarted === true) {
-			this.isDisconnected = true;
-			if (this.gameStateRef.turnTimerInSeconds === 0)
-				this.skipTurn();
-			this.gameStateRef.emit("player_disconnect", this.playerId);
-			console.log(`Player<${this.playerId}> has disconnected`)
-		}
+		this.isDisconnected = true;
+		if (this.gameStateRef.turnTimerInSeconds === 0)
+			this.skipTurn();
+		console.log(`Player<${this.playerId}> has disconnected`)
 	}
 
 	public reconnect(user: UserState) {
 		this.socket = user.socket;
 		this.isDisconnected = false;
 		this.setupSocketListeners();
-		this.socket.emit("player_game_state", this.gameStateRef.transmit(this));
-		this.gameStateRef.emit("player_reconnect", this.playerId);
+		this.socket.emit("game_state", this.gameStateRef.transmit(this));
 		console.log(`Player<${user.uuid}> has reconnected`);
 	}
 

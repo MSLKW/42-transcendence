@@ -33,7 +33,7 @@ export class Opponent {
 			}
 		});
 
-		this.socket.on('game_end', (gameEndStats: GameEndStatsTransmit) => {
+		this.socket.on("game_end", (gameEndStats: GameEndStatsTransmit) => {
 			this.cardManager.reset();
 		})
 	}

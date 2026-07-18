@@ -53,7 +53,7 @@ export class Player {
 	}
 
 	private setupListeners() {
-		this.socket.on('game_end', (gameEndStats: GameEndStatsTransmit) => {
+		this.socket.on("game_end", (gameEndStats: GameEndStatsTransmit) => {
 			this.cardManager.reset();
 			this.cardHeapRef.reset();
 			gameStatus.setGameStats(gameEndStats, this);
@@ -61,7 +61,7 @@ export class Player {
 			console.log(gameEndStats);
 		})
 		
-		this.socket.on('player_play_card_hand_request', (status: StatusTransmit) => {
+		this.socket.on("player_play_card_hand_request", (status: StatusTransmit) => {
 			if (status.success === true) {
 				const cardHand = this.cardManager.sendSelectedCards();
 				this.cardHeapRef.receiveCardHand(cardHand);
@@ -70,7 +70,7 @@ export class Player {
 			}
 		});
 		
-		this.socket.on('player_turn', (playerTurn: PlayerTurnTransmit) => {
+		this.socket.on("player_turn", (playerTurn: PlayerTurnTransmit) => {
 			if (this.playerId === playerTurn.playerId) {
 				this.setPlayerTurnUI(true, playerTurn.skippable);
 			}
@@ -80,23 +80,23 @@ export class Player {
 			console.log(`It is now Player<${playerTurn.playerId}>'s turn! Timer is set at ${playerTurn.timer} seconds!`);
 		});
 
-		this.socket.on('player_skip_turn_request', (status: StatusTransmit) => {
+		this.socket.on("player_skip_turn_request", (status: StatusTransmit) => {
 			if (status.success === false) {
 				console.log(`player_skip_turn_request message: ${status.message}`);
 			}
 		})
 
-		this.socket.on('player_skip_turn', (skipTurn: SkipTurnTransmit) => {
+		this.socket.on("player_skip_turn", (skipTurn: SkipTurnTransmit) => {
 			console.log(`Player<${skipTurn.playerId}> skipped their turn!`);
 		});
 
 		this.sendCardsButton.addEventListener('click', () => {
 			const cardHandTransmit = this.cardManager.selectedCards.transmit();
-			this.socket.emit('player_play_card_hand_request', cardHandTransmit);
+			this.socket.emit("player_play_card_hand_request", cardHandTransmit);
 		});
 		
 		this.skipTurnButton.addEventListener('click', () => {
-			this.socket.emit('player_skip_turn_request');
+			this.socket.emit("player_skip_turn_request");
 		});
 
 		this.sortCardsByRankButton.addEventListener('click', () => {

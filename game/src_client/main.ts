@@ -13,7 +13,6 @@ import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
 import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
 import { OutlinePass } from 'three/addons/postprocessing/OutlinePass.js';
 import { OutputPass } from 'three/examples/jsm/Addons.js';
-import { effect } from 'zod/v3';
 
 const resolution = new THREE.Vector2(window.innerWidth, window.innerHeight)
 
@@ -111,13 +110,13 @@ if (authId && playerId) {
 		}
 	})
 
-	socket.on('connect', () => {
+	socket.on("connect", () => {
 		console.log(`Socket connected`);
 	});
-	socket.on('graceful_disconnect', () => {
+	socket.on("graceful_disconnect", () => {
 		socket.disconnect();
 	});
-	socket.on('disconnect', () => {
+	socket.on("disconnect", () => {
 		console.log('Socket disconnected')
 	});
 
@@ -125,9 +124,8 @@ if (authId && playerId) {
 	const takeSeatButton = document.getElementById('take-seat-button') as HTMLButtonElement;
 	const leaveSeatButton = document.getElementById('leave-seat-button') as HTMLButtonElement;
 	const takeSeatInput = document.getElementById('take-seat-input') as HTMLInputElement;
-	const spectateButton = document.getElementById('spectate-button') as HTMLButtonElement;
 
-	socket.on('game_start_request', (status: StatusTransmit) => {
+	socket.on("game_start_request", (status: StatusTransmit) => {
 		if (status.success === true) {
 			startGameButton.disabled = true;
 		}
@@ -138,15 +136,15 @@ if (authId && playerId) {
 		const gameStartRequest: GameStartRequest = {
 			playerId: playerId
 		}
-		socket.emit('game_start_request', gameStartRequest);
+		socket.emit("game_start_request", gameStartRequest);
 	});
 
-	socket.on('game_end', () => {
+	socket.on("game_end", () => {
 		startGameButton.disabled = false;
 	});
 
-	spectateButton.addEventListener('click', () => {
-		socket.emit("user_spectate");
+	socket.on("player_connection_update", (connections: Record<string, boolean>) => {
+		console.log(connections);
 	});
 
 	takeSeatButton.addEventListener('click', () => {
@@ -169,7 +167,11 @@ if (authId && playerId) {
 		console.log(seatOrder);
 	});
 
-	socket.on("player_game_state", (gameState: GameStateTransmit) => {
+	socket.on("user_list_update", (list: Array<string>) => {
+		console.log(list);
+	})
+
+	socket.on("game_state", (gameState: GameStateTransmit) => {
 		startGameButton.disabled = true;
 
 		const seatOrder = gameState.playerSeatOrder;

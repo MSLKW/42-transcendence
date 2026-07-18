@@ -53,6 +53,14 @@ export class Lobby {
 		this.emit("user_seat_update", seatOrder);
 	}
 
+	public emitUserList() {
+		const userUuidList: Array<string> = [];
+		for (let i = 0; i < this.users.length; i++) {
+			userUuidList.push(this.users[i].uuid);
+		}
+		this.emit("user_list_update", userUuidList);
+	}
+
 	public connectUser(socket: Socket, uuid: string) {
 		const index = this.users.findIndex((user) => user.uuid === uuid);
 		if (this.whitelist.indexOf(uuid) === -1 || 
@@ -64,25 +72,25 @@ export class Lobby {
 			return ;
 		}
 		
-		const newUser = new UserState(socket, uuid, this);
-		this.connectNewUser(newUser);
-		if (this.game.uuidInGame(newUser.uuid) === true) {
-			this.game.playerReconnect(newUser);
-		}
-
-		newUser.socket.on("disconnect", () => {
-			this.disconnectUser(newUser);
-		});
-
-		newUser.socket.on("game_start_request", (gameStartRequest: GameStartRequest) => {
-			this.GameStartRequest(newUser, gameStartRequest);
-		});
-	}
-
-	private connectNewUser(user: UserState) {
+		const user = new UserState(socket, uuid, this);
 		this.users.push(user);
 		console.log(`User<${user.uuid}> has connected`);
-		this.emit("user_connect", user.uuid);
+		this.emitUserList();
+
+		if (this.game.uuidInGame(user.uuid) === true) {
+			this.game.playerReconnect(user);
+		}
+		else {
+			this.game.addSpectator(user);
+		}
+
+		user.socket.on("disconnect", () => {
+			this.disconnectUser(user);
+		});
+
+		user.socket.on("game_start_request", (gameStartRequest: GameStartRequest) => {
+			this.GameStartRequest(user, gameStartRequest);
+		});
 	}
 
 	private disconnectUser(disconnectedUser: UserState) {
@@ -95,8 +103,8 @@ export class Lobby {
 			this.game.playerDisconnect(disconnectedUser);
 		}
 		disconnectedUser.leaveSeat();
-		this.emit("user_disconnect", disconnectedUser.uuid);
 		this.users.splice(index, 1);
+		this.emitUserList();
 		console.log(`User<${disconnectedUser.uuid}> disconnected`);
 		if (this.isActive() === false) {
 			this.events.emit("lobby:inactive");
