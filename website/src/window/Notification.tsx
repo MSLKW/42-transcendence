@@ -83,7 +83,7 @@ export const NotificationWindow = () => {
 							className={`
 								h-full rounded-full
 								${ animateProgress ? "w-0" : "w-full" }
-								${ isError ? "bg-r4" : "bg-a5" } opacity-30
+								${ isError ? "bg-r4" : "bg-a2" } opacity-30
 								transition-all ease-linear
 						`}/>
 					</div>
@@ -100,8 +100,8 @@ export const NotificationWindow = () => {
 						onClick={handleClose}
 						className="
 							w-full p-2
-							bg-n6
-							border border-n5 rounded-full
+							bg-n6 hover:not-disabled:bg-b4
+							border border-n5 hover:not-disabled:border-b5 rounded-full
 							text-n0
 					">
 						ACCEPT
@@ -111,8 +111,8 @@ export const NotificationWindow = () => {
 						onClick={handleClose}
 						className="
 							w-full p-2
-							bg-n6
-							border border-n5 rounded-full
+							bg-n6 hover:not-disabled:bg-r4
+							border border-n5 hover:not-disabled:border-r5 rounded-full
 							text-n0
 					">
 						IGNORE
@@ -123,57 +123,3 @@ export const NotificationWindow = () => {
 		, document.body
 	);
 }
-
-
-		// <button
-		// 	onClick={handleClose}
-		// 	className={`
-		// 		fixed z-5
-		// 		top-10 left-1/2
-		// 		flex flex-col place-content-center place-items-center
-		// 		gap-2
-		// 		${ !isTimed ? "cursor-pointer select-none" : "" }
-		// 		${ isExiting ? "animate-slide-out" : "animate-slide-in" }
-		// `}>
-		// 	<div className="
-		// 		min-w-50
-		// 		bg-n0
-		// 		border border-n1 rounded-full
-		// 		py-5 px-10
-		// 	">
-		// 		<span className={`
-		// 			relative z-1
-		// 			${ isError ? "text-r4" : "text-n6" }
-		// 			text-center
-		// 		`}>
-		// 			{message}
-		// 		</span>
-		// 		{ isTimed && 
-		// 			<div className="
-		// 				absolute top-0 left-0
-		// 				h-full w-full rounded-full
-		// 				overflow-hidden
-		// 			">
-		// 				<div
-		// 					style={{ transitionDuration: "5000ms" }}
-		// 					className={`
-		// 						h-full rounded-full
-		// 						${ animateProgress ? "w-0" : "w-full" }
-		// 						bg-current opacity-30
-		// 						transition-all ease-linear
-		// 				`}/>
-		// 			</div>
-		// 		}
-		// 	</div>
-		// 	<button
-		// 		type="button"
-		// 		onClick={handleClose}
-		// 		className="
-		// 			w-20 p-2
-		// 			bg-n6
-		// 			border border-n5 rounded-full
-		// 			text-n0
-		// 	">
-		// 		OK
-		// 	</button>
-		// </button>

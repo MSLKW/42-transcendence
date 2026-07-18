@@ -8,7 +8,7 @@ import { HidePasswordIcon } from "../components/icon/HidePassword";
 
 export const SignInWindow = () => {
 	const { setShowWindow, setCurrentScene } = useSceneStore();
-	const { setMessage, setIsError, setIsTimed } = useNotificationStore();
+	const { setMessage, setIsError, setIsTimed, setNotification } = useNotificationStore();
 
 	const focusRef = useRef<HTMLInputElement | null>(null);
 	useEffect(() => {
@@ -25,17 +25,13 @@ export const SignInWindow = () => {
 		e.preventDefault();
 
 		if (!email || !password) {
-			setMessage("All fields are required");
-			setIsError(true);
-			setIsTimed(true);
+			setNotification("All fields are required", true, true);
 			setShowWindow("notification", true);
 			return;
 		}
 		const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 		if (!emailRegex.test(email)) {
-			setMessage("Please enter a valid email address");
-			setIsError(true);
-			setIsTimed(true);
+			setNotification("Please enter a valid email address", true, false);
 			setShowWindow("notification", true);
 			return;
 		}
