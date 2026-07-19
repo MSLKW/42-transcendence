@@ -1,0 +1,21 @@
+{
+  "name": "party-manager",
+  "version": "1.0.0",
+  "description": "",
+  "license": "ISC",
+  "author": "",
+  "type": "commonjs",
+  "main": "index.js",
+  "scripts": {
+    "dev": "tsc --noEmit && tsx src/index.ts"
+  },
+  "devDependencies": {
+		"@types/node": "^26.0.0",
+		"tsx": "^4.22.4",
+		"typescript": "^6.0.3"
+	},
+  "dependencies": {
+    "dotenv": "^17.4.2",
+    "socket.io": "^4.8.3"
+  }
+}
