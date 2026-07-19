@@ -2,6 +2,7 @@ import { io, Socket } from "socket.io-client";
 import { GameState } from "../game/GameState";
 import { AAIController } from "../ai/AAIController";
 import { logger } from "../utils/logger";
+import { writeFileSync } from "fs";
 
 import {
 	GameStateTransmit,
@@ -49,7 +50,7 @@ export class Bot
 
 	private	playerJoined = (seatOrder: PlayerSeatOrderTransmit) =>
 	{
-		logger.info(this.id, seatOrder);
+		logger.verbose(this.id, seatOrder);
 		this.seatOrder = seatOrder;
 		if (seatOrder.seatOrder[this.id] == 3)
 		{	
@@ -81,7 +82,7 @@ export class Bot
 		if (this.state.currentPlayer == this.id)
 		{
 			logger.verbose(this.id, "My turn");
-			// logger.verbose(this.id, this.state.encode().join("\n"));
+			writeFileSync(`logs/state<${this.id}>${this.state.turnNumber}.log`, this.state.encode().join("\n"), "utf-8");
 			this.playCardHand();
 		}
 		else
@@ -123,6 +124,7 @@ export class Bot
 		if (opponentMove.playerId != this.id)
 		{
 			logger.verbose(opponentMove.playerId, "played:", opponentMove);
+			this.state.turnSkipped = false;
 			this.state.setLastCardHand(opponentMove);
 		}
 	}
