@@ -30,7 +30,7 @@ const getDbPassword = () => {
 export default defineConfig({
 	dialect: "postgresql",
 	schema: "./drizzle/src/schema/index.schema.ts", // points to the "Source of Truth." => the main schema file pointing to all other schemas
-	out: "./drizzle", // naming is following industry standard / drizzle kit's default behaviour / drizzle's documentation
+	out: "./drizzle/migrations", // naming is following industry standard / drizzle kit's default behaviour / drizzle's documentation
 	dbCredentials: {
 		// Construct the URL using the helper
 		url: `postgresql://${process.env.DB_USER}:${getDbPassword}@${process.env.DB_HOST}:${process.env.DB_PORT}/${process.env.DB_NAME}`,
