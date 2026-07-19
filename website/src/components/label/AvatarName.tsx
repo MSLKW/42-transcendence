@@ -1,11 +1,13 @@
-import { usePartyStore } from "../../store/PartyStore";
+// import { usePartyStore } from "../../store/PartyStore";
+import { useGameStore } from "../../store/GameStore";
 
 interface AvatarProps {
 	playerIndex?: number;
 }
 
 export const AvatarName = ({ playerIndex = 0 }: AvatarProps) => {
-	const { members } = usePartyStore();
+	// const { members } = usePartyStore();
+	const { playerOrder } = useGameStore();
 
 	return (
 		<div className="
@@ -19,7 +21,11 @@ export const AvatarName = ({ playerIndex = 0 }: AvatarProps) => {
 			flex place-content-center place-items-center
 			px-[clamp(0.625rem,1vh+0.3125rem,1.25rem)]
 		">
-			<p>{members[playerIndex].name}</p>
+			{/* { playerIndex >= 0
+				? <p>{members[playerIndex].name}</p>
+				: <p>Bot{playerIndex}</p>
+			} */}
+			<p>{playerOrder[playerIndex]}</p>
 		</div>
 	);
 }

@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { useSceneStore } from "../store/SceneStore";
 import { useGameStore } from "../store/GameStore";
 import { usePartyStore } from "../store/PartyStore";
@@ -11,9 +12,17 @@ import { PartyButton } from "../components/button/Party";
 import { SmallLogo } from "../components/label/Logo";
 
 export const Lobby = () => {
-	const { totalPlayers } = useGameStore();
-	const { partyCount } = usePartyStore();
+	const { totalPlayers, playerOrder } = useGameStore();
+	const { partyCount, members } = usePartyStore();
 	const { setCurrentScene } = useSceneStore();
+
+	useEffect(() => {
+		for (let i = 0; i < totalPlayers; i++)
+			if (i < partyCount)
+				playerOrder[i] = members[i].name;
+			else
+				playerOrder[i] = "bot-" + i;
+	}, []);
 
 	return (
 		<>

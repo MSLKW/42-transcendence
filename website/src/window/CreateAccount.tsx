@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect } from "react";
+import { useNotificationStore, notificationType } from "../store/NotificationStore";
 import { useSceneStore } from "../store/SceneStore";
 import { CloseModule } from "../modules/Close";
 import { LightboxButton } from "../components/button/Lightbox";
@@ -6,7 +7,8 @@ import { ShowPasswordIcon } from "../components/icon/ShowPassword";
 import { HidePasswordIcon } from "../components/icon/HidePassword";
 
 export const CreateAccountWindow = () => {
-	const { contAreaWidth, contAreaHeight, setShowWindow, setCurrentScene } = useSceneStore();
+	const { setShowWindow, setCurrentScene } = useSceneStore();
+	const { setNotification } = useNotificationStore();
 
 	const focusRef = useRef<HTMLInputElement | null>(null);
 	useEffect(() => {
@@ -19,28 +21,26 @@ export const CreateAccountWindow = () => {
 	const [showPassword, setShowPassword] = useState(false);
 	const [confirmPassword, setConfirmPassword] = useState("");
 	const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-	const [error, setError] = useState<string | null>(null);
 	const [isLoading, setIsLoading] = useState(false);
 
 	const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
-		setError(null);
 
 		if (!email || !password || !confirmPassword) {
-			setError("All fields are required");
+			setNotification("All fields are required", notificationType.isError);
 			return;
 		}
 		const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 		if (!emailRegex.test(email)) {
-			setError("Please enter a valid email address");
+			setNotification("Please enter a valid email address", notificationType.isError);
 			return;
 		}
 		if (password.length < 8) {
-			setError("Password must be at least 8 characters");
+			setNotification("Password must be at least 8 characters", notificationType.isError);
 			return;
 		}
 		if (password !== confirmPassword) {
-			setError("Passwords do not match");
+			setNotification("Passwords do not match", notificationType.isError);
 			return;
 		}
 		try {
@@ -61,7 +61,8 @@ export const CreateAccountWindow = () => {
 			setShowWindow("createAccount", false);
 			setCurrentScene("HOME");
 		} catch (err) {
-			setError("Something went wrong. Please try again");
+			const errorMsg = err instanceof Error ? err.message : "Something went wrong. Please try again";
+			setNotification(errorMsg, notificationType.isError);
 		} finally {
 			setIsLoading(false);
 		}
@@ -74,115 +75,93 @@ export const CreateAccountWindow = () => {
 			flex place-content-center place-items-center
 		">
 			<LightboxButton dismiss="createAccount" blur={true} />
-			<div style={{ width: contAreaWidth, height: contAreaHeight }} 
+			<form
+				onSubmit={handleSubmit}
 				className="
 					z-0
-					flex place-content-center place-items-center
-					pointer-events-none
+					bg-linear-to-b from-n0 to-n1
+					border border-n2 rounded-3xl
+					flex flex-col place-content-center place-items-center
+					gap-2.5 sm:gap-3
+					p-[clamp(1rem,5vw+0.25rem,2.5rem)]
+					relative
+					pointer-events-auto
 			">
-				<form 
-					onSubmit={handleSubmit}
-					className="
-						bg-n1
-						border border-n2 rounded-3xl
-						flex flex-col place-content-center place-items-center
-						gap-2.5 sm:gap-3
-						p-[clamp(1rem,5vw+0.25rem,2.5rem)]
-						relative
-						pointer-events-auto
-				">
-					<CloseModule dismiss="createAccount" />
-					<div className="grid grid-cols-1 sm:grid-cols-[5rem_1fr] gap-1 sm:gap-5 w-full">
-						<label
-							htmlFor="email"
-							className="sm:justify-end"
-						>
-							Email
-						</label>
+				<CloseModule dismiss="createAccount" />
+				<label htmlFor="email" className="w-full flex place-content-between">
+					<span className="text-right pr-5">Email</span>
+					<input
+						ref={focusRef}
+						id="email"
+						type="text"
+						value={email}
+						placeholder="Enter your email"
+						onChange={(e) => setEmail(e.target.value)}
+						className="input-form"
+					/>
+				</label>
+				<label htmlFor="password" className="w-full flex place-content-between">
+					<span className="text-right pr-5">
+						Password
+					</span>
+					<div className="relative">
 						<input
-							ref={focusRef}
-							id="email"
-							type="text"
-							placeholder="Enter your email"
-							value={email}
-							onChange={(e) => setEmail(e.target.value)}
-							className="input-form"
+							id="password"
+							type={showPassword ? "text" : "password"}
+							value={password}
+							placeholder="At least 8 characters"
+							onChange={(e) => setPassword(e.target.value)}
+							className="input-form w-full"
 						/>
+						<button
+							type="button"
+							onClick={() => setShowPassword(!showPassword)}
+							className="
+								absolute right-1 top-1/2 -translate-y-1/2
+								h-[80%] aspect-square
+								text-n0
+								btn-icon
+								rounded-full
+						">
+							{ showPassword ? <ShowPasswordIcon /> : <HidePasswordIcon /> }
+						</button>
 					</div>
-					<div className="grid grid-cols-1 sm:grid-cols-[5rem_1fr] gap-1 sm:gap-5 w-full">
-						<label
-							htmlFor="password"
-							className="sm:justify-end"
-						>
-							Password
-						</label>
-						<div className="relative">
-							<input
-								id="password"
-								type={showPassword ? "text" : "password"}
-								placeholder="At least 8 characters"
-								value={password}
-								onChange={(e) => setPassword(e.target.value)}
-								className="input-form"
-							/>
-							<button
-								type="button"
-								onClick={() => setShowPassword(!showPassword)}
-								className="
-									absolute right-1 top-1/2 -translate-y-1/2
-									h-[80%] aspect-square
-									text-n0
-									btn-icon
-									rounded-full
-							">
-								{ showPassword ? <ShowPasswordIcon /> : <HidePasswordIcon /> }
-							</button>
-						</div>
+				</label>
+				<label htmlFor="confirm" className="w-full flex place-content-between">
+					<span className="text-right pr-5">
+						Confirm
+					</span>
+					<div className="relative">
+						<input
+							id="confirm"
+							type={showConfirmPassword ? "text" : "password"}
+							value={confirmPassword}
+							placeholder="Confirm your password"
+							onChange={(e) => setConfirmPassword(e.target.value)}
+							className="input-form w-full"
+						/>
+						<button
+							type="button"
+							onClick={() => setShowConfirmPassword(!showPassword)}
+							className="
+								absolute right-1 top-1/2 -translate-y-1/2
+								h-[80%] aspect-square
+								text-n0
+								btn-icon
+								rounded-full
+						">
+							{ showPassword ? <ShowPasswordIcon /> : <HidePasswordIcon /> }
+						</button>
 					</div>
-					<div className="grid grid-cols-1 sm:grid-cols-[5rem_1fr] gap-1 sm:gap-5 w-full">
-						<label
-							htmlFor="confirm"
-							className="sm:justify-end"
-						>
-							Confirm
-						</label>
-						<div className="relative">
-							<input
-								id="confirm"
-								type={showConfirmPassword ? "text" : "password"}
-								placeholder="Confirm your password"
-								value={confirmPassword}
-								onChange={(e) => setConfirmPassword(e.target.value)}
-								className="input-form"
-							/>
-							<button
-								type="button"
-								onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-								className="
-									absolute right-1 top-1/2 -translate-y-1/2
-									h-[80%] aspect-square
-									text-n0
-									btn-icon
-									rounded-full
-							">
-								{ showConfirmPassword ? <ShowPasswordIcon /> : <HidePasswordIcon /> }
-							</button>
-						</div>
-					</div>
-					<button
-						type="submit"
-						disabled={isLoading}
-						className="btn-white hw-5/1 mt-5"
-					>
-						{ isLoading ? "CREATING..." : "CREATE ACCOUNT" }
-					</button>
-					{error && 
-						<div className="text-r4 text-sm font-medium mt-5 w-full text-center">
-							{error}
-						</div>
-					}
-				</form>
-			</div>
+				</label>
+				<button
+					type="submit"
+					disabled={isLoading}
+					className="btn-white hw-5/1 mt-5"
+				>
+					{ isLoading ? "CREATING..." : "CREATE ACCOUNT" }
+				</button>
+			</form>
 		</section>
 	);
 }

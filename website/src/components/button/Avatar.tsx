@@ -18,12 +18,15 @@ export const AvatarButton = ({ cornerButton = "none", playerIndex = 0, isActive 
 			<button
 				data-tip={ playerIndex === 0 ? "Edit Profile" : "View Stats"}
 				onClick={(e) => {
-					setPartyValue("playerFocus", playerIndex);
-					if (playerIndex === 0)
-						setShowWindow("profile", true);
-					else
-						setShowWindow("stats", true);
 					e.currentTarget.blur();
+					if (playerIndex === 0) {
+						setPartyValue("playerFocus", playerIndex);
+						setShowWindow("profile", true);
+					} else if (playerIndex > 0) {
+						setPartyValue("playerFocus", playerIndex);
+						setShowWindow("stats", true);
+					} else if (playerIndex < 0)
+						setShowWindow("bots", true);
 				}}
 				className="
 					btn-avatar btn-tip-up h-max w-max

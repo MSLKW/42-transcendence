@@ -13,6 +13,7 @@ import { Lobby } from "./pages/Lobby";
 import { Gameplay } from "./pages/Gameplay";
 import { R3F } from "./pages/R3F";
 import { Results } from "./pages/Results";
+import { BotsWindow } from "./window/Bots";
 import { ChatWindow } from "./window/Chat";
 import { CreateAccountWindow } from "./window/CreateAccount";
 import { InfoWindow } from "./window/Info";
@@ -20,8 +21,9 @@ import { NotificationWindow } from "./window/Notification";
 import { PartyWindow } from "./window/Party";
 import { ProfileWindow } from "./window/Profile";
 import { RankWindow } from "./window/Rank";
-import { SignInWindow } from "./window/SignIn";
+import { SetupWindow } from "./window/Setup";
 import { SettingsWindow } from "./window/Settings";
+import { SignInWindow } from "./window/SignIn";
 import { StatsWindow } from "./window/Stats";
 import { useNotificationStore } from "./store/NotificationStore";
 
@@ -35,7 +37,7 @@ export default function App() {
 			behavior: 'smooth',
 		});
 		if (!data.name && currentScene != "LOGIN")
-			setShowWindow("profile", true);
+			setShowWindow("setup", true);
 	}, [currentScene]);
 
 	const containerRef = useRef(null);
@@ -88,6 +90,7 @@ export default function App() {
 			{ currentScene === 'GAMEPLAY' && <Gameplay /> }
 			{ currentScene === 'R3F' && <R3F /> }
 			{ currentScene === 'RESULTS' && <Results /> }
+			{ showWindow["bots"] && <BotsWindow /> }
 			{ showWindow["chat"] && <ChatWindow /> }
 			{ showWindow["createAccount"] && <CreateAccountWindow /> }
 			{ showWindow["info"] && <InfoWindow /> }
@@ -95,6 +98,7 @@ export default function App() {
 			{ showWindow["party"] && <PartyWindow /> }
 			{ showWindow["profile"] && <ProfileWindow /> }
 			{ showWindow["rank"] && <RankWindow /> }
+			{ showWindow["setup"] && <SetupWindow /> }
 			{ showWindow["settings"] && <SettingsWindow /> }
 			{ showWindow["signIn"] && <SignInWindow /> }
 			{ showWindow["stats"] && <StatsWindow /> }

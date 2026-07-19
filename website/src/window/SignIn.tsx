@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from "react";
-import { useNotificationStore } from "../store/NotificationStore";
+import { useNotificationStore, notificationType } from "../store/NotificationStore";
 import { useSceneStore } from "../store/SceneStore";
 import { CloseModule } from "../modules/Close";
 import { LightboxButton } from "../components/button/Lightbox";
@@ -25,14 +25,12 @@ export const SignInWindow = () => {
 		e.preventDefault();
 
 		if (!email || !password) {
-			setNotification("All fields are required", true, true);
-			setShowWindow("notification", true);
+			setNotification("All fields are required", notificationType.isError);
 			return;
 		}
 		const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 		if (!emailRegex.test(email)) {
-			setNotification("Please enter a valid email address", true, true);
-			setShowWindow("notification", true);
+			setNotification("Please enter a valid email address", notificationType.isError);
 			return;
 		}
 
@@ -56,8 +54,7 @@ export const SignInWindow = () => {
 			setCurrentScene("HOME");
 		} catch (err) {
 			const errorMsg = err instanceof Error ? err.message : "Something went wrong. Please try again";
-			setNotification(errorMsg, true, true);
-			setShowWindow("notification", true);
+			setNotification(errorMsg, notificationType.isError);
 		} finally {
 			setIsLoading(false);
 		}

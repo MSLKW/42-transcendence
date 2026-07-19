@@ -1,10 +1,12 @@
 import { useState, useRef, useEffect } from "react";
 import { createPortal } from "react-dom";
 import { useNotificationStore } from "../store/NotificationStore";
+import { usePlayerStore } from "../store/PlayerStore";
 import { useSceneStore } from "../store/SceneStore";
 
 export const NotificationWindow = () => {
-	const { message, isError, isTimed, onAccept, onIgnore } = useNotificationStore();
+	const { message, isError, isTimed, numOfButtons, onButton1Click, onButton2Click } = useNotificationStore();
+	const { data } = usePlayerStore();
 	const { setShowWindow } = useSceneStore();
 	const [ isExiting, setIsExiting ] = useState(false);
 	const [ animateProgress, setAnimateProgress ] = useState(false);
@@ -32,12 +34,17 @@ export const NotificationWindow = () => {
 		}, 500);
 	};
 
+	const handleSetupComplete = () => {
+		setShowWindow("setup", false);
+		handleClose(onButton1Click);
+	}
+
 	const handleAccept = () => {
-		handleClose(onAccept);
+		handleClose(onButton1Click);
 	};
 
 	const handleIgnore = () => {
-		handleClose(onIgnore);
+		handleClose(onButton2Click);
 	};
 
 	useEffect(() => {
@@ -53,7 +60,7 @@ export const NotificationWindow = () => {
 		}, 5000);
 		
 		autoUnmountTimer.current = window.setTimeout(() => {
-			onAccept?.();
+			onButton1Click?.();
 			setShowWindow("notification", false);
 		}, 5500);
 
@@ -63,7 +70,7 @@ export const NotificationWindow = () => {
 			clearTimeout(autoUnmountTimer.current);
 			cancelAnimationFrame(animationFrame.current);
 		};
-	}, [isTimed, onAccept, setShowWindow]);
+	}, [isTimed, onButton1Click, setShowWindow]);
 
 	return createPortal(
 		<div
@@ -110,7 +117,27 @@ export const NotificationWindow = () => {
 					</div>
 				}
 			</button>
-			{ !isTimed &&
+			{ numOfButtons === 1 &&
+				<div
+					className="
+						flex gap-5
+						w-full
+				">
+					<button
+						type="button"
+						onClick={handleSetupComplete}
+						disabled={data.name ? false : true }
+						className="
+							w-full p-2
+							bg-n6 hover:not-disabled:bg-b4
+							border border-n5 hover:not-disabled:border-b5 rounded-full
+							text-n0
+					">
+						{ data.name ? "Let's Play!" : "Waiting for valid name..." }
+					</button>
+				</div>
+			}
+			{ numOfButtons === 2 &&
 				<div
 					className="
 						flex gap-5

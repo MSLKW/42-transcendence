@@ -3,17 +3,18 @@ import { useSceneStore } from "../../store/SceneStore";
 interface LightboxButtonProps {
 	dismiss: string,
 	blur?: boolean,
+	isDismissable?: boolean,
 }
 
-export const LightboxButton = ({ dismiss, blur }: LightboxButtonProps) => {
+export const LightboxButton = ({ dismiss, blur, isDismissable = true }: LightboxButtonProps) => {
 	const { setShowWindow } = useSceneStore();
 
 	return (
 		<button
 			tabIndex={-1}
 			onClick={() => {
-				console.log("234d5rtfyvbhjn")
-				setShowWindow(dismiss, false)
+				if (isDismissable)
+					setShowWindow(dismiss, false);
 			}}
 			className={`
 				-z-1 absolute
