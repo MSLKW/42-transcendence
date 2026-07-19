@@ -1,8 +1,8 @@
-import { drizzle } from 'drizzle-orm/node-postgres';
+import { drizzle } from 'drizzle-orm/node-postgres';  // /postgres-js";
 import fs from 'fs';
-import * as schema from '@big2_monorepo/database'; 
+import * as authSchema from '@big2/database'; 
 // Drizzle uses the actual imported schema files. 
-// alias maps @big2_monorepo/database to ../../packages/database/src/auth.schema.ts
+// alias maps "@big2/database" to "../../packages/database/drizzle/src/schema/auth.schema.ts" (tsconfig.json)
 
 
 if (!process.env.DB_PASSWORD_FILE) {
@@ -14,7 +14,8 @@ export const db = drizzle({
     host: process.env.DB_HOST,
     user: process.env.DB_USER,
     database: process.env.DB_NAME,
-	password: fs.readFileSync(process.env.DB_PASSWORD_FILE!, 'utf8').trim(),
+	  password: fs.readFileSync(process.env.DB_PASSWORD_FILE!, 'utf8').trim(),
+    port: parseInt(process.env.DB_PORT || "5432", 10),
   },
-  schema, // This is shorthand for schema: schema
+  schema: authSchema
 });

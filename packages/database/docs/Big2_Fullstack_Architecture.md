@@ -1,10 +1,10 @@
 # Comprehensive Fullstack Architecture
-**Project:** 3D big2_monorepo Web App Game (PERN Stack + Docker + Monorepo Microservices + 1 Database only)<br>
+**Project:** 3D big2 Web App Game (PERN Stack + Docker + Monorepo Microservices + 1 Database only)<br>
 **Purpose:** Documentation and onboarding guide for the team regarding Database Management, Microservices, and API Gateway Architecture.<br>
 
 ### Folder Structure (The "Binary Tree")
 ```
-/big2_monorepo
+/big2
   ├── package.json               <-- (The Workspace Map)
   ├── Makefile                   <-- To make project run with 1 command only  [PDF rule]
   ├── docker-compose.yml         <-- For deployment                           [PDF rule]

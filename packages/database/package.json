@@ -1,5 +1,5 @@
 {
-  "name": "database",
+  "name": "@big2/database",
   "version": "1.0.0",
   "type": "module",
   "description": "",
@@ -24,6 +24,7 @@
   },
   "devDependencies": {
     "@types/node": "^26.1.1",
+    "@types/pg": "^8.20.0",
     "drizzle-kit": "^0.31.10",
     "typescript": "^5.9.3"
   }

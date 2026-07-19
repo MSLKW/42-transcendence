@@ -1,5 +1,5 @@
 import { eq } from "drizzle-orm";
-import { sessions } from "@big2_monorepo/database";
+import { sessions } from "@big2/database";
 import { db } from "../db/db";
 import { Session } from "../models/session";
 import { SessionStore } from "./sessionStore";

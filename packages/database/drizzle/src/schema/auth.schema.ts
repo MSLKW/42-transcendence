@@ -1,7 +1,7 @@
-import { pgSchema, text, uuid, timestamp, integer } from "drizzle-orm/pg-core";
+import { pgSchema, text, uuid, timestamp, integer } from "drizzle-orm/pg-core"; // pg-core specificly means postgres
 import { relations } from "drizzle-orm"; // to create relationships
 
-// 1. Define the schmea
+// 1. Define the schema variable name
 export const authSchema = pgSchema("auth_schema");
 
 

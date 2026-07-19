@@ -1,132 +1,169 @@
 networks:
   transcendence:
-    name : ${NETWORK_NAME}
+    name : ${NETWORK_NAME}     # name : transcendence
     driver: bridge
-    external: true        # IMPORTANT: Add this if the network already exists
+
 
 volumes:
-  database_volume:
-    name: ${DB_VOLUME_NAME}
+  db_data:
+    name: ${DB_VOLUME_NAME}    # name: postgres_data
     driver: local
     driver_opts:  
       type: none
       o: bind
-      device: ${HOME}/data/${DB_VOLUME_NAME}
+      device: ${HOME}/data/${DB_VOLUME_NAME}       # device: /home/aimokhta/data/postgres_data
 
-secrets:
+
+secrets: # auto make all secret files just read only mode
   db_admin_password:
     file: ./secrets/database_passwords/db_admin_password.txt
   db_auth_password:
     file: ./secrets/database_passwords/db_auth_password.txt
+  db_website_password:
+    file: ./secrets/database_passwords/db_website_password.txt
+  db_game_password:
+    file: ./secrets/database_passwords/db_game_password.txt
+  db_bot_password:
+    file: ./secrets/database_passwords/db_bot_password.txt
+  db_chat_password:
+    file: ./secrets/database_passwords/db_chat_password.txt
+
 
 services:
 
-#           DATABASE RDBMS = PostgreSQL
+# ==============================================================================
+#           POSTGRESQL ( RDBMS Database Engine )
+#                       *RDBMS = Relational Database Managaement System
+# ==============================================================================
   postgresql-rdbms:
     container_name: postgresql-rdbms
-    image: postgres:17-bookworm        # No Dockerfile needed here!
+    image: postgres:17-bookworm           # No Dockerfile needed here, pull directly from Docker Hub!
     restart: unless-stopped
-    expose:
-      - "${POSTGRES_PORT}"
-    environment: # Postgres Docker image need them through environment - to specifically overwrite the defaults of the first 3 here
+    ports:
+      - "${POSTGRES_PORT}:${POSTGRES_PORT}"
+    environment:                          # Postgres Docker image need them through environment - to specifically overwrite the defaults of the first 3 here
       POSTGRES_DB: ${POSTGRES_DB}
       POSTGRES_USER: ${POSTGRES_USER}
-      POSTGRES_PASSWORD_FILE: /run/secrets/db_admin_password.txt
-      POSTGRES_AUTH_USER_PASSWORD_FILE: /run/secrets/db_auth_password.txt
-      POSTGRES_WEBSITE_USER_PASSWORD_FILE: /run/secrets/db_website_password.txt
-      POSTGRES_GAME_USER_PASSWORD_FILE: /run/secrets/db_game_password.txt
-      POSTGRES_BOT_USER_PASSWORD_FILE: /run/secrets/db_bot_password.txt
-      POSTGRES_CHAT_USER_PASSWORD_FILE: /run/secrets/db_chat_password.txt
+      POSTGRES_PASSWORD_FILE: /run/secrets/db_admin_password
+      POSTGRES_AUTH_USER_PASSWORD_FILE: /run/secrets/db_auth_password
+      POSTGRES_WEBSITE_USER_PASSWORD_FILE: /run/secrets/db_website_password
+      POSTGRES_GAME_USER_PASSWORD_FILE: /run/secrets/db_game_password
+      POSTGRES_BOT_USER_PASSWORD_FILE: /run/secrets/db_bot_password
+      POSTGRES_CHAT_USER_PASSWORD_FILE: /run/secrets/db_chat_password
+    secrets:
+      - db_admin_password
+      - db_auth_password
+      - db_website_password
+      - db_game_password
+      - db_bot_password
+      - db_chat_password
     env_file:
       - .env
     volumes:
-      - database_volume:/var/lib/postgresql/data                                                              # volume
-      - ./secrets/database_passwords:/run/secrets:ro      # secrets
-      - ./packages/database/init/init.sql:/docker-entrypoint-initdb.d/init.sql:ro                             # to run schema creation script
-      - ./packages/database/scripts:/scripts:ro
-    networks:
-      - transcendence
+      - db_data:/var/lib/postgresql/data                                          # volume
+      - ./packages/database/init/init.sql:/docker-entrypoint-initdb.d/init.sql:ro # to run schema creation script
+      - ./packages/database/scripts:/scripts:ro                                   # container executions
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
       interval: 5s
       timeout: 5s
       retries: 5
-  
-  
-#           Drizzle = ORM - a library
-#           DATA BROWSER = Drizzle Studio, Dev-only Database Tool, a CLI tool inside Node environment (thats why node image)
-  drizzle-studio:
-    container_name: drizzle-studio
-    image: drizzle-studio:aisyah
-    build: 
+    networks:
+      - transcendence
+
+
+
+# ==============================================================================
+#           DRIZZLE ( Drizzle-ORM + Drizzle-kit + NODE )
+# ==============================================================================
+  drizzle-db_tool:
+    container_name: drizzle-db_tool
+    build:
       context: .
-      dockerfile: ./packages/database/Dockerfile              # gets the built (main application), built once only -> efficient + saves CPU and disk space. 
-    pull_policy: build                                        # This forces local builds, ignoring Docker Hub
+      dockerfile: ./packages/database/Dockerfile
+    image: drizzle-db_tool:aisyah
+    pull_policy: build
     restart: unless-stopped
     ports:
       - "${DRIZZLE_STUDIO_PORT}:${DRIZZLE_STUDIO_PORT}"
     environment:
-      DB_HOST: postgresql-rdbms                           # DB_HOST is a standard industry convention
-      DB_NAME: ${POSTGRES_DB}
+      DB_HOST: postgresql-rdbms
       DB_PORT: ${POSTGRES_PORT}
-      DB_USER: ${POSTGRES_USER}                           # ${POSTGRES_USER_NAME_AUTH}
+      DB_NAME: ${POSTGRES_DB}
+      DB_USER: ${POSTGRES_USER}
     secrets:
       - db_admin_password
     env_file:
-      - .env                                  
-    # volumes:
-    #   - ./secrets/database_passwords/db_admin_password.txt:/run/secrets/db_admin_password.txt:ro
-    command: npx drizzle-kit studio --port ${DRIZZLE_STUDIO_PORT} --host 0.0.0.0
-    networks:
-      - transcendence
+      - .env
     depends_on:
       postgresql-rdbms:
         condition: service_healthy
+    networks:
+      - transcendence
+    command: ["npm", "run", "db:studio", "--", "--host", "0.0.0.0"]
+    # The double dash "--" acts as a separator. It tells npm:
+    # "Stop parsing arguments for yourself. Everything after this -- should be passed directly to the command I am executing."
 
-#           AUTHENTICATION
+
+
+# ==============================================================================
+#           Authentication (Backend Microservice)
+# ==============================================================================
   auth:
     container_name: auth
     build:
-      context: .                                                  # Set this to the project root
-      dockerfile: ./backend-services/authentication/Dockerfile    # Point to the Dockerfile
+      context: .                                                  # Set workdir to the repo's root
+      dockerfile: ./backend-services/authentication/Dockerfile    # Point to the Dockerfile's relative path
     image: auth:jeremy
     pull_policy: build
     restart: unless-stopped
     ports:
       - "${AUTH_PORT}:${AUTH_PORT}"
     environment:
-      DB_HOST: postgresql-rdbms                           # DB_HOST is a standard industry convention
+      DB_HOST: postgresql-rdbms                              # DB_HOST is a standard industry convention
       DB_NAME: ${POSTGRES_DB}
       DB_PORT: ${POSTGRES_PORT}
       DB_USER: ${POSTGRES_USER}                           # ${POSTGRES_USER_NAME_AUTH}
-      DB_PASSWORD_FILE: /run/secrets/db_auth_password.txt
+      DB_PASSWORD_FILE: /run/secrets/db_admin_password
+      # DB_USER: ${POSTGRES_USER_NAME_AUTH}                           # ${POSTGRES_USER_NAME_AUTH}
+      # DB_PASSWORD_FILE: /run/secrets/db_auth_password
     env_file:
       - .env                                              # Loads global configs
       - backend-services/authentication/.env              # Loads service-specific configs
-    volumes:
-      - ./secrets/database_passwords/db_auth_password.txt:/run/secrets/db_auth_password.txt:ro # => will be inside auth's .env
-      - ./secrets/database_passwords/db_admin_password.txt:/run/secrets/db_admin_password.txt:ro
-    networks:
-      - transcendence
+    secrets:
+      - db_admin_password
+      # - db_auth_password
     depends_on:
       postgresql-rdbms:
         condition: service_healthy
+    networks:
+      - transcendence
 
+
+
+# # ==============================================================================
+# #           Adminer (Web-Based Admin Tool)
+# # ==============================================================================
+#   adminer:
+#     image: adminer:fastcgi # Requires nginx upstream routing Xrequirement backend must be HTTPS
+#     image: adminer:5.5.0-alpne #standalone - best for web game app
+#     ports:
+#       - "${LOCALHOST}:${ADMINER_PORT}:${ADMINER_PORT}"
+#     restart: unless-stopped
+#     env_file:
+#       - .env
+#     environment:
+#     secrets:
+#     volumes:
+#     depends_on:
+#       postgresql-rdbms:
+#         condition: service_healthy
+#     networks:
+#       - transcendence
 
 #         GAME-FRONTEND
 #         GAME-BACKEND
 #         GAME-BOT
 #         WEBSITE + NGINX (only backend has to be seperate micoservices with seperate 1 responsibiliyty -> PDF)
 #         CHAT
-#         OTHERS (still learning now)
-
-
-# NOTES:
-# env_file placement
-  # can have env_file at the bottom => Docker Compose processes the file in stages, rather than reading it line-by-line from top to bottom.
-  # environment overrides .env if vars exits in both, both can co-exist in docker-compose
-  # image syntax => image: version-tag
-# Drizzle Studio, need HTTPS?
-  # The requirement "HTTPS everywhere" applies to your production application (You must encrypt all traffic between your users and your API Gateway)
-  # No need HTTPS for Drizzle Studio, coz its a local development-only tool, should never be exposed to the public internet. 
-  # Accessing it at http://localhost:(port) is standard and perfectly acceptable for your development environment, keep it out of production entirely to avoid massive security holes
+#         OTHERS

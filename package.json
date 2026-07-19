@@ -1,11 +1,14 @@
 {
-  "name": "big2_monorepo",
+  "name": "big2",
   "private": true,
   "workspaces":[
     "packages/*",
     "backend-services/*"
   ],
   "scripts": {
+    "db:generate": "npm run --prefix packages/database db:generate",
+    "db:migrate": "npm run --prefix packages/database db:migrate",
+    "db:studio": "npm run --prefix packages/database db:studio",
     "build": "npm run build --workspaces --if-present",
     "dev": "npm run dev --workspaces --if-present",
     "lint": "eslint .",

@@ -19,11 +19,14 @@ RUN npm install
 # Copy all the actual source code
 COPY . .
 
+# Build typescripts
+RUN npm run build 
+
 # Now switch to the database directory
 WORKDIR /app/packages/database
 
 # Copy the script using the correct path from the root
-COPY packages/database/scripts/drizzle-entrypoint.sh /usr/local/bin/entrypoint.sh
+COPY packages/database/scripts/database-entrypoint.sh /usr/local/bin/entrypoint.sh
 RUN chmod +x /usr/local/bin/entrypoint.sh
 
 # Use the script as the entrypoint

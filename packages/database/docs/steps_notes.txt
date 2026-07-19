@@ -52,7 +52,7 @@ Step 2: Define the schemas in Drizzle
 
 
   3. The index.ts File (The "Collector")
-  This file acts as a shortcut. When you import from @big2_monorepo/database in your services, you'll want a clean way to get your tables.
+  This file acts as a shortcut. When you import from @big2/database in your services, you'll want a clean way to get your tables.
     ```
     // packages/database/src/index.ts
     export * from "./auth.schema";
@@ -64,7 +64,7 @@ Step 2: Define the schemas in Drizzle
 
     Why this works?
     export * is a shorthand that tells TypeScript: "Take everything that is exported from auth.schema.ts and re-export it from this file."
-    It acts like a funnel. When your backend services import from @big2_monorepo/database, they are actually grabbing the exports from your schema files through this index.ts file.
+    It acts like a funnel. When your backend services import from @big2/database, they are actually grabbing the exports from your schema files through this index.ts file.
 
     One important detail!
     This only works if you are using named exports in your schema files, Example auth.schema.ts:
@@ -109,7 +109,7 @@ This is the entire pipeline with the sequence of "Initialize SQL" -> "Define in 
 Now, in your auth-service (or any other service), you import exactly what you need. Because of the index.ts file, it looks very clean:
 ```TypeScript
 // backend/auth-service/src/index.ts
-import { users } from "@big2_monorepo/database"; 
+import { users } from "@big2/database"; 
 // Even though you import 'users', Drizzle knows it belongs 
 // to 'auth_service' because it's defined in that schema.
 ```
@@ -256,7 +256,7 @@ Makefile: ${} vs $( )
 
         all
             # Makefile replaces $(DB_VOLUME_NAME) with the value from .env
-            # The shell only sees the final result, e.g., "big2_monorepo_data"
+            # The shell only sees the final result, e.g., "big2_data"
             @mkdir -p $(PWD)/data/$(DB_VOLUME_NAME)
         ```
     Where you SHOULD use ${}
@@ -270,13 +270,13 @@ Why envsubst?
     you are safely injecting your environment secrets into the SQL command 
     without having to write them into your code files.
 
-TSConfig: Use the simpler alias @big2_monorepo/database/*.
-Imports: Use import * as schema from '@big2_monorepo/database/auth.schema';.
+TSConfig: Use the simpler alias @big2/database/*.
+Imports: Use import * as schema from '@big2/database/auth.schema';.
 Makefile: Use envsubst to bridge the gap between your .env variables and the SQL script.
 
 Cross-Package Usage: 
   Other services (like auth) can now add this to their own package.json dependencies using:
-  "dependencies": { "@big2_monorepo/database": "workspace:*" } 
+  "dependencies": { "@big2/database": "workspace:*" } 
   (if using a monorepo manager like pnpm or yarn workspaces).
 
 
