@@ -7,6 +7,7 @@ const whitelistInput = document.getElementById('whitelist-input') as HTMLInputEl
 const whitelistButton = document.getElementById('whitelist-button') as HTMLButtonElement;
 
 const createLobbyButton = document.getElementById('create-lobby') as HTMLButtonElement;
+const updateLobbyButton = document.getElementById('update-lobby') as HTMLButtonElement;
 
 let sessionId: string = "";
 
@@ -41,10 +42,20 @@ interface createLobbyPayload {
 createLobbyButton?.addEventListener('click', () => {
 	createLobbyAsync().then((result) => {
 		sessionId = result.sessionId;
+		whitelisted.length = 0;
 		console.log(`Received sessionId: ${sessionId}`);
 	}).catch((err) => {
 		console.log("Failed to create lobby");
 	});
+});
+
+updateLobbyButton?.addEventListener('click', () => {
+	const sessionId = sessionIdInput.value;
+	updateLobbyAsync(sessionId).then((result) => {
+		console.log(`Updated lobby<${sessionId}>`);
+	}).catch((err) => {
+		console.log("Failed to update lobby");
+	})
 });
 
 async function createLobbyAsync(): Promise<createLobbyResponse> {
@@ -66,4 +77,24 @@ async function createLobbyAsync(): Promise<createLobbyResponse> {
 	}
 	const result: createLobbyResponse = await response.json();
 	return (result);
+}
+
+async function updateLobbyAsync(sessionId: string): Promise<string> {
+	const data: createLobbyPayload = {
+		hostUuid: playerId.value,
+		playersLimit: 4,
+		whitelist: whitelisted
+	};
+	const response = await fetch(`/api/game/lobby/${sessionId}`, {
+		method: 'PUT',
+		headers: {
+			'Content-Type': 'application/json',
+		},
+		body: JSON.stringify(data),
+	});
+
+	if (!response.ok) {
+		throw new Error(`HTTP Error: ${response.status}`);
+	}
+	return (await response.text());
 }

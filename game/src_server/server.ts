@@ -33,7 +33,7 @@ const lobbyRequestSchema = z.object({
 	whitelist: z.array(z.string())
 });
 
-type LobbyRequest = z.infer<typeof lobbyRequestSchema>;
+export type LobbyRequest = z.infer<typeof lobbyRequestSchema>;
 
 /*
 	Exposed internally for party manager to request
@@ -47,15 +47,36 @@ app.post('/api/game/lobby', (req, res) => {
 	try {
 		const payload: LobbyRequest = lobbyRequestSchema.parse(req.body);
 
-		const sessionId = lobbyManager.createLobby(payload.hostUuid, payload.whitelist, payload.playersLimit);
+		const sessionId = lobbyManager.createLobby(payload);
 		return (res.status(200).json({ sessionId: sessionId }));
 	} 
-	catch(error) {
+	catch (error) {
 		if (error instanceof z.ZodError) {
 			return (res.status(400).json(error.issues));
 		}
 	}
 });
+
+app.put('/api/game/lobby/:sessionId', (req, res) => {
+	const sessionId = req.params.sessionId;
+	const lobby = lobbyManager.getLobby(sessionId);
+	if (lobby === undefined) {
+		return (res.status(404).end());
+	}
+	try {
+		const payload: LobbyRequest = lobbyRequestSchema.parse(req.body);
+		if (lobby.update(payload)) {
+			return (res.status(200).end());
+		}
+	}
+	catch (error) {
+		if (error instanceof z.ZodError) {
+			return (res.status(400).json(error.issues));
+		}
+	}
+	return (res.status(500).end());
+});
+
 
 export function kickSocket(socket: Socket) {
 	socket.emit("graceful_disconnect");

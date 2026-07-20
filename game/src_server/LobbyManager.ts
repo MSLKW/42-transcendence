@@ -1,4 +1,4 @@
-import { io, kickSocket } from './server.js';
+import { io, kickSocket, LobbyRequest } from './server.js';
 import { Socket } from 'socket.io';
 import { Lobby } from './Lobby.js';
 
@@ -26,21 +26,25 @@ export class LobbyManager {
 		});
 	}
 
-	private getSessionId(): string {
+	private getNewSessionId(): string {
 		const sessionId = this.newSessionId.toString();
 		this.newSessionId++;
 		return (sessionId);
 	}
 
-	public createLobby(hostUuid: string, whitelist: Array<string>, playersLimit: number): string {
-		const sessionId = this.getSessionId();
-		const lobby = new Lobby(hostUuid, whitelist, playersLimit, sessionId);
+	public createLobby(data: LobbyRequest): string {
+		const sessionId = this.getNewSessionId();
+		const lobby = new Lobby(data, sessionId);
 		lobby.events.on("lobby:inactive", () => {
 			this.deleteLobby(lobby);
 		})
-		console.log(`Lobby<${sessionId}> created with host ${hostUuid} and whitelist: ${whitelist} `);
+		console.log(`Lobby<${sessionId}> created with host ${data.hostUuid} and whitelist: ${data.whitelist} `);
 		this.lobbies[sessionId] = lobby;
 		return (sessionId);
+	}
+
+	public getLobby(sessionId: string): Lobby | undefined {
+		return (this.lobbies[sessionId]);
 	}
 
 	public deleteLobby(lobby: Lobby) {

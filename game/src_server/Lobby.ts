@@ -1,5 +1,5 @@
 import { Socket } from 'socket.io';
-import { io, kickSocket } from './server.js';
+import { io, kickSocket, LobbyRequest } from './server.js';
 import { UserState } from './UserState.js';
 import { GameState } from './GameState.js';
 import { GameStartRequest, SeatOrderTransmit, StatusTransmit } from '../src_shared/Types.js';
@@ -16,17 +16,17 @@ export class Lobby {
 	public	sessionId: string;
 	public	events: EventEmitter;
 
-	constructor(hostUuid: string, whitelist: Array<string>, playersLimit: number, sessionId: string) {
-		this.hostUuid = hostUuid;
+	constructor(data: LobbyRequest, sessionId: string) {
+		this.hostUuid = data.hostUuid;
 		this.users = [];
-		this.whitelist = whitelist;
+		this.whitelist = data.whitelist;
 		this.availableSeats = [];
 		this.totalUsersLimit = 5;
 		this.sessionId = sessionId;
 		this.events = new EventEmitter();
-		this.game = new GameState(playersLimit, this.sessionId);
+		this.game = new GameState(data.playersLimit, this.sessionId);
 		this.lobbyRoomId = "lobby" + this.sessionId;
-		for (let i = 0; i < playersLimit; i++) {
+		for (let i = 0; i < data.playersLimit; i++) {
 			this.availableSeats.push(i);
 		}
 	}
@@ -133,5 +133,12 @@ export class Lobby {
 
 	public isActive() {
 		return (this.users.length > 0);
+	}
+
+	public update(data: LobbyRequest): boolean {
+		console.log(`lobby${this.sessionId} is updated`)
+		// this.hostUuid = data.hostUuid;
+		this.whitelist = data.whitelist;
+		return (true);
 	}
 }
