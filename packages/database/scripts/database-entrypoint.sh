@@ -46,8 +46,9 @@ done
 # 3. Check for final success
 if [ "$SUCCESS" = false ]; then
   echo "Error: Migrations failed after $MAX_RETRIES attempts."
-  # for now, there will no generate/migrate yet (dev phase)
-  # migrate will definitely fail if theres no existing generated files yet
+  # echo "Exiting now..."
+  # exit 1
+  #! bug, check mhy not migrating, is it coz its already migrated before? 
 fi
 
 

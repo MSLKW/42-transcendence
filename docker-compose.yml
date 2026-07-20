@@ -1,6 +1,6 @@
 networks:
   transcendence:
-    name : ${NETWORK_NAME}     # name : transcendence
+    name : ${NETWORK_NAME}     # name : transcendence 
     driver: bridge
 
 
@@ -83,7 +83,7 @@ services:
       dockerfile: ./packages/database/Dockerfile
     image: drizzle-db_tool:aisyah
     pull_policy: build
-    restart: unless-stopped
+    restart: no
     ports:
       - "${DRIZZLE_STUDIO_PORT}:${DRIZZLE_STUDIO_PORT}"
     environment:
@@ -91,6 +91,7 @@ services:
       DB_PORT: ${POSTGRES_PORT}
       DB_NAME: ${POSTGRES_DB}
       DB_USER: ${POSTGRES_USER}
+      DB_PASSWORD_FILE: /run/secrets/db_admin_password
     secrets:
       - db_admin_password
     env_file:
@@ -123,16 +124,13 @@ services:
       DB_HOST: postgresql-rdbms                              # DB_HOST is a standard industry convention
       DB_NAME: ${POSTGRES_DB}
       DB_PORT: ${POSTGRES_PORT}
-      DB_USER: ${POSTGRES_USER}                           # ${POSTGRES_USER_NAME_AUTH}
-      DB_PASSWORD_FILE: /run/secrets/db_admin_password
-      # DB_USER: ${POSTGRES_USER_NAME_AUTH}                           # ${POSTGRES_USER_NAME_AUTH}
-      # DB_PASSWORD_FILE: /run/secrets/db_auth_password
+      DB_USER: ${POSTGRES_USER} # ${POSTGRES_USER_NAME_AUTH}
+      DB_PASSWORD_FILE: /run/secrets/db_admin_password # /run/secrets/db_auth_password
     env_file:
       - .env                                              # Loads global configs
-      - backend-services/authentication/.env              # Loads service-specific configs
+      # - backend-services/authentication/.env              # Loads service-specific configs (if have)
     secrets:
-      - db_admin_password
-      # - db_auth_password
+      - db_admin_password # - db_auth_password
     depends_on:
       postgresql-rdbms:
         condition: service_healthy

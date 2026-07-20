@@ -32,4 +32,16 @@ If you used echo "password" > file, it often adds a newline character that Postg
 
 If you find that authentication fails, try opening the files in nano and deleting any empty lines at the bottom so the cursor is exactly at the end of the string.
 
+//
+The -f stands for follow.
 
+When you run docker logs -f <container_name>, it keeps the terminal session open and "tails" the logs. This means:
+
+Real-time updates: As soon as your application prints a new log (like console.log), it instantly appears in your terminal.
+
+Continuous stream: It doesn't just print what has happened so far and exit; it stays attached to the container's output stream until you manually stop it (by pressing Ctrl+C).
+
+
+//
+docker compose:
+environment overwrite env_file (on the same var)
