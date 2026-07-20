@@ -23,28 +23,28 @@ export const CreateAccountWindow = () => {
 	const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 	const [isLoading, setIsLoading] = useState(false);
 
-	// const AUTH_URL = "http://localhost:3000";
-	const AUTH_URL = "localhost:3000";
+	const AUTH_URL = "http://localhost:3000";
+	// const AUTH_URL = "localhost:3000";
 	// const AUTH_URL = "/api/auth";
 
 	const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
 
 		if (!email || !password || !confirmPassword) {
-			setNotification("All fields are required", notificationType.isError);
+			setNotification("All fields are required", notificationType.error);
 			return;
 		}
 		const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 		if (!emailRegex.test(email)) {
-			setNotification("Please enter a valid email address", notificationType.isError);
+			setNotification("Please enter a valid email address", notificationType.error);
 			return;
 		}
 		if (password.length < 8) {
-			setNotification("Password must be at least 8 characters", notificationType.isError);
+			setNotification("Password must be at least 8 characters", notificationType.error);
 			return;
 		}
 		if (password !== confirmPassword) {
-			setNotification("Passwords do not match", notificationType.isError);
+			setNotification("Passwords do not match", notificationType.error);
 			return;
 		}
 		try {
@@ -69,7 +69,7 @@ export const CreateAccountWindow = () => {
 			setCurrentScene("HOME");
 		} catch (err) {
 			const errorMsg = err instanceof Error ? err.message : "Something went wrong. Please try again";
-			setNotification(errorMsg, notificationType.isError);
+			setNotification(errorMsg, notificationType.error);
 		} finally {
 			setIsLoading(false);
 		}

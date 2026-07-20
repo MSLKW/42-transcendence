@@ -25,12 +25,12 @@ export const SignInWindow = () => {
 		e.preventDefault();
 
 		if (!email || !password) {
-			setNotification("All fields are required", notificationType.isError);
+			setNotification("All fields are required", notificationType.error);
 			return;
 		}
 		const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 		if (!emailRegex.test(email)) {
-			setNotification("Please enter a valid email address", notificationType.isError);
+			setNotification("Please enter a valid email address", notificationType.error);
 			return;
 		}
 
@@ -54,7 +54,7 @@ export const SignInWindow = () => {
 			setCurrentScene("HOME");
 		} catch (err) {
 			const errorMsg = err instanceof Error ? err.message : "Something went wrong. Please try again";
-			setNotification(errorMsg, notificationType.isError);
+			setNotification(errorMsg, notificationType.error);
 		} finally {
 			setIsLoading(false);
 		}

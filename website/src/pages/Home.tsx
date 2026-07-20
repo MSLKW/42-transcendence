@@ -11,9 +11,9 @@ import { SmallLogo } from "../components/label/Logo";
 
 export const GAMEMODE = {
 	DEV: 1,
-	PLAYERS2: 2,
-	PLAYERS3: 3,
-	PLAYERS4: 4,
+	VERSUS2: 2,
+	VERSUS3: 3,
+	VERSUS4: 4,
 }
 
 export const Home = () => {
@@ -48,9 +48,9 @@ export const Home = () => {
 							flex-5
 							pointer-events-auto
 		 				">
-		 					<HomeCardButton gameMode={GAMEMODE.PLAYERS4}/>
-		 					<HomeCardButton gameMode={GAMEMODE.PLAYERS3}/>
-		 					<HomeCardButton gameMode={GAMEMODE.PLAYERS2}/>
+		 					<HomeCardButton gameMode={GAMEMODE.VERSUS4}/>
+		 					<HomeCardButton gameMode={GAMEMODE.VERSUS3}/>
+		 					<HomeCardButton gameMode={GAMEMODE.VERSUS2}/>
 		 					<HomeCardButton gameMode={GAMEMODE.DEV}/>
 		 				</div>
 		 			</div>
@@ -67,7 +67,7 @@ export const Home = () => {
 						sm:overflow-x-visible overflow-x-auto
 					">
 						{ Array.from({ length: partyCount }).map((_, index) => (
-							<AvatarButton key={index} playerIndex={index} cornerButton={members[index].isHost === true ? "host" : "remove"}/>
+							<AvatarButton key={index} playerIndex={index} cornerButton={members[index].isHost ? "host" : ""}/>
 						))}
 						<PartyButton />
 					</div>

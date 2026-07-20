@@ -31,7 +31,7 @@ export const HomeCardButton = ({ gameMode = 4 }: HomeProps) => {
 				focus-visible:outline-2 outline-b5 outline-offset-5
 				snap-center
 		">
-			{ gameMode === GAMEMODE.PLAYERS4 &&
+			{ gameMode === GAMEMODE.VERSUS4 &&
 				<>
 					<div className="
 						w-[clamp(2.5rem,3.571vmin+1.786rem,5rem)] aspect-square
@@ -69,7 +69,7 @@ export const HomeCardButton = ({ gameMode = 4 }: HomeProps) => {
 					<h1 className="text-n0">4 Players</h1>
 				</>
 			}
-			{ gameMode === GAMEMODE.PLAYERS3 &&
+			{ gameMode === GAMEMODE.VERSUS3 &&
 				<>
 					<div className="
 						w-[clamp(2.5rem,3.571vmin+1.786rem,5rem)] aspect-square
@@ -100,7 +100,7 @@ export const HomeCardButton = ({ gameMode = 4 }: HomeProps) => {
 					<h1 className="text-n0">3 Players</h1>
 				</>
 			}
-			{ gameMode === GAMEMODE.PLAYERS2 &&
+			{ gameMode === GAMEMODE.VERSUS2 &&
 				<>
 					<div className="
 						h-[clamp(2.5rem,3.571vmin+1.786rem,5rem)] aspect-square w-max

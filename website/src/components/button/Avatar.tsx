@@ -9,7 +9,7 @@ interface AvatarProps {
 	isActive?: boolean;
 }
 
-export const AvatarButton = ({ cornerButton = "none", playerIndex = 0, isActive = false }: AvatarProps) => {
+export const AvatarButton = ({ cornerButton = "", playerIndex = 0, isActive = false }: AvatarProps) => {
 	const { setPartyValue } = usePartyStore();
 	const { setShowWindow } = useSceneStore();
 
@@ -19,7 +19,7 @@ export const AvatarButton = ({ cornerButton = "none", playerIndex = 0, isActive 
 				data-tip={ playerIndex === 0 ? "Edit Profile" : "View Stats"}
 				onClick={(e) => {
 					e.currentTarget.blur();
-					console.log(playerIndex);
+
 					if (playerIndex === 0) {
 						setPartyValue("playerFocus", playerIndex);
 						setShowWindow("profile", true);

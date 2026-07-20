@@ -39,7 +39,7 @@ export const useDevStore = create<DevState>()(
 				});
 				usePlayerStore.setState({
 					data: {
-						uuid: "12345678901234567890123456789012",
+						uuid: "12345678-abcd-efgh-ijkl-000000000000",
 						name: null,
 						avatar: "avatar-stock-0.webp",
 						badge: "Newcomer",
@@ -71,7 +71,7 @@ export const useDevStore = create<DevState>()(
 					partyCount: 1,
 					playerFocus: 0,
 					members: [{
-						uuid: "12345678901234567890123456789012",
+						uuid: "12345678-abcd-efgh-ijkl-000000000000",
 						name: null,
 						avatar: "avatar-stock-0.webp",
 						badge: "Newcomer",

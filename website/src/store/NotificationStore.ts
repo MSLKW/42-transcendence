@@ -13,9 +13,9 @@ interface NotificationValues {
 }
 
 export const notificationType = {
-	isError: 0,
-	isNameInput: 1,
-	isInvitation: 2,
+	error: 0,
+	nameInput: 1,
+	invite: 2,
 } as const;
 
 interface NotificationState extends NotificationValues {
@@ -44,15 +44,15 @@ export const useNotificationStore = create<NotificationState>()(
 				let isTimed = false;
 				let numOfButtons = 0;
 
-				if (type === notificationType.isError) {
+				if (type === notificationType.error) {
 					isError = true;
 					isTimed = true;
 					numOfButtons = 0;
-				} else if (type === notificationType.isNameInput) {
+				} else if (type === notificationType.nameInput) {
 					isError = false;
 					isTimed = false;
 					numOfButtons = 1;
-				} else if (type === notificationType.isInvitation) {
+				} else if (type === notificationType.invite) {
 					isError = false;
 					isTimed = false;
 					numOfButtons = 2;

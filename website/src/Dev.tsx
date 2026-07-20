@@ -61,7 +61,7 @@ export default function Dev() {
 
 const TEST_MEMBERS = [
 	{
-		uuid: "12345678901234567890123456789012",
+		uuid: "12345678-abcd-efgh-ijkl-111111111111",
 		name: "Dev-Azrul",
 		avatar: "avatar-stock-1.webp",
 		badge: "Beginner's Luck",
@@ -90,7 +90,7 @@ const TEST_MEMBERS = [
 		isHost: false,
 	},
 	{
-		uuid: "12345678901234567890123456789012",
+		uuid: "12345678-abcd-efgh-ijkl-222222222222",
 		name: "Dev-Max",
 		avatar: "avatar-stock-2.webp",
 		badge: "Challenger",
@@ -119,7 +119,7 @@ const TEST_MEMBERS = [
 		isHost: false,
 	},
 	{
-		uuid: "12345678901234567890123456789012",
+		uuid: "12345678-abcd-efgh-ijkl-333333333333",
 		name: "Dev-Jeremy",
 		avatar: "avatar-stock-3.webp",
 		badge: "Enthusiast",
@@ -148,7 +148,7 @@ const TEST_MEMBERS = [
 		isHost: false,
 	},
 	{
-		uuid: "12345678901234567890123456789012",
+		uuid: "12345678-abcd-efgh-ijkl-444444444444",
 		name: "Dev-Aisyah",
 		avatar: "avatar-stock-4.webp",
 		badge: "Risk Taker",

@@ -10,7 +10,7 @@ export const SetupWindow = () => {
 	const { setNotification } = useNotificationStore();
 
 	useEffect(() => {
-		setNotification("Enter your name and choose your avatar", notificationType.isNameInput);
+		setNotification("Enter your name and choose your avatar", notificationType.nameInput);
 	}, []);
 
 	return (
