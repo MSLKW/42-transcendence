@@ -1,7 +1,9 @@
 import { pgSchema, text, uuid, timestamp, integer } from "drizzle-orm/pg-core"; // pg-core specificly means postgres
 import { relations } from "drizzle-orm"; // to create relationships
 
-// 1. Define the schema variable name
+
+// 1. Schema Creations => only do schema creation through Drizzle !!
+//    Industry Standard: Keep schema names hardcoded in your SQL and your code.
 export const authSchema = pgSchema("auth_schema");
 
 
@@ -16,6 +18,7 @@ export const users = authSchema.table("users", {
   failedLoginAttempts: integer("failed_login_attempts").default(0).notNull(),
   lockedUntil: timestamp("locked_until"),
 });
+
 
 //            Sessions Table
 export const sessions = authSchema.table("sessions", {

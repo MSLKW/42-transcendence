@@ -47,7 +47,7 @@ const pool = new Pool({
 //    The 'pool' is the engine provided by 'pg'.
 //    Using new Pool() is the industry standard for production Node.js applications. 
 //    Safest way to ensure your auth service remains responsive and stable under load.
-export const db = drizzle(pool, {schema: authSchema });
+export const postgres = drizzle(pool, {schema: authSchema });
 
 
 // 5. Graceful Shutdown 

@@ -1,4 +1,4 @@
-CREATE SCHEMA "auth_schema";
+CREATE SCHEMA IF NOT EXISTS "auth_schema";
 --> statement-breakpoint
 CREATE TABLE "auth_schema"."sessions" (
 	"token" text PRIMARY KEY NOT NULL,

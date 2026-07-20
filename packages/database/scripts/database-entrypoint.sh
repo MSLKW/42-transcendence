@@ -27,7 +27,7 @@ SUCCESS=false
 
 while [ $COUNT -lt $MAX_RETRIES ]; do
   if npm run db:migrate; then
-    echo "Migrations applied successfully!"
+    echo "\nMigrations applied successfully!"
     SUCCESS=true
     break
   else
@@ -46,9 +46,8 @@ done
 # 3. Check for final success
 if [ "$SUCCESS" = false ]; then
   echo "Error: Migrations failed after $MAX_RETRIES attempts."
-  # echo "Exiting now..."
-  # exit 1
-  #! bug, check mhy not migrating, is it coz its already migrated before? 
+  echo "Exiting drizzle-db_tool container upon migration failure now..."
+  exit 1
 fi
 
 
