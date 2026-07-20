@@ -24,10 +24,10 @@ export const StatsWindow = () => {
 				<div className="divide-y divide-n2">
 					<div className="flex">
 						<AvatarMemberModule />
-						{/* <PlayerDataModule /> */}
+						<PlayerDataModule />
 					</div>
 					<MedalsModule />
-					{/* <PlayerStatsModule /> */}
+					<PlayerStatsModule />
 				</div>
 			</div>
 		</section>
