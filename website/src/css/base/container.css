@@ -1,0 +1,38 @@
+@utility cont-bg {
+	@apply
+		z-[-1]
+		absolute top-0 left-1/2 -translate-x-1/2
+		w-screen h-screen
+		pointer-events-none
+		;
+}
+@utility cont-canvas {
+	@apply
+		z-0
+		absolute top-0 left-1/2 -translate-x-1/2
+		w-full min-w-80 max-w-360
+		h-full min-h-120 max-h-360
+		;
+}
+@utility cont-body {
+	@apply
+		z-1
+		w-full min-w-80 max-w-360
+		h-full min-h-120 max-h-360
+		mx-auto
+		p-[clamp(0.125rem,5vw+0.125rem,3.125rem)]
+		flex flex-col
+		relative
+		pointer-events-none
+		;
+}
+
+header {
+	@apply w-full h-fit z-1;
+}
+main {
+	@apply w-full h-full z-0;
+}
+footer {
+	@apply w-full h-max z-1;
+}

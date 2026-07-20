@@ -14,36 +14,37 @@ export class Player {
 	private cardHeapRef: CardHeap;
 	private raycaster: THREE.Raycaster;
 
-	private sendCardsButton: HTMLButtonElement;
-	private skipTurnButton: HTMLButtonElement;
-	private startGameButton: HTMLButtonElement;
-	private sortCardsByRankButton: HTMLButtonElement;
-	private sortCardsBySuitButton: HTMLButtonElement
-
+	private sendCardsButton!: HTMLButtonElement;
+	private skipTurnButton!: HTMLButtonElement;
+	private startGameButton!: HTMLButtonElement;
+	private sortCardsByRankButton!: HTMLButtonElement;
+	private sortCardsBySuitButton!: HTMLButtonElement
+	
 	constructor(socket: Socket, playerId: string, cardHeapRef: CardHeap) {
 		this.socket = socket;
 		this.cardHeapRef = cardHeapRef;
 		this.playerId = playerId;
 		this.raycaster = new THREE.Raycaster();
-
-		this.sendCardsButton = document.getElementById('send-cards-button') as HTMLButtonElement;
-		this.skipTurnButton = document.getElementById('skip-turn-button') as HTMLButtonElement;
-		this.startGameButton = document.getElementById('start-game-button') as HTMLButtonElement;
-		this.sortCardsByRankButton = document.getElementById('sort-cards-by-rank-button') as HTMLButtonElement;
-		this.sortCardsBySuitButton = document.getElementById('sort-cards-by-suit-button') as HTMLButtonElement;
-
 		this.cardManager = new CardManager(this.playerId);
 
-		if (this.sendCardsButton === undefined || 
-			this.skipTurnButton === undefined || 
-			this.startGameButton === undefined ||
-			this.sortCardsByRankButton === undefined ||
-			this.sortCardsBySuitButton === undefined) {
-			console.error("Player could not get HTML buttons");
-			return ;
-		}
-		this.setupListeners();
-		this.setPlayerTurnUI(false);
+		setTimeout(() => {
+			this.sendCardsButton = document.getElementById('send-cards-button') as HTMLButtonElement;
+			this.skipTurnButton = document.getElementById('skip-turn-button') as HTMLButtonElement;
+			this.startGameButton = document.getElementById('start-game-button') as HTMLButtonElement;
+			this.sortCardsByRankButton = document.getElementById('sort-cards-by-rank-button') as HTMLButtonElement;
+			this.sortCardsBySuitButton = document.getElementById('sort-cards-by-suit-button') as HTMLButtonElement;
+
+			if (this.sendCardsButton || 
+				this.skipTurnButton || 
+				this.startGameButton ||
+				this.sortCardsByRankButton ||
+				this.sortCardsBySuitButton) {
+				console.error("Player could not get HTML buttons");
+				return ;
+			}
+			this.setupListeners();
+			this.setPlayerTurnUI(false);
+		}, 0);
 	}
 
 	public getPlayerId() {
@@ -57,7 +58,7 @@ export class Player {
 			}
 			console.log(`Start Game: ${status.success}`);
 		});
-		
+
 		this.socket.on('game_end', (gameEndStats: GameEndStatsTransmit) => {
 			this.cardManager.reset();
 			this.cardHeapRef.reset();
@@ -66,7 +67,7 @@ export class Player {
 			gameStatus.setLightboxActive(true);
 			console.log(gameEndStats);
 		})
-		
+
 		this.socket.on('player_play_card_hand', (status: statusTransmit) => {
 			if (status.success === true) {
 				const cardHand = this.cardManager.sendSelectedCards();
@@ -109,6 +110,7 @@ export class Player {
 		});
 		
 		this.startGameButton.addEventListener('click', () => {
+			console.log("123");
 			const gameStartRequest: GameStartRequest = {
 				playerId: this.playerId
 			}
