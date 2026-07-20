@@ -4,6 +4,7 @@ import { CardHand } from './CardHand.ts';
 import { outlinePass } from './main.ts';
 import { outline } from 'three/examples/jsm/tsl/display/OutlineNode.js';
 import { CardHandTransmit } from '../src_shared/Types.ts';
+import { update } from 'three/examples/jsm/libs/tween.module.js';
 
 export class CardManager {
 	private position: THREE.Vector3;
@@ -105,36 +106,39 @@ export class CardManager {
 			let slot = slots.at(i);
 			if (card && slot) {
 				let normalizedIndex = cards.length > 1 ? i / (cards.length - 1) : 0.5;
-				card.object.position.copy(slot);
-				card.object.rotation.copy(this.rotation);
-				this.applyFanEffect(card.object, 40, 1, normalizedIndex);
-				this.applyHoverEffect(card);
+				let updatedPosition = new THREE.Vector3().copy(slot);
+				let updatedRotation = new THREE.Quaternion().setFromEuler(this.rotation);
+				this.applyFanEffect(updatedPosition, updatedRotation, 40, 1, normalizedIndex);
+				this.applyHoverEffect(card, updatedPosition);
+				if (updatedPosition !== card.object.position || updatedRotation !== card.object.quaternion) {
+					card.move(updatedPosition, new THREE.Euler().setFromQuaternion(updatedRotation));
+				}
 				// console.log(`updated card object rank: ${card.rank} suit: ${card.suit} position: ${card.object.position.x},${card.object.position.y},${card.object.position.z} index: ${normalizedIndex}`);
 			}
 		}
 	}
 
-	private applyFanEffect(object: THREE.Object3D, rotation: number, position: number, normalizedIndex: number) {
-		const fanRotationStart = (rotation / 2) * (Math.PI / 180);
-		const fanRotationEnd = -(rotation / 2) * (Math.PI / 180);
+	// Will mutate position and rotation
+	private applyFanEffect(position: THREE.Vector3, rotation: THREE.Quaternion, fanRotation: number, width: number, normalizedIndex: number) {
+		const fanRotationStart = (fanRotation / 2) * (Math.PI / 180);
+		const fanRotationEnd = -(fanRotation / 2) * (Math.PI / 180);
 
-		const fanPositionValley = -(position / 2)
-		const fanPositionPeak = position / 2
+		const fanPositionValley = -(width / 2);
+		const fanPositionPeak = width / 2;
 
-		object.rotateZ(THREE.MathUtils.lerp(fanRotationStart, fanRotationEnd, normalizedIndex));
-		object.translateY(THREE.MathUtils.lerp(fanPositionValley, fanPositionPeak, Math.sin(normalizedIndex * Math.PI)));
-		object.translateZ(THREE.MathUtils.lerp(0, 0.1, normalizedIndex));
+		rotation.multiply(new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(0, 0, 1), THREE.MathUtils.lerp(fanRotationStart, fanRotationEnd, normalizedIndex)));
+		position.add(new THREE.Vector3(0, THREE.MathUtils.lerp(fanPositionValley, fanPositionPeak, Math.sin(normalizedIndex * Math.PI)), THREE.MathUtils.lerp(0, 0.1, normalizedIndex)).applyQuaternion(rotation));
+		// object.translateZ(THREE.MathUtils.lerp(0, 0.1, normalizedIndex));
 	}
 
-	private applyHoverEffect(card: Card) {
-		// const higlightableObjects: Array<THREE.Object3D> = [];
+	// Will mutate position
+	private applyHoverEffect(card: Card, position: THREE.Vector3) {
 		const index = outlinePass.selectedObjects.indexOf(card.object);
 		if (card.isHover === true) {
 			if (index === -1) {
 				outlinePass.selectedObjects.push(card.object);
 			}
-			card.object.translateY(0.5);
-			card.object.translateZ(0.1);
+			position.add(new THREE.Vector3(0, 0.5, 0.1).applyQuaternion(card.object.quaternion));
 		}
 		else if (card.isHover === false && index !== -1) {
 			outlinePass.selectedObjects.splice(index, 1);

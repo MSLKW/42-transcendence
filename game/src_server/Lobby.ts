@@ -80,7 +80,7 @@ export class Lobby {
 		if (this.game.uuidInGame(user.uuid) === true) {
 			this.game.playerReconnect(user);
 		}
-		else {
+		else if (this.game.isGameStarted === true) {
 			this.game.addSpectator(user);
 		}
 

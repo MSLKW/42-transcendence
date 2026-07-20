@@ -13,6 +13,7 @@ import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
 import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
 import { OutlinePass } from 'three/addons/postprocessing/OutlinePass.js';
 import { OutputPass } from 'three/examples/jsm/Addons.js';
+import { gsap } from 'gsap';
 
 const resolution = new THREE.Vector2(window.innerWidth, window.innerHeight)
 

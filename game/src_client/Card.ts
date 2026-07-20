@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import { CardRank, CardSuit, CardTransmit } from '../src_shared/Types.ts';
 import { scene } from './main.ts'
+import { gsap } from 'gsap';
 
 export class Card {
 	private static	textureLoader = new THREE.TextureLoader();
@@ -49,6 +50,21 @@ export class Card {
 		this.frontMesh.removeFromParent();
 		this.backMesh.removeFromParent();
 		this.object.removeFromParent();
+	}
+
+	public move(position: THREE.Vector3, rotation: THREE.Euler) {
+		gsap.to(this.object.position, {
+			x: position.x,
+			y: position.y,
+			z: position.z,
+			duration: 0.1,
+		});
+		gsap.to(this.object.rotation, {
+			x: rotation.x,
+			y: rotation.y,
+			z: rotation.z,
+			duration: 0.1,
+		});
 	}
 
 	public setCardRankSuit(rank: CardRank | undefined, suit: CardSuit | undefined) {

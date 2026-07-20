@@ -18,6 +18,7 @@ export class CardHeap {
 		this.cardHands.push(cardHand);
 		this.updateCardHandObject(cardHand);
 		this.position.y += 0.01;
+		console.log("received cardhand");
 	}
 
 	private updateCardHandObject(cardHand: CardHand) {
@@ -25,8 +26,10 @@ export class CardHeap {
 		let xEnd = 2.5;
 		for (let i = 0; i < cardHand.cards.length; i++) {
 			let normalizedIndex = cardHand.cards.length > 1 ? i / (cardHand.cards.length - 1) : 0.5;
-			cardHand.cards[i].object.rotation.set(-Math.PI / 2, 0, 0);
-			cardHand.cards[i].object.position.set(this.position.x + THREE.MathUtils.lerp(xStart, xEnd, normalizedIndex), this.position.y, this.position.z);
+			cardHand.cards[i].move(
+				new THREE.Vector3(this.position.x + THREE.MathUtils.lerp(xStart, xEnd, normalizedIndex), this.position.y, this.position.z),
+				new THREE.Euler(-Math.PI / 2, 0, 0)
+			);
 		}
 	}
 
