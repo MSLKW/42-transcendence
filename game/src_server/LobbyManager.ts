@@ -38,7 +38,7 @@ export class LobbyManager {
 		lobby.events.on("lobby:inactive", () => {
 			this.deleteLobby(lobby);
 		})
-		console.log(`Lobby<${sessionId}> created with host ${data.hostUuid} and whitelist: ${data.whitelist} `);
+		console.log(`Lobby<${sessionId}> created with host ${data.hostUuid} and whitelist: ${data.playerUuids} `);
 		this.lobbies[sessionId] = lobby;
 		return (sessionId);
 	}

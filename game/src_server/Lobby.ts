@@ -19,7 +19,7 @@ export class Lobby {
 	constructor(data: LobbyRequest, sessionId: string) {
 		this.hostUuid = data.hostUuid;
 		this.users = [];
-		this.whitelist = data.whitelist;
+		this.whitelist = data.playerUuids;
 		this.availableSeats = [];
 		this.totalUsersLimit = 5;
 		this.sessionId = sessionId;
@@ -136,9 +136,16 @@ export class Lobby {
 	}
 
 	public update(data: LobbyRequest): boolean {
-		console.log(`lobby${this.sessionId} is updated`)
+		const kickUuids = this.whitelist.filter((uuid) => data.playerUuids.indexOf(uuid) === -1);
+		this.whitelist = data.playerUuids;
+		for (let i = 0; i < kickUuids.length; i++) {
+			const user = this.users.find((user) => user.uuid === kickUuids[i]);
+			if (user !== undefined) {
+				kickSocket(user.socket);
+			}
+		}
 		// this.hostUuid = data.hostUuid;
-		this.whitelist = data.whitelist;
+		console.log(`lobby${this.sessionId} is updated`)
 		return (true);
 	}
 }
