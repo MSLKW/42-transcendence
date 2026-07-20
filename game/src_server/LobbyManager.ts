@@ -20,7 +20,7 @@ export class LobbyManager {
 				lobby.connectUser(socket, uuid);
 			}
 			else {
-				console.log(`Lobby not found: ${lobbyId}`);
+				console.log(`Lobby<${lobbyId}> not found`);
 				kickSocket(socket);
 			}
 		});
@@ -38,7 +38,7 @@ export class LobbyManager {
 		lobby.events.on("lobby:inactive", () => {
 			this.deleteLobby(lobby);
 		})
-		console.log(`Lobby<${sessionId}> created with host ${data.hostUuid} and whitelist: ${data.playerUuids} `);
+		console.log(`Lobby<${sessionId}> created with Host<${data.hostUuid}> and whitelist: [${data.playerUuids}]`);
 		this.lobbies[sessionId] = lobby;
 		return (sessionId);
 	}
@@ -51,7 +51,7 @@ export class LobbyManager {
 		if (this.lobbies[lobby.sessionId] === undefined)
 			return ;
 		delete(this.lobbies[lobby.sessionId]);
-		console.log(`Deleted Lobby<${lobby.sessionId}>`);
+		console.log(`Lobby<${lobby.sessionId}> deleted`);
 	}
 
 	private authenticateSocket(authId: string): string {

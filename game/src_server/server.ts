@@ -30,7 +30,7 @@ const lobbyManager = new LobbyManager();
 const lobbyRequestSchema = z.object({
 	hostUuid: z.string().min(1), // will be replaced with z.uuid
 	playersLimit: z.number(),
-	playerUuids: z.array(z.string())
+	playerUuids: z.array(z.string()).transform((uuids) => [... new Set(uuids)])
 });
 
 export type LobbyRequest = z.infer<typeof lobbyRequestSchema>;

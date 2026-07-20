@@ -18,7 +18,6 @@ export class CardHeap {
 		this.cardHands.push(cardHand);
 		this.updateCardHandObject(cardHand);
 		this.position.y += 0.01;
-		console.log("received cardhand");
 	}
 
 	private updateCardHandObject(cardHand: CardHand) {
