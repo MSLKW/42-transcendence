@@ -194,7 +194,7 @@ if (authId && playerId) {
 	});
 }
 
-function tablePosition(seatIndex: number, isPlayer: boolean): [THREE.Vector3, THREE.Euler] {
+function tablePosition(seatIndex: number, isPlayer: boolean): [THREE.Vector3, THREE.Quaternion] {
 	const positions: Array<THREE.Vector3> = [
 		new THREE.Vector3(0, 2, 8),
 		new THREE.Vector3(-8, 2, 0),
@@ -216,7 +216,7 @@ function tablePosition(seatIndex: number, isPlayer: boolean): [THREE.Vector3, TH
 		camera.lookAt(tableMesh.position);
 		orbitControls.update();
 	}
-	return ([positions[seatIndex], rotations[seatIndex]])
+	return ([positions[seatIndex], new THREE.Quaternion().setFromEuler(rotations[seatIndex])]);
 }
 
 function animate(time: DOMHighResTimeStamp) {

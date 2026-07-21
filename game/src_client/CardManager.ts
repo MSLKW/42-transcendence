@@ -1,31 +1,39 @@
 import * as THREE from 'three';
 import { Card } from './Card.ts';
 import { CardHand } from './CardHand.ts';
-import { outlinePass } from './main.ts';
+import { outlinePass, scene } from './main.ts';
 import { outline } from 'three/examples/jsm/tsl/display/OutlineNode.js';
 import { CardHandTransmit } from '../src_shared/Types.ts';
 import { update } from 'three/examples/jsm/libs/tween.module.js';
 
 export class CardManager {
 	private position: THREE.Vector3;
-	private rotation: THREE.Euler;
+	private rotation: THREE.Quaternion;
 	private boundSpace: number;
 	private	slots: Array<THREE.Vector3>;
 	private	cards: Array<Card>;
+	private hitboxes: Array<THREE.Mesh>;
+	private static invisibleMaterial = new THREE.MeshBasicMaterial({
+		colorWrite: false,
+		depthWrite: false
+	});
 	public	selectedCards: CardHand;
 	private selectedBoundSpace: number;
 	private selectedSlots: Array<THREE.Vector3>;
 	private playerId: string;
+	private fanRotation: number = 40;
+	private fanHeight: number = 1;
 	
 	constructor(playerId: string,
 				position: THREE.Vector3 = new THREE.Vector3(0, 0, 0),
-				rotation: THREE.Euler = new THREE.Euler(0, 0, 0), 
+				rotation: THREE.Quaternion = new THREE.Quaternion(0, 0, 0),
 				boundSpace: number = 10, 
 				selectedBoundSpace: number = 5) {
 		this.position = position;
 		this.rotation = rotation;
 		this.slots = [];
 		this.cards = [];
+		this.hitboxes = [];
 		this.playerId = playerId
 		this.selectedCards = new CardHand(this.playerId);
 		this.boundSpace = boundSpace;
@@ -36,6 +44,7 @@ export class CardManager {
 	public receiveCard(card: Card) {
 		this.cards.push(card);
 		this.slots = this.calculateSlots(this.cards, this.boundSpace);
+		this.initHitBoxes(this.cards, this.slots);
 		this.updateCardObjects(this.cards, this.slots);
 	}
 
@@ -47,6 +56,7 @@ export class CardManager {
 		}
 		this.cards.splice(index, 1);
 		this.slots = this.calculateSlots(this.cards, this.boundSpace);
+		this.initHitBoxes(this.cards, this.slots);
 		this.updateCardObjects(this.cards, this.slots);
 	}
 
@@ -56,9 +66,7 @@ export class CardManager {
 			console.log('Card to remove not found');
 			return (undefined);
 		}
-		this.cards.splice(index, 1);
-		this.slots = this.calculateSlots(this.cards, this.boundSpace);
-		this.updateCardObjects(this.cards, this.slots);
+		this.removeCard(card);
 		return (card);
 	}
 
@@ -67,7 +75,7 @@ export class CardManager {
 		this.updateCardObjects(this.cards, this.slots);
 	}
 
-	public updateManager(position: THREE.Vector3 | undefined, rotation: THREE.Euler | undefined) {
+	public updateManager(position: THREE.Vector3 | undefined, rotation: THREE.Quaternion | undefined) {
 		if (position !== undefined) {
 			this.position = position;
 		}
@@ -80,7 +88,7 @@ export class CardManager {
 		this.updateCardObjects(this.selectedCards.cards, this.selectedSlots);
 	}
 
-	// very prone to breaking lol, gotta revamp
+	// Revamp so that it is bundled up together instead of separated when on low cards
 	private	calculateSlots(cards: Array<Card>, boundSpace: number, offset?: THREE.Vector3): Array<THREE.Vector3> {
 		if (offset === undefined)
 			offset = new THREE.Vector3(0, 0, 0);
@@ -91,13 +99,86 @@ export class CardManager {
 			let normalizedIndex = cards.length > 1 ? i / (cards.length - 1) : 0.5;
 			let x = THREE.MathUtils.lerp(leftBound, rightBound, normalizedIndex);
 			const slot = new THREE.Vector3(this.position.x + offset.x + x, this.position.y + offset.y, this.position.z + offset.z);
-			slots.push(this.rotateAroundPivot(slot, this.position, this.rotation));
+			this.rotateAroundPivot(slot, this.position, this.rotation);
+			this.applyFanPositionEffect(slot, this.rotation, normalizedIndex);
+			slots.push(slot);
 		}
 		return (slots)
 	}
 
-	private rotateAroundPivot(position: THREE.Vector3, pivot: THREE.Vector3, rotation: THREE.Euler) {
-		return (new THREE.Vector3().copy(position).sub(pivot).applyEuler(rotation).add(pivot));
+	// Mutate position
+	private rotateAroundPivot(position: THREE.Vector3, pivot: THREE.Vector3, rotation: THREE.Quaternion) {
+		position.sub(pivot).applyQuaternion(rotation).add(pivot);
+	}
+
+	private initHitBoxes(cards: Array<Card>, slots: Array<THREE.Vector3>) {
+		if (slots.length !== cards.length) {
+			console.log(`initHitBoxes: slots and cards do not match`);
+			return ;
+		}
+		let width = Card.Width;
+		if (slots[0] !== undefined && slots[1] !== undefined) {
+			width = Math.abs(slots[1].x - slots[0].x);
+		}
+		const hitboxes = [];
+		for (let i = 0; i < slots.length; i++) {
+			const hitboxGeometry = new THREE.PlaneGeometry(width, Card.Height);
+			const hitboxMesh = new THREE.Mesh(hitboxGeometry, CardManager.invisibleMaterial);
+			hitboxMesh.userData.card = cards[i];
+			hitboxMesh.position.copy(slots[i]);
+			let normalizedIndex = cards.length > 1 ? i / (cards.length - 1) : 0.5;
+			this.applyFanRotationEffect(hitboxMesh.quaternion, normalizedIndex);
+			hitboxes.push(hitboxMesh);
+		}
+		this.stitchHitBoxes(hitboxes);
+		for (let i = 0; i < this.hitboxes.length; i++) {
+			const mesh = this.hitboxes[i];
+			mesh.geometry.dispose();
+			scene.remove(mesh);
+		}
+		scene.add(...hitboxes);
+		this.hitboxes = hitboxes;
+	}
+
+	private stitchHitBoxes(hitboxes: Array<THREE.Mesh>) {
+		const extension = 0.5;
+		for (let i = 0; i < hitboxes.length; i++) {
+			const vertices = hitboxes[i].geometry.attributes.position;
+			if (i === 0) {
+				vertices.setX(0, -extension);
+				vertices.setX(2, -extension);
+			}
+			else if (i === hitboxes.length - 1) {
+				vertices.setX(1, extension);
+				vertices.setX(3, extension);
+			}
+			const nextHitbox = hitboxes[i + 1];
+			if (nextHitbox !== undefined) {
+				const secondVertices = nextHitbox.geometry.attributes.position;
+				hitboxes[i].updateMatrixWorld(true);
+				nextHitbox.updateMatrixWorld(true);
+				this.stitch(hitboxes[i], nextHitbox, 1, 0);
+				this.stitch(hitboxes[i], nextHitbox, 3, 2);
+				secondVertices.needsUpdate = true;
+			}
+			vertices.needsUpdate = true;
+		}
+	}
+	
+	private stitch(leftMesh: THREE.Mesh, rightMesh: THREE.Mesh, leftVerticeIndex: number, rightVerticeIndex: number) {
+		const leftBuffer = leftMesh.geometry.attributes.position;
+		const rightBuffer = rightMesh.geometry.attributes.position;
+
+		const leftWorld = new THREE.Vector3().fromBufferAttribute(leftBuffer, leftVerticeIndex).applyMatrix4(leftMesh.matrixWorld);
+		const rightWorld = new THREE.Vector3().fromBufferAttribute(rightBuffer, rightVerticeIndex).applyMatrix4(rightMesh.matrixWorld);
+
+		const midWorld = new THREE.Vector3().lerpVectors(leftWorld, rightWorld, 0.5);
+
+		const leftLocal = midWorld.clone().applyMatrix4(leftMesh.matrixWorld.clone().invert());
+		const rightLocal = midWorld.clone().applyMatrix4(rightMesh.matrixWorld.clone().invert());
+
+		leftBuffer.setXYZ(leftVerticeIndex, leftLocal.x, leftLocal.y, leftLocal.z);
+		rightBuffer.setXYZ(rightVerticeIndex, rightLocal.x, rightLocal.y, rightLocal.z);
 	}
 
 	private updateCardObjects(cards: Array<Card>, slots: Array<THREE.Vector3>) {
@@ -107,8 +188,8 @@ export class CardManager {
 			if (card && slot) {
 				let normalizedIndex = cards.length > 1 ? i / (cards.length - 1) : 0.5;
 				let updatedPosition = new THREE.Vector3().copy(slot);
-				let updatedRotation = new THREE.Quaternion().setFromEuler(this.rotation);
-				this.applyFanEffect(updatedPosition, updatedRotation, 40, 1, normalizedIndex);
+				let updatedRotation = new THREE.Quaternion().copy(this.rotation);
+				this.applyFanRotationEffect(updatedRotation, normalizedIndex);
 				this.applyHoverEffect(card, updatedPosition);
 				if (updatedPosition !== card.object.position || updatedRotation !== card.object.quaternion) {
 					card.move(updatedPosition, new THREE.Euler().setFromQuaternion(updatedRotation));
@@ -118,17 +199,37 @@ export class CardManager {
 		}
 	}
 
-	// Will mutate position and rotation
-	private applyFanEffect(position: THREE.Vector3, rotation: THREE.Quaternion, fanRotation: number, width: number, normalizedIndex: number) {
-		const fanRotationStart = (fanRotation / 2) * (Math.PI / 180);
-		const fanRotationEnd = -(fanRotation / 2) * (Math.PI / 180);
+	// Will mutate rotation
+	private applyFanRotationEffect(rotation: THREE.Quaternion, normalizedIndex: number) {
+		const fanRotationStart = (this.fanRotation / 2) * (Math.PI / 180);
+		const fanRotationEnd = -(this.fanRotation / 2) * (Math.PI / 180);
 
-		const fanPositionValley = -(width / 2);
-		const fanPositionPeak = width / 2;
+		rotation.multiply(
+			new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(0, 0, 1), 
+			THREE.MathUtils.lerp(fanRotationStart, fanRotationEnd, normalizedIndex))
+		);
+	}
 
-		rotation.multiply(new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(0, 0, 1), THREE.MathUtils.lerp(fanRotationStart, fanRotationEnd, normalizedIndex)));
-		position.add(new THREE.Vector3(0, THREE.MathUtils.lerp(fanPositionValley, fanPositionPeak, Math.sin(normalizedIndex * Math.PI)), THREE.MathUtils.lerp(0, 0.1, normalizedIndex)).applyQuaternion(rotation));
-		// object.translateZ(THREE.MathUtils.lerp(0, 0.1, normalizedIndex));
+	// Will mutate position
+	private applyFanPositionEffect(position: THREE.Vector3, rotation: THREE.Quaternion, normalizedIndex: number) {
+		const fanRotationStart = (this.fanRotation / 2) * (Math.PI / 180);
+		const fanRotationEnd = -(this.fanRotation / 2) * (Math.PI / 180);
+
+		const fanPositionValley = -(this.fanHeight / 2);
+		const fanPositionPeak = this.fanHeight / 2;
+
+		const newRotation = new THREE.Quaternion().multiplyQuaternions(
+			rotation, 
+			new THREE.Quaternion().setFromAxisAngle(
+				new THREE.Vector3(0, 0, 1), 
+				THREE.MathUtils.lerp(fanRotationStart, fanRotationEnd, normalizedIndex))
+		);
+		position.add(new THREE.Vector3(
+				0, 
+				THREE.MathUtils.lerp(fanPositionValley, fanPositionPeak, Math.sin(normalizedIndex * Math.PI)), 
+				THREE.MathUtils.lerp(0, 0.1, normalizedIndex)
+			).applyQuaternion(newRotation)
+		);
 	}
 
 	// Will mutate position
@@ -179,10 +280,9 @@ export class CardManager {
 		for (let i = 0; i < this.cards.length; i++) {
 			this.cards[i].isHover = false;
 		}
-		let cardObjects = Card.getCardObjects(this.cards);
-		let intersected = raycaster.intersectObjects(cardObjects);
+		let intersected = raycaster.intersectObjects(this.hitboxes);
 		if (intersected.length > 0) {
-			let card: Card = intersected[0].object.userData.instance;
+			let card: Card = intersected[0].object.userData.card;
 			card.isHover = true;
 		}
 		this.updateCardObjects(this.cards, this.slots);

@@ -4,8 +4,10 @@ import { scene } from './main.ts'
 import { gsap } from 'gsap';
 
 export class Card {
+	public static readonly Width = 1;
+	public static readonly Height = 1.5;
 	private static	textureLoader = new THREE.TextureLoader();
-	private static	geometry: THREE.PlaneGeometry = new THREE.PlaneGeometry(1, 1.5);
+	private static	geometry: THREE.PlaneGeometry = new THREE.PlaneGeometry(this.Width, this.Height);
 	private static	frontTextureAtlas: Array<THREE.Texture> = Card.initTextureAtlas();
 	private static	backTexture: THREE.Texture = Card.textureLoader.load('/resources/card_back.webp');
 	private	frontTexture: THREE.Texture;
@@ -42,6 +44,7 @@ export class Card {
 		this.object.add(this.backMesh);
 
 		scene.add(this.object);
+		// this.object.visible = false;
 	}
 
 	public dispose() {
