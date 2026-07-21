@@ -15,7 +15,7 @@ export const SettingsWindow = () => {
 	return (
 		<section className="
 			absolute z-1 top-0 left-0
-			w-screen h-screen
+			h-full w-full
 			flex place-content-center place-items-center
 		">
 			<LightboxButton dismiss="settings" blur={true} />

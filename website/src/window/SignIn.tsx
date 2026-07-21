@@ -63,7 +63,7 @@ export const SignInWindow = () => {
 	return (
 		<section className="
 			absolute z-1 inset-0 left-0
-			w-screen h-screen
+			h-full w-full
 			flex place-content-center place-items-center
 		">
 			<LightboxButton dismiss="signIn" blur={true} />

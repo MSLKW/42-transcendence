@@ -6,7 +6,7 @@ import { ChatBubble } from "../components/label/ChatBubble"
 import { ChatReport } from "../components/label/ChatReport"
 
 export const ChatWindow = () => {
-	const { contAreaHeight, contAreaWidth } = useSceneStore();
+	const { sceneHeight, sceneWidth } = useSceneStore();
 
 	return (
 		<section className="
@@ -16,7 +16,7 @@ export const ChatWindow = () => {
 			h-screen w-screen
 		">
 			<LightboxButton dismiss="chat" blur={true} />
-			<div style={{ width: contAreaWidth, height: contAreaHeight }}
+			<div style={{ width: sceneWidth, height: sceneHeight }}
 				className="
 					z-0
 					flex place-content-end place-items-end

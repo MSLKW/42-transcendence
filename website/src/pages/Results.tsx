@@ -1,4 +1,4 @@
-import { usePartyStore } from "../store/PartyStore";
+import { useGameStore } from "../store/GameStore";
 import { useSceneStore } from "../store/SceneStore";
 import { BackButton } from "../components/button/Back";
 import { SettingsButton } from "../components/button/Settings";
@@ -54,7 +54,7 @@ export const ResultRank = () => {
 }
 
 export const ResultPlayed = () => {
-	const { members } = usePartyStore();
+	const { playerOrder } = useGameStore();
 
 	return (
 		<>
@@ -73,7 +73,7 @@ export const ResultPlayed = () => {
 				bg-b2
 			">
 				<AvatarImage />
-				<h2>{members[0].name}</h2>
+				<h2>{playerOrder[0]}</h2>
 			</div>
 			<div className="
 				row-start-3 row-end-3
@@ -82,7 +82,7 @@ export const ResultPlayed = () => {
 				h-full w-full
 			">
 				<AvatarImage />
-				<h2>{members[1].name}</h2>
+				<h2>{playerOrder[1]}</h2>
 			</div>
 			<div className="
 				row-start-4 row-end-4
@@ -91,7 +91,7 @@ export const ResultPlayed = () => {
 				h-full w-full
 			">
 				<AvatarImage />
-				<h2>{members[3].name}</h2>
+				<h2>{playerOrder[3]}</h2>
 			</div>
 			<div className="
 				row-start-5 row-end-5
@@ -100,7 +100,7 @@ export const ResultPlayed = () => {
 				h-full w-full
 			">
 				<AvatarImage />
-				<h2>{members[2].name}</h2>
+				<h2>{playerOrder[2]}</h2>
 			</div>
 		</>
 	);
@@ -242,26 +242,24 @@ export const ResultsWindow = () => {
 }
 
 export const Results = () => {
-	const setCurrentScene = useSceneStore((state) => state.setCurrentScene);
+	const { setCurrentScene } = useSceneStore();
 
 	return (
 		<>
-			<section className="cont-body backdrop-blur-xs">
-				<header className="flex place-content-between">
-					<div className="flex btn-icon-border">
-						<BackButton scene={() => setCurrentScene("LOBBY")} />
-						<SettingsButton />
-					</div>
-					<div className="flex btn-icon-border">
-						<EmojiButton />
-						<ChatButton />
-					</div>
-				</header>
-				<main className="flex place-content-center place-items-center p-[clamp(0.5rem,4vh+0.25rem,2.5rem)]">
-					<ResultsWindow />
-				</main>
-				<footer />
-			</section>
+			<header className="flex place-content-between">
+				<div className="flex btn-icon-border">
+					<BackButton scene={() => setCurrentScene("LOBBY")} />
+					<SettingsButton />
+				</div>
+				<div className="flex btn-icon-border">
+					<EmojiButton />
+					<ChatButton />
+				</div>
+			</header>
+			<main className="flex place-content-center place-items-center p-[clamp(0.5rem,4vh+0.25rem,2.5rem)]">
+				<ResultsWindow />
+			</main>
+			<footer />
 		</>
 	);
 }

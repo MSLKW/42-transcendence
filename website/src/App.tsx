@@ -30,7 +30,7 @@ import { useNotificationStore } from "./store/NotificationStore";
 export default function App() {
 	const { data } = usePlayerStore();
 
-	const { setContAreaHeight, setContAreaWidth, currentScene, showWindow, setShowWindow } = useSceneStore();
+	const { setSceneHeight, setSceneWidth, currentScene, showWindow, setShowWindow } = useSceneStore();
 	useEffect(() => {
 		window.scrollTo({
 			top: 0,
@@ -47,8 +47,8 @@ export default function App() {
 
 		const observer = new ResizeObserver((entries) => {
 			for (let entry of entries) {
-				setContAreaWidth(entry.target.scrollWidth);
-				setContAreaHeight(entry.target.scrollHeight);
+				setSceneWidth(entry.target.scrollWidth);
+				setSceneHeight(entry.target.scrollHeight);
 			}
 		});
 		observer.observe(containerRef.current);
@@ -63,7 +63,12 @@ export default function App() {
 		<>
 			{ (currentScene === "LOGIN" || currentScene === "HOME") && <StripeBg /> }
 			{showStats && <Stats />}
-			<section className="cont-canvas">
+			<section ref={containerRef} className="
+				z-0
+				absolute top-0 left-1/2 -translate-x-1/2
+				w-full min-w-80 max-w-360
+				h-full min-h-120 max-h-360
+			">
 				<Canvas>
 					{ (currentScene === "LOGIN" || currentScene === "LOBBY" || currentScene === "R3F" || currentScene === "RESULTS") && 
 						<>
@@ -84,24 +89,26 @@ export default function App() {
 					}
 				</Canvas>
 			</section>
-			{ currentScene === 'LOGIN' && <Login /> }
-			{ currentScene === 'HOME' && <Home /> }
-			{ currentScene === 'LOBBY' && <Lobby /> }
-			{ currentScene === 'GAMEPLAY' && <Gameplay /> }
-			{ currentScene === 'R3F' && <R3F /> }
-			{ currentScene === 'RESULTS' && <Results /> }
-			{ showWindow["bots"] && <BotsWindow /> }
-			{ showWindow["chat"] && <ChatWindow /> }
-			{ showWindow["createAccount"] && <CreateAccountWindow /> }
-			{ showWindow["info"] && <InfoWindow /> }
-			{ showWindow["notification"] && <NotificationWindow key={id}/> }
-			{ showWindow["party"] && <PartyWindow /> }
-			{ showWindow["profile"] && <ProfileWindow /> }
-			{ showWindow["rank"] && <RankWindow /> }
-			{ showWindow["setup"] && <SetupWindow /> }
-			{ showWindow["settings"] && <SettingsWindow /> }
-			{ showWindow["signIn"] && <SignInWindow /> }
-			{ showWindow["stats"] && <StatsWindow /> }
+			<section className="cont-body">
+				{ currentScene === 'LOGIN' && <Login /> }
+				{ currentScene === 'HOME' && <Home /> }
+				{ currentScene === 'LOBBY' && <Lobby /> }
+				{ currentScene === 'GAMEPLAY' && <Gameplay /> }
+				{ currentScene === 'R3F' && <R3F /> }
+				{ currentScene === 'RESULTS' && <Results /> }
+				{ showWindow["bots"] && <BotsWindow /> }
+				{ showWindow["chat"] && <ChatWindow /> }
+				{ showWindow["createAccount"] && <CreateAccountWindow /> }
+				{ showWindow["info"] && <InfoWindow /> }
+				{ showWindow["notification"] && <NotificationWindow key={id}/> }
+				{ showWindow["party"] && <PartyWindow /> }
+				{ showWindow["profile"] && <ProfileWindow /> }
+				{ showWindow["rank"] && <RankWindow /> }
+				{ showWindow["setup"] && <SetupWindow /> }
+				{ showWindow["settings"] && <SettingsWindow /> }
+				{ showWindow["signIn"] && <SignInWindow /> }
+				{ showWindow["stats"] && <StatsWindow /> }
+			</section>
 		</>
 	);
 }

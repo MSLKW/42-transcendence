@@ -1,4 +1,8 @@
+import { useSceneStore } from "../store/SceneStore";
+
 export const BigLogo = () => {
+	const { setShowWindow } = useSceneStore();
+
 	return (
 		<div className="
 			flex flex-col place-content-center place-items-center
@@ -24,26 +28,41 @@ export const BigLogo = () => {
 					2
 				</span>
 			</div>
-			<span className="
-				text-[clamp(1rem,0.714vw+0.857rem,1.5rem)]
-				text-b5
-				font-extralight
-				tracking-widest
-				whitespace-nowrap
+			<button
+				data-tip="About This Game"
+				onClick={() => setShowWindow("info", true)}
+				className="
+					text-[clamp(1rem,0.714vw+0.857rem,1.5rem)]
+					text-b5
+					font-extralight
+					tracking-widest
+					whitespace-nowrap
+					btn-tip-down
+					rounded-full
+					hover:not-disabled:scale-105 active:hover:not-disabled:scale-100
+					focus-visible:outline-2
 			">
 				A 42 TRANSCENDENCE PROJECT
-			</span>
+			</button>
 		</div>
 	);
 }
 
 export const SmallLogo = () => {
+	const { setShowWindow } = useSceneStore();
 	return (
-		<div className="
-			absolute z-0 right-0
-			w-max h-max
-			flex flex-col place-content-center place-items-end
-			pointer-events-none
+		<button
+			data-tip="About This Game"
+			onClick={() => setShowWindow("info", true)}
+			className="
+				absolute z-0 right-0
+				w-max h-max
+				flex flex-col place-content-center place-items-end
+				pointer-events-none
+				btn-tip-up
+				rounded-full
+				hover:not-disabled:scale-105 active:hover:not-disabled:scale-100
+				focus-visible:outline-2
 		">
 			<div className="
 				flex place-content-center place-items-center
@@ -71,6 +90,6 @@ export const SmallLogo = () => {
 			">
 				A 42 TRANSCENDENCE PROJECT
 			</span>
-		</div>
+		</button>
 	);
 }

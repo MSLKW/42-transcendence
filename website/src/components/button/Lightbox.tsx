@@ -17,7 +17,7 @@ export const LightboxButton = ({ dismiss, blur, isDismissable = true }: Lightbox
 					setShowWindow(dismiss, false);
 			}}
 			className={`
-				-z-1 absolute
+				absolute -z-1
 				h-screen w-screen
 				${ blur ? "backdrop-blur-xs" : "" }
 		`}/>

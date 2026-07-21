@@ -3,7 +3,7 @@ import { CloseModule } from "../modules/Close";
 import { LightboxButton } from "../components/button/Lightbox";
 
 export const InfoWindow = () => {
-	const { contAreaHeight, contAreaWidth } = useSceneStore();
+	const { sceneHeight, sceneWidth } = useSceneStore();
 
     return (
 		<section className="
@@ -12,7 +12,7 @@ export const InfoWindow = () => {
 			flex place-content-center place-items-center
 		">
 			<LightboxButton dismiss="info" blur={true} />
-			<div style={{ width: contAreaWidth, height: contAreaHeight }}
+			<div style={{ width: sceneWidth, height: sceneHeight }}
 				className="
 					z-0
 					flex place-content-center place-items-center

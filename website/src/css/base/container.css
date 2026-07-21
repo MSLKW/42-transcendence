@@ -1,11 +1,3 @@
-@utility cont-canvas {
-	@apply
-		z-0
-		absolute top-0 left-1/2 -translate-x-1/2
-		w-full min-w-80 max-w-360
-		h-full min-h-120 max-h-360
-		;
-}
 @utility cont-body {
 	@apply
 		z-1
