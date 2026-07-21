@@ -1,6 +1,8 @@
 import "dotenv/config";
 import { createServer } from "http";
 import { Server, Socket } from "socket.io";
+import { Client } from "./client/Client";
+import { clientManager } from "./client/ClientManager";
 
 const PORT = Number(process.env.PORT) || 3000;
 const AUTH_SERVICE_URL = process.env.AUTH_SERVICE_URL;
@@ -55,17 +57,23 @@ io.use(async (socket, next) => {
 
 io.on("connection", (socket: Socket) => {
 	const uuid = socket.data.uuid;
+
+	if (clientManager.getByUuid(uuid))
+	{
+		socket.disconnect(true);
+		return ;
+	}
+
+	const client = new Client(uuid, "", socket);
+	clientManager.add(client);
 	console.log(`Client connected: ${socket.id} (user ${uuid})`);
 
-	// TODO: mark presence as online in your presence table, e.g.
-	// await setPresence(uuid, "online");
+	// TODO: mark presence as online in Postgres
 
 	socket.on("disconnect", (reason) => {
 		console.log(`Client disconnected: ${socket.id} (user ${uuid}) — ${reason}`);
 
-		// TODO: mark presence as offline — but see note below about
-		// distinguishing "left the app" vs "moved to game manager socket"
-		// await setPresence(uuid, "offline");
+		// TODO: mark presence as offline in Postgres
 	});
 });
 
