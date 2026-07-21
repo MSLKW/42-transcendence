@@ -10,7 +10,7 @@ import { EmojiButton } from "../components/button/Emoji";
 import { SmallLogo } from "../components/label/Logo";
 
 export const GAMEMODE = {
-	DEV: 1,
+	TUTORIAL: 1,
 	VERSUS2: 2,
 	VERSUS3: 3,
 	VERSUS4: 4,
@@ -51,7 +51,7 @@ export const Home = () => {
 		 					<HomeCardButton gameMode={GAMEMODE.VERSUS4}/>
 		 					<HomeCardButton gameMode={GAMEMODE.VERSUS3}/>
 		 					<HomeCardButton gameMode={GAMEMODE.VERSUS2}/>
-		 					<HomeCardButton gameMode={GAMEMODE.DEV}/>
+		 					<HomeCardButton gameMode={GAMEMODE.TUTORIAL}/>
 		 				</div>
 		 			</div>
 				</main>

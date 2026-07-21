@@ -124,7 +124,7 @@ export const HomeCardButton = ({ gameMode = 4 }: HomeProps) => {
 					<h1 className="text-n0">2 Players</h1>
 				</>
 			}
-			{ gameMode === GAMEMODE.DEV &&
+			{ gameMode === GAMEMODE.TUTORIAL &&
 				<>
 					<div className="
 						w-[clamp(2.5rem,3.571vmin+1.786rem,5rem)] aspect-square
