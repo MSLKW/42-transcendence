@@ -43,11 +43,10 @@ export class Party
 		user.party = this;
 		this.members.set(userId, user);
 		this.invites.delete(userId);
-		for (const key in this.members)
+		for (const key of this.members.keys())
 		{
-			if (key == userId)
-				continue ;
-			this.members.get(key)!.emit("player_join", { userId });
+			if (key != userId)
+				this.members.get(key)!.emit("player_join", {uuid: userId});
 		}
 		return (true);
 	}
@@ -55,7 +54,10 @@ export class Party
 	removeUser(uuid: string)
 	{
 		if (uuid == this.hostId)
+		{
+			this.clear("the host has left");
 			return ;
+		}
 
 		const user = this.members.get(uuid);
 		if (!user)
@@ -63,20 +65,22 @@ export class Party
 		user.status = "available";
 		user.party = null;
 		this.members.delete(uuid);
-		for (const key in this.members)
-			this.members.get(key)!.emit("player_left", uuid);
+		for (const key of this.members.keys())
+			this.members.get(key)!.emit("player_left", {uuid: uuid});
 	}
 
-	clear()
+	clear(reason: string)
 	{
-		for (const key in this.members)
+		for (const key of this.members.keys())
 		{
 			const user = this.members.get(key)!;
 
 			user.status = "available";
 			user.party = null;
-			user.emit("kicked", "The party was removed");
+			user.emit("kicked", {message: reason});
 		}
+		this.invites.clear();
+		this.members.clear();
 	}
 
 	getMemberUuids(): string[]

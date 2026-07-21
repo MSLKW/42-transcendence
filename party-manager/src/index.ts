@@ -3,6 +3,7 @@ import { createServer } from "http";
 import { Server, Socket } from "socket.io";
 import { Client } from "./client/Client";
 import { clientManager } from "./client/ClientManager";
+import { registerEventHandlers } from "./client/event_handlers";
 
 const PORT = Number(process.env.PORT) || 3000;
 const AUTH_SERVICE_URL = process.env.AUTH_SERVICE_URL;
@@ -39,13 +40,15 @@ io.use(async (socket, next) => {
 
 		const data = await response.json();
 
-		if (!data.id || typeof data.id !== "string")
+		if (!data.userId || typeof data.userId !== "string")
 		{
 			console.error("Auth service returned an OK response with no valid uuid");
 			return next(new Error("UNAUTHORIZED: malformed validation response"));
 		}
 
-		socket.data.uuid = data.id;
+		socket.data.uuid = data.userId;
+		if (clientManager.getByUuid(socket.data.uuid))
+			return next(new Error("UNAUTHORIZED: you are online in another browser"));
 		next();
 	}
 	catch (err)
@@ -58,19 +61,16 @@ io.use(async (socket, next) => {
 io.on("connection", (socket: Socket) => {
 	const uuid = socket.data.uuid;
 
-	if (clientManager.getByUuid(uuid))
-	{
-		socket.disconnect(true);
-		return ;
-	}
-
 	const client = new Client(uuid, "", socket);
+	registerEventHandlers(socket, client);
 	clientManager.add(client);
 	console.log(`Client connected: ${socket.id} (user ${uuid})`);
 
 	// TODO: mark presence as online in Postgres
 
-	socket.on("disconnect", (reason) => {
+	socket.on("disconnect", (reason) =>
+	{
+		clientManager.removeBySocketId(socket.id);
 		console.log(`Client disconnected: ${socket.id} (user ${uuid}) — ${reason}`);
 
 		// TODO: mark presence as offline in Postgres
