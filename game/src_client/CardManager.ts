@@ -21,8 +21,9 @@ export class CardManager {
 	private selectedBoundSpaceLimit: number;
 	private selectedSlots: Array<THREE.Vector3>;
 	private playerId: string;
-	private fanRotation: number = 40;
+	private fanRotation: number = 20;
 	private fanHeight: number = 1;
+	private sortFunction: ((a: Card, b: Card) => number) | undefined;
 	
 	constructor(playerId: string,
 				position: THREE.Vector3 = new THREE.Vector3(0, 0, 0),
@@ -39,11 +40,13 @@ export class CardManager {
 		this.boundSpaceLimit = boundSpace;
 		this.selectedBoundSpaceLimit = selectedBoundSpace;
 		this.selectedSlots = [];
+		this.sortFunction = undefined;
 	}
 
 	public receiveCard(card: Card) {
 		this.cards.push(card);
 		this.slots = this.calculateSlots(this.cards, this.boundSpaceLimit);
+		this.sortCards();
 		this.initHitBoxes(this.cards, this.slots);
 		this.updateCardObjects(this.cards, this.slots);
 	}
@@ -56,6 +59,7 @@ export class CardManager {
 		}
 		this.cards.splice(index, 1);
 		this.slots = this.calculateSlots(this.cards, this.boundSpaceLimit);
+		this.sortCards();
 		this.initHitBoxes(this.cards, this.slots);
 		this.updateCardObjects(this.cards, this.slots);
 	}
@@ -70,10 +74,17 @@ export class CardManager {
 		return (card);
 	}
 
-	public sortCards(compareFunction: (a: Card, b: Card) => number) {
-		this.cards.sort(compareFunction);
-		this.initHitBoxes(this.cards, this.slots);
-		this.updateCardObjects(this.cards, this.slots);
+	public setSort(sortFunction: ((a: Card, b: Card) => number) | undefined) {
+		this.sortFunction = sortFunction;
+		this.sortCards();
+	}
+
+	private sortCards() {
+		if (this.sortFunction !== undefined) {
+			this.cards.sort(this.sortFunction);
+			this.initHitBoxes(this.cards, this.slots);
+			this.updateCardObjects(this.cards, this.slots);
+		}
 	}
 
 	public updateManager(position: THREE.Vector3 | undefined, rotation: THREE.Quaternion | undefined) {
@@ -94,8 +105,8 @@ export class CardManager {
 		if (offset === undefined)
 			offset = new THREE.Vector3(0, 0, 0);
 		const slots: Array<THREE.Vector3> = [];
-		// const boundSpace = Math.min(boundSpaceLimit, (cards.length - 1) * Card.Width);
-		const boundSpace = boundSpaceLimit;
+		const boundSpace = Math.min(boundSpaceLimit, (cards.length - 1) * Card.Width);
+		this.fanHeight = boundSpace / 2 * Math.tan((this.fanRotation * Math.PI / 180) / 4);
 		const leftBound = -(boundSpace / 2);
 		const rightBound = boundSpace / 2;
 		for (let i = 0; i < cards.length; i++) {

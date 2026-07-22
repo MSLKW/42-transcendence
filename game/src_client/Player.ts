@@ -100,11 +100,11 @@ export class Player {
 		});
 
 		this.sortCardsByRankButton.addEventListener('click', () => {
-			this.cardManager.sortCards((a, b) => a.rank - b.rank);
+			this.cardManager.setSort((a, b) => a.rank - b.rank);
 		});
 
 		this.sortCardsBySuitButton.addEventListener('click', () => {
-			this.cardManager.sortCards((a, b) => a.suit - b.suit);
+			this.cardManager.setSort((a, b) => a.suit - b.suit);
 		});
 
 		renderer.domElement.addEventListener('click', (event) => {
