@@ -35,6 +35,15 @@ class ClientManager
 		return (this.byUuid.has(uuid));
 	}
 
+	rebindSocket(oldSocketId: string, newSocketId: string)
+	{
+		const client = this.bySocketId.get(oldSocketId);
+		if (!client)
+			return ;
+		this.bySocketId.delete(oldSocketId);
+		this.bySocketId.set(newSocketId, client);
+	}
+
 	emitToUuid(uuid: string, event: string, payload: unknown): boolean
 	{
 		const client = this.getByUuid(uuid);

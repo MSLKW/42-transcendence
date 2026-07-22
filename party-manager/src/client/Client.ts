@@ -6,7 +6,7 @@ export type ClientStatus = "available" | "in_party" | "in_game";
 export class Client
 {
 	public readonly uuid: string;
-	public readonly socket: Socket;
+	public socket: Socket;
 	public username: string;
 	public status: ClientStatus = "available";
 	public party: Party | null = null;

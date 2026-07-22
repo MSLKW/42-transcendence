@@ -5,6 +5,8 @@ import { Client } from "./client/Client";
 import { clientManager } from "./client/ClientManager";
 import { registerEventHandlers } from "./client/event_handlers";
 
+import { PartyState } from "./PartyTransmitTypes";
+
 const PORT = Number(process.env.PORT) || 3000;
 const AUTH_SERVICE_URL = process.env.AUTH_SERVICE_URL;
 
@@ -47,8 +49,6 @@ io.use(async (socket, next) => {
 		}
 
 		socket.data.uuid = data.userId;
-		if (clientManager.getByUuid(socket.data.uuid))
-			return next(new Error("UNAUTHORIZED: you are online in another browser"));
 		next();
 	}
 	catch (err)
@@ -60,18 +60,42 @@ io.use(async (socket, next) => {
 
 io.on("connection", (socket: Socket) => {
 	const uuid = socket.data.uuid;
+	const existing = clientManager.getByUuid(uuid);
 
-	const client = new Client(uuid, "", socket);
-	registerEventHandlers(socket, client);
-	clientManager.add(client);
-	console.log(`Client connected: ${socket.id} (user ${uuid})`);
+	if (existing)
+	{
+		const oldSocket = existing.socket;
+		clientManager.rebindSocket(oldSocket.id, socket.id);
+		existing.socket = socket;
+		registerEventHandlers(socket, existing);
+		const state: PartyState = {
+			inParty: existing.party ? true : false,
+			members: existing.party?.getMemberUuids()
+		}
+		existing.emit("party_state", state);
+		oldSocket.disconnect(true);
+		console.log(`User switched sockets ${oldSocket.id} -> ${socket.id} (user ${uuid})`);
+	}
+	else
+	{
+		const client = new Client(uuid, "", socket);
+		clientManager.add(client);
+		registerEventHandlers(socket, client);
+		console.log(`Client connected: ${socket.id} (user ${uuid})`);
+	}
+	
 
 	// TODO: mark presence as online in Postgres
 
 	socket.on("disconnect", (reason) =>
 	{
+		const client = clientManager.getBySocketId(socket.id);
+
+		if (!client)
+			return ;
 		clientManager.removeBySocketId(socket.id);
-		console.log(`Client disconnected: ${socket.id} (user ${uuid}) — ${reason}`);
+		client.party?.removeUser(client.uuid);
+		console.log(`Client disconnected: ${socket.id} (user ${uuid}) - ${reason}`);
 
 		// TODO: mark presence as offline in Postgres
 	});
