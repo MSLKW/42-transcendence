@@ -1,4 +1,5 @@
 import { Client } from "./Client";
+import { Party } from "../party/Party";
 
 class ClientManager
 {
@@ -11,11 +12,22 @@ class ClientManager
 		this.bySocketId.set(client.socket.id, client);
 	}
 
+	removeByUuid(uuid: string)
+	{
+		const client = this.byUuid.get(uuid);
+		if (!client)
+			return ;
+		client.party?.removeUser(client.uuid);
+		this.byUuid.delete(uuid);
+		this.bySocketId.delete(client.socket.id);
+	}
+	
 	removeBySocketId(socketId: string)
 	{
 		const client = this.bySocketId.get(socketId);
 		if (!client)
 			return;
+		client.party?.removeUser(client.uuid);
 		this.byUuid.delete(client.uuid);
 		this.bySocketId.delete(socketId);
 	}

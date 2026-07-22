@@ -1,6 +1,6 @@
 import "dotenv/config";
 import { createServer } from "http";
-import { Server, Socket } from "socket.io";
+import { DisconnectReason, Server, Socket } from "socket.io";
 import { Client } from "./client/Client";
 import { clientManager } from "./client/ClientManager";
 import { registerEventHandlers } from "./client/event_handlers";
@@ -9,9 +9,19 @@ import { PartyState } from "./PartyTransmitTypes";
 
 const PORT = Number(process.env.PORT) || 3000;
 const AUTH_SERVICE_URL = process.env.AUTH_SERVICE_URL;
+const RECONNECT_GRACE_PERIOD_MS = Number(process.env.DISCONNECT_GRACE_PERIOD_MS) || 15_000;
+const INTENTIONAL_DISCONNECT_REASONS = new Set([
+	"server namespace disconnect", // kicked
+	"client namespace disconnect", // client intentionally disconnected
+	"forced close",
+	"parse error",
+	"forced server close",
+]);
 
 if (!AUTH_SERVICE_URL)
 	throw new Error("AUTH_SERVICE_URL is not set");
+
+const pendingRemovals = new Map<string, NodeJS.Timeout>();
 
 const httpServer = createServer();
 
@@ -21,7 +31,6 @@ const io = new Server(httpServer, {
 	},
 });
 
-// --- Auth middleware: runs once per handshake, before "connection" fires ---
 io.use(async (socket, next) => {
 	const token = socket.handshake.auth?.token;
 
@@ -58,10 +67,19 @@ io.use(async (socket, next) => {
 	}
 });
 
-io.on("connection", (socket: Socket) => {
+io.on("connection", (socket: Socket) =>
+{
 	const uuid = socket.data.uuid;
+	
+	const pendingTimer = pendingRemovals.get(uuid);
+	if (pendingTimer)
+	{
+		clearTimeout(pendingTimer);
+		pendingRemovals.delete(uuid);
+		console.log(`User<${uuid}> reconnected`);
+	}
+	
 	const existing = clientManager.getByUuid(uuid);
-
 	if (existing)
 	{
 		const oldSocket = existing.socket;
@@ -74,32 +92,48 @@ io.on("connection", (socket: Socket) => {
 		}
 		existing.emit("party_state", state);
 		oldSocket.disconnect(true);
-		console.log(`User switched sockets ${oldSocket.id} -> ${socket.id} (user ${uuid})`);
+		console.log(`User<${uuid}> switched sockets: ${oldSocket.id} -> ${socket.id}`);
 	}
 	else
 	{
 		const client = new Client(uuid, "", socket);
 		clientManager.add(client);
 		registerEventHandlers(socket, client);
-		console.log(`Client connected: ${socket.id} (user ${uuid})`);
+		console.log(`User<${uuid}> connected on socket ${socket.id}`);
 	}
 	
 
 	// TODO: mark presence as online in Postgres
 
-	socket.on("disconnect", (reason) =>
+	socket.on("disconnect", (reason: DisconnectReason) =>
 	{
 		const client = clientManager.getBySocketId(socket.id);
 
 		if (!client)
 			return ;
-		clientManager.removeBySocketId(socket.id);
-		client.party?.removeUser(client.uuid);
-		console.log(`Client disconnected: ${socket.id} (user ${uuid}) - ${reason}`);
+		if (INTENTIONAL_DISCONNECT_REASONS.has(reason))
+			finalizeRemoval(uuid, reason);
+		else
+		{
+			const timer = setTimeout(() =>
+			{
+				finalizeRemoval(uuid, "reconnection grace period ended");
+				pendingRemovals.delete(uuid);
+			}, RECONNECT_GRACE_PERIOD_MS);
 
-		// TODO: mark presence as offline in Postgres
+			pendingRemovals.set(uuid, timer);
+			console.log(`User<${uuid}> disconnected unintentionally. Waiting for reconnection`)
+		}
 	});
 });
+
+function finalizeRemoval(uuid: string, reason: string)
+{
+	clientManager.removeByUuid(uuid);
+	console.log(`User<${uuid}> disconnected - ${reason}`);
+
+	// TODO: mark presence as offline in Postgres
+}
 
 httpServer.listen(PORT, () => {
 	console.log(`Socket.IO server listening on port ${PORT}`);
