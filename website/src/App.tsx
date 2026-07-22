@@ -73,18 +73,18 @@ export default function App() {
 					{ (currentScene === "LOGIN" || currentScene === "LOBBY" || currentScene === "R3F" || currentScene === "RESULTS") && 
 						<>
 							<AdaptiveDpr />
-							<ambientLight intensity={0.5}/>
+							<ambientLight intensity={0.5} />
 							<directionalLight position={[0, 5, 5]} intensity={0.5} />
 							{ currentScene === "LOGIN" &&
 								<Card
-								position={[0,0.25,0]}
-								rotation={[-Math.PI/4,0,0]}
-								color="gold"
+									position={[0,0.25,0]}
+									rotation={[-Math.PI/4,0,0]}
+									color="gold"
 								/>
 							}
 							<SphereBg />
 							<PerspectiveCamera makeDefault position={[0, 0, 2.25]} />
-							<OrbitControls enableZoom={false}/>
+							<OrbitControls enableZoom={false} />
 						</>
 					}
 				</Canvas>

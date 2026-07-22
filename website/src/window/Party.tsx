@@ -79,7 +79,7 @@ export const PartyWindow = () => {
 					pointer-events-auto
 			`}>
 				<InviteOthersModule />
-				<hr className="text-a5"/>
+				<hr />
 				<JoinAnotherPartyModule />
 				<PinWindowModule />
 			</div>

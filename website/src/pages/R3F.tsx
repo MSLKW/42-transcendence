@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-import { useSceneStore } from "../store/SceneStore";
 import { HeaderModule } from "../modules/Header";
 import { RankButton } from "../components/button/Rank";
 import { AvatarButton } from "../components/button/Avatar";
@@ -8,7 +7,6 @@ import { useGameStore } from "../store/GameStore";
 
 export const R3F = () => {
 	const { totalPlayers } = useGameStore();
-	const { setCurrentScene } = useSceneStore();
 
 	const [activePlayer, setActivePlayer] = useState<number>(0);
 	const nextTurn = () => setActivePlayer((prev) => (prev + 1) % 4);

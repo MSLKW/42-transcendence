@@ -35,7 +35,9 @@ export default function Dev() {
 			<ul className="flex place-content-evenly">
 				<li><button type="button" tabIndex={-1} onClick={() => toggleFlag("showFrame")}>Frame</button></li>
 				<li><button type="button" tabIndex={-1} onClick={() => toggleFlag("showStats")}>Stats</button></li>
-				<li><button type="button" tabIndex={-1} onClick={() => setCurrentScene('RESULTS')}>Results</button></li>
+				{ (currentScene === "R3F" || currentScene === "GAMEPLAY") && 
+					<li><button type="button" tabIndex={-1} onClick={() => setCurrentScene('RESULTS')}>Results</button></li>
+				}
 				<li><button type="button" tabIndex={-1} onClick={() => resetGame()}>Reset</button></li>
 			</ul>
 			<ul className="flex place-content-evenly">
