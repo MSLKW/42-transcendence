@@ -10,6 +10,10 @@ import { PartyState } from "./PartyTransmitTypes";
 const PORT = Number(process.env.PORT) || 3000;
 const AUTH_SERVICE_URL = process.env.AUTH_SERVICE_URL;
 const RECONNECT_GRACE_PERIOD_MS = Number(process.env.DISCONNECT_GRACE_PERIOD_MS) || 15_000;
+
+if (!AUTH_SERVICE_URL)
+	throw new Error("AUTH_SERVICE_URL is not set");
+
 const INTENTIONAL_DISCONNECT_REASONS = new Set([
 	"server namespace disconnect", // kicked
 	"client namespace disconnect", // client intentionally disconnected
@@ -17,9 +21,6 @@ const INTENTIONAL_DISCONNECT_REASONS = new Set([
 	"parse error",
 	"forced server close",
 ]);
-
-if (!AUTH_SERVICE_URL)
-	throw new Error("AUTH_SERVICE_URL is not set");
 
 const pendingRemovals = new Map<string, NodeJS.Timeout>();
 
