@@ -9,7 +9,7 @@ import { update } from 'three/examples/jsm/libs/tween.module.js';
 export class CardManager {
 	private position: THREE.Vector3;
 	private rotation: THREE.Quaternion;
-	private boundSpace: number;
+	private boundSpaceLimit: number;
 	private	slots: Array<THREE.Vector3>;
 	private	cards: Array<Card>;
 	private hitboxes: Array<THREE.Mesh>;
@@ -18,7 +18,7 @@ export class CardManager {
 		depthWrite: false
 	});
 	public	selectedCards: CardHand;
-	private selectedBoundSpace: number;
+	private selectedBoundSpaceLimit: number;
 	private selectedSlots: Array<THREE.Vector3>;
 	private playerId: string;
 	private fanRotation: number = 40;
@@ -36,14 +36,14 @@ export class CardManager {
 		this.hitboxes = [];
 		this.playerId = playerId
 		this.selectedCards = new CardHand(this.playerId);
-		this.boundSpace = boundSpace;
-		this.selectedBoundSpace = selectedBoundSpace;
+		this.boundSpaceLimit = boundSpace;
+		this.selectedBoundSpaceLimit = selectedBoundSpace;
 		this.selectedSlots = [];
 	}
 
 	public receiveCard(card: Card) {
 		this.cards.push(card);
-		this.slots = this.calculateSlots(this.cards, this.boundSpace);
+		this.slots = this.calculateSlots(this.cards, this.boundSpaceLimit);
 		this.initHitBoxes(this.cards, this.slots);
 		this.updateCardObjects(this.cards, this.slots);
 	}
@@ -55,7 +55,7 @@ export class CardManager {
 			return ;
 		}
 		this.cards.splice(index, 1);
-		this.slots = this.calculateSlots(this.cards, this.boundSpace);
+		this.slots = this.calculateSlots(this.cards, this.boundSpaceLimit);
 		this.initHitBoxes(this.cards, this.slots);
 		this.updateCardObjects(this.cards, this.slots);
 	}
@@ -72,6 +72,7 @@ export class CardManager {
 
 	public sortCards(compareFunction: (a: Card, b: Card) => number) {
 		this.cards.sort(compareFunction);
+		this.initHitBoxes(this.cards, this.slots);
 		this.updateCardObjects(this.cards, this.slots);
 	}
 
@@ -82,19 +83,21 @@ export class CardManager {
 		if (rotation !== undefined) {
 			this.rotation = rotation;
 		}
-		this.slots = this.calculateSlots(this.cards, this.boundSpace);
+		this.slots = this.calculateSlots(this.cards, this.boundSpaceLimit);
 		this.updateCardObjects(this.cards, this.slots);
-		this.selectedSlots = this.calculateSlots(this.selectedCards.cards, this.selectedBoundSpace);
+		this.selectedSlots = this.calculateSlots(this.selectedCards.cards, this.selectedBoundSpaceLimit);
 		this.updateCardObjects(this.selectedCards.cards, this.selectedSlots);
 	}
 
 	// Revamp so that it is bundled up together instead of separated when on low cards
-	private	calculateSlots(cards: Array<Card>, boundSpace: number, offset?: THREE.Vector3): Array<THREE.Vector3> {
+	private	calculateSlots(cards: Array<Card>, boundSpaceLimit: number, offset?: THREE.Vector3): Array<THREE.Vector3> {
 		if (offset === undefined)
 			offset = new THREE.Vector3(0, 0, 0);
 		const slots: Array<THREE.Vector3> = [];
-		const leftBound = -(boundSpace / 2)
-		const rightBound = boundSpace / 2
+		// const boundSpace = Math.min(boundSpaceLimit, (cards.length - 1) * Card.Width);
+		const boundSpace = boundSpaceLimit;
+		const leftBound = -(boundSpace / 2);
+		const rightBound = boundSpace / 2;
 		for (let i = 0; i < cards.length; i++) {
 			let normalizedIndex = cards.length > 1 ? i / (cards.length - 1) : 0.5;
 			let x = THREE.MathUtils.lerp(leftBound, rightBound, normalizedIndex);
@@ -118,9 +121,9 @@ export class CardManager {
 		}
 		let width = Card.Width;
 		if (slots[0] !== undefined && slots[1] !== undefined) {
-			width = Math.abs(slots[1].x - slots[0].x);
+			width = Math.min(width, Math.abs(slots[1].x - slots[0].x));
 		}
-		const hitboxes = [];
+		const hitboxes: Array<THREE.Mesh> = [];
 		for (let i = 0; i < slots.length; i++) {
 			const hitboxGeometry = new THREE.PlaneGeometry(width, Card.Height);
 			const hitboxMesh = new THREE.Mesh(hitboxGeometry, CardManager.invisibleMaterial);
@@ -130,17 +133,20 @@ export class CardManager {
 			this.applyFanRotationEffect(hitboxMesh.quaternion, normalizedIndex);
 			hitboxes.push(hitboxMesh);
 		}
-		this.stitchHitBoxes(hitboxes);
+		if (width < Card.Width) {
+			this.manipulateHitBoxes(hitboxes);
+		}
 		for (let i = 0; i < this.hitboxes.length; i++) {
 			const mesh = this.hitboxes[i];
 			mesh.geometry.dispose();
 			scene.remove(mesh);
 		}
-		scene.add(...hitboxes);
+		if (hitboxes.length > 0)
+			scene.add(...hitboxes);
 		this.hitboxes = hitboxes;
 	}
 
-	private stitchHitBoxes(hitboxes: Array<THREE.Mesh>) {
+	private manipulateHitBoxes(hitboxes: Array<THREE.Mesh>) {
 		const extension = 0.5;
 		for (let i = 0; i < hitboxes.length; i++) {
 			const vertices = hitboxes[i].geometry.attributes.position;
@@ -157,15 +163,15 @@ export class CardManager {
 				const secondVertices = nextHitbox.geometry.attributes.position;
 				hitboxes[i].updateMatrixWorld(true);
 				nextHitbox.updateMatrixWorld(true);
-				this.stitch(hitboxes[i], nextHitbox, 1, 0);
-				this.stitch(hitboxes[i], nextHitbox, 3, 2);
+				this.stitchVertices(hitboxes[i], nextHitbox, 1, 0);
+				this.stitchVertices(hitboxes[i], nextHitbox, 3, 2);
 				secondVertices.needsUpdate = true;
 			}
 			vertices.needsUpdate = true;
 		}
 	}
 	
-	private stitch(leftMesh: THREE.Mesh, rightMesh: THREE.Mesh, leftVerticeIndex: number, rightVerticeIndex: number) {
+	private stitchVertices(leftMesh: THREE.Mesh, rightMesh: THREE.Mesh, leftVerticeIndex: number, rightVerticeIndex: number) {
 		const leftBuffer = leftMesh.geometry.attributes.position;
 		const rightBuffer = rightMesh.geometry.attributes.position;
 
@@ -292,7 +298,7 @@ export class CardManager {
 		if (this.selectedCards.receiveCard(card) == true) {
 			this.removeCard(card);
 			card.isHover = false;
-			this.selectedSlots = this.calculateSlots(this.selectedCards.cards, this.selectedBoundSpace, new THREE.Vector3(0, 3, 0));
+			this.selectedSlots = this.calculateSlots(this.selectedCards.cards, this.selectedBoundSpaceLimit, new THREE.Vector3(0, 3, 0));
 			this.updateCardObjects(this.selectedCards.cards, this.selectedSlots);
 		}
 	}
@@ -301,7 +307,7 @@ export class CardManager {
 		if (this.selectedCards.removeCard(card)) {
 			this.receiveCard(card);
 			card.isHover = false;
-			this.selectedSlots = this.calculateSlots(this.selectedCards.cards, this.selectedBoundSpace, new THREE.Vector3(0, 3, 0));
+			this.selectedSlots = this.calculateSlots(this.selectedCards.cards, this.selectedBoundSpaceLimit, new THREE.Vector3(0, 3, 0));
 			this.updateCardObjects(this.selectedCards.cards, this.selectedSlots);
 		}
 	}
@@ -312,8 +318,8 @@ export class CardManager {
 		}
 		this.selectedCards.disposeCards();
 		this.cards.length = 0;
-		this.slots = this.calculateSlots(this.cards, this.boundSpace);
-		this.selectedSlots = this.calculateSlots(this.selectedCards.cards, this.selectedBoundSpace);
+		this.slots = this.calculateSlots(this.cards, this.boundSpaceLimit);
+		this.selectedSlots = this.calculateSlots(this.selectedCards.cards, this.selectedBoundSpaceLimit);
 		this.updateCardObjects(this.cards, this.slots);
 		this.updateCardObjects(this.selectedCards.cards, this.selectedSlots);
 	}
