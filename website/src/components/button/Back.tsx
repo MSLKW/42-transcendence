@@ -1,0 +1,17 @@
+import { BackIcon } from "../icon/Back";
+
+interface BackButtonProps {
+	scene?: () => void;
+}
+
+export const BackButton = ({ scene }: BackButtonProps) => {
+	return (
+		<button
+			data-tip="Back"
+			onClick={scene}
+			className="btn-icon btn-tip-down"
+		>
+			<BackIcon />
+		</button>
+	);
+}
