@@ -1,4 +1,5 @@
 import { useSceneStore } from "../store/SceneStore";
+import { usePartyStore } from "../store/PartyStore";
 import { AvatarMemberModule } from "../modules/AvatarMember";
 import { CloseModule } from "../modules/Close";
 import { MedalsModule } from "../modules/Medals";
@@ -7,7 +8,9 @@ import { PlayerStatsModule } from "../modules/PlayerStats";
 import { LightboxButton } from "../components/button/Lightbox";
 
 export const StatsWindow = () => {
-	const { profileFocus } = useSceneStore();
+	const { profileIndex } = useSceneStore();
+	const { members } = usePartyStore();
+	
 	return (
 		<section className="
 			absolute z-1
@@ -25,12 +28,11 @@ export const StatsWindow = () => {
 				<CloseModule dismiss="stats" />
 				<div className="divide-y divide-n2">
 					<div className="flex">
-						<AvatarMemberModule />
-						{/* <PlayerDataModule /> */}
-						<p className="text-n6">{profileFocus}</p>
+						<AvatarMemberModule name={members[profileIndex].name ?? "Guest"} />
+						<PlayerDataModule />
 					</div>
-					{/* <MedalsModule /> */}
-					{/* <PlayerStatsModule /> */}
+					<MedalsModule />
+					<PlayerStatsModule />
 				</div>
 			</div>
 		</section>

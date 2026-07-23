@@ -24,7 +24,7 @@ export const useDevStore = create<DevState>()(
 			resetGame: () => {
 				useSceneStore.setState({
 					currentScene: "LOGIN",
-					profileFocus: 0,
+					profileIndex: 0,
 					showWindow: {
 						badge: false,
 						createAccount: false,

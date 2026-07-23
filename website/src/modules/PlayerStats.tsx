@@ -3,7 +3,7 @@ import { useSceneStore } from "../store/SceneStore";
 
 export const PlayerStatsModule = () => {
 	const { members } = usePartyStore();
-	const { profileFocus } = useSceneStore();
+	const { profileIndex } = useSceneStore();
 
 	return (
 		<div className="
@@ -18,21 +18,21 @@ export const PlayerStatsModule = () => {
 				p-5
 			">
 				<h2>Total Played</h2>
-				<p>{members[profileFocus].totalPlayed}</p>
+				<p>{members[profileIndex].totalPlayed}</p>
 			</div>
 			<div className="
 				w-full h-full
 				p-5
 			">
 				<h2>Total Wins</h2>
-				<p>{members[profileFocus].totalWins}</p>
+				<p>{members[profileIndex].totalWins}</p>
 			</div>
 			<div className="
 				w-full h-full
 				p-5
 			">
 				<h2>Win Streak</h2>
-				<p>{members[profileFocus].winStreak}</p>
+				<p>{members[profileIndex].winStreak}</p>
 			</div>
 		</div>
 	);

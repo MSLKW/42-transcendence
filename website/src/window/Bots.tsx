@@ -1,5 +1,5 @@
 import { CloseModule } from "../modules/Close";
-// import { AvatarMemberModule } from "../modules/AvatarMember";
+import { AvatarMemberModule } from "../modules/AvatarMember";
 // import { PlayerStatsModule } from "../modules/PlayerStats";
 // import { PlayerDataModule } from "../modules/PlayerData";
 import { LightboxButton } from "../components/button/Lightbox";
@@ -21,11 +21,11 @@ export const BotsWindow = () => {
 			">
 				<CloseModule dismiss="bots" />
 				<div className="divide-y divide-n2">
-					{/* <div className="flex">
-						<AvatarMemberModule />
-						<PlayerDataModule />
-					</div> */}
-					<p>Bots data info here</p>
+					<div className="flex">
+						<AvatarMemberModule name="Bot"/>
+						{/* <PlayerDataModule /> */}
+					</div>
+					<p className="text-n6">Bots data info here</p>
 					{/* <PlayerStatsModule /> */}
 				</div>
 			</div>

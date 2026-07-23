@@ -55,10 +55,10 @@ export const Home = () => {
 						sm:overflow-x-visible overflow-x-auto
 					"
 				>
-					{ members.map((member) => (
+					{ members.map((member, index) => (
 						<AvatarButton
 							key={member.uuid}
-							uuid={member.uuid}
+							index={index}
 							name={member.name ?? "Guest"}
 							relation={member.relation}
 							cornerButton={member.isHost ? "host" : ""}

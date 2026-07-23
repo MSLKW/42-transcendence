@@ -40,7 +40,7 @@ export const Lobby = () => {
 					{ totalPlayers === 4 && members[2] &&
 						<AvatarButton
 							key={members[2].uuid}
-							uuid={members[2].uuid}
+							index={2}
 							name={members[2].name ?? "Guest"}
 							relation={members[2].relation}
 							cornerButton={members[2].isHost ? "host" : ""}
@@ -51,7 +51,7 @@ export const Lobby = () => {
 							{ members[1] && 
 								<AvatarButton
 									key={members[1].uuid}
-									uuid={members[1].uuid}
+									index={1}
 									name={members[1].name ?? "Guest"}
 									relation={members[1].relation}
 									cornerButton={members[1].isHost ? "host" : ""}
@@ -60,7 +60,7 @@ export const Lobby = () => {
 							{ members[2] && 
 								<AvatarButton
 									key={members[2].uuid}
-									uuid={members[2].uuid}
+									index={2}
 									name={members[2].name ?? "Guest"}
 									relation={members[2].relation}
 									cornerButton={members[2].isHost ? "host" : ""}
@@ -71,7 +71,7 @@ export const Lobby = () => {
 					{ totalPlayers === 2 && members[1] &&
 						<AvatarButton
 							key={members[1].uuid}
-							uuid={members[1].uuid}
+							index={1}
 							name={members[1].name ?? "Guest"}
 							relation={members[1].relation}
 							cornerButton={members[1].isHost ? "host" : ""}
@@ -85,7 +85,7 @@ export const Lobby = () => {
 					{ totalPlayers === 4 && members[1] &&
 						<AvatarButton
 							key={members[1].uuid}
-							uuid={members[1].uuid}
+							index={1}
 							name={members[1].name ?? "Guest"}
 							relation={members[1].relation}
 							cornerButton={members[1].isHost ? "host" : ""}
@@ -100,7 +100,7 @@ export const Lobby = () => {
 					{ totalPlayers === 4 && members[3] &&
 						<AvatarButton
 							key={members[3].uuid}
-							uuid={members[3].uuid}
+							index={3}
 							name={members[3].name ?? "Guest"}
 							relation={members[3].relation}
 							cornerButton={members[3].isHost ? "host" : ""}
@@ -111,7 +111,7 @@ export const Lobby = () => {
 					{ members[0] &&
 						<AvatarButton
 							key={members[0].uuid}
-							uuid={members[0].uuid}
+							index={0}
 							name={members[0].name ?? "Guest"}
 							relation={members[0].relation}
 							cornerButton={members[0].isHost ? "host" : ""}
@@ -131,11 +131,11 @@ export const Lobby = () => {
 					sm:overflow-x-visible overflow-x-auto
 				">
 					{ totalMembers > totalPlayers && 
-						members.slice(totalPlayers).map((member) => {
+						members.slice(totalPlayers).map((member, index) => {
 							return (
 								<AvatarButton
 									key={member.uuid}
-									uuid={member.uuid}
+									index={index}
 									name={member.name ?? "Guest"}
 									relation={member.relation}
 									cornerButton={member.isHost ? "host" : ""}

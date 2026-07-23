@@ -29,7 +29,7 @@ export const R3F = () => {
 						<div className="absolute left-[25%] top-[5%]">
 							<AvatarButton
 								key={members[2].uuid}
-								uuid={members[2].uuid}
+								index={2}
 								name={members[2].name ?? "Guest"}
 								relation={members[2].relation}
 								cornerButton="cardsLeft"
@@ -39,7 +39,7 @@ export const R3F = () => {
 						<div className="absolute left-[5%] top-[20%]">
 							<AvatarButton
 								key={members[1].uuid}
-								uuid={members[1].uuid}
+								index={1}
 								name={members[1].name ?? "Guest"}
 								relation={members[1].relation}
 								cornerButton="cardsLeft"
@@ -49,7 +49,7 @@ export const R3F = () => {
 						<div className="absolute right-[5%] top-[20%]">
 							<AvatarButton
 								key={members[3].uuid}
-								uuid={members[3].uuid}
+								index={3}
 								name={members[3].name ?? "Guest"}
 								relation={members[3].relation}
 								cornerButton="cardsLeft"
@@ -63,7 +63,7 @@ export const R3F = () => {
 						<div className="absolute left-[5%] top-[20%]">
 							<AvatarButton
 								key={members[1].uuid}
-								uuid={members[1].uuid}
+								index={1}
 								name={members[1].name ?? "Guest"}
 								relation={members[1].relation}
 								cornerButton="cardsLeft"
@@ -73,7 +73,7 @@ export const R3F = () => {
 						<div className="absolute right-[5%] top-[20%]">
 							<AvatarButton
 								key={members[2].uuid}
-								uuid={members[2].uuid}
+								index={2}
 								name={members[2].name ?? "Guest"}
 								relation={members[2].relation}
 								cornerButton="cardsLeft"
@@ -86,7 +86,7 @@ export const R3F = () => {
 					<div className="absolute left-[25%] top-[5%]">
 						<AvatarButton
 							key={members[1].uuid}
-							uuid={members[1].uuid}
+							index={1}
 							name={members[1].name ?? "Guest"}
 							relation={members[1].relation}
 							cornerButton="cardsLeft"
@@ -110,7 +110,7 @@ export const R3F = () => {
 			<footer className="flex place-content-between place-items-center">
 				<AvatarButton
 					key={members[0].uuid}
-					uuid={members[0].uuid}
+					index={0}
 					name={members[0].name ?? "Guest"}
 					relation={members[0].relation}
 					cornerButton="cardsLeft"

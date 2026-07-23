@@ -1,10 +1,11 @@
-import { useSceneStore } from "../store/SceneStore";
 import { AvatarImage } from "../components/image/AvatarImage";
 import { AvatarName } from "../components/label/AvatarName";
 
-export const AvatarMemberModule = () => {
-	const { profileFocus } = useSceneStore();
+interface AvatarMemberProps {
+	name: string;
+}
 
+export const AvatarMemberModule = ({ name = "Player" }: AvatarMemberProps) => {
 	return (
 		<div className="
 			flex place-content-evenly place-items-center
@@ -13,7 +14,7 @@ export const AvatarMemberModule = () => {
 		">
 			<div className="flex flex-col gap-3 place-content-center place-items-center">
 				<AvatarImage />
-				<AvatarName playerIndex={profileFocus} />
+				<AvatarName name={name} />
 			</div>
 		</div>
 	);

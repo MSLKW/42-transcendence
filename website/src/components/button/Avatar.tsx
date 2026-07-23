@@ -4,7 +4,7 @@ import { AvatarImage } from "../image/AvatarImage";
 import { AvatarName } from "../label/AvatarName";
 
 interface AvatarProps {
-	uuid: string,
+	index: number,
 	name: string,
 	relation: RelationType,
 	cornerButton?: string;
@@ -12,7 +12,7 @@ interface AvatarProps {
 	isActive?: boolean;
 }
 
-export const AvatarButton = ({ uuid, name, relation, cornerButton = "", isActive = false }: AvatarProps) => {
+export const AvatarButton = ({ index, name, relation, cornerButton = "", isActive = false }: AvatarProps) => {
 	const { setSceneValue, setShowWindow } = useSceneStore();
 
 	return (
@@ -26,7 +26,7 @@ export const AvatarButton = ({ uuid, name, relation, cornerButton = "", isActive
 				onClick={(e) => {
 					e.currentTarget.blur();
 
-					setSceneValue("profileUUID", uuid);
+					setSceneValue("profileIndex", index);
 					if (relation === RELATION.SELF)
 						setShowWindow("profile", true);
 					else if (relation === RELATION.BOT)
