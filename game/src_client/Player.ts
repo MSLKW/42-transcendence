@@ -6,7 +6,7 @@ import { Card } from './Card.ts';
 import { CardManager } from './CardManager.ts';
 import { CardHeap } from './CardHeap.ts';
 import { scene, renderer, camera, gameStatus, orbitControls } from './main.ts';
-import { OrbitControls } from 'three/examples/jsm/Addons.js';
+import { OrbitControls, TechnicolorShader } from 'three/examples/jsm/Addons.js';
 
 export class Player {
 	private	socket: Socket;
@@ -135,8 +135,10 @@ export class Player {
 		})
 
 		renderer.domElement.addEventListener('pointerup', (event) => {
-			console.log(`isDragging: ${this.isDragging}`);
 			if (this.cardManager.draggedCard !== undefined) {
+				if (this.isDragging === true) {
+					this.cardManager.setSort(undefined);
+				}
 				this.eventDropDrag(event);
 			}
 			if (this.isDragging === false) {

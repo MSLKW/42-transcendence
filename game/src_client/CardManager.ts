@@ -60,8 +60,9 @@ export class CardManager {
 		this.draggedCard = undefined;
 	}
 
-	public receiveCard(card: Card) {
-		this.cards.push(card);
+	public receiveCard(card: Card, index: number = this.cards.length) {
+		this.cards.splice(index, 0, card);
+		card.isHover = false;
 		this.slots = this.calculateSlots(this.cards, this.boundSpaceLimit);
 		this.sortCards();
 		this.initHitBoxes(this.cards, this.slots);
@@ -111,6 +112,7 @@ export class CardManager {
 			this.rotation = rotation;
 		}
 		this.dragPlane.setFromNormalAndCoplanarPoint(this.dragPlane.normal.clone().applyQuaternion(this.rotation), this.position);
+		this.dragPlane.constant -= 0.2;
 		this.slots = this.calculateSlots(this.cards, this.boundSpaceLimit);
 		this.updateCardObjects(this.cards, this.slots);
 		this.selectedSlots = this.calculateSlots(this.selectedCards.cards, this.selectedBoundSpaceLimit);
@@ -352,8 +354,34 @@ export class CardManager {
 	public dropDraggedCard(raycaster: THREE.Raycaster) {
 		if (this.draggedCard === undefined)
 			return ;
-		this.receiveCard(this.draggedCard);
+		this.receiveCard(this.draggedCard, this.getInsertIndex(this.draggedCard));
 		this.draggedCard = undefined;
+	}
+
+	private getInsertIndex(draggedCard: Card): number {
+		const draggedCardWorldPos = new THREE.Vector3();
+		draggedCard.object.getWorldPosition(draggedCardWorldPos);
+		let closestSlotIndex = 0;
+		let closestDistance = Infinity;
+		for (let i = 0; i < this.slots.length; i++) {
+			const distanceSquared = this.slots[i].distanceToSquared(draggedCardWorldPos);
+			if (distanceSquared < closestDistance) {
+				closestDistance = distanceSquared;
+				closestSlotIndex = i;
+			}
+		}
+		const closestSlot = this.slots[closestSlotIndex];
+		let insertIndex = this.cards.length;
+		if (closestSlot !== undefined) {
+			const checkLeftRight = draggedCardWorldPos.clone().cross(this.slots[closestSlotIndex]);
+			if (checkLeftRight.z > 0) {
+				insertIndex = Math.max(closestSlotIndex - 1, 0);
+			}
+			else if (checkLeftRight.z < 0) {
+				insertIndex = closestSlotIndex + 1;
+			}
+		}
+		return (insertIndex);
 	}
 
 	public hoverCard(raycaster: THREE.Raycaster) {
