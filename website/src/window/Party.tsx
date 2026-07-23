@@ -1,6 +1,7 @@
 import { useRef } from "react";
 import { LightboxButton } from "../components/button/Lightbox";
 import { PinButton } from "../components/button/Pin";
+import { SearchButton } from "../components/button/Search";
 import { SendButton } from "../components/button/Send";
 import { AvatarImage } from "../components/image/AvatarImage";
 
@@ -21,47 +22,41 @@ export const SearchModule = () => {
 					placeholder="Search For Party Members"
 					className="input-chat"
 				/>
-				<SendButton />
+				<SearchButton />
 			</div>
 		</div>
 	);
 }
 
-export const InviteOthersModule = () => {
+export const PartyCodeModule = () => {
 	return (
-		<div className="
-			flex
-			gap-[clamp(0.125rem,2vw+0.0625rem,0.25rem)]
-			text-[clamp(0.5625rem,2.5vw+0.28125rem,1.125rem)]
-		">
-			<h2>Invitation code:</h2>
-			<span className="text-lg tracking-[0.25rem]">
-				<i>ABCD1234</i>
-			</span>
-		</div>
-	);
-}
-
-export const JoinAnotherPartyModule = () => {
-	const focusRef = useRef<HTMLInputElement | null>(null);
-
-	return (
-		<div className="w-full flex flex-col gap-[clamp(0.125rem,2vw+0.0625rem,0.25rem)]">
-			<label htmlFor="party-code">
-				<h2>Join another party</h2>
-			</label>
-			<div className="
-				h-max
-				flex place-content-center place-items-center
-				gap-3
-			">
+		<div className="space-y-1">
+			<div
+				className="
+					flex
+					gap-2
+					text-[clamp(0.5625rem,2.5vw+0.28125rem,1.125rem)]
+				"
+			>
+				<h2>Invitation code:</h2>
+				<span className="text-lg tracking-[0.25rem]">
+					<i>ABCD1234</i>
+				</span>
+			</div>
+			<div
+				className="
+					w-full h-max
+					flex
+					place-content-center place-items-center
+					gap-2
+				"
+			>
 				<input
-					ref={focusRef}
 					id="party-code"
 					type="text"
-					placeholder="Enter code"
+					placeholder="Join another party"
 					className="input-chat"
-				/>
+					/>
 				<SendButton />
 			</div>
 		</div>
@@ -134,9 +129,8 @@ export const PartyWindow = () => {
 				<FriendModule name="Dev-Jeremy" />
 				<FriendModule name="Dev-Aisyah" />
 				<hr />
-				<InviteOthersModule />
-				<JoinAnotherPartyModule />
-				{/* <PinWindowModule /> */}
+				<PartyCodeModule />
+				<PinWindowModule />
 			</div>
 		</section>
 	);
