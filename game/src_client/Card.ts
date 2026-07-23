@@ -55,18 +55,20 @@ export class Card {
 		this.object.removeFromParent();
 	}
 
-	public move(position: THREE.Vector3, rotation: THREE.Euler) {
+	public move(position: THREE.Vector3, rotation: THREE.Quaternion) {
 		gsap.to(this.object.position, {
 			x: position.x,
 			y: position.y,
 			z: position.z,
 			duration: 0.1,
 		});
-		gsap.to(this.object.rotation, {
-			x: rotation.x,
-			y: rotation.y,
-			z: rotation.z,
+		const object = this.object;
+		gsap.to({ progress: 0 }, {
+			progress: 1,
 			duration: 0.1,
+			onUpdate: function () {
+				object.quaternion.slerp(rotation, this.progress());
+			}
 		});
 	}
 

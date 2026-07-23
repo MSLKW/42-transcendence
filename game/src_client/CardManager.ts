@@ -151,7 +151,7 @@ export class CardManager {
 		}
 		let width = Card.Width;
 		if (slots[0] !== undefined && slots[1] !== undefined) {
-			width = Math.min(width, Math.abs(slots[1].x - slots[0].x));
+			width = Math.min(width, slots[0].distanceTo(slots[1]));
 		}
 		const hitboxes: Array<THREE.Mesh> = [];
 		for (let i = 0; i < slots.length; i++) {
@@ -159,6 +159,7 @@ export class CardManager {
 			const hitboxMesh = new THREE.Mesh(hitboxGeometry, CardManager.invisibleMaterial);
 			hitboxMesh.userData.card = cards[i];
 			hitboxMesh.position.copy(slots[i]);
+			hitboxMesh.quaternion.copy(this.rotation);
 			let normalizedIndex = cards.length > 1 ? i / (cards.length - 1) : 0.5;
 			this.applyFanRotationEffect(hitboxMesh.quaternion, normalizedIndex);
 			hitboxes.push(hitboxMesh);
@@ -223,12 +224,12 @@ export class CardManager {
 			let slot = slots.at(i);
 			if (card && slot) {
 				let normalizedIndex = cards.length > 1 ? i / (cards.length - 1) : 0.5;
-				let updatedPosition = new THREE.Vector3().copy(slot);
-				let updatedRotation = new THREE.Quaternion().copy(this.rotation);
+				let updatedPosition = slot.clone();
+				let updatedRotation = this.rotation.clone();
 				this.applyFanRotationEffect(updatedRotation, normalizedIndex);
 				this.applyHoverEffect(card, updatedPosition);
 				if (updatedPosition !== card.object.position || updatedRotation !== card.object.quaternion) {
-					card.move(updatedPosition, new THREE.Euler().setFromQuaternion(updatedRotation));
+					card.move(updatedPosition, updatedRotation);
 				}
 				// console.log(`updated card object rank: ${card.rank} suit: ${card.suit} position: ${card.object.position.x},${card.object.position.y},${card.object.position.z} index: ${normalizedIndex}`);
 			}
@@ -241,8 +242,10 @@ export class CardManager {
 		const fanRotationEnd = -(this.fanRotation / 2) * (Math.PI / 180);
 
 		rotation.multiply(
-			new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(0, 0, 1), 
-			THREE.MathUtils.lerp(fanRotationStart, fanRotationEnd, normalizedIndex))
+			new THREE.Quaternion().setFromAxisAngle(
+				new THREE.Vector3(0, 0, 1), 
+				THREE.MathUtils.lerp(fanRotationStart, fanRotationEnd, normalizedIndex)
+			)
 		);
 	}
 
@@ -373,12 +376,12 @@ export class CardManager {
 		const closestSlot = this.slots[closestSlotIndex];
 		let insertIndex = this.cards.length;
 		if (closestSlot !== undefined) {
-			const checkLeftRight = draggedCardWorldPos.clone().cross(this.slots[closestSlotIndex]);
+			const checkLeftRight = closestSlot.clone().cross(draggedCardWorldPos);
 			if (checkLeftRight.z > 0) {
-				insertIndex = Math.max(closestSlotIndex - 1, 0);
+				insertIndex = Math.max(closestSlotIndex, 0); // Left
 			}
 			else if (checkLeftRight.z < 0) {
-				insertIndex = closestSlotIndex + 1;
+				insertIndex = closestSlotIndex + 1; // Right
 			}
 		}
 		return (insertIndex);

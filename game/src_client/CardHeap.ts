@@ -27,7 +27,7 @@ export class CardHeap {
 			let normalizedIndex = cardHand.cards.length > 1 ? i / (cardHand.cards.length - 1) : 0.5;
 			cardHand.cards[i].move(
 				new THREE.Vector3(this.position.x + THREE.MathUtils.lerp(xStart, xEnd, normalizedIndex), this.position.y, this.position.z),
-				new THREE.Euler(-Math.PI / 2, 0, 0)
+				new THREE.Quaternion().setFromEuler(new THREE.Euler(-Math.PI / 2, 0, 0))
 			);
 		}
 	}
