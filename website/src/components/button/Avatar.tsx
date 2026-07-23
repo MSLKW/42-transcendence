@@ -1,32 +1,38 @@
-import { usePartyStore } from "../../store/PartyStore";
 import { useSceneStore } from "../../store/SceneStore";
+import { RELATION, type RelationType } from "../../store/PartyStore";
 import { AvatarImage } from "../image/AvatarImage";
 import { AvatarName } from "../label/AvatarName";
 
 interface AvatarProps {
+	uuid: string,
+	name: string,
+	relation: RelationType,
 	cornerButton?: string;
 	playerIndex?: number;
 	isActive?: boolean;
 }
 
-export const AvatarButton = ({ cornerButton = "", playerIndex = 0, isActive = false }: AvatarProps) => {
-	const { setPartyValue } = usePartyStore();
-	const { setShowWindow } = useSceneStore();
+export const AvatarButton = ({ uuid, name, relation, cornerButton = "", isActive = false }: AvatarProps) => {
+	const { setSceneValue, setShowWindow } = useSceneStore();
 
 	return (
 		<>
 			<button
-				data-tip={ playerIndex === 0 ? "Edit Profile" : "View Stats"}
+				data-tip={
+					relation === RELATION.SELF ? "Edit Profile" :
+					relation === RELATION.BOT ? "Choose Bot"
+					: "View Stats"
+				}
 				onClick={(e) => {
 					e.currentTarget.blur();
 
-					if (playerIndex === 0) {
-						setPartyValue("playerFocus", playerIndex);
+					setSceneValue("profileUUID", uuid);
+					if (relation === RELATION.SELF)
 						setShowWindow("profile", true);
-					} else if (playerIndex > 0) {
-						setPartyValue("playerFocus", playerIndex);
+					else if (relation === RELATION.BOT)
+						setShowWindow("bots", true);
+					else
 						setShowWindow("stats", true);
-					}
 				}}
 				className="
 					btn-avatar btn-tip-up h-max w-max
@@ -34,7 +40,7 @@ export const AvatarButton = ({ cornerButton = "", playerIndex = 0, isActive = fa
 					gap-1
 			">
 				<AvatarImage cornerButton={cornerButton} isActive={isActive} />
-				<AvatarName playerIndex={playerIndex} />
+				<AvatarName name={name} />
 			</button>
 		</>
 	);

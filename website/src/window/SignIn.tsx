@@ -62,7 +62,7 @@ export const SignInWindow = () => {
 
 	return (
 		<section className="
-			absolute z-1 inset-0 left-0
+			absolute z-1 left-0
 			h-full w-full
 			flex place-content-center place-items-center
 		">

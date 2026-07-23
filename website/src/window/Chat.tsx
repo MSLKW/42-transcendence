@@ -13,9 +13,9 @@ export const ChatWindow = () => {
 			absolute z-1
 			top-0
 			left-0
-			h-screen w-screen
+			h-full w-full
 		">
-			<LightboxButton dismiss="chat" blur={true} />
+			<LightboxButton dismiss="chat" blur={false} />
 			<div style={{ width: sceneWidth, height: sceneHeight }}
 				className="
 					z-0

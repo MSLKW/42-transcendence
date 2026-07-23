@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { useDevStore } from "./store/DevStore";
 import { useGameStore } from "./store/GameStore";
-import { usePartyStore, ISFRIEND } from "./store/PartyStore";
+import { usePartyStore, RELATION, SEATNUMBER_UNSEATED } from "./store/PartyStore";
 import { useSceneStore } from "./store/SceneStore";
 import { usePlayerStore } from "./store/PlayerStore";
 
@@ -20,7 +20,7 @@ export default function Dev() {
 		console.log("gameStarted", gameStarted);
 	}, [currentScene]);
 	
-	const { partyCount, addMember } = usePartyStore();
+	const { totalMembers, addMember } = usePartyStore();
 	const { incTotalWins, incTotalLoss } = usePlayerStore();
 
 	return (
@@ -41,14 +41,14 @@ export default function Dev() {
 				<li><button type="button" tabIndex={-1} onClick={() => resetGame()}>Reset</button></li>
 			</ul>
 			<ul className="flex place-content-evenly">
-				{ partyCount <= TEST_MEMBERS.length &&
+				{ totalMembers <= TEST_MEMBERS.length &&
 					<li>
 						<button
 							type="button"
 							tabIndex={-1}
-							onClick={() => addMember(TEST_MEMBERS[partyCount - 1])}
+							onClick={() => addMember(TEST_MEMBERS[totalMembers - 1])}
 						>
-							Add "{TEST_MEMBERS[partyCount - 1].name}" As Party Member
+							Add "{TEST_MEMBERS[totalMembers - 1].name}" As Party Member
 						</button>
 					</li>
 				}
@@ -87,9 +87,9 @@ const TEST_MEMBERS = [
 			WIN_STREAK_10: null,
 			MASTER_COLLECTOR: null,
 		},
-		seatNumber: -1,
-		isFriend: ISFRIEND.TRUE,
+		relation: RELATION.STRANGER,
 		isHost: false,
+		seatNumber: SEATNUMBER_UNSEATED,
 	},
 	{
 		uuid: "12345678-abcd-efgh-ijkl-222222222222",
@@ -116,9 +116,9 @@ const TEST_MEMBERS = [
 			WIN_STREAK_10: null,
 			MASTER_COLLECTOR: null,
 		},
-		seatNumber: -1,
-		isFriend: ISFRIEND.FALSE,
+		relation: RELATION.FRIEND,
 		isHost: false,
+		seatNumber: SEATNUMBER_UNSEATED,
 	},
 	{
 		uuid: "12345678-abcd-efgh-ijkl-333333333333",
@@ -145,9 +145,9 @@ const TEST_MEMBERS = [
 			WIN_STREAK_10: null,
 			MASTER_COLLECTOR: null,
 		},
-		seatNumber: -1,
-		isFriend: ISFRIEND.TRUE,
+		relation: RELATION.FRIEND,
 		isHost: false,
+		seatNumber: SEATNUMBER_UNSEATED,
 	},
 	{
 		uuid: "12345678-abcd-efgh-ijkl-444444444444",
@@ -174,8 +174,8 @@ const TEST_MEMBERS = [
 			WIN_STREAK_10: null,
 			MASTER_COLLECTOR: null,
 		},
-		seatNumber: -1,
-		isFriend: ISFRIEND.TRUE,
+		relation: RELATION.STRANGER,
 		isHost: false,
+		seatNumber: SEATNUMBER_UNSEATED,
 	},
 ] as const;

@@ -14,7 +14,7 @@ export const ProfileWindow = () => {
 		<section className="
 			absolute z-1
 			top-0 left-0
-			h-screen w-screen
+			h-full w-full
 			flex place-content-center place-items-center
 		">
 			<LightboxButton dismiss={data.name ? "profile" : ""} blur={true} />

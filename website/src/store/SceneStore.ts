@@ -4,12 +4,16 @@ import { useGameStore } from "./GameStore";
 
 export type SCENES = "BADGE" | "LOGIN" | "HOME" | "LOBBY" | "GAMEPLAY" | "R3F" | "RESULTS";
 
-interface SceneState {
+interface SceneValues {
 	currentScene: SCENES;
 	sceneHeight: number;
 	sceneWidth: number;
 	showWindow: Record<string, boolean>;
+	profileUUID: string;
+}
 
+interface SceneState extends SceneValues {
+	setSceneValue: <K extends keyof SceneValues>(key: K, value: SceneValues[K]) => void;
 	setCurrentScene: (scene: SCENES) => void;
 	setSceneWidth: (width: number) => void;
 	setSceneHeight: (height: number) => void;
@@ -37,7 +41,9 @@ export const useSceneStore = create<SceneState>() (
 				chat: false,
 				rank: false,
 			},
+			profileUUID: "",
 
+			setSceneValue: (key, value) => set(() => ({ [key]: value })),
 			setCurrentScene: (scene) => {
 				set({ currentScene: scene });
 				useGameStore.getState().setGameValue("gameStarted", scene === "R3F" || scene === "GAMEPLAY");

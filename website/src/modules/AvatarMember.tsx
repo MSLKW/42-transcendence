@@ -1,9 +1,9 @@
-import { usePartyStore } from "../store/PartyStore";
+import { useSceneStore } from "../store/SceneStore";
 import { AvatarImage } from "../components/image/AvatarImage";
 import { AvatarName } from "../components/label/AvatarName";
 
 export const AvatarMemberModule = () => {
-	const { playerFocus } = usePartyStore();
+	const { profileFocus } = useSceneStore();
 
 	return (
 		<div className="
@@ -13,7 +13,7 @@ export const AvatarMemberModule = () => {
 		">
 			<div className="flex flex-col gap-3 place-content-center place-items-center">
 				<AvatarImage />
-				<AvatarName playerIndex={playerFocus} />
+				<AvatarName playerIndex={profileFocus} />
 			</div>
 		</div>
 	);

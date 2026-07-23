@@ -1,6 +1,6 @@
 import { useSceneStore } from "../../store/SceneStore";
 import { useGameStore } from "../../store/GameStore";
-import { GAMEMODE } from "../../pages/Home";
+import { GAMEMODE, type GameModeType, usePartyStore } from "../../store/PartyStore";
 import { PersonIcon } from "../icon/Person";
 import { TutorialIcon } from "../icon/TutorialIcon";
 
@@ -11,12 +11,14 @@ interface HomeProps {
 export const HomeCardButton = ({ gameMode = 4 }: HomeProps) => {
 	const { setCurrentScene } = useSceneStore();
 	const { setGameValue } = useGameStore();
+	const { setPartyValue } = usePartyStore();
 
 	return (
 		<button
 			onClick={() => {
 				setGameValue("totalPlayers", gameMode);
-				if (gameMode === GAMEMODE.DEV)
+				setPartyValue("gameMode", gameMode as GameModeType);
+				if (gameMode === GAMEMODE.TUTORIAL)
 					setCurrentScene("GAMEPLAY")
 				else
 					setCurrentScene("LOBBY")

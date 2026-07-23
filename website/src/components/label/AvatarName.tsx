@@ -1,13 +1,15 @@
-import { useGameStore } from "../../store/GameStore";
-import { usePartyStore } from "../../store/PartyStore";
+// import { useGameStore } from "../../store/GameStore";
+// import { usePartyStore } from "../../store/PartyStore";
 
 interface AvatarProps {
-	playerIndex?: number;
+	// playerIndex?: number;
+	name: string;
 }
 
-export const AvatarName = ({ playerIndex = 0 }: AvatarProps) => {
-	const { playerOrder } = useGameStore();
-	const { members, partyCount } = usePartyStore();
+// export const AvatarName = ({ playerIndex = 0 }: AvatarProps) => {
+export const AvatarName = ({ name = "Player" }: AvatarProps) => {
+	// const { playerNames } = useGameStore();
+	// const { members, totalMembers } = usePartyStore();
 
 	return (
 		<div className="
@@ -21,10 +23,11 @@ export const AvatarName = ({ playerIndex = 0 }: AvatarProps) => {
 			flex place-content-center place-items-center
 			px-[clamp(0.625rem,1vh+0.3125rem,1.25rem)]
 		">
-			{ playerIndex < partyCount
+			{/* { playerIndex < totalMembers
 				? <p>{members[playerIndex].name}</p>
-				: <p>{playerOrder[playerIndex]}</p>
-			}
+				: <p>{playerNames[playerIndex]}</p>
+				} */}
+			<p>{name}</p>
 		</div>
 	);
 }

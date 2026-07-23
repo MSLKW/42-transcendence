@@ -7,9 +7,9 @@ export const RankWindow = () => {
 		<section className="
 			absolute left-0 top-0
 			z-1
-			w-screen h-screen
+			w-full h-full
 		">
-			<LightboxButton dismiss="rank" blur={true} />
+			<LightboxButton dismiss="rank" blur={false} />
 			<div className="
 				z-0
 				w-fit h-fit

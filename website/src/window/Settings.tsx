@@ -25,6 +25,7 @@ export const SettingsWindow = () => {
 				bg-linear-to-b from-n0 to-n1
 				border border-n2 rounded-3xl
 				relative
+				pointer-events-auto
 			">
 				<CloseModule dismiss="settings" />
 				<div className="
