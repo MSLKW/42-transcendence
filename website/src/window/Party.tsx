@@ -4,6 +4,7 @@ import { PinButton } from "../components/button/Pin";
 import { SearchButton } from "../components/button/Search";
 import { SendButton } from "../components/button/Send";
 import { AvatarImage } from "../components/image/AvatarImage";
+import { FriendsIcon } from "../components/icon/Friends";
 
 export const SearchModule = () => {
 	const focusRef = useRef<HTMLInputElement | null>(null);
@@ -19,7 +20,7 @@ export const SearchModule = () => {
 					ref={focusRef}
 					id="party-code"
 					type="text"
-					placeholder="Search For Party Members"
+					placeholder="Enter name"
 					className="input-chat"
 				/>
 				<SearchButton />
@@ -80,13 +81,18 @@ interface FriendsProps {
 }
 export const FriendModule = ({ name }: FriendsProps) => {
 	return (
-		<div className="flex gap-5">
+		<div className="w-full flex gap-5">
 			<AvatarImage />
 			<div className="w-full">
 				<h2>{name}</h2>
-				<div className="flex place-items-center gap-2 mb-2">
-					<div className="h-2.5 aspect-square rounded-full bg-c4"/>
-					<span>Online</span>
+				<div className="h-8 flex place-content-between place-items-center">
+					<div className="h-full flex place-items-center gap-2">
+						<div className="h-2.5 aspect-square rounded-full bg-c4"/>
+						<span>Online</span>
+					</div>
+					<button className="h-8 aspect-square">
+						<FriendsIcon />
+					</button>
 				</div>
 				<button
 					className="
@@ -94,6 +100,7 @@ export const FriendModule = ({ name }: FriendsProps) => {
 						rounded-full
 						bg-n6
 						text-n0
+						px-5
 					"
 				>
 					Invite To Party
@@ -113,7 +120,7 @@ export const PartyWindow = () => {
 			<LightboxButton dismiss="party" blur={false} isDismissable={true} />
 			<div
 				className={`
-					w-100
+					w-90 max-h-150
 					absolute bottom-10 right-10
 					bg-linear-to-b from-n0 to-n1
 					border border-n2 rounded-[clamp(0.125rem,2vw+0.0625rem,1.5rem)]
@@ -122,12 +129,20 @@ export const PartyWindow = () => {
 					text-n6
 					pointer-events-auto
 			`}>
-				<SearchModule />
+				<div className="space-y-1">
+					<h2>Search For Party Members</h2>
+					<SearchModule />
+				</div>
 				<hr />
-				<FriendModule name="Dev-Azrul" />
-				<FriendModule name="Dev-Max" />
-				<FriendModule name="Dev-Jeremy" />
-				<FriendModule name="Dev-Aisyah" />
+				<div className="space-y-1 overflow-scroll">
+					<h2>Friends List</h2>
+					<div className="flex flex-col gap-2">
+						<FriendModule name="Dev-Azrul" />
+						<FriendModule name="Dev-Max" />
+						<FriendModule name="Dev-Jeremy" />
+						<FriendModule name="Dev-Aisyah" />
+					</div>
+				</div>
 				<hr />
 				<PartyCodeModule />
 				<PinWindowModule />
