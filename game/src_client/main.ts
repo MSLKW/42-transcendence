@@ -74,7 +74,7 @@ const box2Mesh = new THREE.Mesh(boxGeometry, box2Material);
 box2Mesh.position.set(-20, 2, -20);
 scene.add(boxMesh, box2Mesh);
 
-const orbitControls = new OrbitControls(camera, renderer.domElement);
+export const orbitControls = new OrbitControls(camera, renderer.domElement);
 camera.position.set(0, 10, 0);
 orbitControls.update();
 

@@ -7,23 +7,38 @@ import { CardHandTransmit } from '../src_shared/Types.ts';
 import { update } from 'three/examples/jsm/libs/tween.module.js';
 
 export class CardManager {
+	/* Card Manager */
 	private position: THREE.Vector3;
 	private rotation: THREE.Quaternion;
+
+	/* Main Cards */
 	private boundSpaceLimit: number;
 	private	slots: Array<THREE.Vector3>;
 	private	cards: Array<Card>;
+
+	/* Hitboxes */
 	private hitboxes: Array<THREE.Mesh>;
 	private static invisibleMaterial = new THREE.MeshBasicMaterial({
 		colorWrite: false,
 		depthWrite: false
 	});
+
+	/* Selected Cards */
 	public	selectedCards: CardHand;
 	private selectedBoundSpaceLimit: number;
 	private selectedSlots: Array<THREE.Vector3>;
+
+	/* References */
 	private playerId: string;
+	private sortFunction: ((a: Card, b: Card) => number) | undefined;
+
+	/* Dragging */
+	public	draggedCard: Card | undefined;
+	private dragPlane: THREE.Plane;
+
+	/* Fanning Effect */
 	private fanRotation: number = 20;
 	private fanHeight: number = 1;
-	private sortFunction: ((a: Card, b: Card) => number) | undefined;
 	
 	constructor(playerId: string,
 				position: THREE.Vector3 = new THREE.Vector3(0, 0, 0),
@@ -40,7 +55,9 @@ export class CardManager {
 		this.boundSpaceLimit = boundSpace;
 		this.selectedBoundSpaceLimit = selectedBoundSpace;
 		this.selectedSlots = [];
+		this.dragPlane = new THREE.Plane().setFromNormalAndCoplanarPoint(new THREE.Vector3(0, 0, 1), this.position);
 		this.sortFunction = undefined;
+		this.draggedCard = undefined;
 	}
 
 	public receiveCard(card: Card) {
@@ -54,7 +71,6 @@ export class CardManager {
 	public removeCard(card: Card) {
 		let index = this.cards.indexOf(card);
 		if (index == -1) {
-			console.log('Card to remove not found');
 			return ;
 		}
 		this.cards.splice(index, 1);
@@ -94,6 +110,7 @@ export class CardManager {
 		if (rotation !== undefined) {
 			this.rotation = rotation;
 		}
+		this.dragPlane.setFromNormalAndCoplanarPoint(this.dragPlane.normal.clone().applyQuaternion(this.rotation), this.position);
 		this.slots = this.calculateSlots(this.cards, this.boundSpaceLimit);
 		this.updateCardObjects(this.cards, this.slots);
 		this.selectedSlots = this.calculateSlots(this.selectedCards.cards, this.selectedBoundSpaceLimit);
@@ -293,18 +310,6 @@ export class CardManager {
 		}
 	}
 
-	public hoverCard(raycaster: THREE.Raycaster) {
-		for (let i = 0; i < this.cards.length; i++) {
-			this.cards[i].isHover = false;
-		}
-		let intersected = raycaster.intersectObjects(this.hitboxes);
-		if (intersected.length > 0) {
-			let card: Card = intersected[0].object.userData.card;
-			card.isHover = true;
-		}
-		this.updateCardObjects(this.cards, this.slots);
-	}
-
 	private	selectCard(card: Card) {
 		if (this.selectedCards.receiveCard(card) == true) {
 			this.removeCard(card);
@@ -321,6 +326,46 @@ export class CardManager {
 			this.selectedSlots = this.calculateSlots(this.selectedCards.cards, this.selectedBoundSpaceLimit, new THREE.Vector3(0, 3, 0));
 			this.updateCardObjects(this.selectedCards.cards, this.selectedSlots);
 		}
+	}
+
+	public pickupDraggedCard(raycaster: THREE.Raycaster) {
+		if (this.draggedCard !== undefined) 
+			return ;
+		let cardObjects = Card.getCardObjects(this.cards);
+		let intersected = raycaster.intersectObjects(cardObjects);
+		if (intersected.length > 0) {
+			let card: Card = intersected[0].object.userData.instance;
+			this.draggedCard = card;
+			this.removeCard(card);
+		}
+	}
+
+	public moveDraggedCard(raycaster: THREE.Raycaster) {
+		if (this.draggedCard === undefined)
+			return ;
+		const intersectedPoint = new THREE.Vector3();
+		raycaster.ray.intersectPlane(this.dragPlane, intersectedPoint);
+		this.draggedCard.object.position.copy(intersectedPoint);
+		this.draggedCard.object.quaternion.copy(this.rotation);
+	}
+
+	public dropDraggedCard(raycaster: THREE.Raycaster) {
+		if (this.draggedCard === undefined)
+			return ;
+		this.receiveCard(this.draggedCard);
+		this.draggedCard = undefined;
+	}
+
+	public hoverCard(raycaster: THREE.Raycaster) {
+		for (let i = 0; i < this.cards.length; i++) {
+			this.cards[i].isHover = false;
+		}
+		let intersected = raycaster.intersectObjects(this.hitboxes);
+		if (intersected.length > 0) {
+			let card: Card = intersected[0].object.userData.card;
+			card.isHover = true;
+		}
+		this.updateCardObjects(this.cards, this.slots);
 	}
 
 	public reset() {

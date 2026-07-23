@@ -25,12 +25,10 @@ export class CardHand {
 
 	public removeCard(card: Card): boolean {
 		if (this.cards.length == 0) {
-			console.log('CardHand is empty');
 			return (false);
 		}
 		let index = this.cards.indexOf(card);
 		if (index == -1) {
-			console.log('Card to remove not found');
 			return (false);
 		}
 		this.cards.splice(index, 1);

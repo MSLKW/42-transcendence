@@ -5,7 +5,8 @@ import { CardHand } from './CardHand.ts';
 import { Card } from './Card.ts';
 import { CardManager } from './CardManager.ts';
 import { CardHeap } from './CardHeap.ts';
-import { scene, renderer, camera, gameStatus } from './main.ts';
+import { scene, renderer, camera, gameStatus, orbitControls } from './main.ts';
+import { OrbitControls } from 'three/examples/jsm/Addons.js';
 
 export class Player {
 	private	socket: Socket;
@@ -13,17 +14,22 @@ export class Player {
 	public	cardManager: CardManager;
 	private cardHeapRef: CardHeap;
 	private raycaster: THREE.Raycaster;
+	private startClick: THREE.Vector2;
+	private isDragging: boolean;
 
 	private sendCardsButton: HTMLButtonElement;
 	private skipTurnButton: HTMLButtonElement;
 	private sortCardsByRankButton: HTMLButtonElement;
 	private sortCardsBySuitButton: HTMLButtonElement
 
+
 	constructor(socket: Socket, playerId: string, cardHeapRef: CardHeap) {
 		this.socket = socket;
 		this.cardHeapRef = cardHeapRef;
 		this.playerId = playerId;
 		this.raycaster = new THREE.Raycaster();
+		this.startClick = new THREE.Vector2();
+		this.isDragging = false;
 
 		this.sendCardsButton = document.getElementById('send-cards-button') as HTMLButtonElement;
 		this.skipTurnButton = document.getElementById('skip-turn-button') as HTMLButtonElement;
@@ -107,32 +113,71 @@ export class Player {
 			this.cardManager.setSort((a, b) => a.suit - b.suit);
 		});
 
-		renderer.domElement.addEventListener('click', (event) => {
-			this.eventClick(event);
-		});
+		renderer.domElement.addEventListener('pointerdown', (event) => {
+			orbitControls.enabled = false;
+			this.startClick.x = event.clientX;
+			this.startClick.y = event.clientY;
+			this.isDragging = false;
+			this.eventDrag(event);
+		})
 
-		window.addEventListener('pointermove', (event) => {
+		renderer.domElement.addEventListener('pointermove', (event) => {
+			const xDelta = Math.abs(event.clientX - this.startClick.x);
+			const yDelta = Math.abs(event.clientY - this.startClick.y);
+
+			if (xDelta > 5 || yDelta > 5) {
+				this.isDragging = true;
+			}
+			if (this.cardManager.draggedCard !== undefined) {
+				this.eventMoveDrag(event);
+			}
 			this.eventHover(event);
+		})
+
+		renderer.domElement.addEventListener('pointerup', (event) => {
+			console.log(`isDragging: ${this.isDragging}`);
+			if (this.cardManager.draggedCard !== undefined) {
+				this.eventDropDrag(event);
+			}
+			if (this.isDragging === false) {
+				this.eventClick(event);
+			}
+			this.isDragging = false;
+			orbitControls.enabled = true;
 		})
 	}
 
-	private eventClick(event: PointerEvent) {
+	private raycast(event: PointerEvent) {
 		const canvas = renderer.domElement.getBoundingClientRect();
 		const mouse = new THREE.Vector2(
 			((event.clientX - canvas.left) / canvas.width) * 2 - 1,
 			-((event.clientY - canvas.top) / canvas.height) * 2 + 1
 		);
 		this.raycaster.setFromCamera(mouse, camera);
+	}
+
+	private eventClick(event: PointerEvent) {
+		this.raycast(event);
 		this.cardManager.interactCard(this.raycaster);
 	}
 
+	private eventDrag(event: PointerEvent) {
+		this.raycast(event);
+		this.cardManager.pickupDraggedCard(this.raycaster);
+	}
+	
+	private eventMoveDrag(event: PointerEvent) {
+		this.raycast(event);
+		this.cardManager.moveDraggedCard(this.raycaster);
+	}
+
+	private eventDropDrag(event: PointerEvent) {
+		this.raycast(event);
+		this.cardManager.dropDraggedCard(this.raycaster);
+	}
+
 	private eventHover(event: PointerEvent) {
-		const canvas = renderer.domElement.getBoundingClientRect();
-		const mouse = new THREE.Vector2(
-			((event.clientX - canvas.left) / canvas.width) * 2 - 1,
-			-((event.clientY - canvas.top) / canvas.height) * 2 + 1
-		);
-		this.raycaster.setFromCamera(mouse, camera);
+		this.raycast(event);
 		this.cardManager.hoverCard(this.raycaster);
 	}
 
