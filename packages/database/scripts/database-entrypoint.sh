@@ -1,11 +1,11 @@
 #!/bin/sh
 
-# 1. Wait for the postgresql-rdbms to be ready
-echo "Waiting for postgresql-rdbms..."
-while ! pg_isready -h postgresql-rdbms -p 5432; do
+# 1. Wait for the postgresql to be ready
+echo "Waiting for postgresql..."
+while ! pg_isready -h postgresql -p 5432; do
   sleep 2
 done
-echo "postgresql-rdbms is ready!"
+echo "postgresql is ready!"
 
 
 # # 2. Apply Migrations (DO NOT generate here)
@@ -46,7 +46,7 @@ done
 # 3. Check for final success
 if [ "$SUCCESS" = false ]; then
   echo "Error: Migrations failed after $MAX_RETRIES attempts."
-  echo "Exiting drizzle-db_tool container upon migration failure now..."
+  echo "Exiting orm-backend container upon migration failure now..."
   exit 1
 fi
 

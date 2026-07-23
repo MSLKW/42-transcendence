@@ -1,17 +1,23 @@
 networks:
   transcendence:
-    name : ${NETWORK_NAME}     # name : transcendence 
+    name: ${MAIN_NETWORK_NAME}
     driver: bridge
+  database:
+    name: ${DB_NETWORK_NAME}
+    driver: bridge 
+  # lobby:
+  #   name: lobby
+  #   driver: bridge
 
 
 volumes:
   db_data:
-    name: ${DB_VOLUME_NAME}    # name: postgres_data
+    name: ${DB_VOLUME_NAME}
     driver: local
     driver_opts:  
       type: none
       o: bind
-      device: ${HOME}/data/${DB_VOLUME_NAME}       # device: /home/aimokhta/data/postgres_data
+      device: ${HOME}/data/${DB_VOLUME_NAME}
 
 
 secrets: # auto make all secret files just read only mode
@@ -35,8 +41,8 @@ services:
 #           POSTGRESQL ( RDBMS Database Engine )
 #                       *RDBMS = Relational Database Managaement System
 # ==============================================================================
-  postgresql-rdbms:
-    container_name: postgresql-rdbms
+  postgresql:
+    container_name: postgresql
     image: postgres:17-bookworm           # No Dockerfile needed here, pull directly from Docker Hub!
     restart: unless-stopped
     ports:
@@ -61,33 +67,33 @@ services:
       - .env
     volumes:
       - db_data:/var/lib/postgresql/data                                          # volume
-      - ./packages/database/init/init.sql:/docker-entrypoint-initdb.d/init.sql:ro # to run schema creation script
-      - ./packages/database/scripts:/scripts:ro                                   # container executions
+      - ./packages/database/init/init.sql:/docker-entrypoint-initdb.d/init.sql:ro # to run complex/specific sql scripts directly to Postgres instead of to Drizzle
+      - ./packages/database/scripts:/scripts:ro                                   # container execution
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
       interval: 5s
       timeout: 5s
       retries: 5
     networks:
-      - transcendence
+      - transcendence # - database
 
 
 
 # ==============================================================================
-#           DRIZZLE ( Drizzle-ORM + Drizzle-kit + NODE )
+#           ORM-BACKEND (Node.js + Express.js + Drizzle-orm + Drizzle-kit)
 # ==============================================================================
-  drizzle-db_tool:
-    container_name: drizzle-db_tool
+  orm-backend:
+    container_name: orm-backend
     build:
       context: .
       dockerfile: ./packages/database/Dockerfile
-    image: drizzle-db_tool:aisyah
+    image: orm-backend:aisyah
     pull_policy: build
     restart: no
     ports:
       - "${DRIZZLE_STUDIO_PORT}:${DRIZZLE_STUDIO_PORT}"
     environment:
-      DB_HOST: postgresql-rdbms
+      DB_HOST: postgresql
       DB_PORT: ${POSTGRES_PORT}
       DB_NAME: ${POSTGRES_DB}
       DB_USER: ${POSTGRES_USER}
@@ -97,13 +103,19 @@ services:
     env_file:
       - .env
     depends_on:
-      postgresql-rdbms:
+      postgresql:
         condition: service_healthy
     networks:
       - transcendence
+      # - database
     command: ["npm", "run", "db:studio", "--", "--host", "0.0.0.0"]
     # The double dash "--" acts as a separator. It tells npm:
     # "Stop parsing arguments for yourself. Everything after this -- should be passed directly to the command I am executing."
+
+
+
+
+
 
 
 
@@ -121,7 +133,7 @@ services:
     ports:
       - "${AUTH_PORT}:${AUTH_PORT}"
     environment:
-      DB_HOST: postgresql-rdbms                              # DB_HOST is a standard industry convention
+      DB_HOST: postgresql                              # DB_HOST is a standard industry convention
       DB_NAME: ${POSTGRES_DB}
       DB_PORT: ${POSTGRES_PORT}
       DB_USER: ${POSTGRES_USER} # ${POSTGRES_USER_NAME_AUTH}
@@ -132,8 +144,8 @@ services:
     secrets:
       - db_admin_password # - db_auth_password
     depends_on:
-      postgresql-rdbms:
-        condition: service_healthy
+      postgresql:
+        condition: service_healthy # have to change this to drizzle instead after database add/change network to 
     networks:
       - transcendence
 
@@ -154,7 +166,7 @@ services:
 #     secrets:
 #     volumes:
 #     depends_on:
-#       postgresql-rdbms:
+#       postgresql:
 #         condition: service_healthy
 #     networks:
 #       - transcendence

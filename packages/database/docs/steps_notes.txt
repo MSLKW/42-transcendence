@@ -14,7 +14,7 @@ Step 1: Create the SQL Initialization Script
   Update your docker-compose.yml to map this file
     ```
     // docker-compose.yml
-    postgresql-rdbms:
+    postgresql:
         image: postgres:17
         volumes:
           - postgresql_data:/var/lib/postgresql/data
@@ -93,7 +93,7 @@ Step 4: How to verify it works
   Push your schema: Run npx drizzle-kit push (or migrate).
   Check the database:
     Open your terminal and enter the database container:
-    docker exec -it postgresql-rdbms psql -U admin -d big_two_db
+    docker exec -it postgresql psql -U admin -d big_two_db
     Type \dn (this lists all schemas).
     You should see: auth_service, lobby_service, game_service, and public.
 

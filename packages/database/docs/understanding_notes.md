@@ -67,14 +67,14 @@
 ## specified schema for each microservices
 `Master URL (for migration and studio) - for Drizzle only`
 ```
-DATABASE_URL=postgresql://admin:password@postgresql-rdbms:5432/big_two_db
+DATABASE_URL=postgresql://admin:password@postgresql:5432/big_two_db
 ```
 
 `Service-specific`
 ```
 // You override the URL specifically for each service
 // each microservice gets a specific DATABASE_URL with a ?schema=... parameter injected by Docker.
-DATABASE_URL=postgresql://admin:password@postgresql-rdbms:5432/big_two_db?schema=auth_service
+DATABASE_URL=postgresql://admin:password@postgresql:5432/big_two_db?schema=auth_service
 ```
 
 

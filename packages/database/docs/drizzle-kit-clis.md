@@ -36,12 +36,12 @@ Your `drizzle-orm` container runs `drizzle-kit studio` via the `command` in `doc
 ```sh
 #!/bin/sh
 
-# Wait for the postgresql-rdbms to be ready
-echo "Waiting for postgresql-rdbms..."
-while ! pg_isready -h postgresql-rdbms -p 5432 -U "${POSTGRES_USER}"; do
+# Wait for the postgresql to be ready
+echo "Waiting for postgresql..."
+while ! pg_isready -h postgresql -p 5432 -U "${POSTGRES_USER}"; do
   sleep 2
 done
-echo "postgresql-rdbms is ready!"
+echo "postgresql is ready!"
 
 # Run migrations automatically every time the container starts
 echo "Running database migrations..."
