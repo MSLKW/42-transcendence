@@ -5,10 +5,12 @@ import { Lobby } from './Lobby.js';
 export class LobbyManager {
 	private lobbies: Record<string, Lobby>;
 	private newSessionId: number;
+	private lobbyLimit: number;
 
 	constructor() {
 		this.lobbies = {};
 		this.newSessionId = 0;
+		this.lobbyLimit = 100;
 
 		io.on("connection", (socket) => {
 			const authId = socket.handshake.auth.token;
@@ -32,7 +34,11 @@ export class LobbyManager {
 		return (sessionId);
 	}
 
+	// Will return empty sessionId if cannot create lobby
 	public createLobby(data: LobbyRequest): string {
+		if (Object.keys(this.lobbies).length >= this.lobbyLimit) {
+			return ("");
+		}
 		const sessionId = this.getNewSessionId();
 		const lobby = new Lobby(data, sessionId);
 		lobby.events.on("lobby:inactive", () => {
