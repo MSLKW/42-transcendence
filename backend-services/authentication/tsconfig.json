@@ -12,8 +12,6 @@
 		"types": ["node"],
 		"incremental": true,
 		"tsBuildInfoFile": "./.tsbuildinfo",
-		"paths": {
-			"@big2/database": ["../../packages/database/dist/drizzle/src/schema/auth.schema.d.ts"]		} 
 	},
 	"include": ["src/**/*.ts"],
 	"references": [

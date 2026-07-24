@@ -78,8 +78,7 @@ services:
       - .env
     volumes:
       - pg_data:/var/lib/postgresql/data                                          # volume
-      - ./packages/database/init/init.sql:/docker-entrypoint-initdb.d/init.sql:ro # to run complex/specific sql scripts directly to Postgres automatically instead of to Drizzle
-      # - ./packages/database/scripts:/scripts:ro                                   # container execution
+      - ./packages/database/postgres/init.sql:/docker-entrypoint-initdb.d/init.sql:ro # to run complex/specific sql scripts directly to Postgres automatically instead of to Drizzle
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
       interval: 5s
@@ -113,7 +112,7 @@ services:
       - db_admin_password
     env_file:
       - .env
-    # command: ["npm", "start"]
+    command: ["npm", "start"]
     networks:
       - transcendence
       # - database

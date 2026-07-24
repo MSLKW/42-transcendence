@@ -8,13 +8,9 @@ done
 echo "[2/5]  postgresql is ready!"
 
 
-# # 2. Apply Migrations (DO NOT generate here)
-# if [ -d migrations ] && find migrations -mindepth 1 -maxdepth 1 | grep -q .; then
-#   echo "Drizzle executing the pending SQL migration files into database..."
-#   npm run db:migrate
-# else
-#   echo "No migrations found; skipping db:migrate."
-# fi
+# # # 2. Apply Generate(DO NOT generate here, only for 1st time locally only)
+# echo "[3.1/5] Drizzle generating SQL migration files into database..."
+# npm run db:generate
 
 
 # 2. Wait for initialization (The "Retry Loop" pattern)
@@ -53,7 +49,7 @@ fi
 
 # 4. Execute the container to the foreground
 echo "[5/5]  Starting orm-backend..."
-exec node /app/packages/database/dist/index.js
-# cd /app/packages/database
-# exec "$@" 
+# exec node /app/packages/database/dist/index.js
+cd /app/packages/database
+exec "$@" 
 # will take docker compose's command

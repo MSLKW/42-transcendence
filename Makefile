@@ -6,7 +6,7 @@
 #    By: aimokhta <aimokhta@student.42kl.edu.my>    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2026/06/16 09:31:30 by aimokhta          #+#    #+#              #
-#    Updated: 2026/07/24 12:30:28 by aimokhta         ###   ########.fr        #
+#    Updated: 2026/07/24 20:53:59 by aimokhta         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -27,7 +27,7 @@ all:
 	@mkdir -p $(HOME)/data/$(DG_VOLUME_NAME)
 	@sudo chmod -R 777 $(HOME)/data/$(DG_VOLUME_NAME)
 	@echo "$(PURPLE)\n🛠️  Building and launching containers...\n$(RESET)"
-	@docker compose -f ./docker-compose.yml up --build -d
+	@docker compose -f ./docker-compose.yml up --build
 
 down:
 # Docker removes the containers & networks, keeps built images saved on your disk.

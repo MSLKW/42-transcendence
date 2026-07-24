@@ -20,8 +20,11 @@ RUN npm install
 # Copy all the actual source code
 COPY . .
 
-# ---> ADD THIS LINE: Build all workspace packages (including @big2/database) <---
-RUN npm run build
+# # ---> ADD THIS LINE: Build all workspace packages (including @big2/database) <---
+# RUN npm run build
+
+# ---> BUILD THE DATABASE PACKAGE EXPLICITLY <---
+RUN npm run --prefix packages/database build || npm run build
 
 # Now switch to the specific service directory
 WORKDIR /app/backend-services/authentication

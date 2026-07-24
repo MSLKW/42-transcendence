@@ -3,16 +3,22 @@
   "version": "1.0.0",
   "type": "module",
   "description": "",
-  "main": "index.js",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    }
+  },
   "directories": {
     "doc": "docs"
   },
   "scripts": {
-    "build": "tsc",
     "db:generate": "drizzle-kit generate",
     "db:migrate": "drizzle-kit migrate",
-    "db:studio": "drizzle-kit studio",
     "db:push": "drizzle-kit push",
+    "build": "tsup src/index.ts --format esm --dts --clean --tsconfig tsconfig.build.json",
     "start": "node dist/index.js"
   },
   "keywords": [],
@@ -29,7 +35,7 @@
     "@types/node": "^26.1.1",
     "@types/pg": "^8.20.0",
     "drizzle-kit": "^0.31.10",
-    "ts-node": "^10.9.2",
+    "tsup": "^8.5.1",
     "typescript": "^5.9.3"
   }
 }

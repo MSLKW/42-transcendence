@@ -1,6 +1,5 @@
 import { eq } from "drizzle-orm";
-import { users } from "@big2/database"; 	// the database package
-import { postgres } from "./postgres"; 				// the drizzle database connection instance
+import { postgres, users } from "@big2/database"
 import { User } from "../models/user";
 import { UserStore } from "./userStore";
 
