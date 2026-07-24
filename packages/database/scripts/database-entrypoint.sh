@@ -1,11 +1,11 @@
 #!/bin/sh
 
 # 1. Wait for the postgresql to be ready
-echo "[1/5]  Waiting for postgresql..."
-while ! pg_isready -h postgresql -p 5432; do
+echo "[1/5]  Waiting for ${DB_HOST}..."
+while ! pg_isready -h ${DB_HOST} -p 5432; do
   sleep 2
 done
-echo "[2/5]  postgresql is ready!"
+echo "[2/5]  ${DB_HOST} is ready!"
 
 
 # # # 2. Apply Generate(DO NOT generate here, only for 1st time locally only)

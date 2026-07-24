@@ -3,9 +3,12 @@
     "target": "esnext",
     "module": "esnext",
     "moduleResolution": "bundler",
+    "rootDir": "./",
     "types": ["node"],
     "strict": true,
     "skipLibCheck": true
   },
-  "include": ["drizzle.config.ts"]
+  "include": [
+    "drizzle.config.ts"
+  ]
 }

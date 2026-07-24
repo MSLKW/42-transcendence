@@ -6,7 +6,7 @@
 #    By: aimokhta <aimokhta@student.42kl.edu.my>    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2026/06/16 09:31:30 by aimokhta          #+#    #+#              #
-#    Updated: 2026/07/24 20:53:59 by aimokhta         ###   ########.fr        #
+#    Updated: 2026/07/25 01:52:37 by aimokhta         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -57,19 +57,12 @@ re: fclean all
 
 logs:
 	docker logs postgresql
-	docker logs drizzle-studio
+	docker logs drizzle-gateway
 	docker logs auth
 # 	docker logs website
 # 	docker logs game
 # 	docker logs game-bot
 # 	docker logs chat
-
-harden-db:
-# Run this once you are done developing to lock the doors & ready to harden the DB
-# This command replaces ${VAR} in the SQL file with actual values from .env
-	@echo "$(PURPLE)Hardening database...\n$(RESET)"
-	@cat ./packages/database/scripts/harden.sql | envsubst | docker exec -i postgresql psql -U $(POSTGRES_USER_NAME_ADMIN) -d $(POSTGRES_DB_NAME)
-# 	@docker exec -i postgresql psql -U $(POSTGRES_USER) -d $(POSTGRES_DB) -f ./packages/database/scripts/harden.sql
 
 nuclear:
 	@docker system prune -a --volumes -f
@@ -98,4 +91,4 @@ debug-config:
 	@docker compose config 
 
 
-.PHONY: all down recreate clean fclean re logs harden-db nuclear debug-logs
+.PHONY: all down recreate clean fclean re logs nuclear debug-logs

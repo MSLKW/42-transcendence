@@ -103,7 +103,7 @@ services:
     ports:
       - "${ORM_BACKEND_PORT}:${ORM_BACKEND_PORT}"
     environment:
-      DB_HOST: postgresql
+      DB_HOST: ${POSTGRES_HOST}
       DB_PORT: ${POSTGRES_PORT}
       DB_NAME: ${POSTGRES_DB}
       DB_USER: ${POSTGRES_USER}
@@ -139,7 +139,7 @@ services:
     env_file:
       - .env
     environment:
-      DB_HOST: postgresql
+      DB_HOST: ${POSTGRES_HOST}
       DB_PORT: ${POSTGRES_PORT}
       DB_NAME: ${POSTGRES_DB}
       DB_USER: ${POSTGRES_USER}
@@ -184,7 +184,7 @@ services:
     ports:
       - "${AUTH_PORT}:${AUTH_PORT}"
     environment:
-      DB_HOST: postgresql                              # DB_HOST is a standard industry convention
+      DB_HOST: ${POSTGRES_HOST}                             # DB_HOST is a standard industry convention
       DB_NAME: ${POSTGRES_DB}
       DB_PORT: ${POSTGRES_PORT}
       DB_USER: ${POSTGRES_USER} # ${POSTGRES_USER_NAME_AUTH}
@@ -229,7 +229,6 @@ services:
 #         OTHERS
 
 
-    # command: ["npm", "run", "db:studio", "--", "--host", "0.0.0.0"]
     # The double dash "--" acts as a separator. It tells npm:
     # "Stop parsing arguments for yourself. Everything after this -- should be passed directly to the command I am executing."
 

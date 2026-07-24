@@ -1,3 +1,4 @@
+/// <reference types="node" />
 import fs from "fs";
 import 'dotenv/config'; // 1. Load .env files
 import { defineConfig } from "drizzle-kit";
@@ -29,12 +30,12 @@ if (!password) {
 // 		defineConfig function = acts as the central control center for Drizzle Kit (your migration tool)
 // 		"configuration schema" that tells Drizzle exactly how to talk to your database and where to find your code.
 export default defineConfig({
-    dialect: "postgresql",
+    dialect: "postgresql",  //! can this use .env var?
     schema: "./src/schema/index.ts", // points to the "Source of Truth." => the schema/index.ts file pointing to all other schemas
     out: "./migrations", // naming is following industry standard / drizzle kit's default behaviour / drizzle's documentation
     dbCredentials: {
         // Construct the URL using the helper
-        url: `postgresql://${process.env.DB_USER}:${password}@${process.env.DB_HOST}:${process.env.DB_PORT}/${process.env.DB_NAME}`,
+        url: `${process.env.DB_HOST}://${process.env.DB_USER}:${password}@${process.env.DB_HOST}:${process.env.DB_PORT}/${process.env.DB_NAME}`,
     },
     // Optional: Add verbose logging for debugging migrations
     verbose: true, // Makes the terminal output talkative. It will show you the exact SQL strings it's running. This is vital when you are learning or debugging why a migration might be failing.
