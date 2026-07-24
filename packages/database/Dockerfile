@@ -10,6 +10,7 @@ RUN apt-get update && \
 WORKDIR /app
 
 # Copy necessary dependency files, package.json files, for workspaces
+# COPY package.json ./
 COPY package.json package-lock.json ./
 COPY packages/database/package.json ./packages/database/
 
@@ -19,11 +20,11 @@ RUN npm install
 # Copy all the actual source code
 COPY . .
 
-# Build typescripts
-RUN npm run build 
-
 # Now switch to the database directory
 WORKDIR /app/packages/database
+
+# compiling your TypeScript files into JavaScript 
+RUN npm run build 
 
 # Copy the script using the correct path from the root
 COPY packages/database/scripts/database-entrypoint.sh /usr/local/bin/entrypoint.sh

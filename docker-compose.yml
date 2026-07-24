@@ -11,13 +11,20 @@ networks:
 
 
 volumes:
-  db_data:
-    name: ${DB_VOLUME_NAME}
+  pg_data:
+    name: ${PG_VOLUME_NAME}
     driver: local
     driver_opts:  
       type: none
       o: bind
-      device: ${HOME}/data/${DB_VOLUME_NAME}
+      device: ${HOME}/data/${PG_VOLUME_NAME}
+  dg_data:
+    name: ${DG_VOLUME_NAME}
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: ${HOME}/data/${DG_VOLUME_NAME}
 
 
 secrets: # auto make all secret files just read only mode
@@ -33,14 +40,18 @@ secrets: # auto make all secret files just read only mode
     file: ./secrets/database_passwords/db_bot_password.txt
   db_chat_password:
     file: ./secrets/database_passwords/db_chat_password.txt
+  dg_masterpass:
+    file: ./secrets/drizzle-gateway/dg_masterpass.txt
+
+
 
 
 services:
 
-# ==============================================================================
-#           POSTGRESQL ( RDBMS Database Engine )
-#                       *RDBMS = Relational Database Managaement System
-# ==============================================================================
+  # ==============================================================================
+  #           POSTGRESQL ( RDBMS Database Engine )
+  #                       *RDBMS = Relational Database Managaement System
+  # ==============================================================================
   postgresql:
     container_name: postgresql
     image: postgres:17-bookworm           # No Dockerfile needed here, pull directly from Docker Hub!
@@ -66,9 +77,9 @@ services:
     env_file:
       - .env
     volumes:
-      - db_data:/var/lib/postgresql/data                                          # volume
-      - ./packages/database/init/init.sql:/docker-entrypoint-initdb.d/init.sql:ro # to run complex/specific sql scripts directly to Postgres instead of to Drizzle
-      - ./packages/database/scripts:/scripts:ro                                   # container execution
+      - pg_data:/var/lib/postgresql/data                                          # volume
+      - ./packages/database/init/init.sql:/docker-entrypoint-initdb.d/init.sql:ro # to run complex/specific sql scripts directly to Postgres automatically instead of to Drizzle
+      # - ./packages/database/scripts:/scripts:ro                                   # container execution
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
       interval: 5s
@@ -79,9 +90,9 @@ services:
 
 
 
-# ==============================================================================
-#           ORM-BACKEND (Node.js + Express.js + Drizzle-orm + Drizzle-kit)
-# ==============================================================================
+  # ==============================================================================
+  #           ORM-BACKEND (Node.js + Express.js + Drizzle-orm + Drizzle-kit)
+  # ==============================================================================
   orm-backend:
     container_name: orm-backend
     build:
@@ -91,7 +102,7 @@ services:
     pull_policy: build
     restart: no
     ports:
-      - "${DRIZZLE_STUDIO_PORT}:${DRIZZLE_STUDIO_PORT}"
+      - "${ORM_BACKEND_PORT}:${ORM_BACKEND_PORT}"
     environment:
       DB_HOST: postgresql
       DB_PORT: ${POSTGRES_PORT}
@@ -102,26 +113,67 @@ services:
       - db_admin_password
     env_file:
       - .env
-    depends_on:
-      postgresql:
-        condition: service_healthy
+    # command: ["npm", "start"]
     networks:
       - transcendence
       # - database
-    command: ["npm", "run", "db:studio", "--", "--host", "0.0.0.0"]
-    # The double dash "--" acts as a separator. It tells npm:
-    # "Stop parsing arguments for yourself. Everything after this -- should be passed directly to the command I am executing."
+    depends_on:
+      postgresql:
+        condition: service_healthy
+
+
+
+  # ==============================================================================
+  #           DRIZZLE-GATEWAY ( Database's GUI Dev Tool )
+  # ==============================================================================
+  drizzle-gateway:
+    container_name: drizzle-gateway
+    image: ghcr.io/drizzle-team/gateway:latest
+    restart: unless-stopped
+    ports:
+      - "${DRIZZLE_GATEWAY_PORT}:${DRIZZLE_GATEWAY_PORT}"
+    networks:
+      - transcendence # - database
+    depends_on:
+      postgresql:
+        condition: service_healthy
+    env_file:
+      - .env
+    environment:
+      DB_HOST: postgresql
+      DB_PORT: ${POSTGRES_PORT}
+      DB_NAME: ${POSTGRES_DB}
+      DB_USER: ${POSTGRES_USER}
+      MASTERPASS_FILE: /run/secrets/dg_masterpass
+      DB_PASSWORD_FILE:  /run/secrets/db_admin_password
+      STORE_PATH: /app # <--- Required by Drizzle Gateway
+      PORT: ${DRIZZLE_GATEWAY_PORT}
+    secrets:
+      - dg_masterpass
+      - db_admin_password
+    volumes:
+      - dg_data:/app # <--- Required persistent volume mounting to /app
+    # entrypoint:
+    #   - "sh"
+    #   - "-c"
+    #   - |       # literal block scalar = "yaml, treat everything below as literal multi-line block of text"
+    #     MASTERPASS=$(cat /run/secrets/dg_masterpass)
+    #     DB_PASSWORD=$(cat /run/secrets/db_admin_password)
+ 
+    #     # Explicitly include the postgresql:// protocol scheme
+    #     export DATABASE_URL="$DB_HOST://$DB_USER:$DB_PASSWORD@$DB_HOST:$DB_PORT/$DB_NAME"
+
+    #     # Hand off control to the image's default entrypoint/command
+    #     exec docker-entrypoint.sh
+      
 
 
 
 
 
-
-
-
-# ==============================================================================
-#           Authentication (Backend Microservice)
-# ==============================================================================
+  # ==============================================================================
+  #           Authentication (Backend Microservice)
+  # ==============================================================================
   auth:
     container_name: auth
     build:
@@ -140,7 +192,6 @@ services:
       DB_PASSWORD_FILE: /run/secrets/db_admin_password # /run/secrets/db_auth_password
     env_file:
       - .env                                              # Loads global configs
-      # - backend-services/authentication/.env              # Loads service-specific configs (if have)
     secrets:
       - db_admin_password # - db_auth_password
     depends_on:
@@ -151,9 +202,9 @@ services:
 
 
 
-# # ==============================================================================
-# #           Adminer (Web-Based Admin Tool)
-# # ==============================================================================
+#  # ==============================================================================
+#  #           Adminer (Web-Based Admin Tool)
+#  # ==============================================================================
 #   adminer:
 #     image: adminer:fastcgi # Requires nginx upstream routing Xrequirement backend must be HTTPS
 #     image: adminer:5.5.0-alpne #standalone - best for web game app
@@ -177,3 +228,12 @@ services:
 #         WEBSITE + NGINX (only backend has to be seperate micoservices with seperate 1 responsibiliyty -> PDF)
 #         CHAT
 #         OTHERS
+
+
+    # command: ["npm", "run", "db:studio", "--", "--host", "0.0.0.0"]
+    # The double dash "--" acts as a separator. It tells npm:
+    # "Stop parsing arguments for yourself. Everything after this -- should be passed directly to the command I am executing."
+
+    # - backend-services/authentication/.env              # Loads service-specific configs (if have)
+
+

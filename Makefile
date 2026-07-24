@@ -6,7 +6,7 @@
 #    By: aimokhta <aimokhta@student.42kl.edu.my>    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2026/06/16 09:31:30 by aimokhta          #+#    #+#              #
-#    Updated: 2026/07/23 19:28:29 by aimokhta         ###   ########.fr        #
+#    Updated: 2026/07/24 12:30:28 by aimokhta         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -23,8 +23,9 @@ include .env
 export
 
 all:
-# 	@mkdir -p /home/aimokhta/data/postgres_data
-	@mkdir -p $(HOME)/data/$(DB_VOLUME_NAME)
+	@mkdir -p $(HOME)/data/$(PG_VOLUME_NAME)
+	@mkdir -p $(HOME)/data/$(DG_VOLUME_NAME)
+	@sudo chmod -R 777 $(HOME)/data/$(DG_VOLUME_NAME)
 	@echo "$(PURPLE)\n🛠️  Building and launching containers...\n$(RESET)"
 	@docker compose -f ./docker-compose.yml up --build -d
 
@@ -49,7 +50,6 @@ clean:
 	@echo "$(PURPLE)\n🗑️  Done removed every single containers, volumes and images in Docker! \n$(RESET)"
 	
 fclean: clean
-# 	@sudo rm -rf /home/aimokhta/data
 	@sudo rm -rf $(HOME)/data
 	@echo "$(PURPLE)\n🗑️  Removed all volumes on host! $(RESET)\n"
 

@@ -2,21 +2,12 @@
   // Visit https://aka.ms/tsconfig to read more about this file
   "compilerOptions": {
     // File Layout
-    "rootDir": ".",
+    "rootDir": "./drizzle/src", // to include drizzle.config.ts too at ./
     "outDir": "./dist",
-
-    // Environment Settings
-    // See also https://aka.ms/tsconfig/module
-    
-    // "target": "ES2022",
-    "target": "esnext",
+    "target": "esnext", // "target": "ES2022",
     "module": "esnext",
     "moduleResolution": "bundler",
     "types": ["node"],
-    // "types": [],
-    // For nodejs:
-    // "lib": ["esnext"],
-    // and npm install -D @types/node
 
     // Other Outputs
     "composite": true,
@@ -46,5 +37,8 @@
     "moduleDetection": "force",
     "skipLibCheck": true,
   },
-  "include": ["drizzle/src/**/*", "drizzle.config.ts"]
+  
+  // include = tells ts compiler, tsc, which specific files or folders its allowed to look at & compile 
+  // "include": ["src/**/*.ts", "drizzle.config.ts"]
+  "include": ["drizzle/src/**/*.ts"] // => dosent need drizzle.config.ts to be compiled to js, its a config file nor source code, and drizzle.config.ts handled alone speeratedly by drizzle-kit nativelyw/o needing tsc to compile it
 }

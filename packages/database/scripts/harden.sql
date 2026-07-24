@@ -5,7 +5,7 @@
 
 
 import { sql } from "drizzle-orm";
-import { db } from "../index"; // Ensure this is your 'drizzle' client
+import { db } from "../index"; -- Ensure this is your 'drizzle' client
 
 export async function up() {
   -- Use 'sql' tagged template to safely execute

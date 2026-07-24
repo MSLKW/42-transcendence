@@ -14,3 +14,18 @@
 // // Export everything together as a single library endpoint
 // export * from "./schema";
 // export type * from "./schema";
+
+
+// EXPRESS.JS
+// for API from frontend to database
+import express, { type Express, type Request, type Response } from 'express';
+
+const app: Express = express();
+
+app.get('/', (req: Request, res: Response) => {
+  res.send('hello world');
+});
+
+app.listen(3001, () => {
+  console.log(`Server running on http://localhost:3001`);
+});
