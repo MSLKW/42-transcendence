@@ -37,9 +37,10 @@ export const PartyCodeModule = () => {
 					flex
 					gap-2
 					text-[clamp(0.5625rem,2.5vw+0.28125rem,1.125rem)]
+					place-items-center
 				"
 			>
-				<h2>Invitation code:</h2>
+				<h2>Your Party Code:</h2>
 				<span className="text-lg tracking-[0.25rem]">
 					<i>ABCD1234</i>
 				</span>

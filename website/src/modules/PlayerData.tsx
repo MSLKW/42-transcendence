@@ -70,7 +70,7 @@ export const PlayerDataModule = () => {
 								</span>
 							</button>
 						:
-							<span className="w-full text-center self-center"><i>"{members[profileIndex].badge}"</i></span>
+							<span className="w-full text-center self-center"><i>{members[profileIndex].badge}</i></span>
 					}
 					{ showWindow["badge"] && <BadgeWindow /> }
 				</div>

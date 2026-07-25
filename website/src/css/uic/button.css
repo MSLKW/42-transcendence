@@ -2,6 +2,7 @@ button {
 	@apply
 		transition-all duration-100 ease-in-out
 		pointer-events-auto cursor-pointer disabled:cursor-default
+		hover:not-disabled:scale-105 active:hover:not-disabled:scale-100
 		outline-b5 outline-offset-5
 		disabled:opacity-50
 		;
@@ -11,7 +12,7 @@ button {
 	@apply
 		bg-n1
 		border border-n2
-		rounded-3xl
+		rounded-full
 		flex
 		;
 }
@@ -46,10 +47,16 @@ button {
 @utility btn-white {
 	@apply
 		bg-n6 hover:not-disabled:bg-b5
-		border border-n5 rounded-3xl hover:not-disabled:border-b6
+		border border-n5 rounded-full hover:not-disabled:border-b6
 		text-lg text-n0
 		hover:not-disabled:scale-105 active:hover:not-disabled:scale-100
 		focus-visible:outline-2
+		;
+}
+
+@utility btn-text {
+	@apply
+		rounded-full
 		;
 }
 
@@ -65,7 +72,7 @@ button {
 	@apply
 		w-full h-full
 		bg-n1
-		border border-n2 rounded-3xl
+		border border-n2 rounded-full
 		text-n6 text-[clamp(0.25rem,2vw+0.125rem,1rem)]
 		hover:not-disabled:scale-105 active:hover:not-disabled:scale-100
 		focus:outline-2 focus:outline-double
