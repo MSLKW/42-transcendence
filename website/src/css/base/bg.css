@@ -6,6 +6,22 @@
 		;
 }
 
+@utility bg-dark {
+	@apply
+		bg-n1
+		border border-n2
+		outline-b5
+		;
+}
+
+@utility bg-accent {
+	@apply
+		bg-b5
+		border border-b6
+		outline-b5
+		;
+}
+
 @utility bg-clear {
 	@apply
 		border border-transparent hover:not-disabled:border-b5

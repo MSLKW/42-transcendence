@@ -1,9 +1,16 @@
+import { useRef, useEffect } from "react";
 import { Window } from "./Window";
 import { SendButton } from "../components/button/Send";
 import { ChatBubble } from "../components/label/ChatBubble"
 import { ChatReport } from "../components/label/ChatReport"
 
 export const ChatWindow = () => {
+	const focusRef = useRef<HTMLInputElement | null>(null);
+	useEffect(() => {
+		if (focusRef.current)
+			focusRef.current.focus();
+	}, []);
+
 	return (
 		<Window
 			title="Chat"
@@ -51,7 +58,11 @@ export const ChatWindow = () => {
 					flex place-content-between place-items-center
 					gap-3
 				">
-					<input className="input-chat"/>
+					<input
+						ref={focusRef}
+						placeholder="Message"
+						className="input-chat"
+					/>
 					<SendButton />
 				</div>
 			</div>

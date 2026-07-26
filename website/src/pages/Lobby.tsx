@@ -33,7 +33,7 @@ export const Lobby = () => {
 			<HeaderModule back="HOME"/>
 			<main className="flex flex-col place-content-evenly place-items-evenly">
 				<div className={`
-					w-full h-full
+					h-full
 					grid ${ totalPlayers === 3 ? "grid-cols-2" : "grid-cols-1" } grid-rows-1
 					place-content-evenly place-items-center
 				`}>

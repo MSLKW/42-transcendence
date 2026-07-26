@@ -11,7 +11,7 @@ export const RankWindow = () => {
 		>
 			<div className="flex">
 				<div className="
-					px-1.5rem py-1rem
+					px-1.5rem py-2rem mr-10
 					flex gap-1rem
 					rounded-bl-xl
 				">
@@ -23,7 +23,7 @@ export const RankWindow = () => {
 					</div>
 					<div className="
 						flex flex-col
-						gap-1rem
+						gap-0.75rem
 						text-n6 text-right whitespace-nowrap
 					">
 						<h3>Straight Flush</h3>
@@ -40,15 +40,14 @@ export const RankWindow = () => {
 				</div>
 				<div
 					className="
+						px-1.5rem py-2rem
 						flex gap-1rem
-						bg-light
+						bg-n6
 						rounded-br-xl
-						px-1.5rem
 					"
 				>
 					<div className="
 						flex flex-col place-content-between
-						py-1rem
 					">
 						<SpadesIcon />
 						<HeartsIcon />
@@ -58,6 +57,7 @@ export const RankWindow = () => {
 					<div className="
 						flex place-items-center
 						text-b3
+						mr-5
 					">
 						<RankArrowIcon />
 					</div>

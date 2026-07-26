@@ -5,7 +5,7 @@
 		absolute
 		bg-a2
 		border border-n2 rounded-full
-		text-n6 text-1.25rem leading-0
+		text-n6 text-1.25rem leading-tight
 		py-1rem px-2rem
 		pointer-events-none
 		scale-0 opacity-0
@@ -14,6 +14,7 @@
 }
 
 @utility btn-tip-up {
+	@apply relative;
 	&::after {
 		@apply
 			btn-tip-after
@@ -22,28 +23,30 @@
 			left-1/2 -translate-x-1/2
 			;
 	}
-	&:focus::after,
+	&:focus-visible::after,
 	&:hover::after {
 		@apply scale-100 opacity-100;
 	}
 }
 
 @utility btn-tip-up2 {
+	@apply relative;
 	&::after {
 		@apply
 			btn-tip-after
 			origin-bottom
-			bottom-[calc(100%+clamp(0.75rem,2.308vmin+0.058rem,1.5rem))]
+			bottom-[calc(100%+clamp(1rem,3.077vmin+0.077rem,2rem))]
 			left-1/2 -translate-x-1/2
 			;
 	}
-	&:focus::after,
+	&:focus-visible::after,
 	&:hover::after {
 		@apply scale-100 opacity-100;
 	}
 }
 
 @utility btn-tip-down {
+	@apply relative;
 	&::after {
 		@apply
 			btn-tip-after
@@ -52,22 +55,23 @@
 			left-1/2 -translate-x-1/2
 			;
 	}
-	&:focus::after,
+	&:focus-visible::after,
 	&:hover::after {
 		@apply scale-100 opacity-100;
 	}
 }
 
 @utility btn-tip-left {
+	@apply relative;
 	&::after {
 		@apply
 			btn-tip-after
 			origin-right
-			right-[calc(100%+clamp(0.25rem,0.357vmin+0.179rem,0.5rem))]
+			right-[calc(100%+clamp(0.75rem,2.308vmin+0.058rem,1.5rem))]
 			top-1/2 -translate-y-1/2
 			;
 	}
-	&:focus::after,
+	&:focus-visible::after,
 	&:hover::after {
 		@apply scale-100 opacity-100;
 	}

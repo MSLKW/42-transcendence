@@ -103,8 +103,24 @@ export const R3F = () => {
 					absolute left-1/2 top-[65%] -translate-x-1/2
 					flex gap-[clamp(1.25rem,1.786vw+0.893rem,2.5rem)]
 				">
-					<button onClick={nextTurn} className="btn-white hw-4/1">PASS</button>
-					<button onClick={nextTurn} className="btn-white hw-4/1">PLAY</button>
+					<button
+						onClick={nextTurn}
+						className="
+							btn-text bg-light
+							h-3rem aspect-5/1
+						"
+					>
+						PASS
+					</button>
+					<button
+						onClick={nextTurn}
+						className="
+							btn-text bg-light
+							h-3rem aspect-5/1
+						"
+					>
+						PLAY
+					</button>
 				</div>
 			</main>
 			<footer className="flex place-content-between place-items-center">

@@ -13,13 +13,11 @@ export const SortButton = ({ call, sortType, type, tip }: SortButtonProps) => {
 			data-tip={tip}
 			onClick={call}
 			className={`
-				w-full h-full
-				bg-n1
-				border border-n2 rounded-full
-				text-n6 text-[clamp(0.25rem,2vw+0.125rem,1rem)]
-				hover:not-disabled:scale-105 active:hover:not-disabled:scale-100
-				focus:outline-2 focus:outline-double
-				relative btn-tip-left
+				btn-text bg-dark
+				h-2.5rem
+				text-n6 text-1.25rem
+				focus:outline-double
+				btn-tip-left
 				${sortType === type ? "outline-2" : "outline-none"}
 			`}
 		>

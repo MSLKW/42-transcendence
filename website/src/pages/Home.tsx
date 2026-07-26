@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { usePartyStore, GAMEMODE } from "../store/PartyStore";
 import { HeaderModule } from "../modules/Header";
-import { HomeCardButton } from "../components/button/HomeCard";
+import { HomeCardButton } from "../modules/HomeCard";
 import { AvatarButton } from "../components/button/Avatar";
 import { PartyButton } from "../components/button/Party";
 import { SmallLogo } from "../modules/Logo";

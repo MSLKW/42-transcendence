@@ -10,11 +10,7 @@ export const YeahButton = () => {
 		<button data-tip="Yeah!"
 			onClick={(e) => {handleSend(e)}}
 			className="
-				h-[clamp(1.875rem,5vh+0.5rem,3.125rem)] aspect-square
-				rounded-full
-				text-b5
-				hover:not-disabled:scale-105 active:hover:not-disabled:scale-100
-				focus:outline-2
+				btn-icon
 				btn-tip-left
 			"
 		>
@@ -33,11 +29,7 @@ export const HmmmButton = () => {
 		<button data-tip="Hmmm..."
 			onClick={(e) => {handleSend(e)}}
 			className="
-				h-[clamp(1.875rem,5vh+0.5rem,3.125rem)] aspect-square
-				rounded-full
-				text-b5
-				hover:not-disabled:scale-105 active:hover:not-disabled:scale-100
-				focus:outline-2
+				btn-icon
 				btn-tip-left
 			"
 		>
@@ -56,11 +48,7 @@ export const WoahButton = () => {
 		<button data-tip="~Woah~"
 			onClick={(e) => {handleSend(e)}}
 			className="
-				h-[clamp(1.875rem,5vh+0.5rem,3.125rem)] aspect-square
-				rounded-full
-				text-b5
-				hover:not-disabled:scale-105 active:hover:not-disabled:scale-100
-				focus:outline-2
+				btn-icon
 				btn-tip-left
 			"
 		>
@@ -72,9 +60,7 @@ export const WoahButton = () => {
 export const EmojiButton = () => {
 	return (
 		<div className="group relative flex gap-5">
-			<button className="btn-icon">
-				<YeahIcon />
-			</button>
+			<YeahButton />
 			<div className="
 				absolute
 				invisible opacity-0 group-hover:visible group-hover:opacity-100

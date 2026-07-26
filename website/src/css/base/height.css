@@ -1,3 +1,10 @@
+@utility h-5rem {
+	@apply
+		h-[clamp(2rem,2.857vmin+1.429rem,4rem)]
+		box-border
+		;
+}
+
 @utility h-4rem {
 	@apply
 		h-[clamp(2rem,2.857vmin+1.429rem,4rem)]

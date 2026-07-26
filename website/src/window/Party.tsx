@@ -1,4 +1,4 @@
-import { useRef } from "react";
+import { useRef, useEffect } from "react";
 import { Window } from "./Window";
 import { PinButton } from "../components/button/Pin";
 import { SearchButton } from "../components/button/Search";
@@ -8,17 +8,27 @@ import { FriendsIcon } from "../components/icon/Friends";
 
 export const SearchModule = () => {
 	const focusRef = useRef<HTMLInputElement | null>(null);
+	useEffect(() => {
+		if (focusRef.current)
+			focusRef.current.focus();
+	}, []);
 
 	return (
-		<div className="flex flex-col gap-[clamp(0.125rem,2vw+0.0625rem,0.25rem)]">
+		<div
+			className="
+				flex flex-col
+				gap-[clamp(0.125rem,2vw+0.0625rem,0.25rem)]
+			"
+		>
 			<div className="
 				w-full h-max
 				flex place-content-center place-items-center
+				px-[clamp(0.25rem,2vw+0.125rem,1.875rem)] 
 				gap-3
 			">
 				<input
 					ref={focusRef}
-					id="party-code"
+					id="search"
 					type="text"
 					placeholder="Search For Party Members"
 					className="
@@ -119,23 +129,20 @@ export const PartyWindow = () => {
 			title="Add To Party"
 			dismissKey="party"
 			placement="br"
+			pinState={false}
 		>
 			<div
 				className={`
-					px-[clamp(0.25rem,2vw+0.125rem,1.875rem)] pt-[clamp(0.25rem,2vw+0.125rem,1.25rem)]
+					pt-[clamp(0.25rem,2vw+0.125rem,1.25rem)]
 					flex flex-col gap-[clamp(0.25rem,2vw+0.125rem,1.25rem)]
 					text-n6
 					pointer-events-auto
 				`}
 			>
-				<div className="space-y-1">
-					{/* <h2>Search For Party Members</h2> */}
-					<SearchModule />
-				</div>
-				{/* <hr /> */}
+				<SearchModule />
 				<div className="
 					h-80
-					space-y-1 pr-5
+					space-y-1 px-5
 					overflow-scroll
 					pb-5
 					"

@@ -1,8 +1,8 @@
-import { useSceneStore } from "../../store/SceneStore";
-import { useGameStore } from "../../store/GameStore";
-import { GAMEMODE, type GameModeType, usePartyStore } from "../../store/PartyStore";
-import { PersonIcon } from "../icon/Person";
-import { TutorialIcon } from "../icon/TutorialIcon";
+import { useSceneStore } from "../store/SceneStore";
+import { useGameStore } from "../store/GameStore";
+import { GAMEMODE, type GameModeType, usePartyStore } from "../store/PartyStore";
+import { PersonIcon } from "../components/icon/Person";
+import { TutorialIcon } from "../components/icon/TutorialIcon";
 
 interface HomeProps {
 	gameMode?: number;
@@ -31,6 +31,7 @@ export const HomeCardButton = ({ gameMode = 4 }: HomeProps) => {
 				flex flex-col place-content-between
 				hover:not-disabled:scale-105 active:hover:not-disabled:scale-100
 				focus-visible:outline-2 outline-b5 outline-offset-5
+				cursor-pointer
 				snap-center
 		">
 			{ gameMode === GAMEMODE.VERSUS4 &&
