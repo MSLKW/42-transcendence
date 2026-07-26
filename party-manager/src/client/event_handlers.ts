@@ -40,7 +40,7 @@ export function registerEventHandlers(socket: Socket, client: Client)
 			return (callback({success: false, reason: "party is invalid or no longer exists"}));
 		if (!party.addUser(client.uuid))
 			return (callback({success: false, reason: "you are not invited to this party"}));
-		return (callback({success: true, members: party.getMemberUuids()}));
+		return (callback({success: true}));
 	});
 
 	socket.on("reject_invite", (payload: {hostUuid: string}) =>
