@@ -3,7 +3,7 @@
 ### One shared PostgreSQL database used by all services
 - multiple independently deployable microservices that share a single monorepo
 - `monorepo` = a way to organize your code (storing all projects and shared libraries in a single repository)<br>
-- mainly consists of `packages`, `backend`, and `frontend-services`
+- mainly consists of `packages`, `backend`, and `frontend`
 
 
 <!-- --- -->

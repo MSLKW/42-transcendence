@@ -19,7 +19,7 @@
   │   ├── /bot                   <-- Private backend microservice
   │   └── /game-backend          <-- Private backend microservice
   │
-  └── /frontend-services             (The Shop)
+  └── /frontend             (The Shop)
       ├── /website               <-- Frontend microservice
       └── /game-frontend         <-- Frontend microservice
 ```
