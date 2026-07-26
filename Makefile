@@ -6,7 +6,7 @@
 #    By: aimokhta <aimokhta@student.42kl.edu.my>    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2026/06/16 09:31:30 by aimokhta          #+#    #+#              #
-#    Updated: 2026/07/25 01:52:37 by aimokhta         ###   ########.fr        #
+#    Updated: 2026/07/25 13:14:32 by aimokhta         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -57,6 +57,7 @@ re: fclean all
 
 logs:
 	docker logs postgresql
+	docker logs orm-drizzle
 	docker logs drizzle-gateway
 	docker logs auth
 # 	docker logs website

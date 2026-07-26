@@ -90,14 +90,14 @@ services:
 
 
   # ==============================================================================
-  #           ORM-BACKEND (Node.js + Express.js + Drizzle-orm + Drizzle-kit)
+  #           ORM-DRIZZLE (Node.js + Drizzle)
   # ==============================================================================
-  orm-backend:
-    container_name: orm-backend
+  orm-drizzle:
+    container_name: orm-drizzle
     build:
       context: .
       dockerfile: ./packages/database/Dockerfile
-    image: orm-backend:aisyah
+    image: orm-drizzle:aisyah
     pull_policy: build
     restart: no
     ports:

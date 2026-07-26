@@ -54,4 +54,4 @@ process.on('SIGINT', async () => {
 
 
 
-console.log(`~~~Yeayyy done setup orm-backend~~~`);
+console.log(`~~~Yeayyy done setup orm-drizzle~~~`);

@@ -9,7 +9,7 @@ echo "[2/5]  ${DB_HOST} is ready!"
 
 
 # # # 2. Apply Generate(DO NOT generate here, only for 1st time locally only)
-# echo "[3.1/5] Drizzle generating SQL migration files into database..."
+# echo "[2.5/5] Drizzle generating SQL migration files into database..."
 # npm run db:generate
 
 
@@ -42,13 +42,13 @@ done
 # 3. Check for final success
 if [ "$SUCCESS" = false ]; then
   echo "[4/5]  Error: Migrations failed after $MAX_RETRIES attempts."
-  echo "[4/5]  Exiting orm-backend container upon migration failure now..."
+  echo "[4/5]  Exiting orm-drizzle container upon migration failure now..."
   exit 1
 fi
 
 
 # 4. Execute the container to the foreground
-echo "[5/5]  Starting orm-backend..."
+echo "[5/5]  Starting orm-drizzle..."
 # exec node /app/packages/database/dist/index.js
 cd /app/packages/database
 exec "$@" 
