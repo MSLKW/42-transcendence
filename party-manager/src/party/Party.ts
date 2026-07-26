@@ -64,7 +64,7 @@ export class Party
 		user.party = null;
 		this.members.delete(uuid);
 		for (const key of this.members.keys())
-			this.members.get(key)!.emit("player_left", {uuid: uuid});
+			this.members.get(key)!.emit("player_state", this.getState());
 	}
 
 	clear(reason: string)
