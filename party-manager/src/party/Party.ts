@@ -11,6 +11,8 @@ export class Party
 	private invites = new Map<string, Client>();
 	private members = new Map<string, Client>();
 
+	gameId: string | null = null;
+
 	constructor(host: Client)
 	{
 		this.id = randomUUID();
@@ -90,7 +92,8 @@ export class Party
 	{
 		return ({
 			hostUuid: this.hostId,
-			members: [...this.members.keys()]
+			members: [...this.members.keys()],
+			gameId: this.gameId
 		});
 	}
 }
