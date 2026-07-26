@@ -15,7 +15,7 @@ export const AvatarName = ({ name = "Player" }: AvatarProps) => {
 			flex place-content-center place-items-center
 			px-[clamp(0.625rem,1vh+0.3125rem,1.25rem)]
 		">
-			<p>{name}</p>
+			<h3>{name}</h3>
 		</div>
 	);
 }

@@ -1,4 +1,4 @@
-import { PinIcon } from "../icon/Pin";
+import { PinInactiveIcon } from "../icon/Pin";
 
 export const PinButton = () => {
     return (
@@ -6,7 +6,7 @@ export const PinButton = () => {
             data-tip="Pin Window"
             className="btn-icon btn-icon-border btn-tip-down"
         >
-            <PinIcon />
+            <PinInactiveIcon />
         </button>
     );
 }

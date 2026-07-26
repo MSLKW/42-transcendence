@@ -1,6 +1,11 @@
 @import "tailwindcss";
+@import "./css/base/bg.css";
 @import "./css/base/clamp.css";
 @import "./css/base/container.css";
+@import "./css/base/gap.css";
+@import "./css/base/height.css";
+@import "./css/base/padding.css";
+@import "./css/base/text.css";
 @import "./css/base/typography.css";
 @import "./css/uic/button.css";
 @import "./css/uic/hr.css";

@@ -1,19 +1,16 @@
 import { useSceneStore } from "../../store/SceneStore";
 
 export const CreateAccountButton = () => {
-	const setShowWindow =  useSceneStore((state) => state.setShowWindow);
+	const { showWindow, setShowWindow } =  useSceneStore();
 	return (
 		<button
-			onClick={() => setShowWindow("createAccount", true)}
+			onClick={() => setShowWindow("createAccount", !showWindow.createAccount)}
 			className="
-				hw-5/1
-				rounded-full
-				text-lg
-				text-n6 hover:not-disabled:text-b5
-				hover:not-disabled:scale-105 active:hover:not-disabled:scale-100
-				focus:outline-2
+				btn-text bg-light
+				h-3rem aspect-6/1
+				text-1.25rem text-n0
 		">
-			<u>CREATE ACCOUNT</u>
+			CREATE ACCOUNT
 		</button>
 	);
 }

@@ -92,8 +92,12 @@ export const Lobby = () => {
 						/>
 					}
 					<button
-						className="btn-white hw-4/1"
 						onClick={() => setCurrentScene("R3F")}
+						className="
+							btn-text bg-light
+							h-3rem aspect-4/1
+							text-1.25rem text-n0
+						"
 					>
 						START
 					</button>

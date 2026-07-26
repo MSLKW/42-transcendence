@@ -3,7 +3,7 @@ export const AddFriendIcon = () => (
 		fill="none"
 		viewBox="0 0 50 50"
 		xmlns="http://www.w3.org/2000/svg"
-		className="fill-black"
+		className="fill-current"
 	>
 		<path
 			d="M36.2037 30.0057V20.6307H37.7946V30.0057H36.2037ZM32.3116 26.1136V24.5227H41.6866V26.1136H32.3116Z"

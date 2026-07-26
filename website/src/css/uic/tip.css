@@ -4,12 +4,12 @@
 		w-max h-max
 		absolute
 		bg-a2
-		border border-n2 rounded-lg
-		text-n6 text-[clamp(0.4375rem,2vw+0.21875rem,1rem)]
-		px-[clamp(0.3125rem,1vw+0.15625rem,1.25rem)]
+		border border-n2 rounded-full
+		text-n6 text-1.25rem leading-0
+		py-1rem px-2rem
 		pointer-events-none
 		scale-0 opacity-0
-		transition-all ease-out duration-50
+		transition-all ease-in-out duration-100
 		;
 }
 
@@ -18,7 +18,22 @@
 		@apply
 			btn-tip-after
 			origin-bottom
-			bottom-[calc(100%+1rem)]
+			bottom-[calc(100%+clamp(0.25rem,0.769vmin+0.019rem,0.5rem))]
+			left-1/2 -translate-x-1/2
+			;
+	}
+	&:focus::after,
+	&:hover::after {
+		@apply scale-100 opacity-100;
+	}
+}
+
+@utility btn-tip-up2 {
+	&::after {
+		@apply
+			btn-tip-after
+			origin-bottom
+			bottom-[calc(100%+clamp(0.75rem,2.308vmin+0.058rem,1.5rem))]
 			left-1/2 -translate-x-1/2
 			;
 	}
@@ -33,7 +48,7 @@
 		@apply
 			btn-tip-after
 			origin-top
-			top-[calc(100%+1rem)]
+			top-[calc(100%+clamp(0.25rem,0.769vmin+0.019rem,0.5rem))]
 			left-1/2 -translate-x-1/2
 			;
 	}
@@ -48,7 +63,7 @@
 		@apply
 			btn-tip-after
 			origin-right
-			right-[calc(100%+1rem)]
+			right-[calc(100%+clamp(0.25rem,0.357vmin+0.179rem,0.5rem))]
 			top-1/2 -translate-y-1/2
 			;
 	}

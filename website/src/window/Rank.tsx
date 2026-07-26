@@ -1,62 +1,54 @@
-import { LightboxButton } from "../components/button/Lightbox";
+import { Window } from "./Window";
 import { RankArrowIcon } from "../components/icon/RankArrow";
 import { SpadesIcon, HeartsIcon, ClubsIcon, DiamondsIcon } from "../components/icon/Suits"
 
 export const RankWindow = () => {
 	return (
-		<section className="
-			absolute left-0 top-0
-			z-1
-			w-full h-full
-		">
-			<LightboxButton dismiss="rank" blur={false} />
-			<div className="
-				z-0
-				w-fit h-fit
-				absolute top-[37.5%] left-1/2 -translate-x-1/2
-				border border-n2 rounded-3xl
-				flex
-				overflow-hidden
-			">
+		<Window
+			title={`Rank`}
+			dismissKey="rank"
+			pinState={false}
+		>
+			<div className="flex">
 				<div className="
-					w-fit
-					h-fit
-					flex items-stretch
-					bg-n1
+					px-1.5rem py-1rem
+					flex gap-1rem
+					rounded-bl-xl
 				">
 					<div className="
-						w-7.5
-						ml-5
+						flex place-items-center
 						text-b5
 					">
 						<RankArrowIcon />
 					</div>
 					<div className="
 						flex flex-col
-						gap-3
-						p-5
+						gap-1rem
 						text-n6 text-right whitespace-nowrap
 					">
-						<p>Straight Flush</p>
-						<p>4 of a Kind</p>
-						<p>Full House</p>
-						<p>Flush</p>
-						<p className="text-b5">Straight</p>
+						<h3>Straight Flush</h3>
+						<h3>4 of a Kind</h3>
+						<h3>Full House</h3>
+						<h3>Flush</h3>
+						<h3 className="text-b5">Straight</h3>
 						<hr className="text-n2"/>
-						<p>Triple</p>
-						<p>Double</p>
-						<p>High Card</p>
-						<p>Open</p>
+						<h3>Triple</h3>
+						<h3>Double</h3>
+						<h3>High Card</h3>
+						<h3>Open</h3>
 					</div>
 				</div>
-				<div className="
-					flex items-stretch
-					bg-n6
-				">
+				<div
+					className="
+						flex gap-1rem
+						bg-light
+						rounded-br-xl
+						px-1.5rem
+					"
+				>
 					<div className="
-						h-full
 						flex flex-col place-content-between
-						p-5
+						py-1rem
 					">
 						<SpadesIcon />
 						<HeartsIcon />
@@ -64,14 +56,13 @@ export const RankWindow = () => {
 						<DiamondsIcon />
 					</div>
 					<div className="
-						w-7.5
-						mr-5
+						flex place-items-center
 						text-b3
 					">
 						<RankArrowIcon />
 					</div>
 				</div>
 			</div>
-		</section>
+		</Window>
 	);
 }

@@ -1,34 +1,41 @@
-import { CloseModule } from "../modules/Close";
+import { useEffect } from "react";
+import { useNotificationStore, notificationType } from "../store/NotificationStore";
+import { Window } from "./Window";
 import { AvatarMemberModule } from "../modules/AvatarMember";
-// import { PlayerStatsModule } from "../modules/PlayerStats";
-// import { PlayerDataModule } from "../modules/PlayerData";
-import { LightboxButton } from "../components/button/Lightbox";
 
 export const BotsWindow = () => {
+	const { setNotification } = useNotificationStore();
+	
+	useEffect(() => {
+		setNotification("Select Bot Intelligence...", notificationType.botSelect);
+	}, []);
+
 	return (
-		<section className="
-			absolute z-1
-			top-0 left-0
-			h-screen w-screen
-			flex place-content-center place-items-center
-		">
-			<LightboxButton dismiss="bots" blur={true} />
-			<div className="
-				h-fit w-120
-				bg-linear-to-b from-n0 to-n1
-				border border-n2 rounded-xl
-				relative
-			">
-				<CloseModule dismiss="bots" />
-				<div className="divide-y divide-n2">
-					<div className="flex">
-						<AvatarMemberModule name="Bot"/>
-						{/* <PlayerDataModule /> */}
-					</div>
-					<p className="text-n6">Bots data info here</p>
-					{/* <PlayerStatsModule /> */}
+		<>
+			<button
+				className="
+					fixed z-1 top-0 left-0
+					h-screen w-screen
+					backdrop-blur-xs
+					pointer-events-none
+				"
+			/>
+			<Window
+				title="Bots"
+				dismissKey="bots"
+				hasHeader={false}
+			>
+				<div
+					className="
+						py-2rem px-3rem
+						flex
+					"
+				>
+					<AvatarMemberModule name="Beginner"/>
+					<AvatarMemberModule name="Intermediate"/>
+					<AvatarMemberModule name="Pro"/>
 				</div>
-			</div>
-		</section>
+			</Window>
+		</>
 	);
 }

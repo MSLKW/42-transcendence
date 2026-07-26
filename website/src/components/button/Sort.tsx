@@ -12,9 +12,16 @@ export const SortButton = ({ call, sortType, type, tip }: SortButtonProps) => {
 		<button
 			data-tip={tip}
 			onClick={call}
-			className={`btn-sort btn-tip-left
+			className={`
+				w-full h-full
+				bg-n1
+				border border-n2 rounded-full
+				text-n6 text-[clamp(0.25rem,2vw+0.125rem,1rem)]
+				hover:not-disabled:scale-105 active:hover:not-disabled:scale-100
+				focus:outline-2 focus:outline-double
+				relative btn-tip-left
 				${sortType === type ? "outline-2" : "outline-none"}
-				`}
+			`}
 		>
 			{type}
 		</button>

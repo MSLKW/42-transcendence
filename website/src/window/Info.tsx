@@ -1,5 +1,4 @@
-import { CloseModule } from "../modules/Close";
-import { LightboxButton } from "../components/button/Lightbox";
+import { Window } from "./Window";
 
 const AboutThisProject = () => {
 	return (
@@ -90,26 +89,21 @@ const MeetTheTeam = () => {
 
 export const InfoWindow = () => {
     return (
-		<section className="
-			absolute z-1 top-0 left-0
-			h-full w-full
-			flex place-content-center place-items-center
-		">
-			<LightboxButton dismiss="info" blur={true} />
+		<Window
+			title="Info"
+			dismissKey="info"
+			profileIndex={-1}
+		>
 			<div className="
-				z-0
+				w-200 max-w-[90vw]
 				flex place-content-center place-items-center
 				pointer-events-none
-				max-w-[80%] max-h-[80%]
 				relative
 			">
-				<CloseModule dismiss="info" />
 				<div
 					tabIndex={-1}
 					className="
-						h-200
-						bg-n1
-						border border-n2 rounded-3xl
+						h-200 max-h-[90vh]
 						p-10 space-y-10
 						text-n6
 						overflow-scroll
@@ -122,6 +116,6 @@ export const InfoWindow = () => {
 					<MeetTheTeam />
 				</div>
 			</div>
-		</section>
+		</Window>
 	);
 }

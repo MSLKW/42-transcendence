@@ -1,5 +1,5 @@
 import { useRef } from "react";
-import { LightboxButton } from "../components/button/Lightbox";
+import { Window } from "./Window";
 import { PinButton } from "../components/button/Pin";
 import { SearchButton } from "../components/button/Search";
 import { SendButton } from "../components/button/Send";
@@ -20,8 +20,10 @@ export const SearchModule = () => {
 					ref={focusRef}
 					id="party-code"
 					type="text"
-					placeholder="Enter name"
-					className="input-chat"
+					placeholder="Search For Party Members"
+					className="
+						input-chat
+					"
 				/>
 				<SearchButton />
 			</div>
@@ -85,11 +87,11 @@ export const FriendModule = ({ name }: FriendsProps) => {
 		<div className="w-full flex gap-5">
 			<AvatarImage />
 			<div className="w-full">
-				<h2>{name}</h2>
+				<h3>{name}</h3>
 				<div className="h-8 flex place-content-between place-items-center">
 					<div className="h-full flex place-items-center gap-2">
 						<div className="h-2.5 aspect-square rounded-full bg-c4"/>
-						<span>Online</span>
+						<p>Online</p>
 					</div>
 					<button className="h-8 aspect-square">
 						<FriendsIcon />
@@ -113,29 +115,31 @@ export const FriendModule = ({ name }: FriendsProps) => {
 
 export const PartyWindow = () => {
 	return (
-		<section className="
-			absolute z-1 top-0 left-0
-			h-full w-full
-			pointer-events-none
-		">
-			<LightboxButton dismiss="party" blur={false} isDismissable={true} />
+		<Window
+			title="Add To Party"
+			dismissKey="party"
+			placement="br"
+		>
 			<div
 				className={`
-					w-90 max-h-150
-					absolute bottom-10 right-10
-					bg-linear-to-b from-n0 to-n1
-					border border-n2 rounded-[clamp(0.125rem,2vw+0.0625rem,1.5rem)]
-					p-[clamp(0.25rem,2vw+0.125rem,1.875rem)]
+					px-[clamp(0.25rem,2vw+0.125rem,1.875rem)] pt-[clamp(0.25rem,2vw+0.125rem,1.25rem)]
 					flex flex-col gap-[clamp(0.25rem,2vw+0.125rem,1.25rem)]
 					text-n6
 					pointer-events-auto
-			`}>
+				`}
+			>
 				<div className="space-y-1">
-					<h2>Search For Party Members</h2>
+					{/* <h2>Search For Party Members</h2> */}
 					<SearchModule />
 				</div>
-				<hr />
-				<div className="space-y-1 overflow-scroll">
+				{/* <hr /> */}
+				<div className="
+					h-80
+					space-y-1 pr-5
+					overflow-scroll
+					pb-5
+					"
+				>
 					<h2>Friends List</h2>
 					<div className="flex flex-col gap-2">
 						<FriendModule name="Dev-Azrul" />
@@ -144,10 +148,8 @@ export const PartyWindow = () => {
 						<FriendModule name="Dev-Aisyah" />
 					</div>
 				</div>
-				<hr />
-				<PartyCodeModule />
-				<PinWindowModule />
+				{/* <PartyCodeModule /> */}
 			</div>
-		</section>
+		</Window>
 	);
 }

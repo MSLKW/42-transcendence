@@ -1,8 +1,7 @@
 import { useState, useRef, useEffect } from "react";
 import { useNotificationStore, notificationType } from "../store/NotificationStore";
 import { useSceneStore } from "../store/SceneStore";
-import { CloseModule } from "../modules/Close";
-import { LightboxButton } from "../components/button/Lightbox";
+import { Window } from "./Window";
 import { ShowPasswordIcon } from "../components/icon/ShowPassword";
 import { HidePasswordIcon } from "../components/icon/HidePassword";
 
@@ -61,73 +60,72 @@ export const SignInWindow = () => {
 	}
 
 	return (
-		<section className="
-			absolute z-1 left-0
-			h-full w-full
-			flex place-content-center place-items-center
-		">
-			<LightboxButton dismiss="signIn" blur={true} />
+		<Window
+			title="Sign In"
+			dismissKey="signIn"
+		>
 			<form 
 				onSubmit={handleSubmit}
 				className="
-					z-0
-					bg-linear-to-b from-n0 to-n1
-					border border-n2 rounded-3xl
-					p-[clamp(1rem,5vw+0.25rem,2.5rem)]
 					flex flex-col place-content-center place-items-center
-					gap-2.5 sm:gap-3
-					relative
+					py-2rem px-3rem gap-2rem
 					pointer-events-auto
-			">
-				<CloseModule dismiss="signIn" />
-				<label htmlFor="email" className="w-full flex place-content-between">
-					<span className="text-right pr-5">Email</span>
-					<input
-						ref={focusRef}
-						id="email"
-						type="text"
-						value={email}
-						placeholder="Enter your email"
-						onChange={(e) => setEmail(e.target.value)}
-						className="input-form"
-					/>
-				</label>
-				<label htmlFor="password" className="w-full flex place-content-between">
-					<span className="text-right pr-5">
-						Password
-					</span>
-					<div className="relative">
+				"
+			>
+				<div className="flex flex-col gap-1rem">
+					<label htmlFor="email" className="w-full flex place-content-between">
+						<span className="text-right pr-5">Email</span>
 						<input
-							id="password"
-							type={showPassword ? "text" : "password"}
-							autoComplete="current-password"
-							value={password}
-							placeholder="Enter your password"
-							onChange={(e) => setPassword(e.target.value)}
-							className="input-form w-full"
+							ref={focusRef}
+							id="email"
+							type="text"
+							value={email}
+							placeholder="Enter your email"
+							onChange={(e) => setEmail(e.target.value)}
+							className="input-form"
 						/>
-						<button
-							type="button"
-							onClick={() => setShowPassword(!showPassword)}
-							className="
-								absolute right-1 top-1/2 -translate-y-1/2
-								h-[80%] aspect-square
-								text-n0
-								btn-icon
-								rounded-full
-						">
-							{ showPassword ? <ShowPasswordIcon /> : <HidePasswordIcon /> }
-						</button>
-					</div>
-				</label>
+					</label>
+					<label htmlFor="password" className="w-full flex place-content-between">
+						<span className="text-right pr-5">
+							Password
+						</span>
+						<div className="relative">
+							<input
+								id="password"
+								type={showPassword ? "text" : "password"}
+								autoComplete="current-password"
+								value={password}
+								placeholder="Enter your password"
+								onChange={(e) => setPassword(e.target.value)}
+								className="input-form w-full"
+							/>
+							<button
+								type="button"
+								onClick={() => setShowPassword(!showPassword)}
+								className="
+									absolute right-1 top-1/2 -translate-y-1/2
+									h-[80%] aspect-square
+									text-n0
+									btn-icon
+									rounded-full
+							">
+								{ showPassword ? <ShowPasswordIcon /> : <HidePasswordIcon /> }
+							</button>
+						</div>
+					</label>
+				</div>
 				<button
 					type="submit"
 					disabled={isLoading}
-					className="btn-white hw-5/1 mt-5"
+					className="
+						btn-text bg-white
+						h-3rem aspect-5/1
+						text-1.25rem text-n0
+					"
 				>
 					{ isLoading ? "SIGNING IN...": "SIGN IN" }
 				</button>
 			</form>
-		</section>
+		</Window>
 	);
 }

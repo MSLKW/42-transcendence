@@ -17,9 +17,11 @@ export const LightboxButton = ({ dismiss, blur, isDismissable = true }: Lightbox
 					setShowWindow(dismiss, false);
 			}}
 			className={`
-				absolute -z-1
+				fixed -z-1
 				h-screen w-screen
 				${ blur ? "backdrop-blur-xs" : "" }
-		`}/>
+				cursor-alias
+			`}
+		/>
 	);
 }

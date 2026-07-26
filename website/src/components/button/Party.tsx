@@ -2,20 +2,23 @@ import { useSceneStore } from "../../store/SceneStore";
 import { AddIcon } from "../icon/Add";
 
 export const PartyButton = () => {
-	const setShowWindow = useSceneStore((scene) => scene.setShowWindow);
+	const { showWindow, setShowWindow } = useSceneStore();
 
 	return (
 		<button 
-			data-tip="Add / Join Party"
+			data-tip="Add To Party"
 			onClick={(e) => {
-				setShowWindow("party", true);
+				setShowWindow("party", !showWindow.party);
 				e.currentTarget.blur();
 			}}
 			className="
-				btn-avatar btn-tip-up
+				rounded-xs h-full
+				hover:not-disabled:scale-105 active:hover:not-disabled:scale-100
+				focus-visible:outline-2 btn-tip-up
 				flex flex-col place-items-center
-				gap-1
-		">
+				gap-0.5rem
+			"
+		>
 			<div
 				className="
 					h-[clamp(2.5rem,7.5vh+0.5rem,5rem)] aspect-square
@@ -38,7 +41,7 @@ export const PartyButton = () => {
 				flex place-content-center place-items-center
 				px-[clamp(0.625rem,1vh+0.3125rem,1.25rem)]
 			">
-				<p>Add</p>
+				<h3>Add</h3>
 			</div>
 		</button>
 	);

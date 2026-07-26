@@ -90,6 +90,7 @@ export default function App() {
 				</Canvas>
 			</section>
 			<section className="cont-body">
+			{/* <section className="h-screen w-screen"> */}
 				{ currentScene === 'LOGIN' && <Login /> }
 				{ currentScene === 'HOME' && <Home /> }
 				{ currentScene === 'LOBBY' && <Lobby /> }

@@ -1,10 +1,10 @@
 button {
 	@apply
-		transition-all duration-100 ease-in-out
-		pointer-events-auto cursor-pointer disabled:cursor-default
-		hover:not-disabled:scale-105 active:hover:not-disabled:scale-100
-		outline-b5 outline-offset-5
+		focus-visible:scale-105 active:hover:not-disabled:scale-100
+		focus-visible:outline-2 outline-offset-3
 		disabled:opacity-50
+		transition-all duration-100 ease-in-out
+		pointer-events-auto
 		;
 }
 
@@ -19,63 +19,20 @@ button {
 
 @utility btn-icon {
 	@apply
-		h-[clamp(2rem,3.077vh+1.077rem,3rem)] aspect-square
 		rounded-full
-		text-b5
-		hover:not-disabled:scale-105 active:hover:not-disabled:scale-100
-		focus-visible:outline-2
+		hover:not-disabled:scale-105
+		active:hover:not-disabled:scale-100
+		outline-b5
+		cursor-pointer
 		;
 }
-
-@utility btn-rank {
-	@apply
-		hover:not-disabled:scale-105 active:hover:not-disabled:scale-100
-		focus-visible:outline-2
-		;
-}
-
-@utility btn-emoji {
-	@apply
-		h-[clamp(1.875rem,5vh+0.5rem,3.125rem)] aspect-square
-		rounded-full
-		text-b5
-		hover:not-disabled:scale-105 active:hover:not-disabled:scale-100
-		focus:outline-2
-		;
-}
-
-@utility btn-white {
-	@apply
-		bg-n6 hover:not-disabled:bg-b5
-		border border-n5 rounded-full hover:not-disabled:border-b6
-		text-lg text-n0
-		hover:not-disabled:scale-105 active:hover:not-disabled:scale-100
-		focus-visible:outline-2
-		;
-}
-
+	
 @utility btn-text {
 	@apply
 		rounded-full
-		;
-}
-
-@utility btn-avatar {
-	@apply
-		rounded-xs h-full
 		hover:not-disabled:scale-105 active:hover:not-disabled:scale-100
-		focus-visible:outline-2
-		;
-}
-
-@utility btn-sort {
-	@apply
-		w-full h-full
-		bg-n1
-		border border-n2 rounded-full
-		text-n6 text-[clamp(0.25rem,2vw+0.125rem,1rem)]
-		hover:not-disabled:scale-105 active:hover:not-disabled:scale-100
-		focus:outline-2 focus:outline-double
-		relative
+		outline-b5
+		whitespace-nowrap leading-0
+		cursor-pointer
 		;
 }

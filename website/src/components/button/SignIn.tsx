@@ -1,12 +1,16 @@
 import { useSceneStore } from "../../store/SceneStore";
 
 export const SignInButton = () => {
-	const setShowWindow = useSceneStore((scene) => scene.setShowWindow);
+	const { showWindow, setShowWindow } = useSceneStore();
 
 	return (
 		<button
-			onClick={() => setShowWindow("signIn", true)}
-			className="btn-white hw-5/1"
+			onClick={() => setShowWindow("signIn", !showWindow.signIn)}
+			className="
+				btn-text bg-light
+				h-3rem aspect-6/1
+				text-1.25rem text-n0
+			"
 		>
 			SIGN IN
 		</button>

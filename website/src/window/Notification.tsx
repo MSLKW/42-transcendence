@@ -1,11 +1,11 @@
 import { useState, useRef, useEffect } from "react";
 import { createPortal } from "react-dom";
-import { useNotificationStore } from "../store/NotificationStore";
+import { useNotificationStore, notificationType } from "../store/NotificationStore";
 import { usePlayerStore } from "../store/PlayerStore";
 import { useSceneStore } from "../store/SceneStore";
 
 export const NotificationWindow = () => {
-	const { message, isError, isTimed, numOfButtons, onButton1Click, onButton2Click } = useNotificationStore();
+	const { type, message, isError, isTimed, numOfButtons, onButton1Click, onButton2Click } = useNotificationStore();
 	const { data } = usePlayerStore();
 	const { setShowWindow } = useSceneStore();
 	const [ isExiting, setIsExiting ] = useState(false);
@@ -36,6 +36,11 @@ export const NotificationWindow = () => {
 
 	const handleSetupComplete = () => {
 		setShowWindow("setup", false);
+		handleClose(onButton1Click);
+	}
+
+	const handleBotSelect = () => {
+		setShowWindow("bots", false);
 		handleClose(onButton1Click);
 	}
 
@@ -75,7 +80,7 @@ export const NotificationWindow = () => {
 	return createPortal(
 		<div
 			className={`
-				fixed z-5
+				absolute z-5
 				top-10 left-1/2
 				flex flex-col place-content-center place-items-center
 				gap-2
@@ -125,15 +130,19 @@ export const NotificationWindow = () => {
 				">
 					<button
 						type="button"
-						onClick={handleSetupComplete}
+						onClick={type === notificationType.nameInput ? handleSetupComplete : handleBotSelect}
 						disabled={data.name ? false : true }
 						className="
-							w-full p-2
-							bg-n6 hover:not-disabled:bg-b4
-							border border-n5 hover:not-disabled:border-b5 rounded-full
-							text-n0
+							btn-text bg-light
+							h-3rem w-full
+							text-1.25rem text-n0
 					">
-						{ data.name ? "Let's Play!" : "Waiting for valid name..." }
+						{ type === notificationType.nameInput && 
+							(data.name ? "Let's Play!" : "Waiting for valid name...")
+						}
+						{ type === notificationType.botSelect &&
+							"OK!"
+						}
 					</button>
 				</div>
 			}
@@ -147,10 +156,10 @@ export const NotificationWindow = () => {
 						type="button"
 						onClick={handleAccept}
 						className="
-							w-full p-2
-							bg-n6 hover:not-disabled:bg-b4
-							border border-n5 hover:not-disabled:border-b5 rounded-full
-							text-n0
+							btn-text bg-light
+							h-3rem w-full
+							text-1.25rem text-n0
+							
 					">
 						ACCEPT
 					</button>
@@ -158,10 +167,9 @@ export const NotificationWindow = () => {
 						type="button"
 						onClick={handleIgnore}
 						className="
-							w-full p-2
-							bg-n6 hover:not-disabled:bg-r4
-							border border-n5 hover:not-disabled:border-r5 rounded-full
-							text-n0
+							btn-text bg-light
+							w-full
+							text-1.25rem text-n0
 					">
 						IGNORE
 					</button>

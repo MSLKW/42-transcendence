@@ -15,7 +15,7 @@ export const ToggleButton = ({checked, onChange, disabled}: ToggleButtonProps) =
 				className="sr-only peer"
 			/>
 			<div className={`
-				h-6 aspect-5/3
+				h-2rem aspect-5/3
 				p-1 rounded-full
 				bg-n6 peer-checked:bg-b5 
 				peer-focus-visible:outline-2 outline-b5 outline-offset-5

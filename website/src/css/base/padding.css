@@ -1,0 +1,83 @@
+@utility py-3rem {
+	@apply
+		py-[clamp(1.5rem,4.615vmin+0.115rem,3rem)]
+		box-border
+		;
+}
+
+@utility py-2.5rem {
+	@apply
+		py-[clamp(1.25rem,3.846vmin+0.096rem,2.5rem)]
+		box-border
+		;
+}
+
+@utility py-2rem {
+	@apply
+		py-[clamp(1rem,3.077vmin+0.077rem,2rem)]
+		box-border
+		;
+}
+
+@utility py-1.5rem {
+	@apply
+		py-[clamp(0.75rem,2.308vmin+0.058rem,1.5rem)]
+		box-border
+		;
+}
+
+@utility py-1rem {
+	@apply
+		py-[clamp(0.5rem,1.538vmin+0.038rem,1rem)]
+		box-border
+		;
+}
+
+@utility py-0.5rem {
+	@apply
+		py-[clamp(0.25rem,0.769vmin+0.019rem,0.5rem)]
+		box-border
+		;
+}
+
+@utility px-3rem {
+	@apply
+		px-[clamp(1.5rem,2.143vmin+1.071rem,3rem)]
+		box-border
+		;
+}
+
+@utility px-2.5rem {
+	@apply
+		px-[clamp(1.25rem,1.786vmin+0.893rem,2.5rem)]
+		box-border
+		;
+}
+
+@utility px-2rem {
+	@apply
+		px-[clamp(1rem,1.429vmin+0.714rem,2rem)]
+		box-border
+		;
+}
+
+@utility px-1.5rem {
+	@apply
+		px-[clamp(0.75rem,1.071vmin+0.536rem,1.5rem)]
+		box-border
+		;
+}
+
+@utility px-1rem {
+	@apply
+		px-[clamp(0.5rem,0.714vmin+0.357rem,1rem)]
+		box-border
+		;
+}
+
+@utility px-0.5rem {
+	@apply
+		px-[clamp(0.25rem,0.357vmin+0.179rem,0.5rem)]
+		box-border
+		;
+}

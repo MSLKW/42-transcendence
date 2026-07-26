@@ -1,5 +1,5 @@
 import { useSceneStore } from "../../store/SceneStore";
-import { RELATION, type RelationType } from "../../store/PartyStore";
+import { RELATION, usePartyStore, type RelationType } from "../../store/PartyStore";
 import { AvatarImage } from "../image/AvatarImage";
 import { AvatarName } from "../label/AvatarName";
 
@@ -14,6 +14,7 @@ interface AvatarProps {
 
 export const AvatarButton = ({ index, name, relation, cornerButton = "", isActive = false }: AvatarProps) => {
 	const { setSceneValue, setShowWindow } = useSceneStore();
+	const { members } = usePartyStore();
 
 	return (
 		<>
@@ -34,11 +35,14 @@ export const AvatarButton = ({ index, name, relation, cornerButton = "", isActiv
 					else
 						setShowWindow("stats", true);
 				}}
-				className="
-					btn-avatar btn-tip-up h-max w-max
+				className={`
+					rounded-xs h-full
+					hover:not-disabled:scale-105 active:hover:not-disabled:scale-100
+					focus-visible:outline-2 ${ members[index].isHost ? "btn-tip-up2" : "btn-tip" } w-max
 					flex flex-col place-content-center place-items-center
-					gap-1
-			">
+					gap-0.5rem
+				`}
+			>
 				<AvatarImage cornerButton={cornerButton} isActive={isActive} />
 				<AvatarName name={name} />
 			</button>

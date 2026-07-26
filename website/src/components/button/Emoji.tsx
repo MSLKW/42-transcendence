@@ -9,7 +9,14 @@ export const YeahButton = () => {
 	return (
 		<button data-tip="Yeah!"
 			onClick={(e) => {handleSend(e)}}
-			className="btn-emoji btn-tip-left"
+			className="
+				h-[clamp(1.875rem,5vh+0.5rem,3.125rem)] aspect-square
+				rounded-full
+				text-b5
+				hover:not-disabled:scale-105 active:hover:not-disabled:scale-100
+				focus:outline-2
+				btn-tip-left
+			"
 		>
 			<YeahIcon />
 		</button>
@@ -25,7 +32,14 @@ export const HmmmButton = () => {
 	return (
 		<button data-tip="Hmmm..."
 			onClick={(e) => {handleSend(e)}}
-			className="btn-emoji btn-tip-left"
+			className="
+				h-[clamp(1.875rem,5vh+0.5rem,3.125rem)] aspect-square
+				rounded-full
+				text-b5
+				hover:not-disabled:scale-105 active:hover:not-disabled:scale-100
+				focus:outline-2
+				btn-tip-left
+			"
 		>
 			<HmmmIcon />
 		</button>
@@ -41,7 +55,14 @@ export const WoahButton = () => {
 	return (
 		<button data-tip="~Woah~"
 			onClick={(e) => {handleSend(e)}}
-			className="btn-emoji btn-tip-left"
+			className="
+				h-[clamp(1.875rem,5vh+0.5rem,3.125rem)] aspect-square
+				rounded-full
+				text-b5
+				hover:not-disabled:scale-105 active:hover:not-disabled:scale-100
+				focus:outline-2
+				btn-tip-left
+			"
 		>
 			<WoahIcon />
 		</button>

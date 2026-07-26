@@ -1,8 +1,16 @@
 import { create } from "zustand";
 import { useSceneStore } from "./SceneStore";
 
+export const notificationType = {
+	error: 0,
+	nameInput: 1,
+	invite: 2,
+	botSelect: 3,
+} as const;
+
 interface NotificationValues {
-	id: number
+	type: number;
+	id: number;
 	message: string;
 	isError: boolean;
 	isTimed: boolean;
@@ -11,12 +19,6 @@ interface NotificationValues {
 	onButton1Click?: () => void;
 	onButton2Click?: () => void;
 }
-
-export const notificationType = {
-	error: 0,
-	nameInput: 1,
-	invite: 2,
-} as const;
 
 interface NotificationState extends NotificationValues {
 	setNotification: (
@@ -30,6 +32,7 @@ interface NotificationState extends NotificationValues {
 
 export const useNotificationStore = create<NotificationState>()(
 	(set) => ({
+		type: notificationType.error,
 		id: 0,
 		message: "Welcome to Big 2!",
 		isError: false,
@@ -48,7 +51,7 @@ export const useNotificationStore = create<NotificationState>()(
 					isError = true;
 					isTimed = true;
 					numOfButtons = 0;
-				} else if (type === notificationType.nameInput) {
+				} else if (type === notificationType.nameInput || type === notificationType.botSelect) {
 					isError = false;
 					isTimed = false;
 					numOfButtons = 1;
@@ -59,6 +62,7 @@ export const useNotificationStore = create<NotificationState>()(
 				}
 
 				return {
+					type: type,
 					id: notificationStore.id + 1,
 					message: msg,
 					isError,
