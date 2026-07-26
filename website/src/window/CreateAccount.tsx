@@ -23,7 +23,7 @@ export const CreateAccountWindow = () => {
 	const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 	const [isLoading, setIsLoading] = useState(false);
 
-	const AUTH_URL = "http://localhost:3000";
+	const AUTH_URL = "/api/auth";
 	// const AUTH_URL = "localhost:3000";
 	// const AUTH_URL = "/api/auth";
 
