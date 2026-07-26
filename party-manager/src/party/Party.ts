@@ -45,10 +45,7 @@ export class Party
 		this.members.set(userId, user);
 		this.invites.delete(userId);
 		for (const key of this.members.keys())
-		{
-			if (key != userId)
-				this.members.get(key)!.emit("player_join", {uuid: userId});
-		}
+				this.members.get(key)!.emit("party_state", this.getState());
 		return (true);
 	}
 
