@@ -53,4 +53,13 @@ export function registerEventHandlers(socket: Socket, client: Client)
 	{
 		client.party?.removeUser(client.uuid);
 	});
+
+	socket.on("start_game_session", () =>
+	{
+		if (client.party == null)
+			client.party = new Party(client);
+		else if (client.party.gameId != null)
+			return ;
+		client.party.startGameSession();
+	});
 }
