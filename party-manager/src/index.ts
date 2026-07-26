@@ -86,6 +86,7 @@ io.on("connection", (socket: Socket) =>
 		const oldSocket = existing.socket;
 		clientManager.rebindSocket(oldSocket.id, socket.id);
 		existing.socket = socket;
+		registerEventHandlers(socket, existing);
 		if (existing.party)
 			existing.emit("party_state", existing.party.getState());
 		oldSocket.disconnect(true);
