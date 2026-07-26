@@ -11,7 +11,7 @@ WORKDIR /app
 
 # Copy necessary dependency files, package.json files, for workspaces
 # COPY package.json ./
-COPY package.json package-lock.json ./
+COPY package.json ./
 COPY packages/database/package.json ./packages/database/
 
 # Install dependencies at the root
@@ -19,6 +19,7 @@ RUN npm install
 
 # Copy all the actual source code
 COPY . .
+# actually should be only the compiled javascript files from typescript only, not all files blindly -> MVP
 
 # Now switch to the database directory
 WORKDIR /app/packages/database
@@ -32,3 +33,4 @@ RUN chmod +x /usr/local/bin/entrypoint.sh
 
 # Use the script as the entrypoint
 ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
+CMD ["npm", "start"]

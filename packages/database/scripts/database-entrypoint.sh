@@ -42,13 +42,13 @@ done
 # 3. Check for final success
 if [ "$SUCCESS" = false ]; then
   echo "[4/5]  Error: Migrations failed after $MAX_RETRIES attempts."
-  echo "[4/5]  Exiting orm-drizzle container upon migration failure now..."
+  echo "[4/5]  Exiting migrator container upon migration failure now..."
   exit 1
 fi
 
 
 # 4. Execute the container to the foreground
-echo "[5/5]  Starting orm-drizzle..."
+echo "[5/5]  Starting migrator..."
 # exec node /app/packages/database/dist/index.js
 cd /app/packages/database
 exec "$@" 

@@ -54,4 +54,4 @@ process.on('SIGINT', async () => {
 
 
 
-console.log(`~~~Yeayyy done setup orm-drizzle~~~`);
+console.log(`~~~Yeayyy done setup migrator~~~`);
