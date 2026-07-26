@@ -3,7 +3,7 @@
 ### One shared PostgreSQL database used by all services
 - multiple independently deployable microservices that share a single monorepo
 - `monorepo` = a way to organize your code (storing all projects and shared libraries in a single repository)<br>
-- mainly consists of `packages`, `backend-services`, and `frontend-services`
+- mainly consists of `packages`, `backend`, and `frontend-services`
 
 
 <!-- --- -->
@@ -102,11 +102,11 @@ npx drizzle-kit studio or npx drizzle-kit push, you are acting as an Administrat
 
 
 <!-- --- -->
-## backend-services/auth vs packages/auth-utils
+## backend/auth vs packages/auth-utils
 ```
 /packages
   └── auth-utils/      <-- The "Shared Math": Encryption, token verification logic.
-/backend-services
+/backend
   └── auth/            <-- The "Active Service": Handles the database, logins, and signups.
 ```
 - If your app is complex, you actually end up with both

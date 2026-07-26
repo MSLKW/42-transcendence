@@ -11,7 +11,7 @@ WORKDIR /app
 
 # Copy necessary package.json files for workspaces
 COPY package.json ./
-COPY backend-services/authentication/package.json ./backend-services/authentication/
+COPY backend/authentication/package.json ./backend/authentication/
 COPY packages/database/package.json ./packages/database/
 
 # Install dependencies at the root
@@ -28,10 +28,10 @@ COPY . .
 RUN npm run --prefix packages/database build || npm run build
 
 # Now switch to the specific service directory
-WORKDIR /app/backend-services/authentication
+WORKDIR /app/backend/authentication
 
 # # Copy the script using the correct path from the root
-COPY backend-services/authentication/scripts/auth-entrypoint.sh /usr/local/bin/entrypoint.sh
+COPY backend/authentication/scripts/auth-entrypoint.sh /usr/local/bin/entrypoint.sh
 RUN chmod +x /usr/local/bin/entrypoint.sh
 
 ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]

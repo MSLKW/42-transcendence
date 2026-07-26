@@ -13,7 +13,7 @@
   │   ├── /database              <-- Shared Libraries/Tools & Single Source of Truth (Postgres & Drizzle)
   │   └── /auth-utils            <-- Shared security logic                           (The math logics only)
   │ 
-  ├── /backend-services              (The HQ)
+  ├── /backend              (The HQ)
   │   ├── /chat                  <-- Private backend microservice
   │   ├── /authentication        <-- Private backend microservice
   │   ├── /bot                   <-- Private backend microservice

@@ -227,8 +227,8 @@ Industry Standard vs Overkill
     monorepo (auth, game, website) => one huge .env => will become a "God File" and a nightmare to manage.
     Use a hierarchical approach:
       Root .env: Global things like POSTGRES_DB, POSTGRES_USER.
-      backend-services/auth/.env: Service-specific things like AUTH_PORT.
-      backend-services/game/.env: Service-specific things like MAX_PLAYERS_PER_ROOM.
+      backend/auth/.env: Service-specific things like AUTH_PORT.
+      backend/game/.env: Service-specific things like MAX_PLAYERS_PER_ROOM.
       # packages/database/.env usually doesn't need its own .env file! 
         The database is a resource that the services consume. 
         Your database/ folder should just contain the SQL scripts, not its own configuration.
