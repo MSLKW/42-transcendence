@@ -1,5 +1,6 @@
 import { Client } from "../client/Client";
 import { randomUUID } from "crypto";
+import { PartyState } from "../PartyTransmitTypes";
 
 export class Party
 {
@@ -86,5 +87,13 @@ export class Party
 	getMemberUuids(): string[]
 	{
 		return ([...this.members.keys()]);
+	}
+
+	getState(): PartyState
+	{
+		return ({
+			hostUuid: this.hostId,
+			members: [...this.members.keys()]
+		});
 	}
 }

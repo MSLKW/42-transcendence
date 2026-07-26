@@ -1,4 +1,4 @@
 export type PartyState = {
-	inParty: boolean,
-	members?: string[]
+	hostUuid: string,
+	members: string[]
 }
