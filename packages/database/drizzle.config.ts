@@ -6,12 +6,12 @@ import { defineConfig } from "drizzle-kit";
 
 // 2. Helper to safely read the password
 function dbPassword() {
-  // 2.1 Check for Docker secret file first
+  // a: Check for Docker secret file first
   if (process.env.DB_PASSWORD_FILE && fs.existsSync(process.env.DB_PASSWORD_FILE)) {
     console.log(`Using Docker secrets: ${process.env.DB_PASSWORD_FILE}`);
     return fs.readFileSync(process.env.DB_PASSWORD_FILE, "utf8").trim();
   }
-  // 2.2 Fallback for local development
+  // b: Fallback for local development
   if (process.env.DUMMY_DB_PASSWORD) {
     console.log(`Using env's Dummy DB Password:  ${process.env.DUMMY_DB_PASSWORD}`);
     return process.env.DUMMY_DB_PASSWORD || "";

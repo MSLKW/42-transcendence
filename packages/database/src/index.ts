@@ -1,10 +1,10 @@
 import fs from 'fs';
-import 'dotenv/config'; // When you import dotenv/config, the package executes its config() function immediately as a side effect. This loads the variables from your .env file into process.env automatically.
+import 'dotenv/config'; // 1. Load .env files // When you import dotenv/config, the package executes its config() function immediately as a side effect. This loads the variables from your .env file into process.env automatically.
 import { drizzle } from "drizzle-orm/node-postgres";
 import { Pool } from "pg";
 import * as schema from "./schema/index"
 
-// 1. Helper to safely read the password
+// 2. Helper to safely read the password
 function dbPassword() {
   // a: Docker path - If the _FILE path is provided, read the secret from the file
   if (process.env.DB_PASSWORD_FILE && fs.existsSync(process.env.DB_PASSWORD_FILE)) {
@@ -23,14 +23,19 @@ if (!password) {
 }
 
 
-// 2. Create the single shared connection pool, using password
+// 3. Create the single shared connection pool, using password
 const pool = new Pool({
     host: process.env.DB_HOST,
     user: process.env.DB_USER,
     database: process.env.DB_NAME,
     password: password,
-    port: parseInt(process.env.DB_PORT || "5432", 10)
-});
+    port: parseInt(process.env.DB_PORT || "5432", 10), // syntax: env var, fallback value if forgot to put in .env, parse into decimal number 
+
+    // --- Industry Standard Pool Settings ---
+    max: parseInt(process.env.DB_MAX_CONNECTIONS || "20", 10), // Maximum number of clients in the pool (prevents crashing Postgres). PostgreSQL has a default limit of 100 simultaneous connections, controlled by the max_connections parameter
+    idleTimeoutMillis: 30000, // Close idle clients after 30 seconds
+    connectionTimeoutMillis: 2000, // Return an error if connection takes longer than 2 seconds
+  });
 
 
 // Export the db client instance
@@ -47,6 +52,7 @@ export * from "./schema/index";
 //    You can add this if you find your app "hanging" when you try to stop it:
 //    In Dev: It’s convenient so you don't have to restart the Docker container to clear connections.
 //    In Production: It is critical. If you restart your backend container without closing the pool, the Postgres server keeps those "dead" connections open until they timeout. If you restart often, you will eventually hit max_connections and your database will stop accepting new requests, crashing your app.
+//    conclusion: Gracefully close the database pool when receiving an interruption signal (e.g., Ctrl+C or Docker shutdown)
 process.on('SIGINT', async () => {
   await pool.end();
   process.exit(0);
@@ -54,4 +60,4 @@ process.on('SIGINT', async () => {
 
 
 
-console.log(`~~~Yeayyy done setup migrator~~~`);
+console.log(`~~~ Database connection pool initialized & Drizzle ORM'S instance exported successfully ~~~`);

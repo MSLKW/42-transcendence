@@ -1,0 +1,1 @@
+this file later will be about explanation the architect and implementation of database for this project as a whole
