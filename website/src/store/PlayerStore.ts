@@ -24,6 +24,12 @@ export type ACHIEVEMENT_LABEL =
 	| "MASTER_COLLECTOR"
 	;
 
+export const STATUS = {
+	OFFLINE: 0,
+	AVAILABLE: 1,
+	INGAME: 2,
+} as const;
+
 export interface PlayerData {
 	uuid: string;			//"12345678901234567890123456789012"
 	name: string | null;	//"Azrul", "Max", null
@@ -38,19 +44,7 @@ export interface PlayerData {
 	totalLoss: number;		//0, 1000
 	winStreak: number;		//0, 1000
 	achievements: Record<ACHIEVEMENT_LABEL, { unlockedAt: number } | null>; //{"FIRST_LOGIN": null, ..., "PLAYED_1_GAME": { unlockedAt: 1784110862000 }}
-	seatNumber: number;		//-1, 0, 1, 2, 3
-							//if value is -1, member is not yet seated or spectator
-							//from host pov: <4 players> [0 bottom, 1 left, 2 top, 3 right], <3 players> [0 bottom, 1 left, 2 right], <2 players> [0 bottom, 1 top]
-							//when rendering from non-host pov, offset seat index placement - totalPlayers so client is at the bottom of their screen
 }
-
-export const SEATNUMBER_UNSEATED = -1 as const;
-
-export const STATUS = {
-	OFFLINE: 0,
-	AVAILABLE: 1,
-	INGAME: 2,
-} as const;
 
 interface PlayerValues {
 	data: PlayerData;
@@ -69,7 +63,7 @@ export const usePlayerStore = create<PlayerState>() (
 	persist(
 		(set) => ({
 			data: {
-				uuid: "12345678901234567890123456789012",
+				uuid: "12345678-abcd-efgh-ijkl-000000000000",
 				name: null,
 				avatar: "avatar-stock-0.webp",
 				badge: BADGE_LABEL[0],
@@ -93,7 +87,6 @@ export const usePlayerStore = create<PlayerState>() (
 					WIN_STREAK_10: null,
 					MASTER_COLLECTOR: null,
 				},
-				seatNumber: SEATNUMBER_UNSEATED,
 			},
 			status: STATUS.AVAILABLE,
 

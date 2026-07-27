@@ -1,12 +1,14 @@
 import { useState, useEffect } from "react";
+import { useGameStore } from "../store/GameStore";
+import { usePartyStore } from "../store/PartyStore";
 import { HeaderModule } from "../modules/Header";
 import { RankButton } from "../components/button/Rank";
 import { AvatarButton } from "../components/button/Avatar";
 import { SortButtons } from "../components/button/Sort";
-import { useGameStore } from "../store/GameStore";
 
 export const R3F = () => {
 	const { totalPlayers } = useGameStore();
+	const { members } = usePartyStore();
 
 	const [activePlayer, setActivePlayer] = useState<number>(0);
 	const nextTurn = () => setActivePlayer((prev) => (prev + 1) % 4);
@@ -26,22 +28,31 @@ export const R3F = () => {
 					<>
 						<div className="absolute left-[25%] top-[5%]">
 							<AvatarButton
+								key={members[2].uuid}
+								index={2}
+								name={members[2].name ?? "Guest"}
+								relation={members[2].relation}
 								cornerButton="cardsLeft"
-								playerIndex={2}
 								isActive={false}
 							/>
 						</div>
 						<div className="absolute left-[5%] top-[20%]">
 							<AvatarButton
+								key={members[1].uuid}
+								index={1}
+								name={members[1].name ?? "Guest"}
+								relation={members[1].relation}
 								cornerButton="cardsLeft"
-								playerIndex={1}
 								isActive={false}
 							/>
 						</div>
 						<div className="absolute right-[5%] top-[20%]">
 							<AvatarButton
+								key={members[3].uuid}
+								index={3}
+								name={members[3].name ?? "Guest"}
+								relation={members[3].relation}
 								cornerButton="cardsLeft"
-								playerIndex={3}
 								isActive={false}
 							/>
 						</div>
@@ -51,15 +62,21 @@ export const R3F = () => {
 					<>
 						<div className="absolute left-[5%] top-[20%]">
 							<AvatarButton
+								key={members[1].uuid}
+								index={1}
+								name={members[1].name ?? "Guest"}
+								relation={members[1].relation}
 								cornerButton="cardsLeft"
-								playerIndex={1}
 								isActive={false}
 							/>
 						</div>
 						<div className="absolute right-[5%] top-[20%]">
 							<AvatarButton
+								key={members[2].uuid}
+								index={2}
+								name={members[2].name ?? "Guest"}
+								relation={members[2].relation}
 								cornerButton="cardsLeft"
-								playerIndex={2}
 								isActive={false}
 							/>
 						</div>
@@ -68,8 +85,11 @@ export const R3F = () => {
 				{ totalPlayers === 2 &&
 					<div className="absolute left-[25%] top-[5%]">
 						<AvatarButton
+							key={members[1].uuid}
+							index={1}
+							name={members[1].name ?? "Guest"}
+							relation={members[1].relation}
 							cornerButton="cardsLeft"
-							playerIndex={1}
 							isActive={false}
 						/>
 					</div>
@@ -83,14 +103,33 @@ export const R3F = () => {
 					absolute left-1/2 top-[65%] -translate-x-1/2
 					flex gap-[clamp(1.25rem,1.786vw+0.893rem,2.5rem)]
 				">
-					<button onClick={nextTurn} className="btn-white hw-4/1">PASS</button>
-					<button onClick={nextTurn} className="btn-white hw-4/1">PLAY</button>
+					<button
+						onClick={nextTurn}
+						className="
+							btn-text bg-light
+							h-3rem aspect-5/1
+						"
+					>
+						PASS
+					</button>
+					<button
+						onClick={nextTurn}
+						className="
+							btn-text bg-light
+							h-3rem aspect-5/1
+						"
+					>
+						PLAY
+					</button>
 				</div>
 			</main>
 			<footer className="flex place-content-between place-items-center">
 				<AvatarButton
+					key={members[0].uuid}
+					index={0}
+					name={members[0].name ?? "Guest"}
+					relation={members[0].relation}
 					cornerButton="cardsLeft"
-					playerIndex={0}
 					isActive={true}
 				/>
 				<div className="

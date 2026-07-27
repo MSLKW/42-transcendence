@@ -1,46 +1,76 @@
-import { useRef } from "react";
-import { LightboxButton } from "../components/button/Lightbox";
+import { useRef, useEffect } from "react";
+import { Window } from "./Window";
 import { PinButton } from "../components/button/Pin";
+import { SearchButton } from "../components/button/Search";
 import { SendButton } from "../components/button/Send";
+import { AvatarImage } from "../components/image/AvatarImage";
+import { FriendsIcon } from "../components/icon/Friends";
 
-export const InviteOthersModule = () => {
-	return (
-		<div className="
-			flex flex-col
-			gap-[clamp(0.125rem,2vw+0.0625rem,0.25rem)]
-			text-[clamp(0.5625rem,2.5vw+0.28125rem,1.125rem)]
-		">
-			<h2>Invite others</h2>
-			<span className="text-lg">
-				<span>Share Code: </span>
-				<span className="tracking-[0.25rem]">
-					<i>ABCD1234</i>
-				</span>
-			</span>
-		</div>
-	);
-}
-
-export const JoinAnotherPartyModule = () => {
+export const SearchModule = () => {
 	const focusRef = useRef<HTMLInputElement | null>(null);
+	useEffect(() => {
+		if (focusRef.current)
+			focusRef.current.focus();
+	}, []);
 
 	return (
-		<div className="flex flex-col gap-[clamp(0.125rem,2vw+0.0625rem,0.25rem)]">
-			<label htmlFor="party-code">
-				<h2>Join another party</h2>
-			</label>
+		<div
+			className="
+				flex flex-col
+				gap-[clamp(0.125rem,2vw+0.0625rem,0.25rem)]
+			"
+		>
 			<div className="
-				w-60 h-max
+				w-full h-max
 				flex place-content-center place-items-center
+				px-[clamp(0.25rem,2vw+0.125rem,1.875rem)] 
 				gap-3
 			">
 				<input
 					ref={focusRef}
+					id="search"
+					type="text"
+					placeholder="Search For Party Members"
+					className="
+						input-chat
+					"
+				/>
+				<SearchButton />
+			</div>
+		</div>
+	);
+}
+
+export const PartyCodeModule = () => {
+	return (
+		<div className="space-y-1">
+			<div
+				className="
+					flex
+					gap-2
+					text-[clamp(0.5625rem,2.5vw+0.28125rem,1.125rem)]
+					place-items-center
+				"
+			>
+				<h2>Your Party Code:</h2>
+				<span className="text-lg tracking-[0.25rem]">
+					<i>ABCD1234</i>
+				</span>
+			</div>
+			<div
+				className="
+					w-full h-max
+					flex
+					place-content-center place-items-center
+					gap-2
+				"
+			>
+				<input
 					id="party-code"
 					type="text"
-					placeholder="Enter code"
+					placeholder="Join another party"
 					className="input-chat"
-				/>
+					/>
 				<SendButton />
 			</div>
 		</div>
@@ -59,30 +89,74 @@ export const PinWindowModule = () => {
 	);
 }
 
+interface FriendsProps {
+	name: string,
+}
+export const FriendModule = ({ name }: FriendsProps) => {
+	return (
+		<div className="w-full flex gap-5">
+			<AvatarImage />
+			<div className="w-full">
+				<h3>{name}</h3>
+				<div className="h-8 flex place-content-between place-items-center">
+					<div className="h-full flex place-items-center gap-2">
+						<div className="h-2.5 aspect-square rounded-full bg-c4"/>
+						<p>Online</p>
+					</div>
+					<button className="h-8 aspect-square">
+						<FriendsIcon />
+					</button>
+				</div>
+				<button
+					className="
+						w-full
+						rounded-full
+						bg-n6
+						text-n0
+						px-5
+					"
+				>
+					Invite To Party
+				</button>
+			</div>
+		</div>
+	);
+}
+
 export const PartyWindow = () => {
 	return (
-		<section className="
-			absolute z-1 top-0 left-0
-			h-full w-full
-			pointer-events-none
-		">
-			<LightboxButton dismiss="party" blur={false} isDismissable={true} />
+		<Window
+			title="Add To Party"
+			dismissKey="party"
+			placement="br"
+			pinState={false}
+		>
 			<div
 				className={`
-					w-80 h-100
-					absolute bottom-10 right-10
-					bg-linear-to-b from-n0 to-n1
-					border border-n2 rounded-[clamp(0.125rem,2vw+0.0625rem,1.5rem)]
-					p-[clamp(0.25rem,2vw+0.125rem,1.875rem)]
+					pt-[clamp(0.25rem,2vw+0.125rem,1.25rem)]
 					flex flex-col gap-[clamp(0.25rem,2vw+0.125rem,1.25rem)]
 					text-n6
 					pointer-events-auto
-			`}>
-				<InviteOthersModule />
-				<hr />
-				<JoinAnotherPartyModule />
-				<PinWindowModule />
+				`}
+			>
+				<SearchModule />
+				<div className="
+					h-80
+					space-y-1 px-5
+					overflow-scroll
+					pb-5
+					"
+				>
+					<h2>Friends List</h2>
+					<div className="flex flex-col gap-2">
+						<FriendModule name="Dev-Azrul" />
+						<FriendModule name="Dev-Max" />
+						<FriendModule name="Dev-Jeremy" />
+						<FriendModule name="Dev-Aisyah" />
+					</div>
+				</div>
+				{/* <PartyCodeModule /> */}
 			</div>
-		</section>
+		</Window>
 	);
 }

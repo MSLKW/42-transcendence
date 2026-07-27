@@ -9,7 +9,10 @@ export const YeahButton = () => {
 	return (
 		<button data-tip="Yeah!"
 			onClick={(e) => {handleSend(e)}}
-			className="btn-emoji btn-tip-left"
+			className="
+				btn-icon
+				btn-tip-left
+			"
 		>
 			<YeahIcon />
 		</button>
@@ -25,7 +28,10 @@ export const HmmmButton = () => {
 	return (
 		<button data-tip="Hmmm..."
 			onClick={(e) => {handleSend(e)}}
-			className="btn-emoji btn-tip-left"
+			className="
+				btn-icon
+				btn-tip-left
+			"
 		>
 			<HmmmIcon />
 		</button>
@@ -41,7 +47,10 @@ export const WoahButton = () => {
 	return (
 		<button data-tip="~Woah~"
 			onClick={(e) => {handleSend(e)}}
-			className="btn-emoji btn-tip-left"
+			className="
+				btn-icon
+				btn-tip-left
+			"
 		>
 			<WoahIcon />
 		</button>
@@ -51,9 +60,7 @@ export const WoahButton = () => {
 export const EmojiButton = () => {
 	return (
 		<div className="group relative flex gap-5">
-			<button className="btn-icon">
-				<YeahIcon />
-			</button>
+			<YeahButton />
 			<div className="
 				absolute
 				invisible opacity-0 group-hover:visible group-hover:opacity-100

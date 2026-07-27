@@ -1,7 +1,7 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-import { usePlayerStore, STATUS, SEATNUMBER_UNSEATED } from "./PlayerStore";
-import { usePartyStore, ISFRIEND } from "./PartyStore";
+import { usePlayerStore, STATUS } from "./PlayerStore";
+import { usePartyStore, RELATION, SEATNUMBER_UNSEATED } from "./PartyStore";
 import { useSceneStore } from "./SceneStore";
 
 interface DevValues {
@@ -24,6 +24,7 @@ export const useDevStore = create<DevState>()(
 			resetGame: () => {
 				useSceneStore.setState({
 					currentScene: "LOGIN",
+					profileIndex: 0,
 					showWindow: {
 						badge: false,
 						createAccount: false,
@@ -63,13 +64,11 @@ export const useDevStore = create<DevState>()(
 							WIN_STREAK_10: null,
 							MASTER_COLLECTOR: null,
 						},
-						seatNumber: -1,
 					},
 					status: STATUS.AVAILABLE,
 				});
 				usePartyStore.setState({
-					partyCount: 1,
-					playerFocus: 0,
+					totalMembers: 1,
 					members: [{
 						uuid: "12345678-abcd-efgh-ijkl-000000000000",
 						name: null,
@@ -97,7 +96,7 @@ export const useDevStore = create<DevState>()(
 						},
 						seatNumber: SEATNUMBER_UNSEATED,
 						isHost: true,
-						isFriend: ISFRIEND.NA,
+						relation: RELATION.SELF,
 					}],
 				});
 			},

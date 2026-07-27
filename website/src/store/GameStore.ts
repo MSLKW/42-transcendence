@@ -3,7 +3,7 @@ import { persist } from "zustand/middleware";
 
 interface GameValues {
 	totalPlayers: number;
-	playerOrder: (string | null)[];
+	playerNames: (string | null)[];
 	isReadyToPlay: boolean[];
 	gameStarted: boolean;
 	activePlayer: number;
@@ -12,21 +12,21 @@ interface GameValues {
 interface GameState extends GameValues {
 	setGameValue: <K extends keyof GameValues>(key: K, value: GameValues[K]) => void;
 	setActivePlayer: () => void;
-	resetActivePlayer: () => void;
 }
 
 export const useGameStore = create<GameState>() (
 	persist(
 		(set) => ({
-			totalPlayers: 4,
-			playerOrder: [null, null, null, null],
-			isReadyToPlay: [false, false, false, false],
+			totalPlayers: 1,
+			playerNames: [null],
+			isReadyToPlay: [false],
 			gameStarted: false,
 			activePlayer: 0,
 
 			setGameValue: (key, value) => set(() => ({ [key]: value })),
-			setActivePlayer: () => set((state) => ({ activePlayer: (state.activePlayer + 1) % state.totalPlayers })),
-			resetActivePlayer: () => set({ activePlayer: 0 }),
+			setActivePlayer: () => set((state) => ({
+				activePlayer: (state.activePlayer + 1) % state.totalPlayers
+			})),
 		}),
 		{
 			name: 'game-storage',

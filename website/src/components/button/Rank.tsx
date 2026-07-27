@@ -9,18 +9,19 @@ export const RankButton = () => {
 			data-tip="View Rank List"
 			onClick={() => setShowWindow("rank", true)}
 			className="
-				w-max
-				h-max
-				btn-rank btn-icon-border btn-tip-down
+				btn-text bg-dark
+				btn-tip-up
+				h-max w-max
 				flex place-content-between place-items-center
-		">
+			"
+		>
 			<div className="
 				h-full w-full
-				px-[clamp(0.25rem,2vw+0.125rem,1.25rem)]
+				py-0.5rem px-2rem
 				text-n6
 				relative
 			">
-				<p>Straight</p>
+				<h3>Straight</h3>
 			</div>
 			<div className="h-10 aspect-square text-b5">
 				<RankIcon />

@@ -4,13 +4,13 @@ import { useSceneStore } from "../store/SceneStore";
 import { BadgeWindow } from "../window/Badge";
 
 export const PlayerDataModule = () => {
-	const { members, playerFocus } = usePartyStore();
-	const { showWindow, setShowWindow } = useSceneStore();
+	const { members } = usePartyStore();
+	const { profileIndex, showWindow, setShowWindow } = useSceneStore();
 	const [ xpProgress, setXPProgress ] = useState(0);
 	useEffect(() => {
-		const percentage = (members[playerFocus].xp / (members[playerFocus].level * 1000)) * 100
+		const percentage = (members[profileIndex].xp / (members[profileIndex].level * 1000)) * 100
 		setXPProgress(percentage);
-	}, [members[playerFocus].xp]);
+	}, [members[profileIndex].xp]);
 
 	return (
 		<div className="
@@ -23,9 +23,9 @@ export const PlayerDataModule = () => {
 				grid grid-cols-[5rem_1fr]
 				place-content-start place-items-start
 			">
-				<label>Level {members[playerFocus].level}</label>
+				<label>Level {members[profileIndex].level}</label>
 				<div className="text-sm text-center w-full">
-					<span>XP: {members[playerFocus].xp} / {members[playerFocus].level * 1000}</span>
+					<span>XP: {members[profileIndex].xp} / {members[profileIndex].level * 1000}</span>
 					<div className="
 						h-2
 						rounded-full
@@ -48,7 +48,7 @@ export const PlayerDataModule = () => {
 				place-content-center place-items-center
 			">
 				<div className="relative w-full flex">
-					{ playerFocus === 0
+					{ profileIndex === 0
 						?
 							<button
 								type="button"
@@ -65,19 +65,19 @@ export const PlayerDataModule = () => {
 									pl-1 pr-3 py-1
 									flex justify-between items-center
 								">
-									<span className="px-3">{members[playerFocus].badge}</span>
+									<span className="px-3">{members[profileIndex].badge}</span>
 									<span className="text-xs">▼</span>
 								</span>
 							</button>
 						:
-							<span className="w-full text-center self-center"><i>"{members[playerFocus].badge}"</i></span>
+							<span className="w-full text-center self-center"><i>{members[profileIndex].badge}</i></span>
 					}
 					{ showWindow["badge"] && <BadgeWindow /> }
 				</div>
 			</div>
 			<div>
-				<p className="text-sm text-a5">Last Login: {members[playerFocus].lastLogin}</p>
-				<p className="text-sm text-a5">Joined: {members[playerFocus].createdAt}</p>
+				<p className="text-sm text-a5">Last Login: {members[profileIndex].lastLogin}</p>
+				<p className="text-sm text-a5">Joined: {members[profileIndex].createdAt}</p>
 			</div>
 		</div>
 	);

@@ -1,32 +1,33 @@
-import { usePartyStore } from "../store/PartyStore";
+import { useEffect } from "react";
+import { usePartyStore, GAMEMODE } from "../store/PartyStore";
 import { HeaderModule } from "../modules/Header";
-import { HomeCardButton } from "../components/button/HomeCard";
+import { HomeCardButton } from "../modules/HomeCard";
 import { AvatarButton } from "../components/button/Avatar";
 import { PartyButton } from "../components/button/Party";
 import { SmallLogo } from "../modules/Logo";
 
-export const GAMEMODE = {
-	TUTORIAL: 1,
-	VERSUS2: 2,
-	VERSUS3: 3,
-	VERSUS4: 4,
-}
-
 export const Home = () => {
-	const { partyCount, members } = usePartyStore();
+	const { members, removeBots } = usePartyStore();
+
+	useEffect(() => {
+		removeBots();
+	}, [])
 
 	return (
 		<>
 			<HeaderModule back="LOGIN" />
 			<main>
-				<div tabIndex={-1} className="
-					absolute top-0 left-0
-					w-full h-full
-					pt-[clamp(5rem,25vh,20rem)] pb-[clamp(10rem,32vh,20rem)]
-					flex
-					overflow-x-auto
-					snap-x snap-mandatory
-				">
+				<div
+					tabIndex={-1}
+					className="
+						absolute top-0 left-0
+						w-full h-full
+						pt-[clamp(5rem,25vh,20rem)] pb-[clamp(10rem,32vh,20rem)]
+						flex
+						overflow-x-auto
+						snap-x snap-mandatory
+					"
+				>
 					<div className="
 						flex place-content-center-safe place-items-center gap-[clamp(1.25rem,1.786vw+0.893rem,2.5rem)]
 						w-full h-full
@@ -45,14 +46,23 @@ export const Home = () => {
 				flex place-content-between place-items-center
 				relative
 			">
-				<div tabIndex={-1} className="
-					z-1
-					flex
-					gap-[clamp(0.25rem,3vw+0.125rem,2.5rem)]
-					sm:overflow-x-visible overflow-x-auto
-				">
-					{ Array.from({ length: partyCount }).map((_, index) => (
-						<AvatarButton key={index} playerIndex={index} cornerButton={members[index].isHost ? "host" : ""}/>
+				<div
+					tabIndex={-1}
+					className="
+						z-1
+						flex
+						gap-[clamp(0.25rem,3vw+0.125rem,2.5rem)]
+						sm:overflow-x-visible overflow-x-auto
+					"
+				>
+					{ members.map((member, index) => (
+						<AvatarButton
+							key={member.uuid}
+							index={index}
+							name={member.name ?? "Guest"}
+							relation={member.relation}
+							cornerButton={member.isHost ? "host" : ""}
+						/>
 					))}
 					<PartyButton />
 				</div>
