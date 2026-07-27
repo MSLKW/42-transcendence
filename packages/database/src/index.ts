@@ -2,7 +2,7 @@ import fs from 'fs';
 import 'dotenv/config'; // 1. Load .env files // When you import dotenv/config, the package executes its config() function immediately as a side effect. This loads the variables from your .env file into process.env automatically.
 import { drizzle } from "drizzle-orm/node-postgres";
 import { Pool } from "pg";
-import * as schema from "./schema/index"
+import * as schema from "./schema/index.schema"
 
 // 2. Helper to safely read the password
 function dbPassword() {
@@ -44,7 +44,7 @@ export const postgres = drizzle(pool, { schema });
 
 // Re-export everything (all schemas from schema/index.ts)
 //    So microservices can use table definitions (like `users`, `sessions`)
-export * from "./schema/index";
+export * from "./schema/index.schema";
 
 
 // 4. Graceful Shutdown 

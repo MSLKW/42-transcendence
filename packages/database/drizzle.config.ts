@@ -31,7 +31,7 @@ if (!password) {
 // 		"configuration schema" that tells Drizzle exactly how to talk to your database and where to find your code.
 export default defineConfig({
     dialect: "postgresql",  //! can this use .env var?
-    schema: "./src/schema/index.ts", // points to the "Source of Truth." => the schema/index.ts file pointing to all other schemas
+    schema: "./src/schema/index.schema.ts", // points to the "Source of Truth." => the schema/index.ts file pointing to all other schemas
     out: "./migrations", // naming is following industry standard / drizzle kit's default behaviour / drizzle's documentation
     dbCredentials: {
         // Construct the URL using the helper
