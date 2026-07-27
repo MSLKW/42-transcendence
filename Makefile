@@ -6,7 +6,7 @@
 #    By: aimokhta <aimokhta@student.42kl.edu.my>    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2026/06/16 09:31:30 by aimokhta          #+#    #+#              #
-#    Updated: 2026/07/27 23:20:35 by aimokhta         ###   ########.fr        #
+#    Updated: 2026/07/27 23:42:24 by aimokhta         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -23,9 +23,9 @@ include .env
 export
 
 all:
-	@mkdir -p $(HOME)/data/$(POSTGRES_VOLUME_NAME)
-	@mkdir -p $(HOME)/data/$(DG_VOLUME_NAME)
-	@sudo chmod -R 777 $(HOME)/data/$(DG_VOLUME_NAME)
+# 	@mkdir -p $(HOME)/data/$(POSTGRES_VOLUME_NAME)
+# 	@mkdir -p $(HOME)/data/$(DG_VOLUME_NAME)
+# 	@sudo chmod -R 777 $(HOME)/data/$(DG_VOLUME_NAME)
 	@echo "$(PURPLE)\n🛠️  Building and launching containers...\n$(RESET)"
 	@docker compose -f ./docker-compose.yml up --build
 
@@ -45,13 +45,14 @@ recreate:
 	@docker compose -f ./docker-compose.yml up -d --force-recreate
 
 clean:
-	@echo "$(PURPLE)\n🗑️  Removing all containers, volumes, network and images including public base images in Docker...\n$(RESET)"
-	@docker compose -f ./docker-compose.yml down --volumes --rmi all
-	@echo "$(PURPLE)\n🗑️  Done removed every single containers, volumes and images in Docker! \n$(RESET)"
+	@echo "$(PURPLE)\n🗑️  Removing all containers, volumes, network and images including public base images (keeping volumes)...\n$(RESET)"
+	@docker compose -f ./docker-compose.yml down --rmi all
+	@echo "$(PURPLE)\n🗑️  Done cleaning all containers and images! \n$(RESET)"
 	
 fclean: clean
-	@sudo rm -rf $(HOME)/data
-	@echo "$(PURPLE)\n🗑️  Removed all volumes on host! $(RESET)\n"
+	@echo "$(PURPLE)\n🗑️🚨 Removing Docker Named Volumes...\n$(RESET)"
+	@docker compose -f ./docker-compose.yml down --volumes
+	@echo "$(PURPLE)\n🗑️💥 Done! Everything, including volumes, are removed!\n$(RESET)"
 
 re: fclean all
 
@@ -68,7 +69,7 @@ logs:
 	@docker logs party-manager
 # 	docker logs website
 # 	docker logs game
-# 	docker logs game-bot
+# 	docker logs bot
 # 	docker logs chat
 
 nuclear:
