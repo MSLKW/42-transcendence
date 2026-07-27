@@ -32,7 +32,7 @@ const pool = new Pool({
     port: parseInt(process.env.DB_PORT || "5432", 10), // syntax: env var, fallback value if forgot to put in .env, parse into decimal number 
 
     // --- Industry Standard Pool Settings ---
-    max: parseInt(process.env.DB_MAX_CONNECTIONS || "20", 10), // Maximum number of clients in the pool (prevents crashing Postgres). PostgreSQL has a default limit of 100 simultaneous connections, controlled by the max_connections parameter
+    max: parseInt(process.env.POSTGRES_MAX_CONNECTIONS || "20", 10), // Maximum number of clients in the pool (prevents crashing Postgres). PostgreSQL has a default limit of 100 simultaneous connections, controlled by the max_connections parameter
     idleTimeoutMillis: 30000, // Close idle clients after 30 seconds
     connectionTimeoutMillis: 2000, // Return an error if connection takes longer than 2 seconds
   });
