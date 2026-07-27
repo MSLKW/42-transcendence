@@ -8,7 +8,7 @@ export const SignOutButton = () => {
         <button
             data-tip="Sign Out"
             onClick={() => resetGame()}
-            className="btn-icon btn-tip-down"
+            className="btn-icon data-tip-down"
         >
                 <SignOutIcon />
         </button>

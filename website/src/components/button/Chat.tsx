@@ -10,7 +10,7 @@ export const ChatButton = () => {
 			onClick={() => setShowWindow("chat", !showWindow.chat)}
 			className="
 				btn-icon
-				btn-tip-down
+				data-tip-down
 			"
 		>
 			<ChatIcon />

@@ -169,7 +169,7 @@ export const CreateAccountWindow = () => {
 					disabled={isLoading}
 					className="
 						btn-text bg-white
-						h-3rem aspect-5/1
+						h-3rem aspect-6/1
 						text-1.25rem text-n0
 					"
 				>

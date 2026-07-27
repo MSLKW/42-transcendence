@@ -11,14 +11,16 @@ export const RankWindow = () => {
 		>
 			<div className="flex">
 				<div className="
-					px-1.5rem py-2rem mr-10
+					px-1.5rem py-2rem mr-5
 					flex gap-1rem
 					rounded-bl-xl
 				">
-					<div className="
-						flex place-items-center
-						text-b5
-					">
+					<div
+						className="
+							flex place-items-center
+							text-b5
+						"
+					>
 						<RankArrowIcon />
 					</div>
 					<div className="
@@ -31,7 +33,6 @@ export const RankWindow = () => {
 						<h3>Full House</h3>
 						<h3>Flush</h3>
 						<h3 className="text-b5">Straight</h3>
-						<hr className="text-n2"/>
 						<h3>Triple</h3>
 						<h3>Double</h3>
 						<h3>High Card</h3>
@@ -57,7 +58,6 @@ export const RankWindow = () => {
 					<div className="
 						flex place-items-center
 						text-b3
-						mr-5
 					">
 						<RankArrowIcon />
 					</div>

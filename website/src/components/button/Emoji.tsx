@@ -11,7 +11,7 @@ export const YeahButton = () => {
 			onClick={(e) => {handleSend(e)}}
 			className="
 				btn-icon
-				btn-tip-left
+				data-tip-left
 			"
 		>
 			<YeahIcon />
@@ -30,7 +30,7 @@ export const HmmmButton = () => {
 			onClick={(e) => {handleSend(e)}}
 			className="
 				btn-icon
-				btn-tip-left
+				data-tip-left
 			"
 		>
 			<HmmmIcon />
@@ -49,7 +49,7 @@ export const WoahButton = () => {
 			onClick={(e) => {handleSend(e)}}
 			className="
 				btn-icon
-				btn-tip-left
+				data-tip-left
 			"
 		>
 			<WoahIcon />

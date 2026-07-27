@@ -21,10 +21,11 @@ export const PlayerDataModule = () => {
 		">
 			<div className="
 				grid grid-cols-[5rem_1fr]
-				place-content-start place-items-start
+				place-items-center
+				leading-tight
 			">
-				<label>Level {members[profileIndex].level}</label>
-				<div className="text-sm text-center w-full">
+				<h2>Level {members[profileIndex].level}</h2>
+				<div className="text-1rem text-center w-full">
 					<span>XP: {members[profileIndex].xp} / {members[profileIndex].level * 1000}</span>
 					<div className="
 						h-2
@@ -65,12 +66,12 @@ export const PlayerDataModule = () => {
 									pl-1 pr-3 py-1
 									flex justify-between items-center
 								">
-									<span className="px-3">{members[profileIndex].badge}</span>
+									<p className="px-3">{members[profileIndex].badge}</p>
 									<span className="text-xs">▼</span>
 								</span>
 							</button>
 						:
-							<span className="w-full text-center self-center"><i>{members[profileIndex].badge}</i></span>
+							<p className="w-full text-center self-center"><i>{members[profileIndex].badge}</i></p>
 					}
 					{ showWindow["badge"] && <BadgeWindow /> }
 				</div>

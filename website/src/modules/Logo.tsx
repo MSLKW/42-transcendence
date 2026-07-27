@@ -37,7 +37,7 @@ export const BigLogo = () => {
 					text-1.5rem text-b5 focus-visible:text-n6 hover:text-n6 font-extralight tracking-widest whitespace-nowrap
 					h-4rem aspect-8/1
 					outline-n6
-					btn-tip-down
+					data-tip-down
 			">
 				A 42 TRANSCENDENCE PROJECT
 			</button>
@@ -58,8 +58,9 @@ export const SmallLogo = () => {
 				flex flex-col place-items-end
 				py-1rem px-1.5rem
 				hover:not-disabled:scale-105 active:hover:not-disabled:scale-100
-				btn-tip-up
-		">
+				data-tip-up
+			"
+		>
 			<div className="
 				flex place-items-center
 			">

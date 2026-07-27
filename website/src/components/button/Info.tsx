@@ -9,7 +9,7 @@ export const InfoButton = () => {
 			data-tip="Info"
 			onClick={() => setShowWindow("info", true)}
 			className="
-				btn-icon btn-tip-down
+				btn-icon data-tip-down
 		">
 			<InfoIcon />
 		</button>

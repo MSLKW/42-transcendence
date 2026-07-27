@@ -10,7 +10,7 @@ export const RankButton = () => {
 			onClick={() => setShowWindow("rank", true)}
 			className="
 				btn-text bg-dark
-				btn-tip-up
+				data-tip-up
 				h-max w-max
 				flex place-content-between place-items-center
 			"

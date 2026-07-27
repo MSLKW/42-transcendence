@@ -22,7 +22,7 @@ export const PartyButton = () => {
 					rounded-xs
 					hover:not-disabled:scale-105 active:hover:not-disabled:scale-100
 					focus-visible:outline-2 outline-b5
-					btn-tip-up
+					data-tip-up
 					cursor-pointer
 				"
 			>

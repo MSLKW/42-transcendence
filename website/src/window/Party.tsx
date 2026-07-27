@@ -95,7 +95,7 @@ export const FriendModule = ({ name }: FriendsProps) => {
 					border border-a3 rounded-sm outline-b5
 					hover:scale-105
 					cursor-pointer
-					btn-tip-up
+					data-tip-up
 				"
 			>
 				<div className="flex place-content-between place-items-center">

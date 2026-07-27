@@ -178,7 +178,7 @@ export const SettingsWindow = () => {
 							onChange={() => setSetting("uiColor", 0)}
 							checked={uiColor === 0}
 						/>
-						<div className="h-full aspect-1/2 flex border border-n6 overflow-clip">
+						<div className="h-2rem aspect-1/2 flex border border-n6 overflow-clip">
 							<div className="h-full aspect-square bg-b4"/>
 							<div className="h-full aspect-square bg-a4"/>
 						</div>
@@ -190,7 +190,7 @@ export const SettingsWindow = () => {
 							onChange={() => setSetting("uiColor", 1)}
 							checked={uiColor === 1}
 						/>
-						<div className="h-full aspect-1/2 flex border border-n6 overflow-clip">
+						<div className="h-2rem aspect-1/2 flex border border-n6 overflow-clip">
 							<div className="h-full aspect-square bg-d4"/>
 							<div className="h-full aspect-square bg-c4"/>
 						</div>

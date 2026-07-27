@@ -53,7 +53,7 @@ export const NotificationWindow = () => {
 	};
 
 	const handleEndGame = () => {
-		setCurrentScene("LOBBY");
+		setCurrentScene("HOME");
 		handleClose(onButton1Click);
 	};
 

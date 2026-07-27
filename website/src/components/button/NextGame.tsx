@@ -7,7 +7,7 @@ export const NextGameButton = () => {
     return (
         <button
             data-tip="Next Game"
-            className="btn-icon btn-icon-border btn-tip-down"
+            className="btn-icon btn-icon-border data-tip-down"
             onClick={() => setCurrentScene("R3F")} 
         >
             <NextGameIcon />
