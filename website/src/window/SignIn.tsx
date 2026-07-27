@@ -41,7 +41,7 @@ export const SignInWindow = () => {
 				headers: {
 					"Content-Type": "application/json",
 				},
-				body: JSON.stringify({ email, password }),
+				body: JSON.stringify({ identifier: email, password }),
 			});
 
 			if (!response.ok) {

@@ -22,9 +22,6 @@ export const CreateAccountWindow = () => {
 	const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 	const [isLoading, setIsLoading] = useState(false);
 
-	const AUTH_URL = "http://localhost:3000";
-	// const AUTH_URL = "localhost:3000";
-	// const AUTH_URL = "/api/auth";
 
 	const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
@@ -48,10 +45,7 @@ export const CreateAccountWindow = () => {
 		}
 		try {
 			setIsLoading(true);
-			// const response = await fetch("/api/auth/signup", {
-			// const response = await fetch("http://localhost:3000/signup", {
-			// const response = await fetch("localhost:3000/signup", {
-			const response = await fetch(`${AUTH_URL}/signup`, {
+			const response = await fetch("/api/auth/signup", {
 				method: "POST",
 				headers: {
 					"Content-Type": "application/json",
