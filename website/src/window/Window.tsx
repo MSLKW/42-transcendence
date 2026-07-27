@@ -135,11 +135,10 @@ export const Window: React.FC<WindowProps> = ({
 											<body>
 												<div class="h-fit w-120 bg-linear-to-b from-n0 to-n1 border border-n2 rounded-xl overflow-hidden">
 													<div class="bg-a2 flex place-content-between place-items-center p-2 box-border select-none">
-														<h2 class="text-n6 ml-5 font-bold">Stats - ${members[profileIndex]?.name || "Guest"}</h2>
+														<h2 class="text-n6 ml-5 font-bold">Stats: ${members[profileIndex]?.name || "Guest"}</h2>
 													</div>
 													<div class="window-body divide-y divide-n2 text-white p-4">
-														<p>Profile Index: ${profileIndex}</p>
-														<p>Isolated window content goes here entirely independent of parent UI.</p>
+														<p>Stats: ${members[profileIndex]?.name || "Guest"}</p>
 													</div>
 												</div>
 											</body>
@@ -150,6 +149,7 @@ export const Window: React.FC<WindowProps> = ({
 										const url = URL.createObjectURL(blob);
 
 										window.open(url, "_blank", "width=500,height=700");
+										setShowWindow(dismissKey, false);
 									}}
 									className="btn-icon data-tip-up"
 								>

@@ -10,12 +10,19 @@ interface HeaderModuleProps {
 }
 
 export const HeaderModule = ({ back }: HeaderModuleProps) => {
-	const { setCurrentScene } = useSceneStore();
+	const { currentScene, setCurrentScene } = useSceneStore();
 
 	return (
 		<header className="flex justify-between">
 			<div className="flex btn-icon-border">
-				{ back === "LOGIN" ? <SignOutButton /> : <BackButton scene={() => setCurrentScene("HOME")}/> }
+				{ back === "LOGIN"
+					? <SignOutButton />
+					: <BackButton scene={() => {
+						if (currentScene === "LOBBY" || currentScene === "RESULTS")
+							setCurrentScene("HOME");
+						else if (currentScene === "R3F")
+							setCurrentScene("LOBBY");
+					}}/> }
 				<SettingsButton />
 			</div>
 			<div className="flex btn-icon-border">

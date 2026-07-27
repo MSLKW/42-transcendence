@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useGameStore } from "../store/GameStore";
 import { usePartyStore } from "../store/PartyStore";
+import { useSettingsStore, AUTO_PASS_RECORD } from "../store/SettingsStore";
 import { HeaderModule } from "../modules/Header";
 import { RankButton } from "../components/button/Rank";
 import { AvatarButton } from "../components/button/Avatar";
@@ -12,13 +13,19 @@ export const R3F = () => {
 
 	const [activePlayer, setActivePlayer] = useState<number>(0);
 	const nextTurn = () => setActivePlayer((prev) => (prev + 1) % 4);
+	const autoPassValues = Object.values(AUTO_PASS_RECORD);
+	const { autoPassIndex } = useSettingsStore();
 	useEffect(() => {
+		const autoPassValue = autoPassValues[autoPassIndex];
+		if (autoPassValue <= 0)
+			return;
+		
 		const timer = setTimeout(() => {
 			nextTurn();
 			console.log("activePlayer:", activePlayer);
-		}, 1000);
+		}, autoPassValue);
 		return () => clearTimeout(timer);
-	}, [activePlayer]);
+	}, [autoPassIndex, activePlayer, nextTurn]);
 
 	return (
 		<>

@@ -1,5 +1,5 @@
 import { useGameStore } from "../store/GameStore";
-import { useSettingsStore, AUTO_PASS_LABELS } from "../store/SettingsStore";
+import { useSettingsStore, AUTO_PASS_RECORD } from "../store/SettingsStore";
 import { Window } from "./Window";
 import { RadioButton } from "../components/button/Radio";
 import { ToggleButton } from "../components/button/Toggle";
@@ -10,6 +10,8 @@ export const SettingsWindow = () => {
 		allow3OfAKind, allow2OfSpadesEnd, autoPassIndex, endGameCondition, scoreCalculation, cardStyle, uiColor, fxLevel, mxLevel,
 		setSetting, toggleSetting,
 	} = useSettingsStore();
+
+	const autoPassKeys = Object.keys(AUTO_PASS_RECORD);
 
 	return (
 		<Window
@@ -58,18 +60,21 @@ export const SettingsWindow = () => {
 				">
 					<label htmlFor="autoPassSlider">
 						<h3 className={` ${ gameStarted && "opacity-50" } `}>
-							Auto Pass Time: {AUTO_PASS_LABELS[autoPassIndex]}
+							Auto Pass Time: {autoPassKeys[autoPassIndex]}
 						</h3>
 					</label>
 					<input
 						type="range"
 						id="autoPassSlider"
 						min="0"
-						max={AUTO_PASS_LABELS.length - 1}
+						max={autoPassKeys.length - 1}
 						step="1"
 						value={autoPassIndex}
 						disabled={gameStarted}
-						onChange={(e) => setSetting("autoPassIndex", parseInt(e.target.value, 10))}
+						onChange={ (e) => {
+							const index = parseInt(e.target.value, 10);
+							setSetting("autoPassIndex", index);
+						}}
 						className="accent-b5 cursor-pointer"
 					/>
 				</div>
