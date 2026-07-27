@@ -6,6 +6,7 @@ import { AvatarButton } from "../components/button/Avatar";
 import { AvatarImage } from "../components/image/AvatarImage";
 import { RedTriangle } from "../components/image/RedTriangle";
 import { GreenTriangle } from "../components/image/GreenTriangle";
+import { useGameStore } from "../store/GameStore";
 
 const ResultRank = () => {
 	return (
@@ -32,7 +33,7 @@ const ResultRank = () => {
 			">
 				<h3>2</h3>
 			</div>
-			<div className="
+			{/* <div className="
 				row-start-4 row-end-4
 				flex place-content-center place-items-center
 				h-full w-full
@@ -45,13 +46,14 @@ const ResultRank = () => {
 				h-full w-full
 			">
 				<h3>4</h3>
-			</div>
+			</div> */}
 		</>
 	);
 }
 
 const ResultPlayed = () => {
 	const { members } = usePartyStore();
+	const { totalPlayers } = useGameStore();
 
 	return (
 		<>
@@ -87,35 +89,41 @@ const ResultPlayed = () => {
 					<p>Total Wins: 1</p>
 				</div>
 			</div>
-			<div className="
-				row-start-4 row-end-4
-				flex place-items-center
-				gap-5
-				h-full w-full
-			">
-				<AvatarImage />
-				<div className="flex flex-col place-content-center place-items-start">
-					<h3>{members[3].name}</h3>
-					<p>Total Wins: 0</p>
+			{/* { totalPlayers <= 3 &&
+				<div className="
+					row-start-4 row-end-4
+					flex place-items-center
+					gap-5
+					h-full w-full
+				">
+					<AvatarImage />
+					<div className="flex flex-col place-content-center place-items-start">
+						<h3>{members[2].name}</h3>
+						<p>Total Wins: 0</p>
+					</div>
 				</div>
-			</div>
-			<div className="
-				row-start-5 row-end-5
-				flex place-items-center
-				gap-5
-				h-full w-full
-			">
-				<AvatarImage />
-				<div className="flex flex-col place-content-center place-items-start">
-					<h3>{members[2].name}</h3>
-					<p>Total Wins: 0</p>
+			}
+			{ totalPlayers <= 4 &&
+				<div className="
+					row-start-5 row-end-5
+					flex place-items-center
+					gap-5
+					h-full w-full
+				">
+					<AvatarImage />
+					<div className="flex flex-col place-content-center place-items-start">
+						<h3>{members[3].name}</h3>
+						<p>Total Wins: 0</p>
+					</div>
 				</div>
-			</div>
+			} */}
 		</>
 	);
 }
 
 const ResultChange = () => {
+	const { totalPlayers } = useGameStore();
+	
 	return (
 		<>
 			<div className="
@@ -140,25 +148,31 @@ const ResultChange = () => {
 			">
 				<GreenTriangle />
 			</div>
-			<div className="
-				row-start-4 row-end-4
-				flex place-content-center place-items-center
-				h-full w-full
-			">
-				<RedTriangle />
-			</div>
-			<div className="
-				row-start-5 row-end-5
-				flex place-content-center place-items-center
-				h-full w-full
-			">
-				<RedTriangle />
-			</div>
+			{/* { totalPlayers <= 3 &&
+				<div className="
+					row-start-4 row-end-4
+					flex place-content-center place-items-center
+					h-full w-full
+				">
+					<RedTriangle />
+				</div>
+			}
+			{ totalPlayers <= 4 &&
+				<div className="
+					row-start-5 row-end-5
+					flex place-content-center place-items-center
+					h-full w-full
+				">
+					<RedTriangle />
+				</div>
+			} */}
 		</>
 	);
 }
 
 const ResultTotal = () => {
+	const { totalPlayers } = useGameStore();
+
 	return (
 		<>
 			<div className="
@@ -183,25 +197,30 @@ const ResultTotal = () => {
 			">
 				<h3>10</h3>
 			</div>
-			<div className="
-				row-start-4 row-end-4
-				flex place-content-center place-items-center
-				h-full w-full
-			">
-				<h3>12</h3>
-			</div>
-			<div className="
-				row-start-5 row-end-5
-				flex place-content-center place-items-center
-				h-full w-full
-			">
-				<h3>15</h3>
-			</div>
+			{/* { totalPlayers <= 3 &&
+				<div className="
+					row-start-4 row-end-4
+					flex place-content-center place-items-center
+					h-full w-full
+				">
+					<h3>12</h3>
+				</div>
+			}
+			{ totalPlayers <= 4 &&
+				<div className="
+					row-start-5 row-end-5
+					flex place-content-center place-items-center
+					h-full w-full
+				">
+					<h3>15</h3>
+				</div>
+			} */}
 		</>
 	);
 }
 
 export const Results = () => {
+	const { totalPlayers } = useGameStore();
 	const { members } = usePartyStore();
 	const { setNotification } = useNotificationStore();
 	const winner = "Congratulations " + members[0].name + "! Play next round?";
@@ -240,18 +259,22 @@ export const Results = () => {
 							<AvatarButton index={1} name={members[1].name ?? "Guest"} relation={members[1].relation} cornerButton="2nd" />
 							<span className="text-r4">+6</span>
 						</div>
-						<div className="text-center flex flex-col gap-3">
-							<AvatarButton index={3} name={members[2].name ?? "Guest"} relation={members[2].relation} cornerButton="3rd" />
-							<span className="text-r4">+8</span>
-						</div>
-						<div className="text-center flex flex-col gap-3">
-							<AvatarButton index={2} name={members[3].name ?? "Guest"} relation={members[3].relation} cornerButton="4th" />
-							<span className="text-r4">+15</span>
-						</div>
+						{/* { totalPlayers <= 3 &&
+							<div className="text-center flex flex-col gap-3">
+								<AvatarButton index={2} name={members[2].name ?? "Guest"} relation={members[2].relation} cornerButton="3rd" />
+								<span className="text-r4">+8</span>
+							</div>
+						}
+						{ totalPlayers <= 4 &&
+							<div className="text-center flex flex-col gap-3">
+								<AvatarButton index={3} name={members[3].name ?? "Guest"} relation={members[3].relation} cornerButton="4th" />
+								<span className="text-r4">+15</span>
+							</div>
+						} */}
 					</div>
 					<div
 						className="
-							grid grid-cols-[7.5rem_15rem_7.5rem_7.5rem] grid-rows-[5rem_5rem_5rem_5rem_5rem]
+							grid grid-cols-[7.5rem_15rem_7.5rem_7.5rem] grid-rows-[5rem]
 							text-center text-n6
 							divide-x divide-n2
 						"

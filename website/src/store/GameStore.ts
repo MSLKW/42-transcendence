@@ -13,6 +13,7 @@ interface GameValues {
 
 interface GameState extends GameValues {
 	setGameValue: <K extends keyof GameValues>(key: K, value: GameValues[K]) => void;
+	setPlayerNames: () => void;
 	setActivePlayer: () => void;
 	dealCards: () => void;
 	setCardsLeft: (player: number, cardsPlayed: number) => void;
@@ -31,6 +32,7 @@ export const useGameStore = create<GameState>() (
 			round: 0,
 
 			setGameValue: (key, value) => set(() => ({ [key]: value })),
+			setPlayerNames: () => set(() => ({})),
 			setActivePlayer: () => set((gameStore) => ({
 				activePlayer: (gameStore.activePlayer + 1) % gameStore.totalPlayers
 			})),
