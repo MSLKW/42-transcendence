@@ -25,12 +25,6 @@ secrets: # auto make all secret files just read only mode
     file: ./secrets/database_passwords/db_game_password.txt
   db_party-manager_password:
     file: ./secrets/database_passwords/db_party-manager_password.txt
-  # db_website_password:
-  #   file: ./secrets/database_passwords/db_website_password.txt
-  # db_bot_password:
-  #   file: ./secrets/database_passwords/db_bot_password.txt
-  # db_chat_password:
-  #   file: ./secrets/database_passwords/db_chat_password.txt
   dg_masterpass:
     file: ./secrets/drizzle-gateway/dg_masterpass.txt
 
@@ -58,17 +52,11 @@ services:
       POSTGRES_AUTH_USER_PASSWORD_FILE: /run/secrets/db_auth_password
       POSTGRES_GAME_USER_PASSWORD_FILE: /run/secrets/db_game_password
       POSTGRES_PARTY-MANAGER_USER_PASSWORD_FILE: /run/secrets/db_party-manager_password
-      # POSTGRES_WEBSITE_USER_PASSWORD_FILE: /run/secrets/db_website_password
-      # POSTGRES_BOT_USER_PASSWORD_FILE: /run/secrets/db_bot_password
-      # POSTGRES_CHAT_USER_PASSWORD_FILE: /run/secrets/db_chat_password
     secrets:
       - db_admin_password
       - db_auth_password
       - db_game_password
       - db_party-manager_password
-      # - db_website_password
-      # - db_bot_password
-      # - db_chat_password
     env_file:
       - .env
     volumes:
