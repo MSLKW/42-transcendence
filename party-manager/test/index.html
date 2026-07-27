@@ -25,63 +25,13 @@
     font-size: 14px;
   }
   h1 { font-size: 18px; margin: 0 0 4px; }
-  .sub { color: var(--muted); margin: 0 0 16px; }
-
-  .toolbar {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    margin-bottom: 12px;
-  }
-  .toolbar button { flex-shrink: 0; }
-
-  .tabbar {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 6px;
-    margin-bottom: 14px;
-    border-bottom: 1px solid var(--border);
-    padding-bottom: 12px;
-  }
-  .tab {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    background: var(--panel);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    padding: 6px 8px 6px 10px;
-    cursor: pointer;
-    font-size: 12px;
-    color: var(--muted);
-  }
-  .tab.active {
-    border-color: var(--accent);
-    color: var(--text);
-  }
-  .tab .dot {
-    width: 7px; height: 7px; border-radius: 50%;
-    background: var(--err);
-    flex-shrink: 0;
-  }
-  .tab .dot.connected { background: var(--ok); }
-  .tab .close {
-    color: var(--muted);
-    font-weight: bold;
-    padding: 0 2px;
-    border-radius: 4px;
-  }
-  .tab .close:hover { color: var(--text); background: #2a2e38; }
-  .tab .label { white-space: nowrap; }
-
+  .sub { color: var(--muted); margin: 0 0 20px; }
   .layout {
-    display: none;
+    display: grid;
     grid-template-columns: 340px 1fr;
     gap: 16px;
     align-items: start;
   }
-  .layout.active { display: grid; }
-
   .panel {
     background: var(--panel);
     border: 1px solid var(--border);
@@ -140,11 +90,11 @@
     font-size: 12px;
     margin-bottom: 12px;
   }
-  .status .dot {
+  .dot {
     width: 8px; height: 8px; border-radius: 50%;
     background: var(--err);
   }
-  .status .dot.connected { background: var(--ok); }
+  .dot.connected { background: var(--ok); }
   .event-block {
     border-bottom: 1px solid var(--border);
     padding: 12px 0;
@@ -162,12 +112,12 @@
     font-size: 12px;
     color: var(--accent);
   }
-  .log {
+  #log {
     background: #0b0d11;
     border: 1px solid var(--border);
     border-radius: 8px;
     padding: 10px;
-    height: 660px;
+    height: 620px;
     overflow-y: auto;
     font-family: ui-monospace, Menlo, monospace;
     font-size: 12px;
@@ -191,431 +141,280 @@
   .timestamp { color: var(--muted); margin-right: 6px; }
   .clear-btn { float: right; }
   pre { white-space: pre-wrap; word-break: break-word; margin: 4px 0 0; color: #cfd3d8; }
-  .empty-state {
-    color: var(--muted);
-    padding: 40px;
-    text-align: center;
-    border: 1px dashed var(--border);
-    border-radius: 10px;
-  }
 </style>
 </head>
 <body>
 
 <h1>Party Manager Tester</h1>
-<p class="sub">Minimal test harness for your Socket.IO party manager service. Each tab below is an independent, simultaneous connection — use it to simulate multiple clients at once. Field values and open tabs are saved to this browser automatically.</p>
+<p class="sub">Minimal test harness for your Socket.IO party manager service. Not styled for production use.</p>
 
-<div class="toolbar">
-  <button id="addClientBtn">+ Add Client</button>
-</div>
-
-<div class="tabbar" id="tabbar"></div>
-
-<div id="clientsContainer"></div>
-<div id="emptyState" class="empty-state" style="display:none;">No clients open. Click "+ Add Client" to start one.</div>
-
-<template id="clientTemplate">
-  <div class="layout">
-    <div>
-      <div class="panel">
-        <h2>Connection</h2>
-        <div class="status"><span data-field="statusDot" class="dot"></span><span data-field="statusText">Disconnected</span></div>
-        <label>Server URL</label>
-        <input data-field="serverUrl" value="http://localhost:5000" />
-        <label>Session token (sent as auth.token)</label>
-        <input data-field="token" placeholder="paste a valid session token" />
-        <button data-action="connect">Connect</button>
-        <button data-action="disconnect" class="secondary" disabled>Disconnect</button>
-      </div>
-
-      <div class="panel">
-        <h2>Events</h2>
-
-        <div class="event-block">
-          <div class="event-title"><span>Send Invite</span><span class="event-name">send_invite</span></div>
-          <label>Recipient UUID</label>
-          <input data-field="inviteRecipient" placeholder="recipient uuid" />
-          <button data-emit="send_invite">Send</button>
-        </div>
-
-        <div class="event-block">
-          <div class="event-title"><span>Kick Player</span><span class="event-name">kick_player</span></div>
-          <label>Recipient UUID</label>
-          <input data-field="kickRecipient" placeholder="uuid of player to kick" />
-          <button data-emit="kick_player">Send</button>
-        </div>
-
-        <div class="event-block">
-          <div class="event-title"><span>Accept Invite</span><span class="event-name">accept_invite</span></div>
-          <label>Host UUID</label>
-          <input data-field="acceptHostUuid" placeholder="host uuid" />
-          <button data-emit="accept_invite">Send (expects ack)</button>
-        </div>
-
-        <div class="event-block">
-          <div class="event-title"><span>Reject Invite</span><span class="event-name">reject_invite</span></div>
-          <label>Host UUID</label>
-          <input data-field="rejectHostUuid" placeholder="host uuid" />
-          <button data-emit="reject_invite">Send</button>
-        </div>
-
-        <div class="event-block">
-          <div class="event-title"><span>Leave Party</span><span class="event-name">leave_party</span></div>
-          <button data-emit="leave_party">Send</button>
-        </div>
-
-        <div class="event-block">
-          <div class="event-title"><span>Start Game Session</span><span class="event-name">start_game_session</span></div>
-          <button data-emit="start_game_session">Send</button>
-        </div>
-
-        <div class="event-block">
-          <div class="event-title">Server → Client events (reference only)</div>
-          <p style="color: var(--muted); font-size: 12px; margin: 0;">
-            These arrive automatically via <code>socket.onAny(...)</code> and appear in the log —
-            no button needed: <code>player_join</code>, <code>player_left</code>,
-            <code>invite_received</code>, <code>kicked</code>, <code>game_session_start</code>.
-          </p>
-        </div>
-
-        <div class="event-block">
-          <div class="event-title">Custom event</div>
-          <label>Event name</label>
-          <input data-field="customEventName" placeholder="event_name" />
-          <label>Payload (JSON)</label>
-          <textarea data-field="customPayload" rows="3" placeholder='{ "key": "value" }'></textarea>
-          <button data-action="customEmit">Emit</button>
-          <button data-action="customEmitAck" class="secondary">Emit (expect ack)</button>
-        </div>
-      </div>
+<div class="layout">
+  <div>
+    <div class="panel">
+      <h2>Connection</h2>
+      <div class="status"><span id="statusDot" class="dot"></span><span id="statusText">Disconnected</span></div>
+      <label>Server URL (origin only — protocol + host + port)</label>
+      <input id="serverUrl" value="http://localhost:3000" />
+      <label>Socket.IO path (must match your nginx location block)</label>
+      <input id="socketPath" value="/socket.io" placeholder="/socket/party/socket.io" />
+      <label>Session token (sent as auth.token)</label>
+      <input id="token" placeholder="paste a valid session token" />
+      <button id="connectBtn">Connect</button>
+      <button id="disconnectBtn" class="secondary" disabled>Disconnect</button>
     </div>
 
     <div class="panel">
-      <h2>Log <button class="secondary clear-btn" data-action="clearLog">Clear</button></h2>
-      <div class="log" data-field="log"></div>
+      <h2>Events</h2>
+
+      <div class="event-block">
+        <div class="event-title"><span>Send Invite</span><span class="event-name">send_invite</span></div>
+        <label>Recipient UUID</label>
+        <input id="inviteRecipient" placeholder="recipient uuid" />
+        <button data-emit="send_invite">Send</button>
+      </div>
+
+      <div class="event-block">
+        <div class="event-title"><span>Kick Player</span><span class="event-name">kick_player</span></div>
+        <label>Recipient UUID</label>
+        <input id="kickRecipient" placeholder="uuid of player to kick" />
+        <button data-emit="kick_player">Send</button>
+      </div>
+
+      <div class="event-block">
+        <div class="event-title"><span>Accept Invite</span><span class="event-name">accept_invite</span></div>
+        <label>Host UUID</label>
+        <input id="acceptHostUuid" placeholder="host uuid" />
+        <button data-emit="accept_invite">Send (expects ack)</button>
+      </div>
+
+      <div class="event-block">
+        <div class="event-title"><span>Reject Invite</span><span class="event-name">reject_invite</span></div>
+        <label>Host UUID</label>
+        <input id="rejectHostUuid" placeholder="host uuid" />
+        <button data-emit="reject_invite">Send</button>
+      </div>
+
+      <div class="event-block">
+        <div class="event-title"><span>Leave Party</span><span class="event-name">leave_party</span></div>
+        <button data-emit="leave_party">Send</button>
+      </div>
+
+      <div class="event-block">
+        <div class="event-title"><span>Start Game Session</span><span class="event-name">start_game_session</span></div>
+        <button data-emit="start_game_session">Send</button>
+      </div>
+
+      <div class="event-block">
+        <div class="event-title">Server → Client events (reference only)</div>
+        <p style="color: var(--muted); font-size: 12px; margin: 0;">
+          These arrive automatically via <code>socket.onAny(...)</code> and appear in the log below —
+          no button needed: <code>player_join</code>, <code>player_left</code>,
+          <code>invite_received</code>, <code>kicked</code>, <code>game_session_start</code>.
+        </p>
+      </div>
+
+      <div class="event-block">
+        <div class="event-title">Custom event</div>
+        <label>Event name</label>
+        <input id="customEventName" placeholder="event_name" />
+        <label>Payload (JSON)</label>
+        <textarea id="customPayload" rows="3" placeholder='{ "key": "value" }'></textarea>
+        <button id="customEmitBtn">Emit</button>
+        <button id="customEmitAckBtn" class="secondary">Emit (expect ack)</button>
+      </div>
     </div>
   </div>
-</template>
+
+  <div class="panel">
+    <h2>Log <button class="secondary clear-btn" id="clearLogBtn">Clear</button></h2>
+    <div id="log"></div>
+  </div>
+</div>
 
 <script>
-const STORAGE_KEY = 'partyTesterClients_v1';
-const ACTIVE_KEY = 'partyTesterActiveId_v1';
-const FIELD_NAMES = ['serverUrl', 'token', 'inviteRecipient', 'kickRecipient', 'acceptHostUuid', 'rejectHostUuid', 'customEventName', 'customPayload'];
+let socket = null;
 
-const tabbarEl = document.getElementById('tabbar');
-const containerEl = document.getElementById('clientsContainer');
-const emptyStateEl = document.getElementById('emptyState');
-const templateEl = document.getElementById('clientTemplate');
-
-let clients = new Map(); // id -> Client instance
-let clientOrder = [];    // ordered list of ids
-let activeId = null;
-
-function uid() {
-  return 'c' + Math.random().toString(36).slice(2, 9);
-}
+const logEl = document.getElementById('log');
+const statusDot = document.getElementById('statusDot');
+const statusText = document.getElementById('statusText');
+const connectBtn = document.getElementById('connectBtn');
+const disconnectBtn = document.getElementById('disconnectBtn');
 
 function timestamp() {
   return new Date().toLocaleTimeString([], { hour12: false });
 }
 
-class Client {
-  constructor(config) {
-    this.id = config.id || uid();
-    this.label = config.label || null;
-    this.socket = null;
-    this.connected = false;
-
-    // Build the panel DOM from the template
-    const fragment = templateEl.content.cloneNode(true);
-    this.layoutEl = fragment.querySelector('.layout');
-    containerEl.appendChild(this.layoutEl);
-
-    // Build the tab button
-    this.tabEl = document.createElement('div');
-    this.tabEl.className = 'tab';
-    this.tabEl.innerHTML = `<span class="dot"></span><span class="label"></span><span class="close" title="Close">&times;</span>`;
-    this.tabDot = this.tabEl.querySelector('.dot');
-    this.tabLabel = this.tabEl.querySelector('.label');
-    tabbarEl.appendChild(this.tabEl);
-
-    this.tabEl.querySelector('.close').addEventListener('click', (e) => {
-      e.stopPropagation();
-      closeClient(this.id);
-    });
-    this.tabEl.addEventListener('click', () => setActive(this.id));
-    this.tabLabel.addEventListener('dblclick', () => {
-      const newLabel = prompt('Rename this client tab:', this.tabLabel.textContent);
-      if (newLabel && newLabel.trim()) {
-        this.label = newLabel.trim();
-        this.tabLabel.textContent = this.label;
-        persistState();
-      }
-    });
-
-    // Populate fields from saved config
-    FIELD_NAMES.forEach((name) => {
-      const el = this.field(name);
-      if (el && config[name] !== undefined) el.value = config[name];
-    });
-
-    this.updateLabel();
-    this.attachHandlers();
-
-    // Persist field changes as the user types
-    this.layoutEl.addEventListener('input', () => persistState());
-  }
-
-  field(name) {
-    return this.layoutEl.querySelector(`[data-field="${name}"]`);
-  }
-
-  updateLabel() {
-    const idx = clientOrder.indexOf(this.id) + 1;
-    this.tabLabel.textContent = this.label || `Client ${idx || clients.size}`;
-  }
-
-  log(tag, label, data) {
-    const logEl = this.field('log');
-    const entry = document.createElement('div');
-    entry.className = 'log-entry';
-    const dataStr = data !== undefined ? JSON.stringify(data, null, 2) : '';
-    entry.innerHTML = `<span class="timestamp">${timestamp()}</span><span class="tag ${tag}">${tag.toUpperCase()}</span><strong>${label}</strong>${dataStr ? `<pre>${dataStr}</pre>` : ''}`;
-    logEl.appendChild(entry);
-    logEl.scrollTop = logEl.scrollHeight;
-  }
-
-  setConnected(connected) {
-    this.connected = connected;
-    this.field('statusDot').classList.toggle('connected', connected);
-    this.field('statusText').textContent = connected ? 'Connected' : 'Disconnected';
-    this.layoutEl.querySelector('[data-action="connect"]').disabled = connected;
-    this.layoutEl.querySelector('[data-action="disconnect"]').disabled = !connected;
-    this.tabDot.classList.toggle('connected', connected);
-  }
-
-  requireConnection() {
-    if (!this.socket || !this.socket.connected) {
-      this.log('err', 'Not connected — connect first');
-      return false;
-    }
-    return true;
-  }
-
-  emitWithAck(event, payload) {
-    if (!this.requireConnection()) return;
-    this.log('sent', event, payload);
-    this.socket.timeout(5000).emit(event, payload, (err, response) => {
-      if (err) {
-        this.log('err', `${event} (ack timeout / error)`, { message: err.message });
-      } else {
-        this.log('ack', `${event} response`, response);
-      }
-    });
-  }
-
-  emitNoAck(event, payload) {
-    if (!this.requireConnection()) return;
-    this.log('sent', event, payload);
-    this.socket.emit(event, payload);
-  }
-
-  connect() {
-    const url = this.field('serverUrl').value.trim();
-    const token = this.field('token').value.trim();
-    if (!url) return this.log('err', 'Missing server URL');
-
-    this.socket = io(url, {
-      auth: { token },
-      transports: ['websocket', 'polling'],
-    });
-
-    this.socket.on('connect', () => {
-      this.setConnected(true);
-      this.log('sys', `Connected (socket id: ${this.socket.id})`);
-    });
-
-    this.socket.on('connect_error', (err) => {
-      this.setConnected(false);
-      this.log('err', 'connect_error', { message: err.message });
-    });
-
-    this.socket.on('disconnect', (reason) => {
-      this.setConnected(false);
-      this.log('sys', 'Disconnected', { reason });
-    });
-
-    this.socket.onAny((event, ...args) => {
-      this.log('recv', event, args.length === 1 ? args[0] : args);
-    });
-  }
-
-  disconnect() {
-    if (this.socket) this.socket.disconnect();
-  }
-
-  attachHandlers() {
-    this.layoutEl.querySelector('[data-action="connect"]').addEventListener('click', () => this.connect());
-    this.layoutEl.querySelector('[data-action="disconnect"]').addEventListener('click', () => this.disconnect());
-    this.layoutEl.querySelector('[data-action="clearLog"]').addEventListener('click', () => {
-      this.field('log').innerHTML = '';
-    });
-
-    this.layoutEl.querySelectorAll('[data-emit]').forEach((btn) => {
-      btn.addEventListener('click', () => {
-        const event = btn.getAttribute('data-emit');
-        switch (event) {
-          case 'send_invite':
-            this.emitNoAck('send_invite', { recipientUuid: this.field('inviteRecipient').value.trim() });
-            break;
-          case 'kick_player':
-            this.emitNoAck('kick_player', { recipientUuid: this.field('kickRecipient').value.trim() });
-            break;
-          case 'accept_invite':
-            this.emitWithAck('accept_invite', { hostUuid: this.field('acceptHostUuid').value.trim() });
-            break;
-          case 'reject_invite':
-            this.emitNoAck('reject_invite', { hostUuid: this.field('rejectHostUuid').value.trim() });
-            break;
-          case 'leave_party':
-            this.emitNoAck('leave_party', undefined);
-            break;
-          case 'start_game_session':
-            this.emitNoAck('start_game_session', undefined);
-            break;
-        }
-      });
-    });
-
-    this.layoutEl.querySelector('[data-action="customEmit"]').addEventListener('click', () => {
-      const { ok, name, payload } = this.readCustomEmit();
-      if (ok) this.emitNoAck(name, payload);
-    });
-
-    this.layoutEl.querySelector('[data-action="customEmitAck"]').addEventListener('click', () => {
-      const { ok, name, payload } = this.readCustomEmit();
-      if (ok) this.emitWithAck(name, payload);
-    });
-  }
-
-  readCustomEmit() {
-    const name = this.field('customEventName').value.trim();
-    if (!name) {
-      this.log('err', 'Missing event name');
-      return { ok: false };
-    }
-    let payload;
-    try {
-      const raw = this.field('customPayload').value.trim();
-      payload = raw ? JSON.parse(raw) : undefined;
-    } catch (e) {
-      this.log('err', 'Invalid JSON payload', { message: e.message });
-      return { ok: false };
-    }
-    return { ok: true, name, payload };
-  }
-
-  getConfig() {
-    const config = { id: this.id, label: this.label };
-    FIELD_NAMES.forEach((name) => {
-      const el = this.field(name);
-      config[name] = el ? el.value : '';
-    });
-    return config;
-  }
-
-  destroy() {
-    if (this.socket) this.socket.disconnect();
-    this.layoutEl.remove();
-    this.tabEl.remove();
-  }
+function log(tag, label, data) {
+  const entry = document.createElement('div');
+  entry.className = 'log-entry';
+  const dataStr = data !== undefined ? JSON.stringify(data, null, 2) : '';
+  entry.innerHTML = `<span class="timestamp">${timestamp()}</span><span class="tag ${tag}">${tag.toUpperCase()}</span><strong>${label}</strong>${dataStr ? `<pre>${dataStr}</pre>` : ''}`;
+  logEl.appendChild(entry);
+  logEl.scrollTop = logEl.scrollHeight;
 }
 
-function setActive(id) {
-  activeId = id;
-  clients.forEach((client, cid) => {
-    const isActive = cid === id;
-    client.layoutEl.classList.toggle('active', isActive);
-    client.tabEl.classList.toggle('active', isActive);
+// --- Field persistence (sessionStorage: survives refresh, but is scoped
+// per-tab — each tab you open gets its own independent set of saved values,
+// so you can run multiple simulated clients in parallel tabs without them
+// overwriting each other's server URL, token, uuids, etc.) ---
+const PERSISTED_FIELD_IDS = [
+  'serverUrl', 'socketPath', 'token',
+  'inviteRecipient', 'kickRecipient',
+  'acceptHostUuid', 'rejectHostUuid',
+  'customEventName', 'customPayload',
+];
+
+function restorePersistedFields() {
+  PERSISTED_FIELD_IDS.forEach((id) => {
+    const saved = sessionStorage.getItem(`tester:${id}`);
+    if (saved !== null) {
+      const el = document.getElementById(id);
+      if (el) el.value = saved;
+    }
   });
-  persistState();
 }
 
-function relabelAll() {
-  clientOrder.forEach((id) => clients.get(id).updateLabel());
+function wireFieldPersistence() {
+  PERSISTED_FIELD_IDS.forEach((id) => {
+    const el = document.getElementById(id);
+    if (!el) return;
+    el.addEventListener('input', () => {
+      sessionStorage.setItem(`tester:${id}`, el.value);
+    });
+  });
 }
 
-function updateEmptyState() {
-  emptyStateEl.style.display = clientOrder.length === 0 ? 'block' : 'none';
+restorePersistedFields();
+wireFieldPersistence();
+
+function setConnected(connected) {
+  statusDot.classList.toggle('connected', connected);
+  statusText.textContent = connected ? 'Connected' : 'Disconnected';
+  connectBtn.disabled = connected;
+  disconnectBtn.disabled = !connected;
 }
 
-function addClient(config = {}) {
-  const client = new Client(config);
-  clients.set(client.id, client);
-  clientOrder.push(client.id);
-  relabelAll();
-  updateEmptyState();
-  setActive(client.id);
-  persistState();
-  return client;
-}
+document.getElementById('connectBtn').addEventListener('click', () => {
+  const url = document.getElementById('serverUrl').value.trim();
+  const path = document.getElementById('socketPath').value.trim() || '/socket.io';
+  const token = document.getElementById('token').value.trim();
 
-function closeClient(id) {
-  const client = clients.get(id);
-  if (!client) return;
-  client.destroy();
-  clients.delete(id);
-  clientOrder = clientOrder.filter((cid) => cid !== id);
-  relabelAll();
-  updateEmptyState();
+  if (!url) return log('err', 'Missing server URL');
 
-  if (activeId === id) {
-    const next = clientOrder[clientOrder.length - 1] || null;
-    if (next) setActive(next);
-    else { activeId = null; persistState(); }
-  } else {
-    persistState();
-  }
-}
+  socket = io(url, {
+    path,
+    auth: { token },
+    transports: ['websocket', 'polling'],
+  });
 
-function persistState() {
-  const configs = clientOrder.map((id) => clients.get(id).getConfig());
-  try {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(configs));
-    localStorage.setItem(ACTIVE_KEY, activeId || '');
-  } catch (e) {
-    console.warn('Could not save state to localStorage', e);
-  }
-}
+  socket.on('connect', () => {
+    setConnected(true);
+    log('sys', `Connected (socket id: ${socket.id})`);
+    document.title = `Tester — ${socket.id.slice(0, 6)}`;
+  });
 
-function loadState() {
-  let configs = [];
-  let savedActive = null;
-  try {
-    const raw = localStorage.getItem(STORAGE_KEY);
-    if (raw) configs = JSON.parse(raw);
-    savedActive = localStorage.getItem(ACTIVE_KEY) || null;
-  } catch (e) {
-    console.warn('Could not read saved state', e);
-  }
+  socket.on('connect_error', (err) => {
+    setConnected(false);
+    log('err', 'connect_error', { message: err.message });
+  });
 
-  if (configs.length === 0) {
-    addClient({ serverUrl: 'http://localhost:5000' });
-    return;
-  }
+  socket.on('disconnect', (reason) => {
+    setConnected(false);
+    log('sys', 'Disconnected', { reason });
+  });
 
-  configs.forEach((config) => addClient(config));
-  if (savedActive && clients.has(savedActive)) setActive(savedActive);
-}
-
-document.getElementById('addClientBtn').addEventListener('click', () => {
-  // New tabs inherit the currently active tab's server URL as a convenience default
-  const current = activeId ? clients.get(activeId) : null;
-  const defaultUrl = current ? current.field('serverUrl').value.trim() : 'http://localhost:5000';
-  addClient({ serverUrl: defaultUrl || 'http://localhost:5000' });
+  // Catch-all listener for any server-pushed event (e.g. party_invite, party_updated)
+  socket.onAny((event, ...args) => {
+    log('recv', event, args.length === 1 ? args[0] : args);
+  });
 });
 
-window.addEventListener('DOMContentLoaded', loadState);
+document.getElementById('disconnectBtn').addEventListener('click', () => {
+  if (socket) socket.disconnect();
+});
+
+document.getElementById('clearLogBtn').addEventListener('click', () => {
+  logEl.innerHTML = '';
+});
+
+function requireConnection() {
+  if (!socket || !socket.connected) {
+    log('err', 'Not connected — connect first');
+    return false;
+  }
+  return true;
+}
+
+function emitWithAck(event, payload) {
+  if (!requireConnection()) return;
+  log('sent', event, payload);
+  socket.timeout(5000).emit(event, payload, (err, response) => {
+    if (err) {
+      log('err', `${event} (ack timeout / error)`, { message: err.message });
+    } else {
+      log('ack', `${event} response`, response);
+    }
+  });
+}
+
+function emitNoAck(event, payload) {
+  if (!requireConnection()) return;
+  log('sent', event, payload);
+  socket.emit(event, payload);
+}
+
+document.querySelectorAll('[data-emit]').forEach((btn) => {
+  btn.addEventListener('click', () => {
+    const event = btn.getAttribute('data-emit');
+
+    switch (event) {
+      case 'send_invite':
+        emitNoAck('send_invite', { recipient: document.getElementById('inviteRecipient').value.trim() });
+        break;
+      case 'kick_player':
+        emitNoAck('kick_player', { recipient: document.getElementById('kickRecipient').value.trim() });
+        break;
+      case 'accept_invite':
+        emitWithAck('accept_invite', { hostUuid: document.getElementById('acceptHostUuid').value.trim() });
+        break;
+      case 'reject_invite':
+        emitNoAck('reject_invite', { hostUuid: document.getElementById('rejectHostUuid').value.trim() });
+        break;
+      case 'leave_party':
+        emitNoAck('leave_party', undefined);
+        break;
+      case 'start_game_session':
+        emitNoAck('start_game_session', undefined);
+        break;
+    }
+  });
+});
+
+document.getElementById('customEmitBtn').addEventListener('click', () => {
+  const name = document.getElementById('customEventName').value.trim();
+  if (!name) return log('err', 'Missing event name');
+  let payload;
+  try {
+    const raw = document.getElementById('customPayload').value.trim();
+    payload = raw ? JSON.parse(raw) : undefined;
+  } catch (e) {
+    return log('err', 'Invalid JSON payload', { message: e.message });
+  }
+  emitNoAck(name, payload);
+});
+
+document.getElementById('customEmitAckBtn').addEventListener('click', () => {
+  const name = document.getElementById('customEventName').value.trim();
+  if (!name) return log('err', 'Missing event name');
+  let payload;
+  try {
+    const raw = document.getElementById('customPayload').value.trim();
+    payload = raw ? JSON.parse(raw) : undefined;
+  } catch (e) {
+    return log('err', 'Invalid JSON payload', { message: e.message });
+  }
+  emitWithAck(name, payload);
+});
 </script>
 
 </body>
