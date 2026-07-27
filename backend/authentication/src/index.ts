@@ -1,7 +1,9 @@
 import "dotenv/config";
 import express from "express";
-import { FileUserStore } from "./store/fileUserStore";
-import { FileSessionStore } from "./store/fileSessionStore";
+import { DrizzleUserStore } from "./store/drizzleUserStore";
+import { DrizzleSessionStore } from "./store/drizzleSessionStore";
+// import { FileUserStore } from "./store/fileUserStore";
+// import { FileSessionStore } from "./store/fileSessionStore";
 import { signupHandler } from "./handlers/signup";
 import { signinHandler } from "./handlers/signin";
 import { guestHandler } from "./handlers/guest";
@@ -12,8 +14,8 @@ const app = express();
 app.use(express.json());
 
 //replace with actual db user store class like MongoUserStore()
-const userStore = new FileUserStore();
-const sessionStore = new FileSessionStore();
+const userStore = new DrizzleUserStore();
+const sessionStore = new DrizzleSessionStore();
 
 app.post("/signup", signupHandler(userStore));
 app.post("/signin", signinHandler(userStore, sessionStore));

@@ -1,0 +1,238 @@
+networks:
+  transcendence:
+    name: ${MAIN_NETWORK_NAME}
+    driver: bridge 
+  database: # main goal: to talk to Postgres ultimately - anyone who need to read/write into database will be incuded
+    name: ${DB_NETWORK_NAME}
+    driver: bridge # anyone outside cannot enter this network
+    internal: true # anyone inside cannot go outside this network (talking to external containers or internet/browsers)
+  # lobby:
+  #   name: lobby
+  #   driver: bridge
+
+
+volumes: # industry standard => name volumes => more secure oppose to anyone ever can adjust volumes (data's disk) on host if volumes are bind mounted
+  pg_data:
+  dg_data:
+
+
+secrets: # auto make all secret files just read only mode
+  db_admin_password:
+    file: ./secrets/database_passwords/db_admin_password.txt
+  db_auth_password:
+    file: ./secrets/database_passwords/db_auth_password.txt
+  db_game_password:
+    file: ./secrets/database_passwords/db_game_password.txt
+  db_party_manager_password:
+    file: ./secrets/database_passwords/db_party_manager_password.txt
+  # db_website_password:
+  #   file: ./secrets/database_passwords/db_website_password.txt
+  # db_bot_password:
+  #   file: ./secrets/database_passwords/db_bot_password.txt
+  # db_chat_password:
+  #   file: ./secrets/database_passwords/db_chat_password.txt
+  dg_masterpass:
+    file: ./secrets/drizzle-gateway/dg_masterpass.txt
+
+
+
+
+services:
+
+# -------------------DATABASE NETWORK-----------------------
+
+  # ==============================================================================
+  #           POSTGRESQL ( RDBMS Database Engine )
+  #                       *RDBMS = Relational Database Managaement System
+  # ==============================================================================
+  postgresql:
+    container_name: postgresql
+    image: postgres:17-bookworm # No Dockerfile needed here, pull directly from Docker Hub!
+    restart: unless-stopped
+    expose:
+      - "${POSTGRES_PORT}"
+    environment: # Postgres Docker image need them through environment - to specifically overwrite the defaults of the first 3 here
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD_FILE: /run/secrets/db_admin_password
+      POSTGRES_AUTH_USER_PASSWORD_FILE: /run/secrets/db_auth_password
+      POSTGRES_GAME_USER_PASSWORD_FILE: /run/secrets/db_game_password
+      POSTGRES_PARTY_MANAGER_USER_PASSWORD_FILE: /run/secrets/db_party_manager_password
+      # POSTGRES_WEBSITE_USER_PASSWORD_FILE: /run/secrets/db_website_password
+      # POSTGRES_BOT_USER_PASSWORD_FILE: /run/secrets/db_bot_password
+      # POSTGRES_CHAT_USER_PASSWORD_FILE: /run/secrets/db_chat_password
+    secrets:
+      - db_admin_password
+      - db_auth_password
+      - db_game_password
+      - db_party_manager_password
+      # - db_website_password
+      # - db_bot_password
+      # - db_chat_password
+    env_file:
+      - .env
+    volumes:
+      - pg_data:/var/lib/postgresql/data # volume
+      - ./infra/postgresql/init.sql:/docker-entrypoint-initdb.d/init.sql:ro # to run complex/specific sql scripts directly to Postgres automatically instead of to Drizzle
+    networks:
+      - database
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+
+
+  # ==============================================================================
+  #           DRIZZLE-GATEWAY ( Database's GUI Dev Tool )
+  # ==============================================================================
+  drizzle-gateway:
+    container_name: drizzle-gateway
+    image: ghcr.io/drizzle-team/gateway:latest
+    restart: unless-stopped
+    ports:
+      - "${DRIZZLE_GATEWAY_PORT}:${DRIZZLE_GATEWAY_PORT}"
+    env_file:
+      - .env
+    environment:
+      DB_HOST: ${POSTGRES_HOST}
+      DB_PORT: ${POSTGRES_PORT}
+      DB_NAME: ${POSTGRES_DB}
+      DB_USER: ${POSTGRES_USER}
+      MASTERPASS_FILE: /run/secrets/dg_masterpass
+      DB_PASSWORD_FILE:  /run/secrets/db_admin_password
+      STORE_PATH: /app # <--- Required by Drizzle Gateway
+      PORT: ${DRIZZLE_GATEWAY_PORT}
+    secrets:
+      - dg_masterpass
+      - db_admin_password
+    volumes:
+      - dg_data:/app # <--- Required persistent volume mounting to /app
+    networks:
+      - transcendence
+      - database
+    depends_on:
+      postgresql:
+        condition: service_healthy
+
+# --------------------------- TRANSCENDENCE NETWORK ------------------------------
+  # ==============================================================================
+  #           MIGRATOR (Node.js + Drizzle)
+  #                 A Job Container only 
+  # ==============================================================================
+  migrator: # a job container (or more technical terms, ephemeral containers / one-shot containers)
+    container_name: migrator
+    build:
+      context: .
+      dockerfile: ./packages/database/Dockerfile
+    image: migrator:aisyah
+    pull_policy: build
+    restart: no # It runs migrations only, then it exits successfully, the end of this container's life. 
+    # ports:
+    #   - "${ORM_BACKEND_PORT}:${ORM_BACKEND_PORT}"
+    environment:
+      DB_HOST: ${POSTGRES_HOST}
+      DB_PORT: ${POSTGRES_PORT}
+      DB_NAME: ${POSTGRES_DB}
+      DB_USER: ${POSTGRES_USER}
+      DB_PASSWORD_FILE: /run/secrets/db_admin_password
+    secrets:
+      - db_admin_password
+    env_file:
+      - .env
+    networks:
+      - transcendence
+      - database
+    depends_on:
+      postgresql:
+        condition: service_healthy
+
+
+
+  # ==============================================================================
+  #           Authentication (Backend Microservice)
+  # ==============================================================================
+  auth:
+    container_name: auth
+    build:
+      context: .                                                  # Set workdir to the repo's root
+      dockerfile: ./backend/authentication/Dockerfile    # Point to the Dockerfile's relative path
+    image: auth:jeremy
+    pull_policy: build
+    restart: unless-stopped
+    ports:
+      - "${AUTH_PORT}:${AUTH_PORT}"
+    environment:
+      DB_HOST: ${POSTGRES_HOST}                             # DB_HOST is a standard industry convention
+      DB_NAME: ${POSTGRES_DB}
+      DB_PORT: ${POSTGRES_PORT}
+      DB_USER: ${POSTGRES_USER} # ${POSTGRES_USER_NAME_AUTH}
+      DB_PASSWORD_FILE: /run/secrets/db_admin_password # /run/secrets/db_auth_password
+    env_file:
+      - .env                                              # Loads global configs
+    secrets:
+      - db_admin_password # - db_auth_password
+    networks:
+      - transcendence
+      - database
+    depends_on:
+      migrator:
+        condition: service_completed_successfully  # Waits for migrator to finish and exit with code 0
+
+
+
+#  # ==============================================================================
+#  #           Adminer (Web-Based Admin Tool)
+#  # ==============================================================================
+#   adminer:
+#     image: adminer:fastcgi # Requires nginx upstream routing Xrequirement backend must be HTTPS
+#     image: adminer:5.5.0-alpne #standalone - best for web game app
+#     ports:
+#       - "${LOCALHOST}:${ADMINER_PORT}:${ADMINER_PORT}"
+#     restart: unless-stopped
+#     env_file:
+#       - .env
+#     environment:
+#     secrets:
+#     volumes:
+#     depends_on:
+#       postgresql:
+#         condition: service_healthy
+#     networks:
+#       - transcendence
+
+
+#         GAME-CLIENT
+#         WEBSITE
+#         GAME-SERVER
+#         BOT
+#         CHAT
+#         PARTY MANAGER (including friends system?)
+#         NGINX
+#         OTHERS
+
+
+
+
+
+# 1 -> double dash
+    # The double dash "--" acts as a separator. It tells npm:
+    # "Stop parsing arguments for yourself. Everything after this -- should be passed directly to the command I am executing."
+
+# 2 -> other .env
+    # - backend/authentication/.env              # Loads service-specific configs (if have)
+
+# 3 -> '|' in entrypoint
+    # entrypoint:
+    #   - "sh"
+    #   - "-c"
+    #   - |       # literal block scalar = "yaml, treat everything below as literal multi-line block of text"
+    #     MASTERPASS=$(cat /run/secrets/dg_masterpass)
+    #     DB_PASSWORD=$(cat /run/secrets/db_admin_password)
+ 
+    #     # Explicitly include the postgresql:// protocol scheme
+    #     export DATABASE_URL="$DB_HOST://$DB_USER:$DB_PASSWORD@$DB_HOST:$DB_PORT/$DB_NAME"
+
+    #     # Hand off control to the image's default entrypoint/command
+    #     exec docker-entrypoint.sh

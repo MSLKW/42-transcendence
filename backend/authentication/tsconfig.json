@@ -1,8 +1,8 @@
 {
 	"compilerOptions": {
 		"target": "ES2022",
-		"module": "NodeNext",
-		"moduleResolution": "NodeNext",
+		"module": "esnext",
+		"moduleResolution": "bundler",
 		"outDir": "./dist",
 		"rootDir": "./src",
 		"strict": true,
@@ -11,7 +11,10 @@
 		"forceConsistentCasingInFileNames": true,
 		"types": ["node"],
 		"incremental": true,
-		"tsBuildInfoFile": "./.tsbuildinfo"
+		"tsBuildInfoFile": "./.tsbuildinfo",
 	},
-	"include": ["src/**/*.ts"]
+	"include": ["src/**/*.ts"],
+	"references": [
+		{ "path": "../../packages/database" }
+	]
 }
