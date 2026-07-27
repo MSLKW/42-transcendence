@@ -22,7 +22,6 @@ export const R3F = () => {
 		
 		const timer = setTimeout(() => {
 			nextTurn();
-			console.log("activePlayer:", activePlayer);
 		}, autoPassValue);
 		return () => clearTimeout(timer);
 	}, [autoPassIndex, activePlayer, nextTurn]);
@@ -112,6 +111,7 @@ export const R3F = () => {
 				">
 					<button
 						onClick={nextTurn}
+						disabled={activePlayer != 0}
 						className="
 							btn-text bg-light
 							h-3rem aspect-5/1
@@ -121,6 +121,7 @@ export const R3F = () => {
 					</button>
 					<button
 						onClick={nextTurn}
+						disabled={activePlayer != 0}
 						className="
 							btn-text bg-light
 							h-3rem aspect-5/1
