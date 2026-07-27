@@ -1,5 +1,10 @@
 import { Client } from "../client/Client";
 import { randomUUID } from "crypto";
+import { PartyState } from "../PartyTransmitTypes";
+
+const GAME_SERVICE_URL = process.env.GAME_SERVICE_URL;
+if (!GAME_SERVICE_URL)
+	throw new Error("GAME_SERVICE_URL is not set");
 
 export class Party
 {
@@ -9,6 +14,7 @@ export class Party
 	
 	private invites = new Map<string, Client>();
 	private members = new Map<string, Client>();
+	gameId: string | null = null;
 
 	constructor(host: Client)
 	{
@@ -44,10 +50,9 @@ export class Party
 		this.members.set(userId, user);
 		this.invites.delete(userId);
 		for (const key of this.members.keys())
-		{
-			if (key != userId)
-				this.members.get(key)!.emit("player_join", {uuid: userId});
-		}
+				this.members.get(key)!.emit("party_state", this.getState());
+		if (this.gameId)
+			this.updateLobby();
 		return (true);
 	}
 
@@ -66,7 +71,9 @@ export class Party
 		user.party = null;
 		this.members.delete(uuid);
 		for (const key of this.members.keys())
-			this.members.get(key)!.emit("player_left", {uuid: uuid});
+			this.members.get(key)!.emit("player_state", this.getState());
+		if (this.gameId)
+			this.updateLobby();
 	}
 
 	clear(reason: string)
@@ -83,8 +90,68 @@ export class Party
 		this.members.clear();
 	}
 
-	getMemberUuids(): string[]
+	async startGameSession()
 	{
-		return ([...this.members.keys()]);
+		try
+		{
+			const response = await fetch(`${GAME_SERVICE_URL}/lobby`, {
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json"
+				},
+				body: JSON.stringify({
+					hostUuid: this.hostId,
+					playersLimit: 4,
+					playerUuids: [...this.members.keys()]
+				})
+			});
+			if (!response.ok)
+			{
+				console.error("could not create game session", response.status);
+				return ;
+			}
+			const data = await response.json();
+			this.gameId = data.lobbySessionId;
+			for (const key of this.members.keys())
+				this.members.get(key)!.emit("game_session_start", {gameId: this.gameId});
+		}
+		catch (err)
+		{
+			console.error("call to game lobby failed", err);
+		}
+	}
+
+	async updateLobby()
+	{
+		try
+		{
+			const response = await fetch(`${GAME_SERVICE_URL}/lobby/${this.gameId}`, {
+				method: "PUT",
+				headers: {
+					"Content-Type": "application/json"
+
+				},
+				body: JSON.stringify({
+					hostUuid: this.hostId,
+					playersLimit: 4,
+					playerUuids: [...this.members.keys()]
+				})
+			});
+			if (!response.ok)
+				console.error("could not update game session", response.status);
+		}
+		catch (err)
+		{
+			console.error("call to game lobby failed", err)
+		}
+	}
+
+	getState(): PartyState
+	{
+		return ({
+			hostUuid: this.hostId,
+			members: [...this.members.keys()],
+			gameId: this.gameId
+		});
 	}
 }
