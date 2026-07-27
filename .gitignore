@@ -1,7 +1,0 @@
-secrets/
-.env
-dist/
-node_modules/
-backend-auth/
-data/
-package-lock.json
