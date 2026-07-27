@@ -13,8 +13,8 @@ function dbPassword() {
   }
 
   // b: Fallback -> local development path
-    console.log(`Database's index.ts => using env's Dummy DB Password: ${process.env.DUMMY_DB_PASSWORD}`);
-    return process.env.DUMMY_DB_PASSWORD || "";
+    console.log(`Database's index.ts => using env's Dummy DB Password: ${process.env.DUMMY_POSTGRES_PASSWORD}`);
+    return process.env.DUMMY_POSTGRES_PASSWORD || "";
 };
 
 const password = dbPassword();

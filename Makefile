@@ -6,7 +6,7 @@
 #    By: aimokhta <aimokhta@student.42kl.edu.my>    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2026/06/16 09:31:30 by aimokhta          #+#    #+#              #
-#    Updated: 2026/07/26 16:28:32 by aimokhta         ###   ########.fr        #
+#    Updated: 2026/07/27 23:20:35 by aimokhta         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -23,7 +23,7 @@ include .env
 export
 
 all:
-	@mkdir -p $(HOME)/data/$(PG_VOLUME_NAME)
+	@mkdir -p $(HOME)/data/$(POSTGRES_VOLUME_NAME)
 	@mkdir -p $(HOME)/data/$(DG_VOLUME_NAME)
 	@sudo chmod -R 777 $(HOME)/data/$(DG_VOLUME_NAME)
 	@echo "$(PURPLE)\n🛠️  Building and launching containers...\n$(RESET)"
@@ -41,7 +41,7 @@ up:
 
 # A "soft" restart that picks up changes but keeps data
 recreate:
-	@echo "$(PURPLE) Starting/Resuming services, picking up changes on docker except on host (volumes)...\n{RESET)"
+	@echo "$(PURPLE) Starting/Resuming services, picking up changes on docker except on host (volumes)...\n$(RESET)"
 	@docker compose -f ./docker-compose.yml up -d --force-recreate
 
 clean:
@@ -56,10 +56,16 @@ fclean: clean
 re: fclean all
 
 logs:
-	docker logs postgresql
-	docker logs migrator
-	docker logs drizzle-gateway
-	docker logs auth
+	@echo "$(PURPLE)docker logs postgresql$(RESET)"
+	@docker logs postgresql
+	@echo "$(PURPLE)docker logs migrator$(RESET)"
+	@docker logs migrator
+	@echo "$(PURPLE)docker logs drizzle-gateway$(RESET)"
+	@docker logs drizzle-gateway
+	@echo "$(PURPLE)docker logs auth$(RESET)"
+	@docker logs auth
+	@echo "$(PURPLE)docker logs party-manager$(RESET)"
+	@docker logs party-manager
 # 	docker logs website
 # 	docker logs game
 # 	docker logs game-bot

@@ -23,8 +23,8 @@ secrets: # auto make all secret files just read only mode
     file: ./secrets/database_passwords/db_auth_password.txt
   db_game_password:
     file: ./secrets/database_passwords/db_game_password.txt
-  db_party_manager_password:
-    file: ./secrets/database_passwords/db_party_manager_password.txt
+  db_party-manager_password:
+    file: ./secrets/database_passwords/db_party-manager_password.txt
   # db_website_password:
   #   file: ./secrets/database_passwords/db_website_password.txt
   # db_bot_password:
@@ -57,7 +57,7 @@ services:
       POSTGRES_PASSWORD_FILE: /run/secrets/db_admin_password
       POSTGRES_AUTH_USER_PASSWORD_FILE: /run/secrets/db_auth_password
       POSTGRES_GAME_USER_PASSWORD_FILE: /run/secrets/db_game_password
-      POSTGRES_PARTY_MANAGER_USER_PASSWORD_FILE: /run/secrets/db_party_manager_password
+      POSTGRES_PARTY-MANAGER_USER_PASSWORD_FILE: /run/secrets/db_party-manager_password
       # POSTGRES_WEBSITE_USER_PASSWORD_FILE: /run/secrets/db_website_password
       # POSTGRES_BOT_USER_PASSWORD_FILE: /run/secrets/db_bot_password
       # POSTGRES_CHAT_USER_PASSWORD_FILE: /run/secrets/db_chat_password
@@ -65,7 +65,7 @@ services:
       - db_admin_password
       - db_auth_password
       - db_game_password
-      - db_party_manager_password
+      - db_party-manager_password
       # - db_website_password
       # - db_bot_password
       # - db_chat_password
@@ -83,7 +83,7 @@ services:
       retries: 5
 
 
-
+# --------------------------- TRANSCENDENCE NETWORK ------------------------------
   # ==============================================================================
   #           DRIZZLE-GATEWAY ( Database's GUI Dev Tool )
   # ==============================================================================
@@ -116,7 +116,7 @@ services:
       postgresql:
         condition: service_healthy
 
-# --------------------------- TRANSCENDENCE NETWORK ------------------------------
+
   # ==============================================================================
   #           MIGRATOR (Node.js + Drizzle)
   #                 A Job Container only 
@@ -179,6 +179,39 @@ services:
     depends_on:
       migrator:
         condition: service_completed_successfully  # Waits for migrator to finish and exit with code 0
+
+
+
+  # ==============================================================================
+  #           Party-Manager (Backend Microservice)
+  # ==============================================================================
+  party-manager:
+    container_name: party-manager
+    build:
+      context: .                                                  # Set workdir to the repo's root
+      dockerfile: ./backend/party-manager/Dockerfile    # Point to the Dockerfile's relative path
+    image: party-manager:jeremy
+    pull_policy: build
+    restart: unless-stopped
+    ports:
+      - "${PARTY-MANAGER_PORT}:${PARTY-MANAGER_PORT}"
+    environment:
+      DB_HOST: ${POSTGRES_HOST}                             # DB_HOST is a standard industry convention
+      DB_NAME: ${POSTGRES_DB}
+      DB_PORT: ${POSTGRES_PORT}
+      DB_USER: ${POSTGRES_USER} # ${POSTGRES_USER_NAME_PARTY-MANAGER}
+      DB_PASSWORD_FILE: /run/secrets/db_admin_password # /run/secrets/db_party-manager_password
+    env_file:
+      - .env                                              # Loads global configs
+    secrets:
+      - db_admin_password # - db_party-manager_password
+    networks:
+      - transcendence
+      - database
+    depends_on:
+      migrator:
+        condition: service_completed_successfully  # Waits for migrator to finish and exit with code 0
+
 
 
 

@@ -12,9 +12,9 @@ function dbPassword() {
     return fs.readFileSync(process.env.DB_PASSWORD_FILE, "utf8").trim();
   }
   // b: Fallback for local development
-  if (process.env.DUMMY_DB_PASSWORD) {
-    console.log(`Using env's Dummy DB Password:  ${process.env.DUMMY_DB_PASSWORD}`);
-    return process.env.DUMMY_DB_PASSWORD || "";
+  if (process.env.DUMMY_POSTGRES_PASSWORD) {
+    console.log(`Using env's Dummy DB Password:  ${process.env.DUMMY_POSTGRES_PASSWORD}`);
+    return process.env.DUMMY_POSTGRES_PASSWORD || "";
   }
 
   return "aisyahDatabaseGirlFinallyy!333>u<";
