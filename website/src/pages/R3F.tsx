@@ -12,7 +12,7 @@ export const R3F = () => {
 	const { members } = usePartyStore();
 
 	const [activePlayer, setActivePlayer] = useState<number>(0);
-	const nextTurn = () => setActivePlayer((prev) => (prev + 1) % 4);
+	const nextTurn = () => setActivePlayer((prev) => (prev + 1) % totalPlayers);
 	const autoPassValues = Object.values(AUTO_PASS_RECORD);
 	const { autoPassIndex } = useSettingsStore();
 	useEffect(() => {
@@ -33,16 +33,6 @@ export const R3F = () => {
 			<main>
 				{ totalPlayers === 4 &&
 					<>
-						<div className="absolute left-[25%] top-[5%]">
-							<AvatarButton
-								key={members[2].uuid}
-								index={2}
-								name={members[2].name ?? "Guest"}
-								relation={members[2].relation}
-								cornerButton="cardsLeft"
-								isActive={false}
-							/>
-						</div>
 						<div className="absolute left-[5%] top-[20%]">
 							<AvatarButton
 								key={members[1].uuid}
@@ -50,7 +40,17 @@ export const R3F = () => {
 								name={members[1].name ?? "Guest"}
 								relation={members[1].relation}
 								cornerButton="cardsLeft"
-								isActive={false}
+								isActive={activePlayer === 1}
+							/>
+						</div>
+						<div className="absolute left-[25%] top-[5%]">
+							<AvatarButton
+								key={members[2].uuid}
+								index={2}
+								name={members[2].name ?? "Guest"}
+								relation={members[2].relation}
+								cornerButton="cardsLeft"
+								isActive={activePlayer === 2}
 							/>
 						</div>
 						<div className="absolute right-[5%] top-[20%]">
@@ -60,7 +60,7 @@ export const R3F = () => {
 								name={members[3].name ?? "Guest"}
 								relation={members[3].relation}
 								cornerButton="cardsLeft"
-								isActive={false}
+								isActive={activePlayer === 3}
 							/>
 						</div>
 					</>
@@ -74,7 +74,7 @@ export const R3F = () => {
 								name={members[1].name ?? "Guest"}
 								relation={members[1].relation}
 								cornerButton="cardsLeft"
-								isActive={false}
+								isActive={activePlayer === 1}
 							/>
 						</div>
 						<div className="absolute right-[5%] top-[20%]">
@@ -84,7 +84,7 @@ export const R3F = () => {
 								name={members[2].name ?? "Guest"}
 								relation={members[2].relation}
 								cornerButton="cardsLeft"
-								isActive={false}
+								isActive={activePlayer === 2}
 							/>
 						</div>
 					</>
@@ -97,7 +97,7 @@ export const R3F = () => {
 							name={members[1].name ?? "Guest"}
 							relation={members[1].relation}
 							cornerButton="cardsLeft"
-							isActive={false}
+							isActive={activePlayer === 1}
 						/>
 					</div>
 				}
@@ -137,7 +137,7 @@ export const R3F = () => {
 					name={members[0].name ?? "Guest"}
 					relation={members[0].relation}
 					cornerButton="cardsLeft"
-					isActive={true}
+					isActive={activePlayer === 0}
 				/>
 				<div className="
 					w-[clamp(1rem,10vw+0.5rem,5rem)] h-full

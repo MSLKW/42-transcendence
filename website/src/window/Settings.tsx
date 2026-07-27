@@ -10,7 +10,6 @@ export const SettingsWindow = () => {
 		allow3OfAKind, allow2OfSpadesEnd, autoPassIndex, endGameCondition, scoreCalculation, cardStyle, uiColor, fxLevel, mxLevel,
 		setSetting, toggleSetting,
 	} = useSettingsStore();
-
 	const autoPassKeys = Object.keys(AUTO_PASS_RECORD);
 
 	return (
