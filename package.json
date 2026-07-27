@@ -2,8 +2,10 @@
   "name": "big2",
   "private": true,
   "workspaces":[
+    "infra/*",
     "packages/*",
-    "backend/*"
+    "backend/*",
+    "frontend/*"
   ],
   "scripts": {
     "db:generate": "npm run --prefix packages/database db:generate --",
