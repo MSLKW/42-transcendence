@@ -6,7 +6,7 @@
 #    By: aimokhta <aimokhta@student.42kl.edu.my>    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2026/06/16 09:31:30 by aimokhta          #+#    #+#              #
-#    Updated: 2026/07/27 23:42:24 by aimokhta         ###   ########.fr        #
+#    Updated: 2026/07/28 01:22:38 by aimokhta         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -23,9 +23,6 @@ include .env
 export
 
 all:
-# 	@mkdir -p $(HOME)/data/$(POSTGRES_VOLUME_NAME)
-# 	@mkdir -p $(HOME)/data/$(DG_VOLUME_NAME)
-# 	@sudo chmod -R 777 $(HOME)/data/$(DG_VOLUME_NAME)
 	@echo "$(PURPLE)\n🛠️  Building and launching containers...\n$(RESET)"
 	@docker compose -f ./docker-compose.yml up --build
 
