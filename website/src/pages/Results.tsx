@@ -1,16 +1,13 @@
-import { useGameStore } from "../store/GameStore";
-import { useSceneStore } from "../store/SceneStore";
-import { BackButton } from "../components/button/Back";
-import { SettingsButton } from "../components/button/Settings";
-import { EmojiButton } from "../components/button/Emoji";
-import { ChatButton } from "../components/button/Chat";
-import { NextGameButton } from "../components/button/NextGame";
+import { useEffect } from "react";
+import { useNotificationStore, notificationType } from "../store/NotificationStore";
+import { usePartyStore } from "../store/PartyStore";
+import { HeaderModule } from "../modules/Header";
 import { AvatarButton } from "../components/button/Avatar";
 import { AvatarImage } from "../components/image/AvatarImage";
 import { RedTriangle } from "../components/image/RedTriangle";
 import { GreenTriangle } from "../components/image/GreenTriangle";
 
-export const ResultRank = () => {
+const ResultRank = () => {
 	return (
 		<>
 			<div className="
@@ -26,35 +23,35 @@ export const ResultRank = () => {
 				h-full w-full
 				bg-b2
 			">
-				<h2>1</h2>
+				<h3>1</h3>
 			</div>
 			<div className="
 				row-start-3 row-end-3
 				flex place-content-center place-items-center
 				h-full w-full
 			">
-				<h2>2</h2>
+				<h3>2</h3>
 			</div>
 			<div className="
 				row-start-4 row-end-4
 				flex place-content-center place-items-center
 				h-full w-full
 			">
-				<h2>3</h2>
+				<h3>3</h3>
 			</div>
 			<div className="
 				row-start-5 row-end-5
 				flex place-content-center place-items-center
 				h-full w-full
 			">
-				<h2>4</h2>
+				<h3>4</h3>
 			</div>
 		</>
 	);
 }
 
-export const ResultPlayed = () => {
-	const { playerNames } = useGameStore();
+const ResultPlayed = () => {
+	const { members } = usePartyStore();
 
 	return (
 		<>
@@ -73,7 +70,10 @@ export const ResultPlayed = () => {
 				bg-b2
 			">
 				<AvatarImage />
-				<h2>{playerNames[0]}</h2>
+				<div className="flex flex-col place-content-center place-items-start">
+					<h3>{members[0].name}</h3>
+					<p>Total Wins: 1</p>
+				</div>
 			</div>
 			<div className="
 				row-start-3 row-end-3
@@ -82,7 +82,10 @@ export const ResultPlayed = () => {
 				h-full w-full
 			">
 				<AvatarImage />
-				<h2>{playerNames[1]}</h2>
+				<div className="flex flex-col place-content-center place-items-start">
+					<h3>{members[1].name}</h3>
+					<p>Total Wins: 1</p>
+				</div>
 			</div>
 			<div className="
 				row-start-4 row-end-4
@@ -91,7 +94,10 @@ export const ResultPlayed = () => {
 				h-full w-full
 			">
 				<AvatarImage />
-				<h2>{playerNames[3]}</h2>
+				<div className="flex flex-col place-content-center place-items-start">
+					<h3>{members[3].name}</h3>
+					<p>Total Wins: 0</p>
+				</div>
 			</div>
 			<div className="
 				row-start-5 row-end-5
@@ -100,13 +106,16 @@ export const ResultPlayed = () => {
 				h-full w-full
 			">
 				<AvatarImage />
-				<h2>{playerNames[2]}</h2>
+				<div className="flex flex-col place-content-center place-items-start">
+					<h3>{members[2].name}</h3>
+					<p>Total Wins: 0</p>
+				</div>
 			</div>
 		</>
 	);
 }
 
-export const ResultChange = () => {
+const ResultChange = () => {
 	return (
 		<>
 			<div className="
@@ -149,7 +158,7 @@ export const ResultChange = () => {
 	);
 }
 
-export const ResultTotal = () => {
+const ResultTotal = () => {
 	return (
 		<>
 			<div className="
@@ -165,101 +174,95 @@ export const ResultTotal = () => {
 				h-full w-full
 				bg-b2
 			">
-				<h2>5</h2>
+				<h3>5</h3>
 			</div>
 			<div className="
 				row-start-3 row-end-3
 				flex place-content-center place-items-center
 				h-full w-full
 			">
-				<h2>10</h2>
+				<h3>10</h3>
 			</div>
 			<div className="
 				row-start-4 row-end-4
 				flex place-content-center place-items-center
 				h-full w-full
 			">
-				<h2>12</h2>
+				<h3>12</h3>
 			</div>
 			<div className="
 				row-start-5 row-end-5
 				flex place-content-center place-items-center
 				h-full w-full
 			">
-				<h2>15</h2>
+				<h3>15</h3>
 			</div>
 		</>
 	);
 }
 
-export const ResultsWindow = () => {
-	return (
-		<div className="
-			bg-n1
-			border border-n2 rounded-[clamp(0.25rem,3vw+0.125rem,1.5rem)]
-			relative
-		">
-			<div className="
-				flex place-content-evenly
-				border-b border-n2
-				pt-10 pb-3
-			">
-				<div className="text-center flex flex-col gap-3">
-					<AvatarButton playerIndex={0} cornerButton="1st"/>
-					<span className="text-b5">+0</span>
-				</div>
-				<div className="text-center flex flex-col gap-3">
-					<AvatarButton playerIndex={1} cornerButton="2nd" />
-					<span className="text-r4">+6</span>
-				</div>
-				<div className="text-center flex flex-col gap-3">
-					<AvatarButton playerIndex={3} cornerButton="3rd" />
-					<span className="text-r4">+8</span>
-				</div>
-				<div className="text-center flex flex-col gap-3">
-					<AvatarButton playerIndex={2} cornerButton="4th" />
-					<span className="text-r4">+15</span>
-				</div>
-			</div>
-			<div className="
-				grid grid-cols-[7.5rem_15rem_7.5rem_7.5rem] grid-rows-[5rem_5rem_5rem_5rem_5rem]
-				text-center text-n6
-				divide-x divide-n2
-			">
-				<ResultRank />
-				<ResultPlayed />
-				<ResultChange />
-				<ResultTotal />
-			</div>
-			<div className="
-				absolute top-0 right-0 -translate-y-1/2 translate-x-1/2
-				z-1
-			">
-				<NextGameButton />
-			</div>
-		</div>
-	);
-}
-
 export const Results = () => {
-	const { setCurrentScene } = useSceneStore();
+	const { members } = usePartyStore();
+	const { setNotification } = useNotificationStore();
+	const winner = "Congratulations " + members[0].name + "! Play next round?";
+	useEffect(() => {
+		setNotification(winner, notificationType.nextRound);
+	}, []);
 
 	return (
 		<>
-			<header className="flex place-content-between">
-				<div className="flex btn-icon-border">
-					<BackButton scene={() => setCurrentScene("LOBBY")} />
-					<SettingsButton />
+			<HeaderModule back="LOBBY" />
+			<main
+				className="
+					flex place-content-center place-items-center
+					py-2rem px-3rem
+					translate-y-10
+				"
+			>
+				<div
+					className="
+						bg-dark
+						rounded-xl
+					"
+				>
+					<div
+						className="
+							flex place-content-evenly
+							border-b border-n2
+							pt-10 pb-3
+						"
+					>
+						<div className="text-center flex flex-col gap-3">
+							<AvatarButton index={0} name={members[0].name ?? "Guest"} relation={members[0].relation} cornerButton="1st"/>
+							<span className="text-b5">+0</span>
+						</div>
+						<div className="text-center flex flex-col gap-3">
+							<AvatarButton index={1} name={members[1].name ?? "Guest"} relation={members[1].relation} cornerButton="2nd" />
+							<span className="text-r4">+6</span>
+						</div>
+						<div className="text-center flex flex-col gap-3">
+							<AvatarButton index={3} name={members[2].name ?? "Guest"} relation={members[2].relation} cornerButton="3rd" />
+							<span className="text-r4">+8</span>
+						</div>
+						<div className="text-center flex flex-col gap-3">
+							<AvatarButton index={2} name={members[3].name ?? "Guest"} relation={members[3].relation} cornerButton="4th" />
+							<span className="text-r4">+15</span>
+						</div>
+					</div>
+					<div
+						className="
+							grid grid-cols-[7.5rem_15rem_7.5rem_7.5rem] grid-rows-[5rem_5rem_5rem_5rem_5rem]
+							text-center text-n6
+							divide-x divide-n2
+						"
+					>
+						<ResultRank />
+						<ResultPlayed />
+						<ResultChange />
+						<ResultTotal />
+					</div>
 				</div>
-				<div className="flex btn-icon-border">
-					<EmojiButton />
-					<ChatButton />
-				</div>
-			</header>
-			<main className="flex place-content-center place-items-center p-[clamp(0.5rem,4vh+0.25rem,2.5rem)]">
-				<ResultsWindow />
 			</main>
-			<footer />
 		</>
 	);
 }

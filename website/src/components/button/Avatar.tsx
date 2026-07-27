@@ -11,9 +11,10 @@ interface AvatarProps {
 	cornerButton?: string;
 	playerIndex?: number;
 	isActive?: boolean;
+	showName?: boolean;
 }
 
-export const AvatarButton = ({ index, name, relation, cornerButton = "", isActive = false }: AvatarProps) => {
+export const AvatarButton = ({ index, name, relation, cornerButton = "", isActive = false, showName = true }: AvatarProps) => {
 	const { setSceneValue, setShowWindow } = useSceneStore();
 
 	return (
@@ -99,7 +100,7 @@ export const AvatarButton = ({ index, name, relation, cornerButton = "", isActiv
 					</div>
 				}
 			</button>
-			<AvatarName name={name} />
+			{ showName && <AvatarName name={name} /> }
 		</div>
 	);
 }

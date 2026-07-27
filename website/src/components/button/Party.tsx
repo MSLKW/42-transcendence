@@ -35,7 +35,7 @@ export const PartyButton = () => {
 					<AddIcon />
 				</div>
 			</button>
-			<AvatarName name="Add" />
+			<AvatarName name="Party" />
 		</div>
 	);
 }

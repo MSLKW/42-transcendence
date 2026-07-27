@@ -7,7 +7,7 @@ import { useSceneStore } from "../store/SceneStore";
 export const NotificationWindow = () => {
 	const { type, message, isError, isTimed, numOfButtons, onButton1Click, onButton2Click } = useNotificationStore();
 	const { data } = usePlayerStore();
-	const { setShowWindow } = useSceneStore();
+	const { setShowWindow, setCurrentScene } = useSceneStore();
 	const [ isExiting, setIsExiting ] = useState(false);
 	const [ animateProgress, setAnimateProgress ] = useState(false);
 	const isClosing = useRef(false);
@@ -49,6 +49,16 @@ export const NotificationWindow = () => {
 	};
 
 	const handleIgnore = () => {
+		handleClose(onButton2Click);
+	};
+
+	const handleEndGame = () => {
+		setCurrentScene("LOBBY");
+		handleClose(onButton1Click);
+	};
+
+	const handleContinueGame = () => {
+		setCurrentScene("R3F");
 		handleClose(onButton2Click);
 	};
 
@@ -94,7 +104,7 @@ export const NotificationWindow = () => {
 					bg-n0
 					border border-n1 rounded-full
 					py-5 px-10
-					relative cursor-pointer
+					relative ${numOfButtons === 0 ? "cursor-pointer" : "cursor-default" }
 			`}>
 				<span className={`
 					relative z-1
@@ -154,24 +164,34 @@ export const NotificationWindow = () => {
 				">
 					<button
 						type="button"
-						onClick={handleAccept}
+						onClick={type === notificationType.invite ? handleAccept : handleEndGame}
 						className="
 							btn-text bg-light
 							h-3rem w-full
 							text-1.25rem text-n0
 							
 					">
-						ACCEPT
+						{ type === notificationType.invite &&
+							"Accept"
+						}
+						{ type === notificationType.nextRound &&
+							"End"
+						}
 					</button>
 					<button
 						type="button"
-						onClick={handleIgnore}
+						onClick={type === notificationType.invite ? handleIgnore : handleContinueGame}
 						className="
 							btn-text bg-light
 							w-full
 							text-1.25rem text-n0
 					">
-						IGNORE
+						{ type === notificationType.invite &&
+							"Ignore"
+						}
+						{ type === notificationType.nextRound &&
+							"Continue"
+						}
 					</button>
 				</div>
 			}

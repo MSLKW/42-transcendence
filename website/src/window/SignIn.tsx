@@ -73,8 +73,11 @@ export const SignInWindow = () => {
 				"
 			>
 				<div className="flex flex-col gap-1rem">
-					<label htmlFor="email" className="w-full flex place-content-between">
-						<span className="text-right pr-5">Email</span>
+					<label
+						htmlFor="email"
+						className="flex gap-5"
+					>
+						<h2 className="text-right w-[25%]">Email</h2>
 						<input
 							ref={focusRef}
 							id="email"
@@ -82,36 +85,38 @@ export const SignInWindow = () => {
 							value={email}
 							placeholder="Enter your email"
 							onChange={(e) => setEmail(e.target.value)}
-							className="input-form"
+							className="input-form w-[70%]"
 						/>
 					</label>
-					<label htmlFor="password" className="w-full flex place-content-between">
-						<span className="text-right pr-5">
-							Password
-						</span>
-						<div className="relative">
-							<input
-								id="password"
-								type={showPassword ? "text" : "password"}
-								autoComplete="current-password"
-								value={password}
-								placeholder="Enter your password"
-								onChange={(e) => setPassword(e.target.value)}
-								className="input-form w-full"
-							/>
-							<button
-								type="button"
-								onClick={() => setShowPassword(!showPassword)}
-								className="
-									absolute right-1 top-1/2 -translate-y-1/2
-									h-[80%] aspect-square
-									text-n0
-									btn-icon
-									rounded-full
-							">
-								{ showPassword ? <ShowPasswordIcon /> : <HidePasswordIcon /> }
-							</button>
-						</div>
+					<label
+						htmlFor="password"
+						className="
+							flex gap-5
+							relative
+						"
+					>
+						<h2 className="text-right w-[25%]">Password</h2>
+						<input
+							id="password"
+							type={showPassword ? "text" : "password"}
+							autoComplete="current-password"
+							value={password}
+							placeholder="Enter your password"
+							onChange={(e) => setPassword(e.target.value)}
+							className="input-form w-[70%]"
+						/>
+						<button
+							type="button"
+							onClick={() => setShowPassword(!showPassword)}
+							className="
+								absolute right-1 top-1/2 -translate-y-1/2
+								h-[80%] aspect-square
+								text-n0
+								btn-icon
+								rounded-full
+						">
+							{ showPassword ? <ShowPasswordIcon /> : <HidePasswordIcon /> }
+						</button>
 					</label>
 				</div>
 				<button
