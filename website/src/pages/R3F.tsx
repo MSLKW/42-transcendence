@@ -8,8 +8,12 @@ import { AvatarButton } from "../components/button/Avatar";
 import { SortButtons } from "../components/button/Sort";
 
 export const R3F = () => {
-	const { totalPlayers } = useGameStore();
+	const { totalPlayers, dealCards, cardsLeft } = useGameStore();
 	const { members } = usePartyStore();
+
+	useEffect(() => {
+		dealCards();
+	}, []);
 
 	const [activePlayer, setActivePlayer] = useState<number>(0);
 	const nextTurn = () => setActivePlayer((prev) => (prev + 1) % totalPlayers);
@@ -38,7 +42,7 @@ export const R3F = () => {
 								index={1}
 								name={members[1].name ?? "Guest"}
 								relation={members[1].relation}
-								cornerButton="cardsLeft"
+								cornerButton={cardsLeft[1]}
 								isActive={activePlayer === 1}
 							/>
 						</div>
@@ -48,7 +52,7 @@ export const R3F = () => {
 								index={2}
 								name={members[2].name ?? "Guest"}
 								relation={members[2].relation}
-								cornerButton="cardsLeft"
+								cornerButton={cardsLeft[2]}
 								isActive={activePlayer === 2}
 							/>
 						</div>
@@ -58,7 +62,7 @@ export const R3F = () => {
 								index={3}
 								name={members[3].name ?? "Guest"}
 								relation={members[3].relation}
-								cornerButton="cardsLeft"
+								cornerButton={cardsLeft[3]}
 								isActive={activePlayer === 3}
 							/>
 						</div>
@@ -72,7 +76,7 @@ export const R3F = () => {
 								index={1}
 								name={members[1].name ?? "Guest"}
 								relation={members[1].relation}
-								cornerButton="cardsLeft"
+								cornerButton={cardsLeft[1]}
 								isActive={activePlayer === 1}
 							/>
 						</div>
@@ -82,7 +86,7 @@ export const R3F = () => {
 								index={2}
 								name={members[2].name ?? "Guest"}
 								relation={members[2].relation}
-								cornerButton="cardsLeft"
+								cornerButton={cardsLeft[2]}
 								isActive={activePlayer === 2}
 							/>
 						</div>
@@ -95,7 +99,7 @@ export const R3F = () => {
 							index={1}
 							name={members[1].name ?? "Guest"}
 							relation={members[1].relation}
-							cornerButton="cardsLeft"
+							cornerButton={cardsLeft[1]}
 							isActive={activePlayer === 1}
 						/>
 					</div>
@@ -137,7 +141,7 @@ export const R3F = () => {
 					index={0}
 					name={members[0].name ?? "Guest"}
 					relation={members[0].relation}
-					cornerButton="cardsLeft"
+					cornerButton={cardsLeft[0]}
 					isActive={activePlayer === 0}
 				/>
 				<div className="

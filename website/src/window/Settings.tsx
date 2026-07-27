@@ -8,7 +8,7 @@ export const SettingsWindow = () => {
 	const { gameStarted } = useGameStore();
 	const {
 		allow3OfAKind, allow2OfSpadesEnd, autoPassIndex, endGameCondition, scoreCalculation, cardStyle, uiColor, fxLevel, mxLevel,
-		setSetting, toggleSetting,
+		setSettingsValue, toggleSettingsValue,
 	} = useSettingsStore();
 	const autoPassKeys = Object.keys(AUTO_PASS_RECORD);
 
@@ -35,7 +35,7 @@ export const SettingsWindow = () => {
 					`}>
 						<ToggleButton 
 							checked={allow3OfAKind}
-							onChange={() => toggleSetting("allow3OfAKind")}
+							onChange={() => toggleSettingsValue("allow3OfAKind")}
 							disabled={gameStarted}
 						/>
 						<h3>Allow Three of a Kind</h3>
@@ -47,7 +47,7 @@ export const SettingsWindow = () => {
 					`}>
 						<ToggleButton
 							checked={allow2OfSpadesEnd}
-							onChange={() => toggleSetting("allow2OfSpadesEnd")}
+							onChange={() => toggleSettingsValue("allow2OfSpadesEnd")}
 							disabled={gameStarted}
 						/>
 						<h3>Allow Finish with 2 of Spades</h3>
@@ -72,7 +72,7 @@ export const SettingsWindow = () => {
 						disabled={gameStarted}
 						onChange={ (e) => {
 							const index = parseInt(e.target.value, 10);
-							setSetting("autoPassIndex", index);
+							setSettingsValue("autoPassIndex", index);
 						}}
 						className="accent-b5 cursor-pointer"
 					/>
@@ -90,7 +90,7 @@ export const SettingsWindow = () => {
 						<RadioButton
 							name="game-ends"
 							value="first-player"
-							onChange={() => setSetting("endGameCondition", 0)}
+							onChange={() => setSettingsValue("endGameCondition", 0)}
 							checked={endGameCondition === 0}
 							disabled={gameStarted}
 						/>
@@ -104,7 +104,7 @@ export const SettingsWindow = () => {
 						<RadioButton
 							name="game-ends"
 							value="last-hand"
-							onChange={() => setSetting("endGameCondition", 1)}
+							onChange={() => setSettingsValue("endGameCondition", 1)}
 							checked={endGameCondition === 1}
 							disabled={gameStarted}
 						/>
@@ -124,7 +124,7 @@ export const SettingsWindow = () => {
 						<RadioButton
 							name="calculate-score"
 							value="number"
-							onChange={() => setSetting("scoreCalculation", 0)}
+							onChange={() => setSettingsValue("scoreCalculation", 0)}
 							checked={scoreCalculation === 0}
 							disabled={gameStarted}
 						/>
@@ -138,7 +138,7 @@ export const SettingsWindow = () => {
 						<RadioButton
 							name="calculate-score"
 							value="value"
-							onChange={() => setSetting("scoreCalculation", 1)}
+							onChange={() => setSettingsValue("scoreCalculation", 1)}
 							checked={scoreCalculation === 1}
 							disabled={gameStarted}
 						/>
@@ -155,7 +155,7 @@ export const SettingsWindow = () => {
 						<RadioButton
 							name="pCardLook"
 							value="modern"
-							onChange={() => setSetting("cardStyle", 0)}
+							onChange={() => setSettingsValue("cardStyle", 0)}
 							checked={cardStyle === 0}
 						/>
 						<h3>Modern</h3>
@@ -164,7 +164,7 @@ export const SettingsWindow = () => {
 						<RadioButton
 							name="pCardLook"
 							value="classic"
-							onChange={() => setSetting("cardStyle", 1)}
+							onChange={() => setSettingsValue("cardStyle", 1)}
 							checked={cardStyle === 1}
 						/>
 						<h3>Classic</h3>
@@ -179,7 +179,7 @@ export const SettingsWindow = () => {
 						<RadioButton
 							name="UIColors"
 							value="main"
-							onChange={() => setSetting("uiColor", 0)}
+							onChange={() => setSettingsValue("uiColor", 0)}
 							checked={uiColor === 0}
 						/>
 						<div className="h-2rem aspect-1/2 flex border border-n6 overflow-clip">
@@ -191,7 +191,7 @@ export const SettingsWindow = () => {
 						<RadioButton
 							name="UIColors"
 							value="alt"
-							onChange={() => setSetting("uiColor", 1)}
+							onChange={() => setSettingsValue("uiColor", 1)}
 							checked={uiColor === 1}
 						/>
 						<div className="h-2rem aspect-1/2 flex border border-n6 overflow-clip">
@@ -215,7 +215,7 @@ export const SettingsWindow = () => {
 						max={100}
 						step={1}
 						value={fxLevel}
-						onChange={(e) => setSetting("fxLevel", parseFloat(e.target.value))}
+						onChange={(e) => setSettingsValue("fxLevel", parseFloat(e.target.value))}
 						className="accent-b5 cursor-pointer"
 					/>
 				</div>
@@ -233,7 +233,7 @@ export const SettingsWindow = () => {
 						max={100}
 						step={1}
 						value={mxLevel}
-						onChange={(e) => setSetting("mxLevel", parseFloat(e.target.value))}
+						onChange={(e) => setSettingsValue("mxLevel", parseFloat(e.target.value))}
 						className="accent-b5 cursor-pointer"
 					/>
 				</div>

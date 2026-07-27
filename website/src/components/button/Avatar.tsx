@@ -8,7 +8,7 @@ interface AvatarProps {
 	index: number,
 	name: string,
 	relation: RelationType,
-	cornerButton?: string;
+	cornerButton?: string | number;
 	playerIndex?: number;
 	isActive?: boolean;
 	showName?: boolean;
@@ -66,7 +66,7 @@ export const AvatarButton = ({ index, name, relation, cornerButton = "", isActiv
 						<HostIcon />
 					</div>
 				}
-				{ cornerButton === "cardsLeft" &&
+				{ typeof cornerButton === "number" &&
 					<div
 						data-tip="Cards Left"
 						className="
@@ -79,7 +79,7 @@ export const AvatarButton = ({ index, name, relation, cornerButton = "", isActiv
 							cursor-help
 						"
 					>
-						<p>13</p>
+						<p>{cornerButton}</p>
 					</div>
 				}
 				{ (cornerButton === "1st" || cornerButton === "2nd" || cornerButton === "3rd" || cornerButton === "4th") &&

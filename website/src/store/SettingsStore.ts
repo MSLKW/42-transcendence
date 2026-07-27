@@ -27,8 +27,8 @@ interface SettingsValues {
 }
 
 interface SettingsState extends SettingsValues {
-	setSetting: <K extends keyof SettingsValues>(key: K, value: SettingsValues[K]) => void;
-	toggleSetting: (key: 'allow3OfAKind' | 'allow2OfSpadesEnd') => void;
+	setSettingsValue: <K extends keyof SettingsValues>(key: K, value: SettingsValues[K]) => void;
+	toggleSettingsValue: (key: 'allow3OfAKind' | 'allow2OfSpadesEnd') => void;
 }
 
 export const useSettingsStore = create<SettingsState>()(
@@ -44,8 +44,8 @@ export const useSettingsStore = create<SettingsState>()(
 			fxLevel: 75,
 			mxLevel: 50,
 
-			setSetting: (key, value) => set(() => ({ [key]: value })),
-			toggleSetting: (key) => set((state) => ({ [key]: !state[key] })),
+			setSettingsValue: (key, value) => set(() => ({ [key]: value })),
+			toggleSettingsValue: (key) => set((state) => ({ [key]: !state[key] })),
 		}),
 		{ name: 'settings-storage' }
 	)

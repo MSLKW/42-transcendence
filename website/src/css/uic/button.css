@@ -8,21 +8,12 @@ button {
 		;
 }
 
-@utility btn-icon-border {
-	@apply
-		bg-n1
-		border border-n2
-		rounded-full
-		flex
-		;
-}
-
 @utility btn-icon {
 	@apply
 		rounded-full
 		hover:not-disabled:scale-105 active:hover:not-disabled:scale-100
 		outline-b5
-		cursor-pointer
+		cursor-pointer hover:disabled:cursor-default
 		;
 }
 	
@@ -32,6 +23,6 @@ button {
 		hover:not-disabled:scale-105 active:hover:not-disabled:scale-100
 		outline-b5
 		whitespace-nowrap leading-tight
-		cursor-pointer
+		cursor-pointer hover:disabled:cursor-default
 		;
 }

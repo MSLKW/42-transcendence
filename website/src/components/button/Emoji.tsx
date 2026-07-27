@@ -61,13 +61,15 @@ export const EmojiButton = () => {
 	return (
 		<div className="group relative flex gap-5">
 			<YeahButton />
-			<div className="
-				absolute
-				invisible opacity-0 group-hover:visible group-hover:opacity-100
-				transition-all duration-200 ease-in-out transform group-hover-105
-				flex flex-col gap-2
-				btn-icon-border h-fit
-			">
+			<div
+				className="
+					btn-icon bg-dark
+					absolute
+					invisible opacity-0 group-hover:visible group-hover:opacity-100
+					transition-all duration-200 ease-in-out transform group-hover-105
+					flex flex-col gap-2
+				"
+			>
 				<YeahButton />
 				<HmmmButton />
 				<WoahButton />

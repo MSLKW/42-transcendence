@@ -14,7 +14,7 @@ export const HeaderModule = ({ back }: HeaderModuleProps) => {
 
 	return (
 		<header className="flex justify-between">
-			<div className="flex btn-icon-border">
+			<div className="flex btn-icon bg-dark">
 				{ back === "LOGIN"
 					? <SignOutButton />
 					: <BackButton scene={() => {
@@ -25,7 +25,7 @@ export const HeaderModule = ({ back }: HeaderModuleProps) => {
 					}}/> }
 				<SettingsButton />
 			</div>
-			<div className="flex btn-icon-border">
+			<div className="flex btn-icon bg-dark">
 				<EmojiButton />
 				<ChatButton />
 			</div>
