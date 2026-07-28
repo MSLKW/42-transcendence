@@ -2,7 +2,7 @@
 	"name": "login-backend",
 	"version": "1.0.0",
 	"description": "",
-	"main": "dist/index.js",
+	"main": "./dist/index.js",
 	"scripts": {
 		"dev": "tsc --noEmit && tsx src/index.ts",
 		"test:signup": "bash scripts/test-signup.sh",
@@ -12,7 +12,8 @@
 		"test:validate": "bash scripts/test-validate.sh",
 		"build": "tsc",
 		"start": "node dist/index.js",
-		"build:run": "npm run build && npm run start"
+		"build:run": "npm run build && npm run start",
+		"clean": "rm -rf ./dist .tsbuildinfo"
 	},
 	"author": "",
 	"license": "ISC",
