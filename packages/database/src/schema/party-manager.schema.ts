@@ -6,8 +6,9 @@
 // - is_in_game (default: no) - not yet
 // need uuid to be relational
 
-import { pgSchema, boolean, uuid } from "drizzle-orm/pg-core"; // pg-core specificly means postgres
+import { pgSchema, boolean, uuid, serial, integer } from "drizzle-orm/pg-core"; // pg-core specificly means postgres
 import { users } from "./auth.schema";
+// import { relations } from "drizzle-orm"; // to create relationships
 
 export const partyManagerSchema = pgSchema("party-manager_schema");
 
@@ -16,13 +17,14 @@ export const playerStatus = partyManagerSchema.table("player_status", {
 		.primaryKey()
 		.references(() => users.id, {onDelete: "cascade" }),
 	isOnline: boolean("is_online").default(false).notNull(), // default => offline
+	// isInParty: boolean("is_in_party").default(false).notNull(),
+	// isInGame: boolean("is_in_game").default(false).notNull(),
+	// partyManagersId: integer("party_managers_id")
+	// 	.references(() => partyManagers.id, {onDelete: "cascade" }),
+	
 });
 
-
-
-
-// import { relations } from "drizzle-orm"; // to create relationships
-// export const partManagers = partyManagerSchema.table("party_managers", {
-// 	id: serial("id"),primaryKey(),
-// })
+// export const partyManagers = partyManagerSchema.table("party_managers", {
+// 	id: serial("id").primaryKey(),
+// });
 
