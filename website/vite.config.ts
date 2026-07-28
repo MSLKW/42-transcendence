@@ -5,7 +5,7 @@ import tailwindcss from '@tailwindcss/vite'
 export default defineConfig({
 	server: {
 		allowedHosts: [
-			"website"
+		"website"
 		],
 		proxy: {
 			"/api": {
