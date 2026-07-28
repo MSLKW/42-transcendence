@@ -60,7 +60,6 @@ export class Player {
 	private setupListeners() {
 		this.socket.on("game_end", (gameEndStats: GameEndStatsTransmit) => {
 			this.cardManager.reset();
-			this.cardHeapRef.reset();
 			gameStatus.setGameStats(gameEndStats, this);
 			gameStatus.setLightboxActive(true);
 			console.log(gameEndStats);

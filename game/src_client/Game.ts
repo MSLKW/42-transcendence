@@ -75,6 +75,7 @@ export class Game {
 	
 		this.socket.on("game_end", () => {
 			this.startGameButton.disabled = false;
+			this.cardHeap.reset();
 		});
 	
 		this.socket.on("player_connection_update", (connections: Record<string, boolean>) => {

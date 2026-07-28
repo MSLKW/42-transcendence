@@ -13,8 +13,8 @@ export class Card {
 	private static	backTexture: THREE.Texture = Card.textureLoader.load('/resources/card_back.webp');
 	private	frontTexture: THREE.Texture;
 	private	backTexture: THREE.Texture;
-	private	frontMaterial: THREE.MeshBasicMaterial;
-	private	backMaterial: THREE.MeshBasicMaterial;
+	private	frontMaterial: THREE.MeshLambertMaterial;
+	private	backMaterial: THREE.MeshLambertMaterial;
 	private	frontMesh: THREE.Mesh;
 	private	backMesh: THREE.Mesh;
 	public isHover: boolean;
@@ -34,8 +34,8 @@ export class Card {
 		this.frontTexture = this.getFrontTexture(this.rank, this.suit);
 		this.backTexture = Card.backTexture;
 
-		this.frontMaterial = new THREE.MeshBasicMaterial({color: 0xffffff, map: this.frontTexture, side: THREE.FrontSide });
-		this.backMaterial = new THREE.MeshBasicMaterial({color: 0xffffff, map: this.backTexture, side: THREE.BackSide });
+		this.frontMaterial = new THREE.MeshLambertMaterial({color: 0xffffff, map: this.frontTexture, side: THREE.FrontSide });
+		this.backMaterial = new THREE.MeshLambertMaterial({color: 0xffffff, map: this.backTexture, side: THREE.BackSide });
 		this.frontMesh = new THREE.Mesh(Card.geometry, this.frontMaterial);
 		this.backMesh = new THREE.Mesh(Card.geometry, this.backMaterial);
 		this.object = new THREE.Group();
@@ -71,6 +71,12 @@ export class Card {
 				object.quaternion.slerp(rotation, this.progress());
 			}
 		});
+	}
+
+	public dim() {
+		const dimHex = 0x707070;
+		this.backMaterial.color.setHex(dimHex);
+		this.frontMaterial.color.setHex(dimHex);
 	}
 
 	public setCardRankSuit(rank: CardRank | undefined, suit: CardSuit | undefined) {

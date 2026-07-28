@@ -21,6 +21,12 @@ export class CardHeap {
 	}
 
 	public receiveCardHand(cardHand: CardHand) {
+		if (this.cardHands.length > 0) {
+			const cards = this.cardHands[this.cardHands.length - 1].cards;
+			for (let i = 0; i < cards.length; i++) {
+				cards[i].dim();
+			}
+		}
 		this.cardHands.push(cardHand);
 		this.updateCardHandObjects(cardHand);
 		this.position.y += 0.02;

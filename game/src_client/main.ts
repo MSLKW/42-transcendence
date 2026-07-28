@@ -63,30 +63,9 @@ const light = new THREE.PointLight(0xffffff, 25, 20);
 light.position.set(0, 4, 0);
 scene.add(light);
 
-// const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
-// directionalLight.position.set(0, 8, 4);
-// scene.add(directionalLight);
-
-// const lightHelper = new THREE.PointLightHelper(light);
-// const lightHelper = new THREE.DirectionalLightHelper(directionalLight);
-// scene.add(lightHelper);
-
-// const floorGeometry = new THREE.PlaneGeometry(50, 50);
-// const floorMaterial = new THREE.MeshBasicMaterial({ color: 0x122654 });
-// const floorMesh = new THREE.Mesh(floorGeometry, floorMaterial);
-// floorMesh.position.set(0, -3, 0);
-// floorMesh.rotation.x = -Math.PI / 2;
-// scene.add(floorMesh)
-
-// const boxGeometry = new THREE.BoxGeometry(5, 10, 5);
-// const boxMaterial = new THREE.MeshBasicMaterial({ color: 0x2bcfb3 });
-// const boxMesh = new THREE.Mesh(boxGeometry, boxMaterial);
-// boxMesh.position.set(20, 2, 20);
-
-// const box2Material = new THREE.MeshBasicMaterial({ color: 0x88cf2b });
-// const box2Mesh = new THREE.Mesh(boxGeometry, box2Material);
-// box2Mesh.position.set(-20, 2, -20);
-// scene.add(boxMesh, box2Mesh);
+const light1 = new THREE.PointLight(0xffffff, 25, 20);
+light1.position.set(0, 5, 7);
+scene.add(light1);
 
 export const orbitControls = new OrbitControls(camera, renderer.domElement);
 camera.position.set(0, 10, 0);
