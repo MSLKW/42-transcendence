@@ -1,16 +1,27 @@
-FROM node:24 AS builder
+#Builder
+FROM node:20-alpine AS builder
 WORKDIR /app
 
 COPY package*.json ./
-RUN npm ci --only=production
+
+RUN npm ci
 
 COPY . .
 
-FROM node:24-slim
+RUN npm run build
+
+#Runner
+FROM node:20-alpine AS runner
 WORKDIR /app
 
-COPY --from=builder /app ./
-
 ENV NODE_ENV=production
-EXPOSE 5000
-CMD ["npm", "run", "dev"]
+
+COPY package*.json ./
+
+RUN npm ci --omit=dev
+
+COPY --from=builder /app/dist ./dist
+
+EXPOSE 3000
+
+CMD ["npm", "run", "start"]
