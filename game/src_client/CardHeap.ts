@@ -35,18 +35,6 @@ export class CardHeap {
 		this.rotation.z = this.getRandomRange(-0.3, 0.3);
 	}
 
-	private updateCardHandObject(cardHand: CardHand) {
-		let xStart = -2.5;
-		let xEnd = 2.5;
-		for (let i = 0; i < cardHand.cards.length; i++) {
-			let normalizedIndex = cardHand.cards.length > 1 ? i / (cardHand.cards.length - 1) : 0.5;
-			cardHand.cards[i].move(
-				new THREE.Vector3(this.position.x + THREE.MathUtils.lerp(xStart, xEnd, normalizedIndex), this.position.y, this.position.z),
-				new THREE.Quaternion().setFromEuler(new THREE.Euler(-Math.PI / 2, 0, 0))
-			);
-		}
-	}
-
 	// copied logic from CardManager.ts
 	private updateCardHandObjects(cardHand: CardHand) {
 		const cards = cardHand.cards;

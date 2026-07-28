@@ -2,9 +2,6 @@ import * as THREE from 'three';
 import { Card } from './Card.ts';
 import { CardHand } from './CardHand.ts';
 import { outlinePass, scene } from './main.ts';
-import { outline } from 'three/examples/jsm/tsl/display/OutlineNode.js';
-import { CardHandTransmit } from '../src_shared/Types.ts';
-import { update } from 'three/examples/jsm/libs/tween.module.js';
 
 export class CardManager {
 	/* Card Manager */

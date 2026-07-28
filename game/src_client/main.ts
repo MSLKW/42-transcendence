@@ -5,14 +5,14 @@ import { CardHand } from './CardHand.ts';
 import { io } from 'socket.io-client'
 import { CardHeap } from './CardHeap.ts';
 import { Player } from './Player.ts';
-import { OrbitControls } from 'three/examples/jsm/Addons.js';
+import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import { Opponent } from './Opponent.ts';
 import { Game } from './Game.ts';
 import { GameStatus } from './GameStatus.ts';
 import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
 import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
 import { OutlinePass } from 'three/addons/postprocessing/OutlinePass.js';
-import { OutputPass } from 'three/examples/jsm/Addons.js';
+import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
 
 const resolution = new THREE.Vector2(window.innerWidth, window.innerHeight)
 
