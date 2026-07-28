@@ -14,7 +14,7 @@ services:
     restart: unless-stopped
   
   authentication:
-    build: backend-auth
+    build: authentication
     image: authentication:test
     restart: unless-stopped
 
