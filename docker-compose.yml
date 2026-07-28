@@ -19,12 +19,6 @@ volumes: # industry standard => name volumes => more secure oppose to anyone eve
 secrets: # auto make all secret files just read only mode
   db_admin_password:
     file: ./secrets/database_passwords/db_admin_password.txt
-  db_auth_password:
-    file: ./secrets/database_passwords/db_auth_password.txt
-  db_game_password:
-    file: ./secrets/database_passwords/db_game_password.txt
-  db_party-manager_password:
-    file: ./secrets/database_passwords/db_party-manager_password.txt
   dg_masterpass:
     file: ./secrets/drizzle-gateway/dg_masterpass.txt
 
@@ -117,8 +111,6 @@ services:
     image: migrator:aisyah
     pull_policy: build
     restart: no # It runs migrations only, then it exits successfully, the end of this container's life. 
-    # ports:
-    #   - "${ORM_BACKEND_PORT}:${ORM_BACKEND_PORT}"
     environment:
       DB_HOST: ${POSTGRES_HOST}
       DB_PORT: ${POSTGRES_PORT}
@@ -155,12 +147,12 @@ services:
       DB_HOST: ${POSTGRES_HOST}                             # DB_HOST is a standard industry convention
       DB_NAME: ${POSTGRES_DB}
       DB_PORT: ${POSTGRES_PORT}
-      DB_USER: ${POSTGRES_USER} # ${POSTGRES_USER_NAME_AUTH}
-      DB_PASSWORD_FILE: /run/secrets/db_admin_password # /run/secrets/db_auth_password
+      DB_USER: ${POSTGRES_USER}
+      DB_PASSWORD_FILE: /run/secrets/db_admin_password
     env_file:
       - .env                                              # Loads global configs
     secrets:
-      - db_admin_password # - db_auth_password
+      - db_admin_password
     networks:
       - transcendence
       - database
@@ -187,12 +179,12 @@ services:
       DB_HOST: ${POSTGRES_HOST}                             # DB_HOST is a standard industry convention
       DB_NAME: ${POSTGRES_DB}
       DB_PORT: ${POSTGRES_PORT}
-      DB_USER: ${POSTGRES_USER} # ${POSTGRES_USER_NAME_PARTY_MANAGER}
-      DB_PASSWORD_FILE: /run/secrets/db_admin_password # /run/secrets/db_party-manager_password
+      DB_USER: ${POSTGRES_USER}
+      DB_PASSWORD_FILE: /run/secrets/db_admin_password
     env_file:
       - .env                                              # Loads global configs
     secrets:
-      - db_admin_password # - db_party-manager_password
+      - db_admin_password
     networks:
       - transcendence
       - database
