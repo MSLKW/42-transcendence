@@ -37,14 +37,14 @@ export class CardManager {
 	private dragPlane: THREE.Plane;
 
 	/* Fanning Effect */
-	private fanRotation: number = 20;
+	private fanRotation: number = 30;
 	private fanHeight: number = 1;
 	
 	constructor(playerId: string,
 				position: THREE.Vector3 = new THREE.Vector3(0, 0, 0),
 				rotation: THREE.Quaternion = new THREE.Quaternion(0, 0, 0),
-				boundSpace: number = 10, 
-				selectedBoundSpace: number = 5) {
+				boundSpace: number = 5, 
+				selectedBoundSpace: number = 3) {
 		this.position = position;
 		this.rotation = rotation;
 		this.slots = [];
@@ -124,7 +124,7 @@ export class CardManager {
 		if (offset === undefined)
 			offset = new THREE.Vector3(0, 0, 0);
 		const slots: Array<THREE.Vector3> = [];
-		const boundSpace = Math.min(boundSpaceLimit, (cards.length - 1) * Card.Width);
+		const boundSpace = Math.min(boundSpaceLimit, (cards.length - 1) * Card.Width / 2);
 		this.fanHeight = boundSpace / 2 * Math.tan((this.fanRotation * Math.PI / 180) / 4);
 		const leftBound = -(boundSpace / 2);
 		const rightBound = boundSpace / 2;

@@ -1,5 +1,13 @@
 body {
+	--color-n0: #191b1c;
+	--color-n1: #383b3d;
+	
 	margin: 0;
+	background-image: radial-gradient(
+		circle,
+		var(--color-n1) 0%,
+		var(--color-n0) 100%
+	);
 }
 
 .canvas-container {

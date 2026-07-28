@@ -8,6 +8,7 @@ export class Card {
 	public static readonly Height = 1.5;
 	private static	textureLoader = new THREE.TextureLoader();
 	private static	geometry: THREE.PlaneGeometry = new THREE.PlaneGeometry(this.Width, this.Height);
+	// private static	geometry: THREE.ExtrudeGeometry = new THREE.ExtrudeGeometry(Card.shape, {depth: 0.005, bevelEnabled: false});
 	private static	frontTextureAtlas: Array<THREE.Texture> = Card.initTextureAtlas();
 	private static	backTexture: THREE.Texture = Card.textureLoader.load('/resources/card_back.webp');
 	private	frontTexture: THREE.Texture;
@@ -151,6 +152,22 @@ export class Card {
 		}
 		return (texture);
 	}
+
+	// private static initCardShape(width: number, height: number, radius: number): THREE.Shape {
+	// 	const shape = new THREE.Shape();
+	// 	const x = -width / 2;
+	// 	const y = -height / 2;
+	// 	shape.moveTo(x, y + radius);
+	// 	shape.lineTo(x, y + height - radius);
+	// 	shape.quadraticCurveTo(x, y + height, x + radius, y + height);
+	// 	shape.lineTo(x + width - radius, y + height);
+	// 	shape.quadraticCurveTo(x + width, y + height, x + width, y + height - radius);
+	// 	shape.lineTo(x + width, y + radius);
+	// 	shape.quadraticCurveTo(x + width, y, x + width - radius, y);
+	// 	shape.lineTo(x + radius, y);
+	// 	shape.quadraticCurveTo(x, y, x, y + radius);
+	// 	return shape;
+	// }
 
 	public toJSON(): CardTransmit {
 		return {

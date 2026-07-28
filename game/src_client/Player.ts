@@ -6,7 +6,6 @@ import { Card } from './Card.ts';
 import { CardManager } from './CardManager.ts';
 import { CardHeap } from './CardHeap.ts';
 import { scene, renderer, camera, gameStatus, orbitControls } from './main.ts';
-import { OrbitControls, TechnicolorShader } from 'three/examples/jsm/Addons.js';
 
 export class Player {
 	private	socket: Socket;
@@ -110,11 +109,13 @@ export class Player {
 		});
 
 		this.sortCardsBySuitButton.addEventListener('click', () => {
-			this.cardManager.setSort((a, b) => a.suit - b.suit);
+			this.cardManager.setSort((a, b) => {
+				const suitDiff = a.suit - b.suit;
+				return (suitDiff === 0 ? a.rank - b.rank : suitDiff);
+			});
 		});
 
 		renderer.domElement.addEventListener('pointerdown', (event) => {
-			orbitControls.enabled = false;
 			this.startClick.x = event.clientX;
 			this.startClick.y = event.clientY;
 			this.isDragging = false;
@@ -143,9 +144,27 @@ export class Player {
 			}
 			if (this.isDragging === false) {
 				this.eventClick(event);
+				this.eventHover(event);
 			}
 			this.isDragging = false;
-			orbitControls.enabled = true;
+		})
+
+		// DEBUG
+		window.addEventListener('keydown', (event) => {
+			if (event.code === "Minus") {
+				const card = this.cardManager.removeCardByIndex(0);
+				if (card !== undefined) {
+					card.dispose();
+				}
+			}
+			else if (event.code === "Equal") {
+				this.cardManager.receiveCard(new Card(0, 0));
+			}
+			else if (event.code === "Backquote") {
+				console.log("enabling or disabling orbit controls");
+				orbitControls.enabled = !orbitControls.enabled;
+				orbitControls.update();
+			}
 		})
 	}
 
