@@ -43,14 +43,8 @@ services:
       POSTGRES_DB: ${POSTGRES_DB}
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD_FILE: /run/secrets/db_admin_password
-      POSTGRES_AUTH_USER_PASSWORD_FILE: /run/secrets/db_auth_password
-      POSTGRES_GAME_USER_PASSWORD_FILE: /run/secrets/db_game_password
-      POSTGRES_PARTY_MANAGER_USER_PASSWORD_FILE: /run/secrets/db_party-manager_password
     secrets:
       - db_admin_password
-      - db_auth_password
-      - db_game_password
-      - db_party-manager_password
     env_file:
       - .env
     volumes:
@@ -195,35 +189,15 @@ services:
 
 
 
-#  # ==============================================================================
-#  #           Adminer (Web-Based Admin Tool)
-#  # ==============================================================================
-#   adminer:
-#     image: adminer:fastcgi # Requires nginx upstream routing Xrequirement backend must be HTTPS
-#     image: adminer:5.5.0-alpne #standalone - best for web game app
-#     ports:
-#       - "${LOCALHOST}:${ADMINER_PORT}:${ADMINER_PORT}"
-#     restart: unless-stopped
-#     env_file:
-#       - .env
-#     environment:
-#     secrets:
-#     volumes:
-#     depends_on:
-#       postgresql:
-#         condition: service_healthy
-#     networks:
-#       - transcendence
 
 
-#         GAME-CLIENT
+#         GAME
 #         WEBSITE
-#         GAME-SERVER
 #         BOT
 #         CHAT
-#         PARTY MANAGER (including friends system?)
 #         NGINX
-#         OTHERS
+#         API-GATEWAY? 
+#         
 
 
 
