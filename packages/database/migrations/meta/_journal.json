@@ -8,6 +8,13 @@
       "when": 1784902587086,
       "tag": "0000_init_auth_schema_tables",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1785238859201,
+      "tag": "0001_init_party-manager_isOnline_only",
+      "breakpoints": true
     }
   ]
 }
