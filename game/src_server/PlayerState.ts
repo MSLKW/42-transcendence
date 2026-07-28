@@ -66,8 +66,8 @@ export class PlayerState {
 		}
 	}
 
-	public static hasThreeDiamonds(cards: Array<CardTransmit>): boolean {
-		const card = cards.find((card) => card.rank === CardRank.Three && card.suit === CardSuit.Diamond);
+	public static hasCard(cards: Array<CardTransmit>, rank: CardRank, suit: CardSuit): boolean {
+		const card = cards.find((card) => card.rank === rank && card.suit === suit);
 		if (card)
 			return (true);
 		return (false);
@@ -145,7 +145,7 @@ export class PlayerState {
 			}
 		}
 		// need to fix it so that if a three diamonds player disconnect, then the next player can play anything instead of soft locked
-		if (this.cardHeapRef.requiresThreeDiamonds === true && PlayerState.hasThreeDiamonds(cardHand.cards) === false) {
+		if (this.cardHeapRef.requiresThreeDiamonds === true && PlayerState.hasCard(cardHand.cards, CardRank.Three, CardSuit.Diamond) === false) {
 			status.message = "first cardhand played must contain three of diamonds";
 			return (status);
 		}

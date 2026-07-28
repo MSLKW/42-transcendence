@@ -3,7 +3,7 @@ import { io } from './server.js';
 import { PlayerState } from './PlayerState.js';
 import { CardDeckState } from './CardDeckState.js'
 import { CardHeapState } from './CardHeapState.js'
-import { GameStateTransmit, GameEndStatsTransmit, StatusTransmit, PlayerTurnTransmit, GameStartRequest, SkipTurnTransmit, CardTransmit } from '../src_shared/Types.js';
+import { CardRank, CardSuit, GameStateTransmit, GameEndStatsTransmit, StatusTransmit, PlayerTurnTransmit, GameStartRequest, SkipTurnTransmit, CardTransmit } from '../src_shared/Types.js';
 import { UserState } from './UserState.js';
 
 export class GameState {
@@ -89,10 +89,20 @@ export class GameState {
 			this.players[i].collectCards(this.cardDeck.dealCards(Math.floor(this.cardDeck.size / this.players.length)));
 		}
 		for (let i = 0; i < this.players.length; i++) {
-			if (PlayerState.hasThreeDiamonds(this.players[i].cards)) {
+			if (PlayerState.hasCard(this.players[i].cards, CardRank.Three, CardSuit.Diamond)) {
 				this.playerTurnIndex = i;
 				if (this.players.length === 3) { 
 					this.players[i].collectCards(this.cardDeck.dealCards(1));
+				}
+			}
+		}
+		// If last card is three of diamonds, then give it to three of clubs holder
+		const cardsLeft = this.cardDeck.dealCards(1);
+		if (cardsLeft.length === 1) {
+			for (let i = 0; i < this.players.length; i++) {
+				if (PlayerState.hasCard(this.players[i].cards, CardRank.Three, CardSuit.Club)) {
+					this.players[i].collectCards(cardsLeft)
+					this.playerTurnIndex = i;
 				}
 			}
 		}
@@ -173,7 +183,6 @@ export class GameState {
 	private playerTurnEvent() {
 		const player = this.players.at(this.playerTurnIndex);
 		if (player === undefined || player.isDisconnected === true) {
-			console.log("player has disconnected, going to next player");
 			this.nextPlayerTurn();
 			return ;
 		}
