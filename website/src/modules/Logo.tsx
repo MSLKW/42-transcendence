@@ -9,6 +9,7 @@ export const BigLogo = () => {
 		">
 			<div className="
 				flex place-content-center place-items-center
+				gap-2rem
 				mb-[clamp(1.25rem,3.846vh+0.096rem,2.5rem)]
 			">
 				<span className="
@@ -63,6 +64,7 @@ export const SmallLogo = () => {
 		>
 			<div className="
 				flex place-items-center
+				gap-1rem
 			">
 				<span className="
 					text-2.5rem

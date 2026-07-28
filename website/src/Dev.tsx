@@ -5,6 +5,29 @@ import { usePartyStore, RELATION, SEATNUMBER_UNSEATED } from "./store/PartyStore
 import { useSceneStore } from "./store/SceneStore";
 import { usePlayerStore } from "./store/PlayerStore";
 
+interface DevBtnProps {
+	label: string,
+	call: () => void,
+}
+const DevBtn = ({ label, call }: DevBtnProps) => {
+	return (
+		<li>
+			<button
+				type="button"
+				tabIndex={-1}
+				onClick={call}
+				className="
+					hover:scale-105
+					text-r4 hover:text-r5
+					cursor-pointer
+				"
+			>
+				{label}
+			</button>
+		</li>
+	);
+}
+
 export default function Dev() {
 	const { showFrame, toggleFlag, resetGame } = useDevStore();
 	useEffect(() => {
@@ -24,39 +47,33 @@ export default function Dev() {
 	const { incTotalWins, incTotalLoss } = usePlayerStore();
 
 	return (
-		<section className="w-full h-fit text-r4">
+		<section className="w-full text-r4">
 			<ul className="flex place-content-evenly">
-				<li><button type="button" tabIndex={-1} onClick={() => setCurrentScene('LOGIN')}>Login</button></li>
-				<li><button type="button" tabIndex={-1} onClick={() => setCurrentScene('HOME')}>Home</button></li>
-				<li><button type="button" tabIndex={-1} onClick={() => setCurrentScene('LOBBY')}>Lobby</button></li>
-				<li><button type="button" tabIndex={-1} onClick={() => setCurrentScene('GAMEPLAY')}>Gameplay</button></li>
-				<li><button type="button" tabIndex={-1} onClick={() => setCurrentScene('R3F')}>R3F</button></li>
+				<DevBtn label="Login" call={() => setCurrentScene("LOGIN")}/>
+				<DevBtn label="Home" call={() => setCurrentScene("HOME")}/>
+				<DevBtn label="Lobby" call={() => setCurrentScene("LOBBY")}/>
+				<DevBtn label="Gameplay" call={() => setCurrentScene("GAMEPLAY")}/>
+				<DevBtn label="R3F" call={() => setCurrentScene("R3F")}/>
 			</ul>
 			<ul className="flex place-content-evenly">
-				<li><button type="button" tabIndex={-1} onClick={() => toggleFlag("showFrame")}>Frame</button></li>
-				<li><button type="button" tabIndex={-1} onClick={() => toggleFlag("showStats")}>Stats</button></li>
-				{ (currentScene === "R3F" || currentScene === "GAMEPLAY") && 
-					<li><button type="button" tabIndex={-1} onClick={() => setCurrentScene('RESULTS')}>Results</button></li>
-				}
-				<li><button type="button" tabIndex={-1} onClick={() => resetGame()}>Reset</button></li>
+				<DevBtn label="Frame" call={() => toggleFlag("showFrame")}/>
+				<DevBtn label="Stats" call={() => toggleFlag("showStats")}/>
+				<DevBtn label="Reset" call={() => resetGame()}/>
 			</ul>
-			<ul className="flex place-content-evenly">
-				{ totalMembers <= TEST_MEMBERS.length &&
-					<li>
-						<button
-							type="button"
-							tabIndex={-1}
-							onClick={() => addMember(TEST_MEMBERS[totalMembers - 1])}
-						>
-							Add "{TEST_MEMBERS[totalMembers - 1].name}" As Party Member
-						</button>
-					</li>
-				}
-			</ul>
-			<ul className="flex place-content-evenly">
-				<li><button type="button" tabIndex={-1} onClick={() => incTotalWins()}>Win Round</button></li>
-				<li><button type="button" tabIndex={-1} onClick={() => incTotalLoss()}>Lose Round</button></li>
-			</ul>
+			{ (currentScene === "HOME" || currentScene === "LOBBY") && totalMembers <= TEST_MEMBERS.length &&
+				<ul className="flex place-content-evenly">
+					<DevBtn
+						label={`Add ${TEST_MEMBERS[totalMembers - 1].name} As Party Member`}
+						call={() => addMember(TEST_MEMBERS[totalMembers - 1])}/>
+				</ul>
+			}
+			{ (currentScene === "R3F" || currentScene === "GAMEPLAY") && 
+				<ul className="flex place-content-evenly">
+					<DevBtn label="Results" call={() => setCurrentScene('RESULTS')}/>
+					<DevBtn label="Win Round" call={() => incTotalWins()}/>
+					<DevBtn label="Lose Round" call={() => incTotalLoss()}/>
+				</ul>
+			}
 		</section>
 	);
 }
