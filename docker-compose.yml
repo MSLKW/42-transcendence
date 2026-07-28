@@ -51,7 +51,7 @@ services:
       POSTGRES_PASSWORD_FILE: /run/secrets/db_admin_password
       POSTGRES_AUTH_USER_PASSWORD_FILE: /run/secrets/db_auth_password
       POSTGRES_GAME_USER_PASSWORD_FILE: /run/secrets/db_game_password
-      POSTGRES_PARTY-MANAGER_USER_PASSWORD_FILE: /run/secrets/db_party-manager_password
+      POSTGRES_PARTY_MANAGER_USER_PASSWORD_FILE: /run/secrets/db_party-manager_password
     secrets:
       - db_admin_password
       - db_auth_password
@@ -182,12 +182,12 @@ services:
     pull_policy: build
     restart: unless-stopped
     ports:
-      - "${PARTY-MANAGER_PORT}:${PARTY-MANAGER_PORT}"
+      - "${PARTY_MANAGER_PORT}:${PARTY_MANAGER_PORT}"
     environment:
       DB_HOST: ${POSTGRES_HOST}                             # DB_HOST is a standard industry convention
       DB_NAME: ${POSTGRES_DB}
       DB_PORT: ${POSTGRES_PORT}
-      DB_USER: ${POSTGRES_USER} # ${POSTGRES_USER_NAME_PARTY-MANAGER}
+      DB_USER: ${POSTGRES_USER} # ${POSTGRES_USER_NAME_PARTY_MANAGER}
       DB_PASSWORD_FILE: /run/secrets/db_admin_password # /run/secrets/db_party-manager_password
     env_file:
       - .env                                              # Loads global configs
