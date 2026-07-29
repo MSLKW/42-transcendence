@@ -6,7 +6,7 @@ if [ "$#" -ne 1 ]; then
 fi
 
 TOKEN="$1"
-BASE_URL="${BASE_URL:-http://localhost:3000}"
+BASE_URL="${BASE_URL:-http://localhost/api/auth}"
 
 curl -s -X DELETE "$BASE_URL/logout" \
   -H "Authorization: Bearer $TOKEN" \
