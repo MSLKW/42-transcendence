@@ -1,1 +1,0 @@
-this file later will be about guiding other developers in using and testing database functionalities and workability, successfully, specifically in this database/ branch. 
