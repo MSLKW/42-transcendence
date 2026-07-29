@@ -9,9 +9,16 @@ services:
     restart: unless-stopped
   
   website:
-    build: website
+    build:
+      context: ./website
+      dockerfile: Dockerfile
+    ports:
+      - "5173:5173"
     image: website:test
     restart: unless-stopped
+    volumes:
+      - ./website:/app
+      - /app/node_modules
   
   authentication:
     build: backend-auth

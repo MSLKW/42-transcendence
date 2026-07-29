@@ -1,11 +1,13 @@
 import { useState, useRef, useEffect } from "react";
 import { useNotificationStore, notificationType } from "../store/NotificationStore";
+import { usePlayerStore } from "../store/PlayerStore";
 import { useSceneStore } from "../store/SceneStore";
 import { Window } from "./Window";
 import { ShowPasswordIcon } from "../components/icon/ShowPassword";
 import { HidePasswordIcon } from "../components/icon/HidePassword";
 
 export const SignInWindow = () => {
+	const { setPlayerDataValue } = usePlayerStore()
 	const { setShowWindow, setCurrentScene } = useSceneStore();
 	const { setNotification } = useNotificationStore();
 
@@ -38,9 +40,7 @@ export const SignInWindow = () => {
 
 			const response = await fetch("/api/auth/signin", {
 				method: "POST",
-				headers: {
-					"Content-Type": "application/json",
-				},
+				headers: { "Content-Type": "application/json" },
 				body: JSON.stringify({ identifier: email, password }),
 			});
 
@@ -48,6 +48,37 @@ export const SignInWindow = () => {
 				const errorData = await response.json().catch(() => ({}));
 				throw new Error(errorData.message || "Invalid email or password");
 			}
+
+			const data = await response.json();
+			setPlayerDataValue("uuid", data.id);
+			// setPlayerDataValue("sessionToken", data.id);
+			console.log("UUID: ", data.id);
+
+			// const setCookieHeader = response.headers.get("set-cookie");
+			// let sessionToken = "";
+			// console.log("Token (pre): ", sessionToken);
+			// if (setCookieHeader) {
+			// 	const match = setCookieHeader.match(/session_token=([^;]+)/);
+			// 	console.log("Match: ", match);
+			// 	if (match)
+			// 		sessionToken = match[1];
+			// }
+			// setPlayerDataValue("sessionToken", sessionToken);
+			// console.log("Token (post): ", sessionToken);
+			
+			const cookiesArray = response.headers.getSetCookie();;
+			console.log(cookiesArray);
+			let sessionToken = "";
+			
+			const cookieHeader = cookiesArray.find(c => c.startsWith("session_token="));
+			if (cookieHeader) {
+				const match = cookieHeader.match(/session_token=([^;]+)/);
+				console.log("Match: ", match);
+				if (match)
+					sessionToken = match[1];
+			}
+			setPlayerDataValue("sessionToken", sessionToken);
+			console.log("Session Token: ", sessionToken);
 
 			setShowWindow("signIn", false);
 			setCurrentScene("HOME");
