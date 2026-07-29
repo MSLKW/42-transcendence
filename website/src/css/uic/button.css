@@ -1,0 +1,28 @@
+button {
+	@apply
+		focus-visible:scale-105 active:hover:not-disabled:scale-100
+		focus-visible:outline-2 outline-offset-3
+		disabled:opacity-50
+		transition-all duration-100 ease-in-out
+		pointer-events-auto
+		;
+}
+
+@utility btn-icon {
+	@apply
+		rounded-full
+		hover:not-disabled:scale-105 active:hover:not-disabled:scale-100
+		outline-b5
+		cursor-pointer hover:disabled:cursor-default
+		;
+}
+	
+@utility btn-text {
+	@apply
+		rounded-full
+		hover:not-disabled:scale-105 active:hover:not-disabled:scale-100
+		outline-b5
+		whitespace-nowrap leading-tight
+		cursor-pointer hover:disabled:cursor-default
+		;
+}

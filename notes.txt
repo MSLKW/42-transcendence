@@ -1,0 +1,3 @@
+website needs:
+- npm install @vitejs/plugin-react 
+- allowedHosts in vite config

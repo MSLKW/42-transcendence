@@ -1,0 +1,55 @@
+@utility h-5rem {
+	@apply
+		h-[clamp(2rem,2.857vmin+1.429rem,4rem)]
+		box-border
+		;
+}
+
+@utility h-4rem {
+	@apply
+		h-[clamp(2rem,2.857vmin+1.429rem,4rem)]
+		box-border
+		;
+}
+
+@utility h-3.5rem {
+	@apply
+		h-[clamp(1.75rem,2.5vmin+1.25rem,3.5rem)]
+		box-border
+		;
+}
+
+@utility h-3rem {
+	@apply
+		h-[clamp(1.5rem,2.143vmin+1.071rem,3rem)]
+		box-border
+		;
+}
+
+@utility h-2.5rem {
+	@apply
+		h-[clamp(1.25rem,1.786vmin+0.893rem,2.5rem)]
+		box-border
+		;
+}
+
+@utility h-2rem {
+	@apply
+		h-[clamp(1rem,1.429vmin+0.714rem,2rem)]
+		box-border
+		;
+}
+
+@utility h-1.5rem {
+	@apply
+		h-[clamp(0.75rem,1.071vmin+0.536rem,1.5rem)]
+		box-border
+		;
+}
+
+@utility h-1rem {
+	@apply
+		h-[clamp(0.5rem,0.714vmin+0.357rem,1rem)]
+		box-border
+		;
+}

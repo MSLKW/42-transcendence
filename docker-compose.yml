@@ -23,23 +23,17 @@ secrets: # auto make all secret files just read only mode
     file: ./secrets/drizzle-gateway/dg_masterpass.txt
 
 
-
-
 services:
 
-# -------------------DATABASE NETWORK-----------------------
-
-  # ==============================================================================
-  #           POSTGRESQL ( RDBMS Database Engine )
-  #                       *RDBMS = Relational Database Managaement System
-  # ==============================================================================
+  #     POSTGRESQL ( RDBMS Database Engine ), RDBMS = Relational Database Managaement System
+  #     INFRASTRUCTURE MICROSERVICE
   postgresql:
     container_name: postgresql
     image: postgres:17-bookworm # No Dockerfile needed here, pull directly from Docker Hub!
     restart: unless-stopped
     expose:
       - "${POSTGRES_PORT}"
-    environment: # Postgres Docker image need them through environment - to specifically overwrite the defaults of the first 3 here
+    environment: # Postgres Docker image need them through environment - to specifically overwrite the defaults
       POSTGRES_DB: ${POSTGRES_DB}
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD_FILE: /run/secrets/db_admin_password
@@ -58,11 +52,8 @@ services:
       timeout: 5s
       retries: 5
 
-
-# --------------------------- TRANSCENDENCE NETWORK ------------------------------
-  # ==============================================================================
-  #           DRIZZLE-GATEWAY ( Database's GUI Dev Tool )
-  # ==============================================================================
+  #     DRIZZLE-GATEWAY, Database's GUI Dev Tool 
+  #     INFRASTRUCTURE MICROSERVICE
   drizzle-gateway:
     container_name: drizzle-gateway
     image: ghcr.io/drizzle-team/gateway:latest
@@ -78,26 +69,23 @@ services:
       DB_USER: ${POSTGRES_USER}
       MASTERPASS_FILE: /run/secrets/dg_masterpass
       DB_PASSWORD_FILE:  /run/secrets/db_admin_password
-      STORE_PATH: /app # <--- Required by Drizzle Gateway
+      STORE_PATH: /app # Required by Drizzle Gateway
       PORT: ${DRIZZLE_GATEWAY_PORT}
     secrets:
       - dg_masterpass
       - db_admin_password
     volumes:
-      - dg_data:/app # <--- Required persistent volume mounting to /app
+      - dg_data:/app # Required persistent volume mounting to /app
     networks:
       - transcendence
       - database
     depends_on:
       postgresql:
         condition: service_healthy
-
-
-  # ==============================================================================
-  #           MIGRATOR (Node.js + Drizzle)
-  #                 A Job Container only 
-  # ==============================================================================
-  migrator: # a job container (or more technical terms, ephemeral containers / one-shot containers)
+  
+  #     MIGRATOR (Node.js + Drizzle), One-shot container (or other technical terms, ephemeral containers / job containers)
+  #     ONE-SHOT MICORSERVICE
+  migrator:
     container_name: migrator
     build:
       context: .
@@ -121,22 +109,31 @@ services:
     depends_on:
       postgresql:
         condition: service_healthy
+  
+  #     INFRASTRUCTURE MICROSERVICE
+  nginx:
+    build: nginx
+    image: nginx:test
+    ports:
+      - "80:80"
+    restart: unless-stopped
+  
+  #     FRONTEND MICORSERVICE
+  website:
+    build: website
+    image: website:test
+    restart: unless-stopped
 
-
-
-  # ==============================================================================
-  #           Authentication (Backend Microservice)
-  # ==============================================================================
-  auth:
-    container_name: auth
+  #     BACKEND MICORSERVICE
+  authentication:
+    # build: authentication
     build:
       context: .                                                  # Set workdir to the repo's root
       dockerfile: ./backend/authentication/Dockerfile    # Point to the Dockerfile's relative path
-    image: auth:jeremy
+    image: authentication:test
+    container_name: authentication
     pull_policy: build
     restart: unless-stopped
-    ports:
-      - "${AUTH_PORT}:${AUTH_PORT}"
     environment:
       DB_HOST: ${POSTGRES_HOST}                             # DB_HOST is a standard industry convention
       DB_NAME: ${POSTGRES_DB}
@@ -154,23 +151,20 @@ services:
       migrator:
         condition: service_completed_successfully  # Waits for migrator to finish and exit with code 0
 
-
-
-  # ==============================================================================
-  #           Party-Manager (Backend Microservice)
-  # ==============================================================================
-  party-manager:
-    container_name: party-manager
+  #     BACKEND MICORSERVICE
+  party_manager:
+    # build: party-manager
     build:
       context: .                                                  # Set workdir to the repo's root
       dockerfile: ./backend/party-manager/Dockerfile    # Point to the Dockerfile's relative path
-    image: party-manager:jeremy
+    image: party:test
     pull_policy: build
+    container_name: party-manager
     restart: unless-stopped
-    ports:
-      - "3001:${PARTY_MANAGER_PORT}"
     environment:
-      DB_HOST: ${POSTGRES_HOST}                             # DB_HOST is a standard industry convention
+      AUTH_SERVICE_URL: http://authentication:3000
+      GAME_SERVICE_URL: http://game:3000
+      DB_HOST: ${POSTGRES_HOST}          # DB_HOST is a standard industry convention
       DB_NAME: ${POSTGRES_DB}
       DB_PORT: ${POSTGRES_PORT}
       DB_USER: ${POSTGRES_USER}
@@ -186,40 +180,8 @@ services:
       migrator:
         condition: service_completed_successfully  # Waits for migrator to finish and exit with code 0
 
-
-
-
-
-
-#         GAME
-#         WEBSITE
-#         BOT
-#         CHAT
-#         NGINX
-#         API-GATEWAY? 
-#         
-
-
-
-
-
-# 1 -> double dash
-    # The double dash "--" acts as a separator. It tells npm:
-    # "Stop parsing arguments for yourself. Everything after this -- should be passed directly to the command I am executing."
-
-# 2 -> other .env
-    # - backend/authentication/.env              # Loads service-specific configs (if have)
-
-# 3 -> '|' in entrypoint
-    # entrypoint:
-    #   - "sh"
-    #   - "-c"
-    #   - |       # literal block scalar = "yaml, treat everything below as literal multi-line block of text"
-    #     MASTERPASS=$(cat /run/secrets/dg_masterpass)
-    #     DB_PASSWORD=$(cat /run/secrets/db_admin_password)
- 
-    #     # Explicitly include the postgresql:// protocol scheme
-    #     export DATABASE_URL="$DB_HOST://$DB_USER:$DB_PASSWORD@$DB_HOST:$DB_PORT/$DB_NAME"
-
-    #     # Hand off control to the image's default entrypoint/command
-    #     exec docker-entrypoint.sh
+  #     BACKEND MICORSERVICE
+  game:
+    build: game
+    image: game:test
+    restart: unless-stopped
