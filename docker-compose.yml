@@ -168,7 +168,7 @@ services:
     pull_policy: build
     restart: unless-stopped
     ports:
-      - "${PARTY_MANAGER_PORT}:${PARTY_MANAGER_PORT}"
+      - "3001:${PARTY_MANAGER_PORT}"
     environment:
       DB_HOST: ${POSTGRES_HOST}                             # DB_HOST is a standard industry convention
       DB_NAME: ${POSTGRES_DB}

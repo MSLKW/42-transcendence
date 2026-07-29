@@ -5,3 +5,5 @@
 // export const settings = profileSchema.table("settings", {
 	
 // })
+
+export {};
