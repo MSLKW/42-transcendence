@@ -75,8 +75,7 @@ export default function Dev() {
 				</ul>
 			}
 			<ul className="flex place-content-evenly">
-				<li>Session token: {data.sessionToken}</li>
-				<li>UUID: {data.uuid}</li>
+				<li>Player UUID: {data.uuid}</li>
 			</ul>
 		</section>
 	);
@@ -84,7 +83,6 @@ export default function Dev() {
 
 const TEST_MEMBERS = [
 	{
-		sessionToken: "",
 		uuid: "12345678-abcd-efgh-ijkl-111111111111",
 		name: "Dev-Azrul",
 		avatar: "avatar-stock-1.webp",
@@ -114,7 +112,6 @@ const TEST_MEMBERS = [
 		seatNumber: SEATNUMBER_UNSEATED,
 	},
 	{
-		sessionToken: "",
 		uuid: "12345678-abcd-efgh-ijkl-222222222222",
 		name: "Dev-Max",
 		avatar: "avatar-stock-2.webp",
@@ -144,7 +141,6 @@ const TEST_MEMBERS = [
 		seatNumber: SEATNUMBER_UNSEATED,
 	},
 	{
-		sessionToken: "",
 		uuid: "12345678-abcd-efgh-ijkl-333333333333",
 		name: "Dev-Jeremy",
 		avatar: "avatar-stock-3.webp",
@@ -174,7 +170,6 @@ const TEST_MEMBERS = [
 		seatNumber: SEATNUMBER_UNSEATED,
 	},
 	{
-		sessionToken: "",
 		uuid: "12345678-abcd-efgh-ijkl-444444444444",
 		name: "Dev-Aisyah",
 		avatar: "avatar-stock-4.webp",

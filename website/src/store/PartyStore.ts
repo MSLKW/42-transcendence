@@ -58,7 +58,7 @@ export const usePartyStore = create<PartyState>() (
 			gameMode: 0,
 			members: [
 				{
-					uuid: "12345678-abcd-efgh-ijkl-000000000000",
+					uuid: "",
 					name: null,
 					avatar: "avatar-stock-0.webp",
 					badge: "Newcomer",

@@ -4,10 +4,12 @@ import { useSceneStore } from "../store/SceneStore";
 import { Window } from "./Window";
 import { ShowPasswordIcon } from "../components/icon/ShowPassword";
 import { HidePasswordIcon } from "../components/icon/HidePassword";
+import { usePlayerStore } from "../store/PlayerStore";
 
 export const CreateAccountWindow = () => {
 	const { setShowWindow, setCurrentScene } = useSceneStore();
 	const { setNotification } = useNotificationStore();
+	const { setPlayerDataValue } = usePlayerStore();
 
 	const focusRef = useRef<HTMLInputElement | null>(null);
 	useEffect(() => {
@@ -21,7 +23,6 @@ export const CreateAccountWindow = () => {
 	const [confirmPassword, setConfirmPassword] = useState("");
 	const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 	const [isLoading, setIsLoading] = useState(false);
-
 
 	const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
@@ -52,11 +53,14 @@ export const CreateAccountWindow = () => {
 				},
 				body: JSON.stringify({ email, password }),
 			});
-			
+
 			if (!response.ok) {
 				const errorData = await response.json().catch(() => ({}));
 				throw new Error(errorData.message || "Failed to create account");
 			}
+
+			const data = await response.json();
+			setPlayerDataValue("uuid", data.id);
 
 			setShowWindow("createAccount", false);
 			setCurrentScene("HOME");
@@ -115,6 +119,7 @@ export const CreateAccountWindow = () => {
 						/>
 						<button
 							type="button"
+							tabIndex={-1}
 							onClick={() => setShowPassword(!showPassword)}
 							className="
 								absolute right-1 top-1/2 -translate-y-1/2
@@ -146,6 +151,7 @@ export const CreateAccountWindow = () => {
 						/>
 						<button
 							type="button"
+							tabIndex={-1}
 							onClick={() => setShowConfirmPassword(!showConfirmPassword)}
 							className="
 								absolute right-1 top-1/2 -translate-y-1/2

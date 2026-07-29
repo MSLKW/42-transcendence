@@ -31,7 +31,6 @@ export const STATUS = {
 } as const;
 
 export interface PlayerData {
-	sessionToken: string,	//"ccbdc04cac596d61ee5bbd74c305e027ca87fbe18a41abdd7e7ea6153d5202e9"
 	uuid: string;			//"12345678901234567890123456789012"
 	name: string | null;	//"Azrul", "Max", null
 	avatar: string;			//"avatar-stock-0.webp", "avatar-12345678901234567890123456789012.png"
@@ -64,8 +63,7 @@ export const usePlayerStore = create<PlayerState>() (
 	persist(
 		(set) => ({
 			data: {
-				sessionToken: "",
-				uuid: "12345678-abcd-efgh-ijkl-000000000000",
+				uuid: "",
 				name: null,
 				avatar: "avatar-stock-0.webp",
 				badge: BADGE_LABEL[0],

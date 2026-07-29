@@ -51,34 +51,6 @@ export const SignInWindow = () => {
 
 			const data = await response.json();
 			setPlayerDataValue("uuid", data.id);
-			// setPlayerDataValue("sessionToken", data.id);
-			console.log("UUID: ", data.id);
-
-			// const setCookieHeader = response.headers.get("set-cookie");
-			// let sessionToken = "";
-			// console.log("Token (pre): ", sessionToken);
-			// if (setCookieHeader) {
-			// 	const match = setCookieHeader.match(/session_token=([^;]+)/);
-			// 	console.log("Match: ", match);
-			// 	if (match)
-			// 		sessionToken = match[1];
-			// }
-			// setPlayerDataValue("sessionToken", sessionToken);
-			// console.log("Token (post): ", sessionToken);
-			
-			const cookiesArray = response.headers.getSetCookie();;
-			console.log(cookiesArray);
-			let sessionToken = "";
-			
-			const cookieHeader = cookiesArray.find(c => c.startsWith("session_token="));
-			if (cookieHeader) {
-				const match = cookieHeader.match(/session_token=([^;]+)/);
-				console.log("Match: ", match);
-				if (match)
-					sessionToken = match[1];
-			}
-			setPlayerDataValue("sessionToken", sessionToken);
-			console.log("Session Token: ", sessionToken);
 
 			setShowWindow("signIn", false);
 			setCurrentScene("HOME");
@@ -138,6 +110,7 @@ export const SignInWindow = () => {
 						/>
 						<button
 							type="button"
+							tabIndex={-1}
 							onClick={() => setShowPassword(!showPassword)}
 							className="
 								absolute right-1 top-1/2 -translate-y-1/2
