@@ -8,12 +8,13 @@ interface AvatarProps {
 	index: number,
 	name: string,
 	relation: RelationType,
-	cornerButton?: string;
+	cornerButton?: string | number;
 	playerIndex?: number;
 	isActive?: boolean;
+	showName?: boolean;
 }
 
-export const AvatarButton = ({ index, name, relation, cornerButton = "", isActive = false }: AvatarProps) => {
+export const AvatarButton = ({ index, name, relation, cornerButton = "", isActive = false, showName = true }: AvatarProps) => {
 	const { setSceneValue, setShowWindow } = useSceneStore();
 
 	return (
@@ -44,7 +45,7 @@ export const AvatarButton = ({ index, name, relation, cornerButton = "", isActiv
 					rounded-xs
 					hover:not-disabled:scale-105 active:hover:not-disabled:scale-100
 					focus-visible:outline-2 outline-b5
-					${ cornerButton ? "btn-tip-up2" : "btn-tip-up" }
+					${ cornerButton ? "data-tip-up2" : "data-tip-up" }
 					cursor-pointer
 					relative
 				`}
@@ -56,7 +57,7 @@ export const AvatarButton = ({ index, name, relation, cornerButton = "", isActiv
 						className="
 							bg-dark rounded-full
 							h-3rem aspect-square
-							btn-tip-down
+							data-tip-down
 							absolute top-0 -translate-y-1/2 right-0 translate-x-1/2
 							text-a4
 							cursor-help
@@ -65,7 +66,7 @@ export const AvatarButton = ({ index, name, relation, cornerButton = "", isActiv
 						<HostIcon />
 					</div>
 				}
-				{ cornerButton === "cardsLeft" &&
+				{ typeof cornerButton === "number" &&
 					<div
 						data-tip="Cards Left"
 						className="
@@ -74,11 +75,11 @@ export const AvatarButton = ({ index, name, relation, cornerButton = "", isActiv
 							absolute top-0 -translate-y-1/2 right-0 translate-x-1/2
 							text-n6
 							flex place-content-center place-items-center
-							btn-tip-down
+							data-tip-down
 							cursor-help
 						"
 					>
-						<p>13</p>
+						<p>{cornerButton}</p>
 					</div>
 				}
 				{ (cornerButton === "1st" || cornerButton === "2nd" || cornerButton === "3rd" || cornerButton === "4th") &&
@@ -92,14 +93,14 @@ export const AvatarButton = ({ index, name, relation, cornerButton = "", isActiv
 							text-n0
 							flex place-content-center place-items-center
 							cursor-help
-							btn-tip-down
+							data-tip-down
 						`}
 					>
 						<p>{cornerButton}</p>
 					</div>
 				}
 			</button>
-			<AvatarName name={name} />
+			{ showName && <AvatarName name={name} /> }
 		</div>
 	);
 }

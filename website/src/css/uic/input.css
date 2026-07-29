@@ -1,13 +1,12 @@
 @utility input-form {
 	@apply
-		hw-6/1
 		bg-n6
 		border border-n5 rounded-full
-		p-[clamp(1rem,2vh+0.3125rem,1.25rem)]
-		text-n0 placeholder:text-n4 focus:placeholder:text-n3 placeholder:italic
+		py-0.5rem px-1.5rem
+		text-n0 placeholder:text-n4 placeholder:italic
 		pointer-events-auto
 		focus:outline-2 outline-b5 outline-offset-5
-		placeholder:text-[clamp(0.5rem,2vh+0.25rem,1rem)]
+		placeholder:text-1rem
 		;
 }
 
@@ -21,10 +20,6 @@
 		px-5
 		text-n0
 		pointer-events-auto
-
-		focus:outline-2
-		focus:outline-solid
-		focus:outline-b5
-		focus:outline-offset-5
+		focus:outline-2 outline-b5 outline-offset-5
 		;
 }

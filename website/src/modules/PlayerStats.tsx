@@ -18,21 +18,21 @@ export const PlayerStatsModule = () => {
 				p-5
 			">
 				<h2>Total Played</h2>
-				<p>{members[profileIndex].totalPlayed}</p>
+				<h3>{members[profileIndex].totalPlayed}</h3>
 			</div>
 			<div className="
 				w-full h-full
 				p-5
 			">
 				<h2>Total Wins</h2>
-				<p>{members[profileIndex].totalWins}</p>
+				<h3>{members[profileIndex].totalWins}</h3>
 			</div>
 			<div className="
 				w-full h-full
 				p-5
 			">
 				<h2>Win Streak</h2>
-				<p>{members[profileIndex].winStreak}</p>
+				<h3>{members[profileIndex].winStreak}</h3>
 			</div>
 		</div>
 	);

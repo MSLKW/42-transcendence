@@ -17,7 +17,7 @@ export const SortButton = ({ call, sortType, type, tip }: SortButtonProps) => {
 				h-2.5rem
 				text-n6 text-1.25rem
 				focus:outline-double
-				btn-tip-left
+				data-tip-left
 				${sortType === type ? "outline-2" : "outline-none"}
 			`}
 		>

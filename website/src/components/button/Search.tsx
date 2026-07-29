@@ -9,7 +9,7 @@ export const SearchButton = () => {
 	return (
 		<button
 			data-tip="Search"
-			className="btn-icon bg-b5 btn-icon-border btn-tip-up"
+			className="btn-icon bg-accent data-tip-up"
 			onClick={(e) => {handleSearch(e)}}
 		>
 			<SearchIcon />

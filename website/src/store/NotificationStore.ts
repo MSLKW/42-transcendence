@@ -6,6 +6,7 @@ export const notificationType = {
 	nameInput: 1,
 	invite: 2,
 	botSelect: 3,
+	nextRound: 4,
 } as const;
 
 interface NotificationValues {
@@ -55,7 +56,7 @@ export const useNotificationStore = create<NotificationState>()(
 					isError = false;
 					isTimed = false;
 					numOfButtons = 1;
-				} else if (type === notificationType.invite) {
+				} else if (type === notificationType.invite || type === notificationType.nextRound) {
 					isError = false;
 					isTimed = false;
 					numOfButtons = 2;

@@ -1,10 +1,10 @@
 import { useRef, useEffect } from "react";
 import { Window } from "./Window";
-import { PinButton } from "../components/button/Pin";
 import { SearchButton } from "../components/button/Search";
 import { SendButton } from "../components/button/Send";
-import { AvatarImage } from "../components/image/AvatarImage";
+import { AvatarButton } from "../components/button/Avatar";
 import { FriendsIcon } from "../components/icon/Friends";
+import { usePartyStore } from "../store/PartyStore";
 
 export const SearchModule = () => {
 	const focusRef = useRef<HTMLInputElement | null>(null);
@@ -14,29 +14,21 @@ export const SearchModule = () => {
 	}, []);
 
 	return (
-		<div
-			className="
-				flex flex-col
-				gap-[clamp(0.125rem,2vw+0.0625rem,0.25rem)]
-			"
-		>
-			<div className="
-				w-full h-max
-				flex place-content-center place-items-center
-				px-[clamp(0.25rem,2vw+0.125rem,1.875rem)] 
-				gap-3
-			">
-				<input
-					ref={focusRef}
-					id="search"
-					type="text"
-					placeholder="Search For Party Members"
-					className="
-						input-chat
-					"
-				/>
-				<SearchButton />
-			</div>
+		<div className="
+			w-[90%]
+			flex place-content-center place-items-center
+			gap-3
+		">
+			<input
+				ref={focusRef}
+				id="search"
+				type="text"
+				placeholder="Search For Party Members"
+				className="
+					input-chat
+				"
+			/>
+			<SearchButton />
 		</div>
 	);
 }
@@ -77,48 +69,53 @@ export const PartyCodeModule = () => {
 	);
 }
 
-export const PinWindowModule = () => {
-	return (
-		<div className="
-			absolute top-0 left-0 -translate-y-1/2 -translate-x-1/2
-			z-1
-			w-12.5 h-12.5
-		">
-			<PinButton/>
-		</div>
-	);
-}
-
 interface FriendsProps {
 	name: string,
 }
 export const FriendModule = ({ name }: FriendsProps) => {
+	const { members } = usePartyStore();
+
 	return (
-		<div className="w-full flex gap-5">
-			<AvatarImage />
-			<div className="w-full">
-				<h3>{name}</h3>
-				<div className="h-8 flex place-content-between place-items-center">
-					<div className="h-full flex place-items-center gap-2">
-						<div className="h-2.5 aspect-square rounded-full bg-c4"/>
+		<div
+			className="
+				h-7rem w-80
+				flex place-content-center place-items-center
+				gap-0.5rem
+			"
+		>
+			<AvatarButton index={0} name={members[0].name ?? "Guest"} relation={members[0].relation} showName={false}/>
+			<button
+				data-tip="Send Invite"
+				className="
+					h-full w-full
+					flex flex-col place-content-center place-items-between
+					gap-0.5rem
+					py-0.5rem px-1rem
+					hover:bg-a2
+					border border-a3 rounded-sm outline-b5
+					hover:scale-105
+					cursor-pointer
+					data-tip-up
+				"
+			>
+				<div className="flex place-content-between place-items-center">
+					<h3>{name}</h3>
+					<div
+						className="
+							h-full
+							flex place-content-center place-items-center
+							gap-0.5rem
+						"
+					>
+						<div className="h-1rem aspect-square rounded-full bg-c4"/>
 						<p>Online</p>
 					</div>
-					<button className="h-8 aspect-square">
-						<FriendsIcon />
-					</button>
 				</div>
-				<button
-					className="
-						w-full
-						rounded-full
-						bg-n6
-						text-n0
-						px-5
-					"
-				>
-					Invite To Party
-				</button>
-			</div>
+				<div className="flex place-content-center place-items-center text-a4 gap-0.5rem">
+					<FriendsIcon />
+					<h3>Invite To Party</h3>
+				</div>
+			</button>
 		</div>
 	);
 }
@@ -134,17 +131,20 @@ export const PartyWindow = () => {
 			<div
 				className={`
 					pt-[clamp(0.25rem,2vw+0.125rem,1.25rem)]
-					flex flex-col gap-[clamp(0.25rem,2vw+0.125rem,1.25rem)]
+					flex flex-col place-content-center place-items-center
 					text-n6
 					pointer-events-auto
 				`}
 			>
 				<SearchModule />
-				<div className="
-					h-80
-					space-y-1 px-5
-					overflow-scroll
-					pb-5
+				<div
+					tabIndex={-1}
+					className="
+						h-full max-h-[40vh]
+						pt-6
+						space-y-1 px-5
+						overflow-scroll
+						pb-5
 					"
 				>
 					<h2>Friends List</h2>

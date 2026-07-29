@@ -4,6 +4,7 @@ import { useSceneStore } from "../store/SceneStore";
 import { Window } from "./Window";
 import { ShowPasswordIcon } from "../components/icon/ShowPassword";
 import { HidePasswordIcon } from "../components/icon/HidePassword";
+import { io, Socket } from "socket.io-client";
 
 export const SignInWindow = () => {
 	const { setShowWindow, setCurrentScene } = useSceneStore();
@@ -49,8 +50,22 @@ export const SignInWindow = () => {
 				throw new Error(errorData.message || "Invalid email or password");
 			}
 
-			setShowWindow("signIn", false);
-			setCurrentScene("HOME");
+			const socket = io("localhost", {
+				path: "/socket/party"
+			});
+
+			socket.on("connect_error", (err) =>
+			{
+				console.log("failure!", err.message);
+			});
+
+			socket.on("connect", () =>
+			{
+				console.log("success!!!!!", `socket id: ${socket.id}`);
+				setShowWindow("signIn", false);
+				setCurrentScene("HOME");
+			});
+
 		} catch (err) {
 			const errorMsg = err instanceof Error ? err.message : "Something went wrong. Please try again";
 			setNotification(errorMsg, notificationType.error);
@@ -73,8 +88,11 @@ export const SignInWindow = () => {
 				"
 			>
 				<div className="flex flex-col gap-1rem">
-					<label htmlFor="email" className="w-full flex place-content-between">
-						<span className="text-right pr-5">Email</span>
+					<label
+						htmlFor="email"
+						className="flex gap-5"
+					>
+						<h2 className="text-right w-[25%]">Email</h2>
 						<input
 							ref={focusRef}
 							id="email"
@@ -82,36 +100,38 @@ export const SignInWindow = () => {
 							value={email}
 							placeholder="Enter your email"
 							onChange={(e) => setEmail(e.target.value)}
-							className="input-form"
+							className="input-form w-[70%]"
 						/>
 					</label>
-					<label htmlFor="password" className="w-full flex place-content-between">
-						<span className="text-right pr-5">
-							Password
-						</span>
-						<div className="relative">
-							<input
-								id="password"
-								type={showPassword ? "text" : "password"}
-								autoComplete="current-password"
-								value={password}
-								placeholder="Enter your password"
-								onChange={(e) => setPassword(e.target.value)}
-								className="input-form w-full"
-							/>
-							<button
-								type="button"
-								onClick={() => setShowPassword(!showPassword)}
-								className="
-									absolute right-1 top-1/2 -translate-y-1/2
-									h-[80%] aspect-square
-									text-n0
-									btn-icon
-									rounded-full
-							">
-								{ showPassword ? <ShowPasswordIcon /> : <HidePasswordIcon /> }
-							</button>
-						</div>
+					<label
+						htmlFor="password"
+						className="
+							flex gap-5
+							relative
+						"
+					>
+						<h2 className="text-right w-[25%]">Password</h2>
+						<input
+							id="password"
+							type={showPassword ? "text" : "password"}
+							autoComplete="current-password"
+							value={password}
+							placeholder="Enter your password"
+							onChange={(e) => setPassword(e.target.value)}
+							className="input-form w-[70%]"
+						/>
+						<button
+							type="button"
+							onClick={() => setShowPassword(!showPassword)}
+							className="
+								absolute right-1 top-1/2 -translate-y-1/2
+								h-[80%] aspect-square
+								text-n0
+								btn-icon
+								rounded-full
+						">
+							{ showPassword ? <ShowPasswordIcon /> : <HidePasswordIcon /> }
+						</button>
 					</label>
 				</div>
 				<button
@@ -119,7 +139,7 @@ export const SignInWindow = () => {
 					disabled={isLoading}
 					className="
 						btn-text bg-white
-						h-3rem aspect-5/1
+						h-3rem aspect-6/1
 						text-1.25rem text-n0
 					"
 				>

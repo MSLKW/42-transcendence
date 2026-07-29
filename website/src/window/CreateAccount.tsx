@@ -22,9 +22,6 @@ export const CreateAccountWindow = () => {
 	const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 	const [isLoading, setIsLoading] = useState(false);
 
-	const AUTH_URL = "/api/auth";
-	// const AUTH_URL = "localhost:3000";
-	// const AUTH_URL = "/api/auth";
 
 	const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
@@ -48,10 +45,7 @@ export const CreateAccountWindow = () => {
 		}
 		try {
 			setIsLoading(true);
-			// const response = await fetch("/api/auth/signup", {
-			// const response = await fetch("http://localhost:3000/signup", {
-			// const response = await fetch("localhost:3000/signup", {
-			const response = await fetch(`${AUTH_URL}/signup`, {
+			const response = await fetch("/api/auth/signup", {
 				method: "POST",
 				headers: {
 					"Content-Type": "application/json",
@@ -88,8 +82,11 @@ export const CreateAccountWindow = () => {
 					pointer-events-auto
 			">
 				<div className="flex flex-col gap-1rem">
-					<label htmlFor="email" className="w-full flex place-content-between">
-						<span className="text-right pr-5">Email</span>
+					<label
+						htmlFor="email"
+						className="flex gap-5"
+					>
+						<h2 className="text-right w-[25%]">Email</h2>
 						<input
 							ref={focusRef}
 							id="email"
@@ -97,62 +94,68 @@ export const CreateAccountWindow = () => {
 							value={email}
 							placeholder="Enter your email"
 							onChange={(e) => setEmail(e.target.value)}
-							className="input-form"
+							className="input-form w-[70%]"
 						/>
 					</label>
-					<label htmlFor="password" className="w-full flex place-content-between">
-						<span className="text-right pr-5">
-							Password
-						</span>
-						<div className="relative">
-							<input
-								id="password"
-								type={showPassword ? "text" : "password"}
-								value={password}
-								placeholder="At least 8 characters"
-								onChange={(e) => setPassword(e.target.value)}
-								className="input-form w-full"
-							/>
-							<button
-								type="button"
-								onClick={() => setShowPassword(!showPassword)}
-								className="
-									absolute right-1 top-1/2 -translate-y-1/2
-									h-[80%] aspect-square
-									text-n0
-									btn-icon
-									rounded-full
-							">
-								{ showPassword ? <ShowPasswordIcon /> : <HidePasswordIcon /> }
-							</button>
-						</div>
+					<label
+						htmlFor="password"
+						className="
+							flex gap-5
+							relative
+						"
+					>
+						<h2 className="text-right w-[25%]">Password</h2>
+						<input
+							id="password"
+							type={showPassword ? "text" : "password"}
+							value={password}
+							placeholder="At least 8 characters"
+							onChange={(e) => setPassword(e.target.value)}
+							className="input-form w-[70%]"
+						/>
+						<button
+							type="button"
+							onClick={() => setShowPassword(!showPassword)}
+							className="
+								absolute right-1 top-1/2 -translate-y-1/2
+								h-[80%] aspect-square
+								text-n0
+								btn-icon
+								rounded-full
+						">
+							{ showPassword ? <ShowPasswordIcon /> : <HidePasswordIcon /> }
+						</button>
 					</label>
-					<label htmlFor="confirm" className="w-full flex place-content-between">
-						<span className="text-right pr-5">
+					<label
+						htmlFor="confirm"
+						className="
+							flex gap-5
+							relative
+						"
+					>
+						<h2 className="text-right w-[25%]">
 							Confirm
-						</span>
-						<div className="relative">
-							<input
-								id="confirm"
-								type={showConfirmPassword ? "text" : "password"}
-								value={confirmPassword}
-								placeholder="Confirm your password"
-								onChange={(e) => setConfirmPassword(e.target.value)}
-								className="input-form w-full"
-							/>
-							<button
-								type="button"
-								onClick={() => setShowConfirmPassword(!showPassword)}
-								className="
-									absolute right-1 top-1/2 -translate-y-1/2
-									h-[80%] aspect-square
-									text-n0
-									btn-icon
-									rounded-full
-							">
-								{ showPassword ? <ShowPasswordIcon /> : <HidePasswordIcon /> }
-							</button>
-						</div>
+						</h2>
+						<input
+							id="confirm"
+							type={showConfirmPassword ? "text" : "password"}
+							value={confirmPassword}
+							placeholder="Confirm your password"
+							onChange={(e) => setConfirmPassword(e.target.value)}
+							className="input-form w-[70%]"
+						/>
+						<button
+							type="button"
+							onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+							className="
+								absolute right-1 top-1/2 -translate-y-1/2
+								h-[80%] aspect-square
+								text-n0
+								btn-icon
+								rounded-full
+						">
+							{ showConfirmPassword ? <ShowPasswordIcon /> : <HidePasswordIcon /> }
+						</button>
 					</label>
 				</div>
 				<button
@@ -160,7 +163,7 @@ export const CreateAccountWindow = () => {
 					disabled={isLoading}
 					className="
 						btn-text bg-white
-						h-3rem aspect-5/1
+						h-3rem aspect-6/1
 						text-1.25rem text-n0
 					"
 				>
