@@ -85,26 +85,6 @@ services:
         condition: service_healthy
   
 
-  #     INFRASTRUCTURE MICROSERVICE
-  nginx:
-    container_name: nginx
-    build: infra/nginx
-    pull_policy: build
-    image: nginx:test
-    restart: unless-stopped
-    ports:
-      - "80:80"
-    networks:
-      - transcendence
-    depends_on:
-      authentication:
-        condition: service_healthy
-      # website:
-      #   condition: service_healthy
-      # - party_manager
-      #   - game
-
-
   #     MIGRATOR (Node.js + Drizzle), One-shot container (or other technical terms, ephemeral containers / job containers)
   #     ONE-SHOT MICORSERVICE
   migrator:
@@ -133,23 +113,17 @@ services:
         condition: service_healthy
 
   
-  #     FRONTEND MICORSERVICE
-  website:
-    build:
-      context: .
-      dockerfile: ./frontend/website/Dockerfile
+  #     INFRASTRUCTURE MICROSERVICE
+  nginx:
+    container_name: nginx
+    build: infra/nginx
     pull_policy: build
-    image: website:test
-    container_name: website
+    image: nginx:test
     restart: unless-stopped
+    ports:
+      - "80:80"
     networks:
       - transcendence
-      - database #
-    healthcheck:
-      test: ["CMD", "wget", "-qO-", "http://localhost:5173/"]
-      interval: 3s
-      timeout: 3s
-      retries: 10
 
 
   #     BACKEND MICORSERVICE
@@ -174,18 +148,13 @@ services:
     networks:
       - transcendence
       - database
-    healthcheck:
-      test: ["CMD", "curl", "-s", "-o", "/dev/null", "http://localhost:3000/"]
-      interval: 3s
-      timeout: 3s
-      retries: 10
     depends_on:
       migrator:
         condition: service_completed_successfully  # Waits for migrator to finish and exit with code 0
 
 
   #     BACKEND MICORSERVICE
-  party_manager:
+  party-manager:
     build:
       context: .                                        # Set workdir to the repo's root
       dockerfile: ./backend/party-manager/Dockerfile    # Point to the Dockerfile's relative path
@@ -208,11 +177,6 @@ services:
     networks:
       - transcendence
       - database
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:3000/"]
-      interval: 3s
-      timeout: 3s
-      retries: 10
     depends_on:
       migrator:
         condition: service_completed_successfully  # Waits for migrator to finish and exit with code 0
@@ -230,8 +194,18 @@ services:
     networks:
       - transcendence
       - database
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:3000/"]
-      interval: 3s
-      timeout: 3s
-      retries: 10
+
+
+  #     FRONTEND MICORSERVICE
+  website:
+    build:
+      context: .
+      dockerfile: ./frontend/website/Dockerfile
+    pull_policy: build
+    image: website:test
+    container_name: website
+    restart: unless-stopped
+    networks:
+      - transcendence
+
+

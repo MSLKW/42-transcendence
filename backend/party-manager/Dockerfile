@@ -66,16 +66,21 @@ COPY package*.json ./
 COPY packages/database/package.json ./packages/database/
 COPY backend/party-manager/package.json ./backend/party-manager/
 
+RUN apk update && \
+    apk add --no-cache curl && \
+    rm -rf /var/cache/apk/*
+
 ENV NODE_ENV=production
 RUN npm ci --omit=dev
 
 COPY --from=builder /app/packages/database/dist ./packages/database/dist
-COPY --from=builder /app/backend/party-manager/dist ./dist
+COPY --from=builder /app/backend/party-manager/dist ./backend/party-manager/dist
 
 EXPOSE 3000
 
 COPY backend/party-manager/scripts/party-manager_entrypoint.sh /usr/local/bin/entrypoint.sh
 RUN chmod +x /usr/local/bin/entrypoint.sh
 
+WORKDIR /app/backend/party-manager
 ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
-CMD ["npm", "run", "--prefix", "backend/party-manager", "start"]
+CMD ["npm", "run", "start"]
