@@ -30,8 +30,9 @@ RUN apt-get update && \
     apt-get install -y postgresql-client && \
     rm -rf /var/lib/apt/lists/*
 
-# these 4 folder+files are must into every runner that communicates with database (compiled js files, sql files for migrating, other 2 used by drizzle-kit for migrating)
+# all services that communicate with database need this line => database's compiled js files
 COPY --from=builder /app/packages/database/dist ./packages/database/dist 
+# these 3 folders&files are a must for Migrator one-shot container only (sql files for migrating, other 2 used by drizzle-kit for migrating)
 COPY packages/database/migrations ./packages/database/migrations
 COPY packages/database/tsconfig.drizzle.json ./packages/database/tsconfig.drizzle.json
 COPY packages/database/drizzle.config.ts ./packages/database/drizzle.config.ts

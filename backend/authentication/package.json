@@ -1,6 +1,7 @@
 {
 	"name": "login-backend",
 	"version": "1.0.0",
+	"type": "module",
 	"description": "",
 	"main": "./dist/index.js",
 	"scripts": {
@@ -10,7 +11,7 @@
 		"test:guest": "bash scripts/test-guest.sh",
 		"test:logout": "bash scripts/test-logout.sh",
 		"test:validate": "bash scripts/test-validate.sh",
-		"build": "tsc",
+		"build": "tsup src/index.ts --format esm --clean",
 		"start": "node dist/index.js",
 		"build:run": "npm run build && npm run start",
 		"clean": "rm -rf ./dist .tsbuildinfo"
@@ -29,6 +30,7 @@
 		"cookie-parser": "^1.4.7",
 		"dotenv": "^17.4.2",
 		"express": "^5.2.1",
-		"@big2/database": "*"
+		"@big2/database": "*",
+		"tsup": "^8.5.1"
 	}
 }

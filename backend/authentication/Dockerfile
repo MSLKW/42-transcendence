@@ -76,12 +76,13 @@ ENV NODE_ENV=production
 RUN npm ci --omit=dev
 
 COPY --from=builder /app/packages/database/dist ./packages/database/dist
-COPY --from=builder /app/backend/authentication/dist ./dist
+COPY --from=builder /app/backend/authentication/dist ./backend/authentication/dist
 
 EXPOSE 3000
 
 COPY backend/authentication/scripts/auth-entrypoint.sh /usr/local/bin/entrypoint.sh
 RUN chmod +x /usr/local/bin/entrypoint.sh
 
+WORKDIR /app/backend/authentication
 ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
-CMD ["npm", "run", "--prefix", "backend/authentication", "start"]
+CMD ["npm", "run", "start"]
