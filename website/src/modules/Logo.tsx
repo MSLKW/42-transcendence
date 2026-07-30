@@ -14,7 +14,7 @@ export const BigLogo = () => {
 			">
 				<span className="
 					text-[clamp(4rem,5.714vmin+2.857rem,8rem)]
-					font-semibold
+					font-extrabold
 					text-n6
 					tracking-[clamp(2.5rem,3.571vw+1.786rem,5rem)]
 				">
@@ -69,7 +69,7 @@ export const SmallLogo = () => {
 				<span className="
 					text-2.5rem
 					tracking-[clamp(1rem,1.429vmin+0.714rem,2rem)]
-					font-semibold text-n6
+					font-extrabold text-n6
 				">
 					BIG
 				</span>

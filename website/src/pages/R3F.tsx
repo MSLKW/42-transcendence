@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useNotificationStore, notificationType } from "../store/NotificationStore";
 import { useGameStore } from "../store/GameStore";
 import { usePartyStore } from "../store/PartyStore";
 import { useSettingsStore, AUTO_PASS_RECORD } from "../store/SettingsStore";
@@ -10,6 +11,30 @@ import { SortButtons } from "../components/button/Sort";
 export const R3F = () => {
 	const { totalPlayers, dealCards, cardsLeft } = useGameStore();
 	const { members } = usePartyStore();
+
+	const { showNotification } = useNotificationStore();
+	useEffect(() => {
+		const validateAuth = async () => {
+			try {
+				const response = await fetch("/api/auth/validate", {
+					method: "GET",
+					credentials: "include",
+				});
+
+				if (!response.ok) {
+					const errorData = await response.json().catch(() => ({}));
+					if (response.status === 401)
+						throw new Error("Missing or malformed authorization / invalid session");
+					else
+						throw new Error(errorData.message || "Authentication failed");
+				}
+			} catch (err) {
+				if (err instanceof Error && !err.message.includes("401"))
+					showNotification(err.message, notificationType.error);
+			}
+		};
+		validateAuth();
+	}, [])
 
 	useEffect(() => {
 		dealCards();
@@ -34,21 +59,21 @@ export const R3F = () => {
 		<>
 			<HeaderModule back="LOBBY" />
 			<main>
-				{ totalPlayers === 4 &&
+				{ totalPlayers === 4 && members.length >= 4 &&
 					<>
 						<div className="absolute left-[5%] top-[20%]">
 							<AvatarButton
-								key={members[1].uuid}
+								key={members[1].uuid ?? ""}
 								index={1}
 								name={members[1].name ?? "Guest"}
-								relation={members[1].relation}
-								cornerButton={cardsLeft[1]}
+								relation={members[1].relation ?? "-1"}
+								cornerButton={cardsLeft[1] ?? -1}
 								isActive={activePlayer === 1}
 							/>
 						</div>
 						<div className="absolute left-[25%] top-[5%]">
 							<AvatarButton
-								key={members[2].uuid}
+								key={members[2].uuid ?? ""}
 								index={2}
 								name={members[2].name ?? "Guest"}
 								relation={members[2].relation}
@@ -58,48 +83,48 @@ export const R3F = () => {
 						</div>
 						<div className="absolute right-[5%] top-[20%]">
 							<AvatarButton
-								key={members[3].uuid}
+								key={members[3].uuid ?? ""}
 								index={3}
 								name={members[3].name ?? "Guest"}
-								relation={members[3].relation}
-								cornerButton={cardsLeft[3]}
+								relation={members[3].relation ?? ""}
+								cornerButton={cardsLeft[3] ?? -1}
 								isActive={activePlayer === 3}
 							/>
 						</div>
 					</>
 				}
-				{ totalPlayers === 3 &&
+				{ totalPlayers === 3 && members.length >= 3 &&
 					<>
 						<div className="absolute left-[5%] top-[20%]">
 							<AvatarButton
-								key={members[1].uuid}
+								key={members[1].uuid ?? ""}
 								index={1}
 								name={members[1].name ?? "Guest"}
-								relation={members[1].relation}
-								cornerButton={cardsLeft[1]}
+								relation={members[1].relation ?? ""}
+								cornerButton={cardsLeft[1] ?? -1}
 								isActive={activePlayer === 1}
 							/>
 						</div>
 						<div className="absolute right-[5%] top-[20%]">
 							<AvatarButton
-								key={members[2].uuid}
+								key={members[2].uuid ?? ""}
 								index={2}
 								name={members[2].name ?? "Guest"}
-								relation={members[2].relation}
-								cornerButton={cardsLeft[2]}
+								relation={members[2].relation ?? ""}
+								cornerButton={cardsLeft[2] ?? -1}
 								isActive={activePlayer === 2}
 							/>
 						</div>
 					</>
 				}
-				{ totalPlayers === 2 &&
+				{ totalPlayers === 2 && members.length >= 2 &&
 					<div className="absolute left-[25%] top-[5%]">
 						<AvatarButton
-							key={members[1].uuid}
+							key={members[1].uuid ?? ""}
 							index={1}
 							name={members[1].name ?? "Guest"}
-							relation={members[1].relation}
-							cornerButton={cardsLeft[1]}
+							relation={members[1].relation ?? ""}
+							cornerButton={cardsLeft[1] ?? -1}
 							isActive={activePlayer === 1}
 						/>
 					</div>

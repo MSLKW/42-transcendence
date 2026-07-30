@@ -3,10 +3,11 @@ import { useSceneStore } from "./SceneStore";
 
 export const notificationType = {
 	error: 0,
-	nameInput: 1,
-	invite: 2,
-	botSelect: 3,
-	nextRound: 4,
+	message: 1,
+	nameInput: 2,
+	invite: 3,
+	botSelect: 4,
+	nextRound: 5,
 } as const;
 
 interface NotificationValues {
@@ -50,6 +51,10 @@ export const useNotificationStore = create<NotificationState>()(
 
 				if (type === notificationType.error) {
 					isError = true;
+					isTimed = true;
+					numOfButtons = 0;
+				} else if (type === notificationType.message) {
+					isError = false;
 					isTimed = true;
 					numOfButtons = 0;
 				} else if (type === notificationType.nameInput || type === notificationType.botSelect) {
