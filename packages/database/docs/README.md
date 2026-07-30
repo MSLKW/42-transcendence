@@ -142,11 +142,11 @@ Look for these specific terminal logs to confirm the database and its migrator h
 	![Sign In Successful!](./pictures/auth/a_signin.png)
 <br><br>
 
-new ways to test now: <br>
-### bash backend/authentication/scripts/test:signup.sh <email> <password>
-### bash backend/authentication/scripts/test:signin.sh <email> <password>
-### bash backend/authentication/scripts/test:validate.sh <session_token>
-### bash backend/authentication/scripts/test:logout.sh <session_token>
+new ways to test authentication now: <br>
+### bash backend/authentication/scripts/test:signup.sh <user's email> <user's password>
+### bash backend/authentication/scripts/test:signin.sh <user's email> <user's password>
+### bash backend/authentication/scripts/test:validate.sh <user's session_token>
+### bash backend/authentication/scripts/test:logout.sh <user's session_token>
 ---
 
 ## 5. Live Database Testing: Party-Manager Service
