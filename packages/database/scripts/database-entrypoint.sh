@@ -22,7 +22,7 @@ COUNT=0
 SUCCESS=false
 
 while [ $COUNT -lt $MAX_RETRIES ]; do
-  if npm run db:migrate; then
+  if npm run db:migrate; then 
     echo "\n[4/5]  Migrations applied successfully!"
     SUCCESS=true
     break
@@ -49,7 +49,4 @@ fi
 
 # 4. Execute the container to the foreground
 echo "[5/5]  Starting migrator..."
-# exec node /app/packages/database/dist/index.js
-cd /app/packages/database
 exec "$@" 
-# will take docker compose's command

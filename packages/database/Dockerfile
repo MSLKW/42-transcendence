@@ -30,12 +30,17 @@ RUN apt-get update && \
     apt-get install -y postgresql-client && \
     rm -rf /var/lib/apt/lists/*
 
-COPY --from=builder /app/packages/database/dist ./dist
+# these 4 folder+files are must into every runner that communicates with database (compiled js files, sql files for migrating, other 2 used by drizzle-kit for migrating)
+COPY --from=builder /app/packages/database/dist ./packages/database/dist 
+COPY packages/database/migrations ./packages/database/migrations
+COPY packages/database/tsconfig.drizzle.json ./packages/database/tsconfig.drizzle.json
+COPY packages/database/drizzle.config.ts ./packages/database/drizzle.config.ts
 
 # Copy the script using the correct path from the root
 COPY packages/database/scripts/database-entrypoint.sh /usr/local/bin/entrypoint.sh
 RUN chmod +x /usr/local/bin/entrypoint.sh
 
 # Use the script as the entrypoint
+WORKDIR /app/packages/database
 ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
-CMD ["npm", "--prefix", "packages/database", "start"]
+CMD ["npm", "start"]
