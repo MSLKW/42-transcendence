@@ -7,7 +7,7 @@ services:
     ports:
       - "80:80"
     restart: unless-stopped
-  
+
   website:
     build:
       context: ./website
@@ -19,9 +19,9 @@ services:
     volumes:
       - ./website:/app
       - /app/node_modules
-  
+
   authentication:
-    build: backend-auth
+    build: authentication
     image: authentication:test
     restart: unless-stopped
 

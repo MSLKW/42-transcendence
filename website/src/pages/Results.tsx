@@ -222,10 +222,10 @@ const ResultTotal = () => {
 export const Results = () => {
 	const { totalPlayers } = useGameStore();
 	const { members } = usePartyStore();
-	const { setNotification } = useNotificationStore();
+	const { showNotification } = useNotificationStore();
 	const winner = "Congratulations " + members[0].name + "! Play next round?";
 	useEffect(() => {
-		setNotification(winner, notificationType.nextRound);
+		showNotification(winner, notificationType.nextRound);
 	}, []);
 
 	return (

@@ -9,7 +9,7 @@ import { HidePasswordIcon } from "../components/icon/HidePassword";
 export const SignInWindow = () => {
 	const { setPlayerDataValue } = usePlayerStore()
 	const { setShowWindow, setCurrentScene } = useSceneStore();
-	const { setNotification } = useNotificationStore();
+	const { showNotification } = useNotificationStore();
 
 	const focusRef = useRef<HTMLInputElement | null>(null);
 	useEffect(() => {
@@ -26,12 +26,13 @@ export const SignInWindow = () => {
 		e.preventDefault();
 
 		if (!email || !password) {
-			setNotification("All fields are required", notificationType.error);
+			showNotification("All fields are required", notificationType.error);
 			return;
 		}
+		
 		const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 		if (!emailRegex.test(email)) {
-			setNotification("Please enter a valid email address", notificationType.error);
+			showNotification("Please enter a valid email address", notificationType.error);
 			return;
 		}
 
@@ -46,7 +47,10 @@ export const SignInWindow = () => {
 
 			if (!response.ok) {
 				const errorData = await response.json().catch(() => ({}));
-				throw new Error(errorData.message || "Invalid email or password");
+				if (response.status === 401)
+					throw new Error("Account not found / wrong password");
+				else
+					throw new Error(errorData.message || "Invalid email or password");
 			}
 
 			const data = await response.json();
@@ -56,7 +60,7 @@ export const SignInWindow = () => {
 			setCurrentScene("HOME");
 		} catch (err) {
 			const errorMsg = err instanceof Error ? err.message : "Something went wrong. Please try again";
-			setNotification(errorMsg, notificationType.error);
+			showNotification(errorMsg, notificationType.error);
 		} finally {
 			setIsLoading(false);
 		}

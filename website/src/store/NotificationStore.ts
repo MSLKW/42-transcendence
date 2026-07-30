@@ -22,7 +22,7 @@ interface NotificationValues {
 }
 
 interface NotificationState extends NotificationValues {
-	setNotification: (
+	showNotification: (
 		msg: string,
 		type: number,
 		btn1?: () => void,
@@ -42,7 +42,7 @@ export const useNotificationStore = create<NotificationState>()(
 		onButton1Click: undefined,
 		onButton2Click: undefined,
 
-		setNotification: (msg, type, btn1, btn2) => {
+		showNotification: (msg, type, btn1, btn2) => {
 			set((notificationStore) => {
 				let isError = false;
 				let isTimed = false;

@@ -31,14 +31,14 @@ export const STATUS = {
 } as const;
 
 export interface PlayerData {
-	uuid: string;			//"12345678901234567890123456789012"
-	name: string | null;	//"Azrul", "Max", null
+	uuid: string;			//"b5dd8b9f-cbd0-4814-8a86-d143b3575ca8"
+	name: string | null;	//"Azrul", null
 	avatar: string;			//"avatar-stock-0.webp", "avatar-12345678901234567890123456789012.png"
 	badge: string;			//"Newcomer", "Beginner's Luck", "Challenger", "Enthusiast", "Risk Taker",  "The Strategist", "Big 2 Champion"
 	level: number;			//1, 42
 	xp: number;				//0, 1000000
-	createdAt: string;		//"15 July 2026", "n/a"
-	lastLogin: string;		//"15 July 2026", "n/a"
+	createdAt: number;		//1784110862000 -> "14 July 2026: 16:00:00.000"
+	lastLogin: number;		//1784110862000 -> "14 July 2026: 16:00:00.000"
 	totalPlayed: number;	//0, 1000
 	totalWins: number;		//0, 1000
 	totalLoss: number;		//0, 1000
@@ -69,8 +69,8 @@ export const usePlayerStore = create<PlayerState>() (
 				badge: BADGE_LABEL[0],
 				level: 1,
 				xp: 0,
-				createdAt: new Date(1784110862000).toISOString(),
-				lastLogin: new Date().toISOString(),
+				createdAt: 1784110862000,
+				lastLogin: 1784110862000,
 				totalPlayed: 0,
 				totalWins: 0,
 				totalLoss: 0,

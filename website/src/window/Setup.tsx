@@ -5,10 +5,10 @@ import { AvatarNameModule } from "../modules/AvatarName";
 import { AvatarSelectModule } from "../modules/AvatarSelectModule";
 
 export const SetupWindow = () => {
-	const { setNotification } = useNotificationStore();
+	const { showNotification } = useNotificationStore();
 
 	useEffect(() => {
-		setNotification("Enter your name and choose your avatar", notificationType.nameInput);
+		showNotification("Enter your name and choose your avatar", notificationType.nameInput);
 	}, []);
 
 	return (

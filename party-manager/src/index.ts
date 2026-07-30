@@ -33,7 +33,11 @@ const io = new Server(httpServer, {
 });
 
 io.use(async (socket, next) => {
-	const token = socket.handshake.auth?.token;
+	const sessionToken = socket.handshake.headers.cookie
+		?.split("; ")
+		.find(c => c.startsWith("session_token="))
+		?.split("=")[1];	
+	const token = sessionToken || socket.handshake.auth?.token;
 
 	if (!token || typeof token !== "string")
 		return next(new Error("UNAUTHORIZED: no session token provided"));

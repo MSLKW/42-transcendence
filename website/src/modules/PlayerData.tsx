@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { usePartyStore } from "../store/PartyStore";
 import { useSceneStore } from "../store/SceneStore";
 import { BadgeWindow } from "../window/Badge";
@@ -10,7 +10,30 @@ export const PlayerDataModule = () => {
 	useEffect(() => {
 		const percentage = (members[profileIndex].xp / (members[profileIndex].level * 1000)) * 100
 		setXPProgress(percentage);
-	}, [members[profileIndex].xp]);
+	}, [members[profileIndex].xp, members, profileIndex]);
+
+	const formatter = useMemo(() => {
+		return new Intl.DateTimeFormat('en-US', {
+			timeZone: 'UTC',
+			year: 'numeric',
+			month: '2-digit',
+			day: '2-digit',
+			hour: '2-digit',
+			minute: '2-digit',
+			second: '2-digit',
+			fractionalSecondDigits: 3,
+			hour12: false,
+		});
+	}, []);
+
+	const formatDate = (timestamp: number | string | Date): string => {
+		const parts = formatter.formatToParts(new Date(timestamp));
+		const partMap: Record<string, string> = {};
+		for (const { type, value} of parts) {
+			partMap[type] = value;
+		}
+		return `${partMap.year}/${partMap.month}/${partMap.day} -  ${partMap.hour}:${partMap.minute}:${partMap.second}. ${partMap.fractionalSecond}`;
+	};
 
 	return (
 		<div className="
@@ -77,8 +100,8 @@ export const PlayerDataModule = () => {
 				</div>
 			</div>
 			<div>
-				<p className="text-sm text-a5">Last Login: {members[profileIndex].lastLogin}</p>
-				<p className="text-sm text-a5">Joined: {members[profileIndex].createdAt}</p>
+				<p className="text-sm text-a5">Last Login: {formatDate(members[profileIndex].lastLogin)}</p>
+				<p className="text-sm text-a5">Joined: {formatDate(members[profileIndex].createdAt)}</p>
 			</div>
 		</div>
 	);

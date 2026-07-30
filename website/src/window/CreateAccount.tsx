@@ -8,7 +8,7 @@ import { usePlayerStore } from "../store/PlayerStore";
 
 export const CreateAccountWindow = () => {
 	const { setShowWindow, setCurrentScene } = useSceneStore();
-	const { setNotification } = useNotificationStore();
+	const { showNotification } = useNotificationStore();
 	const { setPlayerDataValue } = usePlayerStore();
 
 	const focusRef = useRef<HTMLInputElement | null>(null);
@@ -28,20 +28,20 @@ export const CreateAccountWindow = () => {
 		e.preventDefault();
 
 		if (!email || !password || !confirmPassword) {
-			setNotification("All fields are required", notificationType.error);
+			showNotification("All fields are required", notificationType.error);
 			return;
 		}
 		const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 		if (!emailRegex.test(email)) {
-			setNotification("Please enter a valid email address", notificationType.error);
+			showNotification("Please enter a valid email address", notificationType.error);
 			return;
 		}
 		if (password.length < 8) {
-			setNotification("Password must be at least 8 characters", notificationType.error);
+			showNotification("Password must be at least 8 characters", notificationType.error);
 			return;
 		}
 		if (password !== confirmPassword) {
-			setNotification("Passwords do not match", notificationType.error);
+			showNotification("Passwords do not match", notificationType.error);
 			return;
 		}
 		try {
@@ -71,7 +71,7 @@ export const CreateAccountWindow = () => {
 			setCurrentScene("HOME");
 		} catch (err) {
 			const errorMsg = err instanceof Error ? err.message : "Something went wrong. Please try again";
-			setNotification(errorMsg, notificationType.error);
+			showNotification(errorMsg, notificationType.error);
 		} finally {
 			setIsLoading(false);
 		}

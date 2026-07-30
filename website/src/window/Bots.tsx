@@ -4,10 +4,10 @@ import { Window } from "./Window";
 import { AvatarMemberModule } from "../modules/AvatarMember";
 
 export const BotsWindow = () => {
-	const { setNotification } = useNotificationStore();
+	const { showNotification } = useNotificationStore();
 	
 	useEffect(() => {
-		setNotification("Select Bot Intelligence...", notificationType.botSelect);
+		showNotification("Select Bot Intelligence...", notificationType.botSelect);
 	}, []);
 
 	return (
