@@ -48,7 +48,8 @@ io.use(async (socket, next) => {
 	{
 		const response = await fetch(`${AUTH_SERVICE_URL}/validate`, {
 			headers: {
-				Authorization: `Bearer ${token}`,
+				Cookie: socket.handshake.headers.cookie || "",
+				Authorization: `Bearer ${token}`
 			},
 			signal: AbortSignal.timeout(5000)
 		});
