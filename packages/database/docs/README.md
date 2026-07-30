@@ -141,6 +141,12 @@ Look for these specific terminal logs to confirm the database and its migrator h
 3. **Database Verification:** Go to Drizzle Gateway in your browser, navigate to the `session` table under the auth schema, click **Refresh**, and verify the session record has been created.<br>
 	![Sign In Successful!](./pictures/auth/a_signin.png)
 <br><br>
+
+new ways to test now: <br>
+### bash backend/authentication/scripts/test:signup.sh <email> <password>
+### bash backend/authentication/scripts/test:signin.sh <email> <password>
+### bash backend/authentication/scripts/test:validate.sh <session_token>
+### bash backend/authentication/scripts/test:logout.sh <session_token>
 ---
 
 ## 5. Live Database Testing: Party-Manager Service
