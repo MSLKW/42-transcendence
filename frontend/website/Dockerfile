@@ -2,6 +2,8 @@ FROM node:24 AS builder
 WORKDIR /app
 
 COPY package*.json ./
+COPY frontend/website/package.json ./frontend/website/
+
 RUN npm install
 
 COPY . .
@@ -13,4 +15,4 @@ COPY --from=builder /app ./
 
 ENV NODE_ENV=production
 EXPOSE 5173
-CMD ["npm", "run", "dev"]
+CMD ["npm", "run", "--prefix", "frontend/website", "dev"]

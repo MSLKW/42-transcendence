@@ -52,6 +52,7 @@ services:
       timeout: 5s
       retries: 5
 
+
   #     DRIZZLE-GATEWAY, Database's GUI Dev Tool 
   #     INFRASTRUCTURE MICROSERVICE
   drizzle-gateway:
@@ -83,15 +84,30 @@ services:
       postgresql:
         condition: service_healthy
   
+
+  #     INFRASTRUCTURE MICROSERVICE
+  nginx:
+    container_name: nginx
+    build: infra/nginx
+    pull_policy: build
+    image: nginx:test
+    restart: unless-stopped
+    ports:
+      - "80:80"
+    networks:
+      - transcendence
+      - database #
+
+
   #     MIGRATOR (Node.js + Drizzle), One-shot container (or other technical terms, ephemeral containers / job containers)
   #     ONE-SHOT MICORSERVICE
   migrator:
-    container_name: migrator
     build:
       context: .
       dockerfile: ./packages/database/Dockerfile
-    image: migrator:aisyah
     pull_policy: build
+    image: migrator:aisyah
+    container_name: migrator
     restart: no # It runs migrations only, then it exits successfully, the end of this container's life. 
     environment:
       DB_HOST: ${POSTGRES_HOST}
@@ -109,33 +125,33 @@ services:
     depends_on:
       postgresql:
         condition: service_healthy
-  
-  #     INFRASTRUCTURE MICROSERVICE
-  nginx:
-    build: nginx
-    image: nginx:test
-    ports:
-      - "80:80"
-    restart: unless-stopped
+
   
   #     FRONTEND MICORSERVICE
   website:
-    build: website
+    build:
+      context: .
+      dockerfile: ./frontend/website/Dockerfile
+    pull_policy: build
     image: website:test
+    container_name: website
     restart: unless-stopped
+    networks:
+      - transcendence
+      - database #
+
 
   #     BACKEND MICORSERVICE
   authentication:
-    # build: authentication
     build:
-      context: .                                                  # Set workdir to the repo's root
+      context: .                                         # Set workdir to the repo's root
       dockerfile: ./backend/authentication/Dockerfile    # Point to the Dockerfile's relative path
+    pull_policy: build
     image: authentication:test
     container_name: authentication
-    pull_policy: build
     restart: unless-stopped
     environment:
-      DB_HOST: ${POSTGRES_HOST}                             # DB_HOST is a standard industry convention
+      DB_HOST: ${POSTGRES_HOST}                           # DB_HOST is a standard industry convention
       DB_NAME: ${POSTGRES_DB}
       DB_PORT: ${POSTGRES_PORT}
       DB_USER: ${POSTGRES_USER}
@@ -150,27 +166,27 @@ services:
     depends_on:
       migrator:
         condition: service_completed_successfully  # Waits for migrator to finish and exit with code 0
+
 
   #     BACKEND MICORSERVICE
   party_manager:
-    # build: party-manager
     build:
-      context: .                                                  # Set workdir to the repo's root
+      context: .                                        # Set workdir to the repo's root
       dockerfile: ./backend/party-manager/Dockerfile    # Point to the Dockerfile's relative path
-    image: party:test
     pull_policy: build
+    image: party:test
     container_name: party-manager
     restart: unless-stopped
     environment:
-      AUTH_SERVICE_URL: http://authentication:3000
-      GAME_SERVICE_URL: http://game:3000
-      DB_HOST: ${POSTGRES_HOST}          # DB_HOST is a standard industry convention
+      # AUTH_SERVICE_URL: http://authentication:3000
+      # GAME_SERVICE_URL: http://game:3000
+      DB_HOST: ${POSTGRES_HOST}                         # DB_HOST is a standard industry convention
       DB_NAME: ${POSTGRES_DB}
       DB_PORT: ${POSTGRES_PORT}
       DB_USER: ${POSTGRES_USER}
       DB_PASSWORD_FILE: /run/secrets/db_admin_password
     env_file:
-      - .env                                              # Loads global configs
+      - .env                                             # Loads global configs
     secrets:
       - db_admin_password
     networks:
@@ -180,8 +196,16 @@ services:
       migrator:
         condition: service_completed_successfully  # Waits for migrator to finish and exit with code 0
 
+
   #     BACKEND MICORSERVICE
   game:
-    build: game
+    build:
+      context: .
+      dockerfile: ./backend/game/Dockerfile
+    pull_policy: build
     image: game:test
+    container_name: game
     restart: unless-stopped
+    networks:
+      - transcendence
+      - database

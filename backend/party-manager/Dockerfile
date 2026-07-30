@@ -48,32 +48,29 @@ FROM node:20-alpine AS builder
 WORKDIR /app
 
 COPY package*.json ./
-COPY backend/party-manager/package.json ./backend/party-manager/
 COPY packages/database/package.json ./packages/database/
+COPY backend/party-manager/package.json ./backend/party-manager/
 
 RUN npm ci
 
 COPY . .
 
-RUN npm run build
+RUN npm run --prefix packages/database build
+RUN npm run --prefix backend/party-manager build
 
 #Runner
 FROM node:20-alpine AS runner
 WORKDIR /app
 
-ENV NODE_ENV=production
-
 COPY package*.json ./
-COPY backend/party-manager/package.json ./backend/party-manager/
 COPY packages/database/package.json ./packages/database/
+COPY backend/party-manager/package.json ./backend/party-manager/
 
+ENV NODE_ENV=production
 RUN npm ci --omit=dev
 
-RUN apk update && \
-    apk add --no-cache openssl postgresql-client curl && \
-    rm -rf /var/cache/apk/*
-
-COPY --from=builder /app/dist ./dist
+COPY --from=builder /app/packages/database/dist ./packages/database/dist
+COPY --from=builder /app/backend/party-manager/dist ./dist
 
 EXPOSE 3000
 
@@ -81,4 +78,4 @@ COPY backend/party-manager/scripts/party-manager_entrypoint.sh /usr/local/bin/en
 RUN chmod +x /usr/local/bin/entrypoint.sh
 
 ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
-CMD ["npm", "run", "start"]
+CMD ["npm", "run", "--prefix", "backend/party-manager", "start"]
