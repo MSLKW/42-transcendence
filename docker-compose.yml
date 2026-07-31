@@ -86,12 +86,12 @@ services:
   
 
   #     MIGRATOR (Node.js + Drizzle), One-shot container (or other technical terms, ephemeral containers / job containers)
-  #     ONE-SHOT MICORSERVICE
+  #     ONE-SHOT MICORSERVICE => "run once per deploy" job container
   migrator:
     build:
       context: .
       dockerfile: ./packages/database/Dockerfile
-    pull_policy: build
+    pull_policy: never
     image: migrator:aisyah
     container_name: migrator
     restart: no # It runs migrations only, then it exits successfully, the end of this container's life. 
@@ -115,10 +115,10 @@ services:
   
   #     INFRASTRUCTURE MICROSERVICE
   nginx:
-    container_name: nginx
     build: infra/nginx
-    pull_policy: build
+    pull_policy: never
     image: nginx:test
+    container_name: nginx
     restart: unless-stopped
     ports:
       - "80:80"
@@ -134,7 +134,7 @@ services:
     build:
       context: .                                         # Set workdir to the repo's root
       dockerfile: ./backend/authentication/Dockerfile    # Point to the Dockerfile's relative path
-    pull_policy: build
+    pull_policy: never
     image: authentication:test
     container_name: authentication
     restart: unless-stopped
@@ -173,7 +173,7 @@ services:
     build:
       context: .                                        # Set workdir to the repo's root
       dockerfile: ./backend/party-manager/Dockerfile    # Point to the Dockerfile's relative path
-    pull_policy: build
+    pull_policy: never
     image: party:test
     container_name: party-manager
     restart: unless-stopped
@@ -202,7 +202,7 @@ services:
     build:
       context: .
       dockerfile: ./backend/game/Dockerfile
-    pull_policy: build
+    pull_policy: never
     image: game:test
     container_name: game
     restart: unless-stopped
@@ -216,7 +216,7 @@ services:
     build:
       context: .
       dockerfile: ./frontend/website/Dockerfile
-    pull_policy: build
+    pull_policy: never
     image: website:test
     container_name: website
     restart: unless-stopped
