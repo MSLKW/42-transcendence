@@ -14,29 +14,29 @@ export const R3F = () => {
 	const { totalPlayers, dealCards, cardsLeft } = useGameStore();
 	const { members } = usePartyStore();
 
-	const { showNotification } = useNotificationStore();
-	useEffect(() => {
-		const validateAuth = async () => {
-			try {
-				const response = await fetch("/api/auth/validate", {
-					method: "GET",
-					credentials: "include",
-				});
+	// const { showNotification } = useNotificationStore();
+	// useEffect(() => {
+	// 	const validateAuth = async () => {
+	// 		try {
+	// 			const response = await fetch("/api/auth/validate", {
+	// 				method: "GET",
+	// 				credentials: "include",
+	// 			});
 
-				if (!response.ok) {
-					const errorData = await response.json().catch(() => ({}));
-					if (response.status === 401)
-						throw new Error("Missing or malformed authorization / invalid session");
-					else
-						throw new Error(errorData.message || "Authentication failed");
-				}
-			} catch (err) {
-				if (err instanceof Error && !err.message.includes("401"))
-					showNotification(err.message, notificationType.error);
-			}
-		};
-		validateAuth();
-	}, [])
+	// 			if (!response.ok) {
+	// 				const errorData = await response.json().catch(() => ({}));
+	// 				if (response.status === 401)
+	// 					throw new Error("Missing or malformed authorization / invalid session");
+	// 				else
+	// 					throw new Error(errorData.message || "Authentication failed");
+	// 			}
+	// 		} catch (err) {
+	// 			if (err instanceof Error && !err.message.includes("401"))
+	// 				showNotification(err.message, notificationType.error);
+	// 		}
+	// 	};
+	// 	validateAuth();
+	// }, [])
 
 	const { currentScene } = useSceneStore();
 	useEffect(() => {

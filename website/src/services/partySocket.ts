@@ -22,15 +22,28 @@ class PartySocketService {
 				this.socket?.emit("party:join", { player });
 		});
 
-		this.socket.on("party:update", (partyData: { totalMembers: number; gameMode: any; members: any[] }) => {
-			const partyStore = usePartyStore.getState();
-			partyStore.setPartyValue("totalMembers", partyData.totalMembers);
-			partyStore.setPartyValue("gameMode", partyData.gameMode);
-			partyStore.setPartyValue("members", partyData.members);
+		this.socket.on("party_state", (partyData: { host: string; member: string[]; gameId: string | null }) => {
+			console.log(partyData);
 		});
 
-		this.socket.on("disconnet", (reason) => {
+		this.socket.on("invite_received", (payload: {hostUuid: string}) => {
+			console.log(payload);
+		});
+
+		this.socket.on("kicked", (payload: {message: string}) => {
+			console.log(payload);
+		});
+
+		this.socket.on("game_session_start", (payload: {gameId: string}) => {
+			console.log(payload);
+		});
+
+		this.socket.on("disconnect", (reason) => {
 			console.log("Disconnected from party microservice: ", reason);
+		});
+
+		this.socket.on("connect_error", (error) => {
+			console.log("Connection error:", error.message);
 		});
 	}
 	public disconnect() {
@@ -40,23 +53,36 @@ class PartySocketService {
 		}
 	}
 
-	public invitePlayer(targetUuid: string) {
+	public sendInvite(recipientUuid: string) {
 		if (!this.socket?.connected) {
 			console.warn("Cannot invite player: Socket not connected");
 			return;
 		}
 
-		this.socket.emit("party:invite", { targetUuid });
+		this.socket.emit("send_invite", { recipientUuid });
 	}
-	public kickMember(uuid: string) {
-		this.socket?.emit("party:kick_member", { uuid });
+	public kickMember(recipientUuid: string) {
+		this.socket?.emit("kick_player", { recipientUuid });
 	}
-	public toggleAsFriend(uuid: string) {
-		this.socket?.emit("party:add_friend_member", { uuid });
+	public startGameSession() {
+		this.socket?.emit("start_game_session");
+	}
+	public acceptInvite(hostUuid: string) {
+		this.socket?.emit("accept_invite", { hostUuid }, (response: any) => {
+			if (!response.success)
+				console.log("Failed to accept:", response.reason);
+		});
+	}
+	public rejectInvite(hostUuid: string) {
+		this.socket?.emit("reject_invite", { hostUuid });
+	}
+	public leaveParty() {
+		this.socket?.emit("leave_party");
 	}
 	public updateGameMode(gameMode: number) {
 		this.socket?.emit("party:set_gamemode", { gameMode });
 	}
+
 }
 
 export const partySocket = new PartySocketService();

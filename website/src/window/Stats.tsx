@@ -17,10 +17,6 @@ export const StatsWindow: React.FC = () => {
 	const handleKickMember = () => {
 		partySocket.kickMember("12345678-abcd-efgh-ijkl-000000000000");
 	}
-	const handleToggleAsFriend = () => {
-		setIsFriend(!isFriend);
-		partySocket.toggleAsFriend("12345678-abcd-efgh-ijkl-000000000000");
-	}
 
 	return (
 		<Window
@@ -45,7 +41,6 @@ export const StatsWindow: React.FC = () => {
 						Remove From Party
 					</button>
 					<button
-						onClick={handleToggleAsFriend}
 						className="
 							h-12 w-50
 							btn-text

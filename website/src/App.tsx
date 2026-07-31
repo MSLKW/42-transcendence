@@ -31,12 +31,13 @@ import { partySocket } from "./services/partySocket";
 export default function App() {
 	const { data } = usePlayerStore();
 	useEffect(() => {
-		if (data.uuid)
+		// if (data.uuid)
 			partySocket.connect();
-		return () => {
-			partySocket.disconnect();
-		};
-	}, [data.uuid]);
+		// return () => {
+			// partySocket.disconnect();
+		// };
+	// }, [data.uuid]);
+	}, []);
 
 	const { currentScene, showWindow, setShowWindow } = useSceneStore();
 	useEffect(() => {

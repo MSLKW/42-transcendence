@@ -76,7 +76,7 @@ interface FriendsProps {
 export const FriendModule = ({ name }: FriendsProps) => {
 	const { members } = usePartyStore();
 	const handleInvite = () => {
-		partySocket.invitePlayer("12345678-abcd-efgh-ijkl-000000000000");
+		partySocket.sendInvite("12345678-abcd-efgh-ijkl-000000000000");
 	}
 
 	return (
