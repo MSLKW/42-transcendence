@@ -7,6 +7,8 @@ import { HeaderModule } from "../modules/Header";
 import { RankButton } from "../components/button/Rank";
 import { AvatarButton } from "../components/button/Avatar";
 import { SortButtons } from "../components/button/Sort";
+import { gameSocket } from "../services/gameSocket";
+import { useSceneStore } from "../store/SceneStore";
 
 export const R3F = () => {
 	const { totalPlayers, dealCards, cardsLeft } = useGameStore();
@@ -36,9 +38,18 @@ export const R3F = () => {
 		validateAuth();
 	}, [])
 
+	const { currentScene } = useSceneStore();
 	useEffect(() => {
+		if (currentScene === "R3F")
+			gameSocket.connect();
+		else
+			gameSocket.disconnect();
 		dealCards();
-	}, []);
+
+		return () => {
+			gameSocket.disconnect();
+		};
+	}, [currentScene]);
 
 	const [activePlayer, setActivePlayer] = useState<number>(0);
 	const nextTurn = () => setActivePlayer((prev) => (prev + 1) % totalPlayers);
