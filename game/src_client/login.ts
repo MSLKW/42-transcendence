@@ -35,7 +35,6 @@ interface createLobbyResponse {
 
 interface createLobbyPayload {
 	hostUuid: string;
-	playersLimit: number;
 	playerUuids: Array<string>;
 }
 
@@ -61,7 +60,6 @@ updateLobbyButton?.addEventListener('click', () => {
 async function createLobbyAsync(): Promise<createLobbyResponse> {
 	const data: createLobbyPayload = {
 		hostUuid: playerId.value,
-		playersLimit: 4,
 		playerUuids: whitelisted
 	};
 	const response = await fetch("/lobby", {
@@ -82,7 +80,6 @@ async function createLobbyAsync(): Promise<createLobbyResponse> {
 async function updateLobbyAsync(sessionId: string): Promise<string> {
 	const data: createLobbyPayload = {
 		hostUuid: playerId.value,
-		playersLimit: 4,
 		playerUuids: whitelisted
 	};
 	const response = await fetch(`/lobby/${sessionId}`, {
