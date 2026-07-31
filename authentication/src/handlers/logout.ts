@@ -3,8 +3,9 @@ import { SessionStore } from "../store/sessionStore";
 
 export function logoutHandler(sessionStore: SessionStore) {
 	return async (req: Request, res: Response) => {
+		res.clearCookie("session_token");
+		
 		let token: string;
-
 		const authCookie = req.cookies["session_token"];
 		if (!authCookie)
 		{
