@@ -34,6 +34,10 @@ const lobbyRequestSchema = z.object({
 
 export type LobbyRequest = z.infer<typeof lobbyRequestSchema>;
 
+app.get('/health', (req, res) => {
+	return (res.status(204).end());
+});
+
 app.post('/lobby', (req, res) => {
 	try {
 		const payload: LobbyRequest = lobbyRequestSchema.parse(req.body);
@@ -60,7 +64,7 @@ app.put('/lobby/:lobbySessionId', (req, res) => {
 	try {
 		const payload: LobbyRequest = lobbyRequestSchema.parse(req.body);
 		if (lobby.update(payload)) {
-			return (res.status(200).end());
+			return (res.status(204).end());
 		}
 	}
 	catch (error) {

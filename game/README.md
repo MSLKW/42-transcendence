@@ -12,7 +12,25 @@ The Game Server manages the lobby and game sessions. Handling the lobby and its 
 | GAME_SERVER_LOBBY_LIMIT | number | Specifies the lobby limit, capping the amount of lobbies that the server will create |
 | GAME_SERVER_LOBBY_USER_LIMIT | number | Specifies the limit for the total users connecting to a single lobby |
 
-## POST /lobby endpoint responses
+# Endpoints
+
+## GET /health
+
+### Description:
+
+Healthcheck endpoint for docker orchestrator
+
+### Header: N/A
+
+### Body: N/A
+
+### Response:
+
+| HTTP Status | Payload | Description |
+| --- | --- | --- |
+| 204 | N/A | Server is healthy |
+
+## POST /lobby
 
 ### Description:
 
@@ -82,7 +100,7 @@ Example:
 
 | HTTP Status | Payload | Description |
 | --- | --- | --- |
-| 200 | N/A | The lobby is successfully updated |
+| 204 | N/A | The lobby is successfully updated |
 | 400 | zod: ZodError.issues | The request fails zod validation |
 | 404 | N/A | The server is unable to find the lobby requested |
 | 500 | error: string | The server is unable to update the lobby |
