@@ -2,6 +2,7 @@ import { useRef, useEffect } from "react";
 import { Canvas } from "@react-three/fiber";
 import { Stats, PerspectiveCamera, OrbitControls, AdaptiveDpr } from "@react-three/drei";
 import { useDevStore } from "./store/DevStore";
+import { useNotificationStore } from "./store/NotificationStore";
 import { usePlayerStore } from "./store/PlayerStore";
 import { useSceneStore } from "./store/SceneStore";
 import { StripeBg } from "./components/bg/Stripe";
@@ -25,12 +26,19 @@ import { SetupWindow } from "./window/Setup";
 import { SettingsWindow } from "./window/Settings";
 import { SignInWindow } from "./window/SignIn";
 import { StatsWindow } from "./window/Stats";
-import { useNotificationStore } from "./store/NotificationStore";
+import { partySocket } from "./services/partySocket";
 
 export default function App() {
 	const { data } = usePlayerStore();
+	useEffect(() => {
+		if (data.uuid)
+			partySocket.connect();
+		return () => {
+			partySocket.disconnect();
+		};
+	}, [data.uuid]);
 
-	const { setSceneHeight, setSceneWidth, currentScene, showWindow, setShowWindow } = useSceneStore();
+	const { currentScene, showWindow, setShowWindow } = useSceneStore();
 	useEffect(() => {
 		window.scrollTo({
 			top: 0,
@@ -40,30 +48,14 @@ export default function App() {
 			setShowWindow("setup", true);
 	}, [currentScene]);
 
-	const containerRef = useRef(null);
-	useEffect(() => {
-		if (!containerRef.current)
-			return;
-
-		const observer = new ResizeObserver((entries) => {
-			for (let entry of entries) {
-				setSceneWidth(entry.target.scrollWidth);
-				setSceneHeight(entry.target.scrollHeight);
-			}
-		});
-		observer.observe(containerRef.current);
-		return () => observer.disconnect();
-	}, []);
-
-	const showStats = useDevStore((devStore) => devStore.showStats);
-
 	const { id } = useNotificationStore();
+	const { showStats } = useDevStore();
 
 	return (
 		<>
 			{ (currentScene === "LOGIN" || currentScene === "HOME") && <StripeBg /> }
 			{showStats && <Stats />}
-			<section ref={containerRef} className="
+			<section className="
 				z-0
 				absolute top-0 left-1/2 -translate-x-1/2
 				w-full min-w-80 max-w-360

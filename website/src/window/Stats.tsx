@@ -8,11 +8,19 @@ import { PlayerStatsModule } from "../modules/PlayerStats";
 import { Window } from "./Window";
 import { UnfriendIcon } from "../components/icon/Unfriend";
 import { AddFriendIcon } from "../components/icon/AddFriend";
+import { partySocket } from "../services/partySocket";
 
 export const StatsWindow: React.FC = () => {
 	const { profileIndex } = useSceneStore();
 	const { members } = usePartyStore();
 	const [isFriend, setIsFriend] = useState(false);
+	const handleKickMember = () => {
+		partySocket.kickMember("12345678-abcd-efgh-ijkl-000000000000");
+	}
+	const handleToggleAsFriend = () => {
+		setIsFriend(!isFriend);
+		partySocket.toggleAsFriend("12345678-abcd-efgh-ijkl-000000000000");
+	}
 
 	return (
 		<Window
@@ -28,11 +36,16 @@ export const StatsWindow: React.FC = () => {
 				<MedalsModule />
 				<PlayerStatsModule />
 				<div className="flex place-content-evenly place-items-center p-5 gap-5">
-					<button className="h-12 w-50 btn-text bg-n6 border border-n5 text-n0">
+					<button
+						onClick={handleKickMember}
+						className="
+							h-3rem w-50 btn-text bg-n6 border border-n5 text-n0
+						"
+					>
 						Remove From Party
 					</button>
 					<button
-						onClick={() => setIsFriend(!isFriend)}
+						onClick={handleToggleAsFriend}
 						className="
 							h-12 w-50
 							btn-text

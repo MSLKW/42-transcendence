@@ -5,6 +5,7 @@ import { SendButton } from "../components/button/Send";
 import { AvatarButton } from "../components/button/Avatar";
 import { FriendsIcon } from "../components/icon/Friends";
 import { usePartyStore } from "../store/PartyStore";
+import { partySocket } from "../services/partySocket";
 
 export const SearchModule = () => {
 	const focusRef = useRef<HTMLInputElement | null>(null);
@@ -74,6 +75,9 @@ interface FriendsProps {
 }
 export const FriendModule = ({ name }: FriendsProps) => {
 	const { members } = usePartyStore();
+	const handleInvite = () => {
+		partySocket.invitePlayer("12345678-abcd-efgh-ijkl-000000000000");
+	}
 
 	return (
 		<div
@@ -86,6 +90,7 @@ export const FriendModule = ({ name }: FriendsProps) => {
 			<AvatarButton index={0} name={members[0].name ?? "Guest"} relation={members[0].relation} showName={false}/>
 			<button
 				data-tip="Send Invite"
+				onClick={handleInvite}
 				className="
 					h-full w-full
 					flex flex-col place-content-center place-items-between
