@@ -4,7 +4,7 @@ import { CardHandTransmit, CardRank, CardSuit, GameStateTransmit, GameStartReque
 import { CardHeap } from './CardHeap.ts';
 import { Player } from './Player.ts';
 import { Opponent } from './Opponent.ts';
-import { camera, orbitControls } from './main.ts';
+import { camera, cameraLight, orbitControls } from './main.ts';
 import { gsap } from 'gsap';
 
 export class Game {
@@ -126,12 +126,16 @@ export class Game {
 				if (id === this.playerId) {
 					const player = new Player(this.socket, this.playerId, this.cardHeap); // 2nd game bug where player is doubled, rly need to make a clean game state for client
 					const [pos, rot] = this.tablePosition(i, true);
-					player.cardManager.updateManager(pos, rot);
-					const dummy = new THREE.Object3D();
-					dummy.position.copy(camera.position);
-					dummy.lookAt(new THREE.Vector3());
-					this.move(camera, new THREE.Vector3(pos.x * 1.5, pos.y * 3, pos.z * 1.5), dummy.quaternion);
+					const target = new THREE.Object3D();
+					target.position.copy(camera.position);
+					target.lookAt(new THREE.Vector3());
+					this.move(camera, new THREE.Vector3(pos.x * 1.5, pos.y * 3, pos.z * 1.5), target.quaternion);
 					orbitControls.update();
+					orbitControls.addEventListener("change", () => {
+						const offset = new THREE.Vector3(0, -2, -3);
+						cameraLight.position.copy(camera.position);
+						player.cardManager.updateManager(offset.clone().applyQuaternion(camera.quaternion.clone()).add(camera.position), camera.quaternion.clone());
+					});
 					player.setupGameState(gameState);
 					
 				}

@@ -63,9 +63,9 @@ const light = new THREE.PointLight(0xffffff, 25, 20);
 light.position.set(0, 4, 0);
 scene.add(light);
 
-const light1 = new THREE.PointLight(0xffffff, 25, 20);
-light1.position.set(0, 5, 7);
-scene.add(light1);
+export const cameraLight = new THREE.PointLight(0xffffff, 20, 20);
+cameraLight.position.set(0, 5, 7);
+scene.add(cameraLight);
 
 export const orbitControls = new OrbitControls(camera, renderer.domElement);
 camera.position.set(0, 10, 0);

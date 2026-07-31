@@ -24,6 +24,7 @@ export class CardManager {
 	public	selectedCards: CardHand;
 	private selectedBoundSpaceLimit: number;
 	private selectedSlots: Array<THREE.Vector3>;
+	private	selectedOffset: THREE.Vector3;
 
 	/* References */
 	private playerId: string;
@@ -52,6 +53,7 @@ export class CardManager {
 		this.boundSpaceLimit = boundSpace;
 		this.selectedBoundSpaceLimit = selectedBoundSpace;
 		this.selectedSlots = [];
+		this.selectedOffset = new THREE.Vector3(0, 3, 0);
 		this.dragPlane = new THREE.Plane().setFromNormalAndCoplanarPoint(new THREE.Vector3(0, 0, 1), this.position);
 		this.sortFunction = undefined;
 		this.draggedCard = undefined;
@@ -111,8 +113,9 @@ export class CardManager {
 		this.dragPlane.setFromNormalAndCoplanarPoint(this.dragPlane.normal.clone().applyQuaternion(this.rotation), this.position);
 		this.dragPlane.constant -= 0.2;
 		this.slots = this.calculateSlots(this.cards, this.boundSpaceLimit);
+		this.initHitBoxes(this.cards, this.slots);
 		this.updateCardObjects(this.cards, this.slots);
-		this.selectedSlots = this.calculateSlots(this.selectedCards.cards, this.selectedBoundSpaceLimit);
+		this.selectedSlots = this.calculateSlots(this.selectedCards.cards, this.selectedBoundSpaceLimit, this.selectedOffset);
 		this.updateCardObjects(this.selectedCards.cards, this.selectedSlots);
 	}
 
@@ -316,7 +319,7 @@ export class CardManager {
 		if (this.selectedCards.receiveCard(card) == true) {
 			this.removeCard(card);
 			card.isHover = false;
-			this.selectedSlots = this.calculateSlots(this.selectedCards.cards, this.selectedBoundSpaceLimit, new THREE.Vector3(0, 3, 0));
+			this.selectedSlots = this.calculateSlots(this.selectedCards.cards, this.selectedBoundSpaceLimit, this.selectedOffset);
 			this.updateCardObjects(this.selectedCards.cards, this.selectedSlots);
 		}
 	}
@@ -325,7 +328,7 @@ export class CardManager {
 		if (this.selectedCards.removeCard(card)) {
 			this.receiveCard(card);
 			card.isHover = false;
-			this.selectedSlots = this.calculateSlots(this.selectedCards.cards, this.selectedBoundSpaceLimit, new THREE.Vector3(0, 3, 0));
+			this.selectedSlots = this.calculateSlots(this.selectedCards.cards, this.selectedBoundSpaceLimit, this.selectedOffset);
 			this.updateCardObjects(this.selectedCards.cards, this.selectedSlots);
 		}
 	}
