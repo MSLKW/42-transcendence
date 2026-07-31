@@ -29,8 +29,7 @@ Content-Type: application/json
 | Key | Type | Zod Validation | Description |
 | --- | --- | --- | --- |
 | hostUuid | string | Must be a minimum of 1 character ( FUTURE: Must be UUIDv? ) | Used to establish the lobby host |
-| playersLimit | number | Must be in between 1-4 | Used to limit the amount of players in the game. The total amount of users that can connect to the lobby will be limited by GAME_SERVER_LOBBY_USERS_LIMIT |
-| playerUuids | Array<string> | Can accept duplicate UUIDs, but will remove duplicate UUIDs. ( FUTURE: String must be UUID ) | Used to whitelist client socket.io user connections. If updated playerUuids do not contain currently connected users, they will be kicked out |
+| playerUuids | Array<string> | Can accept duplicate UUIDs, but will remove duplicate UUIDs. ( FUTURE: String must be UUID ) | Used to whitelist client socket.io user connections |
 
 Example:
 
@@ -67,8 +66,7 @@ Content-Type: application/json
 | Key | Type | Zod Validation | Description |
 | --- | --- | --- | --- |
 | hostUuid | string | Must be a minimum of 1 character ( FUTURE: Must be UUIDv? ) | Used to establish the lobby host |
-| playersLimit | number | Must be in between 1-4 | Used to limit the amount of players in the game. The total amount of users that can connect to the lobby will be limited by GAME_SERVER_LOBBY_USERS_LIMIT |
-| playerUuids | Array<string> | Can accept duplicate UUIDs, but will remove duplicate UUIDs. ( FUTURE: String must be UUID ) | Used to whitelist client socket.io user connections |
+| playerUuids | Array<string> | Can accept duplicate UUIDs, but will remove duplicate UUIDs. ( FUTURE: String must be UUID ) | Used to whitelist client socket.io user connections. If updated playerUuids do not contain currently connected users, they will be kicked out |
 
 Example:
 
@@ -84,7 +82,7 @@ Example:
 
 | HTTP Status | Payload | Description |
 | --- | --- | --- |
-| 200 | N/A | The lobby is successfully created |
+| 200 | N/A | The lobby is successfully updated |
 | 400 | zod: ZodError.issues | The request fails zod validation |
 | 404 | N/A | The server is unable to find the lobby requested |
 | 500 | error: string | The server is unable to update the lobby |

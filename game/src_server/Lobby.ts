@@ -4,6 +4,7 @@ import { UserState } from './UserState.js';
 import { GameState } from './GameState.js';
 import { GameStartRequest, SeatOrderTransmit, StatusTransmit } from '../src_shared/Types.js';
 import { EventEmitter } from 'node:events';
+import { success } from 'zod';
 
 export class Lobby {
 	private hostUuid: string;
@@ -24,11 +25,9 @@ export class Lobby {
 		this.totalUsersLimit = 5;
 		this.sessionId = sessionId;
 		this.events = new EventEmitter();
-		this.game = new GameState(data.playersLimit, this.sessionId);
+		this.game = new GameState(this.sessionId);
 		this.lobbyRoomId = "lobby" + this.sessionId;
-		for (let i = 0; i < data.playersLimit; i++) {
-			this.availableSeats.push(i);
-		}
+		this.initSeats(4, this.hostUuid);
 	}
 
 	public emit(event: string, payload: any) {
@@ -91,6 +90,11 @@ export class Lobby {
 		user.socket.on("game_start_request", (gameStartRequest: GameStartRequest) => {
 			this.GameStartRequest(user, gameStartRequest);
 		});
+
+		user.socket.on("user_seat_change", (totalSeats: number) => {
+			const status = this.initSeats(totalSeats, user.uuid);
+			user.socket.emit("user_seat_change", status);
+		})
 	}
 
 	private disconnectUser(disconnectedUser: UserState) {
@@ -147,5 +151,31 @@ export class Lobby {
 		// this.hostUuid = data.hostUuid;
 		console.log(`lobby${this.sessionId} is updated`)
 		return (true);
+	}
+
+	private initSeats(totalSeats: number, uuid: string): StatusTransmit {
+		const status: StatusTransmit = {
+			success: false,
+			message: ""
+		}
+		if (uuid !== this.hostUuid) {
+			status.message = "You are not the host";
+			return (status);
+		}
+		if (totalSeats < 1 || totalSeats > 4) {
+			status.message = "Seats are out of bounds";
+			return (status);
+		}
+		for (let i = 0; i < this.users.length; i++) {
+			this.users[i].leaveSeat();
+		}
+		this.emitSeatOrder();
+		this.availableSeats.length = 0;
+		for (let i = 0; i < totalSeats; i++) {
+			this.availableSeats.push(i);
+		}
+		status.success = true;
+		status.message = "Successfully initialized seats";
+		return (status);
 	}
 }

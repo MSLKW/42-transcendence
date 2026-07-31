@@ -19,6 +19,7 @@ export class Game {
 	private takeSeatButton = document.getElementById('take-seat-button') as HTMLButtonElement;
 	private leaveSeatButton = document.getElementById('leave-seat-button') as HTMLButtonElement;
 	private takeSeatInput = document.getElementById('take-seat-input') as HTMLInputElement;
+	private seatChangeButton = document.getElementById('seat-change-button') as HTMLButtonElement;
 
 
 	constructor(authId: string, sessionId: string, playerId: string) {
@@ -53,6 +54,10 @@ export class Game {
 		this.leaveSeatButton.addEventListener('click', () => {
 			this.socket.emit("user_seat_leave");
 		});
+
+		this.seatChangeButton.addEventListener('click', () => {
+			this.socket.emit("user_seat_change", Number(this.takeSeatInput.value));
+		})
 	}
 
 	private bindSocketEvents() {
@@ -92,6 +97,10 @@ export class Game {
 	
 		this.socket.on("user_seat_update", (seatOrder: SeatOrderTransmit) => {
 			console.log(seatOrder);
+		});
+
+		this.socket.on("user_seat_change", (status: StatusTransmit) => {
+			console.log(status);
 		});
 	
 		this.socket.on("user_list_update", (list: Array<string>) => {

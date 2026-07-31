@@ -18,12 +18,11 @@ export class GameState {
 
 	// Game Settings
 	public	turnTimerInSeconds: number;
-	private playersLimit: number; // Players allowed in the game
 	// Play until last player or when the first player finishes
 	// if play until last player finishes, will score based on finishing ranking?
 	// if play until first player finishes, will score based on cards held by the losers
 	
-	constructor(playersLimit: number, sessionId: string) {
+	constructor(sessionId: string) {
 		this.players = [];
 		this.spectators = [];
 		this.cardDeck = new CardDeckState();
@@ -32,7 +31,6 @@ export class GameState {
 		this.playerTurnIndex = -1;
 		this.playerTurnTimeoutId = undefined;
 		this.turnTimerInSeconds = 0;
-		this.playersLimit = playersLimit;
 		this.gameRoomId = "game" + sessionId;
 	}
 
@@ -49,10 +47,8 @@ export class GameState {
 	}
 
 	public addPlayer(user: UserState) {
-		if (this.players.length < this.playersLimit) {
-			const player = new PlayerState(user.uuid, user.socket, this)
-			this.players.push(player);
-		}
+		const player = new PlayerState(user.uuid, user.socket, this)
+		this.players.push(player);
 	}
 
 	public addSpectator(user: UserState) {

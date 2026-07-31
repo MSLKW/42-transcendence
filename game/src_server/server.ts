@@ -29,20 +29,11 @@ const lobbyManager = new LobbyManager();
 
 const lobbyRequestSchema = z.object({
 	hostUuid: z.string().min(1), // will be replaced with z.uuid
-	playersLimit: z.number().min(1).max(4),
 	playerUuids: z.array(z.string()).transform((uuids) => [... new Set(uuids)])
 });
 
 export type LobbyRequest = z.infer<typeof lobbyRequestSchema>;
 
-/*
-	Exposed internally for party manager to request
-	{
-		"hostUuid": "",
-		"playersLimit": 4,
-		"whitelist": ["id1", "id2", "id3"]
-	}
-*/
 app.post('/lobby', (req, res) => {
 	try {
 		const payload: LobbyRequest = lobbyRequestSchema.parse(req.body);
