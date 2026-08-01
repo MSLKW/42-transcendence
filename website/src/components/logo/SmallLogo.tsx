@@ -35,7 +35,7 @@ export const SmallLogo = () => {
 					2
 				</span>
 			</div>
-			<span className="
+			<span className="`
 				text-[clamp(0.375rem,1.154vmin+0.029rem,0.75rem)]
 				text-b5 font-light text-right tracking-widest whitespace-nowrap leading-6
 			">

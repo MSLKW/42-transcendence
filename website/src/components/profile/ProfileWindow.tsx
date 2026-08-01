@@ -1,6 +1,6 @@
-import { AvatarNameModule } from "../../modules/AvatarName";
-import { AvatarSelectModule } from "../../modules/AvatarSelectModule";
-import { MedalsModule } from "../medals/MedalsModule";
+import { AvatarNameModule } from "../avatar/AvatarNameModule";
+import { AvatarSelectModule } from "../avatar/AvatarSelectModule";
+import { MedalsModule } from "../player/medals/MedalsModule";
 import { PlayerDataModule } from "../player_data/PlayerDataModule";
 import { PlayerStatsModule } from "../player_stats/PlayerStatsModule";
 import { Window } from "../window/Window";

@@ -1,7 +1,7 @@
 import React, { useState, useRef, useCallback, type ReactNode } from "react";
 import { usePartyStore } from "../../store/PartyStore";
 import { useSceneStore } from "../../store/SceneStore";
-import { LightboxButton } from "./lightbox/LightboxButton";
+import { LightboxButton } from "../lightbox/LightboxButton";
 import { PinActiveIcon } from "./pin/PinActiveIcon";
 import { PinInactiveIcon } from "./pin/PinInactiveIcon";
 import { CloseIcon } from "./close/CloseIcon";

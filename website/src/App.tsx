@@ -8,23 +8,23 @@ import { useSceneStore } from "./store/SceneStore";
 import { StripeBg } from "./components/bg/Stripe";
 import { SphereBg } from "./components/3d/Sphere";
 import { Card } from "./components/3d/PCard";
-import { Login } from "./pages/Login";
-import { Home } from "./pages/Home";
-import { Lobby } from "./pages/Lobby";
-import { Gameplay } from "./pages/Gameplay";
-import { R3F } from "./pages/R3F";
-import { Results } from "./pages/Results";
-import { BotsWindow } from "./window/Bots";
-import { ChatWindow } from "./window/Chat";
-import { CreateAccountWindow } from "./components/create_account/CreateAccount";
+import { LoginScene } from "./components/login/LoginScene";
+import { HomeScene } from "./components/home/HomeScene";
+import { LobbyScene } from "./components/lobby/LobbyScene";
+import { GameplayScene } from "./components/gameplay/GameplayScene";
+import { R3FScene } from "./components/r3f/R3FScene";
+import { ResultsScene } from "./components/results/ResultsScene";
+import { BotsWindow } from "./components/bots/BotsWindow";
+import { ChatWindow } from "./components/chat/ChatWindow";
+import { CreateAccountWindow } from "./components/login/create_account/CreateAccountWindow";
+import { SignInWindow } from "./components/login/sign_in/SignInWindow";
 import { InfoWindow } from "./components/info/InfoWindow";
-import { NotificationWindow } from "./window/Notification";
-import { PartyWindow } from "./window/Party";
+import { NotificationWindow } from "./components/notification/NotificationWindow";
+import { PartyWindow } from "./components/party/PartyWindow";
 import { ProfileWindow } from "./components/profile/ProfileWindow";
-import { RankWindow } from "./window/Rank";
-import { SetupWindow } from "./window/Setup";
-import { SettingsWindow } from "./window/Settings";
-import { SignInWindow } from "./components/sign_in/SignIn";
+import { RankWindow } from "./components/rank/RankWindow";
+import { SetupWindow } from "./components/setup/SetupWindow";
+import { SettingsWindow } from "./components/settings/SettingsWindow";
 import { StatsWindow } from "./components/stats/StatsWindow";
 import { partySocket } from "./services/partySocket";
 
@@ -83,12 +83,12 @@ export default function App() {
 				</Canvas>
 			</section>
 			<section className="cont-body">
-				{ currentScene === 'LOGIN' && <Login /> }
-				{ currentScene === 'HOME' && <Home /> }
-				{ currentScene === 'LOBBY' && <Lobby /> }
-				{ currentScene === 'GAMEPLAY' && <Gameplay /> }
-				{ currentScene === 'R3F' && <R3F /> }
-				{ currentScene === 'RESULTS' && <Results /> }
+				{ currentScene === 'LOGIN' && <LoginScene /> }
+				{ currentScene === 'HOME' && <HomeScene /> }
+				{ currentScene === 'LOBBY' && <LobbyScene /> }
+				{ currentScene === 'GAMEPLAY' && <GameplayScene /> }
+				{ currentScene === 'R3F' && <R3FScene /> }
+				{ currentScene === 'RESULTS' && <ResultsScene /> }
 				{ showWindow["bots"] && <BotsWindow /> }
 				{ showWindow["chat"] && <ChatWindow /> }
 				{ showWindow["createAccount"] && <CreateAccountWindow /> }

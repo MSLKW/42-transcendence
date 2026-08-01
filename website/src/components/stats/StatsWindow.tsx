@@ -1,12 +1,12 @@
 import { useSceneStore } from "../../store/SceneStore";
 import { usePartyStore } from "../../store/PartyStore";
 import { Window } from "../window/Window";
-import { AvatarMemberModule } from "../../modules/AvatarMember";
-import { MedalsModule } from "../medals/MedalsModule";
+import { AvatarMemberModule } from "../avatar/AvatarMember";
+import { MedalsModule } from "../player/medals/MedalsModule";
 import { PlayerDataModule } from "../player_data/PlayerDataModule";
 import { PlayerStatsModule } from "../player_stats/PlayerStatsModule";
-import { FriendToggleButton } from "./button/FriendToggleButton";
-import { KickMemberButton } from "./button/KickMemberButton";
+import { FriendToggleButton } from "./friend/FriendToggleButton";
+import { KickMemberButton } from "./kick/KickMemberButton";
 
 export const StatsWindow: React.FC = () => {
 	const { profileIndex } = useSceneStore();
