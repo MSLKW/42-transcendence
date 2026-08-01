@@ -1,8 +1,8 @@
-import { AvatarNameModule } from "../avatar/AvatarNameModule";
+import { AvatarInputModule } from "../avatar/AvatarInputModule";
 import { AvatarSelectModule } from "../avatar/AvatarSelectModule";
 import { MedalsModule } from "../player/medals/MedalsModule";
-import { PlayerDataModule } from "../player_data/PlayerDataModule";
-import { PlayerStatsModule } from "../player_stats/PlayerStatsModule";
+import { PlayerDataModule } from "../player/data/PlayerDataModule";
+import { PlayerStatsModule } from "../player/stats/PlayerStatsModule";
 import { Window } from "../window/Window";
 
 export const ProfileWindow = () => {
@@ -20,7 +20,7 @@ export const ProfileWindow = () => {
 			">
 				<div className="divide-y divide-n2">
 					<div className="flex">
-						<AvatarNameModule />
+						<AvatarInputModule />
 						<PlayerDataModule />
 					</div>
 					<AvatarSelectModule />

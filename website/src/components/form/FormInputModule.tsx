@@ -8,7 +8,7 @@ interface FormInputModuleProps {
 	placeholder?: string;
 	inputFor: string;
 	hasFocusRef?: boolean;
-	isPassword?: boolean
+	isPassword?: boolean;
 	call: (value: string) => void;
 }
 

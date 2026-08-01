@@ -1,7 +1,7 @@
 import { useSceneStore } from "../../store/SceneStore";
 import { RELATION, type RelationType } from "../../store/PartyStore";
 import { AvatarImage } from "./AvatarImage";
-import { AvatarName } from "./AvatarName";
+import { AvatarName } from "./AvatarNameLabel";
 import { HostIcon } from "./HostIcon";
 
 interface AvatarProps {

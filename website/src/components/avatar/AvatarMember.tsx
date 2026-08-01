@@ -1,5 +1,5 @@
 import { AvatarImage } from "./AvatarImage";
-import { AvatarName } from "./AvatarName";
+import { AvatarName } from "./AvatarNameLabel";
 
 interface AvatarMemberProps {
 	name: string;

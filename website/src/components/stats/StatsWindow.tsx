@@ -3,8 +3,8 @@ import { usePartyStore } from "../../store/PartyStore";
 import { Window } from "../window/Window";
 import { AvatarMemberModule } from "../avatar/AvatarMember";
 import { MedalsModule } from "../player/medals/MedalsModule";
-import { PlayerDataModule } from "../player_data/PlayerDataModule";
-import { PlayerStatsModule } from "../player_stats/PlayerStatsModule";
+import { PlayerDataModule } from "../player/data/PlayerDataModule";
+import { PlayerStatsModule } from "../player/stats/PlayerStatsModule";
 import { FriendToggleButton } from "./friend/FriendToggleButton";
 import { KickMemberButton } from "./kick/KickMemberButton";
 

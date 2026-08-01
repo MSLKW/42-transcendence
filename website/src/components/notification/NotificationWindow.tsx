@@ -93,7 +93,7 @@ export const NotificationWindow = () => {
 				absolute z-5
 				top-10 left-1/2
 				flex flex-col place-content-center place-items-center
-				gap-2
+				gap-0.5rem
 				${ isExiting ? "animate-slide-out" : "animate-slide-in" }
 		`}>
 			<button
@@ -103,13 +103,13 @@ export const NotificationWindow = () => {
 					min-w-50
 					bg-n0
 					border border-n1 rounded-full
-					py-5 px-10
+					py-1.5rem px-3rem
 					relative ${numOfButtons === 0 ? "cursor-pointer" : "cursor-default" }
 			`}>
 				<span className={`
 					relative z-1
 					${ isError ? "text-r4" : "text-n6" }
-					text-center
+					text-1.25rem text-center
 				`}>
 					{message}
 				</span>

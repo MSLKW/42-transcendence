@@ -1,14 +1,32 @@
-import { useEffect } from "react";
-import { useNotificationStore, notificationType } from "../../store/NotificationStore";
+import { useState, useRef, useEffect } from "react";
+import { usePlayerStore } from "../../store/PlayerStore";
+import { useSceneStore } from "../../store/SceneStore";
 import { Window } from "../window/Window";
-import { AvatarNameModule } from "../avatar/AvatarNameModule";
+import { AvatarInputModule } from "../avatar/AvatarInputModule";
 import { AvatarSelectModule } from "../avatar/AvatarSelectModule";
 
 export const SetupWindow = () => {
-	const { showNotification } = useNotificationStore();
+	const { data } = usePlayerStore()
+	const [isValid, setIsValid] = useState(Boolean(data.name?.trim()));
+	const { setShowWindow } = useSceneStore();
+
+	const inputRef = useRef<HTMLInputElement | null>(null);
+	useEffect(() => {
+		if (!data.name && inputRef.current)
+			inputRef.current.focus();
+	}, []);
+
+	const submitButtonRef = useRef<HTMLButtonElement | null>(null);
+
+	const handleSetupComplete = () => {
+		if (isValid) {
+			setShowWindow("setup", false)
+		}
+	}
 
 	useEffect(() => {
-		showNotification("Enter your name and choose your avatar", notificationType.nameInput);
+		if (data.name && submitButtonRef.current)
+			submitButtonRef.current.focus();
 	}, []);
 
 	return (
@@ -34,9 +52,36 @@ export const SetupWindow = () => {
 					relative
 				">
 					<div className="divide-y divide-n2">
-						<AvatarNameModule />
+						<AvatarInputModule
+							setIsValid={setIsValid}
+							inputRef={inputRef}
+							submitButtonRef={submitButtonRef}
+						/>
 						<AvatarSelectModule />
 					</div>
+				</div>
+				<hr />
+				<div
+					className="
+						flex flex-col place-content-center place-items-center
+						gap-1rem
+						text-n6
+						py-2rem
+					"
+				>
+					<h3>Enter your name and choose your avatar</h3>
+					<button
+						ref={submitButtonRef}
+						disabled={!isValid}
+						onClick={handleSetupComplete}
+						className="
+							h-3rem aspect-8/1
+							btn-text bg-white
+							text-n0
+						"
+					>
+						{isValid ? "Let's Play!" : "Waiting for valid name..."}
+					</button>
 				</div>
 			</Window>
 		</>
