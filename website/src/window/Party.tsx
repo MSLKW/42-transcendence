@@ -1,5 +1,5 @@
 import { useRef, useEffect } from "react";
-import { Window } from "./Window";
+import { Window } from "../components/window/Window";
 import { SearchButton } from "../components/button/Search";
 import { SendButton } from "../components/button/Send";
 import { AvatarButton } from "../components/button/Avatar";

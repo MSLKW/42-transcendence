@@ -1,4 +1,4 @@
-import { Window } from "./Window";
+import { Window } from "../components/window/Window";
 import { RankArrowIcon } from "../components/icon/RankArrow";
 import { SpadesIcon, HeartsIcon, ClubsIcon, DiamondsIcon } from "../components/icon/Suits"
 

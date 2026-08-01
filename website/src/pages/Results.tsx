@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { useNotificationStore, notificationType } from "../store/NotificationStore";
 import { usePartyStore } from "../store/PartyStore";
-import { HeaderModule } from "../modules/Header";
+import { HeaderModule } from "../components/header/HeaderModule";
 import { AvatarButton } from "../components/button/Avatar";
 import { AvatarImage } from "../components/image/AvatarImage";
 import { RedTriangle } from "../components/image/RedTriangle";

@@ -1,10 +1,10 @@
 import { useEffect } from "react";
 import { usePartyStore, GAMEMODE } from "../store/PartyStore";
-import { HeaderModule } from "../modules/Header";
-import { HomeCardButton } from "../modules/HomeCard";
+import { HeaderModule } from "../components/header/HeaderModule";
+import { HomeCardButton } from "../components/home_card/HomeCard";
 import { AvatarButton } from "../components/button/Avatar";
 import { PartyButton } from "../components/button/Party";
-import { SmallLogo } from "../modules/Logo";
+import { SmallLogo } from "../components/logo/SmallLogo";
 
 export const Home = () => {
 	const { members, removeBots } = usePartyStore();

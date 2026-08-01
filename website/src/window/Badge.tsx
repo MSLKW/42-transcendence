@@ -1,6 +1,6 @@
 import { usePlayerStore, BADGE_LABEL } from "../store/PlayerStore";
 import { useSceneStore } from "../store/SceneStore";
-import { LightboxButton } from "../components/button/Lightbox";
+import { LightboxButton } from "../components/window/lightbox/LightboxButton";
 
 export const BadgeWindow = () => {
 	const { data, setPlayerDataValue } = usePlayerStore();

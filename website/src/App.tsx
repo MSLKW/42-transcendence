@@ -1,4 +1,4 @@
-import { useRef, useEffect } from "react";
+import { useEffect } from "react";
 import { Canvas } from "@react-three/fiber";
 import { Stats, PerspectiveCamera, OrbitControls, AdaptiveDpr } from "@react-three/drei";
 import { useDevStore } from "./store/DevStore";
@@ -16,16 +16,16 @@ import { R3F } from "./pages/R3F";
 import { Results } from "./pages/Results";
 import { BotsWindow } from "./window/Bots";
 import { ChatWindow } from "./window/Chat";
-import { CreateAccountWindow } from "./window/CreateAccount";
-import { InfoWindow } from "./window/Info";
+import { CreateAccountWindow } from "./components/create_account/CreateAccount";
+import { InfoWindow } from "./components/info/InfoWindow";
 import { NotificationWindow } from "./window/Notification";
 import { PartyWindow } from "./window/Party";
-import { ProfileWindow } from "./window/Profile";
+import { ProfileWindow } from "./components/profile/ProfileWindow";
 import { RankWindow } from "./window/Rank";
 import { SetupWindow } from "./window/Setup";
 import { SettingsWindow } from "./window/Settings";
-import { SignInWindow } from "./window/SignIn";
-import { StatsWindow } from "./window/Stats";
+import { SignInWindow } from "./components/sign_in/SignIn";
+import { StatsWindow } from "./components/stats/StatsWindow";
 import { partySocket } from "./services/partySocket";
 
 export default function App() {
@@ -83,7 +83,6 @@ export default function App() {
 				</Canvas>
 			</section>
 			<section className="cont-body">
-			{/* <section className="h-screen w-screen"> */}
 				{ currentScene === 'LOGIN' && <Login /> }
 				{ currentScene === 'HOME' && <Home /> }
 				{ currentScene === 'LOBBY' && <Lobby /> }

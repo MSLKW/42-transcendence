@@ -2,8 +2,8 @@ import { useEffect } from "react";
 import { useSceneStore } from "../store/SceneStore";
 import { useGameStore } from "../store/GameStore";
 import { usePartyStore, RELATION } from "../store/PartyStore";
-import { HeaderModule } from "../modules/Header";
-import { SmallLogo } from "../modules/Logo";
+import { HeaderModule } from "../components/header/HeaderModule";
+import { SmallLogo } from "../components/logo/SmallLogo";
 import { AvatarButton } from "../components/button/Avatar";
 import { PartyButton } from "../components/button/Party";
 
@@ -163,8 +163,8 @@ const BOT_MEMBERS = [
 		badge: "Easy",
 		level: 0,
 		xp: 0,
-		createdAt: "1 July 2026",
-		lastLogin: "1 July 2026",
+		createdAt: 1784110862000,
+		lastLogin: 1784110862000,
 		totalPlayed: 0,
 		totalWins: 0,
 		totalLoss: 0,
@@ -192,8 +192,8 @@ const BOT_MEMBERS = [
 		badge: "Medium",
 		level: 0,
 		xp: 0,
-		createdAt: "1 July 2026",
-		lastLogin: "1 July 2026",
+		createdAt: 1784110862000,
+		lastLogin: 1784110862000,
 		totalPlayed: 0,
 		totalWins: 0,
 		totalLoss: 0,
@@ -221,8 +221,8 @@ const BOT_MEMBERS = [
 		badge: "Hard",
 		level: 0,
 		xp: 0,
-		createdAt: "1 July 2026",
-		lastLogin: "1 July 2026",
+		createdAt: 1784110862000,
+		lastLogin: 1784110862000,
 		totalPlayed: 0,
 		totalWins: 0,
 		totalLoss: 0,

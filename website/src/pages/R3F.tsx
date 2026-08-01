@@ -1,9 +1,8 @@
 import { useState, useEffect } from "react";
-import { useNotificationStore, notificationType } from "../store/NotificationStore";
 import { useGameStore } from "../store/GameStore";
 import { usePartyStore } from "../store/PartyStore";
 import { useSettingsStore, AUTO_PASS_RECORD } from "../store/SettingsStore";
-import { HeaderModule } from "../modules/Header";
+import { HeaderModule } from "../components/header/HeaderModule";
 import { RankButton } from "../components/button/Rank";
 import { AvatarButton } from "../components/button/Avatar";
 import { SortButtons } from "../components/button/Sort";

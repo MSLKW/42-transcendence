@@ -3,7 +3,6 @@ import { persist } from "zustand/middleware";
 import { usePlayerStore, STATUS } from "./PlayerStore";
 import { usePartyStore, RELATION, SEATNUMBER_UNSEATED } from "./PartyStore";
 import { useSceneStore } from "./SceneStore";
-import { useNotificationStore, notificationType } from "./NotificationStore";
 
 interface DevValues {
 	showFrame: boolean;
@@ -47,8 +46,8 @@ export const useDevStore = create<DevState>()(
 						badge: "Newcomer",
 						level: 1,
 						xp: 0,
-						createdAt: "15 July 2026",
-						lastLogin: "15 July 2026",
+						createdAt: 1784110862000,
+						lastLogin: 1784110862000,
 						totalPlayed: 0,
 						totalWins: 0,
 						totalLoss: 0,
@@ -77,8 +76,8 @@ export const useDevStore = create<DevState>()(
 						badge: "Newcomer",
 						level: 1,
 						xp: 0,
-						createdAt: new Date(1784110862000).toISOString(),
-						lastLogin: new Date().toISOString(),
+						createdAt: 1784110862000,
+						lastLogin: 1784110862000,
 						totalPlayed: 0,
 						totalWins: 0,
 						totalLoss: 0,

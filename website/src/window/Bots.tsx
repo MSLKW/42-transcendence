@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { useNotificationStore, notificationType } from "../store/NotificationStore";
-import { Window } from "./Window";
+import { Window } from "../components/window/Window";
 import { AvatarMemberModule } from "../modules/AvatarMember";
 
 export const BotsWindow = () => {

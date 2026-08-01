@@ -1,15 +1,3 @@
-@utility input-form {
-	@apply
-		bg-n6
-		border border-n5 rounded-full
-		py-0.5rem px-1.5rem
-		text-n0 placeholder:text-n4 placeholder:italic
-		pointer-events-auto
-		focus:outline-2 outline-b5 outline-offset-5
-		placeholder:text-1rem
-		;
-}
-
 @utility input-chat {
 	@apply
 		z-0

@@ -1,7 +1,7 @@
 // import { useEffect } from "react";
 // import { useNotificationStore, notificationType } from "../store/NotificationStore";
 import { useSceneStore } from "../store/SceneStore";
-import { BigLogo } from "../modules/Logo";
+import { BigLogo } from "../components/logo/BigLogo";
 import { CreateAccountButton } from "../components/button/CreateAccount";
 import { SignInButton } from "../components/button/SignIn";
 

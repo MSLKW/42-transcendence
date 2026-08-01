@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { useNotificationStore, notificationType } from "../store/NotificationStore";
-import { Window } from "./Window";
+import { Window } from "../components/window/Window";
 import { AvatarNameModule } from "../modules/AvatarName";
 import { AvatarSelectModule } from "../modules/AvatarSelectModule";
 

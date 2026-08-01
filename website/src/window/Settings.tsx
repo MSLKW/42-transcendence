@@ -1,6 +1,6 @@
 import { useGameStore } from "../store/GameStore";
 import { useSettingsStore, AUTO_PASS_RECORD } from "../store/SettingsStore";
-import { Window } from "./Window";
+import { Window } from "../components/window/Window";
 import { RadioButton } from "../components/button/Radio";
 import { ToggleButton } from "../components/button/Toggle";
 
