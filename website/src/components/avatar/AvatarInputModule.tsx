@@ -3,7 +3,7 @@ import { AvatarImage } from "./AvatarImage";
 
 interface AvatarInputModuleProps {
 	setIsValid?: (isValid: boolean) => void;
-	inputRef: React.RefObject<HTMLInputElement | null>;
+	inputRef?: React.RefObject<HTMLInputElement | null>;
 	submitButtonRef?: React.RefObject<HTMLButtonElement | null>;
 }
 export const AvatarInputModule = ({ setIsValid, inputRef, submitButtonRef }: AvatarInputModuleProps) => {

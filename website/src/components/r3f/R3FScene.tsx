@@ -1,44 +1,22 @@
 import { useState, useEffect } from "react";
 import { gameSocket } from "../../services/gameSocket";
+import { partySocket } from "../../services/partySocket";
 import { useGameStore } from "../../store/GameStore";
 import { usePartyStore } from "../../store/PartyStore";
 import { useSceneStore } from "../../store/SceneStore";
 import { useSettingsStore, AUTO_PASS_RECORD } from "../../store/SettingsStore";
 import { HeaderModule } from "../header/HeaderModule";
-import { RankButton } from "./rank/RankButton";
 import { AvatarButton } from "../avatar/AvatarButton";
+import { RankButton } from "./rank/RankButton";
 import { SortButtons } from "./sort/SortButton";
 
 export const R3FScene = () => {
 	const { totalPlayers, dealCards, cardsLeft } = useGameStore();
 	const { members } = usePartyStore();
 
-	// const { showNotification } = useNotificationStore();
-	// useEffect(() => {
-	// 	const validateAuth = async () => {
-	// 		try {
-	// 			const response = await fetch("/api/auth/validate", {
-	// 				method: "GET",
-	// 				credentials: "include",
-	// 			});
-
-	// 			if (!response.ok) {
-	// 				const errorData = await response.json().catch(() => ({}));
-	// 				if (response.status === 401)
-	// 					throw new Error("Missing or malformed authorization / invalid session");
-	// 				else
-	// 					throw new Error(errorData.message || "Authentication failed");
-	// 			}
-	// 		} catch (err) {
-	// 			if (err instanceof Error && !err.message.includes("401"))
-	// 				showNotification(err.message, notificationType.error);
-	// 		}
-	// 	};
-	// 	validateAuth();
-	// }, [])
-
 	const { currentScene } = useSceneStore();
 	useEffect(() => {
+		partySocket.startGameSession();
 		if (currentScene === "R3F")
 			gameSocket.connect();
 		else

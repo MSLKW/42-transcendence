@@ -2,13 +2,15 @@ import { useEffect } from "react";
 import { useDevStore } from "./store/DevStore";
 import { useGameStore } from "./store/GameStore";
 import { usePartyStore, RELATION, SEATNUMBER_UNSEATED } from "./store/PartyStore";
-import { useSceneStore } from "./store/SceneStore";
 import { usePlayerStore } from "./store/PlayerStore";
+import { useSceneStore } from "./store/SceneStore";
+import { partySocket } from "./services/partySocket";
 
 interface DevBtnProps {
 	label: string,
 	call: () => void,
 }
+
 const DevBtn = ({ label, call }: DevBtnProps) => {
 	return (
 		<li>

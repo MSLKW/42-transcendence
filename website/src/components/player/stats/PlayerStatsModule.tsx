@@ -9,7 +9,6 @@ export const PlayerStatsModule = () => {
 		<div className="
 			flex
 			place-content-evenly place-items-end
-			divide-x divide-n2
 			text-n6
 			text-center
 		">

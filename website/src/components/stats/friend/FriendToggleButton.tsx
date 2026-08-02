@@ -8,7 +8,7 @@ export const FriendToggleButton = () => {
 	return (
 		<button
 			className="
-				h-12 w-50
+				h-4rem aspect-5/1
 				btn-text
 				text-n0 border border-n5 bg-n6
 				flex

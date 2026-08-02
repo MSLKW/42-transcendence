@@ -3,6 +3,7 @@ import { createPortal } from "react-dom";
 import { useNotificationStore, notificationType } from "../../store/NotificationStore";
 import { usePlayerStore } from "../../store/PlayerStore";
 import { useSceneStore } from "../../store/SceneStore";
+import { partySocket } from "../../services/partySocket";
 
 export const NotificationWindow = () => {
 	const { type, message, isError, isTimed, numOfButtons, onButton1Click, onButton2Click } = useNotificationStore();
@@ -16,12 +17,10 @@ export const NotificationWindow = () => {
 	const autoUnmountTimer = useRef<number>(0);
 	const animationFrame = useRef<number>(0);
 	
-	const handleClose = (callbackAction?: () => void) => {
+	const handleClose = () => {
 		if (isClosing.current)
 			return;
 		isClosing.current = true;
-
-		callbackAction?.();
 
 		cancelAnimationFrame(animationFrame.current);
 		clearTimeout(exitAnimationTimer.current);
@@ -36,30 +35,32 @@ export const NotificationWindow = () => {
 
 	const handleSetupComplete = () => {
 		setShowWindow("setup", false);
-		handleClose(onButton1Click);
+		handleClose();
 	}
 
 	const handleBotSelect = () => {
 		setShowWindow("bots", false);
-		handleClose(onButton1Click);
+		handleClose();
 	}
 
 	const handleAccept = () => {
-		handleClose(onButton1Click);
+		partySocket.acceptInvite(data.uuid);
+		handleClose();
 	};
 
-	const handleIgnore = () => {
-		handleClose(onButton2Click);
+	const handleReject = () => {
+		partySocket.rejectInvite(data.uuid);
+		handleClose();
 	};
 
 	const handleEndGame = () => {
 		setCurrentScene("HOME");
-		handleClose(onButton1Click);
+		handleClose();
 	};
 
 	const handleContinueGame = () => {
 		setCurrentScene("R3F");
-		handleClose(onButton2Click);
+		handleClose();
 	};
 
 	useEffect(() => {
@@ -98,7 +99,7 @@ export const NotificationWindow = () => {
 		`}>
 			<button
 				type="button"
-				onClick={isTimed ? handleIgnore : undefined}
+				onClick={isTimed ? handleReject : undefined}
 				className={`
 					min-w-50
 					bg-n0
@@ -180,14 +181,14 @@ export const NotificationWindow = () => {
 					</button>
 					<button
 						type="button"
-						onClick={type === notificationType.invite ? handleIgnore : handleContinueGame}
+						onClick={type === notificationType.invite ? handleReject : handleContinueGame}
 						className="
 							btn-text bg-light
 							w-full
 							text-1.25rem text-n0
 					">
 						{ type === notificationType.invite &&
-							"Ignore"
+							"Reject"
 						}
 						{ type === notificationType.nextRound &&
 							"Continue"

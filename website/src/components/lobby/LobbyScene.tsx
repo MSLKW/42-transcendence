@@ -1,4 +1,5 @@
 import { useEffect } from "react";
+import { partySocket } from "../../services/partySocket";
 import { useSceneStore } from "../../store/SceneStore";
 import { useGameStore } from "../../store/GameStore";
 import { usePartyStore, RELATION } from "../../store/PartyStore";
@@ -26,6 +27,7 @@ export const LobbyScene = () => {
 			});
 			currentTotal++;
 		}
+		partySocket.updateGameMode(totalPlayers);
 	}, [gameMode]);
 
 	return (

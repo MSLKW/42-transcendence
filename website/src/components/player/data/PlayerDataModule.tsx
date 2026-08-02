@@ -32,7 +32,7 @@ export const PlayerDataModule = () => {
 		for (const { type, value} of parts) {
 			partMap[type] = value;
 		}
-		return `${partMap.year}/${partMap.month}/${partMap.day} -  ${partMap.hour}:${partMap.minute}:${partMap.second}. ${partMap.fractionalSecond}`;
+		return `${partMap.year}/${partMap.month}/${partMap.day} - ${partMap.hour}:${partMap.minute}:${partMap.second}.${partMap.fractionalSecond}`;
 	};
 
 	return (
@@ -44,12 +44,15 @@ export const PlayerDataModule = () => {
 		">
 			<div className="
 				grid grid-cols-[5rem_1fr]
+				gap-2rem
 				place-items-center
 				leading-tight
 			">
 				<h2>Level {members[profileIndex].level}</h2>
-				<div className="text-1rem text-center w-full">
-					<span>XP: {members[profileIndex].xp} / {members[profileIndex].level * 1000}</span>
+				<div className="w-full">
+					<p className="text-center">
+						XP: {members[profileIndex].xp} / {members[profileIndex].level * 1000}
+					</p>
 					<div className="
 						h-2
 						rounded-full
@@ -94,14 +97,17 @@ export const PlayerDataModule = () => {
 								</span>
 							</button>
 						:
-							<p className="w-full text-center self-center"><i>{members[profileIndex].badge}</i></p>
+							<h2 className="w-full">
+								<i>{members[profileIndex].badge}</i>
+							</h2>
 					}
 					{ showWindow["badge"] && <BadgeWindow /> }
 				</div>
 			</div>
-			<div>
-				<p className="text-sm text-a5">Last Login: {formatDate(members[profileIndex].lastLogin)}</p>
-				<p className="text-sm text-a5">Joined: {formatDate(members[profileIndex].createdAt)}</p>
+			<div className="text-a5">
+				<p>Last Login: {formatDate(members[profileIndex].lastLogin)}</p>
+				<p>Joined: {formatDate(members[profileIndex].createdAt)}</p>
+				<p>UUID: {members[profileIndex].uuid}</p>
 			</div>
 		</div>
 	);

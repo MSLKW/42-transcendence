@@ -1,22 +1,20 @@
+import { Window } from "../window/Window";
 import { AvatarInputModule } from "../avatar/AvatarInputModule";
 import { AvatarSelectModule } from "../avatar/AvatarSelectModule";
 import { MedalsModule } from "../player/medals/MedalsModule";
 import { PlayerDataModule } from "../player/data/PlayerDataModule";
 import { PlayerStatsModule } from "../player/stats/PlayerStatsModule";
-import { Window } from "../window/Window";
+import { LeavePartyModule } from "./LeavePartyModule";
 
 export const ProfileWindow = () => {
-
 	return (
 		<Window
 			title={`Profile`}
 			dismissKey="profile"
 		>
 			<div className="
-				h-fit w-120
-				bg-linear-to-b from-n0 to-n1
-				border border-n1 rounded-xl
 				relative
+				px-3rem
 			">
 				<div className="divide-y divide-n2">
 					<div className="flex">
@@ -26,6 +24,7 @@ export const ProfileWindow = () => {
 					<AvatarSelectModule />
 					<MedalsModule />
 					<PlayerStatsModule />
+					<LeavePartyModule />
 				</div>
 			</div>
 		</Window>
