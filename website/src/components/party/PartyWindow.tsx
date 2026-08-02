@@ -1,6 +1,7 @@
 import { Window } from "../window/Window";
 import { FriendModule } from "./friends/FriendsModule";
 import { SearchModule } from "./search/SearchModule";
+import { statusType } from "../player/status/PlayerStatusModule";
 
 export const PartyWindow = () => {
 	return (
@@ -12,31 +13,29 @@ export const PartyWindow = () => {
 		>
 			<div
 				className={`
-					pt-[clamp(0.25rem,2vw+0.125rem,1.25rem)]
 					flex flex-col place-content-center place-items-center
 					text-n6
+					py-1.5rem px-0.5rem
+					gap-1rem
 					pointer-events-auto
 				`}
 			>
-				<SearchModule />
 				<div
 					tabIndex={-1}
 					className="
-						h-full max-h-[40vh]
-						pt-6
-						space-y-1 px-5
+						h-full max-h-[90%vh]
+						py-0.5rem px-1.5rem
 						overflow-scroll
-						pb-5
+						flex flex-col gap-0.75rem
 					"
 				>
 					<h2>Friends List</h2>
-					<div className="flex flex-col gap-2">
-						<FriendModule name="Dev-Azrul" />
-						<FriendModule name="Dev-Max" />
-						<FriendModule name="Dev-Jeremy" />
-						<FriendModule name="Dev-Aisyah" />
-					</div>
+					<FriendModule name="Dev-Azrul" status={statusType.online}/>
+					<FriendModule name="Dev-Max" status={statusType.online}/>
+					<FriendModule name="Dev-Jeremy" status={statusType.unavailable}/>
+					<FriendModule name="Dev-Aisyah" status={statusType.offline}/>
 				</div>
+				<SearchModule />
 			</div>
 		</Window>
 	);

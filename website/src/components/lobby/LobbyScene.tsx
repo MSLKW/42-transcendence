@@ -6,7 +6,7 @@ import { usePartyStore, RELATION } from "../../store/PartyStore";
 import { HeaderModule } from "../header/HeaderModule";
 import { SmallLogo } from "../logo/SmallLogo";
 import { AvatarButton } from "../avatar/AvatarButton";
-import { PartyButton } from "../party/PartyButton";
+import { PartyButton } from "../party/invite/InviteButton";
 
 export const LobbyScene = () => {
 	const { totalPlayers } = useGameStore();

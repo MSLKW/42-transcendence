@@ -8,6 +8,7 @@ interface SceneValues {
 	currentScene: SCENES;
 	showWindow: Record<string, boolean>;
 	profileIndex: number;
+	profileUuid: string;
 }
 
 interface SceneState extends SceneValues {
@@ -36,6 +37,7 @@ export const useSceneStore = create<SceneState>() (
 				rank: false,
 			},
 			profileIndex: 0,
+			profileUuid: "",
 
 			setSceneValue: (key, value) => set(() => ({ [key]: value })),
 			setCurrentScene: (scene) => {

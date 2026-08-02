@@ -28,3 +28,25 @@
 		text-lg whitespace-nowrap
 		;
 }
+
+@utility bg-party-online {
+	@apply
+		hover:bg-green-950
+		border border-green-800 rounded-sm outline-b5
+		hover:scale-105
+		cursor-pointer
+		data-tip-up
+		;
+}
+
+@utility bg-party-offline {
+	@apply
+		border border-red-800 rounded-sm outline-b5
+		;
+}
+
+@utility bg-party-unavailable {
+	@apply
+		border border-yellow-800 rounded-sm outline-b5
+		;
+}

@@ -12,9 +12,18 @@ interface AvatarProps {
 	playerIndex?: number;
 	isActive?: boolean;
 	showName?: boolean;
+	isDisabled?: boolean;
 }
 
-export const AvatarButton = ({ index, name, relation, cornerButton = "", isActive = false, showName = true }: AvatarProps) => {
+export const AvatarButton = ({
+	index,
+	name,
+	relation,
+	cornerButton = "",
+	isActive = false,
+	showName = true,
+	isDisabled = false,
+}: AvatarProps) => {
 	const { setSceneValue, setShowWindow } = useSceneStore();
 
 	return (
@@ -25,6 +34,7 @@ export const AvatarButton = ({ index, name, relation, cornerButton = "", isActiv
 			"
 		>
 			<button
+				// disabled={isDisabled}
 				data-tip={
 					relation === RELATION.SELF ? "Edit Profile" :
 					relation === RELATION.BOT ? "Choose Bot"

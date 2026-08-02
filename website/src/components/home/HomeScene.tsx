@@ -3,7 +3,7 @@ import { usePartyStore, GAMEMODE } from "../../store/PartyStore";
 import { HeaderModule } from "../header/HeaderModule";
 import { HomeCardButton } from "./home_card/HomeCard";
 import { AvatarButton } from "../avatar/AvatarButton";
-import { PartyButton } from "../party/PartyButton";
+import { PartyButton } from "../party/invite/InviteButton";
 import { SmallLogo } from "../logo/SmallLogo";
 
 export const HomeScene = () => {

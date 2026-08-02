@@ -2,7 +2,7 @@ export const statusType = {
 	"offline": 0,
 	"online": 1,
 	"unavailable": 2,
-}
+} as const;
 
 interface PlayerStatusModuleProps {
 	status: number;
@@ -23,7 +23,7 @@ export const PlayerStatusModule = ({ status }: PlayerStatusModuleProps) => {
 					${
 						status === statusType.offline ? "bg-red-500" :
 						status === statusType.online ? "bg-green-500" :
-						"bg-orange-500"
+						"bg-yellow-500"
 					}
 				`}
 			/>
@@ -31,7 +31,7 @@ export const PlayerStatusModule = ({ status }: PlayerStatusModuleProps) => {
 				{
 					status === statusType.offline ? "Offline" :
 					status === statusType.online ? "Online" :
-					"Unavailable"
+					"In another party"
 				}
 			</p>
 		</div>
