@@ -1,9 +1,5 @@
 import { Request, Response } from "express";
-
-const AUTH_SERVICE_URL = process.env.AUTH_SERVICE_URL;
-
-if (!AUTH_SERVICE_URL)
-	throw new Error("AUTH_SERVICE_URL is not set");
+import { AUTH_SERVICE_URL } from "../config";
 
 export function setProfile()
 {

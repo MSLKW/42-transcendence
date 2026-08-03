@@ -1,14 +1,8 @@
 import { Request, Response } from "express";
+import { AUTH_SERVICE_URL, AVATAR_DIR } from "../config";
 import multer from "multer";
 import path from "path";
 import fs from "fs";
-
-const AUTH_SERVICE_URL = process.env.AUTH_SERVICE_URL;
-
-if (!AUTH_SERVICE_URL)
-	throw new Error("AUTH_SERVICE_URL is not set");
-
-const AVATAR_DIR = process.env.AVATAR_DIR || "./data/avatars";
 
 if (!fs.existsSync(AVATAR_DIR))
 	fs.mkdirSync(AVATAR_DIR, {recursive: true});
@@ -49,7 +43,8 @@ export function uploadAvatar()
 		{
 			const authRes = await fetch(`${AUTH_SERVICE_URL}/validate`, {
 				headers: {
-					Cookie: req.headers.cookie || ""
+					Cookie: req.headers.cookie || "",
+					Authorization: req.get("Authorization") || ""
 				}
 			});
 			const data = await authRes.json();
