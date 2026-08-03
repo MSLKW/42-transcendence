@@ -1,7 +1,12 @@
 import { useRef, useEffect } from "react";
 import { SearchButton } from "./SearchButton";
 
-export const SearchModule = () => {
+interface SearchModuleProps {
+	value: string;
+	onChange: (query: string) => void;
+}
+
+export const SearchModule = ({ value, onChange }: SearchModuleProps) => {
 	const focusRef = useRef<HTMLInputElement | null>(null);
 	useEffect(() => {
 		if (focusRef.current)
@@ -18,7 +23,9 @@ export const SearchModule = () => {
 				ref={focusRef}
 				id="search"
 				type="text"
+				value={value}
 				placeholder="Search For Party Members"
+				onChange={(e) => onChange(e.target.value)}
 				className="
 					input-chat
 				"

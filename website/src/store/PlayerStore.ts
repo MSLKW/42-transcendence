@@ -43,7 +43,7 @@ export interface PlayerData {
 	totalWins: number;		//0, 1000
 	totalLoss: number;		//0, 1000
 	winStreak: number;		//0, 1000
-	achievements: Record<ACHIEVEMENT_LABEL, { unlockedAt: number } | null>; //{"FIRST_LOGIN": null, ..., "PLAYED_1_GAME": { unlockedAt: 1784110862000 }}
+	achievements: Record<ACHIEVEMENT_LABEL, number | null>; //{"FIRST_LOGIN": null, ..., "PLAYED_1_GAME": 1784110862000}
 }
 
 interface PlayerValues {
@@ -131,7 +131,7 @@ export const usePlayerStore = create<PlayerState>() (
 						...playerStore.data,
 						achievements: {
 							...playerStore.data.achievements,
-							[id]: { unlockedAt: Date.now() }
+							[id]: Date.now()
 						}
 					}
 				};

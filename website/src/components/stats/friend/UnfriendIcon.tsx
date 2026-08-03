@@ -3,7 +3,7 @@ export const UnfriendIcon = () => (
 		fill="none"
 		viewBox="0 0 50 50"
 		xmlns="http://www.w3.org/2000/svg"
-		className="fill-n0"
+		className="h-2.5rem aspect-square fill-n0"
 	>
 		<path
 			d="M40.1845 23.983V25.5455H33.8208V23.983H40.1845Z"

@@ -16,15 +16,15 @@ export const FriendToggleButton = () => {
 			"
 		>
 			{isFriend ? (
-				<>
-					<div className="h-10 aspect-square"><UnfriendIcon /></div>
-					<span>Unfriend</span>
-				</>
+				<div className="flex gap-0.5rem place-items-center">
+					<UnfriendIcon />
+					<h3>Unfriend</h3>
+				</div>
 			) : (
-				<>
-					<div className="h-10 aspect-square"><AddFriendIcon /></div>
-					<span>Add Friend</span>
-				</>
+				<div className="flex gap-0.5rem place-items-center">
+					<AddFriendIcon />
+					<h3>Add Friend</h3>
+				</div>
 			)}
 		</button>
 	);

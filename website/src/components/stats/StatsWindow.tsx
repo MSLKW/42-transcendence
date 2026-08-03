@@ -19,14 +19,25 @@ export const StatsWindow: React.FC = () => {
 			dismissKey="stats"
 			profileIndex={profileIndex}
 		>
-			<div className="window-body divide-y divide-n2">
+			<div
+				className="
+					px-3rem
+					divide-y divide-n2
+				"
+			>
 				<div className="flex">
 					<AvatarMemberModule name={members[profileIndex]?.name ?? "Guest"} />
 					<PlayerDataModule />
 				</div>
 				<MedalsModule />
 				<PlayerStatsModule />
-				<div className="flex place-content-evenly place-items-center p-5 gap-5">
+				<div
+					className="
+						flex place-content-evenly place-items-center
+						py-2rem px-2rem
+						gap-1rem
+					"
+				>
 					<KickMemberButton />
 					<FriendToggleButton />
 				</div>
