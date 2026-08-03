@@ -1,0 +1,9 @@
+// packages/auth-schema/tsconfig.json  ← tiny, package-specific
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": { 
+	"rootDir": "./src", 
+	"outDir": "./dist" 
+  },
+  "include": ["src/**/*.ts"]
+}
