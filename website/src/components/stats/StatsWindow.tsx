@@ -11,7 +11,6 @@ import { KickMemberButton } from "./kick/KickMemberButton";
 export const StatsWindow: React.FC = () => {
 	const { profileIndex } = useSceneStore();
 	const { members } = usePartyStore();
-	
 
 	return (
 		<Window
