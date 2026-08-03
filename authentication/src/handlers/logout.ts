@@ -3,14 +3,23 @@ import { SessionStore } from "../store/sessionStore";
 
 export function logoutHandler(sessionStore: SessionStore) {
 	return async (req: Request, res: Response) => {
-		const authHeader = req.headers.authorization;
-		if (typeof authHeader !== "string" || !authHeader.startsWith("Bearer ")) {
-			return res.status(401).json(
-				{ error: "Missing or malformed Authorization header." }
-			);
+		res.clearCookie("session_token");
+		
+		let token: string;
+		const authCookie = req.cookies["session_token"];
+		if (!authCookie)
+		{
+			const authHeader = req.headers.authorization;
+			if (typeof authHeader !== "string" || !authHeader.startsWith("Bearer ")) {
+				return res.status(401).json(
+					{ error: "Missing or malformed Authorization header." }
+				);
+			}
+			token = authHeader.slice("Bearer ".length);
 		}
+		else
+			token = authCookie;
 
-		const token = authHeader.slice("Bearer ".length);
 		if (token.length === 0) {
 			return res.status(401).json(
 				{ error: "Missing or malformed Authorization header." }
