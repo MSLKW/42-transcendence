@@ -37,10 +37,12 @@ export default function App() {
 			top: 0,
 			behavior: 'smooth',
 		});
-		if (!data.name && currentScene != "LOGIN")
-			setShowWindow("setup", true);
-		if (currentScene != "LOGIN" && !partySocket.isSocketActive())
-			partySocket.connect();
+		if (currentScene != "LOGIN") {
+			if (!data.name)
+				setShowWindow("setup", true);
+			if (!partySocket.isSocketActive())
+				partySocket.connect();
+		}
 	}, [currentScene]);
 
 	const { id } = useNotificationStore();
