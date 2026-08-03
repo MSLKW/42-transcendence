@@ -3,6 +3,9 @@
   "version": "1.0.0",
   "type": "module",
   "description": "",
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "exports": {
@@ -11,23 +14,13 @@
       "default": "./dist/index.js"
     }
   },
-  "directories": {
-    "doc": "docs"
-  },
   "scripts": {
-    "db:generate": "drizzle-kit generate",
-    "db:migrate": "drizzle-kit migrate",
-    "db:push": "drizzle-kit push",
     "build": "tsup src/index.ts --format esm --dts --clean --tsconfig tsconfig.build.json",
     "start": "node dist/index.js"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
   "dependencies": {
     "dotenv": "^17.4.2",
     "drizzle-orm": "^0.45.2",
-    "drizzle-kit": "^0.31.10",
     "pg": "^8.22.0"
   },
   "devDependencies": {
