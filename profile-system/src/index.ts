@@ -1,5 +1,6 @@
 import "dotenv/config";
 import express from "express";
+import { healthCheck } from "./handlers/healthCheck";
 import { getProfile } from "./handlers/getProfile";
 import { setProfile } from "./handlers/setProfile";
 import { uploadAvatar } from "./handlers/uploadAvatar";
@@ -13,7 +14,9 @@ const ERROR_MESSAGES: Record<string, string> = {
 
 const app = express();
 app.use(express.json());
+app.use(express.static("test"));
 
+app.get("/health", healthCheck());
 app.get("/:uuid", getProfile());
 app.put("/", setProfile());
 app.put("/avatar", uploadAvatar());
