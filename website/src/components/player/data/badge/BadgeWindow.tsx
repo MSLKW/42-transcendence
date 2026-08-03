@@ -1,9 +1,9 @@
-import { usePlayerStore, BADGE_LABEL } from "../../../../store/PlayerStore";
+import { useProfileStore, BADGE_LABEL } from "../../../../store/ProfileStore";
 import { useSceneStore } from "../../../../store/SceneStore";
 import { LightboxButton } from "../../../lightbox/LightboxButton";
 
 export const BadgeWindow = () => {
-	const { data, setPlayerDataValue } = usePlayerStore();
+	const { data, setProfileDataValue } = useProfileStore();
 	const { showWindow, setShowWindow } = useSceneStore();
 
 	return (
@@ -31,7 +31,7 @@ export const BadgeWindow = () => {
 								type="button"
 								disabled={isDisabled}
 								onClick={() => {
-									setPlayerDataValue("badge", BADGE_LABEL[index]);
+									setProfileDataValue("badge", BADGE_LABEL[index]);
 									setShowWindow("badge", false);
 								}}
 								className={`

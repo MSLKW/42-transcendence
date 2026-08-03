@@ -1,6 +1,6 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-import { usePlayerStore, STATUS } from "./PlayerStore";
+import { useProfileStore, STATUS } from "./ProfileStore";
 import { usePartyStore, RELATION, SEATNUMBER_UNSEATED } from "./PartyStore";
 import { useSceneStore } from "./SceneStore";
 
@@ -38,7 +38,7 @@ export const useDevStore = create<DevState>()(
 						rank: false,
 					},
 				});
-				usePlayerStore.setState({
+				useProfileStore.setState({
 					data: {
 						uuid: "",
 						name: null,

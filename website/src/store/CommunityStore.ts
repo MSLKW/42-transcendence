@@ -1,6 +1,6 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-import type { PlayerData } from "./PlayerStore";
+import type { PlayerData } from "./ProfileStore";
 
 export const RELATION = {
 	STRANGER: 0,

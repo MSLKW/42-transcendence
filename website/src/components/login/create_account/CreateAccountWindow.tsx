@@ -1,14 +1,15 @@
 import { useState } from "react";
 import { useNotificationStore, notificationType } from "../../../store/NotificationStore";
-import { usePlayerStore } from "../../../store/PlayerStore";
+import { useProfileStore } from "../../../store/ProfileStore";
 import { useSceneStore } from "../../../store/SceneStore";
 import { Window } from "../../window/Window";
 import { FormInputModule } from "../../form/FormInputModule";
 import { signUpFetch } from "../../../api/authentication/signUpFetch";
+import { partySocket } from "../../../services/partySocket";
 
 export const CreateAccountWindow = () => {
 	const { showNotification } = useNotificationStore();
-	const { setPlayerDataValue } = usePlayerStore();
+	const { setProfileDataValue } = useProfileStore();
 	const { setShowWindow, setCurrentScene } = useSceneStore();
 
 	const [email, setEmail] = useState("");
@@ -39,9 +40,10 @@ export const CreateAccountWindow = () => {
 		try {
 			setIsLoading(true);
 			const data = await signUpFetch(email, password);
-			setPlayerDataValue("uuid", data.id);
+			setProfileDataValue("uuid", data.id);
 			setShowWindow("createAccount", false);
 			setCurrentScene("HOME");
+			partySocket.connect();
 		} catch (err) {
 			const errorMsg = err instanceof Error ? err.message : "Something went wrong. Please try again";
 			showNotification(errorMsg, notificationType.error);

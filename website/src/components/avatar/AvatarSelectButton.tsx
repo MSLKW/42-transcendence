@@ -1,4 +1,4 @@
-import { usePlayerStore } from "../../store/PlayerStore";
+import { useProfileStore } from "../../store/ProfileStore";
 
 interface AvatarSelectButtonProps {
 	id: string,
@@ -6,11 +6,11 @@ interface AvatarSelectButtonProps {
 }
 
 export const AvatarSelectButton = ({ id, color }: AvatarSelectButtonProps) => {
-	const { data, setPlayerDataValue } = usePlayerStore();
+	const { data, setProfileDataValue } = useProfileStore();
 
 	return (
 		<button 
-			onClick={() => setPlayerDataValue("avatar", id)}
+			onClick={() => setProfileDataValue("avatar", id)}
 			className={`
 				hover:not-disabled:scale-105 active:hover:not-disabled:scale-100
 				focus-visible:outline-double outline-b5 outline-offset-5

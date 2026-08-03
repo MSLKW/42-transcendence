@@ -1,12 +1,12 @@
 import { useState, useRef, useEffect } from "react";
-import { usePlayerStore } from "../../store/PlayerStore";
+import { useProfileStore } from "../../store/ProfileStore";
 import { useSceneStore } from "../../store/SceneStore";
 import { Window } from "../window/Window";
 import { AvatarInputModule } from "../avatar/AvatarInputModule";
 import { AvatarSelectModule } from "../avatar/AvatarSelectModule";
 
 export const SetupWindow = () => {
-	const { data } = usePlayerStore()
+	const { data } = useProfileStore()
 	const [isValid, setIsValid] = useState(Boolean(data.name?.trim()));
 	const { setShowWindow } = useSceneStore();
 

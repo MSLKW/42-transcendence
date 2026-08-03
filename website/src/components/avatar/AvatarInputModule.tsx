@@ -1,4 +1,4 @@
-import { usePlayerStore } from "../../store/PlayerStore";
+import { useProfileStore } from "../../store/ProfileStore";
 import { AvatarImage } from "./AvatarImage";
 
 interface AvatarInputModuleProps {
@@ -7,11 +7,11 @@ interface AvatarInputModuleProps {
 	submitButtonRef?: React.RefObject<HTMLButtonElement | null>;
 }
 export const AvatarInputModule = ({ setIsValid, inputRef, submitButtonRef }: AvatarInputModuleProps) => {
-	const { data, setPlayerDataValue } = usePlayerStore();
+	const { data, setProfileDataValue } = useProfileStore();
 
 	const handleInput = (e: React.ChangeEvent<HTMLInputElement>) => {
 		const value = e.target.value;
-		setPlayerDataValue("name", value);
+		setProfileDataValue("name", value);
 		setIsValid?.(value.trim().length > 0);
 	}
 

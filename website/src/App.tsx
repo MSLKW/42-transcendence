@@ -3,7 +3,7 @@ import { Canvas } from "@react-three/fiber";
 import { Stats, PerspectiveCamera, OrbitControls, AdaptiveDpr } from "@react-three/drei";
 import { useDevStore } from "./store/DevStore";
 import { useNotificationStore } from "./store/NotificationStore";
-import { usePlayerStore } from "./store/PlayerStore";
+import { useProfileStore } from "./store/ProfileStore";
 import { useSceneStore } from "./store/SceneStore";
 import { StripeBg } from "./components/bg/Stripe";
 import { SphereBg } from "./components/3d/Sphere";
@@ -29,15 +29,7 @@ import { StatsWindow } from "./components/stats/StatsWindow";
 import { partySocket } from "./services/partySocket";
 
 export default function App() {
-	const { data } = usePlayerStore();
-	useEffect(() => {
-		// if (data.uuid)
-			partySocket.connect();
-		// return () => {
-			// partySocket.disconnect();
-		// };
-	// }, [data.uuid]);
-	}, []);
+	const { data } = useProfileStore();
 
 	const { currentScene, showWindow, setShowWindow } = useSceneStore();
 	useEffect(() => {
@@ -47,6 +39,8 @@ export default function App() {
 		});
 		if (!data.name && currentScene != "LOGIN")
 			setShowWindow("setup", true);
+		if (currentScene != "LOGIN" && !partySocket.isSocketActive())
+			partySocket.connect();
 	}, [currentScene]);
 
 	const { id } = useNotificationStore();

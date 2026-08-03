@@ -133,7 +133,7 @@ export const LobbyScene = () => {
 				<div tabIndex={-1} className="
 					z-1
 					flex
-					gap-[clamp(0.25rem,3vw+0.125rem,2.5rem)]
+					gap-2rem
 					sm:overflow-x-visible overflow-x-auto
 				">
 					{ totalMembers > totalPlayers && 

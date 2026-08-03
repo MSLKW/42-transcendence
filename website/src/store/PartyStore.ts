@@ -1,6 +1,6 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-import { usePlayerStore, type PlayerData } from "./PlayerStore";
+import { useProfileStore, type ProfileData } from "./ProfileStore";
 
 export const GAMEMODE = {
 	NONE: 0,
@@ -21,7 +21,7 @@ export type RelationType = typeof RELATION[keyof typeof RELATION];
 
 export const SEATNUMBER_UNSEATED = -1 as const;
 
-export interface MemberData extends PlayerData {
+export interface MemberData extends ProfileData {
 	relation: RelationType;	//relationship of this person relative to you; stranger, friend, self, bot
 	isHost: boolean;		//only 1 party member can be "host"
 	seatNumber: number;		//0, 1, 2, 3, 4, 5, ...
@@ -156,8 +156,8 @@ export const usePartyStore = create<PartyState>() (
 	)
 );
 
-const syncPlayerDataToParty = (newPlayerData: PlayerData) => {
-	if (!newPlayerData)
+const syncProfileDataToParty = (newProfileData: ProfileData) => {
+	if (!newProfileData)
 		return;
 
 	const partyStore = usePartyStore.getState();
@@ -165,9 +165,9 @@ const syncPlayerDataToParty = (newPlayerData: PlayerData) => {
 	if (!selfMember)
 		return;
 
-	const hasChanged = Object.keys(newPlayerData).some((key) => {
-		const k = key as keyof PlayerData;
-		return JSON.stringify(selfMember[k]) !== JSON.stringify(newPlayerData[k]);
+	const hasChanged = Object.keys(newProfileData).some((key) => {
+		const k = key as keyof ProfileData;
+		return JSON.stringify(selfMember[k]) !== JSON.stringify(newProfileData[k]);
 	});
 
 	if (hasChanged) {
@@ -175,12 +175,12 @@ const syncPlayerDataToParty = (newPlayerData: PlayerData) => {
 
 		updatedMembers[0] = {
 			...selfMember,
-			...newPlayerData,
+			...newProfileData,
 		};
 
 		partyStore.setPartyValue("members", updatedMembers);
 	}
 };
 
-usePlayerStore.subscribe((state) => syncPlayerDataToParty(state.data));
-syncPlayerDataToParty(usePlayerStore.getState().data);
+useProfileStore.subscribe((state) => syncProfileDataToParty(state.data));
+syncProfileDataToParty(useProfileStore.getState().data);

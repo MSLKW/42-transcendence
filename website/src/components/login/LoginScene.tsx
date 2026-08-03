@@ -49,14 +49,14 @@ export const LoginScene = () => {
 			<footer
 				className="
 					flex flex-col place-content-center place-items-center
-					gap-[clamp(0.75rem,2.308vmin+0.058rem,1.5rem)]
+					gap-2rem
 					mb-[clamp(2.5rem,7.692vmin+0.192rem,5rem)]
 				"
 			>
 				<div
 					className="
 						flex place-content-center place-items-center
-						gap-[clamp(0.75rem,2.308vmin+0.058rem,1.5rem)]
+						gap-2rem
 						flex-wrap
 					"
 				>

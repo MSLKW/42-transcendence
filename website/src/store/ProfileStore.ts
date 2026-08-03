@@ -30,7 +30,7 @@ export const STATUS = {
 	INGAME: 2,
 } as const;
 
-export interface PlayerData {
+export interface ProfileData {
 	uuid: string;			//"b5dd8b9f-cbd0-4814-8a86-d143b3575ca8"
 	name: string | null;	//"Azrul", null
 	avatar: string;			//"avatar-stock-0.webp", "avatar-12345678901234567890123456789012.png"
@@ -46,20 +46,20 @@ export interface PlayerData {
 	achievements: Record<ACHIEVEMENT_LABEL, number | null>; //{"FIRST_LOGIN": null, ..., "PLAYED_1_GAME": 1784110862000}
 }
 
-interface PlayerValues {
-	data: PlayerData;
+interface ProfileValues {
+	data: ProfileData;
 	status: number;
 }
 
-interface PlayerState extends PlayerValues {
-	setPlayerValue: <K extends keyof PlayerValues>(key: K, value: PlayerValues[K]) => void;
-	setPlayerDataValue: <K extends keyof PlayerData>(key: K, value: PlayerData[K]) => void;
+interface ProfileState extends ProfileValues {
+	setProfileValue: <K extends keyof ProfileValues>(key: K, value: ProfileValues[K]) => void;
+	setProfileDataValue: <K extends keyof ProfileData>(key: K, value: ProfileData[K]) => void;
 	incTotalWins: () => void;
 	incTotalLoss: () => void;
 	unlockAchievement: (id: ACHIEVEMENT_LABEL) => void;
 }
 
-export const usePlayerStore = create<PlayerState>() (
+export const useProfileStore = create<ProfileState>() (
 	persist(
 		(set) => ({
 			data: {
@@ -90,47 +90,47 @@ export const usePlayerStore = create<PlayerState>() (
 			},
 			status: STATUS.AVAILABLE,
 
-			setPlayerValue: (key, value) => set(() => ({ [key]: value })),
-			setPlayerDataValue: (key, value) => set((state) => ({
+			setProfileValue: (key, value) => set(() => ({ [key]: value })),
+			setProfileDataValue: (key, value) => set((state) => ({
 				data: {
 					...state.data,
 					[key]: value
 				}
 			})),
-			incTotalWins: () => set((playerStore) => {
-				const newXP = playerStore.data.xp + 420;
+			incTotalWins: () => set((profileStore) => {
+				const newXP = profileStore.data.xp + 420;
 				return {
 					data: {
-						...playerStore.data,
-						totalWins: playerStore.data.totalWins + 1,
-						winStreak: playerStore.data.winStreak + 1,
-						totalPlayed: playerStore.data.totalPlayed + 1,
+						...profileStore.data,
+						totalWins: profileStore.data.totalWins + 1,
+						winStreak: profileStore.data.winStreak + 1,
+						totalPlayed: profileStore.data.totalPlayed + 1,
 						xp: newXP,
 						level: Math.floor(newXP / 1000) + 1,
 					}
 				}
 			}),
-			incTotalLoss: () => set((playerStore) => {
-				const newXP = playerStore.data.xp + 67;
+			incTotalLoss: () => set((profileStore) => {
+				const newXP = profileStore.data.xp + 67;
 				return {
 					data: {
-						...playerStore.data,
-						totalLoss: playerStore.data.totalLoss + 1,
+						...profileStore.data,
+						totalLoss: profileStore.data.totalLoss + 1,
 						winStreak: 0,
-						totalPlayed: playerStore.data.totalPlayed + 1,
+						totalPlayed: profileStore.data.totalPlayed + 1,
 						xp: newXP,
 						level: Math.floor(newXP / 1000) + 1,
 					}
 				}
 			}),
-			unlockAchievement: (id) => set((playerStore) => {
-				if (playerStore.data.achievements[id])
+			unlockAchievement: (id) => set((profileStore) => {
+				if (profileStore.data.achievements[id])
 					return {};
 				return {
 					data: {
-						...playerStore.data,
+						...profileStore.data,
 						achievements: {
-							...playerStore.data.achievements,
+							...profileStore.data.achievements,
 							[id]: Date.now()
 						}
 					}
@@ -138,7 +138,7 @@ export const usePlayerStore = create<PlayerState>() (
 			}),
 		}),
 		{
-			name: 'player-storage',
+			name: 'profile-storage',
 		}
 	)
 );

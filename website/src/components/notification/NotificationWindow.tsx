@@ -1,13 +1,12 @@
 import { useState, useRef, useEffect } from "react";
 import { createPortal } from "react-dom";
 import { useNotificationStore, notificationType } from "../../store/NotificationStore";
-import { usePlayerStore } from "../../store/PlayerStore";
+import { useProfileStore } from "../../store/ProfileStore";
 import { useSceneStore } from "../../store/SceneStore";
-import { partySocket } from "../../services/partySocket";
 
 export const NotificationWindow = () => {
-	const { type, message, isError, isTimed, numOfButtons, onButton1Click, onButton2Click } = useNotificationStore();
-	const { data } = usePlayerStore();
+	const { type, message, isError, isTimed, numOfButtons, onButton1Click } = useNotificationStore();
+	const { data } = useProfileStore();
 	const { setShowWindow, setCurrentScene } = useSceneStore();
 	const [ isExiting, setIsExiting ] = useState(false);
 	const [ animateProgress, setAnimateProgress ] = useState(false);
@@ -44,12 +43,12 @@ export const NotificationWindow = () => {
 	}
 
 	const handleAccept = () => {
-		partySocket.acceptInvite(data.uuid);
+		// partySocket.acceptInvite(data.uuid);
 		handleClose();
 	};
 
 	const handleReject = () => {
-		partySocket.rejectInvite(data.uuid);
+		// partySocket.rejectInvite(data.uuid);
 		handleClose();
 	};
 
@@ -74,7 +73,7 @@ export const NotificationWindow = () => {
 		exitAnimationTimer.current = window.setTimeout(() => {
 			setIsExiting(true);
 		}, 5000);
-		
+
 		autoUnmountTimer.current = window.setTimeout(() => {
 			onButton1Click?.();
 			setShowWindow("notification", false);
@@ -86,7 +85,7 @@ export const NotificationWindow = () => {
 			clearTimeout(autoUnmountTimer.current);
 			cancelAnimationFrame(animationFrame.current);
 		};
-	}, [isTimed, onButton1Click, setShowWindow]);
+	}, [isTimed, onButton1Click, setShowWindow, isExiting]);
 
 	return createPortal(
 		<div
@@ -99,7 +98,7 @@ export const NotificationWindow = () => {
 		`}>
 			<button
 				type="button"
-				onClick={isTimed ? handleReject : undefined}
+				onClick={isTimed ? handleClose : undefined}
 				className={`
 					min-w-50
 					bg-n0

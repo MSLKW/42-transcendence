@@ -1,13 +1,15 @@
 import { io, Socket } from "socket.io-client";
-import { usePlayerStore } from "../store/PlayerStore";
+import { useProfileStore } from "../store/ProfileStore";
 import { useNotificationStore, notificationType } from "../store/NotificationStore";
 
 class PartySocketService {
 	private socket: Socket | null = null;
+	private isConnecting: boolean = false;
 
 	public connect() {
-		if (this.socket?.connected)
+		if (this.socket?.connected || this.isConnecting)
 			return;
+		this.isConnecting = true;
 
 		this.socket = io({
 			path: "/socket/party",
@@ -15,6 +17,7 @@ class PartySocketService {
 		});
 		
 		this.socket.on("connect", () => {
+			this.isConnecting = false;
 			console.log("Connected to Party Microservice:", this.socket?.id);
 			const { showNotification } = useNotificationStore.getState();
 			showNotification(
@@ -22,9 +25,9 @@ class PartySocketService {
 				notificationType.message
 			)
 
-			const player = usePlayerStore.getState().data;
-			if (player.uuid)
-				this.socket?.emit("party:join", { player });
+			const data = useProfileStore.getState().data;
+			if (data.uuid)
+				this.socket?.emit("party:join", { data });
 		});
 
 		this.socket.on("party_state", (partyData: { host: string; member: string[]; gameId: string | null }) => {
@@ -42,8 +45,10 @@ class PartySocketService {
 			showNotification(
 				`${payload.hostName || "A player"} invited you to their party!`,
 				notificationType.invite,
-				() => partySocket.acceptInvite(payload.hostUuid),
-				() => partySocket.rejectInvite(payload.hostUuid)
+				// () => console.log("button 1 clicked"),
+				// () => console.log("button 2 clicked")
+				// () => partySocket.acceptInvite(payload.hostUuid),
+				// () => partySocket.rejectInvite(payload.hostUuid)
 			)
 		});
 
@@ -66,6 +71,7 @@ class PartySocketService {
 		});
 
 		this.socket.on("disconnect", (reason) => {
+			this.isConnecting = false;
 			console.log("Disconnected from party microservice: ", reason);
 			const { showNotification } = useNotificationStore.getState();
 			showNotification(
@@ -75,6 +81,7 @@ class PartySocketService {
 		});
 
 		this.socket.on("connect_error", (error) => {
+			this.isConnecting = false;
 			console.log("Connection error:", error.message);
 			const { showNotification } = useNotificationStore.getState();
 			showNotification(
@@ -84,13 +91,14 @@ class PartySocketService {
 		});
 	}
 	public disconnect() {
+		this.isConnecting = false;
 		if (this.socket) {
 			this.socket.disconnect();
 			this.socket = null;
 		}
 	}
 
-	public sendInvite(recipientUuid: string, recipientName: string) {
+	public sendInvite(recipientUuid: string, recipientName?: string) {
 		const { showNotification } = useNotificationStore.getState();
 		if (!this.socket?.connected) {
 			showNotification(
@@ -204,6 +212,9 @@ class PartySocketService {
 			"Game mode updated",
 			notificationType.message
 		);
+	}
+	public isSocketActive(): boolean {
+		return !!(this.socket && this.socket.connected && this.socket.id) || this.isConnecting;
 	}
 }
 

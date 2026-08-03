@@ -29,7 +29,7 @@ export const HomeScene = () => {
 					"
 				>
 					<div className="
-						flex place-content-center-safe place-items-center gap-[clamp(1.25rem,1.786vw+0.893rem,2.5rem)]
+						flex place-content-center-safe place-items-center gap-2rem
 						w-full h-full
 						flex-5
 						pointer-events-auto
@@ -51,7 +51,7 @@ export const HomeScene = () => {
 					className="
 						z-1
 						flex
-						gap-[clamp(0.25rem,3vw+0.125rem,2.5rem)]
+						gap-2rem
 						sm:overflow-x-visible overflow-x-auto
 					"
 				>

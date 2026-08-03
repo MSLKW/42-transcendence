@@ -124,7 +124,7 @@ export const R3FScene = () => {
 				</div>
 				<div className="
 					absolute left-1/2 top-[65%] -translate-x-1/2
-					flex gap-[clamp(1.25rem,1.786vw+0.893rem,2.5rem)]
+					flex gap-2rem
 				">
 					<button
 						onClick={nextTurn}
@@ -160,7 +160,7 @@ export const R3FScene = () => {
 				<div className="
 					w-[clamp(1rem,10vw+0.5rem,5rem)] h-full
 					flex flex-col place-content-between
-					gap-[clamp(0.25rem,2vh+0.125rem,0.75rem)]
+					gap-0.5rem
 				">
 					<SortButtons />
 				</div>

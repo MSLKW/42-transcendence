@@ -1,8 +1,8 @@
-import { useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useDevStore } from "./store/DevStore";
 import { useGameStore } from "./store/GameStore";
 import { usePartyStore, RELATION, SEATNUMBER_UNSEATED } from "./store/PartyStore";
-import { usePlayerStore } from "./store/PlayerStore";
+import { useProfileStore } from "./store/ProfileStore";
 import { useSceneStore } from "./store/SceneStore";
 import { partySocket } from "./services/partySocket";
 
@@ -46,10 +46,12 @@ export default function Dev() {
 	}, [currentScene]);
 	
 	const { totalMembers, addMember } = usePartyStore();
-	const { data, incTotalWins, incTotalLoss } = usePlayerStore();
+	const { incTotalWins, incTotalLoss } = useProfileStore();
+
+	const [inviteUuid, setInviteUuid] = useState("");
 
 	return (
-		<section className="w-full text-r4">
+		<section className="w-full text-r4 py-1rem">
 			<ul className="flex place-content-evenly">
 				<DevBtn label="Login" call={() => setCurrentScene("LOGIN")}/>
 				<DevBtn label="Home" call={() => setCurrentScene("HOME")}/>
@@ -76,8 +78,15 @@ export default function Dev() {
 					<DevBtn label="Lose Round" call={() => incTotalLoss()}/>
 				</ul>
 			}
-			<ul className="flex place-content-evenly">
-				<li>Player UUID: {data.uuid}</li>
+			<ul className="flex place-content-center place-items-center gap-1rem">
+				<input
+					id="inviteUuid"
+					onChange={(e) => setInviteUuid(e.target.value)}
+					className="
+						bg-black w-[70%]
+					"
+				/>
+				<DevBtn label="Invite" call={() => partySocket.sendInvite(inviteUuid)}/>
 			</ul>
 		</section>
 	);
