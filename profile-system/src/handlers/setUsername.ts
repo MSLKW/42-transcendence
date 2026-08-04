@@ -19,7 +19,7 @@ export function setUsername()
 		}
 		catch (err)
 		{
-			console.error("")
+			console.error(err)
 			return (res.status(500).json({error: "Something went wrong"}));
 		}
 	});
