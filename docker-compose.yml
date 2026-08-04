@@ -90,7 +90,7 @@ services:
   migrator:
     build:
       context: .
-      dockerfile: ./packages/database/Dockerfile
+      dockerfile: ./packages/migrator/Dockerfile
     pull_policy: never
     image: migrator:aisyah
     container_name: migrator

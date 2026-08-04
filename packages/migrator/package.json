@@ -1,41 +1,24 @@
 {
-  "name": "@big2/database",
+  "name": "@big2/migrator",
   "version": "1.0.0",
+  "private": true,
   "type": "module",
   "description": "",
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "main": "./dist/index.js",
-  "types": "./dist/index.d.ts",
-  "exports": {
-    ".": {
-      "types": "./dist/index.d.ts",
-      "default": "./dist/index.js"
-    }
-  },
   "scripts": {
     "db:generate": "drizzle-kit generate",
     "db:migrate": "drizzle-kit migrate",
-    "db:push": "drizzle-kit push",
-    "build": "tsup src/index.ts --format esm --dts --clean --tsconfig tsconfig.build.json",
-    "start": "node dist/index.js"
+    "db:push": "drizzle-kit push"
   },
   "dependencies": {
-    "@big2/auth_schema": "workspace:*",
-    "@big2/party-manager_schema": "workspace:*",
-    "@big2/profile-system_schema": "workspace:*",
-    "@big2/game_schema": "workspace:*",
-    "@big2/db-client": "workspace:*",
     "dotenv": "^17.4.2",
     "drizzle-orm": "^0.45.2",
     "drizzle-kit": "^0.31.10",
-    "pg": "^8.22.0"
+    "typescript": "^5.9.3"
   },
   "devDependencies": {
-    "@types/node": "^26.1.1",
-    "@types/pg": "^8.20.0",
-    "tsup": "^8.5.1",
-    "typescript": "^5.9.3"
+    "@types/node": "^26.1.1"
   }
 }
