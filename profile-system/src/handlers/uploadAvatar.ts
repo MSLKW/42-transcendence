@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
-import { AUTH_SERVICE_URL, AVATAR_DIR } from "../config";
+import { AVATAR_DIR } from "../config";
+import { authenticate } from "../utils/authenticate";
 import multer from "multer";
 import path from "path";
 import fs from "fs";
@@ -30,12 +31,7 @@ export function uploadAvatar()
 	{
 		try
 		{
-			const authRes = await fetch(`${AUTH_SERVICE_URL}/validate`, {
-				headers: {
-					Cookie: req.headers.cookie || "",
-					Authorization: req.get("Authorization") || ""
-				}
-			});
+			const authRes = await authenticate(req);
 			const data = await authRes.json();
 			if (!authRes.ok)
 				return (res.status(authRes.status).json(data));
