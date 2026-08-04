@@ -15,7 +15,7 @@
     }
   },
   "scripts": {
-    "build": "tsup src/index.ts --format esm --dts --clean --tsconfig tsconfig.build.json",
+    "build": "tsc",
     "start": "node dist/index.js"
   },
   "dependencies": {

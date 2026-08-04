@@ -1,5 +1,5 @@
 import { relations } from "drizzle-orm"; // to create relationships
-import { users, sessions } from "./auth.schema";
+import { users, sessions } from "./auth.schema.js";
 
 // 1. Define relationship ONLY to users 
 //      1-to-1 defined by "({ one })"
