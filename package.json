@@ -8,9 +8,9 @@
     "frontend/*"
   ],
   "scripts": {
-    "db:generate": "npm run --prefix packages/database db:generate --",
-    "db:migrate": "npm run --prefix packages/database db:migrate",
-    "db:push": "npm run --prefix packages/database db:push",
+    "db:generate": "npm run --prefix packages/migrator db:generate --",
+    "db:migrate": "npm run --prefix packages/migrator db:migrate",
+    "db:push": "npm run --prefix packages/migrator db:push",
     "build": "npm run build --workspaces --if-present",
     "dev": "npm run dev --workspaces --if-present",
     "lint": "eslint .",

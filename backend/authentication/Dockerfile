@@ -13,7 +13,7 @@
 # # Copy necessary package.json files for workspaces
 # COPY package.json ./
 # COPY backend/authentication/package.json ./backend/authentication/
-# COPY packages/database/package.json ./packages/database/
+# COPY packages/auth_schema/package.json ./packages/auth_schema/
 
 # # Install dependencies at the root
 # RUN npm install
@@ -26,7 +26,7 @@
 # RUN npm run build
 
 # # ---> BUILD THE DATABASE PACKAGE EXPLICITLY <---
-# RUN npm run --prefix packages/database build || npm run build
+# RUN npm run --prefix packages/auth_schema build || npm run build
 
 # # Now switch to the specific service directory
 # WORKDIR /app/backend/authentication
@@ -50,14 +50,16 @@ FROM node:20-alpine AS builder
 WORKDIR /app
 
 COPY package*.json ./
-COPY packages/database/package.json ./packages/database/
+COPY packages/auth_schema/package.json ./packages/auth_schema/
+COPY packages/db-client/package.json ./packages/db-client/
 COPY backend/authentication/package.json ./backend/authentication/
 
 RUN npm ci
 
 COPY . .
 
-RUN npm run --prefix packages/database build
+RUN npm run --prefix packages/auth_schema build
+RUN npm run --prefix packages/db-client build
 RUN npm run --prefix backend/authentication build
 
 #Runner
@@ -65,7 +67,8 @@ FROM node:20-alpine AS runner
 WORKDIR /app
 
 COPY package*.json ./
-COPY packages/database/package.json ./packages/database/
+COPY packages/auth_schema/package.json ./packages/auth_schema/
+COPY packages/db-client/package.json ./packages/db-client/
 COPY backend/authentication/package.json ./backend/authentication/
 
 RUN apk update && \
@@ -75,7 +78,8 @@ RUN apk update && \
 ENV NODE_ENV=production
 RUN npm ci --omit=dev
 
-COPY --from=builder /app/packages/database/dist ./packages/database/dist
+COPY --from=builder /app/packages/auth_schema/dist ./packages/auth_schema/dist
+COPY --from=builder /app/packages/db-client/dist ./packages/db-client/dist
 COPY --from=builder /app/backend/authentication/dist ./backend/authentication/dist
 
 EXPOSE 3000
