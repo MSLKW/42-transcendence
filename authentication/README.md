@@ -113,7 +113,7 @@ Header:
 Authorization: Bearer \<session\_token\>
 
 Responses:
-- 200: { id }
+- 200: { userId }
 - 401: { error } (missing or malformed authorization / invalid session)
 
 #### Example Request:
