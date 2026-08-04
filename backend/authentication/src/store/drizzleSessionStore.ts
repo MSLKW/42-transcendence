@@ -1,5 +1,6 @@
 import { eq } from "drizzle-orm";
-import { postgres, sessions } from "@big2/database";
+import { sessions } from "@big2/auth_schema";
+import { postgres } from "./postgres";
 import { Session } from "../models/session";
 import { SessionStore } from "./sessionStore";
 import { randomBytes } from "crypto";
