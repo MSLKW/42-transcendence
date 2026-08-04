@@ -6,14 +6,20 @@ networks:
     name: ${DB_NETWORK_NAME}
     driver: bridge # anyone outside cannot enter this network
     internal: true # anyone inside cannot go outside this network (talking to external containers or internet/browsers)
-  # lobby:
-  #   name: lobby
+  # backend-internal:
+  #   name: ${INTERNAL_BACKEND_NETWORK_NAME}
   #   driver: bridge
+  #   internal: true
+  # lobby:
+  #   name: ${LOBBY_NETWORK_NAME}
+  #   driver: bridge
+  #   internal: true
 
 
 volumes: # industry standard => name volumes => more secure oppose to anyone ever can adjust volumes (data's disk) on host if volumes are bind mounted
   pg_data:
   dg_data:
+  website_data:
 
 
 secrets: # auto make all secret files just read only mode
@@ -25,6 +31,8 @@ secrets: # auto make all secret files just read only mode
     file: ./secrets/database_passwords/db_game_password.txt
   db_party-manager_password:
     file: ./secrets/database_passwords/db_party-manager_password.txt
+  db_profile-system_password:
+    file: ./secrets/database_passwords/db_profile-system_password.txt
   dg_masterpass:
     file: ./secrets/drizzle-gateway/dg_masterpass.txt
 
@@ -101,8 +109,6 @@ services:
     image: migrator:aisyah
     container_name: migrator
     restart: no # It runs migrations only, then it exits successfully, the end of this container's life. 
-    # ports:
-    #   - "${ORM_BACKEND_PORT}:${ORM_BACKEND_PORT}"
     environment:
       DB_HOST: ${POSTGRES_HOST}
       DB_PORT: ${POSTGRES_PORT}
@@ -159,6 +165,7 @@ services:
     networks:
       - transcendence
       - database
+      # - backend-internal
     healthcheck:
       test: ["CMD", "curl", "-s", "-o", "/dev/null", "http://localhost:3000/"]
       interval: 10s
@@ -186,8 +193,6 @@ services:
     container_name: party-manager
     restart: unless-stopped
     environment:
-      # AUTH_SERVICE_URL: http://authentication:3000
-      # GAME_SERVICE_URL: http://game:3000
       DB_HOST: ${POSTGRES_HOST}                         # DB_HOST is a standard industry convention
       DB_NAME: ${POSTGRES_DB}
       DB_PORT: ${POSTGRES_PORT}
@@ -200,6 +205,36 @@ services:
     networks:
       - transcendence
       - database
+      # - backend-internal
+      # - lobby
+    depends_on:
+      migrator:
+        condition: service_completed_successfully  # Waits for migrator to finish and exit with code 0
+
+
+  #     BACKEND MICORSERVICE
+  profile-system:
+    build:
+      context: .                                         # Set workdir to the repo's root
+      dockerfile: ./backend/profile-system/Dockerfile    # Point to the Dockerfile's relative path
+    pull_policy: never
+    image: profile:test
+    container_name: profile-system
+    restart: unless-stopped
+    environment:
+      DB_HOST: ${POSTGRES_HOST}                         # DB_HOST is a standard industry convention
+      DB_NAME: ${POSTGRES_DB}
+      DB_PORT: ${POSTGRES_PORT}
+      DB_USER: ${POSTGRES_USER} # ${POSTGRES_USER_NAME_PROFILE_SYSTEM}
+      DB_PASSWORD_FILE: /run/secrets/db_admin_password # /run/secrets/db_profile-system_password
+    env_file:
+      - .env                                             # Loads global configs
+    secrets:
+      - db_admin_password # - db_profile-system_password
+    networks:
+      - transcendence
+      - database
+      # - backend-internal
     depends_on:
       migrator:
         condition: service_completed_successfully  # Waits for migrator to finish and exit with code 0
@@ -217,6 +252,7 @@ services:
     networks:
       - transcendence
       - database
+      # - backend-internal
 
 
   #     FRONTEND MICORSERVICE
@@ -230,5 +266,3 @@ services:
     restart: unless-stopped
     networks:
       - transcendence
-
-
