@@ -30,7 +30,8 @@
 		"cookie-parser": "^1.4.7",
 		"dotenv": "^17.4.2",
 		"express": "^5.2.1",
-		"@big2/database": "*",
+		"@big2/auth_schema": "*",
+		"@big2/db-client": "*",
 		"tsup": "^8.5.1"
 	}
 }
