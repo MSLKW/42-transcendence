@@ -4,10 +4,10 @@ import { DisconnectReason, Server, Socket } from "socket.io";
 import { Client } from "./client/Client";
 import { clientManager } from "./client/ClientManager";
 import { registerEventHandlers } from "./client/event_handlers";
-
 import { PartyState } from "./PartyTransmitTypes";
-import { postgres, playerStatus, users } from "@big2/database";
-import { eq } from "drizzle-orm";
+import { DrizzlePlayerStatusStore } from "./store/drizzlePlayerStatusStore";
+
+export const playerStatusStore = new DrizzlePlayerStatusStore();
 
 const PORT = Number(process.env.PORT) || 3000;
 const AUTH_SERVICE_URL = process.env.AUTH_SERVICE_URL;
@@ -108,20 +108,7 @@ io.on("connection", async(socket: Socket) =>
 	}
 	
 	// TODO: mark presence as online in Postgres (implementing below)
-	try
-	{
-		await postgres.insert(playerStatus)
-			.values({ id: uuid, isOnline: true})
-			.onConflictDoUpdate({
-				target: playerStatus.id,
-				set: { isOnline: true}
-			});
-	}
-	catch (postgresErr)
-	{
-		console.error(`Failed to mark user <${uuid}> online in database:`, postgresErr);
-	}
-	
+	await playerStatusStore.setPlayerOnline(uuid);	
 
 	socket.on("disconnect", (reason: DisconnectReason) =>
 	{
@@ -151,16 +138,7 @@ async function finalizeRemoval(uuid: string, reason: string)
 	console.log(`User<${uuid}> disconnected - ${reason}`);
 
 	// TODO: mark presence as offline in Postgres (implementing)
-	try
-	{
-		await postgres.update(playerStatus)
-			.set({ isOnline: false })
-			.where(eq(playerStatus.id, uuid));
-	}
-	catch (postgresErr)
-	{
-		console.error(`Failed to mark user<${uuid}> offline in database:`, postgresErr);
-	}
+	await playerStatusStore.setPlayerOffline(uuid);
 }
 
 httpServer.listen(PORT, () => {

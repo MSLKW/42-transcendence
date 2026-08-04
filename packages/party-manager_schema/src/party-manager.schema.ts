@@ -6,8 +6,9 @@
 // - is_in_game (default: no) - not yet
 // need uuid to be relational
 
-import { pgSchema, boolean, uuid, serial, integer } from "drizzle-orm/pg-core"; // pg-core specificly means postgres
-import { users } from "./auth.schema";
+import { pgSchema, boolean, uuid } from "drizzle-orm/pg-core"; // pg-core specificly means postgres
+// import { serial, integer } from "drizzle-orm/pg-core"; 
+import { users } from "@big2/auth_schema";
 // import { relations } from "drizzle-orm"; // to create relationships
 
 export const partyManagerSchema = pgSchema("party-manager_schema");
