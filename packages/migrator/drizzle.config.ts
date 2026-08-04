@@ -1,26 +1,16 @@
 /// <reference types="node" />
+// needed because your file is likely a standalone script or a config file (like drizzle.config.ts) that TypeScript is evaluating outside your main project context.Without that line, TypeScript does not automatically load the global types for Node.js, making it completely unaware of what process even is.
+// Global Isolation: TypeScript treats files as isolated modules unless told otherwise. If a file is not explicitly included in your tsconfig.json files array, it won't inherit your project's global type configurations.
+// Missing Node Definitions: process is a global object injected by the Node.js runtime, not standard JavaScript. TypeScript needs the @types/node package to understand it.
+// The Triple-Slash Fix: The /// <reference types="..." /> directive acts as a local emergency override. It explicitly tells the TypeScript compiler: "For this specific file, explicitly pull in the Node.js type definitions right now."
+
 import fs from "fs";
 import 'dotenv/config'; // 1. Load .env files
 import { defineConfig } from "drizzle-kit";
 
 
 // 2. Helper to safely read the password
-function dbPassword() {
-  // a: Check for Docker secret file first
-  if (process.env.DB_PASSWORD_FILE && fs.existsSync(process.env.DB_PASSWORD_FILE)) {
-    console.log(`Using Docker secrets: ${process.env.DB_PASSWORD_FILE}`);
-    return fs.readFileSync(process.env.DB_PASSWORD_FILE, "utf8").trim();
-  }
-  // b: Fallback for local development
-  if (process.env.DUMMY_POSTGRES_PASSWORD) {
-    console.log(`Using env's Dummy DB Password:  ${process.env.DUMMY_POSTGRES_PASSWORD}`);
-    return process.env.DUMMY_POSTGRES_PASSWORD || "";
-  }
-
-  return "aisyahDatabaseGirlFinallyy!333>u<";
-};
-
-const password = dbPassword(); // <-- Call the function here!
+const password = fs.readFileSync(process.env.DB_PASSWORD_FILE!, "utf8").trim();
 if (!password) {
   throw new Error("CRITICAL: Database password could not be loaded.");
 }
@@ -31,7 +21,7 @@ if (!password) {
 // 		"configuration schema" that tells Drizzle exactly how to talk to your database and where to find your code.
 export default defineConfig({
     dialect: "postgresql",  // cannot use env vars and has nothing to do with .env
-    schema: [ // points to the "Source of Truth." => the schema/index.ts file pointing to all other schemas
+    schema: [ // points to the "Source of Truth."
       "../auth_schema/src/index.ts", 
       "../game_schema/src/index.ts", 
       "../party-manager_schema/src/index.ts", 
@@ -46,5 +36,3 @@ export default defineConfig({
     verbose: true, // Makes the terminal output talkative. It will show you the exact SQL strings it's running. This is vital when you are learning or debugging why a migration might be failing.
     strict: true,  // safety feature. In strict mode, Drizzle is more aggressive about ensuring your TypeScript schema matches your database exactly. If there are extra tables in your DB that aren't in your schema, it might warn you or complain, helping you keep your database "clean."
 });
-
-
