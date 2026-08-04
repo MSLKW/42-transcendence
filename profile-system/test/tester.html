@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Avatar Upload Tester</title>
+<style>
+  :root {
+    --bg: #1e1f22;
+    --panel: #2a2b2e;
+    --border: #3d3e42;
+    --text: #e4e4e6;
+    --muted: #8a8b8f;
+    --accent: #5b8dee;
+    --ok: #4caf50;
+    --err: #e5534b;
+    --mono: "SF Mono", Consolas, Menlo, monospace;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    padding: 32px 16px;
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    display: flex;
+    justify-content: center;
+  }
+  .wrap { width: 100%; max-width: 640px; }
+  h1 {
+    font-size: 18px;
+    font-weight: 600;
+    margin: 0 0 4px;
+  }
+  .subtitle {
+    color: var(--muted);
+    font-size: 13px;
+    margin: 0 0 24px;
+  }
+  .panel {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 20px;
+    margin-bottom: 16px;
+  }
+  label {
+    display: block;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    margin-bottom: 6px;
+  }
+  .field { margin-bottom: 16px; }
+  .field:last-child { margin-bottom: 0; }
+  input[type="text"],
+  input[type="password"] {
+    width: 100%;
+    padding: 10px 12px;
+    background: #1a1b1d;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    color: var(--text);
+    font-size: 14px;
+    font-family: var(--mono);
+  }
+  input[type="text"]:focus,
+  input[type="password"]:focus {
+    outline: none;
+    border-color: var(--accent);
+  }
+  .file-drop {
+    border: 1.5px dashed var(--border);
+    border-radius: 6px;
+    padding: 20px;
+    text-align: center;
+    cursor: pointer;
+    transition: border-color 0.15s;
+  }
+  .file-drop:hover, .file-drop.drag {
+    border-color: var(--accent);
+  }
+  .file-drop input { display: none; }
+  .file-name {
+    font-size: 13px;
+    color: var(--text);
+    margin-top: 8px;
+    word-break: break-all;
+  }
+  .file-hint {
+    font-size: 13px;
+    color: var(--muted);
+  }
+  button {
+    width: 100%;
+    padding: 12px;
+    background: var(--accent);
+    border: none;
+    border-radius: 6px;
+    color: white;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: opacity 0.15s;
+  }
+  button:hover { opacity: 0.9; }
+  button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+  .warning {
+    font-size: 12px;
+    color: var(--muted);
+    background: #33291a;
+    border: 1px solid #4d3d20;
+    border-radius: 6px;
+    padding: 10px 12px;
+    margin-bottom: 16px;
+    line-height: 1.5;
+  }
+  .log-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+  }
+  .log-header span {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+  }
+  .clear-btn {
+    width: auto;
+    padding: 4px 10px;
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--muted);
+    font-size: 11px;
+    font-weight: 500;
+  }
+  .clear-btn:hover { opacity: 1; border-color: var(--muted); }
+  #log {
+    background: #131314;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 12px;
+    height: 280px;
+    overflow-y: auto;
+    font-family: var(--mono);
+    font-size: 12.5px;
+    line-height: 1.6;
+  }
+  .entry { margin-bottom: 10px; white-space: pre-wrap; word-break: break-all; }
+  .entry:last-child { margin-bottom: 0; }
+  .entry .ts { color: var(--muted); }
+  .entry.ok .status { color: var(--ok); font-weight: 600; }
+  .entry.err .status { color: var(--err); font-weight: 600; }
+  .entry.info { color: var(--muted); }
+  .empty-log { color: var(--muted); font-style: italic; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Avatar Upload Tester</h1>
+  <p class="subtitle">PUT &lt;url&gt;/avatar with a session_token cookie and an image file</p>
+
+  <div class="panel">
+    <div class="field">
+      <label for="baseUrl">Base URL</label>
+      <input type="text" id="baseUrl" placeholder="http://localhost:3000/api">
+    </div>
+    <div class="field">
+      <label for="sessionToken">session_token</label>
+      <input type="text" id="sessionToken" placeholder="paste session token">
+    </div>
+    <div class="field">
+      <label>Avatar image</label>
+      <div class="file-drop" id="dropZone">
+        <input type="file" id="fileInput" accept="image/*">
+        <div class="file-hint" id="fileHint">Click to choose a file, or drag one here</div>
+        <div class="file-name" id="fileName"></div>
+      </div>
+    </div>
+  </div>
+
+  <button id="uploadBtn">Upload</button>
+
+  <div class="panel" style="margin-top:16px;">
+    <div class="log-header">
+      <span>Log</span>
+      <button class="clear-btn" id="clearBtn">Clear</button>
+    </div>
+    <div id="log"><div class="empty-log">No requests yet.</div></div>
+  </div>
+</div>
+
+<script>
+  const baseUrlInput = document.getElementById('baseUrl');
+  const tokenInput = document.getElementById('sessionToken');
+  const fileInput = document.getElementById('fileInput');
+  const dropZone = document.getElementById('dropZone');
+  const fileNameEl = document.getElementById('fileName');
+  const uploadBtn = document.getElementById('uploadBtn');
+  const logEl = document.getElementById('log');
+  const clearBtn = document.getElementById('clearBtn');
+
+  let selectedFile = null;
+
+  dropZone.addEventListener('click', () => fileInput.click());
+  fileInput.addEventListener('change', () => {
+    if (fileInput.files[0]) setFile(fileInput.files[0]);
+  });
+  dropZone.addEventListener('dragover', (e) => {
+    e.preventDefault();
+    dropZone.classList.add('drag');
+  });
+  dropZone.addEventListener('dragleave', () => dropZone.classList.remove('drag'));
+  dropZone.addEventListener('drop', (e) => {
+    e.preventDefault();
+    dropZone.classList.remove('drag');
+    if (e.dataTransfer.files[0]) setFile(e.dataTransfer.files[0]);
+  });
+
+  function setFile(file) {
+    selectedFile = file;
+    fileNameEl.textContent = `${file.name} (${(file.size / 1024).toFixed(1)} KB)`;
+  }
+
+  function timestamp() {
+    return new Date().toLocaleTimeString();
+  }
+
+  function log(message, type = 'info') {
+    const emptyMsg = logEl.querySelector('.empty-log');
+    if (emptyMsg) emptyMsg.remove();
+
+    const entry = document.createElement('div');
+    entry.className = `entry ${type}`;
+    entry.innerHTML = `<span class="ts">[${timestamp()}]</span> ${message}`;
+    logEl.appendChild(entry);
+    logEl.scrollTop = logEl.scrollHeight;
+  }
+
+  clearBtn.addEventListener('click', () => {
+    logEl.innerHTML = '<div class="empty-log">No requests yet.</div>';
+  });
+
+  uploadBtn.addEventListener('click', async () => {
+    const baseUrl = baseUrlInput.value.trim().replace(/\/+$/, '');
+    const token = tokenInput.value.trim();
+
+    if (!baseUrl) return log('Missing base URL.', 'err');
+    if (!token) return log('Missing session_token.', 'err');
+    if (!selectedFile) return log('No file selected.', 'err');
+
+    const url = `${baseUrl}/avatar`;
+    const formData = new FormData();
+    formData.append('avatar', selectedFile);
+
+    uploadBtn.disabled = true;
+    log(`PUT ${url} &mdash; uploading "${selectedFile.name}"...`, 'info');
+
+    try {
+      const res = await fetch(url, {
+        method: 'PUT',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+        },
+        body: formData,
+      });
+
+      const contentType = res.headers.get('content-type') || '';
+      let bodyText;
+      if (contentType.includes('application/json')) {
+        const json = await res.json();
+        bodyText = JSON.stringify(json, null, 2);
+      } else {
+        bodyText = await res.text();
+      }
+
+      const type = res.ok ? 'ok' : 'err';
+      log(`<span class="status">${res.status} ${res.statusText}</span>\n${escapeHtml(bodyText)}`, type);
+    } catch (err) {
+      log(`Request failed: ${escapeHtml(err.message)}`, 'err');
+    } finally {
+      uploadBtn.disabled = false;
+    }
+  });
+
+  function escapeHtml(str) {
+    const div = document.createElement('div');
+    div.textContent = str;
+    return div.innerHTML;
+  }
+</script>
+</body>
+</html>

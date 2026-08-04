@@ -2,6 +2,7 @@ export type UserData = {
 	uuid:			string,
 	username:		string | null,
 	avatar_path:	string,
+	userSettings:	UserSettings,
 	badge:			BadgeLabel,
 	level:			number,
 	xp:				number,
@@ -15,6 +16,31 @@ export type UserData = {
 	online:			boolean,
 	inGame:			boolean
 };
+
+export type UserSettings = {
+	autoPassKey:		AutoPassKeys;
+	allow3OfAKind:		boolean;
+	allow2OfSpadesEnd:	boolean;
+	autoPassIndex:		number;
+	endGameCondition:	number;
+	scoreCalculation:	number;
+	cardStyle:			number;
+	uiColor:			number;
+	fxLevel:			number;
+	mxLevel:			number;
+};
+
+type AutoPassKeys =
+	"1s"
+	| "3s"
+	| "5s"
+	| "10s"
+	| "15s"
+	| "30s"
+	| "42s"
+	| "1 min"
+	| "2 mins"
+	| "No Limit";
 
 type BadgeLabel =
 	"Newcomer"

@@ -1,7 +1,10 @@
 import "dotenv/config";
 import express from "express";
+import { healthCheck } from "./handlers/healthCheck";
+import { userSearch } from "./handlers/userSearch";
 import { getProfile } from "./handlers/getProfile";
-import { setProfile } from "./handlers/setProfile";
+import { setUsername } from "./handlers/setUsername";
+import { setUserSettings } from "./handlers/setUserSettings";
 import { uploadAvatar } from "./handlers/uploadAvatar";
 
 const PORT = process.env.PORT || 3000;
@@ -13,9 +16,13 @@ const ERROR_MESSAGES: Record<string, string> = {
 
 const app = express();
 app.use(express.json());
+app.use(express.static("test"));
 
+app.get("/health", healthCheck());
+app.get("/search", userSearch());
 app.get("/:uuid", getProfile());
-app.put("/", setProfile());
+app.put("/username", setUsername());
+app.put("/settings", setUserSettings());
 app.put("/avatar", uploadAvatar());
 
 const server = app.listen(PORT, () =>

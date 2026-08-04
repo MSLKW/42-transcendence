@@ -1,31 +1,15 @@
 import { Request, Response } from "express";
+import { AVATAR_DIR } from "../config";
+import { authenticate } from "../utils/authenticate";
 import multer from "multer";
 import path from "path";
 import fs from "fs";
-
-const AUTH_SERVICE_URL = process.env.AUTH_SERVICE_URL;
-
-if (!AUTH_SERVICE_URL)
-	throw new Error("AUTH_SERVICE_URL is not set");
-
-const AVATAR_DIR = process.env.AVATAR_DIR || "./data/avatars";
 
 if (!fs.existsSync(AVATAR_DIR))
 	fs.mkdirSync(AVATAR_DIR, {recursive: true});
 
 const ALLOWED_MIME_TYPES = ["image/png"];
 const MAX_FILE_SIZE = 5 * 1024 * 1024;
-
-const storage = multer.diskStorage({
-	destination: (_req, _file, cb) => {
-		cb(null, AVATAR_DIR);
-	},
-	filename: (req, file, cb) => {
-		const { uuid } = req.params;
-		const ext = path.extname(file.originalname).toLowerCase();
-		cb(null, `${uuid}${ext}`);
-	},
-});
 
 const fileFilter = (_req: Request, file: Express.Multer.File, callback: multer.FileFilterCallback) =>
 {
@@ -36,8 +20,8 @@ const fileFilter = (_req: Request, file: Express.Multer.File, callback: multer.F
 };
 
 const multerUpload = multer({
-	storage,
-	fileFilter,
+	storage: multer.memoryStorage(),
+	fileFilter: fileFilter,
 	limits: { fileSize: MAX_FILE_SIZE },
 }).single('avatar');
 
@@ -47,27 +31,33 @@ export function uploadAvatar()
 	{
 		try
 		{
-			const authRes = await fetch(`${AUTH_SERVICE_URL}/validate`, {
-				headers: {
-					Cookie: req.headers.cookie || ""
-				}
-			});
+			const authRes = await authenticate(req);
 			const data = await authRes.json();
 			if (!authRes.ok)
 				return (res.status(authRes.status).json(data));
-			multerUpload(req, res, (err: unknown) =>
+			multerUpload(req, res, async (err: unknown) =>
 			{
 				if (err)
 				{
-					const message = err instanceof Error ? err.message : 'Upload failed';
+					const message = err instanceof Error ? err.message : "Upload failed";
 					return (res.status(400).json({ error: message }));
 				}
 				if (!req.file)
+					return (res.status(400).json({error: "No file uploaded"}));
+
+				const ext = path.extname(req.file.originalname).toLowerCase();
+				const filePath = path.join(AVATAR_DIR, `${data.userId}${ext}`);
+
+				try
 				{
-					res.status(400).json({ error: 'No file uploaded' });
-					return;
+					await fs.promises.writeFile(filePath, req.file.buffer);
+					return (res.status(204).send());
 				}
-				return (res.status(204));
+				catch (writeErr)
+				{
+					console.error(writeErr);
+					return (res.status(500).json({error: "Failed to save file"}));
+				}
 			});
 		}
 		catch (err)
