@@ -12,24 +12,36 @@ export type UserData = {
 	totalWins:		number,
 	totalLoss:		number,
 	winStreak:		number,
-	achievements:	Record<AchievementLabel, Date>,
+	achievements:	Record<AchievementLabel, Date | null>,
 	online:			boolean,
 	inGame:			boolean
 };
 
 export type UserSettings = {
-	autoPassKey:		AutoPassKeys;
-	allow3OfAKind:		boolean;
-	allow2OfSpadesEnd:	boolean;
-	autoPassIndex:		number;
-	endGameCondition:	number;
-	scoreCalculation:	number;
-	cardStyle:			number;
+	allow3OfAKind:		boolean,
+	allow2OfSpadesEnd:	boolean,
+	autoPassIndex:		number,
+	endGameCondition:	number,
+	scoreCalculation:	number,
+	cardStyle:			number,
 	uiColor:			number;
-	fxLevel:			number;
-	mxLevel:			number;
+	fxLevel:			number,
+	mxLevel:			number
 };
 
+export const NULL_ACHIEVEMENTS: Record<AchievementLabel, Date | null> = {
+	"FIRST_LOGIN": null,
+	"LOGIN_1_WEEK": null,
+	"PLAYED_1_GAME": null,
+	"PLAYED_10_GAMES": null,
+	"PLAYED_42_GAMES": null,
+	"FIRST_WIN": null,
+	"WIN_STREAK_2": null,
+	"WIN_STREAK_5": null,
+	"WIN_STREAK_10": null,
+	"MASTER_COLLECTOR": null
+} as const;
+	
 type AutoPassKeys =
 	"1s"
 	| "3s"
