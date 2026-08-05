@@ -18,5 +18,5 @@
 		"noUncheckedSideEffectImports": true,
 		"moduleDetection": "force"
 	},
-	"include": ["src/**/*.ts"]
+	"include": ["src/**/*.ts", "../profile-system_schema/src/enum.ts"]
 }

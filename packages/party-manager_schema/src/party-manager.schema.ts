@@ -18,8 +18,8 @@ export const playerStatus = partyManagerSchema.table("player_status", {
 		.primaryKey()
 		.references(() => users.id, {onDelete: "cascade" }),
 	isOnline: boolean("is_online").default(false).notNull(), // default => offline
+	isInGame: boolean("is_in_game").default(false).notNull(),
 	// isInParty: boolean("is_in_party").default(false).notNull(),
-	// isInGame: boolean("is_in_game").default(false).notNull(),
 	// partyManagersId: integer("party_managers_id")
 	// 	.references(() => partyManagers.id, {onDelete: "cascade" }),
 	
