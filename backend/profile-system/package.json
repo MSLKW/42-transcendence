@@ -1,5 +1,5 @@
 {
-	"name": "login-backend",
+	"name": "profile-system",
 	"version": "1.0.0",
 	"description": "",
 	"main": "./dist/index.js",

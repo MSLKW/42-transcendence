@@ -27,12 +27,12 @@ secrets: # auto make all secret files just read only mode
     file: ./secrets/database_passwords/db_admin_password.txt
   db_auth_password:
     file: ./secrets/database_passwords/db_auth_password.txt
-  db_game_password:
-    file: ./secrets/database_passwords/db_game_password.txt
   db_party-manager_password:
     file: ./secrets/database_passwords/db_party-manager_password.txt
   db_profile-system_password:
     file: ./secrets/database_passwords/db_profile-system_password.txt
+  db_game_password:
+    file: ./secrets/database_passwords/db_game_password.txt
   dg_masterpass:
     file: ./secrets/drizzle-gateway/dg_masterpass.txt
 
@@ -53,11 +53,15 @@ services:
       POSTGRES_PASSWORD_FILE: /run/secrets/db_admin_password
     secrets:
       - db_admin_password
+      - db_auth_password
+      - db_party-manager_password
+      - db_profile-system_password
+      - db_game_password
     env_file:
       - .env
     volumes:
       - pg_data:/var/lib/postgresql/data # volume
-      - ./infra/postgresql/init.sql:/docker-entrypoint-initdb.d/init.sql:ro # to run complex/specific sql scripts directly to Postgres automatically instead of to Drizzle
+      - ./infra/postgresql/init.sh:/docker-entrypoint-initdb.d/init.sh:ro # to run complex/specific sql scripts directly to Postgres automatically instead of to Drizzle
     networks:
       - database
     healthcheck:
@@ -77,22 +81,15 @@ services:
       - "${DRIZZLE_GATEWAY_PORT}:${DRIZZLE_GATEWAY_PORT}"
     env_file:
       - .env
-    environment:
-      DB_HOST: ${POSTGRES_HOST}
-      DB_PORT: ${POSTGRES_PORT}
-      DB_NAME: ${POSTGRES_DB}
-      DB_USER: ${POSTGRES_USER}
-      MASTERPASS_FILE: /run/secrets/dg_masterpass
-      DB_PASSWORD_FILE:  /run/secrets/db_admin_password
-      STORE_PATH: /app # Required by Drizzle Gateway
+    environment: # DB_* - not recognized as per DG documentation
       PORT: ${DRIZZLE_GATEWAY_PORT}
-    secrets:
-      - dg_masterpass
-      - db_admin_password
+      STORE_PATH: /app # Required by Drizzle Gateway
+    command:
+      - 'export MASTERPASS="$(cat /run/secrets/dg_masterpass)" && exec /gateway'
     volumes:
       - dg_data:/app # Required persistent volume mounting to /app
     networks:
-      - transcendence
+      - transcendence #! might not even need this
       - database
     depends_on:
       postgresql:
@@ -104,7 +101,7 @@ services:
   migrator:
     build:
       context: .
-      dockerfile: ./packages/migrator/Dockerfile
+      dockerfile: ./infra/migrator/Dockerfile
     pull_policy: never
     image: migrator:aisyah
     container_name: migrator
@@ -114,7 +111,6 @@ services:
       DB_PORT: ${POSTGRES_PORT}
       DB_NAME: ${POSTGRES_DB}
       DB_USER: ${POSTGRES_USER}
-      DB_PASSWORD_FILE: /run/secrets/db_admin_password
     secrets:
       - db_admin_password
     env_file:
@@ -156,12 +152,12 @@ services:
       DB_HOST: ${POSTGRES_HOST}                           # DB_HOST is a standard industry convention
       DB_NAME: ${POSTGRES_DB}
       DB_PORT: ${POSTGRES_PORT}
-      DB_USER: ${POSTGRES_USER} # ${POSTGRES_USER_NAME_AUTH}
-      DB_PASSWORD_FILE: /run/secrets/db_admin_password # /run/secrets/db_auth_password
+      DB_USER: ${POSTGRES_USER_NAME_AUTH} #  ${POSTGRES_USER}
+      DB_PASSWORD_FILE: /run/secrets/db_auth_password #/run/secrets/db_admin_password 
     env_file:
       - .env                                              # Loads global configs
     secrets:
-      - db_admin_password # - db_auth_password
+      - db_auth_password #db_admin_password 
     networks:
       - transcendence
       - database
@@ -196,12 +192,12 @@ services:
       DB_HOST: ${POSTGRES_HOST}                         # DB_HOST is a standard industry convention
       DB_NAME: ${POSTGRES_DB}
       DB_PORT: ${POSTGRES_PORT}
-      DB_USER: ${POSTGRES_USER} # ${POSTGRES_USER_NAME_PARTY_MANAGER}
-      DB_PASSWORD_FILE: /run/secrets/db_admin_password # /run/secrets/db_party-manager_password
+      DB_USER: ${POSTGRES_USER_NAME_PARTY_MANAGER}  # ${POSTGRES_USER}
+      DB_PASSWORD_FILE: /run/secrets/db_party-manager_password #/run/secrets/db_admin_password
     env_file:
       - .env                                             # Loads global configs
     secrets:
-      - db_admin_password # - db_party-manager_password
+      - db_party-manager_password # - db_admin_password 
     networks:
       - transcendence
       - database
@@ -225,12 +221,12 @@ services:
       DB_HOST: ${POSTGRES_HOST}                         # DB_HOST is a standard industry convention
       DB_NAME: ${POSTGRES_DB}
       DB_PORT: ${POSTGRES_PORT}
-      DB_USER: ${POSTGRES_USER} # ${POSTGRES_USER_NAME_PROFILE_SYSTEM}
-      DB_PASSWORD_FILE: /run/secrets/db_admin_password # /run/secrets/db_profile-system_password
+      DB_USER: ${POSTGRES_USER_NAME_PROFILE_SYSTEM} # ${POSTGRES_USER}
+      DB_PASSWORD_FILE: /run/secrets/db_profile-system_password #/run/secrets/db_admin_password 
     env_file:
       - .env                                             # Loads global configs
     secrets:
-      - db_admin_password # - db_profile-system_password
+      - db_profile-system_password  # - db_admin_password
     networks:
       - transcendence
       - database
@@ -266,3 +262,6 @@ services:
     restart: unless-stopped
     networks:
       - transcendence
+
+ # CHAT - BACKEND SERVICE - NETWORK = backend-internal & transcendence
+ # BOT - BACKEND SERVICE - NETWORK = backend-internal & transcendence

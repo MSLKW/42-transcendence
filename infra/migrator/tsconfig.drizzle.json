@@ -4,6 +4,7 @@
     "module": "esnext",
     "moduleResolution": "bundler",
     "rootDir": "./",
+    "srcDir": "./dist",
     "types": ["node"],
     "strict": true,
     "skipLibCheck": true

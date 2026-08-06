@@ -1,9 +1,5 @@
-// import { pgSchema } from "drizzle-orm/pg-core";
+import { pgSchema } from "drizzle-orm/pg-core"; // pg-core specificly means postgres
 
-// export const profileSchema = pgSchema("profile_schema");
+export const profileSystemSchema = pgSchema("profile-system_schema");
 
-// export const settings = profileSchema.table("settings", {
-	
-// })
-
-export {};
+// export {};
