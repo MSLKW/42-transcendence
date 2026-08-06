@@ -15,26 +15,26 @@ PARTY_MANAGER_PW="$( cat /run/secrets/db_party-manager_password)"
 PROFILE_SYSTEM_PW="$( cat /run/secrets/db_profile-system_password)"
 GAME_PW="$( cat /run/secrets/db_game_password)"
 
-psql -v ON_ERROR_STOP=1 --username "${PG_USER}" --dbname "${PG_DB_NAME}" <<-EOSQL
+psql -v ON_ERROR_STOP=1 --username "${PGUSER}" --dbname "${PGDATABASE}" <<-EOSQL
 
 	-- 1. create any extensions that only diredtly on Postgres can do, not Drizzle
 	-- uuid-ossp: Allows you to generate UUIDs (Universally Unique Identifiers) directly inside the database (e.g., DEFAULT gen_random_uuid()).
 	CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
 	-- 2. Create users & passwords for each backend microservices that communicates with database
-	CREATE USER "${PG_USER_AUTH}" WITH PASSWORD '${AUTH_PW}';
-	CREATE USER "${PG_USER_PARTY_MANAGER}" WITH PASSWORD '${PARTY_MANAGER_PW}';
-	-- CREATE USER "${PG_USER_PROFILE_SYSTEM}" WITH PASSWORD '${PROFILE_SYSTEM_PW}';
-	-- CREATE USER "${PG_USER_GAME}" WITH PASSWORD '${GAME_PW}';
+	CREATE USER "${PGUSER_AUTH}" WITH PASSWORD '${AUTH_PW}';
+	CREATE USER "${PGUSER_PARTY_MANAGER}" WITH PASSWORD '${PARTY_MANAGER_PW}';
+	-- CREATE USER "${PGUSER_PROFILE_SYSTEM}" WITH PASSWORD '${PROFILE_SYSTEM_PW}';
+	-- CREATE USER "${PGUSER_GAME}" WITH PASSWORD '${GAME_PW}';
 
 	-- 3. Revoke default public schema's access from everyone
 	REVOKE ALL ON SCHEMA public FROM PUBLIC;
-	REVOKE ALL ON DATABASE "${PG_DB_NAME}" FROM PUBLIC;
+	REVOKE ALL ON DATABASE "${PGDATABASE}" FROM PUBLIC;
 
 	-- 4. Re-grant CONNECT to each role
-	GRANT CONNECT ON DATABASE "${PG_DB_NAME}" TO "${PG_USER_AUTH}";
-	GRANT CONNECT ON DATABASE "${PG_DB_NAME}" TO "${PG_USER_PARTY_MANAGER}";
-	-- GRANT CONNECT ON DATABASE "${PG_DB_NAME}" TO "${PG_USER_PROFILE_SYSTEM}";
-	-- GRANT CONNECT ON DATABASE "${PG_DB_NAME}" TO "${PG_USER_GAME}";
+	GRANT CONNECT ON DATABASE "${PGDATABASE}" TO "${PGUSER_AUTH}";
+	GRANT CONNECT ON DATABASE "${PGDATABASE}" TO "${PGUSER_PARTY_MANAGER}";
+	-- GRANT CONNECT ON DATABASE "${PGDATABASE}" TO "${PGUSER_PROFILE_SYSTEM}";
+	-- GRANT CONNECT ON DATABASE "${PGDATABASE}" TO "${PGUSER_GAME}";
 
 EOSQL

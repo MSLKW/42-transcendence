@@ -8,7 +8,7 @@ import fs from "fs";
 import 'dotenv/config'; // 1. Load .env files
 import { defineConfig } from "drizzle-kit";
 
-// const password = fs.readFileSync(process.env.PG_PASSWORD_FILE!, "utf8").trim();
+// const password = fs.readFileSync(process.env.PGPASSWORD!, "utf8").trim();
 // if (!password) {
 //   throw new Error("CRITICAL: Database password could not be loaded.");
 // }
@@ -20,7 +20,7 @@ function requirePassword(): string {
     return envPassword;
   }
 
-  const passwordFile = process.env.PG_PASSWORD_FILE ?? "/run/secrets/db_admin_password";
+  const passwordFile = process.env.PGPASSWORD ?? "/run/secrets/db_admin_password";
   try {
     const password = fs.readFileSync(passwordFile, "utf8").trim();
     if (!password) {
@@ -28,7 +28,7 @@ function requirePassword(): string {
     }
     return password;
   } catch {
-    throw new Error("CRITICAL: Database password could not be loaded from PGPASSWORD or PG_PASSWORD_FILE.");
+    throw new Error("CRITICAL: Database password could not be loaded from PGPASSWORD or PGPASSWORD.");
   }
 }
 
@@ -51,10 +51,10 @@ function requirePassword(): string {
 //   return value;
 // }
 
-// const dbPort = Number(requireEnv("PG_PORT"));
-// const dbHost = requireEnv("PG_HOST");
-// const dbUser = requireEnv("PG_USER");
-// const dbName = requireEnv("PG_DB_NAME");
+// const dbPort = Number(requireEnv("PGPORT"));
+// const dbHost = requireEnv("PGHOST");
+// const dbUser = requireEnv("PGUSER");
+// const dbName = requireEnv("PGDATABASE");
 // const dbPassword = requireEnv("PGPASSWORD");
 
 
@@ -77,7 +77,7 @@ export default defineConfig({
       // password: dbPassword,
       // database: dbName,
         // Construct the URL using the helper
-        url: `${process.env.PG_HOST}://${process.env.PG_USER}:${requirePassword()}@${process.env.PG_HOST}:${process.env.PG_PORT}/${process.env.PG_DB_NAME}`,
+        url: `${process.env.PGHOST}://${process.env.PGUSER}:${requirePassword()}@${process.env.PGHOST}:${process.env.PGPORT}/${process.env.PGDATABASE}`,
     },
     // Optional: Add verbose logging for debugging migrations
     verbose: true, // Makes the terminal output talkative. It will show you the exact SQL strings it's running. This is vital when you are learning or debugging why a migration might be failing.

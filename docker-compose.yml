@@ -46,10 +46,10 @@ services:
     image: postgres:17-bookworm # No Dockerfile needed here, pull directly from Docker Hub!
     restart: unless-stopped
     expose:
-      - "${PG_PORT}"
+      - "${PGPORT}"
     environment: # Postgres Docker image need them through environment - to specifically overwrite the defaults
-      POSTGRES_DB: ${PG_DB_NAME}
-      POSTGRES_USER: ${PG_USER}
+      POSTGRES_DB: ${PGDATABASE}
+      POSTGRES_USER: ${PGUSER}
       POSTGRES_PASSWORD_FILE: /run/secrets/db_admin_password
     secrets:
       - db_admin_password
@@ -65,7 +65,7 @@ services:
     networks:
       - database
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${PG_USER} -d ${PG_DB_NAME}"]
+      test: ["CMD-SHELL", "pg_isready -U ${PGUSER} -d ${PGDATABASE}"]
       interval: 5s
       timeout: 5s
       retries: 5
@@ -107,10 +107,10 @@ services:
     container_name: migrator
     restart: no # It runs migrations only, then it exits successfully, the end of this container's life. 
     environment:
-      # PG_HOST: ${PG_HOST}
-      # PG_PORT: ${PG_PORT}
-      # PG_DB_NAME: ${PG_DB_NAME}
-      # PG_USER: ${PG_USER}
+      # PGHOST: ${PGHOST}
+      # PGPORT: ${PGPORT}
+      # PGDATABASE: ${PGDATABASE}
+      # PGUSER: ${PGUSER}
       PGPASSWORD: /run/secrets/db_admin_password
     secrets:
       - db_admin_password
@@ -150,11 +150,11 @@ services:
     container_name: authentication
     restart: unless-stopped
     environment:
-      # PG_HOST: ${PG_HOST}                           # PG_HOST is a standard industry convention
-      # PG_DB_NAME: ${PG_DB_NAME}
-      # PG_PORT: ${PG_PORT}
-      PG_USER: ${PG_USER_AUTH} #  ${PG_USER}
-      PG_PASSWORD_FILE: /run/secrets/db_auth_password #/run/secrets/db_admin_password 
+      # PGHOST: ${PGHOST}                           # PGHOST is a standard industry convention
+      # PGDATABASE: ${PGDATABASE}
+      # PGPORT: ${PGPORT}
+      PGUSER: ${PGUSER_AUTH} #  ${PGUSER}
+      PGPASSWORD: /run/secrets/db_auth_password #/run/secrets/db_admin_password 
     env_file:
       - .env                                              # Loads global configs
     secrets:
@@ -190,11 +190,11 @@ services:
     container_name: party-manager
     restart: unless-stopped
     environment:
-      # PG_HOST: ${PG_HOST}                         # PG_HOST is a standard industry convention
-      # PG_DB_NAME: ${PG_DB_NAME}
-      # PG_PORT: ${PG_PORT}
-      PG_USER: ${PG_USER_PARTY_MANAGER}  # ${PG_USER}
-      PG_PASSWORD_FILE: /run/secrets/db_party-manager_password #/run/secrets/db_admin_password
+      # PGHOST: ${PGHOST}                         # PGHOST is a standard industry convention
+      # PGDATABASE: ${PGDATABASE}
+      # PGPORT: ${PGPORT}
+      PGUSER: ${PGUSER_PARTY_MANAGER}  # ${PGUSER}
+      PGPASSWORD: /run/secrets/db_party-manager_password #/run/secrets/db_admin_password
     env_file:
       - .env                                             # Loads global configs
     secrets:
@@ -219,11 +219,11 @@ services:
 #     container_name: profile-system
 #     restart: unless-stopped
 #     environment:
-#       PG_HOST: ${PG_HOST}                         # PG_HOST is a standard industry convention
-#       PG_DB_NAME: ${PG_DB_NAME}
-#       PG_PORT: ${PG_PORT}
-#       PG_USER: ${PG_USER_PROFILE_SYSTEM} # ${PG_USER}
-#       PG_PASSWORD_FILE: /run/secrets/db_profile-system_password #/run/secrets/db_admin_password 
+#       PGHOST: ${PGHOST}                         # PGHOST is a standard industry convention
+#       PGDATABASE: ${PGDATABASE}
+#       PGPORT: ${PGPORT}
+#       PGUSER: ${PGUSER_PROFILE_SYSTEM} # ${PGUSER}
+#       PGPASSWORD: /run/secrets/db_profile-system_password #/run/secrets/db_admin_password 
 #     env_file:
 #       - .env                                             # Loads global configs
 #     secrets:

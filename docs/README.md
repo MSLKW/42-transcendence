@@ -66,16 +66,16 @@ Look for these specific terminal logs to confirm the database and its migrator h
    <br><br>
 
 5. **Fill in Connection Details:** <br>
-   *Most inputs reference your `.env` variables automatically. For example, typing `postgres_h` or `host` will trigger a dropdown for `PG_HOST`—simply click it! No manual copy-pasting required.*
+   *Most inputs reference your `.env` variables automatically. For example, typing `pg_h` or `host` will trigger a dropdown for `PGHOST`—simply click it! No manual copy-pasting required.*
    <br><br>
    | Field | Value to Enter / Select |
    | :--- | :--- |
    | **Name** | Custom name of your choice (e.g., `big2test`) |
-   | **Host** | `postgres_host` (select from dropdown) |
+   | **Host** | `pghost` (select from dropdown) |
    | **Port** | `5432` (leave default) |
-   | **User** | `postgres_user` (select from dropdown) |
+   | **User** | `pguser` (select from dropdown) |
    | **Password** | Copy & paste manually from `secrets/database_passwords/db_admin_password.txt` *(Tip: Allow your browser to save it for auto-fill next time)* |
-   | **Database** | `postgres_db` (select from dropdown) |
+   | **Database** | `pgdatabase` (select from dropdown) |
    | **SSL Mode & SSL Keys** | Leave as default (used for cloud databases) |
    <br>
 > ⚠️ **Troubleshooting:** If the browser becomes unresponsive upon clicking **Connect**, simply refresh the tab, repeat from Step 3, and it will work smoothly.<br>

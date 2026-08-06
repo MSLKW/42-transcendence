@@ -6,7 +6,7 @@
 #    By: aimokhta <aimokhta@student.42kl.edu.my>    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2026/06/16 09:31:30 by aimokhta          #+#    #+#              #
-#    Updated: 2026/08/06 16:00:38 by aimokhta         ###   ########.fr        #
+#    Updated: 2026/08/07 03:38:51 by aimokhta         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -64,6 +64,7 @@ logs:
 	@docker logs auth
 	@echo "$(PURPLE)docker logs party-manager$(RESET)"
 	@docker logs party-manager
+# 	docker logs profile-system
 # 	docker logs website
 # 	docker logs game
 # 	docker logs bot
