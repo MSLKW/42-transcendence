@@ -46,10 +46,10 @@ services:
     image: postgres:17-bookworm # No Dockerfile needed here, pull directly from Docker Hub!
     restart: unless-stopped
     expose:
-      - "${POSTGRES_PORT}"
+      - "${PG_PORT}"
     environment: # Postgres Docker image need them through environment - to specifically overwrite the defaults
-      POSTGRES_DB: ${POSTGRES_DB}
-      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_DB: ${PG_DB_NAME}
+      POSTGRES_USER: ${PG_USER}
       POSTGRES_PASSWORD_FILE: /run/secrets/db_admin_password
     secrets:
       - db_admin_password
@@ -65,7 +65,7 @@ services:
     networks:
       - database
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      test: ["CMD-SHELL", "pg_isready -U ${PG_USER} -d ${PG_DB_NAME}"]
       interval: 5s
       timeout: 5s
       retries: 5
@@ -81,7 +81,7 @@ services:
       - "${DRIZZLE_GATEWAY_PORT}:${DRIZZLE_GATEWAY_PORT}"
     env_file:
       - .env
-    environment: # DB_* - not recognized as per DG documentation
+    environment: # DB_* / PG_* - not recognized as per DG documentation
       PORT: ${DRIZZLE_GATEWAY_PORT}
       STORE_PATH: /app # Required by Drizzle Gateway
     command:
@@ -107,10 +107,10 @@ services:
     container_name: migrator
     restart: no # It runs migrations only, then it exits successfully, the end of this container's life. 
     environment:
-      DB_HOST: ${POSTGRES_HOST}
-      DB_PORT: ${POSTGRES_PORT}
-      DB_NAME: ${POSTGRES_DB}
-      DB_USER: ${POSTGRES_USER}
+      # PG_HOST: ${PG_HOST}
+      # PG_PORT: ${PG_PORT}
+      # PG_DB_NAME: ${PG_DB_NAME}
+      # PG_USER: ${PG_USER}
       PGPASSWORD: /run/secrets/db_admin_password
     secrets:
       - db_admin_password
@@ -150,11 +150,11 @@ services:
     container_name: authentication
     restart: unless-stopped
     environment:
-      DB_HOST: ${POSTGRES_HOST}                           # DB_HOST is a standard industry convention
-      DB_NAME: ${POSTGRES_DB}
-      DB_PORT: ${POSTGRES_PORT}
-      DB_USER: ${POSTGRES_USER_NAME_AUTH} #  ${POSTGRES_USER}
-      DB_PASSWORD_FILE: /run/secrets/db_auth_password #/run/secrets/db_admin_password 
+      # PG_HOST: ${PG_HOST}                           # PG_HOST is a standard industry convention
+      # PG_DB_NAME: ${PG_DB_NAME}
+      # PG_PORT: ${PG_PORT}
+      PG_USER: ${PG_USER_AUTH} #  ${PG_USER}
+      PG_PASSWORD_FILE: /run/secrets/db_auth_password #/run/secrets/db_admin_password 
     env_file:
       - .env                                              # Loads global configs
     secrets:
@@ -190,11 +190,11 @@ services:
     container_name: party-manager
     restart: unless-stopped
     environment:
-      DB_HOST: ${POSTGRES_HOST}                         # DB_HOST is a standard industry convention
-      DB_NAME: ${POSTGRES_DB}
-      DB_PORT: ${POSTGRES_PORT}
-      DB_USER: ${POSTGRES_USER_NAME_PARTY_MANAGER}  # ${POSTGRES_USER}
-      DB_PASSWORD_FILE: /run/secrets/db_party-manager_password #/run/secrets/db_admin_password
+      # PG_HOST: ${PG_HOST}                         # PG_HOST is a standard industry convention
+      # PG_DB_NAME: ${PG_DB_NAME}
+      # PG_PORT: ${PG_PORT}
+      PG_USER: ${PG_USER_PARTY_MANAGER}  # ${PG_USER}
+      PG_PASSWORD_FILE: /run/secrets/db_party-manager_password #/run/secrets/db_admin_password
     env_file:
       - .env                                             # Loads global configs
     secrets:
@@ -219,11 +219,11 @@ services:
 #     container_name: profile-system
 #     restart: unless-stopped
 #     environment:
-#       DB_HOST: ${POSTGRES_HOST}                         # DB_HOST is a standard industry convention
-#       DB_NAME: ${POSTGRES_DB}
-#       DB_PORT: ${POSTGRES_PORT}
-#       DB_USER: ${POSTGRES_USER_NAME_PROFILE_SYSTEM} # ${POSTGRES_USER}
-#       DB_PASSWORD_FILE: /run/secrets/db_profile-system_password #/run/secrets/db_admin_password 
+#       PG_HOST: ${PG_HOST}                         # PG_HOST is a standard industry convention
+#       PG_DB_NAME: ${PG_DB_NAME}
+#       PG_PORT: ${PG_PORT}
+#       PG_USER: ${PG_USER_PROFILE_SYSTEM} # ${PG_USER}
+#       PG_PASSWORD_FILE: /run/secrets/db_profile-system_password #/run/secrets/db_admin_password 
 #     env_file:
 #       - .env                                             # Loads global configs
 #     secrets:

@@ -12,11 +12,11 @@ fi
 echo "[1/5] Success extracting and exporting postgres user password!"
 
 # 1. Wait for the postgresql to be ready
-echo "[2/5]  Waiting for ${DB_HOST}..."
-while ! pg_isready -h ${DB_HOST} -p ${DB_PORT}; do
+echo "[2/5]  Waiting for ${PG_HOST}..."
+while ! pg_isready -h ${PG_HOST} -p ${PG_PORT}; do
   sleep 2
 done
-echo "[2/5]  ${DB_HOST} is ready!"
+echo "[2/5]  ${PG_HOST} is ready!"
 
 
 # # # 2. Apply Generate(DO NOT generate here, only for 1st time after editing, locally only)

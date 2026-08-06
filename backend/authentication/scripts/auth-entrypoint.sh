@@ -1,9 +1,9 @@
 #!/bin/sh
 
 # 1. Read the mounted secret file into a variable
-export DB_PASSWORD=$(cat "${DB_PASSWORD_FILE}")
+export PG_PASSWORD=$(cat "${PG_PASSWORD_FILE}")
 # Construct the URL using the variable
-export DATABASE_URL="${DB_HOST}://${DB_USER}:${DB_PASSWORD}@${DB_HOST}:${DB_PORT}/${DB_NAME}?schema=auth_schema"
+export DATABASE_URL="${PG_HOST}://${PG_USER}:${PG_PASSWORD}@${PG_HOST}:${PG_PORT}/${PG_DB_NAME}?schema=auth_schema"
 
 # 2. Start auth to the foreground
 echo "Starting authentication service to the foreground..."

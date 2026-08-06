@@ -66,7 +66,7 @@ Look for these specific terminal logs to confirm the database and its migrator h
    <br><br>
 
 5. **Fill in Connection Details:** <br>
-   *Most inputs reference your `.env` variables automatically. For example, typing `postgres_h` or `host` will trigger a dropdown for `POSTGRES_HOST`—simply click it! No manual copy-pasting required.*
+   *Most inputs reference your `.env` variables automatically. For example, typing `postgres_h` or `host` will trigger a dropdown for `PG_HOST`—simply click it! No manual copy-pasting required.*
    <br><br>
    | Field | Value to Enter / Select |
    | :--- | :--- |

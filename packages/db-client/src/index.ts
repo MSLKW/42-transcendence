@@ -5,7 +5,7 @@ import { Pool } from "pg";
 
 
 // 2. Helper to safely read the password
-const password = fs.readFileSync(process.env.DB_PASSWORD_FILE!, 'utf-8').trim();
+const password = fs.readFileSync(process.env.PG_PASSWORD_FILE!, 'utf-8').trim();
 if (!password) {
   throw new Error("CRITICAL: Database password could not be loaded.");
 }
@@ -13,14 +13,14 @@ if (!password) {
 
 // 3. Create the single shared connection pool, using password
 const pool = new Pool({
-    host: process.env.DB_HOST,
-    user: process.env.DB_USER,
-    database: process.env.DB_NAME,
+    host: process.env.PG_HOST,
+    user: process.env.PG_USER,
+    database: process.env.PG_DB_NAME,
     password: password,
-    port: Number(process.env.DB_PORT), // syntax: env var, fallback value if forgot to put in .env, parse into decimal number 
+    port: Number(process.env.PG_PORT), // syntax: env var, fallback value if forgot to put in .env, parse into decimal number 
 
     // --- Industry Standard Pool Settings ---
-    max: Number(process.env.POSTGRES_MAX_CONNECTIONS), // Maximum number of clients in the pool (prevents crashing Postgres). PostgreSQL has a default limit of 100 simultaneous connections, controlled by the max_connections parameter
+    max: Number(process.env.PG_MAX_CONNECTIONS), // Maximum number of clients in the pool (prevents crashing Postgres). PostgreSQL has a default limit of 100 simultaneous connections, controlled by the max_connections parameter
     idleTimeoutMillis: 30000, // Close idle clients after 30 seconds
     connectionTimeoutMillis: 2000, // Return an error if connection takes longer than 2 seconds
   });
