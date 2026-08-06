@@ -6,7 +6,7 @@ networks:
     name: ${DB_NETWORK_NAME}
     driver: bridge # anyone outside cannot enter this network
     internal: true # anyone inside cannot go outside this network (talking to external containers or internet/browsers)
-  # backend-internal:
+  # backend-internal: specifically for internal API
   #   name: ${INTERNAL_BACKEND_NETWORK_NAME}
   #   driver: bridge
   #   internal: true
@@ -120,7 +120,7 @@ services:
     env_file:
       - .env
     networks:
-      - transcendence
+      - transcendence #! this might not needed
       - database
     depends_on:
       postgresql:
@@ -166,7 +166,7 @@ services:
       - transcendence
       - database
       # - backend-internal
-    healthcheck:
+    healthcheck: #! try check internal thru docker exec if they can still communicate thru postgres, with up nginx too
       test: ["CMD", "curl", "-s", "-o", "/dev/null", "http://localhost:3000/"]
       interval: 10s
       timeout: 5s

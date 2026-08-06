@@ -6,7 +6,7 @@
 #    By: aimokhta <aimokhta@student.42kl.edu.my>    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2026/06/16 09:31:30 by aimokhta          #+#    #+#              #
-#    Updated: 2026/07/28 01:22:38 by aimokhta         ###   ########.fr        #
+#    Updated: 2026/08/06 10:36:00 by aimokhta         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -23,7 +23,7 @@ include .env
 export
 
 all:
-	@echo "$(PURPLE)\n🛠️  Building and launching containers...\n$(RESET)"
+	@echo "$(PURPLE)\n🛠️  Building and launching all containers...\n$(RESET)"
 	@docker compose -f ./docker-compose.yml up --build
 
 down:
@@ -42,7 +42,7 @@ recreate:
 	@docker compose -f ./docker-compose.yml up -d --force-recreate
 
 clean:
-	@echo "$(PURPLE)\n🗑️  Removing all containers, volumes, network and images including public base images (keeping volumes)...\n$(RESET)"
+	@echo "$(PURPLE)\n🗑️  Removing all containers, network and images including public base images (keeping volumes)...\n$(RESET)"
 	@docker compose -f ./docker-compose.yml down --rmi all
 	@echo "$(PURPLE)\n🗑️  Done cleaning all containers and images! \n$(RESET)"
 	
