@@ -13,7 +13,7 @@ echo "[1/5] Success extracting and exporting postgres user password!"
 
 # 1. Wait for the postgresql to be ready
 echo "[2/5]  Waiting for ${DB_HOST}..."
-while ! pg_isready -h ${DB_HOST} -p ${DB_PORT} -U ${DB_USER}; do
+while ! pg_isready -h ${DB_HOST} -p ${DB_PORT}; do
   sleep 2
 done
 echo "[2/5]  ${DB_HOST} is ready!"

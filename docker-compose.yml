@@ -209,60 +209,60 @@ services:
         condition: service_completed_successfully  # Waits for migrator to finish and exit with code 0
 
 
-  #     BACKEND MICORSERVICE
-  profile-system:
-    build:
-      context: .                                         # Set workdir to the repo's root
-      dockerfile: ./backend/profile-system/Dockerfile    # Point to the Dockerfile's relative path
-    pull_policy: never
-    image: profile:test
-    container_name: profile-system
-    restart: unless-stopped
-    environment:
-      DB_HOST: ${POSTGRES_HOST}                         # DB_HOST is a standard industry convention
-      DB_NAME: ${POSTGRES_DB}
-      DB_PORT: ${POSTGRES_PORT}
-      DB_USER: ${POSTGRES_USER_NAME_PROFILE_SYSTEM} # ${POSTGRES_USER}
-      DB_PASSWORD_FILE: /run/secrets/db_profile-system_password #/run/secrets/db_admin_password 
-    env_file:
-      - .env                                             # Loads global configs
-    secrets:
-      - db_profile-system_password  # - db_admin_password
-    networks:
-      - transcendence
-      - database
-      # - backend-internal
-    depends_on:
-      migrator:
-        condition: service_completed_successfully  # Waits for migrator to finish and exit with code 0
+#   #     BACKEND MICORSERVICE
+#   profile-system:
+#     build:
+#       context: .                                         # Set workdir to the repo's root
+#       dockerfile: ./backend/profile-system/Dockerfile    # Point to the Dockerfile's relative path
+#     pull_policy: never
+#     image: profile:test
+#     container_name: profile-system
+#     restart: unless-stopped
+#     environment:
+#       DB_HOST: ${POSTGRES_HOST}                         # DB_HOST is a standard industry convention
+#       DB_NAME: ${POSTGRES_DB}
+#       DB_PORT: ${POSTGRES_PORT}
+#       DB_USER: ${POSTGRES_USER_NAME_PROFILE_SYSTEM} # ${POSTGRES_USER}
+#       DB_PASSWORD_FILE: /run/secrets/db_profile-system_password #/run/secrets/db_admin_password 
+#     env_file:
+#       - .env                                             # Loads global configs
+#     secrets:
+#       - db_profile-system_password  # - db_admin_password
+#     networks:
+#       - transcendence
+#       - database
+#       # - backend-internal
+#     depends_on:
+#       migrator:
+#         condition: service_completed_successfully  # Waits for migrator to finish and exit with code 0
 
 
-  #     BACKEND MICORSERVICE
-  game:
-    build:
-      context: .
-      dockerfile: ./backend/game/Dockerfile
-    pull_policy: never
-    image: game:test
-    container_name: game
-    restart: unless-stopped
-    networks:
-      - transcendence
-      - database
-      # - backend-internal
+#   #     BACKEND MICORSERVICE
+#   game:
+#     build:
+#       context: .
+#       dockerfile: ./backend/game/Dockerfile
+#     pull_policy: never
+#     image: game:test
+#     container_name: game
+#     restart: unless-stopped
+#     networks:
+#       - transcendence
+#       - database
+#       # - backend-internal
 
 
-  #     FRONTEND MICORSERVICE
-  website:
-    build:
-      context: .
-      dockerfile: ./frontend/website/Dockerfile
-    pull_policy: never
-    image: website:test
-    container_name: website
-    restart: unless-stopped
-    networks:
-      - transcendence
+#   #     FRONTEND MICORSERVICE
+#   website:
+#     build:
+#       context: .
+#       dockerfile: ./frontend/website/Dockerfile
+#     pull_policy: never
+#     image: website:test
+#     container_name: website
+#     restart: unless-stopped
+#     networks:
+#       - transcendence
 
- # CHAT - BACKEND SERVICE - NETWORK = backend-internal & transcendence
- # BOT - BACKEND SERVICE - NETWORK = backend-internal & transcendence
+#  # CHAT - BACKEND SERVICE - NETWORK = backend-internal & transcendence
+#  # BOT - BACKEND SERVICE - NETWORK = backend-internal & transcendence
