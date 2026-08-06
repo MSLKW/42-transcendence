@@ -20,7 +20,7 @@ set -e
 
 export PGPASSWORD="$(cat /run/secrets/db_admin_password)"
 
-psql -v ON_ERROR_STOP=1 --host "${DB_HOST}" --port "${DB_PORT}" --username "$DB_USER" --dbname "$DB_NAME" <<-EOSQL
+psql -v ON_ERROR_STOP=1 --host "${DB_HOST}" --port "${DB_PORT}" --username "${DB_USER}" --dbname "${DB_NAME}" <<-EOSQL
 
 	-- 1. Grant access of specific schema to its own specific user only:
 	-- privilege = just a specific permission a role (user) is allowed to perform on a specific database object.

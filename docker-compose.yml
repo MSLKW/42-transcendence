@@ -111,6 +111,7 @@ services:
       DB_PORT: ${POSTGRES_PORT}
       DB_NAME: ${POSTGRES_DB}
       DB_USER: ${POSTGRES_USER}
+      PGPASSWORD: /run/secrets/db_admin_password
     secrets:
       - db_admin_password
     env_file:

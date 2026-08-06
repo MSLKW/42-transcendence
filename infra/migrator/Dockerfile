@@ -11,7 +11,6 @@ COPY infra/migrator/package.json ./infra/migrator/
 COPY packages ./packages
 
 # Install dependencies at the root
-# RUN npm ci
 # ENV NODE_ENV=production
 # RUN npm ci --omit=dev
 RUN npm ci
