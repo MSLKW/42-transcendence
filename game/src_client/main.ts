@@ -51,12 +51,30 @@ const tableMaterial = new THREE.MeshLambertMaterial({ color: 0xebbb52 });
 const tableMesh = new THREE.Mesh(tableGeometry, tableMaterial);
 scene.add(tableMesh);
 
-const ambientLight = new THREE.AmbientLight(0xffffff, 1);
+const ambientLight = new THREE.AmbientLight(0xffffff, 0.06);
 scene.add(ambientLight);
 
-// const light = new THREE.PointLight(0xffffff, 25, 20);
-// light.position.set(0, 4, 0);
-// scene.add(light);
+const lightSettings = {
+	intensity: 7,
+	distance: 8,
+	angle: 0.73,
+	penumbra: 0.14,
+	decay: 0.2,
+}
+
+const light = new THREE.SpotLight(0xffffff, 
+	lightSettings.intensity, 
+	lightSettings.distance, 
+	lightSettings.angle, 
+	lightSettings.penumbra, 
+	lightSettings.decay
+);
+light.position.set(0, 7, 0);
+light.target.position.set(0, 0, 0);
+scene.add(light);
+
+const lightHelper = new THREE.SpotLightHelper(light);
+scene.add(lightHelper);
 
 export const cameraLight = new THREE.PointLight(0xffffff, 20, 20);
 cameraLight.position.set(0, 5, 7);
@@ -79,6 +97,21 @@ cameraFolder.add(camera.position, 'z', 0, 10, 0.1).name('Z').listen();
 lensFolder.add(camera, 'fov', 20, 100, 1).name("FOV").onChange(() => {
 	camera.updateProjectionMatrix();
 })
+
+const spotlightFolder = gui.addFolder('Spotlight');
+
+spotlightFolder.add(light.position, 'y', 0, 100, 1).name('Height');
+spotlightFolder.add(light, 'intensity', 0, 100, 1).name('Intensity');
+spotlightFolder.add(light, 'distance', 0, 100, 1).name('Distance');
+spotlightFolder.add(light, 'angle', 0, Math.PI / 2, 0.01).name('Angle');
+spotlightFolder.add(light, 'penumbra', 0, 2, 0.01).name('Penumbra');
+spotlightFolder.add(light, 'decay', 0, 5, 0.1).name('Decay');
+spotlightFolder.onChange(() => {
+	lightHelper.update();
+})
+
+const ambientLightFolder = gui.addFolder('AmbientLight');
+ambientLightFolder.add(ambientLight, 'intensity', 0, 1, 0.01).name('Intensity');
 
 gsap.ticker.lagSmoothing(false);
 

@@ -7,7 +7,6 @@ import { Opponent } from './Opponent.ts';
 import { camera, cameraLight, orbitControls } from './main.ts';
 import { Deck } from './Deck.ts';
 import { gsap } from 'gsap';
-import { GSDevTools } from "gsap/GSDevTools";
 import { Participant } from './Participant.ts';
 
 export class Game {
@@ -162,8 +161,6 @@ export class Game {
 			}
 			this.cardHeap.cardHandQueue.play();
 		})
-		gsap.registerPlugin(GSDevTools);
-		GSDevTools.create({animation: universalTimeline});
 	}
 
 	private initParticipants(gameState: GameStateTransmit) {
