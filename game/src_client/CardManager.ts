@@ -2,11 +2,13 @@ import * as THREE from 'three';
 import { Card } from './Card.ts';
 import { CardHand } from './CardHand.ts';
 import { outlinePass, scene } from './main.ts';
+import { gsap } from 'gsap';
 
 export class CardManager {
 	/* Card Manager */
 	private position: THREE.Vector3;
 	private rotation: THREE.Quaternion;
+	public	isLocked: boolean;
 
 	/* Main Cards */
 	private boundSpaceLimit: number;
@@ -57,37 +59,37 @@ export class CardManager {
 		this.dragPlane = new THREE.Plane().setFromNormalAndCoplanarPoint(new THREE.Vector3(0, 0, 1), this.position);
 		this.sortFunction = undefined;
 		this.draggedCard = undefined;
+		this.isLocked = true;
 	}
 
-	public receiveCard(card: Card, index: number = this.cards.length) {
+	public receiveCard(card: Card, index: number = this.cards.length, duration: number = 0.1): gsap.core.Timeline {
 		this.cards.splice(index, 0, card);
 		card.isHover = false;
 		this.slots = this.calculateSlots(this.cards, this.boundSpaceLimit);
 		this.sortCards();
 		this.initHitBoxes(this.cards, this.slots);
-		this.updateCardObjects(this.cards, this.slots);
+		return (this.updateCardObjects(this.cards, this.slots, duration));
 	}
 
-	public removeCard(card: Card) {
+	public removeCard(card: Card): gsap.core.Timeline | undefined {
 		let index = this.cards.indexOf(card);
 		if (index == -1) {
-			return ;
+			return (undefined);
 		}
 		this.cards.splice(index, 1);
 		this.slots = this.calculateSlots(this.cards, this.boundSpaceLimit);
 		this.sortCards();
 		this.initHitBoxes(this.cards, this.slots);
-		this.updateCardObjects(this.cards, this.slots);
+		return (this.updateCardObjects(this.cards, this.slots));
 	}
 
-	public removeCardByIndex(index: number): Card | undefined {
+	public removeCardByIndex(index: number): [Card | undefined, gsap.core.Timeline | undefined] {
 		const card = this.cards.at(index);
 		if (card === undefined) {
 			console.log('Card to remove not found');
-			return (undefined);
+			return ([undefined, undefined]);
 		}
-		this.removeCard(card);
-		return (card);
+		return ([card, this.removeCard(card)]);
 	}
 
 	public setSort(sortFunction: ((a: Card, b: Card) => number) | undefined) {
@@ -103,7 +105,12 @@ export class CardManager {
 		}
 	}
 
-	public updateManager(position: THREE.Vector3 | undefined, rotation: THREE.Quaternion | undefined) {
+	public getCardsAmount(): number {
+		return (this.cards.length);
+	}
+
+	public updateManager(position: THREE.Vector3 | undefined, rotation: THREE.Quaternion | undefined): gsap.core.Timeline {
+		const timeline = gsap.timeline();
 		if (position !== undefined) {
 			this.position = position;
 		}
@@ -114,9 +121,10 @@ export class CardManager {
 		this.dragPlane.constant -= 0.2;
 		this.slots = this.calculateSlots(this.cards, this.boundSpaceLimit);
 		this.initHitBoxes(this.cards, this.slots);
-		this.updateCardObjects(this.cards, this.slots);
+		timeline.add(this.updateCardObjects(this.cards, this.slots), 0);
 		this.selectedSlots = this.calculateSlots(this.selectedCards.cards, this.selectedBoundSpaceLimit, this.selectedOffset);
-		this.updateCardObjects(this.selectedCards.cards, this.selectedSlots);
+		timeline.add(this.updateCardObjects(this.selectedCards.cards, this.selectedSlots), 0);
+		return (timeline);
 	}
 
 	// Revamp so that it is bundled up together instead of separated when on low cards
@@ -218,7 +226,8 @@ export class CardManager {
 		rightBuffer.setXYZ(rightVerticeIndex, rightLocal.x, rightLocal.y, rightLocal.z);
 	}
 
-	private updateCardObjects(cards: Array<Card>, slots: Array<THREE.Vector3>) {
+	private updateCardObjects(cards: Array<Card>, slots: Array<THREE.Vector3>, duration: number = 0.1): gsap.core.Timeline {
+		const timeline = gsap.timeline();
 		for (let i = 0; i < cards.length; i++) {
 			let card = cards.at(i);
 			let slot = slots.at(i);
@@ -229,11 +238,12 @@ export class CardManager {
 				this.applyFanRotationEffect(updatedRotation, normalizedIndex);
 				this.applyHoverEffect(card, updatedPosition);
 				if (updatedPosition !== card.object.position || updatedRotation !== card.object.quaternion) {
-					card.move(updatedPosition, updatedRotation);
+					timeline.add(card.move(updatedPosition, updatedRotation, duration), 0);
 				}
 				// console.log(`updated card object rank: ${card.rank} suit: ${card.suit} position: ${card.object.position.x},${card.object.position.y},${card.object.position.z} index: ${normalizedIndex}`);
 			}
 		}
+		return (timeline);
 	}
 
 	// Will mutate rotation
@@ -301,6 +311,9 @@ export class CardManager {
 
 	// update card position via slot for selected card
 	public interactCard(raycaster: THREE.Raycaster) {
+		if (this.isLocked === true) {
+			return ;
+		}
 		let cardObjects = Card.getCardObjects(this.cards);
 		let cardHandObjects = Card.getCardObjects(this.selectedCards.cards);
 		let intersected = raycaster.intersectObjects(cardObjects.concat(cardHandObjects));
@@ -334,7 +347,7 @@ export class CardManager {
 	}
 
 	public pickupDraggedCard(raycaster: THREE.Raycaster) {
-		if (this.draggedCard !== undefined) 
+		if (this.draggedCard !== undefined || this.isLocked === true)
 			return ;
 		let cardObjects = Card.getCardObjects(this.cards);
 		let intersected = raycaster.intersectObjects(cardObjects);
@@ -388,6 +401,9 @@ export class CardManager {
 	}
 
 	public hoverCard(raycaster: THREE.Raycaster) {
+		if (this.isLocked === true) {
+			return ;
+		}
 		for (let i = 0; i < this.cards.length; i++) {
 			this.cards[i].isHover = false;
 		}

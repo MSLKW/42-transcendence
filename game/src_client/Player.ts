@@ -6,12 +6,9 @@ import { Card } from './Card.ts';
 import { CardManager } from './CardManager.ts';
 import { CardHeap } from './CardHeap.ts';
 import { scene, renderer, camera, gameStatus, orbitControls } from './main.ts';
+import { Participant } from './Participant.ts';
 
-export class Player {
-	private	socket: Socket;
-	private playerId: string;
-	public	cardManager: CardManager;
-	private cardHeapRef: CardHeap;
+export class Player extends Participant {
 	private raycaster: THREE.Raycaster;
 	private startClick: THREE.Vector2;
 	private isDragging: boolean;
@@ -23,9 +20,7 @@ export class Player {
 
 
 	constructor(socket: Socket, playerId: string, cardHeapRef: CardHeap) {
-		this.socket = socket;
-		this.cardHeapRef = cardHeapRef;
-		this.playerId = playerId;
+		super(socket, playerId, cardHeapRef);
 		this.raycaster = new THREE.Raycaster();
 		this.startClick = new THREE.Vector2();
 		this.isDragging = false;
@@ -34,8 +29,6 @@ export class Player {
 		this.skipTurnButton = document.getElementById('skip-turn-button') as HTMLButtonElement;
 		this.sortCardsByRankButton = document.getElementById('sort-cards-by-rank-button') as HTMLButtonElement;
 		this.sortCardsBySuitButton = document.getElementById('sort-cards-by-suit-button') as HTMLButtonElement;
-
-		this.cardManager = new CardManager(this.playerId);
 
 		if (this.sendCardsButton === undefined || 
 			this.skipTurnButton === undefined || 
@@ -49,10 +42,10 @@ export class Player {
 	}
 
 	public getPlayerId() {
-		return (this.playerId);
+		return (this.uuid);
 	}
 
-	public setupGameState(gameState: GameStateTransmit) {
+	public override sync(gameState: GameStateTransmit) {
 		this.collectCards(gameState.playerCards);
 		this.setPlayerTurnUI(gameState.isPlayerTurn);
 	}
@@ -75,7 +68,7 @@ export class Player {
 		});
 		
 		this.socket.on("player_turn", (playerTurn: PlayerTurnTransmit) => {
-			if (this.playerId === playerTurn.playerId) {
+			if (this.uuid === playerTurn.playerId) {
 				this.setPlayerTurnUI(true, playerTurn.skippable);
 			}
 			else {
@@ -151,7 +144,7 @@ export class Player {
 		// DEBUG
 		window.addEventListener('keydown', (event) => {
 			if (event.code === "Minus") {
-				const card = this.cardManager.removeCardByIndex(0);
+				const [card, animation] = this.cardManager.removeCardByIndex(0);
 				if (card !== undefined) {
 					card.dispose();
 				}

@@ -1,18 +1,13 @@
 import * as THREE from 'three';
-import { Card } from './Card.ts';
-import { CardManager } from './CardManager.ts';
-import { CardHand } from './CardHand.ts';
-import { io } from 'socket.io-client'
-import { CardHeap } from './CardHeap.ts';
-import { Player } from './Player.ts';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
-import { Opponent } from './Opponent.ts';
+import { GUI } from 'three/addons/libs/lil-gui.module.min.js';
 import { Game } from './Game.ts';
 import { GameStatus } from './GameStatus.ts';
 import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
 import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
 import { OutlinePass } from 'three/addons/postprocessing/OutlinePass.js';
 import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
+import { gsap } from 'gsap';
 
 const resolution = new THREE.Vector2(window.innerWidth, window.innerHeight)
 
@@ -59,9 +54,9 @@ scene.add(tableMesh);
 const ambientLight = new THREE.AmbientLight(0xffffff, 1);
 scene.add(ambientLight);
 
-const light = new THREE.PointLight(0xffffff, 25, 20);
-light.position.set(0, 4, 0);
-scene.add(light);
+// const light = new THREE.PointLight(0xffffff, 25, 20);
+// light.position.set(0, 4, 0);
+// scene.add(light);
 
 export const cameraLight = new THREE.PointLight(0xffffff, 20, 20);
 cameraLight.position.set(0, 5, 7);
@@ -72,6 +67,20 @@ camera.position.set(0, 10, 0);
 orbitControls.update();
 
 // camera.rotation.set();
+
+const gui = new GUI();
+const cameraFolder = gui.addFolder('Camera Position');
+const lensFolder = gui.addFolder('Camera Lens');
+
+cameraFolder.add(camera.position, 'x', 0, 10, 0.1).name('X').listen();
+cameraFolder.add(camera.position, 'y', 0, 10, 0.1).name('Y').listen();
+cameraFolder.add(camera.position, 'z', 0, 10, 0.1).name('Z').listen();
+
+lensFolder.add(camera, 'fov', 20, 100, 1).name("FOV").onChange(() => {
+	camera.updateProjectionMatrix();
+})
+
+gsap.ticker.lagSmoothing(false);
 
 function resize() {
 	const width = window.innerWidth;

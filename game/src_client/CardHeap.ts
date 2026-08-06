@@ -1,10 +1,12 @@
 import * as THREE from 'three';
+import { gsap } from 'gsap';
 import { CardHand } from './CardHand.ts';
 import { CardHandTransmit } from '../src_shared/Types.ts';
 import { Card } from './Card.ts';
 
 export class CardHeap {
-	private originalPosition: THREE.Vector3;
+	public	cardHandQueue: gsap.core.Timeline;
+	public	originalPosition: THREE.Vector3;
 	private position: THREE.Vector3;
 	private rotation: THREE.Euler;
 	private cardHands: Array<CardHand>;
@@ -14,13 +16,14 @@ export class CardHeap {
 		this.position = this.originalPosition;
 		this.rotation = new THREE.Euler(-Math.PI / 2, 0, this.getRandomRange(-0.3, 0.3));
 		this.cardHands = [];
+		this.cardHandQueue = gsap.timeline({ paused: true });
 	}
 
 	private getRandomRange(min: number, max: number) {
 		return (Math.random() * (max - min) + min);
 	}
 
-	public receiveCardHand(cardHand: CardHand) {
+	public receiveCardHand(cardHand: CardHand): gsap.core.Timeline {
 		if (this.cardHands.length > 0) {
 			const cards = this.cardHands[this.cardHands.length - 1].cards;
 			for (let i = 0; i < cards.length; i++) {
@@ -28,15 +31,17 @@ export class CardHeap {
 			}
 		}
 		this.cardHands.push(cardHand);
-		this.updateCardHandObjects(cardHand);
+		const timeline = this.updateCardHandObjects(cardHand);
 		this.position.y += 0.02;
 		this.position.x = this.getRandomRange(-0.3, 0.3);
 		this.position.z = this.getRandomRange(-0.3, 0.3);
 		this.rotation.z = this.getRandomRange(-0.3, 0.3);
+		return (timeline);
 	}
 
 	// copied logic from CardManager.ts
-	private updateCardHandObjects(cardHand: CardHand) {
+	private updateCardHandObjects(cardHand: CardHand): gsap.core.Timeline {
+		const timeline = gsap.timeline();
 		const cards = cardHand.cards;
 		const fanRotation = 30;
 		const boundSpace = (cards.length - 1) * Card.Width / 3;
@@ -66,8 +71,9 @@ export class CardHeap {
 					THREE.MathUtils.lerp(0, 0.01, normalizedIndex)
 				).applyQuaternion(rotation)
 			);
-			cards[i].move(position, rotation);
+			timeline.add(cards[i].move(position, rotation), 0);
 		}
+		return (timeline);
 	}
 
 	public sync(cardHands: Array<CardHandTransmit>) {
@@ -88,5 +94,7 @@ export class CardHeap {
 		}
 		this.cardHands.length = 0;
 		this.position = this.originalPosition;
+		this.cardHandQueue.kill();
+		this.cardHandQueue = gsap.timeline({ paused: true });
 	}
 }

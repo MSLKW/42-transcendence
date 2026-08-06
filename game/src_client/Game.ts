@@ -5,14 +5,17 @@ import { CardHeap } from './CardHeap.ts';
 import { Player } from './Player.ts';
 import { Opponent } from './Opponent.ts';
 import { camera, cameraLight, orbitControls } from './main.ts';
+import { Deck } from './Deck.ts';
 import { gsap } from 'gsap';
+import { GSDevTools } from "gsap/GSDevTools";
+import { Participant } from './Participant.ts';
 
 export class Game {
 	private socket: Socket;
-	private cardHeap: CardHeap = new CardHeap(new THREE.Vector3(0, 0.6, 0));;
+	private centerPosition: THREE.Vector3 = new THREE.Vector3(0, 0.6, 0);
+	private cardHeap: CardHeap = new CardHeap(this.centerPosition);
 	private playerId: string;
-	// private player: Player | undefined; // Properly clear up the player and opponents after game ends
-	// private opponents: Array<Opponent>;
+	private participants: Array<Participant>;
 
 	// Buttons
 	private startGameButton = document.getElementById('start-game-button') as HTMLButtonElement;
@@ -31,8 +34,7 @@ export class Game {
 			}
 		})
 
-		// this.player = undefined;
-		// this.opponents = [];
+		this.participants = [];
 
 
 		this.bindSocketEvents();
@@ -108,45 +110,98 @@ export class Game {
 		})
 	
 		this.socket.on("game_state", (gameState: GameStateTransmit) => {
-			this.startGameButton.disabled = true;
-	
-			this.cardHeap.sync(gameState.cardHeap);
-			const seatOrder = gameState.playerSeatOrder;
-			const playerSeatIndex = gameState.playerSeatOrder[this.playerId];
-			const totalSeats = Object.keys(seatOrder).length;
-	
-			const relativeSeatOrder = Object.entries(seatOrder).sort(([, indexA], [, indexB]) => {
-				const distanceA = (indexA - playerSeatIndex + totalSeats) % totalSeats;
-				const distanceB = (indexB - playerSeatIndex + totalSeats) % totalSeats;
-				return distanceA - distanceB;
-			}).map(([id]) => id);
-			
-			for (let i = 0; i < relativeSeatOrder.length; i++) {
-				const id = relativeSeatOrder[i];
-				if (id === this.playerId) {
-					const player = new Player(this.socket, this.playerId, this.cardHeap); // 2nd game bug where player is doubled, rly need to make a clean game state for client
-					const [pos, rot] = this.tablePosition(i, true);
-					const target = new THREE.Object3D();
-					target.position.copy(camera.position);
-					target.lookAt(new THREE.Vector3());
-					this.move(camera, new THREE.Vector3(pos.x * 1.5, pos.y * 3, pos.z * 1.5), target.quaternion);
-					orbitControls.update();
-					orbitControls.addEventListener("change", () => {
-						const offset = new THREE.Vector3(0, -2, -3);
-						cameraLight.position.copy(camera.position);
-						player.cardManager.updateManager(offset.clone().applyQuaternion(camera.quaternion.clone()).add(camera.position), camera.quaternion.clone());
-					});
-					player.setupGameState(gameState);
-					
-				}
-				else if (id !== this.playerId) {
-					const opponent = new Opponent(this.socket, id, this.cardHeap);
-					const [pos, rot] = this.tablePosition(i, false);
-					opponent.cardManager.updateManager(pos, rot);
-					opponent.setupGameState(gameState);
-				}
-			}
+			this.initGame(gameState);
 		});
+	}
+
+	private initGame(gameState: GameStateTransmit) {
+		this.startGameButton.disabled = true;
+
+		this.initParticipants(gameState);
+	
+		const deck = new Deck(this.centerPosition);
+		const universalTimeline = gsap.timeline();
+		if (gameState.cardHeap.length === 0) {
+			deck.initCards(gameState, this.playerId);
+			universalTimeline.add(deck.shuffleAnimation(3));
+		}
+		else {
+		// 	// resynchronize so that the player card hands are immediately in, skip the deck init stuff
+			this.cardHeap.sync(gameState.cardHeap);
+			for (let i = 0; i < this.participants.length; i++) {
+				this.participants[i].sync(gameState);
+			}
+		}
+
+		const dealingCardsTimeline = gsap.timeline();
+		let dealtCards = deck.dealTopCards(1);
+		let dealtCardsFinished = false;
+		for (let i = 0; dealtCards.length === 1; i++) {
+			if (i >= this.participants.length) {
+				i = 0;
+			}
+			let dealtCardAnimation = undefined;
+			const participant = this.participants[i];
+			if (participant.cardManager.getCardsAmount() < gameState.playerCardsAmount[participant.uuid]) {
+				dealtCardAnimation = participant.cardManager.receiveCard(dealtCards[0], 0, 0.3);
+				dealtCardsFinished = true;
+			}
+			if (dealtCardAnimation !== undefined) {
+				dealingCardsTimeline.add(dealtCardAnimation, "<+0.05");
+			}
+			if (dealtCardsFinished === true) {
+				dealtCards = deck.dealTopCards(1);
+				dealtCardsFinished = false;
+			}
+		}
+		universalTimeline.add(dealingCardsTimeline);
+		universalTimeline.eventCallback("onComplete", () => {
+			const player = this.participants.find((participant) => participant.uuid === this.playerId);
+			if (player !== undefined) {
+				player.cardManager.isLocked = false;
+			}
+			this.cardHeap.cardHandQueue.play();
+		})
+		gsap.registerPlugin(GSDevTools);
+		GSDevTools.create({animation: universalTimeline});
+	}
+
+	private initParticipants(gameState: GameStateTransmit) {
+		const seatOrder = gameState.playerSeatOrder;
+		const playerSeatIndex = gameState.playerSeatOrder[this.playerId];
+		const totalSeats = Object.keys(seatOrder).length;
+
+		const relativeSeatOrder = Object.entries(seatOrder).sort(([, indexA], [, indexB]) => {
+			const distanceA = (indexA - playerSeatIndex + totalSeats) % totalSeats;
+			const distanceB = (indexB - playerSeatIndex + totalSeats) % totalSeats;
+			return distanceA - distanceB;
+		}).map(([id]) => id);
+		
+		for (let i = 0; i < relativeSeatOrder.length; i++) {
+			const id = relativeSeatOrder[i];
+			if (id === this.playerId) {
+				const player = new Player(this.socket, this.playerId, this.cardHeap); // 2nd game bug where player is doubled, rly need to make a clean game state for client
+				// const target = new THREE.Object3D();
+				// target.position.copy(camera.position);
+				// target.lookAt(this.cardHeap.originalPosition);
+				camera.position.copy(new THREE.Vector3(0, 4.5, 4.5));
+				camera.lookAt(this.cardHeap.originalPosition);
+				// this.move(camera, new THREE.Vector3(0, 4.5, 4.5), target.quaternion);
+				// orbitControls.update();
+				// orbitControls.addEventListener("change", () => {
+				const offset = new THREE.Vector3(0, -2, -3);
+				cameraLight.position.copy(camera.position);
+				player.cardManager.updateManager(offset.clone().applyQuaternion(camera.quaternion.clone()).add(camera.position), camera.quaternion.clone());
+				// });
+				this.participants.push(player);
+			}
+			else if (id !== this.playerId) {
+				const opponent = new Opponent(this.socket, id, this.cardHeap);
+				const [pos, rot] = this.tablePosition(i);
+				opponent.cardManager.updateManager(pos, rot);
+				this.participants.push(opponent);
+			}
+		}
 	}
 
 	public move(object: THREE.Object3D, position: THREE.Vector3, rotation: THREE.Quaternion) {
@@ -165,18 +220,18 @@ export class Game {
 		});
 	}
 
-	private tablePosition(seatIndex: number, isPlayer: boolean): [THREE.Vector3, THREE.Quaternion] {
+	private tablePosition(seatIndex: number): [THREE.Vector3, THREE.Quaternion] {
 		const positions: Array<THREE.Vector3> = [
 			new THREE.Vector3(0, 2, 4),
-			new THREE.Vector3(-4, 2, 0),
-			new THREE.Vector3(0, 2, -4),
-			new THREE.Vector3(4, 2, 0),
+			new THREE.Vector3(0, 1.5, -4),
+			new THREE.Vector3(-4, 1.5, 0),
+			new THREE.Vector3(4, 1.5, 0),
 		];
 		const rotations: Array<THREE.Euler> = [
 			new THREE.Euler(-Math.PI / 8, 0, 0),
-			new THREE.Euler(0, -Math.PI / 2, 0),
 			new THREE.Euler(0, -Math.PI, 0),
-			new THREE.Euler(0, Math.PI / 2, 0),
+			new THREE.Euler(0, -Math.PI / 2, 0),
+			new THREE.Euler(0, Math.PI / 2, 0)
 		]
 		return ([positions[seatIndex], new THREE.Quaternion().setFromEuler(rotations[seatIndex])]);
 	}

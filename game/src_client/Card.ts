@@ -11,6 +11,7 @@ export class Card {
 	// private static	geometry: THREE.ExtrudeGeometry = new THREE.ExtrudeGeometry(Card.shape, {depth: 0.005, bevelEnabled: false});
 	private static	frontTextureAtlas: Array<THREE.Texture> = Card.initTextureAtlas();
 	private static	backTexture: THREE.Texture = Card.textureLoader.load('/resources/card_back.webp');
+	private static	unknownTexture: THREE.Texture = Card.textureLoader.load('/resources/card_unknown.webp');
 	private	frontTexture: THREE.Texture;
 	private	backTexture: THREE.Texture;
 	private	frontMaterial: THREE.MeshLambertMaterial;
@@ -33,6 +34,8 @@ export class Card {
 		// this.frontTexture = this.getTexture(this.rank, this.suit);
 		this.frontTexture = this.getFrontTexture(this.rank, this.suit);
 		this.backTexture = Card.backTexture;
+		this.backTexture.minFilter = THREE.NearestFilter;
+		this.backTexture.magFilter = THREE.NearestFilter;
 
 		this.frontMaterial = new THREE.MeshLambertMaterial({color: 0xffffff, map: this.frontTexture, side: THREE.FrontSide });
 		this.backMaterial = new THREE.MeshLambertMaterial({color: 0xffffff, map: this.backTexture, side: THREE.BackSide });
@@ -56,21 +59,24 @@ export class Card {
 		this.object.removeFromParent();
 	}
 
-	public move(position: THREE.Vector3, rotation: THREE.Quaternion) {
-		gsap.to(this.object.position, {
+	public move(position: THREE.Vector3, rotation: THREE.Quaternion, duration: number = 0.1): gsap.core.Timeline {
+		const timeline = gsap.timeline();
+		const object = this.object;
+
+		timeline.to(object.position, {
 			x: position.x,
 			y: position.y,
 			z: position.z,
-			duration: 0.1,
-		});
-		const object = this.object;
-		gsap.to({ progress: 0 }, {
+			duration: duration,
+		}, 0);
+		timeline.to({ progress: 0 }, {
 			progress: 1,
-			duration: 0.1,
-			onUpdate: function () {
+			duration: duration,
+			onUpdate: function() {
 				object.quaternion.slerp(rotation, this.progress());
 			}
-		});
+		}, 0);
+		return (timeline);
 	}
 
 	public dim() {
@@ -80,10 +86,10 @@ export class Card {
 	}
 
 	public setCardRankSuit(rank: CardRank | undefined, suit: CardSuit | undefined) {
-		if (rank) {
+		if (rank !== undefined) {
 			this.rank = rank;
 		}
-		if (suit) {
+		if (suit !== undefined) {
 			this.suit = suit;
 		}
 		this.frontTexture = this.getFrontTexture(this.rank, this.suit);
@@ -155,6 +161,7 @@ export class Card {
 			case CardRank.Queen: texture = Card.frontTextureAtlas[y * col + 10]; break ;
 			case CardRank.King: texture = Card.frontTextureAtlas[y * col + 11]; break ;
 			case CardRank.Ace: texture = Card.frontTextureAtlas[y * col + 12]; break ;
+			case CardRank.Unknown: texture = Card.unknownTexture; break ;
 		}
 		return (texture);
 	}

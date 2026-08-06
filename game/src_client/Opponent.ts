@@ -4,32 +4,29 @@ import { CardManager } from './CardManager.ts';
 import { CardHeap } from './CardHeap.ts';
 import { Card } from './Card.ts';
 import { scene } from './main.ts';
-import { CardHandTransmit, GameEndStatsTransmit, GameStateTransmit } from '../src_shared/Types.ts';
+import { CardRank, CardHandTransmit, GameEndStatsTransmit, GameStateTransmit } from '../src_shared/Types.ts';
 import { CardHand } from './CardHand.ts';
+import { Participant } from './Participant.ts';
 
-export class Opponent {
-	private socket: Socket;
-	private opponentId: string;
-	private cardHeapRef: CardHeap;
-	public	cardManager: CardManager;
+export class Opponent extends Participant {
 
-	constructor(socket: Socket, opponentId: string, cardHeapRef: CardHeap) {
-		this.socket = socket;
-		this.opponentId = opponentId;
-		this.cardHeapRef = cardHeapRef;
-		this.cardManager = new CardManager(this.opponentId);
+	constructor(socket: Socket, uuid: string, cardHeapRef: CardHeap) {
+		super(socket, uuid, cardHeapRef);
 
 		this.socket.on("player_play_card_hand", (cardHandTransmit: CardHandTransmit) => {
-			if (cardHandTransmit.playerId === this.opponentId) {
-				const cardHand = new CardHand(this.opponentId);
+			if (cardHandTransmit.playerId === this.uuid) {
+				const cardHand = new CardHand(this.uuid);
 				for (let i = 0; i < cardHandTransmit.cards.length; i++) {
-					let card = this.cardManager.removeCardByIndex(0);
+					let [card, animation] = this.cardManager.removeCardByIndex(0);
 					if (card)  {
 						card.setCardRankSuit(cardHandTransmit.cards[i].rank, cardHandTransmit.cards[i].suit);
 						cardHand.receiveCard(card);
 					}
+					if (animation !== undefined) {
+						this.cardHeapRef.cardHandQueue.add(animation);
+					} 
 				}
-				this.cardHeapRef.receiveCardHand(cardHand);
+				this.cardHeapRef.cardHandQueue.add(this.cardHeapRef.receiveCardHand(cardHand));
 			}
 		});
 
@@ -38,17 +35,14 @@ export class Opponent {
 		})
 	}
 
-	public setupGameState(gameState: GameStateTransmit) {
-		const cardsAmount = gameState.playerCardsAmount[this.opponentId];
-		this.collectCardsAmount(cardsAmount);
+	public override sync(gameState: GameStateTransmit) {
+		this.collectCardsAmount(gameState.playerCardsAmount[this.uuid]);
 	}
 
 	private collectCardsAmount(amount: number) {
-		if (amount > 0) {
-			for (let i = 0; i < amount; i++) {
-				const card = new Card(0, 0);
-				this.cardManager.receiveCard(card);
-			}
+		for (let i = 0; i < amount; i++) {
+			const card = new Card(CardRank.Unknown, 0);
+			this.cardManager.receiveCard(card);
 		}
 	}
 }

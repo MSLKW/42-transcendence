@@ -12,7 +12,8 @@ export enum CardRank {
 	Queen,
 	King,
 	Ace,
-	Two
+	Two,
+	Unknown
 }
 
 export enum CardSuit {
