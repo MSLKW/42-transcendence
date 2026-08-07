@@ -18,4 +18,4 @@ EXPOSE 5000
 
 WORKDIR /app/game_client
 
-CMD ["npx", "vite", "preview", "--port", "5000"]
+CMD ["npm", "run", "dev"]

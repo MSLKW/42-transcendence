@@ -21,6 +21,9 @@ services:
         game-types: ./packages/game-types
     image: website:test
     restart: unless-stopped
+    volumes: # temporary for vite hmr
+      - ./game_client:/app/game_client
+      - /app/node_modules
     networks:
       - big2
   

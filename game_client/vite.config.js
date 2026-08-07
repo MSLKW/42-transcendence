@@ -14,8 +14,17 @@ export default defineConfig({
 		}
 	}
   },
-  preview: { // For npx vite preview
+  server: {
 	host: true,
-	allowedHosts: true
+	allowedHosts: true,
+	port: 5000,
+	watch: {
+		usePolling: true,
+	},
+	ws: {
+		clientPort: 80,
+		protocol: 'ws',
+		host: 'localhost',
+	}
   }
 })
