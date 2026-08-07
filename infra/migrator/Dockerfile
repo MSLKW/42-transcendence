@@ -1,23 +1,15 @@
 FROM node:24-bookworm-slim
 WORKDIR /app
 
+# for healthcheck upon PostgreSQL (pg_isready)
 RUN apt-get update && \
     apt-get install -y postgresql-client && \
     rm -rf /var/lib/apt/lists/*
 
+# Install all dependencies
 COPY package*.json ./
 COPY infra/migrator/package.json ./infra/migrator/
-# copy schemas
-COPY packages ./packages
-
-# Install dependencies at the root
-# ENV NODE_ENV=production
-# RUN npm ci --omit=dev
 RUN npm ci
-
-# RUN apt-get update && \
-#     apt-get install -y postgresql-client && \
-#     rm -rf /var/lib/apt/lists/*
 
 # these 3 folders&files are a must for Migrator one-shot container only (sql files for migrating, other 2 used by drizzle-kit for migrating)
 COPY infra/migrator/migrations ./infra/migrator/migrations
@@ -32,3 +24,8 @@ RUN chmod +x /usr/local/bin/entrypoint.sh /usr/local/bin/grant-permissions.sh
 # Use the script as the entrypoint
 WORKDIR /app/infra/migrator
 ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
+
+# # no need to copy schemas! ignored by drizzle-kit migrate anyway
+# # only drizzle-kit generate & drizzle-kit push commands will need to refer schema
+# # which both commands done locally anyway, not for deployement 
+# COPY packages ./packages 
