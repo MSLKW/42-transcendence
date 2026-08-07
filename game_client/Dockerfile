@@ -5,6 +5,9 @@ COPY . ./game_client/.
 COPY --from=game-types . ./packages/game-types/.
 COPY --from=root package*.json ./
 
+RUN npm install --workspace=@big2/game-types
+RUN cd ./packages/game-types && npm run build
+
 RUN npm ci
 
 RUN cd ./game_client && npm run build

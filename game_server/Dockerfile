@@ -5,6 +5,9 @@ COPY . ./game_server/.
 COPY --from=game-types . ./packages/game-types/.
 COPY --from=root package*.json ./
 
+RUN npm install --workspace=@big2/game-types
+RUN cd ./packages/game-types && npm run build
+
 RUN npm install
 
 RUN cd ./game_server && npm run build
@@ -17,6 +20,9 @@ WORKDIR /app
 COPY package*.json ./game_server/.
 COPY --from=game-types . ./packages/game-types/.
 COPY --from=root package*.json .
+
+RUN npm install --workspace=@big2/game-types
+RUN cd ./packages/game-types && npm run build
 
 RUN npm ci --omit=dev
 
