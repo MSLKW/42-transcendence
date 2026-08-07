@@ -1,16 +1,16 @@
 networks:
-  transcendence:
+  transcendence: # main goal: need access out to the browser / internet
     name: ${MAIN_NETWORK_NAME}
     driver: bridge 
-  database: # main goal: to talk to Postgres ultimately - anyone who need to read/write into database will be incuded
+  database: # main goal: to talk to Postgres ultimately - any container who need to communicate into PostgreSQL must be incuded in this network
     name: ${DB_NETWORK_NAME}
     driver: bridge # anyone outside cannot enter this network
     internal: true # anyone inside cannot go outside this network (talking to external containers or internet/browsers)
-  # backend-internal: specifically for internal API
+  # backend-internal: # specifically for internal API
   #   name: ${INTERNAL_BACKEND_NETWORK_NAME}
   #   driver: bridge
   #   internal: true
-  # lobby:
+  # lobby: # specifically among partys / lobbys
   #   name: ${LOBBY_NETWORK_NAME}
   #   driver: bridge
   #   internal: true
@@ -43,7 +43,7 @@ services:
   #     INFRASTRUCTURE MICROSERVICE
   postgresql:
     container_name: postgresql
-    image: postgres:17-bookworm # No Dockerfile needed here, pull directly from Docker Hub!
+    image: postgres:17-bookworm
     restart: unless-stopped
     expose:
       - "${PGPORT}"
@@ -60,8 +60,8 @@ services:
     env_file:
       - .env
     volumes:
-      - pg_data:/var/lib/postgresql/data # volume
-      - ./infra/postgresql/init.sh:/docker-entrypoint-initdb.d/init.sh:ro # to run complex/specific sql scripts directly to Postgres automatically instead of to Drizzle
+      - pg_data:/var/lib/postgresql/data
+      - ./infra/postgresql/init.sh:/docker-entrypoint-initdb.d/init.sh:ro # to run complex/specific sql scripts directly to Postgres directly instead of to Drizzle
     networks:
       - database
     healthcheck:
@@ -81,7 +81,7 @@ services:
       - "${DRIZZLE_GATEWAY_PORT}:${DRIZZLE_GATEWAY_PORT}"
     env_file:
       - .env
-    environment: # DB_* / PG_* - not recognized as per DG documentation
+    environment: # DB_* / PG_* - not recognized as per DG documentation, better use PG* 
       PORT: ${DRIZZLE_GATEWAY_PORT}
       STORE_PATH: /app # Required by Drizzle Gateway
     command:
@@ -89,7 +89,7 @@ services:
     volumes:
       - dg_data:/app # Required persistent volume mounting to /app
     networks:
-      - transcendence #! might not even need this
+      - transcendence # must need, to open GUI at browser huhu
       - database
     depends_on:
       postgresql:
@@ -107,17 +107,12 @@ services:
     container_name: migrator
     restart: no # It runs migrations only, then it exits successfully, the end of this container's life. 
     environment:
-      # PGHOST: ${PGHOST}
-      # PGPORT: ${PGPORT}
-      # PGDATABASE: ${PGDATABASE}
-      # PGUSER: ${PGUSER}
       PGPASSWORD: /run/secrets/db_admin_password
     secrets:
       - db_admin_password
     env_file:
       - .env
     networks:
-      - transcendence #! this might not needed
       - database
     depends_on:
       postgresql:
@@ -150,15 +145,12 @@ services:
     container_name: authentication
     restart: unless-stopped
     environment:
-      # PGHOST: ${PGHOST}                           # PGHOST is a standard industry convention
-      # PGDATABASE: ${PGDATABASE}
-      # PGPORT: ${PGPORT}
-      PGUSER: ${PGUSER_AUTH} #  ${PGUSER}
-      PGPASSWORD: /run/secrets/db_auth_password #/run/secrets/db_admin_password 
+      PGUSER: ${PGUSER_AUTH}
+      PGPASSWORD: /run/secrets/db_auth_password
     env_file:
       - .env                                              # Loads global configs
     secrets:
-      - db_auth_password #db_admin_password 
+      - db_auth_password
     networks:
       - transcendence
       - database
@@ -190,15 +182,12 @@ services:
     container_name: party-manager
     restart: unless-stopped
     environment:
-      # PGHOST: ${PGHOST}                         # PGHOST is a standard industry convention
-      # PGDATABASE: ${PGDATABASE}
-      # PGPORT: ${PGPORT}
-      PGUSER: ${PGUSER_PARTY_MANAGER}  # ${PGUSER}
-      PGPASSWORD: /run/secrets/db_party-manager_password #/run/secrets/db_admin_password
+      PGUSER: ${PGUSER_PARTY_MANAGER}
+      PGPASSWORD: /run/secrets/db_party-manager_password
     env_file:
       - .env                                             # Loads global configs
     secrets:
-      - db_party-manager_password # - db_admin_password 
+      - db_party-manager_password
     networks:
       - transcendence
       - database
@@ -219,11 +208,8 @@ services:
 #     container_name: profile-system
 #     restart: unless-stopped
 #     environment:
-#       PGHOST: ${PGHOST}                         # PGHOST is a standard industry convention
-#       PGDATABASE: ${PGDATABASE}
-#       PGPORT: ${PGPORT}
-#       PGUSER: ${PGUSER_PROFILE_SYSTEM} # ${PGUSER}
-#       PGPASSWORD: /run/secrets/db_profile-system_password #/run/secrets/db_admin_password 
+#       PGUSER: ${PGUSER_PROFILE_SYSTEM}
+#       PGPASSWORD: /run/secrets/db_profile-system_password
 #     env_file:
 #       - .env                                             # Loads global configs
 #     secrets:
