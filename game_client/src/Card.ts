@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { CardRank, CardSuit, CardTransmit } from '../src_shared/Types.ts';
+import { CardRank, CardSuit, CardTransmit } from '@bigtwo/shared';
 import { scene } from './main.ts'
 import { gsap } from 'gsap';
 

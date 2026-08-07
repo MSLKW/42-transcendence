@@ -1,4 +1,4 @@
-import { GameEndStatsTransmit } from "../src_shared/Types.ts";
+import { GameEndStatsTransmit } from '@bigtwo/shared';
 import { Player } from './Player.ts';
 
 export class GameStatus {

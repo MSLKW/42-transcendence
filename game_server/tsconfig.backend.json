@@ -14,5 +14,5 @@
 		"strict": true,
 		"skipLibCheck": true,
 	},
-	"include": ["src_server/**/*", "src_shared/**/*"]
+	"include": ["src/**/*", "src_shared/**/*"]
 }

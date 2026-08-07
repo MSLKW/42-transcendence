@@ -1,0 +1,13 @@
+{
+	"name": "@bigtwo/shared",
+	"type": "module",
+	"private": true,
+	"dependencies": {
+		"typescript": "^6.0.3"
+	},
+	"main": "./dist/Types.js",
+	"types": "./dist/types/Types.d.ts",
+	"scripts": {
+		"build": "tsc"
+	}
+}

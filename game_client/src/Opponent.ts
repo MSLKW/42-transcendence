@@ -4,7 +4,7 @@ import { CardManager } from './CardManager.ts';
 import { CardHeap } from './CardHeap.ts';
 import { Card } from './Card.ts';
 import { scene } from './main.ts';
-import { CardRank, CardHandTransmit, GameEndStatsTransmit, GameStateTransmit } from '../src_shared/Types.ts';
+import { CardRank, CardHandTransmit, GameEndStatsTransmit, GameStateTransmit } from '@bigtwo/shared';
 import { CardHand } from './CardHand.ts';
 import { Participant } from './Participant.ts';
 

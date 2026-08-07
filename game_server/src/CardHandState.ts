@@ -1,4 +1,4 @@
-import { CardTransmit, CardRank, CardSuit, CardHandTransmit, HandType, PentupleType } from "../src_shared/Types.js";
+import { CardTransmit, CardRank, CardSuit, CardHandTransmit, HandType, PentupleType } from "@bigtwo/shared";
 
 export class CardHandState {
 	public readonly cards: Array<CardTransmit>;

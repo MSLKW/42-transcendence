@@ -1,5 +1,5 @@
 import { Card } from './Card.ts';
-import { HandType, PentupleType, CardRank, CardSuit, CardHandTransmit} from '../src_shared/Types.ts'
+import { HandType, PentupleType, CardRank, CardSuit, CardHandTransmit} from '@bigtwo/shared';
 
 export class CardHand {
 	public readonly	cards: Array<Card>;

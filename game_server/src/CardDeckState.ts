@@ -1,4 +1,4 @@
-import { CardTransmit } from "../src_shared/Types.js"
+import { CardTransmit } from "@bigtwo/shared"
 
 export class CardDeckState {
 	private cards: Array<CardTransmit>;

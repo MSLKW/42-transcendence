@@ -16,9 +16,6 @@
     "zod": "^4.4.3"
   },
   "scripts": {
-    "build:client": "tsc && vite build",
-    "build:server": "tsc --project tsconfig.backend.json",
-    "run:server": "node server_build/src_server/server.js",
-    "all": "npm run build:client && npm run build:server && npm run run:server"
+    "build": "tsc && vite build"
   }
 }

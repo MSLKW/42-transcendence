@@ -1,0 +1,9 @@
+{
+	"name": "bigtwo",
+	"private": true,
+	"workspaces": [
+		"shared",
+		"game_server",
+		"game_client"
+	]
+}

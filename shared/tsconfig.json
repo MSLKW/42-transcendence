@@ -7,13 +7,12 @@
 		"declarationMap": true,
 		"sourceMap": true,
 
-		"outDir": "./tsc",
-		"declarationDir": "./tsc/types",
+		"rootDir": "./src",
+		"outDir": "./dist",
+		"declarationDir": "./dist/types",
 
 		"strict": true,
 		"skipLibCheck": true,
-		"noEmit": true,
-		"allowImportingTsExtensions": true
 	},
-	"include": ["src_client/**/*"]
+	"include": ["src/**/*"]
 }

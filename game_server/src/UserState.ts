@@ -1,7 +1,7 @@
 import { Socket } from 'socket.io';
 import { check } from 'zod';
 import { Lobby } from './Lobby.js';
-import { StatusTransmit } from '../src_shared/Types.js';
+import { StatusTransmit } from '@bigtwo/shared';
 import { kickSocket } from './server.js';
 
 export class UserState {
