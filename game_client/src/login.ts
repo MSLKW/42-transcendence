@@ -62,7 +62,7 @@ async function createLobbyAsync(): Promise<createLobbyResponse> {
 		hostUuid: playerId.value,
 		playerUuids: whitelisted
 	};
-	const response = await fetch("/lobby", {
+	const response = await fetch("/api/game/lobby", {
 		method: 'POST',
 		headers: {
 			'Content-Type': 'application/json',
@@ -82,7 +82,7 @@ async function updateLobbyAsync(sessionId: string): Promise<string> {
 		hostUuid: playerId.value,
 		playerUuids: whitelisted
 	};
-	const response = await fetch(`/lobby/${sessionId}`, {
+	const response = await fetch(`/api/game/lobby/${sessionId}`, {
 		method: 'PUT',
 		headers: {
 			'Content-Type': 'application/json',

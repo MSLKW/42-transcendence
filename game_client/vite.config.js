@@ -9,9 +9,13 @@ export default defineConfig({
     emptyOutDir: true,
 	rolldownOptions: {
 		input: {
-			login: resolve(__dirname, 'index.html'),
-			game: resolve(__dirname, 'game.html')
+			login: resolve(import.meta.dirname, 'index.html'),
+			game: resolve(import.meta.dirname, 'game.html')
 		}
 	}
+  },
+  preview: { // For npx vite preview
+	host: true,
+	allowedHosts: true
   }
 })

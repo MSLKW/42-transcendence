@@ -26,7 +26,8 @@ export class Game {
 
 	constructor(authId: string, sessionId: string, playerId: string) {
 		this.playerId = playerId;
-		this.socket = io('http://localhost:3000', {
+		this.socket = io('http://localhost:80', {
+			path: "/socket/game/",
 			auth: {
 				token: authId,
 				lobbyId: sessionId
@@ -34,7 +35,6 @@ export class Game {
 		})
 
 		this.participants = [];
-
 
 		this.bindSocketEvents();
 		this.bindButtonEvents();

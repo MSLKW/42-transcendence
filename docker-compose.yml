@@ -1,0 +1,54 @@
+name: big2
+
+services:
+  nginx:
+    container_name: nginx
+    build: nginx
+    image: nginx:test
+    ports:
+      - "80:80"
+    restart: unless-stopped
+    networks:
+      - big2
+  
+  website:
+    container_name: website
+    build:
+      context: ./game_client
+      dockerfile: Dockerfile
+      additional_contexts:
+        root: .
+        game-types: ./packages/game-types
+    image: website:test
+    restart: unless-stopped
+    networks:
+      - big2
+  
+  # authentication:
+  #   build: authentication
+  #   image: authentication:test
+  #   restart: unless-stopped
+
+  # party_manager:
+  #   build: party-manager
+  #   image: party:test
+  #   restart: unless-stopped
+  #   environment:
+  #     AUTH_SERVICE_URL: http://authentication:3000
+  #     GAME_SERVICE_URL: http://game:3000
+
+  game_server:
+    container_name: game_server
+    build: 
+      context: ./game_server
+      dockerfile: Dockerfile
+      additional_contexts:
+        root: .
+        game-types: ./packages/game-types
+    image: game_server:test
+    restart: unless-stopped
+    networks:
+      - big2
+
+networks:
+  big2:
