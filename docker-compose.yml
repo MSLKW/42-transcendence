@@ -139,7 +139,7 @@ services:
   authentication:
     build:
       context: .                                         # Set workdir to the repo's root
-      dockerfile: ./backend/authentication/Dockerfile    # Point to the Dockerfile's relative path
+      dockerfile: ./services/authentication/Dockerfile    # Point to the Dockerfile's relative path
     pull_policy: never
     image: authentication:test
     container_name: authentication
@@ -176,7 +176,7 @@ services:
   party-manager:
     build:
       context: .                                        # Set workdir to the repo's root
-      dockerfile: ./backend/party-manager/Dockerfile    # Point to the Dockerfile's relative path
+      dockerfile: ./services/party-manager/Dockerfile    # Point to the Dockerfile's relative path
     pull_policy: never
     image: party:test
     container_name: party-manager
@@ -202,7 +202,7 @@ services:
 #   profile-system:
 #     build:
 #       context: .                                         # Set workdir to the repo's root
-#       dockerfile: ./backend/profile-system/Dockerfile    # Point to the Dockerfile's relative path
+#       dockerfile: ./services/profile-system/Dockerfile    # Point to the Dockerfile's relative path
 #     pull_policy: never
 #     image: profile:test
 #     container_name: profile-system
@@ -227,7 +227,7 @@ services:
 #   game:
 #     build:
 #       context: .
-#       dockerfile: ./backend/game/Dockerfile
+#       dockerfile: ./services/game/Dockerfile
 #     pull_policy: never
 #     image: game:test
 #     container_name: game
@@ -242,7 +242,7 @@ services:
 #   website:
 #     build:
 #       context: .
-#       dockerfile: ./frontend/website/Dockerfile
+#       dockerfile: ./services/website/Dockerfile
 #     pull_policy: never
 #     image: website:test
 #     container_name: website
