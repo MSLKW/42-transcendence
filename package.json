@@ -4,8 +4,7 @@
   "workspaces":[
     "infra/*",
     "packages/*",
-    "backend/*",
-    "frontend/*"
+    "services/*"
   ],
   "scripts": {
     "db:generate": "npm run --prefix infra/migrator db:generate --",
