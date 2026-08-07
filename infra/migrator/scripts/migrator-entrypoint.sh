@@ -1,5 +1,12 @@
 #!/bin/sh
 
+# pg_isready only needs to confirm "the server is up and talking," 
+# not "my specific app user/db exist" — so this is actually a more robust check than the current one,
+# That said, keeping the explicit flags is also fine if you'd rather the healthcheck be self-documenting 
+# — it's a style call, not a correctness one.
+# while ! pg_isready -h ${PGHOST} -p ${PGPORT}; do
+
+
 # Read the secret file mounted by Docker and export it for psql and drizzle-kit
 echo "[1/5]  Extracting postgres user password..."
 if [ -f "/run/secrets/db_admin_password" ]; then
@@ -13,7 +20,6 @@ echo "[1/5] Success extracting and exporting postgres user password!"
 
 # 1. Wait for the postgresql to be ready
 echo "[2/5]  Waiting for ${PGHOST}..."
-# while ! pg_isready -h ${PGHOST} -p ${PGPORT}; do
 while ! pg_isready; do
   sleep 2
 done

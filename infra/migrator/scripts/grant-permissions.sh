@@ -28,6 +28,10 @@
 # -- use both together: the direct GRANT covers what exists NOW, ALTER DEFAULT PRIVILEGES covers what gets created going forward.
 # -- for schema object, just grant USAGE only, coz admin user is the only one that can CREATE
 
+# original:
+# 	psql -v ON_ERROR_STOP=1 --host "${PGHOST}" --port "${PGPORT}" --username "${PGUSER}" --dbname "${PGDATABASE}" <<-EOSQL
+# more explicite to the local socket path. That's fully explicit, self-documenting, and correct — no ambiguity about where it's connecting, no TCP race:
+# 	psql -v ON_ERROR_STOP=1 --host=/var/run/postgresql --username "${PGUSER}" --dbname "${PGDATABASE}" <<-EOSQL 
 
 
 #!/bin/sh
@@ -35,8 +39,7 @@ set -e
 
 export PGPASSWORD="$(cat /run/secrets/db_admin_password)"
 
-# psql -v ON_ERROR_STOP=1 <<-EOSQL
-psql -v ON_ERROR_STOP=1 --host "${PGHOST}" --port "${PGPORT}" --username "${PGUSER}" --dbname "${PGDATABASE}" <<-EOSQL
+psql -v ON_ERROR_STOP=1 <<-EOSQL
 
 	---- (1) auth_schema
 	GRANT USAGE ON SCHEMA auth_schema TO "${PGUSER_AUTH}";
