@@ -1,5 +1,5 @@
 import { Socket } from 'socket.io';
-import { CardTransmit, CardRank, CardSuit, CardHandTransmit, HandType, PentupleType, StatusTransmit, SkipTurnTransmit } from '@bigtwo/shared';
+import { CardTransmit, CardRank, CardSuit, CardHandTransmit, HandType, PentupleType, StatusTransmit, SkipTurnTransmit } from '@big2/game-types';
 import { GameState } from './GameState.js';
 import { CardHeapState } from './CardHeapState.js';
 import { io } from './server.js';

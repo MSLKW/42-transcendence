@@ -1,7 +1,7 @@
 import { Socket } from 'socket.io-client';
 import { CardManager } from './CardManager.ts';
 import { CardHeap } from './CardHeap.ts';
-import { GameStateTransmit } from '@bigtwo/shared';
+import { GameStateTransmit } from '@big2/game-types';
 
 export abstract class Participant {
 	protected	socket: Socket;

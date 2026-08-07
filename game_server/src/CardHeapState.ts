@@ -1,4 +1,4 @@
-import { CardHandTransmit, HandType, PentupleType } from "@bigtwo/shared";
+import { CardHandTransmit, HandType, PentupleType } from '@big2/game-types';
 import { PlayerState } from "./PlayerState.js";
 import { CardHandState } from "./CardHandState.js";
 import { io } from "./server.js";

@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import { io, Socket } from 'socket.io-client';
-import { CardHandTransmit, CardRank, CardSuit, GameStateTransmit, GameStartRequest, StatusTransmit, SeatOrderTransmit } from '@bigtwo/shared';
+import { CardHandTransmit, CardRank, CardSuit, GameStateTransmit, GameStartRequest, StatusTransmit, SeatOrderTransmit } from '@big2/game-types';
 import { CardHeap } from './CardHeap.ts';
 import { Player } from './Player.ts';
 import { Opponent } from './Opponent.ts';

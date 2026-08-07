@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import { gsap } from 'gsap';
 import { CardHand } from './CardHand.ts';
-import { CardHandTransmit } from '@bigtwo/shared';
+import { CardHandTransmit } from '@big2/game-types';
 import { Card } from './Card.ts';
 
 export class CardHeap {

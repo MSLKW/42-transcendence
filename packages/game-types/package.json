@@ -1,5 +1,5 @@
 {
-	"name": "@bigtwo/shared",
+	"name": "@big2/game-types",
 	"type": "module",
 	"private": true,
 	"dependencies": {

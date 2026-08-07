@@ -1,4 +1,4 @@
-import { CardTransmit } from "@bigtwo/shared"
+import { CardTransmit } from '@big2/game-types'
 
 export class CardDeckState {
 	private cards: Array<CardTransmit>;

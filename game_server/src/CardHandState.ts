@@ -1,4 +1,4 @@
-import { CardTransmit, CardRank, CardSuit, CardHandTransmit, HandType, PentupleType } from "@bigtwo/shared";
+import { CardTransmit, CardRank, CardSuit, CardHandTransmit, HandType, PentupleType } from '@big2/game-types';
 
 export class CardHandState {
 	public readonly cards: Array<CardTransmit>;

@@ -1,6 +1,6 @@
 import { io, Socket } from 'socket.io-client';
 import * as THREE from 'three';
-import { CardTransmit, GameEndStatsTransmit, GameStateTransmit, PlayerTurnTransmit, StatusTransmit, SkipTurnTransmit } from '@bigtwo/shared';
+import { CardTransmit, GameEndStatsTransmit, GameStateTransmit, PlayerTurnTransmit, StatusTransmit, SkipTurnTransmit } from '@big2/game-types';
 import { CardHand } from './CardHand.ts';
 import { Card } from './Card.ts';
 import { CardManager } from './CardManager.ts';

@@ -1,8 +1,8 @@
 {
-	"name": "bigtwo",
+	"name": "big2",
 	"private": true,
 	"workspaces": [
-		"shared",
+		"packages/*",
 		"game_server",
 		"game_client"
 	]

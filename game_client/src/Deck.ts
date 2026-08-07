@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { GameStateTransmit, CardRank } from '@bigtwo/shared';
+import { GameStateTransmit, CardRank } from '@big2/game-types';
 import { Card } from './Card.ts';
 import { gsap, shuffle } from 'gsap';
 

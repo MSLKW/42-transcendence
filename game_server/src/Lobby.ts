@@ -2,7 +2,7 @@ import { Socket } from 'socket.io';
 import { io, kickSocket, LobbyRequest } from './server.js';
 import { UserState } from './UserState.js';
 import { GameState } from './GameState.js';
-import { GameStartRequest, SeatOrderTransmit, StatusTransmit } from '@bigtwo/shared';
+import { GameStartRequest, SeatOrderTransmit, StatusTransmit } from '@big2/game-types';
 import { EventEmitter } from 'node:events';
 import { success } from 'zod';
 
