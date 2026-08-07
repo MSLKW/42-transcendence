@@ -10,6 +10,8 @@
 #!/bin/bash
 set -e
 
+unset PGHOST PGPORT
+
 AUTH_PW="$( cat /run/secrets/db_auth_password)"
 PARTY_MANAGER_PW="$( cat /run/secrets/db_party-manager_password)"
 PROFILE_SYSTEM_PW="$( cat /run/secrets/db_profile-system_password)"

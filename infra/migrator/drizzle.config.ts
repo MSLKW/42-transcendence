@@ -77,7 +77,7 @@ export default defineConfig({
       // password: dbPassword,
       // database: dbName,
         // Construct the URL using the helper
-        url: `${process.env.PGHOST}://${process.env.PGUSER}:${requirePassword()}@${process.env.PGHOST}:${process.env.PGPORT}/${process.env.PGDATABASE}`,
+        url: `postgresql://${process.env.PGUSER}:${requirePassword()}@${process.env.PGHOST}:${process.env.PGPORT}/${process.env.PGDATABASE}`,
     },
     // Optional: Add verbose logging for debugging migrations
     verbose: true, // Makes the terminal output talkative. It will show you the exact SQL strings it's running. This is vital when you are learning or debugging why a migration might be failing.

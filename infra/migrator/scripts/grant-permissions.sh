@@ -14,28 +14,29 @@
 # are both idempotent, so re-running them changes nothing if already applied,
 # and correctly picks up any brand-new tables from that deploy's migrations.
 
+# -- 1. Grant access of specific schema to its own specific user only:
+# -- privilege = just a specific permission a role (user) is allowed to perform on a specific database object.
+# -- syntax: GRANT <privileges> ON <object> TO <role>
+# -- objects: Schema, Table, Sequence
+# -- notes:
+# -- 		ALL PRIVILEGES is shorthand for "every privilege that applies to this object type."
+# -- 		Schema: USAGE (allowed to "see into" / reference things inside it — without this, even having table permissions doesn't help, since the role can't even look the table up), CREATE (allowed to create new objects inside it).
+# -- 		Table: SELECT, INSERT, UPDATE, DELETE, TRUNCATE, REFERENCES, TRIGGER.
+# -- 		Sequence: USAGE, SELECT, UPDATE — needed because auto-incrementing columns (SERIAL/IDENTITY) are backed by a sequence object under the hood, and inserting a row calls nextval() on it, which requires its own permission separate from the table's.
+# -- [GRANT ... ON ALL TABLES IN SCHEMA x] is a one-time snapshot — it only touches tables that exist right now, at the moment you run it.
+# -- [ALTER DEFAULT PRIVILEGES] doesn't grant anything itself. It sets up a standing rule: "from now on, whenever role X creates a new table in schema Y, automatically attach these privileges to it for role Z."
+# -- use both together: the direct GRANT covers what exists NOW, ALTER DEFAULT PRIVILEGES covers what gets created going forward.
+# -- for schema object, just grant USAGE only, coz admin user is the only one that can CREATE
+
+
 
 #!/bin/sh
 set -e
 
 export PGPASSWORD="$(cat /run/secrets/db_admin_password)"
 
+# psql -v ON_ERROR_STOP=1 <<-EOSQL
 psql -v ON_ERROR_STOP=1 --host "${PGHOST}" --port "${PGPORT}" --username "${PGUSER}" --dbname "${PGDATABASE}" <<-EOSQL
-
-	-- 1. Grant access of specific schema to its own specific user only:
-	-- privilege = just a specific permission a role (user) is allowed to perform on a specific database object.
-	-- syntax: GRANT <privileges> ON <object> TO <role>
-	-- objects: Schema, Table, Sequence
-	-- notes:
-	-- 		ALL PRIVILEGES is shorthand for "every privilege that applies to this object type."
-	-- 		Schema: USAGE (allowed to "see into" / reference things inside it — without this, even having table permissions doesn't help, since the role can't even look the table up), CREATE (allowed to create new objects inside it).
-	-- 		Table: SELECT, INSERT, UPDATE, DELETE, TRUNCATE, REFERENCES, TRIGGER.
-	-- 		Sequence: USAGE, SELECT, UPDATE — needed because auto-incrementing columns (SERIAL/IDENTITY) are backed by a sequence object under the hood, and inserting a row calls nextval() on it, which requires its own permission separate from the table's.
-	-- [GRANT ... ON ALL TABLES IN SCHEMA x] is a one-time snapshot — it only touches tables that exist right now, at the moment you run it.
-	-- [ALTER DEFAULT PRIVILEGES] doesn't grant anything itself. It sets up a standing rule: "from now on, whenever role X creates a new table in schema Y, automatically attach these privileges to it for role Z."
-	-- use both together: the direct GRANT covers what exists NOW, ALTER DEFAULT PRIVILEGES covers what gets created going forward.
-	-- for schema object, just grant USAGE only, coz admin user is the only one that can CREATE
-
 
 	---- (1) auth_schema
 	GRANT USAGE ON SCHEMA auth_schema TO "${PGUSER_AUTH}";
