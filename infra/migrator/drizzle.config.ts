@@ -8,12 +8,54 @@ import fs from "fs";
 import 'dotenv/config'; // 1. Load .env files
 import { defineConfig } from "drizzle-kit";
 
+// const password = fs.readFileSync(process.env.PGPASSWORD!, "utf8").trim();
+// if (!password) {
+//   throw new Error("CRITICAL: Database password could not be loaded.");
+// }
 
 // 2. Helper to safely read the password
-const password = fs.readFileSync(process.env.DB_PASSWORD_FILE!, "utf8").trim();
-if (!password) {
-  throw new Error("CRITICAL: Database password could not be loaded.");
+function requirePassword(): string {
+  const envPassword = process.env.PGPASSWORD;
+  if (envPassword) {
+    return envPassword;
+  }
+
+  const passwordFile = process.env.PGPASSWORD ?? "/run/secrets/db_admin_password";
+  try {
+    const password = fs.readFileSync(passwordFile, "utf8").trim();
+    if (!password) {
+      throw new Error("empty password");
+    }
+    return password;
+  } catch {
+    throw new Error("CRITICAL: Database password could not be loaded from PGPASSWORD or PGPASSWORD.");
+  }
 }
+
+
+// import 'dotenv/config'; // 1. Load .env files
+// import { defineConfig } from "drizzle-kit";
+
+
+// const password = process.env.PGPASSWORD;
+// if (!password) {
+//   throw new Error("CRITICAL: Database password could not be loaded.");
+// }
+
+// 2. Helper to safely read .env vars and secret
+// function requireEnv(name: string): string {
+//   const value = process.env[name];
+//   if (!value) {
+//     throw new Error(`CRITICAL: Missing required environment variable: ${name}`);
+//   }
+//   return value;
+// }
+
+// const dbPort = Number(requireEnv("PGPORT"));
+// const dbHost = requireEnv("PGHOST");
+// const dbUser = requireEnv("PGUSER");
+// const dbName = requireEnv("PGDATABASE");
+// const dbPassword = requireEnv("PGPASSWORD");
 
 
 // 3. Define the main guidance of how Drizzle do its work
@@ -22,17 +64,24 @@ if (!password) {
 export default defineConfig({
     dialect: "postgresql",  // cannot use env vars and has nothing to do with .env
     schema: [ // points to the "Source of Truth."
-      "../auth_schema/src/index.ts", 
-      "../game_schema/src/index.ts", 
-      "../party-manager_schema/src/index.ts", 
-      "../profile-system_schema/src/index.ts"
+      "../../packages/auth_schema/src/index.ts", 
+      "../../packages/party-manager_schema/src/index.ts", 
+      "../../packages/profile-system_schema/src/index.ts",
+      "../../packages/game_schema/src/index.ts"
     ], 
     out: "./migrations", // naming is following industry standard / drizzle kit's default behaviour / drizzle's documentation
     dbCredentials: {
+      // host: dbHost,
+      // port: dbPort,
+      // user: dbUser,
+      // password: dbPassword,
+      // database: dbName,
         // Construct the URL using the helper
-        url: `${process.env.DB_HOST}://${process.env.DB_USER}:${password}@${process.env.DB_HOST}:${process.env.DB_PORT}/${process.env.DB_NAME}`,
+        url: `postgresql://${process.env.PGUSER}:${requirePassword()}@${process.env.PGHOST}:${process.env.PGPORT}/${process.env.PGDATABASE}`,
     },
     // Optional: Add verbose logging for debugging migrations
     verbose: true, // Makes the terminal output talkative. It will show you the exact SQL strings it's running. This is vital when you are learning or debugging why a migration might be failing.
     strict: true,  // safety feature. In strict mode, Drizzle is more aggressive about ensuring your TypeScript schema matches your database exactly. If there are extra tables in your DB that aren't in your schema, it might warn you or complain, helping you keep your database "clean."
 });
+
+console.log("~~~yeayy done doing all drizzle.config.ts!~~~");

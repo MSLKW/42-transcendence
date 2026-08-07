@@ -1,16 +1,16 @@
 networks:
-  transcendence:
+  transcendence: # main goal: need access out to the browser / internet
     name: ${MAIN_NETWORK_NAME}
     driver: bridge 
-  database: # main goal: to talk to Postgres ultimately - anyone who need to read/write into database will be incuded
+  database: # main goal: to talk to Postgres ultimately - any container who need to communicate into PostgreSQL must be incuded in this network
     name: ${DB_NETWORK_NAME}
     driver: bridge # anyone outside cannot enter this network
     internal: true # anyone inside cannot go outside this network (talking to external containers or internet/browsers)
-  # backend-internal:
+  # backend-internal: # specifically for internal API
   #   name: ${INTERNAL_BACKEND_NETWORK_NAME}
   #   driver: bridge
   #   internal: true
-  # lobby:
+  # lobby: # specifically among partys / lobbys
   #   name: ${LOBBY_NETWORK_NAME}
   #   driver: bridge
   #   internal: true
@@ -27,12 +27,12 @@ secrets: # auto make all secret files just read only mode
     file: ./secrets/database_passwords/db_admin_password.txt
   db_auth_password:
     file: ./secrets/database_passwords/db_auth_password.txt
-  db_game_password:
-    file: ./secrets/database_passwords/db_game_password.txt
   db_party-manager_password:
     file: ./secrets/database_passwords/db_party-manager_password.txt
   db_profile-system_password:
     file: ./secrets/database_passwords/db_profile-system_password.txt
+  db_game_password:
+    file: ./secrets/database_passwords/db_game_password.txt
   dg_masterpass:
     file: ./secrets/drizzle-gateway/dg_masterpass.txt
 
@@ -43,25 +43,29 @@ services:
   #     INFRASTRUCTURE MICROSERVICE
   postgresql:
     container_name: postgresql
-    image: postgres:17-bookworm # No Dockerfile needed here, pull directly from Docker Hub!
+    image: postgres:17-bookworm
     restart: unless-stopped
     expose:
-      - "${POSTGRES_PORT}"
+      - "${PGPORT}"
     environment: # Postgres Docker image need them through environment - to specifically overwrite the defaults
-      POSTGRES_DB: ${POSTGRES_DB}
-      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_DB: ${PGDATABASE}
+      POSTGRES_USER: ${PGUSER}
       POSTGRES_PASSWORD_FILE: /run/secrets/db_admin_password
     secrets:
       - db_admin_password
+      - db_auth_password
+      - db_party-manager_password
+      - db_profile-system_password
+      - db_game_password
     env_file:
       - .env
     volumes:
-      - pg_data:/var/lib/postgresql/data # volume
-      - ./infra/postgresql/init.sql:/docker-entrypoint-initdb.d/init.sql:ro # to run complex/specific sql scripts directly to Postgres automatically instead of to Drizzle
+      - pg_data:/var/lib/postgresql/data
+      - ./infra/postgresql/init.sh:/docker-entrypoint-initdb.d/init.sh:ro # to run complex/specific sql scripts directly to Postgres directly instead of to Drizzle
     networks:
       - database
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      test: ["CMD-SHELL", "pg_isready -U ${PGUSER} -d ${PGDATABASE}"]
       interval: 5s
       timeout: 5s
       retries: 5
@@ -77,22 +81,15 @@ services:
       - "${DRIZZLE_GATEWAY_PORT}:${DRIZZLE_GATEWAY_PORT}"
     env_file:
       - .env
-    environment:
-      DB_HOST: ${POSTGRES_HOST}
-      DB_PORT: ${POSTGRES_PORT}
-      DB_NAME: ${POSTGRES_DB}
-      DB_USER: ${POSTGRES_USER}
-      MASTERPASS_FILE: /run/secrets/dg_masterpass
-      DB_PASSWORD_FILE:  /run/secrets/db_admin_password
-      STORE_PATH: /app # Required by Drizzle Gateway
+    environment: # DB_* / PG_* - not recognized as per DG documentation, better use PG* 
       PORT: ${DRIZZLE_GATEWAY_PORT}
-    secrets:
-      - dg_masterpass
-      - db_admin_password
+      STORE_PATH: /app # Required by Drizzle Gateway
+    command:
+      - 'export MASTERPASS="$(cat /run/secrets/dg_masterpass)" && exec /gateway'
     volumes:
       - dg_data:/app # Required persistent volume mounting to /app
     networks:
-      - transcendence
+      - transcendence # must need, to open GUI at browser huhu
       - database
     depends_on:
       postgresql:
@@ -104,23 +101,18 @@ services:
   migrator:
     build:
       context: .
-      dockerfile: ./packages/migrator/Dockerfile
+      dockerfile: ./infra/migrator/Dockerfile
     pull_policy: never
     image: migrator:aisyah
     container_name: migrator
     restart: no # It runs migrations only, then it exits successfully, the end of this container's life. 
     environment:
-      DB_HOST: ${POSTGRES_HOST}
-      DB_PORT: ${POSTGRES_PORT}
-      DB_NAME: ${POSTGRES_DB}
-      DB_USER: ${POSTGRES_USER}
-      DB_PASSWORD_FILE: /run/secrets/db_admin_password
+      PGPASSWORD: /run/secrets/db_admin_password
     secrets:
       - db_admin_password
     env_file:
       - .env
     networks:
-      - transcendence
       - database
     depends_on:
       postgresql:
@@ -153,20 +145,17 @@ services:
     container_name: authentication
     restart: unless-stopped
     environment:
-      DB_HOST: ${POSTGRES_HOST}                           # DB_HOST is a standard industry convention
-      DB_NAME: ${POSTGRES_DB}
-      DB_PORT: ${POSTGRES_PORT}
-      DB_USER: ${POSTGRES_USER} # ${POSTGRES_USER_NAME_AUTH}
-      DB_PASSWORD_FILE: /run/secrets/db_admin_password # /run/secrets/db_auth_password
+      PGUSER: ${PGUSER_AUTH}
+      PGPASSWORD: /run/secrets/db_auth_password
     env_file:
       - .env                                              # Loads global configs
     secrets:
-      - db_admin_password # - db_auth_password
+      - db_auth_password
     networks:
       - transcendence
       - database
       # - backend-internal
-    healthcheck:
+    healthcheck: #! try check internal thru docker exec if they can still communicate thru postgres, with up nginx too
       test: ["CMD", "curl", "-s", "-o", "/dev/null", "http://localhost:3000/"]
       interval: 10s
       timeout: 5s
@@ -193,15 +182,12 @@ services:
     container_name: party-manager
     restart: unless-stopped
     environment:
-      DB_HOST: ${POSTGRES_HOST}                         # DB_HOST is a standard industry convention
-      DB_NAME: ${POSTGRES_DB}
-      DB_PORT: ${POSTGRES_PORT}
-      DB_USER: ${POSTGRES_USER} # ${POSTGRES_USER_NAME_PARTY_MANAGER}
-      DB_PASSWORD_FILE: /run/secrets/db_admin_password # /run/secrets/db_party-manager_password
+      PGUSER: ${PGUSER_PARTY_MANAGER}
+      PGPASSWORD: /run/secrets/db_party-manager_password
     env_file:
       - .env                                             # Loads global configs
     secrets:
-      - db_admin_password # - db_party-manager_password
+      - db_party-manager_password
     networks:
       - transcendence
       - database
@@ -212,57 +198,57 @@ services:
         condition: service_completed_successfully  # Waits for migrator to finish and exit with code 0
 
 
-  #     BACKEND MICORSERVICE
-  profile-system:
-    build:
-      context: .                                         # Set workdir to the repo's root
-      dockerfile: ./backend/profile-system/Dockerfile    # Point to the Dockerfile's relative path
-    pull_policy: never
-    image: profile:test
-    container_name: profile-system
-    restart: unless-stopped
-    environment:
-      DB_HOST: ${POSTGRES_HOST}                         # DB_HOST is a standard industry convention
-      DB_NAME: ${POSTGRES_DB}
-      DB_PORT: ${POSTGRES_PORT}
-      DB_USER: ${POSTGRES_USER} # ${POSTGRES_USER_NAME_PROFILE_SYSTEM}
-      DB_PASSWORD_FILE: /run/secrets/db_admin_password # /run/secrets/db_profile-system_password
-    env_file:
-      - .env                                             # Loads global configs
-    secrets:
-      - db_admin_password # - db_profile-system_password
-    networks:
-      - transcendence
-      - database
-      # - backend-internal
-    depends_on:
-      migrator:
-        condition: service_completed_successfully  # Waits for migrator to finish and exit with code 0
+#   #     BACKEND MICORSERVICE
+#   profile-system:
+#     build:
+#       context: .                                         # Set workdir to the repo's root
+#       dockerfile: ./backend/profile-system/Dockerfile    # Point to the Dockerfile's relative path
+#     pull_policy: never
+#     image: profile:test
+#     container_name: profile-system
+#     restart: unless-stopped
+#     environment:
+#       PGUSER: ${PGUSER_PROFILE_SYSTEM}
+#       PGPASSWORD: /run/secrets/db_profile-system_password
+#     env_file:
+#       - .env                                             # Loads global configs
+#     secrets:
+#       - db_profile-system_password  # - db_admin_password
+#     networks:
+#       - transcendence
+#       - database
+#       # - backend-internal
+#     depends_on:
+#       migrator:
+#         condition: service_completed_successfully  # Waits for migrator to finish and exit with code 0
 
 
-  #     BACKEND MICORSERVICE
-  game:
-    build:
-      context: .
-      dockerfile: ./backend/game/Dockerfile
-    pull_policy: never
-    image: game:test
-    container_name: game
-    restart: unless-stopped
-    networks:
-      - transcendence
-      - database
-      # - backend-internal
+#   #     BACKEND MICORSERVICE
+#   game:
+#     build:
+#       context: .
+#       dockerfile: ./backend/game/Dockerfile
+#     pull_policy: never
+#     image: game:test
+#     container_name: game
+#     restart: unless-stopped
+#     networks:
+#       - transcendence
+#       - database
+#       # - backend-internal
 
 
-  #     FRONTEND MICORSERVICE
-  website:
-    build:
-      context: .
-      dockerfile: ./frontend/website/Dockerfile
-    pull_policy: never
-    image: website:test
-    container_name: website
-    restart: unless-stopped
-    networks:
-      - transcendence
+#   #     FRONTEND MICORSERVICE
+#   website:
+#     build:
+#       context: .
+#       dockerfile: ./frontend/website/Dockerfile
+#     pull_policy: never
+#     image: website:test
+#     container_name: website
+#     restart: unless-stopped
+#     networks:
+#       - transcendence
+
+#  # CHAT - BACKEND SERVICE - NETWORK = backend-internal & transcendence
+#  # BOT - BACKEND SERVICE - NETWORK = backend-internal & transcendence

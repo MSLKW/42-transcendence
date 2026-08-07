@@ -9,7 +9,6 @@
 import { pgSchema, boolean, uuid } from "drizzle-orm/pg-core"; // pg-core specificly means postgres
 // import { serial, integer } from "drizzle-orm/pg-core"; 
 import { users } from "@big2/auth_schema";
-// import { relations } from "drizzle-orm"; // to create relationships
 
 export const partyManagerSchema = pgSchema("party-manager_schema");
 

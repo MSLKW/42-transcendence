@@ -1,0 +1,42 @@
+# -- What should stay in init.sql:
+# -- 		Keep it for things Drizzle genuinely can't or shouldn't manage:
+# -- 		CREATE EXTENSION IF NOT EXISTS "uuid-ossp"; — extensions are typically outside app-level migration tools' scope
+# -- 		Database roles/users, if you manage those at the Postgres level
+# -- 		One-time seed data, if any (though even this often belongs in a separate seed script, not init.sql)
+
+# init.sh — stage 1, only ever runs once (on an empty pg_data volume)
+
+
+#!/bin/bash
+set -e
+
+unset PGHOST PGPORT
+
+AUTH_PW="$( cat /run/secrets/db_auth_password)"
+PARTY_MANAGER_PW="$( cat /run/secrets/db_party-manager_password)"
+PROFILE_SYSTEM_PW="$( cat /run/secrets/db_profile-system_password)"
+GAME_PW="$( cat /run/secrets/db_game_password)"
+
+psql -v ON_ERROR_STOP=1 --username "${PGUSER}" --dbname "${PGDATABASE}" <<-EOSQL
+
+	-- 1. create any extensions that only diredtly on Postgres can do, not Drizzle
+	-- uuid-ossp: Allows you to generate UUIDs (Universally Unique Identifiers) directly inside the database (e.g., DEFAULT gen_random_uuid()).
+	CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
+
+	-- 2. Create users & passwords for each backend microservices that communicates with database
+	CREATE USER "${PGUSER_AUTH}" WITH PASSWORD '${AUTH_PW}';
+	CREATE USER "${PGUSER_PARTY_MANAGER}" WITH PASSWORD '${PARTY_MANAGER_PW}';
+	-- CREATE USER "${PGUSER_PROFILE_SYSTEM}" WITH PASSWORD '${PROFILE_SYSTEM_PW}';
+	-- CREATE USER "${PGUSER_GAME}" WITH PASSWORD '${GAME_PW}';
+
+	-- 3. Revoke default public schema's access from everyone
+	REVOKE ALL ON SCHEMA public FROM PUBLIC;
+	REVOKE ALL ON DATABASE "${PGDATABASE}" FROM PUBLIC;
+
+	-- 4. Re-grant CONNECT to each role
+	GRANT CONNECT ON DATABASE "${PGDATABASE}" TO "${PGUSER_AUTH}";
+	GRANT CONNECT ON DATABASE "${PGDATABASE}" TO "${PGUSER_PARTY_MANAGER}";
+	-- GRANT CONNECT ON DATABASE "${PGDATABASE}" TO "${PGUSER_PROFILE_SYSTEM}";
+	-- GRANT CONNECT ON DATABASE "${PGDATABASE}" TO "${PGUSER_GAME}";
+
+EOSQL

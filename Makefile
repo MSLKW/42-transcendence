@@ -6,7 +6,7 @@
 #    By: aimokhta <aimokhta@student.42kl.edu.my>    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2026/06/16 09:31:30 by aimokhta          #+#    #+#              #
-#    Updated: 2026/07/28 01:22:38 by aimokhta         ###   ########.fr        #
+#    Updated: 2026/08/07 03:38:51 by aimokhta         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -23,12 +23,12 @@ include .env
 export
 
 all:
-	@echo "$(PURPLE)\n🛠️  Building and launching containers...\n$(RESET)"
+	@echo "$(PURPLE)\n🛠️  Building and launching full Docker environment from scratch... \n$(RESET)"
 	@docker compose -f ./docker-compose.yml up --build
 
 down:
 # Docker removes the containers & networks, keeps built images saved on your disk.
-	@echo "$(PURPLE) Removing everything on Docker except images...\n$(RESET)" 
+	@echo "$(PURPLE) Removing all containers & networks on Docker (except images and volumes)...\n$(RESET)" 
 	@docker compose -f ./docker-compose.yml down
 
 up:
@@ -38,18 +38,18 @@ up:
 
 # A "soft" restart that picks up changes but keeps data
 recreate:
-	@echo "$(PURPLE) Starting/Resuming services, picking up changes on docker except on host (volumes)...\n$(RESET)"
+	@echo "$(PURPLE) Starting/Resuming services, picking up changes on docker by replacing containers (except touching volumes)...\n$(RESET)"
 	@docker compose -f ./docker-compose.yml up -d --force-recreate
 
 clean:
-	@echo "$(PURPLE)\n🗑️  Removing all containers, volumes, network and images including public base images (keeping volumes)...\n$(RESET)"
+	@echo "$(PURPLE)\n🗑️  Removing all containers, network and images including public base images (keeping volumes)...\n$(RESET)"
 	@docker compose -f ./docker-compose.yml down --rmi all
-	@echo "$(PURPLE)\n🗑️  Done cleaning all containers and images! \n$(RESET)"
+	@echo "$(PURPLE)\n🗑️  Done cleaning all containers, networks and images! \n$(RESET)"
 	
 fclean: clean
 	@echo "$(PURPLE)\n🗑️🚨 Removing Docker Named Volumes...\n$(RESET)"
 	@docker compose -f ./docker-compose.yml down --volumes
-	@echo "$(PURPLE)\n🗑️💥 Done! Everything, including volumes, are removed!\n$(RESET)"
+	@echo "$(PURPLE)\n🗑️💥 Done, Absolutely everything are removed now!\n$(RESET)"
 
 re: fclean all
 
@@ -64,6 +64,7 @@ logs:
 	@docker logs auth
 	@echo "$(PURPLE)docker logs party-manager$(RESET)"
 	@docker logs party-manager
+# 	docker logs profile-system
 # 	docker logs website
 # 	docker logs game
 # 	docker logs bot
