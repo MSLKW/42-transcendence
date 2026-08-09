@@ -1,6 +1,6 @@
-# 🗄️ Database-Centric Development's Setup & Testing Guide
+# 🗄️ Database-Centric Development's Setup & Testing Guide (through Drizzle Gateway)
 
-This guide focuses entirely on how to set up your environment, run containers, configure the Drizzle Gateway, and execute service tests specifically to observe their direct effects on the database. Every step is geared toward verifying data persistence and schema updates.
+This guide focuses entirely on how to set up your environment, run containers, configure Drizzle Gateway, and execute service tests specifically to observe their direct effects on the database via the dev tool of Data Browser, Drizzle Gateway. Every step is geared toward verifying data persistence and schema updates.
 
 ### Index:
 * [1. Prerequisites & Required Files](#1-prerequisites--required-files)
