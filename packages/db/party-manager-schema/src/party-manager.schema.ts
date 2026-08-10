@@ -1,4 +1,4 @@
-// create schema: party-manager_schema
+// create schema: party_manager_schema
 // create table: player_status
 // have 3 bools:
 // - is_online (default: no)
@@ -10,7 +10,7 @@ import { pgSchema, boolean, uuid } from "drizzle-orm/pg-core"; // pg-core specif
 // import { serial, integer } from "drizzle-orm/pg-core"; 
 import { users } from "@big2/auth-schema";
 
-export const partyManagerSchema = pgSchema("party-manager_schema");
+export const partyManagerSchema = pgSchema("party_manager_schema");
 
 export const playerStatus = partyManagerSchema.table("player_status", {
 	id: uuid("id")
