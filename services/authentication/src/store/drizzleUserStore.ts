@@ -1,5 +1,5 @@
 import { eq } from "drizzle-orm";
-import { users } from "@big2/auth_schema";
+import { users } from "@big2/auth-schema";
 import { postgres } from "./postgres";
 import { User } from "../models/user";
 import { UserStore } from "./userStore";

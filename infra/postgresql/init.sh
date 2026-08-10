@@ -4,7 +4,7 @@
 # -- 		Database roles/users, if you manage those at the Postgres level
 # -- 		One-time seed data, if any (though even this often belongs in a separate seed script, not init.sql)
 
-# init.sh — stage 1, only ever runs once (on an empty pg_data volume)
+# init.sh — stage 1, only ever runs once (on an empty pg-data volume)
 
 
 #!/bin/bash
@@ -12,10 +12,10 @@ set -e
 
 unset PGHOST PGPORT
 
-AUTH_PW="$( cat /run/secrets/db_auth_password)"
-PARTY_MANAGER_PW="$( cat /run/secrets/db_party-manager_password)"
-PROFILE_SYSTEM_PW="$( cat /run/secrets/db_profile-system_password)"
-GAME_PW="$( cat /run/secrets/db_game_password)"
+AUTH_PW="$( cat /run/secrets/db-auth-password)"
+PARTY_MANAGER_PW="$( cat /run/secrets/db-party-manager-password)"
+PROFILE_SYSTEM_PW="$( cat /run/secrets/db-profile-system-password)"
+GAME_PW="$( cat /run/secrets/db-game-password)"
 
 psql -v ON_ERROR_STOP=1 --username "${PGUSER}" --dbname "${PGDATABASE}" <<-EOSQL
 

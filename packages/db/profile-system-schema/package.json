@@ -1,5 +1,5 @@
 {
-  "name": "@big2/profile-system_schema",
+  "name": "@big2/profile-system-schema",
   "version": "1.0.0",
   "type": "module",
   "description": "",
@@ -20,7 +20,7 @@
   "dependencies": {
     "dotenv": "^17.4.2",
     "drizzle-orm": "^0.45.2",
-    "@big2/auth_schema": "*"
+    "@big2/auth-schema": "*"
   },
   "devDependencies": {
     "@types/node": "^26.1.1",

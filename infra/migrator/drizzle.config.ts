@@ -20,7 +20,7 @@ function requirePassword(): string {
     return envPassword;
   }
 
-  const passwordFile = process.env.PGPASSWORD_ENV_DUMMY ?? "/run/secrets/db_admin_password";
+  const passwordFile = process.env.PGPASSWORD_ENV_DUMMY ?? "/run/secrets/db-admin-password";
   try {
     const password = fs.readFileSync(passwordFile, "utf-8").trim();
     if (!password) {
@@ -63,10 +63,10 @@ function requirePassword(): string {
 export default defineConfig({
     dialect: "postgresql",  // cannot use env vars and has nothing to do with .env
     schema: [ // points to the "Source of Truth."
-      "../../packages/auth_schema/src/index.ts", 
-      "../../packages/party-manager_schema/src/index.ts", 
-      "../../packages/profile-system_schema/src/index.ts",
-      "../../packages/game_schema/src/index.ts"
+      "../../packages/auth-schema/src/index.ts", 
+      "../../packages/party-manager-schema/src/index.ts", 
+      "../../packages/profile-system-schema/src/index.ts",
+      "../../packages/game-schema/src/index.ts"
     ], 
     out: "./migrations", // naming is following industry standard / drizzle kit's default behaviour / drizzle's documentation
     dbCredentials: {

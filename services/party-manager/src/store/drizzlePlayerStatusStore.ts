@@ -1,6 +1,6 @@
 import { eq } from "drizzle-orm";
 import { postgres } from "./postgres";
-import { playerStatus } from "@big2/party-manager_schema";
+import { playerStatus } from "@big2/party-manager-schema";
 
 export class DrizzlePlayerStatusStore {
 

@@ -17,24 +17,24 @@ networks:
 
 
 volumes: # industry standard => name volumes => more secure oppose to anyone ever can adjust volumes (data's disk) on host if volumes are bind mounted
-  pg_data:
-  dg_data:
-  website_data:
+  pg-data:
+  dg-data:
+  website-data:
 
 
 secrets: # auto make all secret files just read only mode
-  db_admin_password:
-    file: ./secrets/database_passwords/db_admin_password.txt
-  db_auth_password:
-    file: ./secrets/database_passwords/db_auth_password.txt
-  db_party-manager_password:
-    file: ./secrets/database_passwords/db_party-manager_password.txt
-  db_profile-system_password:
-    file: ./secrets/database_passwords/db_profile-system_password.txt
-  db_game_password:
-    file: ./secrets/database_passwords/db_game_password.txt
-  dg_masterpass:
-    file: ./secrets/drizzle-gateway/dg_masterpass.txt
+  db-admin-password:
+    file: ./secrets/database-passwords/db-admin-password.txt
+  db-auth-password:
+    file: ./secrets/database-passwords/db-auth-password.txt
+  db-party-manager-password:
+    file: ./secrets/database-passwords/db-party-manager-password.txt
+  db-profile-system-password:
+    file: ./secrets/database-passwords/db-profile-system-password.txt
+  db-game-password:
+    file: ./secrets/database-passwords/db-game-password.txt
+  dg-masterpass:
+    file: ./secrets/drizzle-gateway/dg-masterpass.txt
 
 
 services:
@@ -50,17 +50,17 @@ services:
     environment: # Postgres Docker image need them through environment - to specifically overwrite the defaults
       POSTGRES_DB: ${PGDATABASE}
       POSTGRES_USER: ${PGUSER}
-      POSTGRES_PASSWORD_FILE: /run/secrets/db_admin_password
+      POSTGRES_PASSWORD_FILE: /run/secrets/db-admin-password
     secrets:
-      - db_admin_password
-      - db_auth_password
-      - db_party-manager_password
-      - db_profile-system_password
-      - db_game_password
+      - db-admin-password
+      - db-auth-password
+      - db-party-manager-password
+      - db-profile-system-password
+      - db-game-password
     env_file:
       - .env
     volumes:
-      - pg_data:/var/lib/postgresql/data
+      - pg-data:/var/lib/postgresql/data
       - ./infra/postgresql/init.sh:/docker-entrypoint-initdb.d/init.sh:ro # to run complex/specific sql scripts directly to Postgres directly instead of to Drizzle
     networks:
       - database
@@ -85,9 +85,9 @@ services:
       PORT: ${DRIZZLE_GATEWAY_PORT}
       STORE_PATH: /app # Required by Drizzle Gateway
     command:
-      - 'export MASTERPASS="$(cat /run/secrets/dg_masterpass)" && exec /gateway'
+      - 'export MASTERPASS="$(cat /run/secrets/dg-masterpass)" && exec /gateway'
     volumes:
-      - dg_data:/app # Required persistent volume mounting to /app
+      - dg-data:/app # Required persistent volume mounting to /app
     networks:
       - transcendence # must need, to open GUI at browser huhu
       - database
@@ -107,9 +107,9 @@ services:
     container_name: migrator
     restart: no # It runs migrations only, then it exits successfully, the end of this container's life. 
     environment:
-      PGPASSWORD: /run/secrets/db_admin_password
+      PGPASSWORD: /run/secrets/db-admin-password
     secrets:
-      - db_admin_password
+      - db-admin-password
     env_file:
       - .env
     networks:
@@ -146,11 +146,11 @@ services:
     restart: unless-stopped
     environment:
       PGUSER: ${PGUSER_AUTH}
-      PGPASSWORD: /run/secrets/db_auth_password
+      PGPASSWORD: /run/secrets/db-auth-password
     env_file:
       - .env                                              # Loads global configs
     secrets:
-      - db_auth_password
+      - db-auth-password
     networks:
       - transcendence
       - database
@@ -183,11 +183,11 @@ services:
     restart: unless-stopped
     environment:
       PGUSER: ${PGUSER_PARTY_MANAGER}
-      PGPASSWORD: /run/secrets/db_party-manager_password
+      PGPASSWORD: /run/secrets/db-party-manager-password
     env_file:
       - .env                                             # Loads global configs
     secrets:
-      - db_party-manager_password
+      - db-party-manager-password
     networks:
       - transcendence
       - database
@@ -209,11 +209,11 @@ services:
 #     restart: unless-stopped
 #     environment:
 #       PGUSER: ${PGUSER_PROFILE_SYSTEM}
-#       PGPASSWORD: /run/secrets/db_profile-system_password
+#       PGPASSWORD: /run/secrets/db-profile-system-password
 #     env_file:
 #       - .env                                             # Loads global configs
 #     secrets:
-#       - db_profile-system_password  # - db_admin_password
+#       - db-profile-system-password
 #     networks:
 #       - transcendence
 #       - database

@@ -1,6 +1,6 @@
 import { pgSchema, uuid, text, integer, date, timestamp, boolean, jsonb } from "drizzle-orm/pg-core";
-import { authSchema } from "@big2/auth_schema";
-import { partyManagerSchema } from "@big2/party-manager_schema";
+import { authSchema } from "@big2/auth-schema";
+import { partyManagerSchema } from "@big2/party-manager-schema";
 import { UserSettings, BadgeLabel, AchievementLabel } from "../../../../services/profile-system/src/types";
 
 export const profileSystemSchema = pgSchema("profile-system_schema");

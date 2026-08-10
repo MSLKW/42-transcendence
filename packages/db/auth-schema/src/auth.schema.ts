@@ -1,5 +1,5 @@
 import { pgSchema, text, uuid, timestamp, integer } from "drizzle-orm/pg-core"; // pg-core specificly means postgres
-// import { profileSystemSchema } from "@big2/profile-system_schema";
+// import { profileSystemSchema } from "@big2/profile-system-schema";
 
 
 // 1. Schema Creations => only do schema creation through Drizzle !!
