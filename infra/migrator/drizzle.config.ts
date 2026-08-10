@@ -15,27 +15,26 @@ import { defineConfig } from "drizzle-kit";
 
 // 2. Helper to safely read the password
 function requirePassword(): string {
-  const envPassword = process.env.PGPASSWORD;
+  const envPassword = process.env.PGPASSWORD_ENV_DUMMY; // just for dev stage only (local testing)
   if (envPassword) {
     return envPassword;
   }
 
-  const passwordFile = process.env.PGPASSWORD ?? "/run/secrets/db_admin_password";
+  const passwordFile = process.env.PGPASSWORD_ENV_DUMMY ?? "/run/secrets/db_admin_password";
   try {
-    const password = fs.readFileSync(passwordFile, "utf8").trim();
+    const password = fs.readFileSync(passwordFile, "utf-8").trim();
     if (!password) {
       throw new Error("empty password");
     }
     return password;
   } catch {
-    throw new Error("CRITICAL: Database password could not be loaded from PGPASSWORD or PGPASSWORD.");
+    throw new Error("CRITICAL: Database password could not be loaded from PGPASSWORD_ENV_DUMMY or PGPASSWORD");
   }
 }
 
 
 // import 'dotenv/config'; // 1. Load .env files
 // import { defineConfig } from "drizzle-kit";
-
 
 // const password = process.env.PGPASSWORD;
 // if (!password) {
