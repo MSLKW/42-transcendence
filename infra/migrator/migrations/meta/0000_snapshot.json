@@ -1,5 +1,5 @@
 {
-  "id": "d08311ef-9e7d-4401-9f98-81ccf1a64db5",
+  "id": "47180c26-92ee-40ed-8c01-0d139517d41a",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -129,11 +129,53 @@
       "policies": {},
       "checkConstraints": {},
       "isRLSEnabled": false
+    },
+    "party_manager_schema.player_status": {
+      "name": "player_status",
+      "schema": "party_manager_schema",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "is_online": {
+          "name": "is_online",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "default": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "player_status_id_users_id_fk": {
+          "name": "player_status_id_users_id_fk",
+          "tableFrom": "player_status",
+          "tableTo": "users",
+          "schemaTo": "auth_schema",
+          "columnsFrom": [
+            "id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
     }
   },
   "enums": {},
   "schemas": {
-    "auth_schema": "auth_schema"
+    "auth_schema": "auth_schema",
+    "party_manager_schema": "party_manager_schema"
   },
   "sequences": {},
   "roles": {},

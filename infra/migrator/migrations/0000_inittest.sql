@@ -1,4 +1,6 @@
-CREATE SCHEMA IF NOT EXISTS "auth_schema";
+CREATE SCHEMA "auth_schema";
+--> statement-breakpoint
+CREATE SCHEMA "party_manager_schema";
 --> statement-breakpoint
 CREATE TABLE "auth_schema"."sessions" (
 	"token" text PRIMARY KEY NOT NULL,
@@ -19,4 +21,10 @@ CREATE TABLE "auth_schema"."users" (
 	CONSTRAINT "users_username_unique" UNIQUE("username")
 );
 --> statement-breakpoint
-ALTER TABLE "auth_schema"."sessions" ADD CONSTRAINT "sessions_user_id_users_id_fk" FOREIGN KEY ("user_id") REFERENCES "auth_schema"."users"("id") ON DELETE cascade ON UPDATE no action;
+CREATE TABLE "party_manager_schema"."player_status" (
+	"id" uuid PRIMARY KEY NOT NULL,
+	"is_online" boolean DEFAULT false NOT NULL
+);
+--> statement-breakpoint
+ALTER TABLE "auth_schema"."sessions" ADD CONSTRAINT "sessions_user_id_users_id_fk" FOREIGN KEY ("user_id") REFERENCES "auth_schema"."users"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "party_manager_schema"."player_status" ADD CONSTRAINT "player_status_id_users_id_fk" FOREIGN KEY ("id") REFERENCES "auth_schema"."users"("id") ON DELETE cascade ON UPDATE no action;

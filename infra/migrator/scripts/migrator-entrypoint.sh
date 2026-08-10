@@ -26,10 +26,8 @@ done
 echo "[2/5]  ${PGHOST} is ready!"
 
 
-# # # 2. Apply Generate(DO NOT generate here, only for 1st time after editing, locally only)
-# echo "[2.5/5] Drizzle generating SQL migration files into database..."
-# npm run db:generate
-
+# # # 2. Apply Generate
+# (WARNING! generate is only done locally, never during deployement)
 
 # 2. Wait for initialization (The "Retry Loop" pattern)
 echo "[3/5] Connection ready, applying migrations with retry loops logic..."

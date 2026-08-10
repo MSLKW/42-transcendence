@@ -25,7 +25,6 @@ RUN chmod +x /usr/local/bin/entrypoint.sh /usr/local/bin/grant-permissions.sh
 WORKDIR /app/infra/migrator
 ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
 
-# # no need to copy schemas! ignored by drizzle-kit migrate anyway
+# # no need to copy schemas! (COPY packages ./packages) => ignored by drizzle-kit migrate anyway
 # # only drizzle-kit generate & drizzle-kit push commands will need to refer schema
 # # which both commands done locally anyway, not for deployement 
-# COPY packages ./packages 

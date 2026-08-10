@@ -16,8 +16,8 @@
 	"include": ["src/**/*.ts"],
 	"references": [
 		{ "path": [
-			"../../packages/party-manager-schema",
-			"../../packages/db-client"
+			"../../packages/db/party-manager-schema",
+			"../../packages/db/db-client"
 	 ] }
 	]
 }

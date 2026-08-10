@@ -15,20 +15,24 @@ import { defineConfig } from "drizzle-kit";
 
 // 2. Helper to safely read the password
 function requirePassword(): string {
-  const envPassword = process.env.PGPASSWORD_ENV_DUMMY; // just for dev stage only (local testing)
-  if (envPassword) {
-    return envPassword;
+  if (process.env.PGPASSWORD) { // just for dev stage only (local testing)
+    return process.env.PGPASSWORD;
   }
 
-  const passwordFile = process.env.PGPASSWORD_ENV_DUMMY ?? "/run/secrets/db-admin-password";
+  if (process.env.PGPASSWORD_ENV_DUMMY) { // just for dev stage only (local testing)
+    return process.env.PGPASSWORD_ENV_DUMMY;
+  }
+
+  const passwordFile = "/run/secrets/db-admin-password";
   try {
     const password = fs.readFileSync(passwordFile, "utf-8").trim();
     if (!password) {
       throw new Error("empty password");
     }
     return password;
-  } catch {
-    throw new Error("CRITICAL: Database password could not be loaded from PGPASSWORD_ENV_DUMMY or PGPASSWORD");
+  } 
+  catch {
+    throw new Error("CRITICAL: Database password could not be loaded from PGPASSWORD_ENV_DUMMY or PGPASSWORD or the secrete file itself");
   }
 }
 
@@ -63,10 +67,10 @@ function requirePassword(): string {
 export default defineConfig({
     dialect: "postgresql",  // cannot use env vars and has nothing to do with .env
     schema: [ // points to the "Source of Truth."
-      "../../packages/auth-schema/src/index.ts", 
-      "../../packages/party-manager-schema/src/index.ts", 
-      "../../packages/profile-system-schema/src/index.ts",
-      "../../packages/game-schema/src/index.ts"
+      "../../packages/db/auth-schema/src/index.ts", 
+      "../../packages/db/party-manager-schema/src/index.ts", 
+      // "../../packages/db/profile-system-schema/src/index.ts",
+      "../../packages/db/game-schema/src/index.ts"
     ], 
     out: "./migrations", // naming is following industry standard / drizzle kit's default behaviour / drizzle's documentation
     dbCredentials: {
