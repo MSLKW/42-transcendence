@@ -20,6 +20,10 @@
     "typescript": "^5.9.3"
   },
   "devDependencies": {
-    "@types/node": "^26.1.1"
+    "@types/node": "^26.1.1",
+    "@big2/auth-schema": "*",
+    "@big2/game-schema": "*",
+    "@big2/party-manager-schema": "*",
+    "@big2/profile-system-schema": "*"  
   }
 }

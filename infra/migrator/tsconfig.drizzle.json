@@ -3,8 +3,7 @@
     "target": "esnext",
     "module": "esnext",
     "moduleResolution": "bundler",
-    "rootDir": "./",
-    "srcDir": "./dist",
+    // "rootDir": "./",
     "types": ["node"],
     "strict": true,
     "skipLibCheck": true

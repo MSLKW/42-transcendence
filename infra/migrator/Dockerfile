@@ -6,7 +6,7 @@ RUN apt-get update && \
     apt-get install -y postgresql-client && \
     rm -rf /var/lib/apt/lists/*
 
-# Install all dependencies
+# Install all dependencies, thats needed ONLY FOR MIGRATOR'S DEPLOYEMENT
 COPY package*.json ./
 COPY infra/migrator/package.json ./infra/migrator/
 RUN npm ci
