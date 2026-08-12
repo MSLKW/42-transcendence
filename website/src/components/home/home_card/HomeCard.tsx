@@ -18,11 +18,11 @@ export const HomeCardButton = ({ gameMode, playerCount }: HomeProps) => {
 
 	return (
 		<button
-			disabled={clientUuid !== hostUuid}
+			// disabled={clientUuid !== hostUuid}
 			onClick={() => {
 				setGameValue("totalPlayers", playerCount);
 				if (gameMode === "Tutorial")
-					setCurrentScene("GAMEPLAY");
+					setCurrentScene("TEST");
 				else
 					setCurrentScene("LOBBY");
 			}}

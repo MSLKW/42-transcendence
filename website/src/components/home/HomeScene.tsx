@@ -9,13 +9,15 @@ import { PartyButton } from "../party/invite/InviteButton";
 import { SmallLogo } from "../logo/SmallLogo";
 
 export const HomeScene = () => {
-	const { hostUuid, members } = usePartyStore();
+	const { hostUuid, members, setPartyValue, set1PlayerParty } = usePartyStore();
 	const { clientUuid } = useProfileStore();
 	const { removeBotsFromParty } = useBotStore();
-
+	
 	useEffect(() => {
 		console.log("[Home] Client Uuid:", clientUuid, " hostUuid:", hostUuid);
 		removeBotsFromParty();
+		if (members.length <= 0)
+			set1PlayerParty();
 	}, [])
 
 	return (

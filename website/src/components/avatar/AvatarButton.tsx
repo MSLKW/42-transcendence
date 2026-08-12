@@ -33,7 +33,7 @@ export const AvatarButton = ({
 		>
 			<button
 				data-tip={
-					data.relation === "Self" && currentScene !== "R3F" ? "Edit Profile" :
+					data.relation === "Self" && currentScene !== "GAMEPLAY" ? "Edit Profile" :
 					(data.relation === "Bot" && currentScene === "LOBBY") ? "Choose Bot" :
 					(data.relation === "Stranger" || data.relation === "Friend") ? "View Stats" :
 					""
@@ -41,7 +41,7 @@ export const AvatarButton = ({
 				onClick={(e) => {
 					e.currentTarget.blur();
 
-					if (data.relation === "Self" && currentScene !== "R3F") {
+					if (data.relation === "Self" && currentScene !== "GAMEPLAY") {
 						setShowWindow("profile", true);
 						console.log("Edit Profile button clicked");
 					} else if (data.relation === "Bot" && currentScene === "LOBBY") {
@@ -54,12 +54,13 @@ export const AvatarButton = ({
 				}}
 				className={`
 					rounded-xs
-					${ (data.relation === "Bot" || data.relation === "Self") && currentScene === "R3F"
+					${ (data.relation === "Bot" || data.relation === "Self") && currentScene === "GAMEPLAY"
 						? ""
 						: "hover:not-disabled:scale-105 active:hover:not-disabled:scale-100 focus-visible:outline-2 cursor-pointer"
 					}
-					${ (data.relation === "Bot" || data.relation === "Self") && currentScene === "R3F" ? "" :
-						cornerButton ? "data-tip-up2" : "data-tip-up"
+					${ (data.relation === "Bot" || data.relation === "Self") && currentScene === "GAMEPLAY"
+						? ""
+						: cornerButton ? "data-tip-up2" : "data-tip-up"
 					}
 					outline-b5
 					relative

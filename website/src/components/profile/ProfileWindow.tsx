@@ -32,7 +32,7 @@ export const ProfileWindow = () => {
 			return;
 		updateClientProfile(name, avatar, badge);
 		if (members.length <= 0)
-			set1PlayerParty(name, avatar);
+			set1PlayerParty();
 		setShowWindow("profile", false);
 	}
 

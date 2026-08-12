@@ -41,7 +41,7 @@ export default function Dev() {
 	}, [showFrame]);
 
 	const { incTotalWin, incTotalLoss } = useGameStore();
-	const { partySocketId, partyGameId, members } = usePartyStore();
+	const { partySocketId, partyGameId, members, set1PlayerParty } = usePartyStore();
 	const { clientUuid, isAuthenticated, validateResponse, profilesInDb, resetProfilesInDb } = useProfileStore();
 	const { currentScene, setCurrentScene } = useSceneStore();
 
@@ -53,21 +53,29 @@ export default function Dev() {
 		console.log("[Dev] Game have been reset");
 	}
 
+	const handlePartyConnection = () => {
+		if (partySocket.isSocketActive()) {
+			partySocket.disconnect();
+			set1PlayerParty();
+		} else
+			partySocket.connect();
+	}
+
 	return (
 		<section className="w-full text-r4 py-1rem">
 			<ul className="flex place-content-evenly">
 				<DevBtn label="Login" call={() => setCurrentScene("LOGIN")}/>
 				<DevBtn label="Home" call={() => setCurrentScene("HOME")}/>
 				<DevBtn label="Lobby" call={() => setCurrentScene("LOBBY")}/>
+				<DevBtn label="Test" call={() => setCurrentScene("TEST")}/>
 				<DevBtn label="Gameplay" call={() => setCurrentScene("GAMEPLAY")}/>
-				<DevBtn label="R3F" call={() => setCurrentScene("R3F")}/>
 			</ul>
 			<ul className="flex place-content-evenly">
 				<DevBtn label="Frame" call={() => toggleFlag("showFrame")} />
 				<DevBtn label="Stats" call={() => toggleFlag("showStats")} />
 				<DevBtn label="Reset" call={handleReset} />
 			</ul>
-			{ (currentScene === "R3F" || currentScene === "GAMEPLAY") && 
+			{ currentScene === "GAMEPLAY" && 
 				<ul className="flex place-content-evenly">
 					<DevBtn label="Results" call={() => setCurrentScene('RESULTS')}/>
 					<DevBtn label="Win Round" call={() => incTotalWin(clientUuid!)}/>
@@ -90,7 +98,10 @@ export default function Dev() {
 					<DevBtn label={`isAuthenticated: ${isAuthenticated ? "Yes" : "No"}`} call={() => console.log("/validate response: ", validateResponse)}/>
 				</div>
 				<div className="flex place-content-between">
-					<li>Party Manager Socket ID: {partySocketId ? partySocketId : "n/a"}</li>
+					<DevBtn
+						label={`Party Manager Socket ID: ${partySocketId ? partySocketId : "n/a"}`}
+						call={handlePartyConnection}
+					/>
 					<DevBtn label={`members: ${members.length}`} call={() => console.log("members: ", members)}/>
 				</div>
 				<li>Party Game ID: {partyGameId ? partyGameId : "n/a"}</li>

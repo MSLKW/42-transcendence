@@ -16,7 +16,7 @@ export const SetupValidationModule = ({ name, avatar }: SetupValidationModulePro
 		if (!isValid)
 			return;
 		createClientProfile(name, avatar);
-		set1PlayerParty(name, avatar);
+		set1PlayerParty();
 		setShowWindow("setup", false);
 		console.log("[handleSetupComplete] hostUuid:", hostUuid);
 	};

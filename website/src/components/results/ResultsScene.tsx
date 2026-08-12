@@ -55,7 +55,7 @@ export const ResultsScene = () => {
 									End
 								</button>
 								<button
-									onClick={() => setCurrentScene("R3F")}
+									onClick={() => setCurrentScene("GAMEPLAY")}
 									className="
 										h-3rem aspect-5/1
 										btn-text bg-light

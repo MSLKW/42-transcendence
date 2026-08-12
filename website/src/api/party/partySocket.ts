@@ -95,6 +95,7 @@ class PartySocketService {
 			)
 		});
 	}
+	
 	public disconnect() {
 		this.isConnecting = false;
 		if (this.socket) {
@@ -119,6 +120,7 @@ class PartySocketService {
 			NOTIFICATION_TYPE.message
 		);
 	}
+
 	public kickMember(recipientUuid: string, recipientName: string) {
 		const { showNotification } = useNotificationStore.getState();
 		if (!this.socket?.connected) {
@@ -135,6 +137,7 @@ class PartySocketService {
 			NOTIFICATION_TYPE.message
 		);
 	}
+
 	public startGameSession() {
 		const { showNotification } = useNotificationStore.getState();
 		if (!this.socket?.connected) {
@@ -151,6 +154,7 @@ class PartySocketService {
 			NOTIFICATION_TYPE.message
 		);
 	}
+
 	public acceptInvite(hostUuid: string) {
 		const { showNotification } = useNotificationStore.getState();
 		if (!this.socket?.connected) {
@@ -170,6 +174,7 @@ class PartySocketService {
 			NOTIFICATION_TYPE.message
 		);
 	}
+
 	public rejectInvite(hostUuid: string) {
 		const { showNotification } = useNotificationStore.getState();
 		if (!this.socket?.connected) {
@@ -186,6 +191,7 @@ class PartySocketService {
 			NOTIFICATION_TYPE.message
 		);
 	}
+
 	public leaveParty() {
 		const { showNotification } = useNotificationStore.getState();
 		if (!this.socket?.connected) {
@@ -202,22 +208,7 @@ class PartySocketService {
 			NOTIFICATION_TYPE.message
 		);
 	}
-	public updateGameMode(gameMode: number) {
-		const { showNotification } = useNotificationStore.getState();
-		if (!this.socket?.connected) {
-			showNotification(
-				"Cannot update game mode: Socket not connected",
-				NOTIFICATION_TYPE.error
-			);
-			return;
-		}
 
-		this.socket?.emit("party:set_gamemode", { gameMode });
-		showNotification(
-			"Game mode updated",
-			NOTIFICATION_TYPE.message
-		);
-	}
 	public isSocketActive(): boolean {
 		return !!(this.socket && this.socket.connected && this.socket.id) || this.isConnecting;
 	}

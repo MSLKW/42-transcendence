@@ -15,20 +15,18 @@ export const LobbyScene = () => {
 	const { setCurrentScene } = useSceneStore();
 	const { addBotToParty } = useBotStore();
 	
-	const hasRunRef = useRef(false);
+	let hasRunRef = useRef(false);
 	useEffect(() => {
-		if (hasRunRef.current)
-			return;
-		hasRunRef.current = true;
-
 		let i = members.length;
 		while (i < totalPlayers) {
 			addBotToParty(`bot-${i}`);
 			i++;
 		}
-		partySocket.updateGameMode(totalPlayers);
+		
+		if (hasRunRef.current)
+			return;
+		hasRunRef.current = true;
 		partySocket.startGameSession();
-		hasRunRef.current = false;
 	}, [members.length, totalPlayers]);
 
 	return (
@@ -80,7 +78,7 @@ export const LobbyScene = () => {
 						/>
 					}
 					<button
-						onClick={() => setCurrentScene("R3F")}
+						onClick={() => setCurrentScene("GAMEPLAY")}
 						className="
 							btn-text bg-light
 							h-3rem aspect-4/1

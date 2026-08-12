@@ -18,10 +18,10 @@ export const HeaderModule = ({ back }: HeaderModuleProps) => {
 				{ back === "LOGIN"
 					? <SignOutButton />
 					: <BackButton scene={() => {
-						if (currentScene === "LOBBY" || currentScene === "RESULTS")
-							setCurrentScene("HOME");
-						else if (currentScene === "R3F")
+						if (currentScene === "GAMEPLAY")
 							setCurrentScene("LOBBY");
+						else
+							setCurrentScene("HOME");
 					}}/> }
 				<SettingsButton />
 			</div>

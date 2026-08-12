@@ -30,7 +30,7 @@ interface PartyState extends PartyValues {
 	getMemberData: (memberUuid: string | null) => MemberData | undefined,
 	setPartySocketId: (id: string | undefined) => void,
 	setPartyData: (memberUuids: string[]) => void,
-	set1PlayerParty: (clientName: string, clientAvatar: string) => void,
+	set1PlayerParty: () => void,
 };
 
 export const usePartyStore = create<PartyState>() (
@@ -42,16 +42,20 @@ export const usePartyStore = create<PartyState>() (
 			hostUuid: null,
 
 			setPartyValue: (key, value) => set(() => ({ [key]: value })),
+			
 			resetMembers: () => set({
 				members: [],
 			}),
+			
 			getMemberData: (memberUuid) => {
 				if (!memberUuid)
 					return;
 				const members = get().members;
 				return members.find(p => p.uuid === memberUuid);
 			},
+			
 			setPartySocketId: (id) => set({ partySocketId: id }),
+			
 			setPartyData: (memberUuids) => {
 				const { clientUuid, getProfileData } = useProfileStore.getState();
 				const newMembers: MemberData[] = memberUuids.map((uuid) => {
@@ -74,15 +78,22 @@ export const usePartyStore = create<PartyState>() (
 				});
 				set({ members: newMembers });
 			},
-			set1PlayerParty: (clientName, clientAvatar) => {
-				console.log("[set1PlayerParty]");
+
+			set1PlayerParty: () => {
 				const clientUuid = useProfileStore.getState().clientUuid;
+				if (!clientUuid)
+					return;
+				
+				const data = useProfileStore.getState().getProfileData(clientUuid);
+				if (!data)
+					return;
+
 				set({
 					members: [
 						{
 							uuid: clientUuid,
-							name: clientName,
-							avatar: clientAvatar,
+							name: data.name,
+							avatar: data.avatar,
 							relation: "Self",
 						}
 					],

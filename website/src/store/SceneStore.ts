@@ -3,7 +3,7 @@ import { persist } from "zustand/middleware";
 import { useGameStore } from "./GameStore";
 import type { BADGE_TYPE } from "./ProfileStore";
 
-export type SCENES = "BADGE" | "LOGIN" | "HOME" | "LOBBY" | "GAMEPLAY" | "R3F" | "RESULTS";
+export type SCENES = "BADGE" | "LOGIN" | "HOME" | "LOBBY" | "TEST" | "GAMEPLAY" | "RESULTS";
 
 interface SceneValues {
 	currentScene: SCENES;
@@ -41,7 +41,7 @@ export const useSceneStore = create<SceneState>() (
 			setSceneValue: (key, value) => set(() => ({ [key]: value })),
 			setCurrentScene: (scene) => {
 				set({ currentScene: scene });
-				useGameStore.getState().setGameValue("gameStarted", scene === "R3F" || scene === "GAMEPLAY");
+				useGameStore.getState().setGameValue("gameStarted", scene === "GAMEPLAY");
 			},
 			setShowWindow: (window, show) => set((sceneStore) => {
 				return {

@@ -13,8 +13,8 @@ import { Card } from "./components/3d/PCard";
 import { LoginScene } from "./components/login/LoginScene";
 import { HomeScene } from "./components/home/HomeScene";
 import { LobbyScene } from "./components/lobby/LobbyScene";
+import { TestScene } from "./components/test/TestScene";
 import { GameplayScene } from "./components/gameplay/GameplayScene";
-import { R3FScene } from "./components/r3f/R3FScene";
 import { ResultsScene } from "./components/results/ResultsScene";
 import { BotsWindow } from "./components/bots/BotsWindow";
 import { ChatWindow } from "./components/chat/ChatWindow";
@@ -71,32 +71,30 @@ export default function App() {
 				w-full min-w-80 max-w-360
 				h-full min-h-120 max-h-360
 			">
-				<Canvas>
-					{ (currentScene === "LOGIN" || currentScene === "LOBBY" || currentScene === "R3F" || currentScene === "RESULTS") && 
-						<>
-							<AdaptiveDpr />
-							<ambientLight intensity={0.5} />
-							<directionalLight position={[0, 5, 5]} intensity={0.5} />
-							{ currentScene === "LOGIN" &&
-								<Card
-									position={[0,0.25,0]}
-									rotation={[-Math.PI/4,0,0]}
-									color="gold"
-								/>
-							}
-							<SphereBg />
-							<PerspectiveCamera makeDefault position={[0, 0, 2.25]} />
-							<OrbitControls enableZoom={false} />
-						</>
-					}
-				</Canvas>
+				{ (currentScene === "LOGIN" || currentScene === "HOME" || currentScene === "LOBBY") && 
+					<Canvas>
+						<AdaptiveDpr />
+						<ambientLight intensity={0.5} />
+						<directionalLight position={[0, 5, 5]} intensity={0.5} />
+						{ currentScene === "LOGIN" &&
+							<Card
+								position={[0,0.25,0]}
+								rotation={[-Math.PI/4,0,0]}
+								color="gold"
+							/>
+						}
+						<SphereBg />
+						<PerspectiveCamera makeDefault position={[0, 0, 2.25]} />
+						<OrbitControls enableZoom={false} />
+					</Canvas>
+				}
 			</section>
 			<section className="cont-body">
 				{ currentScene === 'LOGIN' && <LoginScene /> }
 				{ currentScene === 'HOME' && <HomeScene /> }
 				{ currentScene === 'LOBBY' && <LobbyScene /> }
+				{ currentScene === 'TEST' && <TestScene /> }
 				{ currentScene === 'GAMEPLAY' && <GameplayScene /> }
-				{ currentScene === 'R3F' && <R3FScene /> }
 				{ currentScene === 'RESULTS' && <ResultsScene /> }
 				{ showWindow["bots"] && <BotsWindow /> }
 				{ showWindow["chat"] && <ChatWindow /> }

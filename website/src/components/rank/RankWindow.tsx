@@ -1,5 +1,5 @@
 import { Window } from "../window/Window";
-import { RankArrowIcon } from "../r3f/rank/RankArrowIcon";
+import { RankArrowIcon } from "../gameplay/rank/RankArrowIcon";
 import { SpadesIcon, HeartsIcon, ClubsIcon, DiamondsIcon } from "./SuitsIcon"
 
 export const RankWindow = () => {
