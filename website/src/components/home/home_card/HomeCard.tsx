@@ -1,4 +1,4 @@
-import type { GAMEMODE_TYPE } from "../../../store/GameStore";
+import { useGameStore, type GAMEMODE_TYPE } from "../../../store/GameStore";
 import { usePartyStore } from "../../../store/PartyStore";
 import { useProfileStore } from "../../../store/ProfileStore";
 import { useSceneStore } from "../../../store/SceneStore";
@@ -6,10 +6,12 @@ import { PersonIcon } from "./person/PersonIcon";
 import { TutorialIcon } from "./tutorial/TutorialIcon";
 
 interface HomeProps {
-	gameMode: GAMEMODE_TYPE;
+	gameMode: GAMEMODE_TYPE,
+	totalPlayers: number,
 }
 
-export const HomeCardButton = ({ gameMode }: HomeProps) => {
+export const HomeCardButton = ({ gameMode, totalPlayers }: HomeProps) => {
+	const { setGameValue } = useGameStore()
 	const { setCurrentScene } = useSceneStore();
 	const { clientUuid } = useProfileStore();
 	const { hostUuid } = usePartyStore();
@@ -19,9 +21,11 @@ export const HomeCardButton = ({ gameMode }: HomeProps) => {
 			disabled={clientUuid !== hostUuid}
 			onClick={() => {
 				if (gameMode === "Tutorial")
-					setCurrentScene("GAMEPLAY")
-				else
-					setCurrentScene("LOBBY")
+					setCurrentScene("GAMEPLAY");
+				else {
+					setGameValue("totalPlayers", totalPlayers);
+					setCurrentScene("LOBBY");
+				}
 			}}
 			className="
 				h-full max-h-150 aspect-2/3

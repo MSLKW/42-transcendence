@@ -75,6 +75,7 @@ export const usePartyStore = create<PartyState>() (
 				set({ members: newMembers });
 			},
 			set1PlayerParty: (clientName, clientAvatar) => {
+				console.log("[set1PlayerParty]");
 				const clientUuid = useProfileStore.getState().clientUuid;
 				set({
 					members: [
