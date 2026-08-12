@@ -8,7 +8,6 @@ export const RankWindow = () => {
 			title={`Rank`}
 			dismissKey="rank"
 			pinState={false}
-			profileIndex={-1}
 		>
 			<div className="flex">
 				<div className="

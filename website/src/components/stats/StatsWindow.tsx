@@ -1,7 +1,7 @@
+import { useProfileStore } from "../../store/ProfileStore";
 import { useSceneStore } from "../../store/SceneStore";
-import { usePartyStore } from "../../store/PartyStore";
 import { Window } from "../window/Window";
-import { AvatarMemberModule } from "../avatar/AvatarMember";
+import { AvatarMemberModule } from "../avatar/AvatarMemberModule";
 import { MedalsModule } from "../player/medals/MedalsModule";
 import { PlayerDataModule } from "../player/data/PlayerDataModule";
 import { PlayerStatsModule } from "../player/stats/PlayerStatsModule";
@@ -9,27 +9,32 @@ import { FriendToggleButton } from "./friend/FriendToggleButton";
 import { KickMemberButton } from "./kick/KickMemberButton";
 
 export const StatsWindow: React.FC = () => {
-	const { profileIndex } = useSceneStore();
-	const { members } = usePartyStore();
+	const { profileUuid } = useSceneStore();
+	if (!profileUuid)
+		return;
+
+	const { getProfileData } = useProfileStore();
+	const data = getProfileData(profileUuid);
+	if (!data)
+		return null;
 
 	return (
 		<Window
-			title={`Stats: ${members[profileIndex]?.name || "Guest"}`}
+			title={`Player Profile: ${data.name}`}
 			dismissKey="stats"
-			profileIndex={profileIndex}
 		>
 			<div
 				className="
 					px-3rem
-					divide-y divide-n2
+					divide-y divide-n2/40
 				"
 			>
 				<div className="flex">
-					<AvatarMemberModule name={members[profileIndex]?.name ?? "Guest"} />
-					<PlayerDataModule />
+					<AvatarMemberModule name={data.name ?? "Player"} image={data.avatar ?? "stock-0.png"} />
+					<PlayerDataModule profile={data} />
 				</div>
 				<MedalsModule />
-				<PlayerStatsModule />
+				<PlayerStatsModule profile={data} />
 				<div
 					className="
 						flex place-content-evenly place-items-center
@@ -38,6 +43,7 @@ export const StatsWindow: React.FC = () => {
 					"
 				>
 					<KickMemberButton />
+					{/* <FriendToggleButton profile={data} /> */}
 					<FriendToggleButton />
 				</div>
 			</div>

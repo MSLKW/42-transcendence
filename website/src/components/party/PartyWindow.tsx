@@ -1,20 +1,25 @@
 import { useState } from "react";
+// import { useFriendStore } from "../../store/FriendStore";
+// import { useProfileStore } from "../../store/ProfileStore";
 import { Window } from "../window/Window";
-import { FriendModule } from "./friends/FriendsModule";
+// import { FriendModule } from "./friends/FriendsModule";
 import { SearchModule } from "./search/SearchModule";
-import { useCommunityStore } from "../../store/CommunityStore";
 
 export const PartyWindow = () => {
-	const { friendsList, publicList } = useCommunityStore();
+	// const { } = useFriendStore();
+	// const { profilesInDb } = useProfileStore();
 	const [searchQuery, setSearchQuery] = useState("");
 
-	const filteredResults = searchQuery.trim() === ""
-    ? []
-    : publicList.filter((player) => {
-        const matchesQuery = player.name?.toLowerCase().includes(searchQuery.toLowerCase());
-        const isAlreadyFriend = friendsList.some((friend) => friend.uuid === player.uuid);
-        return matchesQuery && !isAlreadyFriend;
-    });
+	// const publicList = profilesInDb.filter(p => p.relation === "STRANGER" || p.relation === "FRIEND" || p.relation === "SELF");
+	// const friendsList = profilesInDb.filter(p => p.relation === "FRIEND");
+
+	// const filteredResults = searchQuery.trim() === ""
+	// 	? []
+	// 	: publicList.filter((profile) => {
+	// 		const matchesQuery = profile.name?.toLowerCase().includes(searchQuery.toLowerCase());
+	// 		return matchesQuery;
+	// 	});
+
 
 	return (
 		<Window
@@ -35,7 +40,7 @@ export const PartyWindow = () => {
 				<div
 					tabIndex={-1}
 					className="
-						h-full max-h-[90%vh] w-full
+						max-h-[50vh] w-full
 						py-0.5rem px-1.5rem
 						overflow-scroll
 						flex flex-col gap-0.75rem
@@ -44,28 +49,26 @@ export const PartyWindow = () => {
 					{searchQuery.trim() === "" ? (
 						<>
 							<h2>Friends List</h2>
-							{friendsList.map((player) => (
+							{/* {friendsList.map((profile) => (
 								<FriendModule
-									key={player.uuid}
-									name={player.name ?? ""}
-									status={player.status}
+									key={profile.uuid!}
+									uuid={profile.uuid!}
 								/>
-							))}
+							))} */}
 						</>
 					) : (
 						<>
 							<h2>Search Results</h2>
-							{filteredResults.length > 0 ? (
-								filteredResults.map((player) => (
+							{/* {filteredResults.length > 0 ? (
+								filteredResults.map((profile) => (
 									<FriendModule
-										key={player.uuid}
-										name={player.name ?? ""}
-										status={player.status}
+										key={profile.uuid!}
+										uuid={profile.uuid!}
 									/>
 								))
-							) : (
+							) : ( */}
 								<h2>No players found</h2>
-							)}
+							{/* )} */}
 						</>
 					)}
 				</div>

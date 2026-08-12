@@ -2,13 +2,13 @@ import { Window } from "../window/Window";
 import { AboutModule } from "./About/AboutModule";
 import { TechModule } from "./Tech/TechModule";
 import { TeamModule } from "./Team/TeamModule";
+import { ShowDevSection } from "./Dev/ShowDevSection";
 
 export const InfoWindow = () => {
     return (
 		<Window
 			title="Info"
 			dismissKey="info"
-			profileIndex={-1}
 		>
 			<div
 				className="
@@ -22,14 +22,14 @@ export const InfoWindow = () => {
 				<div
 					className="
 						h-200 max-h-[80vh]
-						p-10 space-y-10
+						px-3rem
+						divide-n2/40 divide-y-2
 						overflow-scroll
 				">
 					<AboutModule />
-					<hr />
 					<TechModule />
-					<hr />
 					<TeamModule />
+					<ShowDevSection />
 				</div>
 			</div>
 		</Window>

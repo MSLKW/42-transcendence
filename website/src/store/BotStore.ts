@@ -1,0 +1,74 @@
+import { create } from "zustand";
+import { usePartyStore, type MemberData } from "./PartyStore";
+
+interface BotValues {
+	bots: MemberData[],
+};
+
+interface BotState extends BotValues {
+	getBotData: (index: number) => MemberData | undefined;
+	addBotToParty: (uuid: string) => void,
+	removeBotsFromParty: () => void, 
+};
+
+export const useBotStore = create<BotState>() (
+	(_set, get) => ({
+		bots: [
+			{
+				uuid: "bot-1",
+				name: "Norminette",
+				avatar: "stock-5.webp",
+				relation: "Bot",
+			},
+			{
+				uuid: "bot-2",
+				name: "Moulinette",
+				avatar: "stock-6.webp",
+				relation: "Bot",
+			},
+			{
+				uuid: "bot-3",
+				name: "Thila-Bot",
+				avatar: "stock-7.webp",
+				relation: "Bot",
+			},
+		],
+
+		getBotData: (index) => {
+			const bots = get().bots;
+			return bots[index];
+		},
+		
+		addBotToParty: (uuid) => {
+			const bot = get().bots.find(b => b.uuid === uuid);
+			if (!bot)
+				return;
+
+			const currentMembers = usePartyStore.getState().members;
+
+			if (currentMembers.some(m => m.uuid === uuid) || currentMembers.length >= 4)
+				return;
+
+			usePartyStore.setState({
+				members: [
+					...currentMembers,
+					{
+						uuid: bot.uuid,
+						name: bot.name,
+						avatar: bot.avatar,
+						relation: bot.relation,
+					}
+				]
+			});
+		},
+
+		removeBotsFromParty: () => {
+			const currentMembers = usePartyStore.getState().members;
+			const filteredMembers = currentMembers.filter(member => member.relation != "Bot");
+
+			usePartyStore.setState({
+				members: filteredMembers,
+			});
+		},
+	}),
+)

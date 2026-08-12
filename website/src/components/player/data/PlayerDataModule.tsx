@@ -1,39 +1,23 @@
-import { useState, useEffect, useMemo } from "react";
-import { usePartyStore } from "../../../store/PartyStore";
+import { useState, useEffect } from "react";
+import { useProfileStore, type ProfileData, type BADGE_TYPE } from "../../../store/ProfileStore";
 import { useSceneStore } from "../../../store/SceneStore";
 import { BadgeWindow } from "./badge/BadgeWindow";
+import { PlayerStatusModule } from "../status/PlayerStatusModule";
 
-export const PlayerDataModule = () => {
-	const { members } = usePartyStore();
-	const { profileIndex, showWindow, setShowWindow } = useSceneStore();
+interface PlayerDataModule {
+	profile: ProfileData,
+	badge?: BADGE_TYPE,
+	setBadge?: (type: BADGE_TYPE) => void;
+}
+export const PlayerDataModule = ({ badge, setBadge, profile }: PlayerDataModule) => {
+	const { clientUuid } = useProfileStore();
+	const { showWindow, setShowWindow } = useSceneStore();
 	const [ xpProgress, setXPProgress ] = useState(0);
+
 	useEffect(() => {
-		const percentage = (members[profileIndex].xp / (members[profileIndex].level * 1000)) * 100
+		const percentage = (profile.xp / (profile.level * 1000)) * 100
 		setXPProgress(percentage);
-	}, [members[profileIndex].xp, members, profileIndex]);
-
-	const formatter = useMemo(() => {
-		return new Intl.DateTimeFormat('en-US', {
-			timeZone: 'UTC',
-			year: 'numeric',
-			month: '2-digit',
-			day: '2-digit',
-			hour: '2-digit',
-			minute: '2-digit',
-			second: '2-digit',
-			fractionalSecondDigits: 3,
-			hour12: false,
-		});
-	}, []);
-
-	const formatDate = (timestamp: number | string | Date): string => {
-		const parts = formatter.formatToParts(new Date(timestamp));
-		const partMap: Record<string, string> = {};
-		for (const { type, value} of parts) {
-			partMap[type] = value;
-		}
-		return `${partMap.year}/${partMap.month}/${partMap.day} - ${partMap.hour}:${partMap.minute}:${partMap.second}.${partMap.fractionalSecond}`;
-	};
+	}, [profile, profile.level, profile.xp]);
 
 	return (
 		<div className="
@@ -48,10 +32,10 @@ export const PlayerDataModule = () => {
 				place-items-center
 				leading-tight
 			">
-				<h2>Level {members[profileIndex].level}</h2>
+				<h2>Level {profile.level}</h2>
 				<div className="w-full">
 					<p className="text-center">
-						XP: {members[profileIndex].xp} / {members[profileIndex].level * 1000}
+						XP: {profile.xp} / {profile.level * 1000}
 					</p>
 					<div className="
 						h-2
@@ -71,11 +55,12 @@ export const PlayerDataModule = () => {
 			</div>
 			<div className="
 				w-full
-				grid grid-cols-1
-				place-content-center place-items-center
+				flex
+				place-content-between place-items-center
+				gap-2rem
 			">
 				<div className="relative w-full flex">
-					{ profileIndex === 0
+					{ clientUuid === profile.uuid
 						?
 							<button
 								type="button"
@@ -92,22 +77,28 @@ export const PlayerDataModule = () => {
 									pl-1 pr-3 py-1
 									flex justify-between items-center
 								">
-									<p className="px-3">{members[profileIndex].badge}</p>
+									<p className="px-3">{badge}</p>
 									<span className="text-xs">▼</span>
 								</span>
 							</button>
 						:
-							<h2 className="w-full">
-								<i>{members[profileIndex].badge}</i>
+							<h2 className="w-full leading-none">
+								<i>{profile.badge}</i>
 							</h2>
 					}
-					{ showWindow["badge"] && <BadgeWindow /> }
+					{ showWindow["badge"] &&
+						<BadgeWindow
+							badge={badge}
+							setBadge={setBadge}
+						/>
+					}
 				</div>
+				<PlayerStatusModule status={profile.availability}/>
 			</div>
 			<div className="text-a5">
-				<p>Last Login: {formatDate(members[profileIndex].lastLogin)}</p>
-				<p>Joined: {formatDate(members[profileIndex].createdAt)}</p>
-				<p>UUID: {members[profileIndex].uuid}</p>
+				<p>Last Login: {profile.lastLogin.toString()}</p>
+				<p>Joined: {profile.createdAt.toString()}</p>
+				<p>UUID: {profile.uuid}</p>
 			</div>
 		</div>
 	);

@@ -1,5 +1,7 @@
 import { useEffect } from "react";
-import { usePartyStore, GAMEMODE } from "../../store/PartyStore";
+import { useBotStore } from "../../store/BotStore";
+import { usePartyStore } from "../../store/PartyStore";
+import { useProfileStore } from "../../store/ProfileStore";
 import { HeaderModule } from "../header/HeaderModule";
 import { HomeCardButton } from "./home_card/HomeCard";
 import { AvatarButton } from "../avatar/AvatarButton";
@@ -7,10 +9,13 @@ import { PartyButton } from "../party/invite/InviteButton";
 import { SmallLogo } from "../logo/SmallLogo";
 
 export const HomeScene = () => {
-	const { members, removeBots } = usePartyStore();
+	const { hostUuid, members } = usePartyStore();
+	const { clientUuid } = useProfileStore();
+	const { removeBotsFromParty } = useBotStore();
 
 	useEffect(() => {
-		removeBots();
+		console.log("[Home] Client Uuid:", clientUuid, " hostUuid:", hostUuid);
+		removeBotsFromParty();
 	}, [])
 
 	return (
@@ -34,10 +39,10 @@ export const HomeScene = () => {
 						flex-5
 						pointer-events-auto
 					">
-						<HomeCardButton gameMode={GAMEMODE.VERSUS4}/>
-						<HomeCardButton gameMode={GAMEMODE.VERSUS3}/>
-						<HomeCardButton gameMode={GAMEMODE.VERSUS2}/>
-						<HomeCardButton gameMode={GAMEMODE.TUTORIAL}/>
+						<HomeCardButton gameMode="4 Players"/>
+						<HomeCardButton gameMode="3 Players"/>
+						<HomeCardButton gameMode="2 Players"/>
+						<HomeCardButton gameMode="Tutorial"/>
 					</div>
 				</div>
 			</main>
@@ -53,15 +58,22 @@ export const HomeScene = () => {
 						flex
 						gap-2rem
 						sm:overflow-x-visible overflow-x-auto
+						pt-5
 					"
 				>
-					{ members.map((member, index) => (
+					{clientUuid &&
+						<AvatarButton 
+							key={clientUuid}
+							uuid={clientUuid}
+							cornerButton={hostUuid === clientUuid ? "host" : ""}
+						/>
+					}
+					{ members.map((member) => (
+						member.uuid != clientUuid &&
 						<AvatarButton
 							key={member.uuid}
-							index={index}
-							name={member.name ?? "Guest"}
-							relation={member.relation}
-							cornerButton={member.isHost ? "host" : ""}
+							uuid={member.uuid!}
+							cornerButton={hostUuid === member.uuid ? "host" : ""}
 						/>
 					))}
 					<PartyButton />

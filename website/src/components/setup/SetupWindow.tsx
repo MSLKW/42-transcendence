@@ -1,87 +1,47 @@
-import { useState, useRef, useEffect } from "react";
-import { useProfileStore } from "../../store/ProfileStore";
-import { useSceneStore } from "../../store/SceneStore";
+import { useState } from "react";
 import { Window } from "../window/Window";
 import { AvatarInputModule } from "../avatar/AvatarInputModule";
 import { AvatarSelectModule } from "../avatar/AvatarSelectModule";
+import { SetupValidationModule } from "./SetupValidationModule";
 
 export const SetupWindow = () => {
-	const { data } = useProfileStore()
-	const [isValid, setIsValid] = useState(Boolean(data.name?.trim()));
-	const { setShowWindow } = useSceneStore();
-
-	const inputRef = useRef<HTMLInputElement | null>(null);
-	useEffect(() => {
-		if (!data.name && inputRef.current)
-			inputRef.current.focus();
-	}, []);
-
-	const submitButtonRef = useRef<HTMLButtonElement | null>(null);
-
-	const handleSetupComplete = () => {
-		if (isValid) {
-			setShowWindow("setup", false)
-		}
-	}
-
-	useEffect(() => {
-		if (data.name && submitButtonRef.current)
-			submitButtonRef.current.focus();
-	}, []);
+	const [name, setName] = useState("");
+	const [avatar, setAvatar] = useState("");
 
 	return (
 		<>
-			<button
+			{/* <button
 				className="
 					fixed z-1 top-0 left-0
 					h-screen w-screen
 					backdrop-blur-xs
 					pointer-events-none
 				"
-			/>
+			/> */}
 			<Window
 				title="Setup"
 				dismissKey="setup"
 				hasHeader={false}
 			>
-				
 				<div className="
-					h-fit w-120
+					h-fit w-140
 					bg-linear-to-b from-n0 to-n1
 					border border-n1 rounded-xl
-					relative
+					divide-y divide-n2/40
+					py-1rem px-3rem
 				">
-					<div className="divide-y divide-n2">
-						<AvatarInputModule
-							setIsValid={setIsValid}
-							inputRef={inputRef}
-							submitButtonRef={submitButtonRef}
-						/>
-						<AvatarSelectModule />
-					</div>
-				</div>
-				<hr />
-				<div
-					className="
-						flex flex-col place-content-center place-items-center
-						gap-1rem
-						text-n6
-						py-2rem
-					"
-				>
-					<h3>Enter your name and choose your avatar</h3>
-					<button
-						ref={submitButtonRef}
-						disabled={!isValid}
-						onClick={handleSetupComplete}
-						className="
-							h-3rem aspect-8/1
-							btn-text bg-white
-							text-n0
-						"
-					>
-						{isValid ? "Let's Play!" : "Waiting for valid name..."}
-					</button>
+					<AvatarInputModule
+						name={name}
+						setName={setName}
+					/>
+					<AvatarSelectModule
+						avatar={avatar}
+						setAvatar={setAvatar}
+					/>
+					<SetupValidationModule
+						name={name}
+						avatar={avatar}
+					/>
 				</div>
 			</Window>
 		</>

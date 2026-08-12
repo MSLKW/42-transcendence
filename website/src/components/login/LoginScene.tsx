@@ -1,5 +1,3 @@
-// import { useEffect } from "react";
-// import { useNotificationStore, notificationType } from "../store/NotificationStore";
 import { useSceneStore } from "../../store/SceneStore";
 import { BigLogo } from "./logo/BigLogo";
 import { CreateAccountButton } from "./create_account/CreateAccountButton";
@@ -7,32 +5,6 @@ import { SignInButton } from "./sign_in/SignInButton";
 
 export const LoginScene = () => {
 	const { setCurrentScene } = useSceneStore();
-	
-	// const { showNotification } = useNotificationStore();
-	// useEffect(() => {
-	// 	const validateAuth = async () => {
-	// 		try {
-	// 			const response = await fetch("/api/auth/validate", {
-	// 				method: "GET",
-	// 				credentials: "include",
-	// 			});
-
-	// 			if (!response.ok) {
-	// 				showNotification("Welcome to Big 2!", notificationType.message);
-	// 				const errorData = await response.json().catch(() => ({}));
-	// 				if (response.status === 401)
-	// 					throw new Error("Missing or malformed authorization / invalid session");
-	// 				else
-	// 					throw new Error(errorData.message || "Authentication failed");
-	// 			}
-	// 			setCurrentScene("R3F");
-	// 		} catch (err) {
-	// 			if (err instanceof Error && !err.message.includes("401"))
-	// 				showNotification(err.message, notificationType.message);
-	// 		}
-	// 	};
-	// 	validateAuth();
-	// }, [setCurrentScene, showNotification])
 
 	return (
 		<>

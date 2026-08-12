@@ -1,24 +1,24 @@
+import type { GAMEMODE_TYPE } from "../../../store/GameStore";
+import { usePartyStore } from "../../../store/PartyStore";
+import { useProfileStore } from "../../../store/ProfileStore";
 import { useSceneStore } from "../../../store/SceneStore";
-import { useGameStore } from "../../../store/GameStore";
-import { GAMEMODE, type GameModeType, usePartyStore } from "../../../store/PartyStore";
 import { PersonIcon } from "./person/PersonIcon";
 import { TutorialIcon } from "./tutorial/TutorialIcon";
 
 interface HomeProps {
-	gameMode?: number;
+	gameMode: GAMEMODE_TYPE;
 }
 
-export const HomeCardButton = ({ gameMode = 4 }: HomeProps) => {
+export const HomeCardButton = ({ gameMode }: HomeProps) => {
 	const { setCurrentScene } = useSceneStore();
-	const { setGameValue } = useGameStore();
-	const { setPartyValue } = usePartyStore();
+	const { clientUuid } = useProfileStore();
+	const { hostUuid } = usePartyStore();
 
 	return (
 		<button
+			disabled={clientUuid !== hostUuid}
 			onClick={() => {
-				setGameValue("totalPlayers", gameMode);
-				setPartyValue("gameMode", gameMode as GameModeType);
-				if (gameMode === GAMEMODE.TUTORIAL)
+				if (gameMode === "Tutorial")
 					setCurrentScene("GAMEPLAY")
 				else
 					setCurrentScene("LOBBY")
@@ -34,7 +34,7 @@ export const HomeCardButton = ({ gameMode = 4 }: HomeProps) => {
 				cursor-pointer
 				snap-center
 		">
-			{ gameMode === GAMEMODE.VERSUS4 &&
+			{ gameMode === "4 Players" &&
 				<>
 					<div className="
 						w-[clamp(2.5rem,3.571vmin+1.786rem,5rem)] aspect-square
@@ -72,7 +72,7 @@ export const HomeCardButton = ({ gameMode = 4 }: HomeProps) => {
 					<h1 className="text-n0">4 Players</h1>
 				</>
 			}
-			{ gameMode === GAMEMODE.VERSUS3 &&
+			{ gameMode === "3 Players" &&
 				<>
 					<div className="
 						w-[clamp(2.5rem,3.571vmin+1.786rem,5rem)] aspect-square
@@ -103,7 +103,7 @@ export const HomeCardButton = ({ gameMode = 4 }: HomeProps) => {
 					<h1 className="text-n0">3 Players</h1>
 				</>
 			}
-			{ gameMode === GAMEMODE.VERSUS2 &&
+			{ gameMode === "2 Players" &&
 				<>
 					<div className="
 						h-[clamp(2.5rem,3.571vmin+1.786rem,5rem)] aspect-square w-max
@@ -127,7 +127,7 @@ export const HomeCardButton = ({ gameMode = 4 }: HomeProps) => {
 					<h1 className="text-n0">2 Players</h1>
 				</>
 			}
-			{ gameMode === GAMEMODE.TUTORIAL &&
+			{ gameMode === "Tutorial" &&
 				<>
 					<div className="
 						w-[clamp(2.5rem,3.571vmin+1.786rem,5rem)] aspect-square

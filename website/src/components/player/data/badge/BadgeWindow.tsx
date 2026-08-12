@@ -1,9 +1,16 @@
-import { useProfileStore, BADGE_LABEL } from "../../../../store/ProfileStore";
+import { useProfileStore, BADGE_LABEL, type BADGE_TYPE } from "../../../../store/ProfileStore";
 import { useSceneStore } from "../../../../store/SceneStore";
 import { LightboxButton } from "../../../lightbox/LightboxButton";
 
-export const BadgeWindow = () => {
-	const { data, setProfileDataValue } = useProfileStore();
+interface BadgeWindowProps {
+	badge: BADGE_TYPE,
+	setBadge: (type: BADGE_TYPE) => void,
+}
+export const BadgeWindow = ({ badge, setBadge }: BadgeWindowProps) => {
+	const { clientUuid, getProfileData } = useProfileStore();
+	const data = getProfileData(clientUuid!);
+	if (!data)
+		return;
 	const { showWindow, setShowWindow } = useSceneStore();
 
 	return (
@@ -14,24 +21,22 @@ export const BadgeWindow = () => {
 				</div>
 			}
 			<ul className="
-				absolute z-50
-				top-[110%]
-				h-fit w-full
-				bg-n1
+				absolute z-50 top-[110%] w-full
+				bg-dark rounded-md
 				text-n2
-				border border-n2 rounded-md
 				flex flex-col place-content-center place-items-center
-				p-2
+				py-0.5rem
 			">
-				{BADGE_LABEL.map((badge, index) => {
+				{BADGE_LABEL.map((badge_label, index) => {
 					const isDisabled = index > data.level;
 					return (
-						<li key={badge}>
+						<li key={badge_label}>
 							<button
 								type="button"
 								disabled={isDisabled}
 								onClick={() => {
-									setProfileDataValue("badge", BADGE_LABEL[index]);
+									console.log("[Badge Window] badge_label:", badge_label);
+									setBadge(badge_label);
 									setShowWindow("badge", false);
 								}}
 								className={`
@@ -39,10 +44,10 @@ export const BadgeWindow = () => {
 									hover:not-disabled:bg-n2
 									rounded-full
 									text-sm
-									${data.badge === BADGE_LABEL[index] ? "text-b5" : "text-n6"}
-									px-3 py-1.5
+									${badge === BADGE_LABEL[index] ? "text-b5" : "text-n6"}
+									py-0.5rem px-2rem
 							`}>
-								{badge}
+								{badge_label}
 							</button>
 						</li>
 					);

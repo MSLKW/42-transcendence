@@ -1,15 +1,10 @@
 import { useState } from "react";
-import { useNotificationStore, notificationType } from "../../../store/NotificationStore";
-import { useProfileStore } from "../../../store/ProfileStore";
-import { useSceneStore } from "../../../store/SceneStore";
+import { useNotificationStore, NOTIFICATION_TYPE } from "../../../store/NotificationStore";
 import { Window } from "../../window/Window";
 import { FormInputModule } from "../../form/FormInputModule";
-import { signInFetch } from "../../../api/authentication/signInFetch";
-import { partySocket } from "../../../services/partySocket";
+import { handleSignIn } from "../../../api/authentication/sign_in/handleSignIn";
 
 export const SignInWindow = () => {
-	const { setProfileDataValue } = useProfileStore()
-	const { setShowWindow, setCurrentScene } = useSceneStore();
 	const { showNotification } = useNotificationStore();
 
 	const [email, setEmail] = useState("");
@@ -20,28 +15,16 @@ export const SignInWindow = () => {
 		e.preventDefault();
 
 		if (!email || !password) {
-			showNotification("All fields are required", notificationType.error);
+			showNotification("All fields are required", NOTIFICATION_TYPE.error);
 			return;
 		}
 		const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 		if (!emailRegex.test(email)) {
-			showNotification("Please enter a valid email address", notificationType.error);
+			showNotification("Please enter a valid email address", NOTIFICATION_TYPE.error);
 			return;
 		}
 
-		try {
-			setIsLoading(true);
-			const data = await signInFetch(email, password);
-			setProfileDataValue("uuid", data.id);
-			setShowWindow("signIn", false);
-			setCurrentScene("HOME");
-			partySocket.connect();
-		} catch (err) {
-			const errorMsg = err instanceof Error ? err.message : "Something went wrong. Please try again";
-			showNotification(errorMsg, notificationType.error);
-		} finally {
-			setIsLoading(false);
-		}
+		handleSignIn(email, password, setIsLoading);
 	}
 
 	return (

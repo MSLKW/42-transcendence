@@ -1,14 +1,9 @@
-import { useEffect } from "react";
-import { useNotificationStore, notificationType } from "../../store/NotificationStore";
+import { useSceneStore } from "../../store/SceneStore";
 import { Window } from "../window/Window";
-import { AvatarMemberModule } from "../avatar/AvatarMember";
+import { AvatarMemberModule } from "../avatar/AvatarMemberModule";
 
 export const BotsWindow = () => {
-	const { showNotification } = useNotificationStore();
-	
-	useEffect(() => {
-		showNotification("Select Bot Intelligence...", notificationType.botSelect);
-	}, []);
+	const { setShowWindow } = useSceneStore();
 
 	return (
 		<>
@@ -27,13 +22,40 @@ export const BotsWindow = () => {
 			>
 				<div
 					className="
-						py-2rem px-3rem
-						flex
+						divide-n2/40 divide-y-2
 					"
 				>
-					<AvatarMemberModule name="Beginner"/>
-					<AvatarMemberModule name="Intermediate"/>
-					<AvatarMemberModule name="Pro"/>
+					<div
+						className="
+							py-2rem px-3rem
+							flex
+						"
+					>
+						<AvatarMemberModule name="Beginner" image="stock-0.png"/>
+						<AvatarMemberModule name="Intermediate" image="stock-0.png"/>
+						<AvatarMemberModule name="Expert" image="stock-0.png"/>
+					</div>
+					<div
+						className="
+							flex flex-col
+							place-content-center place-items-center
+							gap-1rem
+							py-2rem
+						"
+					>
+						<h3 className="text-n6">
+							Select bot intelligence...
+						</h3>
+						<button
+							onClick={() => setShowWindow("bots", false)}
+							className="
+								h-3rem aspect-5/1
+								btn-text bg-light
+							"
+						>
+							OK!
+						</button>
+					</div>
 				</div>
 			</Window>
 		</>

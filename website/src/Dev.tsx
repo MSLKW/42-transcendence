@@ -1,10 +1,11 @@
 import { useState, useEffect } from "react";
+import { handleSignOut } from "./api/authentication/sign_out/handleSignOut";
+import { partySocket } from "./api/party/partySocket";
 import { useDevStore } from "./store/DevStore";
 import { useGameStore } from "./store/GameStore";
-import { usePartyStore, RELATION, SEATNUMBER_UNSEATED } from "./store/PartyStore";
+import { usePartyStore } from "./store/PartyStore";
 import { useProfileStore } from "./store/ProfileStore";
 import { useSceneStore } from "./store/SceneStore";
-import { partySocket } from "./services/partySocket";
 
 interface DevBtnProps {
 	label: string,
@@ -31,7 +32,7 @@ const DevBtn = ({ label, call }: DevBtnProps) => {
 }
 
 export default function Dev() {
-	const { showFrame, toggleFlag, resetGame } = useDevStore();
+	const { showFrame, toggleFlag } = useDevStore();
 	useEffect(() => {
 		if (showFrame)
 			document.documentElement.classList.add('frame-mode');
@@ -39,16 +40,18 @@ export default function Dev() {
 			document.documentElement.classList.remove('frame-mode');
 	}, [showFrame]);
 
+	const { incTotalWin, incTotalLoss } = useGameStore();
+	const { partySocketId, partyGameId, members } = usePartyStore();
+	const { clientUuid, isAuthenticated, validateResponse, profilesInDb, resetProfilesInDb } = useProfileStore();
 	const { currentScene, setCurrentScene } = useSceneStore();
-	const { gameStarted } = useGameStore();
-	useEffect(() => {
-		console.log("gameStarted", gameStarted);
-	}, [currentScene]);
-	
-	const { totalMembers, addMember } = usePartyStore();
-	const { incTotalWins, incTotalLoss } = useProfileStore();
 
 	const [inviteUuid, setInviteUuid] = useState("");
+
+	const handleReset = async () => {
+		resetProfilesInDb();
+		await handleSignOut();
+		console.log("[Dev] Game have been reset");
+	}
 
 	return (
 		<section className="w-full text-r4 py-1rem">
@@ -60,22 +63,15 @@ export default function Dev() {
 				<DevBtn label="R3F" call={() => setCurrentScene("R3F")}/>
 			</ul>
 			<ul className="flex place-content-evenly">
-				<DevBtn label="Frame" call={() => toggleFlag("showFrame")}/>
-				<DevBtn label="Stats" call={() => toggleFlag("showStats")}/>
-				<DevBtn label="Reset" call={() => resetGame()}/>
+				<DevBtn label="Frame" call={() => toggleFlag("showFrame")} />
+				<DevBtn label="Stats" call={() => toggleFlag("showStats")} />
+				<DevBtn label="Reset" call={handleReset} />
 			</ul>
-			{ (currentScene === "HOME" || currentScene === "LOBBY") && totalMembers <= TEST_MEMBERS.length &&
-				<ul className="flex place-content-evenly">
-					<DevBtn
-						label={`Add ${TEST_MEMBERS[totalMembers - 1].name} As Party Member`}
-						call={() => addMember(TEST_MEMBERS[totalMembers - 1])}/>
-				</ul>
-			}
 			{ (currentScene === "R3F" || currentScene === "GAMEPLAY") && 
 				<ul className="flex place-content-evenly">
 					<DevBtn label="Results" call={() => setCurrentScene('RESULTS')}/>
-					<DevBtn label="Win Round" call={() => incTotalWins()}/>
-					<DevBtn label="Lose Round" call={() => incTotalLoss()}/>
+					<DevBtn label="Win Round" call={() => incTotalWin(clientUuid!)}/>
+					<DevBtn label="Lose Round" call={() => incTotalLoss(clientUuid!)}/>
 				</ul>
 			}
 			<ul className="flex place-content-center place-items-center gap-1rem">
@@ -83,130 +79,29 @@ export default function Dev() {
 					id="inviteUuid"
 					onChange={(e) => setInviteUuid(e.target.value)}
 					className="
-						bg-black w-[70%]
+						bg-dark w-[70%]
 					"
 				/>
 				<DevBtn label="Invite" call={() => partySocket.sendInvite(inviteUuid)}/>
 			</ul>
+			<ul className="flex flex-col px-3rem">
+				<div className="flex place-content-between">
+					<li>Client UUID: {clientUuid ? clientUuid : "n/a"}</li>
+					<DevBtn label={`isAuthenticated: ${isAuthenticated ? "Yes" : "No"}`} call={() => console.log("/validate response: ", validateResponse)}/>
+				</div>
+				<div className="flex place-content-between">
+					<li>Party Manager Socket ID: {partySocketId ? partySocketId : "n/a"}</li>
+					<DevBtn label={`members: ${members.length}`} call={() => console.log("members: ", members)}/>
+				</div>
+				<li>Party Game ID: {partyGameId ? partyGameId : "n/a"}</li>
+				<div className="flex place-content-between">
+					<li>Profile Manager Socket ID: n/a</li>
+					<DevBtn label={`profilesInDb: ${profilesInDb.length}`} call={() => console.log("profilesInDb: ", profilesInDb)} />
+				</div>
+				<li>Friend Manager Socket ID: n/a</li>
+				<li>Game Manager Socket ID: n/a</li>
+				<li>Chat Manager Socket ID: n/a</li>
+			</ul>
 		</section>
 	);
 }
-
-const TEST_MEMBERS = [
-	{
-		uuid: "12345678-abcd-efgh-ijkl-111111111111",
-		name: "Dev-Azrul",
-		avatar: "avatar-stock-1.webp",
-		badge: "Beginner's Luck",
-		level: 10,
-		xp: 1000,
-		createdAt: 1784110862000,
-		lastLogin: 1784110862000,
-		totalPlayed: 10,
-		totalWins: 5,
-		totalLoss: 5,
-		winStreak: 5,
-		achievements: {
-			FIRST_LOGIN: null,
-			LOGIN_1_WEEK: null,
-			PLAYED_1_GAME: null,
-			PLAYED_10_GAMES: null,
-			PLAYED_42_GAMES: null,
-			FIRST_WIN: null,
-			WIN_STREAK_2: null,
-			WIN_STREAK_5: null,
-			WIN_STREAK_10: null,
-			MASTER_COLLECTOR: null,
-		},
-		relation: RELATION.STRANGER,
-		isHost: false,
-		seatNumber: SEATNUMBER_UNSEATED,
-	},
-	{
-		uuid: "12345678-abcd-efgh-ijkl-222222222222",
-		name: "Dev-Max",
-		avatar: "avatar-stock-2.webp",
-		badge: "Challenger",
-		level: 20,
-		xp: 2000,
-		createdAt: 1784110862000,
-		lastLogin: 1784110862000,
-		totalPlayed: 20,
-		totalWins: 10,
-		totalLoss: 10,
-		winStreak: 10,
-		achievements: {
-			FIRST_LOGIN: null,
-			LOGIN_1_WEEK: null,
-			PLAYED_1_GAME: null,
-			PLAYED_10_GAMES: null,
-			PLAYED_42_GAMES: null,
-			FIRST_WIN: null,
-			WIN_STREAK_2: null,
-			WIN_STREAK_5: null,
-			WIN_STREAK_10: null,
-			MASTER_COLLECTOR: null,
-		},
-		relation: RELATION.FRIEND,
-		isHost: false,
-		seatNumber: SEATNUMBER_UNSEATED,
-	},
-	{
-		uuid: "12345678-abcd-efgh-ijkl-333333333333",
-		name: "Dev-Jeremy",
-		avatar: "avatar-stock-3.webp",
-		badge: "Enthusiast",
-		level: 30,
-		xp: 3000,
-		createdAt: 1784110862000,
-		lastLogin: 1784110862000,
-		totalPlayed: 30,
-		totalWins: 15,
-		totalLoss: 15,
-		winStreak: 15,
-		achievements: {
-			FIRST_LOGIN: null,
-			LOGIN_1_WEEK: null,
-			PLAYED_1_GAME: null,
-			PLAYED_10_GAMES: null,
-			PLAYED_42_GAMES: null,
-			FIRST_WIN: null,
-			WIN_STREAK_2: null,
-			WIN_STREAK_5: null,
-			WIN_STREAK_10: null,
-			MASTER_COLLECTOR: null,
-		},
-		relation: RELATION.FRIEND,
-		isHost: false,
-		seatNumber: SEATNUMBER_UNSEATED,
-	},
-	{
-		uuid: "12345678-abcd-efgh-ijkl-444444444444",
-		name: "Dev-Aisyah",
-		avatar: "avatar-stock-4.webp",
-		badge: "Risk Taker",
-		level: 40,
-		xp: 4000,
-		createdAt: 1784110862000,
-		lastLogin: 1784110862000,
-		totalPlayed: 40,
-		totalWins: 20,
-		totalLoss: 20,
-		winStreak: 20,
-		achievements: {
-			FIRST_LOGIN: null,
-			LOGIN_1_WEEK: null,
-			PLAYED_1_GAME: null,
-			PLAYED_10_GAMES: null,
-			PLAYED_42_GAMES: null,
-			FIRST_WIN: null,
-			WIN_STREAK_2: null,
-			WIN_STREAK_5: null,
-			WIN_STREAK_10: null,
-			MASTER_COLLECTOR: null,
-		},
-		relation: RELATION.STRANGER,
-		isHost: false,
-		seatNumber: SEATNUMBER_UNSEATED,
-	},
-] as const;

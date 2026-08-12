@@ -1,13 +1,11 @@
 import { useState, useRef, useEffect } from "react";
 import { createPortal } from "react-dom";
-import { useNotificationStore, notificationType } from "../../store/NotificationStore";
-import { useProfileStore } from "../../store/ProfileStore";
+import { useNotificationStore, NOTIFICATION_TYPE } from "../../store/NotificationStore";
 import { useSceneStore } from "../../store/SceneStore";
 
 export const NotificationWindow = () => {
-	const { type, message, isError, isTimed, numOfButtons, onButton1Click } = useNotificationStore();
-	const { data } = useProfileStore();
-	const { setShowWindow, setCurrentScene } = useSceneStore();
+	const { type, message, isError, isTimed, numOfButtons, onButton1Click, onButton2Click } = useNotificationStore();
+	const { setShowWindow } = useSceneStore();
 	const [ isExiting, setIsExiting ] = useState(false);
 	const [ animateProgress, setAnimateProgress ] = useState(false);
 	const isClosing = useRef(false);
@@ -30,36 +28,6 @@ export const NotificationWindow = () => {
 		manualUnmountTimer.current = window.setTimeout(() => {
 			setShowWindow("notification", false);
 		}, 500);
-	};
-
-	const handleSetupComplete = () => {
-		setShowWindow("setup", false);
-		handleClose();
-	}
-
-	const handleBotSelect = () => {
-		setShowWindow("bots", false);
-		handleClose();
-	}
-
-	const handleAccept = () => {
-		// partySocket.acceptInvite(data.uuid);
-		handleClose();
-	};
-
-	const handleReject = () => {
-		// partySocket.rejectInvite(data.uuid);
-		handleClose();
-	};
-
-	const handleEndGame = () => {
-		setCurrentScene("HOME");
-		handleClose();
-	};
-
-	const handleContinueGame = () => {
-		setCurrentScene("R3F");
-		handleClose();
 	};
 
 	useEffect(() => {
@@ -132,7 +100,7 @@ export const NotificationWindow = () => {
 					</div>
 				}
 			</button>
-			{ numOfButtons === 1 &&
+			{ numOfButtons !== 0 &&
 				<div
 					className="
 						flex gap-5
@@ -140,56 +108,29 @@ export const NotificationWindow = () => {
 				">
 					<button
 						type="button"
-						onClick={type === notificationType.nameInput ? handleSetupComplete : handleBotSelect}
-						disabled={data.name ? false : true }
-						className="
-							btn-text bg-light
-							h-3rem w-full
-							text-1.25rem text-n0
-					">
-						{ type === notificationType.nameInput && 
-							(data.name ? "Let's Play!" : "Waiting for valid name...")
-						}
-						{ type === notificationType.botSelect &&
-							"OK!"
-						}
-					</button>
-				</div>
-			}
-			{ numOfButtons === 2 &&
-				<div
-					className="
-						flex gap-5
-						w-full
-				">
-					<button
-						type="button"
-						onClick={type === notificationType.invite ? handleAccept : handleEndGame}
+						onClick={onButton1Click}
 						className="
 							btn-text bg-light
 							h-3rem w-full
 							text-1.25rem text-n0
 							
 					">
-						{ type === notificationType.invite &&
-							"Accept"
-						}
-						{ type === notificationType.nextRound &&
-							"End"
-						}
+						{ type === NOTIFICATION_TYPE.invite && "Accept" }
+						{ type === NOTIFICATION_TYPE.nextRound && "End" }
+						{ type === NOTIFICATION_TYPE.botSelect && "OK!" }
 					</button>
 					<button
 						type="button"
-						onClick={type === notificationType.invite ? handleReject : handleContinueGame}
+						onClick={onButton2Click}
 						className="
 							btn-text bg-light
 							w-full
 							text-1.25rem text-n0
 					">
-						{ type === notificationType.invite &&
+						{ type === NOTIFICATION_TYPE.invite &&
 							"Reject"
 						}
-						{ type === notificationType.nextRound &&
+						{ type === NOTIFICATION_TYPE.nextRound &&
 							"Continue"
 						}
 					</button>

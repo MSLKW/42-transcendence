@@ -1,30 +1,28 @@
+import { usePartyStore } from "../../store/PartyStore";
 import { useSceneStore } from "../../store/SceneStore";
-import { RELATION, type RelationType } from "../../store/PartyStore";
 import { AvatarImage } from "./AvatarImage";
 import { AvatarName } from "./AvatarNameLabel";
 import { HostIcon } from "./HostIcon";
 
 interface AvatarProps {
-	index: number,
-	name: string,
-	relation: RelationType,
+	uuid: string,
 	cornerButton?: string | number;
-	playerIndex?: number;
 	isActive?: boolean;
 	showName?: boolean;
-	isDisabled?: boolean;
 }
 
 export const AvatarButton = ({
-	index,
-	name,
-	relation,
+	uuid,
 	cornerButton = "",
 	isActive = false,
 	showName = true,
-	isDisabled = false,
 }: AvatarProps) => {
-	const { setSceneValue, setShowWindow } = useSceneStore();
+	const { getMemberData } = usePartyStore();
+	const { currentScene, setShowWindow } = useSceneStore();
+
+	const data = getMemberData(uuid);
+	if (!data)
+		return null;
 
 	return (
 		<div
@@ -34,29 +32,36 @@ export const AvatarButton = ({
 			"
 		>
 			<button
-				// disabled={isDisabled}
 				data-tip={
-					relation === RELATION.SELF ? "Edit Profile" :
-					relation === RELATION.BOT ? "Choose Bot"
-					: "View Stats"
+					data.relation === "Self" && currentScene !== "R3F" ? "Edit Profile" :
+					(data.relation === "Bot" && currentScene === "LOBBY") ? "Choose Bot" :
+					(data.relation === "Stranger" || data.relation === "Friend") ? "View Stats" :
+					""
 				}
 				onClick={(e) => {
 					e.currentTarget.blur();
 
-					setSceneValue("profileIndex", index);
-					if (relation === RELATION.SELF)
+					if (data.relation === "Self" && currentScene !== "R3F") {
 						setShowWindow("profile", true);
-					else if (relation === RELATION.BOT)
+						console.log("Edit Profile button clicked");
+					} else if (data.relation === "Bot" && currentScene === "LOBBY") {
 						setShowWindow("bots", true);
-					else
-						setShowWindow("stats", true);
+						console.log("Bots Profile button clicked");
+					} else if (data.relation === "Stranger" || data.relation === "Friend") {
+						setShowWindow("stats", true, uuid);
+						console.log("Player Profile button clicked");
+					}
 				}}
 				className={`
 					rounded-xs
-					hover:not-disabled:scale-105 active:hover:not-disabled:scale-100
-					focus-visible:outline-2 outline-b5
-					${ cornerButton ? "data-tip-up2" : "data-tip-up" }
-					cursor-pointer
+					${ (data.relation === "Bot" || data.relation === "Self") && currentScene === "R3F"
+						? ""
+						: "hover:not-disabled:scale-105 active:hover:not-disabled:scale-100 focus-visible:outline-2 cursor-pointer"
+					}
+					${ (data.relation === "Bot" || data.relation === "Self") && currentScene === "R3F" ? "" :
+						cornerButton ? "data-tip-up2" : "data-tip-up"
+					}
+					outline-b5
 					relative
 				`}
 			>
@@ -110,7 +115,7 @@ export const AvatarButton = ({
 					</div>
 				}
 			</button>
-			{ showName && <AvatarName name={name} /> }
+			{ showName && data.name && <AvatarName name={data.name} /> }
 		</div>
 	);
 }

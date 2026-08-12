@@ -1,6 +1,6 @@
 import { io, Socket } from "socket.io-client";
-import { useProfileStore } from "../store/ProfileStore";
-import { useNotificationStore, notificationType } from "../store/NotificationStore";
+import { useNotificationStore, NOTIFICATION_TYPE } from "../../store/NotificationStore";
+import { usePartyStore } from "../../store/PartyStore";
 
 class PartySocketService {
 	private socket: Socket | null = null;
@@ -18,37 +18,39 @@ class PartySocketService {
 		
 		this.socket.on("connect", () => {
 			this.isConnecting = false;
-			console.log("Connected to Party Microservice:", this.socket?.id);
+			
+			usePartyStore.getState().setPartySocketId(this.socket?.id);
+			console.log("[partySocket] \'connect\' id:", this.socket?.id);
+
 			const { showNotification } = useNotificationStore.getState();
 			showNotification(
-				`Connected to Party Microservice: ${this.socket?.id}`,
-				notificationType.message
+				`Connected to Party Manager: ${this.socket?.id}`,
+				NOTIFICATION_TYPE.message
 			)
-
-			const data = useProfileStore.getState().data;
-			if (data.uuid)
-				this.socket?.emit("party:join", { data });
 		});
 
-		this.socket.on("party_state", (partyData: { host: string; member: string[]; gameId: string | null }) => {
-			console.log(partyData);
+		this.socket.on("party_state", (partyData: { hostUuid: string; members: string[]; gameId: string | null }) => {
+			console.log("[partySocket] 'party_state' partyData:", partyData);
+			
+			usePartyStore.getState().setPartyData(partyData.members);
+			usePartyStore.getState().setPartyValue("partyGameId", partyData.gameId);
+			usePartyStore.getState().setPartyValue("hostUuid", partyData.hostUuid);
+
 			const { showNotification } = useNotificationStore.getState();
 			showNotification(
-				`Party state: ${partyData.host} | ${partyData.gameId}`,
-				notificationType.message
+				`Party state: ${partyData.hostUuid} | ${partyData.gameId}`,
+				NOTIFICATION_TYPE.message
 			)
 		});
 
 		this.socket.on("invite_received", (payload: { hostUuid: string, hostName?: string }) => {
-			console.log(payload);
+			console.log("[partySocket] invite_received");
 			const { showNotification } = useNotificationStore.getState();
 			showNotification(
 				`${payload.hostName || "A player"} invited you to their party!`,
-				notificationType.invite,
-				// () => console.log("button 1 clicked"),
-				// () => console.log("button 2 clicked")
-				// () => partySocket.acceptInvite(payload.hostUuid),
-				// () => partySocket.rejectInvite(payload.hostUuid)
+				NOTIFICATION_TYPE.invite,
+				() => partySocket.acceptInvite(payload.hostUuid),
+				() => partySocket.rejectInvite(payload.hostUuid)
 			)
 		});
 
@@ -57,7 +59,7 @@ class PartySocketService {
 			const { showNotification } = useNotificationStore.getState();
 			showNotification(
 				`Party disbanded: ${payload.message}`,
-				notificationType.message
+				NOTIFICATION_TYPE.message
 			)
 		});
 
@@ -66,17 +68,20 @@ class PartySocketService {
 			const { showNotification } = useNotificationStore.getState();
 			showNotification(
 				`Game session start: ${payload.gameId}`,
-				notificationType.message
+				NOTIFICATION_TYPE.message
 			)
 		});
 
 		this.socket.on("disconnect", (reason) => {
 			this.isConnecting = false;
-			console.log("Disconnected from party microservice: ", reason);
+
+			usePartyStore.getState().setPartySocketId("n/a");
+			console.log("Disconnected from Party Manager: ", reason);
+
 			const { showNotification } = useNotificationStore.getState();
 			showNotification(
 				`Disconnected from party microservice: ${reason}`,
-				notificationType.error
+				NOTIFICATION_TYPE.error
 			)
 		});
 
@@ -86,7 +91,7 @@ class PartySocketService {
 			const { showNotification } = useNotificationStore.getState();
 			showNotification(
 				`Connection error: ${error.message}`,
-				notificationType.error
+				NOTIFICATION_TYPE.error
 			)
 		});
 	}
@@ -103,7 +108,7 @@ class PartySocketService {
 		if (!this.socket?.connected) {
 			showNotification(
 				"Cannot invite player: Socket not connected",
-				notificationType.error
+				NOTIFICATION_TYPE.error
 			);
 			return;
 		}
@@ -111,7 +116,7 @@ class PartySocketService {
 		this.socket.emit("send_invite", { recipientUuid });
 		showNotification(
 			`Invitation sent to ${recipientName}`,
-			notificationType.message
+			NOTIFICATION_TYPE.message
 		);
 	}
 	public kickMember(recipientUuid: string, recipientName: string) {
@@ -119,7 +124,7 @@ class PartySocketService {
 		if (!this.socket?.connected) {
 			showNotification(
 				"Cannot kick member: Socket not connected",
-				notificationType.error
+				NOTIFICATION_TYPE.error
 			);
 			return;
 		}
@@ -127,7 +132,7 @@ class PartySocketService {
 		this.socket?.emit("kick_player", { recipientUuid });
 		showNotification(
 			`${recipientName} removed from your party`,
-			notificationType.message
+			NOTIFICATION_TYPE.message
 		);
 	}
 	public startGameSession() {
@@ -135,7 +140,7 @@ class PartySocketService {
 		if (!this.socket?.connected) {
 			showNotification(
 				"Cannot start game session: Socket not connected",
-				notificationType.error
+				NOTIFICATION_TYPE.error
 			);
 			return;
 		}
@@ -143,7 +148,7 @@ class PartySocketService {
 		this.socket?.emit("start_game_session");
 		showNotification(
 			"Game session started",
-			notificationType.message
+			NOTIFICATION_TYPE.message
 		);
 	}
 	public acceptInvite(hostUuid: string) {
@@ -151,7 +156,7 @@ class PartySocketService {
 		if (!this.socket?.connected) {
 			showNotification(
 				"Cannot accept invite: Socket not connected",
-				notificationType.error
+				NOTIFICATION_TYPE.error
 			);
 			return;
 		}
@@ -162,7 +167,7 @@ class PartySocketService {
 		});
 		showNotification(
 			"You just joined a party!",
-			notificationType.message
+			NOTIFICATION_TYPE.message
 		);
 	}
 	public rejectInvite(hostUuid: string) {
@@ -170,7 +175,7 @@ class PartySocketService {
 		if (!this.socket?.connected) {
 			showNotification(
 				"Cannot reject invite: Socket not connected",
-				notificationType.error
+				NOTIFICATION_TYPE.error
 			);
 			return;
 		}
@@ -178,7 +183,7 @@ class PartySocketService {
 		this.socket?.emit("reject_invite", { hostUuid });
 		showNotification(
 			"Invitation rejected",
-			notificationType.message
+			NOTIFICATION_TYPE.message
 		);
 	}
 	public leaveParty() {
@@ -186,7 +191,7 @@ class PartySocketService {
 		if (!this.socket?.connected) {
 			showNotification(
 				"Cannot leave party: Socket not connected",
-				notificationType.error
+				NOTIFICATION_TYPE.error
 			);
 			return;
 		}
@@ -194,7 +199,7 @@ class PartySocketService {
 		this.socket?.emit("leave_party");
 		showNotification(
 			"You left the party",
-			notificationType.message
+			NOTIFICATION_TYPE.message
 		);
 	}
 	public updateGameMode(gameMode: number) {
@@ -202,7 +207,7 @@ class PartySocketService {
 		if (!this.socket?.connected) {
 			showNotification(
 				"Cannot update game mode: Socket not connected",
-				notificationType.error
+				NOTIFICATION_TYPE.error
 			);
 			return;
 		}
@@ -210,7 +215,7 @@ class PartySocketService {
 		this.socket?.emit("party:set_gamemode", { gameMode });
 		showNotification(
 			"Game mode updated",
-			notificationType.message
+			NOTIFICATION_TYPE.message
 		);
 	}
 	public isSocketActive(): boolean {

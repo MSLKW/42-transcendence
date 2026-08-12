@@ -1,20 +1,20 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import { useGameStore } from "./GameStore";
+import type { BADGE_TYPE } from "./ProfileStore";
 
 export type SCENES = "BADGE" | "LOGIN" | "HOME" | "LOBBY" | "GAMEPLAY" | "R3F" | "RESULTS";
 
 interface SceneValues {
 	currentScene: SCENES;
 	showWindow: Record<string, boolean>;
-	profileIndex: number;
-	profileUuid: string;
+	profileUuid: string | null;
 }
 
 interface SceneState extends SceneValues {
 	setSceneValue: <K extends keyof SceneValues>(key: K, value: SceneValues[K]) => void;
 	setCurrentScene: (scene: SCENES) => void;
-	setShowWindow: (window: string, show: boolean) => void;
+	setShowWindow: (window: string, show: boolean, uuid?: string | BADGE_TYPE) => void;
 } 
 
 export const useSceneStore = create<SceneState>() (
@@ -36,20 +36,21 @@ export const useSceneStore = create<SceneState>() (
 				chat: false,
 				rank: false,
 			},
-			profileIndex: 0,
-			profileUuid: "",
+			profileUuid: null,
 
 			setSceneValue: (key, value) => set(() => ({ [key]: value })),
 			setCurrentScene: (scene) => {
 				set({ currentScene: scene });
 				useGameStore.getState().setGameValue("gameStarted", scene === "R3F" || scene === "GAMEPLAY");
 			},
-			setShowWindow: (window, show) => set((state) => ({ 
-				showWindow: {
-					...state.showWindow,
-					[window]: show,
+			setShowWindow: (window, show) => set((sceneStore) => {
+				return {
+					showWindow: {
+						...sceneStore.showWindow,
+						[window]: show,
+					}
 				}
-			})),
+			}),
 		}),
 		{
 			name: 'scene-storage',

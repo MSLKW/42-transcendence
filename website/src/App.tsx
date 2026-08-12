@@ -1,6 +1,8 @@
 import { useEffect } from "react";
 import { Canvas } from "@react-three/fiber";
 import { Stats, PerspectiveCamera, OrbitControls, AdaptiveDpr } from "@react-three/drei";
+import { fetchValidate } from "./api/authentication/validate/fetchValidate";
+import { partySocket } from "./api/party/partySocket";
 import { useDevStore } from "./store/DevStore";
 import { useNotificationStore } from "./store/NotificationStore";
 import { useProfileStore } from "./store/ProfileStore";
@@ -26,10 +28,11 @@ import { RankWindow } from "./components/rank/RankWindow";
 import { SetupWindow } from "./components/setup/SetupWindow";
 import { SettingsWindow } from "./components/settings/SettingsWindow";
 import { StatsWindow } from "./components/stats/StatsWindow";
-import { partySocket } from "./services/partySocket";
+import Dev from "./Dev";
 
 export default function App() {
-	const { data } = useProfileStore();
+	const { clientUuid, getProfileData } = useProfileStore();
+	const data = getProfileData(clientUuid!);
 
 	const { currentScene, showWindow, setShowWindow } = useSceneStore();
 	useEffect(() => {
@@ -37,8 +40,18 @@ export default function App() {
 			top: 0,
 			behavior: 'smooth',
 		});
+
+		const validateAuth = async () => {
+			try {
+				await fetchValidate();
+			} catch(err) {
+				console.log(err);
+			}
+		};
+		validateAuth();
+
 		if (currentScene != "LOGIN") {
-			if (!data.name)
+			if (!data?.name)
 				setShowWindow("setup", true);
 			if (!partySocket.isSocketActive())
 				partySocket.connect();
@@ -46,7 +59,7 @@ export default function App() {
 	}, [currentScene]);
 
 	const { id } = useNotificationStore();
-	const { showStats } = useDevStore();
+	const { showDevSection, showStats } = useDevStore();
 
 	return (
 		<>
@@ -98,6 +111,7 @@ export default function App() {
 				{ showWindow["signIn"] && <SignInWindow /> }
 				{ showWindow["stats"] && <StatsWindow /> }
 			</section>
+			{ showDevSection && <Dev /> }
 		</>
 	);
 }

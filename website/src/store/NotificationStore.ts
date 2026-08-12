@@ -1,7 +1,7 @@
 import { create } from "zustand";
 import { useSceneStore } from "./SceneStore";
 
-export const notificationType = {
+export const NOTIFICATION_TYPE = {
 	error: 0,
 	message: 1,
 	nameInput: 2,
@@ -34,7 +34,7 @@ interface NotificationState extends NotificationValues {
 
 export const useNotificationStore = create<NotificationState>()(
 	(set) => ({
-		type: notificationType.error,
+		type: NOTIFICATION_TYPE.error,
 		id: 0,
 		message: "Welcome to Big 2!",
 		isError: false,
@@ -49,19 +49,19 @@ export const useNotificationStore = create<NotificationState>()(
 				let isTimed = false;
 				let numOfButtons = 0;
 
-				if (type === notificationType.error) {
+				if (type === NOTIFICATION_TYPE.error) {
 					isError = true;
 					isTimed = true;
 					numOfButtons = 0;
-				} else if (type === notificationType.message) {
+				} else if (type === NOTIFICATION_TYPE.message) {
 					isError = false;
 					isTimed = true;
 					numOfButtons = 0;
-				} else if (type === notificationType.nameInput || type === notificationType.botSelect) {
+				} else if (type === NOTIFICATION_TYPE.nameInput || type === NOTIFICATION_TYPE.botSelect) {
 					isError = false;
 					isTimed = false;
 					numOfButtons = 1;
-				} else if (type === notificationType.invite || type === notificationType.nextRound) {
+				} else if (type === NOTIFICATION_TYPE.invite || type === NOTIFICATION_TYPE.nextRound) {
 					isError = false;
 					isTimed = false;
 					numOfButtons = 2;

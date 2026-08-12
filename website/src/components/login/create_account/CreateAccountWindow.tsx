@@ -1,16 +1,11 @@
 import { useState } from "react";
-import { useNotificationStore, notificationType } from "../../../store/NotificationStore";
-import { useProfileStore } from "../../../store/ProfileStore";
-import { useSceneStore } from "../../../store/SceneStore";
+import { useNotificationStore, NOTIFICATION_TYPE } from "../../../store/NotificationStore";
+import { handleSignUp } from "../../../api/authentication/sign_up/handleSignUp";
 import { Window } from "../../window/Window";
 import { FormInputModule } from "../../form/FormInputModule";
-import { signUpFetch } from "../../../api/authentication/signUpFetch";
-import { partySocket } from "../../../services/partySocket";
 
 export const CreateAccountWindow = () => {
 	const { showNotification } = useNotificationStore();
-	const { setProfileDataValue } = useProfileStore();
-	const { setShowWindow, setCurrentScene } = useSceneStore();
 
 	const [email, setEmail] = useState("");
 	const [password, setPassword] = useState("");
@@ -21,35 +16,23 @@ export const CreateAccountWindow = () => {
 		e.preventDefault();
 
 		if (!email || !password || !confirmPassword) {
-			showNotification("All fields are required", notificationType.error);
+			showNotification("All fields are required", NOTIFICATION_TYPE.error);
 			return;
 		}
 		const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 		if (!emailRegex.test(email)) {
-			showNotification("Please enter a valid email address", notificationType.error);
+			showNotification("Please enter a valid email address", NOTIFICATION_TYPE.error);
 			return;
 		}
 		if (password.length < 8) {
-			showNotification("Password must be at least 8 characters", notificationType.error);
+			showNotification("Password must be at least 8 characters", NOTIFICATION_TYPE.error);
 			return;
 		}
 		if (password !== confirmPassword) {
-			showNotification("Passwords do not match", notificationType.error);
+			showNotification("Passwords do not match", NOTIFICATION_TYPE.error);
 			return;
 		}
-		try {
-			setIsLoading(true);
-			const data = await signUpFetch(email, password);
-			setProfileDataValue("uuid", data.id);
-			setShowWindow("createAccount", false);
-			setCurrentScene("HOME");
-			partySocket.connect();
-		} catch (err) {
-			const errorMsg = err instanceof Error ? err.message : "Something went wrong. Please try again";
-			showNotification(errorMsg, notificationType.error);
-		} finally {
-			setIsLoading(false);
-		}
+		handleSignUp(email, password, setIsLoading);
 	}
 	
 	return (

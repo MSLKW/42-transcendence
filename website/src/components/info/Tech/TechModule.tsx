@@ -1,6 +1,13 @@
 export const TechModule = () => {
 	return (
-		<div className="space-y-5 text-center">
+		<div
+			className="
+				flex flex-col
+				gap-2rem
+				text-center
+				py-3rem
+			"
+		>
 			<h1 className="text-b5">Technologies Used</h1>
 			<div className="grid grid-cols-[1fr_1fr_1fr_1fr] grid-rows-auto gap-5">
 				<div className="flex flex-col">

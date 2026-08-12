@@ -145,7 +145,7 @@ export const SettingsWindow = () => {
 						<h3>Value of cards</h3>
 					</label>
 				</div>
-				<hr className="col-span-full text-a4"/>
+				<hr className="col-span-full text-n2/40"/>
 				<div className="
 					col-span-1
 					flex flex-col gap-0.5rem
@@ -200,7 +200,7 @@ export const SettingsWindow = () => {
 						</div>
 					</label>
 				</div>
-				<hr className="col-span-full text-a4"/>
+				<hr className="col-span-full text-n2/40"/>
 				<div className="
 					col-span-1
 					flex flex-col gap-0.5rem

@@ -10,131 +10,261 @@ export const BADGE_LABEL = [
 	"The Strategist",
 	"Big 2 Champion",
 ] as const;
+export type BADGE_TYPE = typeof BADGE_LABEL[number];
 
-export type ACHIEVEMENT_LABEL =
-	| "FIRST_LOGIN"
-	| "LOGIN_1_WEEK"
-	| "PLAYED_1_GAME"
-	| "PLAYED_10_GAMES"
-	| "PLAYED_42_GAMES"
-	| "FIRST_WIN"
-	| "WIN_STREAK_2"
-	| "WIN_STREAK_5"
-	| "WIN_STREAK_10"
-	| "MASTER_COLLECTOR"
-	;
+export const MEDAL_LABEL = [
+	"First Login",
+	"Login 1 Week",
+	"Played 1 Game",
+	"Played 10 Games",
+	"Played 42 Games",
+	"First Win",
+	"Win Streak 2",
+	"Win Streak 5",
+	"Win Streak 10",
+	"Master Collector",
+] as const;
+export type MEDAL_TYPE = typeof MEDAL_LABEL[number];
 
-export const STATUS = {
-	OFFLINE: 0,
-	AVAILABLE: 1,
-	INGAME: 2,
-} as const;
+export const AVAILABILITY_LABEL = [
+	"Offline",
+	"Online",
+	"Busy",
+] as const;
+export type AVAILABILITY_TYPE = typeof AVAILABILITY_LABEL[number];
 
 export interface ProfileData {
-	uuid: string;			//"b5dd8b9f-cbd0-4814-8a86-d143b3575ca8"
-	name: string | null;	//"Azrul", null
-	avatar: string;			//"avatar-stock-0.webp", "avatar-12345678901234567890123456789012.png"
-	badge: string;			//"Newcomer", "Beginner's Luck", "Challenger", "Enthusiast", "Risk Taker",  "The Strategist", "Big 2 Champion"
-	level: number;			//1, 42
-	xp: number;				//0, 1000000
-	createdAt: number;		//1784110862000 -> "14 July 2026: 16:00:00.000"
-	lastLogin: number;		//1784110862000 -> "14 July 2026: 16:00:00.000"
-	totalPlayed: number;	//0, 1000
-	totalWins: number;		//0, 1000
-	totalLoss: number;		//0, 1000
-	winStreak: number;		//0, 1000
-	achievements: Record<ACHIEVEMENT_LABEL, number | null>; //{"FIRST_LOGIN": null, ..., "PLAYED_1_GAME": 1784110862000}
-}
+	uuid: string | null;
+	name: string | null;
+	avatar: string | null;
+	badge: BADGE_TYPE;
+	level: number;
+	xp: number;
+	createdAt: Date;
+	lastLogin: Date;
+	totalPlayed: number;
+	totalWins: number;
+	totalLoss: number;
+	winStreak: number;
+	medals: Record<MEDAL_TYPE, Date | null>;
+	availability: AVAILABILITY_TYPE;
+};
+
+const createDefaultProfile = (uuid: string, name: string, avatar: string, badge: BADGE_TYPE = "Newcomer"): ProfileData => ({
+	uuid,
+	name,
+	avatar,
+	badge,
+	level: 1,
+	xp: 0,
+	createdAt: new Date(),
+	lastLogin: new Date(),
+	totalPlayed: 0,
+    totalWins: 0,
+    totalLoss: 0,
+    winStreak: 0,
+    medals: {
+        "First Login": null,
+        "Login 1 Week": null,
+        "Played 1 Game": null,
+        "Played 10 Games": null,
+        "Played 42 Games": null,
+        "First Win": null,
+        "Win Streak 2": null,
+        "Win Streak 5": null,
+        "Win Streak 10": null,
+        "Master Collector": null,
+    },
+    availability: "Online",
+});
+
+const defaultProfileInDb: ProfileData[] = [
+	{
+		uuid: "12345678-abcd-efgh-ijkl-000000000001",
+		name: "Dev-Azrul",
+		avatar: "stock-1.webp",
+		badge: "Risk Taker",
+		level: 2,
+		xp: 1111,
+		createdAt: new Date("2026-08-01T01:01:01+08:00"),
+		lastLogin: new Date("2026-08-01T01:01:01+08:00"),
+		totalPlayed: 1,
+		totalWins: 1,
+		totalLoss: 1,
+		winStreak: 1,
+		medals: {
+			"First Login": new Date("2026-08-01T01:01:01+08:00"),
+			"Login 1 Week": new Date("2026-08-01T01:01:01+08:00"),
+			"Played 1 Game": null,
+			"Played 10 Games": null,
+			"Played 42 Games": null,
+			"First Win": null,
+			"Win Streak 2": null,
+			"Win Streak 5": null,
+			"Win Streak 10": null,
+			"Master Collector": null,
+		},
+		availability: "Offline",
+	},
+	{
+		uuid: "12345678-abcd-efgh-ijkl-000000000002",
+		name: "Dev-Max",
+		avatar: "stock-2.webp",
+		badge: "The Strategist",
+		level: 3,
+		xp: 2222,
+		createdAt: new Date("2026-08-01T02:02:02+08:00"),
+		lastLogin: new Date("2026-08-01T02:02:02+08:00"),
+		totalPlayed: 2,
+		totalWins: 2,
+		totalLoss: 2,
+		winStreak: 2,
+		medals: {
+			"First Login": new Date("2026-08-01T02:02:02+08:00"),
+			"Login 1 Week": new Date("2026-08-01T02:02:02+08:00"),
+			"Played 1 Game": new Date("2026-08-01T02:02:02+08:00"),
+			"Played 10 Games": null,
+			"Played 42 Games": null,
+			"First Win": null,
+			"Win Streak 2": null,
+			"Win Streak 5": null,
+			"Win Streak 10": null,
+			"Master Collector": null,
+		},
+		availability: "Offline",
+	},
+	{
+		uuid: "12345678-abcd-efgh-ijkl-000000000003",
+		name: "Dev-Jeremy",
+		avatar: "stock-3.webp",
+		badge: "Big 2 Champion",
+		level: 4,
+		xp: 3333,
+		createdAt: new Date("2026-08-01T03:03:03+08:00"),
+		lastLogin: new Date("2026-08-01T03:03:03+08:00"),
+		totalPlayed: 3,
+		totalWins: 3,
+		totalLoss: 3,
+		winStreak: 3,
+		medals: {
+			"First Login": new Date("2026-08-01T03:03:03+08:00"),
+			"Login 1 Week": new Date("2026-08-01T03:03:03+08:00"),
+			"Played 1 Game": new Date("2026-08-01T03:03:03+08:00"),
+			"Played 10 Games": new Date("2026-08-01T03:03:03+08:00"),
+			"Played 42 Games": null,
+			"First Win": null,
+			"Win Streak 2": null,
+			"Win Streak 5": null,
+			"Win Streak 10": null,
+			"Master Collector": null,
+		},
+		availability: "Offline",
+	},
+	{
+		uuid: "12345678-abcd-efgh-ijkl-000000000004",
+		name: "Dev-Aisyah",
+		avatar: "stock-4.webp",
+		badge: "Newcomer",
+		level: 5,
+		xp: 4444,
+		createdAt: new Date("2026-08-01T04:04:04+08:00"),
+		lastLogin: new Date("2026-08-01T04:04:04+08:00"),
+		totalPlayed: 4,
+		totalWins: 4,
+		totalLoss: 4,
+		winStreak: 4,
+		medals: {
+			"First Login": new Date("2026-08-01T04:04:04+08:00"),
+			"Login 1 Week": new Date("2026-08-01T04:04:04+08:00"),
+			"Played 1 Game": new Date("2026-08-01T04:04:04+08:00"),
+			"Played 10 Games": new Date("2026-08-01T04:04:04+08:00"),
+			"Played 42 Games": new Date("2026-08-01T04:04:04+08:00"),
+			"First Win": null,
+			"Win Streak 2": null,
+			"Win Streak 5": null,
+			"Win Streak 10": null,
+			"Master Collector": null,
+		},
+		availability: "Offline",
+	},
+];
 
 interface ProfileValues {
-	data: ProfileData;
-	status: number;
-}
+	clientUuid: string | null;
+	isAuthenticated: boolean;
+	validateResponse: Response | undefined;
+	profilesInDb: ProfileData[];
+};
 
 interface ProfileState extends ProfileValues {
-	setProfileValue: <K extends keyof ProfileValues>(key: K, value: ProfileValues[K]) => void;
-	setProfileDataValue: <K extends keyof ProfileData>(key: K, value: ProfileData[K]) => void;
-	incTotalWins: () => void;
-	incTotalLoss: () => void;
-	unlockAchievement: (id: ACHIEVEMENT_LABEL) => void;
-}
+	setClientUuid: (uuid: string) => void;
+	setIsAuthenticated: (isValid: boolean) => void;
+	setValidateResponse: (validation: Response) => void;
+	createClientProfile: (name: string, avatar: string) => void;
+	updateClientProfile: (name: string, avatar: string, badge: BADGE_TYPE) => void;
+	getProfileData: (uuid: string) => ProfileData | undefined;
+	resetProfilesInDb: () => void;
+};
 
 export const useProfileStore = create<ProfileState>() (
 	persist(
-		(set) => ({
-			data: {
-				uuid: "",
-				name: null,
-				avatar: "avatar-stock-0.webp",
-				badge: BADGE_LABEL[0],
-				level: 1,
-				xp: 0,
-				createdAt: 1784110862000,
-				lastLogin: 1784110862000,
-				totalPlayed: 0,
-				totalWins: 0,
-				totalLoss: 0,
-				winStreak: 0,
-				achievements: {
-					FIRST_LOGIN: null,
-					LOGIN_1_WEEK: null,
-					PLAYED_1_GAME: null,
-					PLAYED_10_GAMES: null,
-					PLAYED_42_GAMES: null,
-					FIRST_WIN: null,
-					WIN_STREAK_2: null,
-					WIN_STREAK_5: null,
-					WIN_STREAK_10: null,
-					MASTER_COLLECTOR: null,
-				},
-			},
-			status: STATUS.AVAILABLE,
+		(set, get) => ({
+			clientUuid: null,
+			isAuthenticated: false, 
+			validateResponse: undefined,
+			profilesInDb: defaultProfileInDb,
 
-			setProfileValue: (key, value) => set(() => ({ [key]: value })),
-			setProfileDataValue: (key, value) => set((state) => ({
-				data: {
-					...state.data,
-					[key]: value
-				}
-			})),
-			incTotalWins: () => set((profileStore) => {
-				const newXP = profileStore.data.xp + 420;
-				return {
-					data: {
-						...profileStore.data,
-						totalWins: profileStore.data.totalWins + 1,
-						winStreak: profileStore.data.winStreak + 1,
-						totalPlayed: profileStore.data.totalPlayed + 1,
-						xp: newXP,
-						level: Math.floor(newXP / 1000) + 1,
-					}
-				}
+			setClientUuid: (uuid) => set({
+				clientUuid: uuid,
 			}),
-			incTotalLoss: () => set((profileStore) => {
-				const newXP = profileStore.data.xp + 67;
-				return {
-					data: {
-						...profileStore.data,
-						totalLoss: profileStore.data.totalLoss + 1,
-						winStreak: 0,
-						totalPlayed: profileStore.data.totalPlayed + 1,
-						xp: newXP,
-						level: Math.floor(newXP / 1000) + 1,
-					}
-				}
+			setIsAuthenticated: (isValid) => set ({
+				isAuthenticated: isValid,	
 			}),
-			unlockAchievement: (id) => set((profileStore) => {
-				if (profileStore.data.achievements[id])
-					return {};
-				return {
-					data: {
-						...profileStore.data,
-						achievements: {
-							...profileStore.data.achievements,
-							[id]: Date.now()
-						}
+			setValidateResponse: (validation) => set ({
+				validateResponse: validation,
+			}),
+			createClientProfile: (name, avatar) => 
+				set((profileStore) => {
+					const existingIndex = profileStore.profilesInDb.some((p) => p.uuid === profileStore.clientUuid);
+
+					if (existingIndex) {
+						return {
+							profilesInDb: profileStore.profilesInDb.map((p) =>
+								p.uuid === profileStore.clientUuid
+									? { ...p, name, avatar }
+									: p
+							)
+						};
 					}
-				};
+
+					const newProfile = createDefaultProfile(profileStore.clientUuid!, name, avatar);
+					return {
+						profilesInDb: [...profileStore.profilesInDb, newProfile],
+					};
+				}),
+			updateClientProfile: (name, avatar, badge) =>
+				set((profileStore) => {
+					const existingIndex = profileStore.profilesInDb.some((p) => p.uuid === profileStore.clientUuid);
+
+					if (!existingIndex) {
+						const newProfile = createDefaultProfile(profileStore.clientUuid!, name, avatar, badge);
+						return { profilesInDb: [...profileStore.profilesInDb, newProfile] };
+					}
+
+					return {
+						profilesInDb: profileStore.profilesInDb.map((p) =>
+							p.uuid === profileStore.clientUuid
+								? { ...p, name, avatar, badge }
+								: p
+						)
+					};
+				}),
+			getProfileData: (uuid) => {
+				const profiles = get().profilesInDb;
+				return profiles.find(p => p.uuid === uuid);
+			},
+			resetProfilesInDb: () => set({
+				profilesInDb: defaultProfileInDb,
 			}),
 		}),
 		{

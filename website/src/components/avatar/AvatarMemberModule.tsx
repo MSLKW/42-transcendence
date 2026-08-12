@@ -3,9 +3,13 @@ import { AvatarName } from "./AvatarNameLabel";
 
 interface AvatarMemberProps {
 	name: string;
+	image: string;
 }
 
-export const AvatarMemberModule = ({ name = "Player" }: AvatarMemberProps) => {
+export const AvatarMemberModule = ({ name, image = "stock-0.png" }: AvatarMemberProps) => {
+	if (!name)
+		return;
+	
 	return (
 		<div className="
 			flex place-content-evenly place-items-center
@@ -13,8 +17,8 @@ export const AvatarMemberModule = ({ name = "Player" }: AvatarMemberProps) => {
 			gap-5
 		">
 			<div className="flex flex-col gap-3 place-content-center place-items-center">
-				<AvatarImage />
-				<AvatarName name={name} />
+				{image && <AvatarImage />}
+				{name && <AvatarName name={name} />}
 			</div>
 		</div>
 	);

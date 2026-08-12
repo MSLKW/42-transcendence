@@ -1,10 +1,12 @@
-import { useState } from "react";
+// import type { FriendData } from "../../../store/FriendStore";
 import { UnfriendIcon } from "./UnfriendIcon";
 import { AddFriendIcon } from "./AddFriendIcon";
 
-export const FriendToggleButton = () => {
-	const [isFriend, setIsFriend] = useState(false);
-	
+interface FriendToggleButtonProps {
+	// profile: FriendData;
+}
+// export const FriendToggleButton = ({ profile }: FriendToggleButtonProps) => {	
+export const FriendToggleButton = () => {	
 	return (
 		<button
 			className="
@@ -15,7 +17,7 @@ export const FriendToggleButton = () => {
 				place-content-center place-items-center
 			"
 		>
-			{isFriend ? (
+			{/* {profile.relation === "FRIEND" ? (
 				<div className="flex gap-0.5rem place-items-center">
 					<UnfriendIcon />
 					<h3>Unfriend</h3>
@@ -25,7 +27,7 @@ export const FriendToggleButton = () => {
 					<AddFriendIcon />
 					<h3>Add Friend</h3>
 				</div>
-			)}
+			)} */}
 		</button>
 	);
 }

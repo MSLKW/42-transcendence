@@ -1,8 +1,9 @@
-import { useEffect } from "react";
-import { partySocket } from "../../services/partySocket";
+import { useEffect, useRef } from "react";
+import { partySocket } from "../../api/party/partySocket";
+import { useBotStore } from "../../store/BotStore";
+import { useGameStore } from "../../store/GameStore"; 
+import { usePartyStore } from "../../store/PartyStore";
 import { useSceneStore } from "../../store/SceneStore";
-import { useGameStore } from "../../store/GameStore";
-import { usePartyStore, RELATION } from "../../store/PartyStore";
 import { HeaderModule } from "../header/HeaderModule";
 import { SmallLogo } from "../logo/SmallLogo";
 import { AvatarButton } from "../avatar/AvatarButton";
@@ -10,25 +11,24 @@ import { PartyButton } from "../party/invite/InviteButton";
 
 export const LobbyScene = () => {
 	const { totalPlayers } = useGameStore();
-	const { members, gameMode, totalMembers, addMember } = usePartyStore();
+	const { members } = usePartyStore();
 	const { setCurrentScene } = useSceneStore();
-
+	const { addBotToParty } = useBotStore();
+	
+	const hasRunRef = useRef(false);
 	useEffect(() => {
-		let currentTotal = members.length;
-		while (currentTotal < gameMode) {
-			const botIndex = currentTotal;
-			const template = BOT_MEMBERS[(botIndex - 1) % BOT_MEMBERS.length];
+		if (hasRunRef.current)
+			return;
+		hasRunRef.current = true;
 
-			addMember({
-				...template,
-				uuid: `bot-${botIndex}`,
-				name: `Bot-${botIndex}`,
-				seatNumber: botIndex,
-			});
-			currentTotal++;
+		let i = members.length;
+		while (i < totalPlayers) {
+			addBotToParty(`bot-${i}`);
+			i++;
 		}
 		partySocket.updateGameMode(totalPlayers);
-	}, [gameMode]);
+		partySocket.startGameSession();
+	}, []);
 
 	return (
 		<>
@@ -39,44 +39,32 @@ export const LobbyScene = () => {
 					grid ${ totalPlayers === 3 ? "grid-cols-2" : "grid-cols-1" } grid-rows-1
 					place-content-evenly place-items-center
 				`}>
-					{ totalPlayers === 4 && members[2] &&
+					{ totalPlayers === 4 && members[2] && members[2].uuid &&
 						<AvatarButton
 							key={members[2].uuid}
-							index={2}
-							name={members[2].name ?? "Guest"}
-							relation={members[2].relation}
-							cornerButton={members[2].isHost ? "host" : ""}
+							uuid={members[2].uuid}
 						/>
 					}
 					{ totalPlayers === 3 &&
 						<>
-							{ members[1] && 
+							{ members[1] && members[1].uuid &&
 								<AvatarButton
 									key={members[1].uuid}
-									index={1}
-									name={members[1].name ?? "Guest"}
-									relation={members[1].relation}
-									cornerButton={members[1].isHost ? "host" : ""}
+									uuid={members[1].uuid}
 								/>
 							}
-							{ members[2] && 
+							{ members[2] && members[2].uuid &&
 								<AvatarButton
 									key={members[2].uuid}
-									index={2}
-									name={members[2].name ?? "Guest"}
-									relation={members[2].relation}
-									cornerButton={members[2].isHost ? "host" : ""}
+									uuid={members[2].uuid}
 								/>
 							}
 						</>
 					}
-					{ totalPlayers === 2 && members[1] &&
+					{ totalPlayers === 2 && members[1] && members[1].uuid &&
 						<AvatarButton
 							key={members[1].uuid}
-							index={1}
-							name={members[1].name ?? "Guest"}
-							relation={members[1].relation}
-							cornerButton={members[1].isHost ? "host" : ""}
+							uuid={members[1].uuid}
 						/>
 					}
 				</div>
@@ -84,13 +72,10 @@ export const LobbyScene = () => {
 					w-full h-full
 					grid ${totalPlayers === 4 ? "grid-cols-3" : "grid-cols-1" } place-items-center
 				`}>
-					{ totalPlayers === 4 && members[1] &&
+					{ totalPlayers === 4 && members[1] && members[1].uuid &&
 						<AvatarButton
 							key={members[1].uuid}
-							index={1}
-							name={members[1].name ?? "Guest"}
-							relation={members[1].relation}
-							cornerButton={members[1].isHost ? "host" : ""}
+							uuid={members[1].uuid}
 						/>
 					}
 					<button
@@ -103,24 +88,18 @@ export const LobbyScene = () => {
 					>
 						START
 					</button>
-					{ totalPlayers === 4 && members[3] &&
+					{ totalPlayers === 4 && members[3] && members[3].uuid &&
 						<AvatarButton
 							key={members[3].uuid}
-							index={3}
-							name={members[3].name ?? "Guest"}
-							relation={members[3].relation}
-							cornerButton={members[3].isHost ? "host" : ""}
+							uuid={members[3].uuid}
 						/>
 					}
 				</div>
 				<div className="w-full h-full grid place-items-center place-content-center">
-					{ members[0] &&
+					{ members[0] && members[0].uuid &&
 						<AvatarButton
 							key={members[0].uuid}
-							index={0}
-							name={members[0].name ?? "Guest"}
-							relation={members[0].relation}
-							cornerButton={members[0].isHost ? "host" : ""}
+							uuid={members[0].uuid}
 						/>
 					}
 				</div>
@@ -136,15 +115,14 @@ export const LobbyScene = () => {
 					gap-2rem
 					sm:overflow-x-visible overflow-x-auto
 				">
-					{ totalMembers > totalPlayers && 
-						members.slice(totalPlayers).map((member, index) => {
+					{ members.length > totalPlayers &&
+						members.slice(totalPlayers).map((member) => {
+							if (!member.uuid)
+								return;
 							return (
 								<AvatarButton
 									key={member.uuid}
-									index={index}
-									name={member.name ?? "Guest"}
-									relation={member.relation}
-									cornerButton={member.isHost ? "host" : ""}
+									uuid={member.uuid}
 								/>
 							)
 						})
@@ -156,93 +134,3 @@ export const LobbyScene = () => {
 		</>
 	);
 }
-
-const BOT_MEMBERS = [
-	{
-		uuid: "bot-1",
-		name: "Bot-1",
-		avatar: "avatar-stock-1.webp",
-		badge: "Easy",
-		level: 0,
-		xp: 0,
-		createdAt: 1784110862000,
-		lastLogin: 1784110862000,
-		totalPlayed: 0,
-		totalWins: 0,
-		totalLoss: 0,
-		winStreak: 0,
-		achievements: {
-			FIRST_LOGIN: null,
-			LOGIN_1_WEEK: null,
-			PLAYED_1_GAME: null,
-			PLAYED_10_GAMES: null,
-			PLAYED_42_GAMES: null,
-			FIRST_WIN: null,
-			WIN_STREAK_2: null,
-			WIN_STREAK_5: null,
-			WIN_STREAK_10: null,
-			MASTER_COLLECTOR: null,
-		},
-		relation: RELATION.BOT,
-		isHost: false,
-		seatNumber: 1,
-	},
-	{
-		uuid: "bot-2",
-		name: "Bot-2",
-		avatar: "avatar-stock-2.webp",
-		badge: "Medium",
-		level: 0,
-		xp: 0,
-		createdAt: 1784110862000,
-		lastLogin: 1784110862000,
-		totalPlayed: 0,
-		totalWins: 0,
-		totalLoss: 0,
-		winStreak: 0,
-		achievements: {
-			FIRST_LOGIN: null,
-			LOGIN_1_WEEK: null,
-			PLAYED_1_GAME: null,
-			PLAYED_10_GAMES: null,
-			PLAYED_42_GAMES: null,
-			FIRST_WIN: null,
-			WIN_STREAK_2: null,
-			WIN_STREAK_5: null,
-			WIN_STREAK_10: null,
-			MASTER_COLLECTOR: null,
-		},
-		relation: RELATION.BOT,
-		isHost: false,
-		seatNumber: 2,
-	},
-	{
-		uuid: "bot-3",
-		name: "Bot-3",
-		avatar: "avatar-stock-3.webp",
-		badge: "Hard",
-		level: 0,
-		xp: 0,
-		createdAt: 1784110862000,
-		lastLogin: 1784110862000,
-		totalPlayed: 0,
-		totalWins: 0,
-		totalLoss: 0,
-		winStreak: 0,
-		achievements: {
-			FIRST_LOGIN: null,
-			LOGIN_1_WEEK: null,
-			PLAYED_1_GAME: null,
-			PLAYED_10_GAMES: null,
-			PLAYED_42_GAMES: null,
-			FIRST_WIN: null,
-			WIN_STREAK_2: null,
-			WIN_STREAK_5: null,
-			WIN_STREAK_10: null,
-			MASTER_COLLECTOR: null,
-		},
-		relation: RELATION.BOT,
-		isHost: false,
-		seatNumber: 3,
-	},
-]

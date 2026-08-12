@@ -1,11 +1,7 @@
-export const statusType = {
-	"offline": 0,
-	"online": 1,
-	"unavailable": 2,
-} as const;
+import type { AVAILABILITY_TYPE } from "../../../store/ProfileStore";
 
 interface PlayerStatusModuleProps {
-	status: number;
+	status: AVAILABILITY_TYPE;
 }
 export const PlayerStatusModule = ({ status }: PlayerStatusModuleProps) => {
 	return (
@@ -21,19 +17,19 @@ export const PlayerStatusModule = ({ status }: PlayerStatusModuleProps) => {
 					h-1rem aspect-square
 					rounded-full
 					${
-						status === statusType.offline ? "bg-red-500" :
-						status === statusType.online ? "bg-green-500" :
+						status === "Offline" ? "bg-red-500" :
+						status === "Online" ? "bg-green-500" :
 						"bg-yellow-500"
 					}
 				`}
 			/>
-			<p>
+			<h3 className="whitespace-nowrap">
 				{
-					status === statusType.offline ? "Offline" :
-					status === statusType.online ? "Online" :
+					status === "Offline" ? "Offline" :
+					status === "Online" ? "Online" :
 					"In another party"
 				}
-			</p>
+			</h3>
 		</div>
 	);
 }

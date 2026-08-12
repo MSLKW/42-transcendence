@@ -1,6 +1,12 @@
 export const TeamModule = () => {
 	return (
-		<div className="space-y-5">
+		<div
+			className="
+				flex flex-col
+				gap-2rem
+				py-3rem
+			"
+		>
 			<h1 className="text-center text-b5">Meet The Team</h1>
 			<div className="flex gap-5">
 				<image className="h-30 aspect-square bg-a5" />

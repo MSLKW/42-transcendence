@@ -1,5 +1,3 @@
-import { signInFetch } from "./signInFetch";
-
 export const signUpFetch = async (email: string, password: string) => {
 	const response = await fetch("/api/auth/signup", {
 		method: "POST",
@@ -20,6 +18,4 @@ export const signUpFetch = async (email: string, password: string) => {
 	}
 
 	await response.json();
-
-	return signInFetch(email, password);;
 }

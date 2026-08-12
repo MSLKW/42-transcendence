@@ -1,4 +1,4 @@
-import { partySocket } from "../../services/partySocket";
+import { partySocket } from "../../api/party/partySocket";
 
 export const LeavePartyModule = () => {
 	return (

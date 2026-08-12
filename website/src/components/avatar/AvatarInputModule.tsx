@@ -1,19 +1,21 @@
-import { useProfileStore } from "../../store/ProfileStore";
+import { useRef, useEffect } from "react";
 import { AvatarImage } from "./AvatarImage";
 
 interface AvatarInputModuleProps {
-	setIsValid?: (isValid: boolean) => void;
-	inputRef?: React.RefObject<HTMLInputElement | null>;
-	submitButtonRef?: React.RefObject<HTMLButtonElement | null>;
+	name: string,
+	setName: (name: string) => void,
 }
-export const AvatarInputModule = ({ setIsValid, inputRef, submitButtonRef }: AvatarInputModuleProps) => {
-	const { data, setProfileDataValue } = useProfileStore();
-
+export const AvatarInputModule = ({ name, setName }: AvatarInputModuleProps) => {
 	const handleInput = (e: React.ChangeEvent<HTMLInputElement>) => {
 		const value = e.target.value;
-		setProfileDataValue("name", value);
-		setIsValid?.(value.trim().length > 0);
+		setName(value);
 	}
+
+	const inputRef = useRef<HTMLInputElement | null>(null);
+	useEffect(() => {
+		if (!name && inputRef.current)
+			inputRef.current.focus();
+	}, []);
 
 	return (
 		<div className="
@@ -31,15 +33,13 @@ export const AvatarInputModule = ({ setIsValid, inputRef, submitButtonRef }: Ava
 					ref={inputRef}
 					id="name"
 					type="text"
-					value={data.name ?? ""}
+					value={name ?? ""}
 					placeholder="Name"
 					onChange={handleInput}
 					onKeyDown={(e) => {
 						if (e.key === "Enter") {
 							e.preventDefault();
 							e.currentTarget.blur();
-							if (data.name?.trim())
-								submitButtonRef?.current?.focus();
 						} else if (e.key === "Escape")
 							e.currentTarget.blur();
 					}}

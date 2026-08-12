@@ -1,50 +1,11 @@
-import React, { useState, useRef, useCallback, type ReactNode } from "react";
-import { usePartyStore } from "../../store/PartyStore";
+import { useState, type ReactNode } from "react";
 import { useSceneStore } from "../../store/SceneStore";
+import { useDraggable } from "../../utilities/draggable";
 import { LightboxButton } from "../lightbox/LightboxButton";
 import { PinActiveIcon } from "./pin/PinActiveIcon";
 import { PinInactiveIcon } from "./pin/PinInactiveIcon";
 import { CloseIcon } from "./close/CloseIcon";
-import { MaximizeIcon } from "./maximize/MaximizeIcon";
-
-const useDraggable = (initialPosition = { x: 0, y: 0 }) => {
-    const [position, setPosition] = useState(initialPosition);
-    const draggingRef = useRef(false);
-    const offsetRef = useRef({ x: 0, y: 0 });
-
-    const handleMouseMove = useCallback((e: MouseEvent) => {
-        if (!draggingRef.current) return;
-
-        setPosition({
-            x: e.clientX - offsetRef.current.x,
-            y: e.clientY - offsetRef.current.y,
-        });
-    }, []);
-
-    const handleMouseUp = useCallback(() => {
-        draggingRef.current = false;
-        document.removeEventListener("mousemove", handleMouseMove);
-        document.removeEventListener("mouseup", handleMouseUp);
-    }, [handleMouseMove]);
-
-    const handleMouseDown = (e: React.MouseEvent<HTMLDivElement>) => {
-        if (e.button !== 0) return;
-
-        draggingRef.current = true;
-        offsetRef.current = {
-            x: e.clientX - position.x,
-            y: e.clientY - position.y,
-        };
-
-        document.addEventListener("mousemove", handleMouseMove);
-        document.addEventListener("mouseup", handleMouseUp);
-    };
-
-    return {
-        position,
-        handleMouseDown,
-    };
-};
+// import { MaximizeIcon } from "./maximize/MaximizeIcon";
 
 interface WindowProps {
 	title: string;
@@ -52,8 +13,10 @@ interface WindowProps {
 	children: ReactNode;
 	placement?: string;
 	hasHeader?: boolean;
+	hasPinButton?: boolean;
 	pinState?: boolean;
-	profileIndex?: number;
+	isDismissable?: boolean;
+	call?: () => void | undefined;
 }
 
 export const Window: React.FC<WindowProps> = ({
@@ -62,12 +25,13 @@ export const Window: React.FC<WindowProps> = ({
 	children,
 	placement = "c",
 	hasHeader = true,
+	hasPinButton = true,
 	pinState = true,
-	profileIndex = 0,
+	isDismissable = true,
+	call,
 }) => {
 	const [isPinned, setIsPinned] = useState(pinState);
 	const { position, handleMouseDown } = useDraggable();
-	const { members } = usePartyStore();
 	const { setShowWindow } = useSceneStore();
 
 	return (
@@ -78,7 +42,14 @@ export const Window: React.FC<WindowProps> = ({
 			flex place-content-center place-items-center
 			pointer-events-none
 		">
-			{ hasHeader && isPinned && <LightboxButton dismiss={dismissKey} blur={true} /> }
+			{ hasHeader && isPinned &&
+				<LightboxButton
+					dismiss={dismissKey}
+					blur={true}
+					call={call}
+					isDismissable={isDismissable}
+				/>
+			}
 			<div
 				style={{ transform: `translate(${position.x}px, ${position.y}px)`, }} 
 				className={`
@@ -111,14 +82,16 @@ export const Window: React.FC<WindowProps> = ({
 							{title}
 						</h2>
 						<div className="flex">
-							<button
-								data-tip={isPinned ? "Unpin Window" : "Pin Window"}
-								onClick={() => setIsPinned(!isPinned)}
-								className="btn-icon data-tip-up"
-							>
-								{ isPinned ? <PinActiveIcon /> : <PinInactiveIcon /> }
-							</button>
-							{ profileIndex != 0 &&
+							{ hasPinButton &&
+								<button
+									data-tip={isPinned ? "Unpin Window" : "Pin Window"}
+									onClick={() => setIsPinned(!isPinned)}
+									className="btn-icon data-tip-up"
+								>
+									{ isPinned ? <PinActiveIcon /> : <PinInactiveIcon /> }
+								</button>
+							}
+							{/* { profileIndex != 0 &&
 								<button
 									data-tip="Open In New Window"
 									onClick={() => {
@@ -156,10 +129,15 @@ export const Window: React.FC<WindowProps> = ({
 								>
 									<MaximizeIcon />
 								</button>
-							}
+							} */}
 							<button
 								data-tip="Close Window"
-								onClick={() => {setShowWindow(dismissKey, false)}}
+								disabled={!isDismissable}
+								onClick={
+									call
+										? call
+										: () => setShowWindow(dismissKey, false)
+								}
 								className="btn-icon data-tip-up"
 							>
 								<CloseIcon />
@@ -167,7 +145,6 @@ export const Window: React.FC<WindowProps> = ({
 						</div>
 					</div>
 				}
-
 				{children}
 			</div>
 		</section>

@@ -1,186 +1,96 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-import { useProfileStore, type ProfileData } from "./ProfileStore";
+import { useProfileStore } from "./ProfileStore";
 
-export const GAMEMODE = {
-	NONE: 0,
-	TUTORIAL: 1,
-	VERSUS2: 2,
-	VERSUS3: 3,
-	VERSUS4: 4,
-} as const;
-export type GameModeType = typeof GAMEMODE[keyof typeof GAMEMODE];
+export const RELATION_LABEL = [
+	"Stranger",
+	"Friend",
+	"Bot",
+	"Self",
+] as const;
+export type RELATION_TYPE = typeof RELATION_LABEL[number];
 
-export const RELATION = {
-	STRANGER: 0,
-	FRIEND: 1,
-	SELF: 2,
-	BOT: 3,
-} as const;
-export type RelationType = typeof RELATION[keyof typeof RELATION];
-
-export const SEATNUMBER_UNSEATED = -1 as const;
-
-export interface MemberData extends ProfileData {
-	relation: RelationType;	//relationship of this person relative to you; stranger, friend, self, bot
-	isHost: boolean;		//only 1 party member can be "host"
-	seatNumber: number;		//0, 1, 2, 3, 4, 5, ...
-							//if seatNumber is greater than game mode ie (4 players), members 4 and 5 are spectators
-
-	//from host pov: <4 players game mode> [0 bottom, 1 left, 2 top, 3 right], <3 players game mode> [0 bottom, 1 left, 2 right], <2 players game mode> [0 bottom, 1 top]
-	//when rendering from non-host pov, offset all active player's seat placements (modulo total players) so client is at the bottom of their own screen
-}
+export interface MemberData {
+	uuid: string | null,
+	name: string | null,
+	avatar: string | null,
+	relation: RELATION_TYPE,
+};
 
 interface PartyValues {
-	totalMembers: number;	//minimum of 1. no max limit (members can be spectator and not play)
-	gameMode: GameModeType;
+	partySocketId: string | null;
+	partyGameId: string | null;
 	members: MemberData[];
-}
+	hostUuid: string | null;
+};
 
 interface PartyState extends PartyValues {
-	setPartyValue: <K extends keyof PartyValues>(key: K, value: PartyValues[K]) => void;
-	addMember: (member: MemberData) => void;
-	removeMember: (uuid: string) => void;
-	removeBots: () => void;
-	toggleIsFriend: (index: number) => void;
-	changeSeatNumber: (
-		uuid_target: string,
-		seat_target: number,
-		uuid_swap?: string,
-		seat_origin?: number,
-	) => void;
-}
+	setPartyValue: <K extends keyof PartyValues>(key: K, value:PartyValues[K]) => void;
+	resetMembers: () => void,
+	getMemberData: (memberUuid: string | null) => MemberData | undefined,
+	setPartySocketId: (id: string | undefined) => void,
+	setPartyData: (memberUuids: string[]) => void,
+	set1PlayerParty: (clientName: string, clientAvatar: string) => void,
+};
 
 export const usePartyStore = create<PartyState>() (
 	persist(
-		(set) => ({
-			totalMembers: 1,
-			gameMode: 0,
-			members: [
-				{
-					uuid: "",
-					name: null,
-					avatar: "avatar-stock-0.webp",
-					badge: "Newcomer",
-					level: 1,
-					xp: 0,
-					createdAt: 1784110862000,
-					lastLogin: 1784110862000,
-					totalPlayed: 0,
-					totalWins: 0,
-					totalLoss: 0,
-					winStreak: 0,
-					achievements: {
-						FIRST_LOGIN: null,
-						LOGIN_1_WEEK: null,
-						PLAYED_1_GAME: null,
-						PLAYED_10_GAMES: null,
-						PLAYED_42_GAMES: null,
-						FIRST_WIN: null,
-						WIN_STREAK_2: null,
-						WIN_STREAK_5: null,
-						WIN_STREAK_10: null,
-						MASTER_COLLECTOR: null,
-					},
-					seatNumber: SEATNUMBER_UNSEATED,
-					isHost: true,
-					relation: RELATION.SELF,
-				},
-			],
+		(set, get) => ({
+			partySocketId: null,
+			partyGameId: null,
+			members: [],
+			hostUuid: null,
 
-			setPartyValue: (key, value) => set({ [key]: value }),
-
-			addMember: (member) => set((partyStore) => {
-				const exists = partyStore.members.some((m) => m.uuid === member.uuid);
-				const updatedMembers = exists
-					? partyStore.members.map((m) => (m.uuid === member.uuid 
-						? { ...m, ...member}
-						: m
-					)) : [...partyStore.members, { ...member }];
-				return {
-					members: updatedMembers,
-					totalMembers: exists ? partyStore.totalMembers: partyStore.members.length + 1,
-				};
+			setPartyValue: (key, value) => set(() => ({ [key]: value })),
+			resetMembers: () => set({
+				members: [],
 			}),
-
-			removeMember: (uuid) => set((partyStore) => {
-				const updatedMembers = partyStore.members.filter((m) => m.uuid !== uuid);
-				return {
-					members: updatedMembers,
-					totalMembers: Math.max(1, updatedMembers.length),
-				};
-			}),
-
-			removeBots: () => set((partyStore) => {
-				const humanMembers = partyStore.members.filter((m) => m.relation != RELATION.BOT);
-				return {
-					members: humanMembers,
-					totalMembers: humanMembers.length,
-				}
-			}),
-
-			toggleIsFriend: (index) => set((partyStore) => {
-				const target = partyStore.members[index];
-				if (!target || target.relation === RELATION.SELF || target.relation === RELATION.BOT)
-					return partyStore;
-				const nextRelation = target.relation === RELATION.FRIEND
-					? RELATION.STRANGER
-					: RELATION.FRIEND
-				return {
-					members: partyStore.members.map((m, i) => i === index
-						? { ...m, relation: nextRelation }
-						: m
-					),
-				};
-			}),
-
-			changeSeatNumber: (uuid_target, seat_target, uuid_swap, seat_origin) => set((partyStore) => {
-				const updatedMembers = partyStore.members.map((member) => {
-					if (member.uuid === uuid_target) {
-						return { ...member, seatNumber: seat_target };
-					}
-					if (uuid_swap && member.uuid === uuid_swap) {
+			getMemberData: (memberUuid) => {
+				if (!memberUuid)
+					return;
+				const members = get().members;
+				return members.find(p => p.uuid === memberUuid);
+			},
+			setPartySocketId: (id) => set({ partySocketId: id }),
+			setPartyData: (memberUuids) => {
+				const { clientUuid, getProfileData } = useProfileStore.getState();
+				const newMembers: MemberData[] = memberUuids.map((uuid) => {
+					if (uuid === clientUuid) {
+						const data = getProfileData(uuid);
 						return {
-							...member,
-							seatNumber: seat_origin ?? SEATNUMBER_UNSEATED
+							uuid: uuid,
+							name: data?.name ?? "Client",
+							avatar: data?.avatar ?? "stock-0.png",
+							relation: "Self",
 						};
 					}
-					return member;
+
+					return {
+						uuid: uuid,
+						name: "Player",
+						avatar: "stock-0.png",
+						relation: "Stranger"
+					};
 				});
-				return { members: updatedMembers };
-			}),
+				set({ members: newMembers });
+			},
+			set1PlayerParty: (clientName, clientAvatar) => {
+				const clientUuid = useProfileStore.getState().clientUuid;
+				set({
+					members: [
+						{
+							uuid: clientUuid,
+							name: clientName,
+							avatar: clientAvatar,
+							relation: "Self",
+						}
+					],
+					hostUuid: clientUuid,
+				});
+			},
 		}),
 		{
 			name: 'party-storage',
 		}
 	)
 );
-
-const syncProfileDataToParty = (newProfileData: ProfileData) => {
-	if (!newProfileData)
-		return;
-
-	const partyStore = usePartyStore.getState();
-	const selfMember = partyStore.members[0];
-	if (!selfMember)
-		return;
-
-	const hasChanged = Object.keys(newProfileData).some((key) => {
-		const k = key as keyof ProfileData;
-		return JSON.stringify(selfMember[k]) !== JSON.stringify(newProfileData[k]);
-	});
-
-	if (hasChanged) {
-		const updatedMembers = [...partyStore.members];
-
-		updatedMembers[0] = {
-			...selfMember,
-			...newProfileData,
-		};
-
-		partyStore.setPartyValue("members", updatedMembers);
-	}
-};
-
-useProfileStore.subscribe((state) => syncProfileDataToParty(state.data));
-syncProfileDataToParty(useProfileStore.getState().data);

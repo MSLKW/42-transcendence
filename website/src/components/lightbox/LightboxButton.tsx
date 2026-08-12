@@ -4,23 +4,28 @@ interface LightboxButtonProps {
 	dismiss: string,
 	blur?: boolean,
 	isDismissable?: boolean,
+	call?: () => void;
 }
 
-export const LightboxButton = ({ dismiss, blur, isDismissable = true }: LightboxButtonProps) => {
+export const LightboxButton = ({ dismiss, blur, isDismissable = true, call }: LightboxButtonProps) => {
 	const { setShowWindow } = useSceneStore();
 
 	return (
 		<button
 			tabIndex={-1}
-			onClick={() => {
-				if (isDismissable)
-					setShowWindow(dismiss, false);
-			}}
+			onClick={
+				call
+					? call
+					: () => {
+						if (isDismissable)
+							setShowWindow(dismiss, false);
+					}
+			}
 			className={`
 				fixed -z-1
 				h-screen w-screen
 				${ blur ? "backdrop-blur-xs" : "" }
-				cursor-alias
+				${ isDismissable ? "cursor-alias" : ""}
 			`}
 		/>
 	);
