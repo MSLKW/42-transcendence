@@ -8,6 +8,8 @@ import { signinHandler } from "./handlers/signin";
 import { guestHandler } from "./handlers/guest";
 import { logoutHandler } from "./handlers/logout";
 import { validateSessionHandler } from "./handlers/validateSession";
+import { startSessionCleanupJob } from './jobs/cleanupSessions';
+
 
 const app = express();
 app.use(express.json());
@@ -49,3 +51,6 @@ server.on("error", (err: NodeJS.ErrnoException) => {
 	);
 	process.exit(1);
 });
+
+// after your db connection / app setup is ready
+startSessionCleanupJob();

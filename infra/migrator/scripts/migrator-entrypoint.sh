@@ -1,50 +1,51 @@
 #!/bin/sh
 
+# 1. Read the secret file mounted by Docker and export it for psql and drizzle-kit
+echo "[1/6]  Extracting postgres user password..."
+if [ -f "/run/secrets/db-admin-password" ]; then
+  export PGPASSWORD="$(cat /run/secrets/db-admin-password)"
+else
+  echo "[1/6] Error! Secret file /run/secrets/db-admin-password not found!"
+  echo "[1/6] Failure! Exit failure migrator container with failure now..."
+  exit 1
+fi
+echo "[1/6] Success extracting and exporting postgres user password!"
+
+
 # pg_isready only needs to confirm "the server is up and talking," 
 # not "my specific app user/db exist" — so this is actually a more robust check than the current one,
 # That said, keeping the explicit flags is also fine if you'd rather the healthcheck be self-documenting 
 # — it's a style call, not a correctness one.
 # while ! pg_isready -h ${PGHOST} -p ${PGPORT}; do
-
-
-# Read the secret file mounted by Docker and export it for psql and drizzle-kit
-echo "[1/5]  Extracting postgres user password..."
-if [ -f "/run/secrets/db-admin-password" ]; then
-  export PGPASSWORD="$(cat /run/secrets/db-admin-password)"
-else
-  echo "[1/5] Error! Secret file /run/secrets/db-admin-password not found!"
-  echo "[1/5] Failure! Exit failure migrator container with failure now..."
-  exit 1
-fi
-echo "[1/5] Success extracting and exporting postgres user password!"
-
-# 1. Wait for the postgresql to be ready
-echo "[2/5]  Waiting for ${PGHOST}..."
+#
+# 2. Wait for the postgresql to be ready
+echo "[2/6]  Waiting for ${PGHOST}..."
 while ! pg_isready; do
   sleep 2
 done
-echo "[2/5]  ${PGHOST} is ready!"
+echo "[2/6]  ${PGHOST} is ready!"
 
 
-# # # 2. Apply Generate
+# #. Apply Generate
 # (WARNING! generate is only done locally, never during deployement)
 
-# 2. Wait for initialization (The "Retry Loop" pattern)
-echo "[3/5] Connection ready, applying migrations with retry loops logic..."
 
-#     We try to migrate up to 5 times
-MAX_RETRIES=2
+# 3. Wait for initialization (The "Retry Loop" pattern)
+echo "[3/6] Connection ready, applying migrations with retry loops logic..."
+
+# We try to migrate up to (MAX_RETRIES) times
+MAX_RETRIES=2   
 COUNT=0
 SUCCESS=false
 
 while [ $COUNT -lt $MAX_RETRIES ]; do
   if npm run db:migrate; then 
-    echo "\n[3/5]  Migrations applied successfully!"
+    echo "\n[3/6]  Migrations applied successfully!"
     SUCCESS=true
     break
   else
     COUNT=$((COUNT+1))
-    echo "[3/5]  Migration failed (Attempt $COUNT/$MAX_RETRIES). Retrying in 5 seconds..."
+    echo "[3/6]  Migration failed (Attempt $COUNT/$MAX_RETRIES). Retrying in 5 seconds..."
     
     # If we reached the limit, stop retrying
     if [ $COUNT -eq $MAX_RETRIES ]; then
@@ -55,23 +56,42 @@ while [ $COUNT -lt $MAX_RETRIES ]; do
   fi
 done
 
-
-# 3. Check for final success
+# Check for final success
 if [ "$SUCCESS" = false ]; then
-  echo "[3/5]  Error: Migrations failed after $MAX_RETRIES attempts."
-  echo "[3/5]  Failure! Exit failure migrator container upon migration failure now..."
+  echo "[3/6]  Error: Migrations failed after $MAX_RETRIES attempts."
+  echo "[3/6]  Failure! Exit failure migrator container upon migration failure now..."
   exit 1
 fi
 
 
 # 4. apply grant permissions -> establishing private schemas for microservices to be 'loosely-coupled services'
-echo "[4/5] Applying schema permissions for each microservices..."
+echo "[4/6] Applying schema permissions for each microservices..."
 if ! /usr/local/bin/grant-permissions.sh; then
-  echo "[4/5] Error: Applying schema permissions failed"
-  echo "[4/5] Failure! Exit failure migrator container upon schema permissions application failure now..."
+  echo "[4/6] Error: Applying schema permissions failed"
+  echo "[4/6] Failure! Exit failure migrator container upon schema permissions application failure now..."
   exit 1
 fi
-echo "[4/5] Schema permissions application succeed!"
+echo "[4/6] Schema permissions application succeed!"
 
-# 5. Execute the container to the foreground
-echo "[5/5] Success! Exit success migrator container now..."
+
+# 5. apply triggers after all schemas and tables are created through completed migrations above
+echo "[5/6] Applying Postgres Triggers for updateAt columns upon all tables... (as debugging helper purposes)"
+if ! /usr/local/bin/apply-triggers.sh; then
+  echo "[5/6] Error: Applying Postgers Triggers failed"
+  echo "[5/6] Failure! Exit failure migrator container upon Postgres Triggers application failure now..."
+  exit 1
+fi
+echo "[5/6] Postgres Triggers application succeed!"
+
+
+# ANY SEEDINGS CAN BE PLACED HERE AFTER ALL DDL IS COMPLETE
+# DDL = Data Definition Language 
+#   the SQL category that defines database structure.
+#   (CREATE, ALTER, DROP)
+# as opposed to DML = Data Manipulation Language
+#   the SQL category that defines which operate on the data inside that structure.
+#   (SELECT/INSERT/UPDATE/DELETE/MERGE) 
+
+
+# 6. Execute the container to the foreground
+echo "[6/6] Success! Exit success migrator container now..."

@@ -19,7 +19,8 @@
   },
   "dependencies": {
     "dotenv": "^17.4.2",
-    "drizzle-orm": "^0.45.2"
+    "drizzle-orm": "^0.45.2",
+    "@big2/auth-schema": "*"
   },
   "devDependencies": {
     "@types/node": "^26.1.1",

@@ -1,11 +1,13 @@
-# -- What should stay in init.sql:
-# -- 		Keep it for things Drizzle genuinely can't or shouldn't manage:
-# -- 		CREATE EXTENSION IF NOT EXISTS "uuid-ossp"; — extensions are typically outside app-level migration tools' scope
-# -- 		Database roles/users, if you manage those at the Postgres level
-# -- 		One-time seed data, if any (though even this often belongs in a separate seed script, not init.sql)
+# What should stay in init.sh:
+#	Keep it for things Drizzle genuinely can't or shouldn't manage
+#	Database roles/users, if you manage those at the Postgres level
+#	One-time seed data, if any (though even this often belongs in a separate seed script, not init.sql)
 
 # init.sh — stage 1, only ever runs once (on an empty pg-data volume)
-
+# 	every permissiosn, grants, anything - dosent apply to the admin user, thus no explicit rules needed for admin user
+#	CREATE USER + GRANT CONNECT never depend on the service being built.
+#	a Postgres role can exist with CONNECT permission and literally nothing to use it on yet — no tables, no schema, no app code. That's completely normal and won't error or crash your init script. 
+#	Permissions just sit unused until there's something to grant against.
 
 #!/bin/bash
 set -e
@@ -19,24 +21,23 @@ GAME_PW="$( cat /run/secrets/db-game-password)"
 
 psql -v ON_ERROR_STOP=1 --username "${PGUSER}" --dbname "${PGDATABASE}" <<-EOSQL
 
-	-- 1. create any extensions that only diredtly on Postgres can do, not Drizzle
-	-- uuid-ossp: Allows you to generate UUIDs (Universally Unique Identifiers) directly inside the database (e.g., DEFAULT gen_random_uuid()).
-	CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
+	-- 1. create any extensions that only directly on Postgres can do, not Drizzle
+	-- any extensions in the future will be placed here
 
 	-- 2. Create users & passwords for each backend microservices that communicates with database
 	CREATE USER "${PGUSER_AUTH}" WITH PASSWORD '${AUTH_PW}';
 	CREATE USER "${PGUSER_PARTY_MANAGER}" WITH PASSWORD '${PARTY_MANAGER_PW}';
-	-- CREATE USER "${PGUSER_PROFILE_SYSTEM}" WITH PASSWORD '${PROFILE_SYSTEM_PW}';
-	-- CREATE USER "${PGUSER_GAME}" WITH PASSWORD '${GAME_PW}';
+	CREATE USER "${PGUSER_PROFILE_SYSTEM}" WITH PASSWORD '${PROFILE_SYSTEM_PW}';
+	CREATE USER "${PGUSER_GAME}" WITH PASSWORD '${GAME_PW}';
 
 	-- 3. Revoke default public schema's access from everyone
 	REVOKE ALL ON SCHEMA public FROM PUBLIC;
 	REVOKE ALL ON DATABASE "${PGDATABASE}" FROM PUBLIC;
 
-	-- 4. Re-grant CONNECT to each role
+	-- 4. Re-grant CONNECT ON DATABASE to each role
 	GRANT CONNECT ON DATABASE "${PGDATABASE}" TO "${PGUSER_AUTH}";
 	GRANT CONNECT ON DATABASE "${PGDATABASE}" TO "${PGUSER_PARTY_MANAGER}";
-	-- GRANT CONNECT ON DATABASE "${PGDATABASE}" TO "${PGUSER_PROFILE_SYSTEM}";
-	-- GRANT CONNECT ON DATABASE "${PGDATABASE}" TO "${PGUSER_GAME}";
+	GRANT CONNECT ON DATABASE "${PGDATABASE}" TO "${PGUSER_PROFILE_SYSTEM}";
+	GRANT CONNECT ON DATABASE "${PGDATABASE}" TO "${PGUSER_GAME}";
 
 EOSQL
