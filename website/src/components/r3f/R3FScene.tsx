@@ -1,4 +1,6 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useRef, useEffect, useCallback } from "react";
+import { partySocket } from "../../api/party/partySocket";
+import { useBotStore } from "../../store/BotStore";
 import { useGameStore } from "../../store/GameStore";
 import { usePartyStore } from "../../store/PartyStore";
 import { useSettingsStore, AUTO_PASS_RECORD } from "../../store/SettingsStore";
@@ -8,8 +10,25 @@ import { RankButton } from "./rank/RankButton";
 import { SortButtons } from "./sort/SortButton";
 
 export const R3FScene = () => {
-	const { totalPlayers } = useGameStore()
+	const { totalPlayers } = useGameStore();
+	const { addBotToParty } = useBotStore();
 	const { members } = usePartyStore();
+
+	const hasRunRef = useRef(false);
+	useEffect(() => {
+		if (hasRunRef.current)
+			return;
+		hasRunRef.current = true;
+
+		let i = members.length;
+		while (i < totalPlayers) {
+			addBotToParty(`bot-${i}`);
+			i++;
+		}
+		partySocket.updateGameMode(totalPlayers);
+		partySocket.startGameSession();
+		hasRunRef.current = false;
+	}, [members.length, totalPlayers]);
 
 	const [round, setRound] = useState(1);
 	const incRound = () => {

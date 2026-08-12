@@ -39,10 +39,10 @@ export const HomeScene = () => {
 						flex-5
 						pointer-events-auto
 					">
-						<HomeCardButton gameMode="4 Players" totalPlayers={4}/>
-						<HomeCardButton gameMode="3 Players" totalPlayers={3}/>
-						<HomeCardButton gameMode="2 Players" totalPlayers={2}/>
-						<HomeCardButton gameMode="Tutorial" totalPlayers={1}/>
+						<HomeCardButton gameMode="4 Players" playerCount={4}/>
+						<HomeCardButton gameMode="3 Players" playerCount={3}/>
+						<HomeCardButton gameMode="2 Players" playerCount={2}/>
+						<HomeCardButton gameMode="Tutorial" playerCount={1}/>
 					</div>
 				</div>
 			</main>

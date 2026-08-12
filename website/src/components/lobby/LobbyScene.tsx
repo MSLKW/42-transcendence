@@ -28,7 +28,8 @@ export const LobbyScene = () => {
 		}
 		partySocket.updateGameMode(totalPlayers);
 		partySocket.startGameSession();
-	}, []);
+		hasRunRef.current = false;
+	}, [members.length, totalPlayers]);
 
 	return (
 		<>

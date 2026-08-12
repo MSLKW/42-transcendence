@@ -7,10 +7,10 @@ import { TutorialIcon } from "./tutorial/TutorialIcon";
 
 interface HomeProps {
 	gameMode: GAMEMODE_TYPE,
-	totalPlayers: number,
+	playerCount: number,
 }
 
-export const HomeCardButton = ({ gameMode, totalPlayers }: HomeProps) => {
+export const HomeCardButton = ({ gameMode, playerCount }: HomeProps) => {
 	const { setGameValue } = useGameStore()
 	const { setCurrentScene } = useSceneStore();
 	const { clientUuid } = useProfileStore();
@@ -20,12 +20,11 @@ export const HomeCardButton = ({ gameMode, totalPlayers }: HomeProps) => {
 		<button
 			disabled={clientUuid !== hostUuid}
 			onClick={() => {
+				setGameValue("totalPlayers", playerCount);
 				if (gameMode === "Tutorial")
 					setCurrentScene("GAMEPLAY");
-				else {
-					setGameValue("totalPlayers", totalPlayers);
+				else
 					setCurrentScene("LOBBY");
-				}
 			}}
 			className="
 				h-full max-h-150 aspect-2/3
