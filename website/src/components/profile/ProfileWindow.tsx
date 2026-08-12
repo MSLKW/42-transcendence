@@ -20,7 +20,7 @@ export const ProfileWindow = () => {
 	const data = getProfileData(clientUuid!);
 	if (!data || !data.name)
 		return;
-	const { hostUuid, set1PlayerParty } = usePartyStore();
+	const { hostUuid, members, set1PlayerParty } = usePartyStore();
 
 	const [name, setName] = useState(data.name);
 	const [avatar, setAvatar] = useState(data.avatar!);
@@ -31,7 +31,8 @@ export const ProfileWindow = () => {
 		if (!isValid)
 			return;
 		updateClientProfile(name, avatar, badge);
-		set1PlayerParty(name, avatar);
+		if (members.length <= 0)
+			set1PlayerParty(name, avatar);
 		setShowWindow("profile", false);
 	}
 
