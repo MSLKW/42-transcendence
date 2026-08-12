@@ -4,7 +4,6 @@
 
 | <center>Event Name</center> | <center>JSON Payload</center> | <center>Callback</center> |
 |-|-|-|
-| "party_state" | host: string,<br>members: string[],<br>gameId: string \| null | <center>-</center> |
 | "send_invite" | recipientUuid: string | <center>-</center> |
 | "kick_player" | recipientUuid: string | <center>-</center> |
 | "accept_invite" | hostUuid: string | success: boolean,<br>reason?: string (if success == false) |
@@ -15,6 +14,7 @@
 ## Party Manager To Frontend Socket Transmits
 | <center>Event Name</center> | <center>JSON Payload</center> | <center>Callback</center> |
 |-|-|-|
+| "party_state" | host: string,<br>members: string[],<br>gameId: string \| null | <center>-</center> |
 | "invite_received" | hostUuid: string | <center>-</center> |
 | "kicked" | message: string | <center>-</center> |
 | "game_session_start" | gameId: string | <center>-</center> |
