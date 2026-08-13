@@ -13,22 +13,22 @@ export const FriendToggleButton = ({ uuid }: FriendToggleButtonProps) => {
 			onClick={() => toggleFriend(uuid)}
 			className="
 				h-4rem aspect-5/1
-				btn-text
-				text-n0 border border-n5 bg-n6
-				flex
-				place-content-center place-items-center
+				btn-text bg-light
+				text-n0
+				flex place-content-center place-items-center
+				gap-0.5rem
 			"
 		>
 			{ isAFriend(uuid) ? (
-				<div className="flex gap-0.5rem place-items-center">
+				<>
 					<UnfriendIcon />
 					<h3>Unfriend</h3>
-				</div>
+				</>
 			) : (
-				<div className="flex gap-0.5rem place-items-center">
+				<>
 					<AddFriendIcon />
 					<h3>Add Friend</h3>
-				</div>
+				</>
 			)}
 		</button>
 	);
