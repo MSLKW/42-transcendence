@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { handleSignOut } from "./api/authentication/sign_out/handleSignOut";
 import { partySocket } from "./api/party/partySocket";
 import { useDevStore } from "./store/DevStore";
+import { useFriendStore } from "./store/FriendStore";
 import { useGameStore } from "./store/GameStore";
 import { usePartyStore } from "./store/PartyStore";
 import { useProfileStore } from "./store/ProfileStore";
@@ -40,6 +41,7 @@ export default function Dev() {
 			document.documentElement.classList.remove('frame-mode');
 	}, [showFrame]);
 
+	const { friendUuids } = useFriendStore();
 	const { incTotalWin, incTotalLoss } = useGameStore();
 	const { partySocketId, partyGameId, members, set1PlayerParty } = usePartyStore();
 	const { clientUuid, isAuthenticated, validateResponse, profilesInDb, resetProfilesInDb } = useProfileStore();
@@ -98,6 +100,10 @@ export default function Dev() {
 					<DevBtn label={`isAuthenticated: ${isAuthenticated ? "Yes" : "No"}`} call={() => console.log("/validate response: ", validateResponse)}/>
 				</div>
 				<div className="flex place-content-between">
+					<li>Profile Manager Socket ID: n/a</li>
+					<DevBtn label={`profilesInDb: ${profilesInDb.length}`} call={() => console.log("profilesInDb: ", profilesInDb)} />
+				</div>
+				<div className="flex place-content-between">
 					<DevBtn
 						label={`Party Manager Socket ID: ${partySocketId ? partySocketId : "n/a"}`}
 						call={handlePartyConnection}
@@ -105,12 +111,11 @@ export default function Dev() {
 					<DevBtn label={`members: ${members.length}`} call={() => console.log("members: ", members)}/>
 				</div>
 				<li>Party Game ID: {partyGameId ? partyGameId : "n/a"}</li>
-				<div className="flex place-content-between">
-					<li>Profile Manager Socket ID: n/a</li>
-					<DevBtn label={`profilesInDb: ${profilesInDb.length}`} call={() => console.log("profilesInDb: ", profilesInDb)} />
-				</div>
-				<li>Friend Manager Socket ID: n/a</li>
 				<li>Game Manager Socket ID: n/a</li>
+				<div className="flex place-content-between">
+					<li>Friend Manager Socket ID: n/a</li>
+					<DevBtn label={`friendUuids: ${friendUuids.length}`} call={() => console.log("friendUuids: ", friendUuids)} />
+				</div>
 				<li>Chat Manager Socket ID: n/a</li>
 			</ul>
 		</section>

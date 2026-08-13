@@ -18,7 +18,7 @@ export const AvatarButton = ({
 	showName = true,
 }: AvatarProps) => {
 	const { getMemberData } = usePartyStore();
-	const { currentScene, setShowWindow } = useSceneStore();
+	const { currentScene, setShowWindow, setSceneValue } = useSceneStore();
 
 	const data = getMemberData(uuid);
 	if (!data)
@@ -48,6 +48,7 @@ export const AvatarButton = ({
 						setShowWindow("bots", true);
 						console.log("Bots Profile button clicked");
 					} else if (data.relation === "Stranger" || data.relation === "Friend") {
+						setSceneValue("profileUuid", uuid);
 						setShowWindow("stats", true, uuid);
 						console.log("Player Profile button clicked");
 					}

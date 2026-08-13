@@ -71,12 +71,12 @@ export const HomeScene = () => {
 						/>
 					}
 					{ members.map((member) => (
-						member.uuid != clientUuid &&
-						<AvatarButton
-							key={member.uuid}
-							uuid={member.uuid!}
-							cornerButton={hostUuid === member.uuid ? "host" : ""}
-						/>
+						member.uuid && member.uuid != clientUuid &&
+							<AvatarButton
+								key={member.uuid}
+								uuid={member.uuid}
+								cornerButton={hostUuid === member.uuid ? "host" : ""}
+							/>
 					))}
 					<PartyButton />
 				</div>
