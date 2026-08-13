@@ -5,11 +5,13 @@ import { BadgeWindow } from "./badge/BadgeWindow";
 import { PlayerStatusModule } from "../status/PlayerStatusModule";
 
 interface PlayerDataModule {
-	profile: ProfileData,
+	profile: ProfileData | undefined,
 	badge?: BADGE_TYPE,
 	setBadge?: (type: BADGE_TYPE) => void;
 }
-export const PlayerDataModule = ({ badge, setBadge, profile }: PlayerDataModule) => {
+export const PlayerDataModule = ({ profile, badge, setBadge }: PlayerDataModule) => {
+	if (!profile)
+		return;
 	const { clientUuid } = useProfileStore();
 	const { showWindow, setShowWindow } = useSceneStore();
 	const [ xpProgress, setXPProgress ] = useState(0);
@@ -86,7 +88,7 @@ export const PlayerDataModule = ({ badge, setBadge, profile }: PlayerDataModule)
 								<i>{profile.badge}</i>
 							</h2>
 					}
-					{ showWindow["badge"] &&
+					{ showWindow["badge"] && badge && setBadge &&
 						<BadgeWindow
 							badge={badge}
 							setBadge={setBadge}

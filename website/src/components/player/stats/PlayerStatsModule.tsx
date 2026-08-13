@@ -1,9 +1,12 @@
 import type { ProfileData } from "../../../store/ProfileStore";
 
 interface PlayerStatsModuleProps {
-	profile: ProfileData;
+	profile: ProfileData | undefined;
 }
 export const PlayerStatsModule = ({ profile }: PlayerStatsModuleProps) => {
+	if (!profile)
+		return;
+
 	return (
 		<div className="
 			flex

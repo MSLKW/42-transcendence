@@ -68,7 +68,7 @@ export const ProfileWindow = () => {
 				/>
 				<MedalsModule />
 				<PlayerStatsModule profile={data} />
-				{ hostUuid != clientUuid && <LeavePartyModule /> }
+				{ hostUuid !== clientUuid && <LeavePartyModule /> }
 			</div>
 		</Window>
 	);

@@ -15,8 +15,8 @@ export const handleSignOut = async () => {
 		useProfileStore.getState().setClientUuid("n/a");
 		
 		useSceneStore.getState().setCurrentScene("LOGIN");
-		console.log("[handleSignOut] Logged out successfully!");
 		useNotificationStore.getState().showNotification("Logged out successfully", NOTIFICATION_TYPE.message);
+		console.log("[handleSignOut] Logged out successfully!");
 	} catch (err) {
 		const errorMsg = err instanceof Error ? err.message : "Something went wrong. Please try again";
 		console.log("[handleSignOut] ", errorMsg)

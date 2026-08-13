@@ -8,11 +8,11 @@ export const fetchValidate = async () => {
 	useProfileStore.getState().setValidateResponse(response);
 
 	if (!response.ok) {
-		console.log("/api/auth/validate error: Invalid or expired session");
 		useProfileStore.getState().setIsAuthenticated(false);
+		console.log("[/api/auth/validate] error: Invalid or expired session");
 		return;
 	}
 	
 	useProfileStore.getState().setIsAuthenticated(true);
-	console.log("/api/auth/validate 200 OK");
+	console.log("[/api/auth/validate] 200 OK");
 }

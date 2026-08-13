@@ -1,6 +1,13 @@
 import { partySocket } from "../../api/party/partySocket";
+import { usePartyStore } from "../../store/PartyStore";
 
 export const LeavePartyModule = () => {
+	const { set1PlayerParty } = usePartyStore();
+	const handleLeaveParty = () => {
+		partySocket.leaveParty();
+		set1PlayerParty();
+	}
+
 	return (
 		<div
 			className="
@@ -9,7 +16,7 @@ export const LeavePartyModule = () => {
 			"
 		>
 			<button
-				onClick={() => partySocket.leaveParty()}
+				onClick={handleLeaveParty}
 				className="
 					btn-text bg-light
 					h-3rem aspect-5/1

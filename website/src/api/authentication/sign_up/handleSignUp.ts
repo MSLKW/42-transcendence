@@ -22,8 +22,8 @@ export const handleSignUp = async (email: string, password: string, setIsLoading
 		setShowWindow("createAccount", false);
 		setCurrentScene("HOME");
 		partySocket.connect();
-		console.log("[handleSignUp] Account created successfully!");
 		showNotification("Account created successfully!", NOTIFICATION_TYPE.message);
+		console.log("[handleSignUp] Account created successfully!");
 	} catch (err) {
 		const errorMsg = err instanceof Error ? err.message : "Something went wrong. Please try again";
 		showNotification(errorMsg, NOTIFICATION_TYPE.error);
