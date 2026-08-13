@@ -20,7 +20,7 @@ export const ProfileWindow = () => {
 	const data = getProfileData(clientUuid!);
 	if (!data || !data.name)
 		return;
-	const { hostUuid, members, set1PlayerParty } = usePartyStore();
+	const { members, set1PlayerParty } = usePartyStore();
 
 	const [name, setName] = useState(data.name);
 	const [avatar, setAvatar] = useState(data.avatar!);
@@ -68,7 +68,7 @@ export const ProfileWindow = () => {
 				/>
 				<MedalsModule />
 				<PlayerStatsModule profile={data} />
-				{ hostUuid !== clientUuid && <LeavePartyModule /> }
+				{ members.length > 1 && <LeavePartyModule /> }
 			</div>
 		</Window>
 	);

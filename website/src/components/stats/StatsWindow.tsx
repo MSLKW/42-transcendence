@@ -1,3 +1,4 @@
+import { usePartyStore } from "../../store/PartyStore";
 import { useProfileStore } from "../../store/ProfileStore";
 import { useSceneStore } from "../../store/SceneStore";
 import { Window } from "../window/Window";
@@ -10,13 +11,15 @@ import { KickMemberButton } from "./kick/KickMemberButton";
 
 export const StatsWindow: React.FC = () => {
 	const { profileUuid } = useSceneStore();
-	// if (!profileUuid)
-		// return;
+	if (!profileUuid)
+		return;
 
 	const { getProfileData } = useProfileStore();
 	const data = getProfileData(profileUuid!);
 	// if (!data)
 		// return null;
+
+	const { getMemberData } = usePartyStore();
 
 	return (
 		<Window
@@ -42,8 +45,7 @@ export const StatsWindow: React.FC = () => {
 						gap-1rem
 					"
 				>
-					<KickMemberButton />
-					{/* <FriendToggleButton profile={data} /> */}
+					{ getMemberData(profileUuid) && <KickMemberButton />}
 					<FriendToggleButton uuid={profileUuid!}/>
 				</div>
 			</div>

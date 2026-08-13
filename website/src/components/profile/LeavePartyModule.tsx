@@ -1,8 +1,10 @@
 import { partySocket } from "../../api/party/partySocket";
 import { usePartyStore } from "../../store/PartyStore";
+import { useProfileStore } from "../../store/ProfileStore";
 
 export const LeavePartyModule = () => {
-	const { set1PlayerParty } = usePartyStore();
+	const { set1PlayerParty, hostUuid } = usePartyStore();
+	const { clientUuid } = useProfileStore();
 	const handleLeaveParty = () => {
 		partySocket.leaveParty();
 		set1PlayerParty();
@@ -22,7 +24,7 @@ export const LeavePartyModule = () => {
 					h-3rem aspect-5/1
 				"
 			>
-				Leave Party
+				{clientUuid === hostUuid ? "Disband Party" : "Leave Party"}
 			</button>
 		</div>
 	);
