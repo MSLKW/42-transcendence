@@ -1,6 +1,6 @@
 import { useState, useRef, useCallback } from "react";
 
-export const useDraggable = (initialPosition = { x: 0, y: 0 }) => {
+export const useWindowDrag = (initialPosition = { x: 0, y: 0 }) => {
 	const [position, setPosition] = useState(initialPosition);
 	const draggingRef = useRef(false);
 	const offsetRef = useRef({ x: 0, y: 0 });

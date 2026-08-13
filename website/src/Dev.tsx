@@ -42,7 +42,7 @@ export default function Dev() {
 	}, [showFrame]);
 
 	const { friendUuids } = useFriendStore();
-	const { incTotalWin, incTotalLoss } = useGameStore();
+	const { seats, incTotalWin, incTotalLoss } = useGameStore();
 	const { partySocketId, partyGameId, members, set1PlayerParty } = usePartyStore();
 	const { clientUuid, isAuthenticated, validateResponse, profilesInDb, resetProfilesInDb } = useProfileStore();
 	const { currentScene, setCurrentScene } = useSceneStore();
@@ -111,7 +111,10 @@ export default function Dev() {
 					<DevBtn label={`members: ${members.length}`} call={() => console.log("members: ", members)}/>
 				</div>
 				<li>Party Game ID: {partyGameId ? partyGameId : "n/a"}</li>
-				<li>Game Manager Socket ID: n/a</li>
+				<div className="flex place-content-between">
+					<li>Game Manager Socket ID: n/a</li>
+					<DevBtn label={`seats: ${seats.length}`} call={() => console.log("seats: ", seats)} />
+				</div>
 				<div className="flex place-content-between">
 					<li>Friend Manager Socket ID: n/a</li>
 					<DevBtn label={`friendUuids: ${friendUuids.length}`} call={() => console.log("friendUuids: ", friendUuids)} />

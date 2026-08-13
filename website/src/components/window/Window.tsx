@@ -1,6 +1,6 @@
 import { useState, type ReactNode } from "react";
 import { useSceneStore } from "../../store/SceneStore";
-import { useDraggable } from "../../utilities/draggable";
+import { useWindowDrag } from "../../utilities/windowDrag";
 import { LightboxButton } from "../lightbox/LightboxButton";
 import { PinActiveIcon } from "./pin/PinActiveIcon";
 import { PinInactiveIcon } from "./pin/PinInactiveIcon";
@@ -31,7 +31,7 @@ export const Window: React.FC<WindowProps> = ({
 	call,
 }) => {
 	const [isPinned, setIsPinned] = useState(pinState);
-	const { position, handleMouseDown } = useDraggable();
+	const { position, handleMouseDown } = useWindowDrag();
 	const { setShowWindow } = useSceneStore();
 
 	return (

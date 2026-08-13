@@ -71,7 +71,7 @@ export default function App() {
 				w-full min-w-80 max-w-360
 				h-full min-h-120 max-h-360
 			">
-				{ (currentScene === "LOGIN" || currentScene === "HOME" || currentScene === "LOBBY") && 
+				{ (currentScene === "LOGIN" || currentScene === "HOME") && 
 					<Canvas>
 						<AdaptiveDpr />
 						<ambientLight intensity={0.5} />

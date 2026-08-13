@@ -10,7 +10,7 @@ import { AvatarButton } from "../avatar/AvatarButton";
 import { PartyButton } from "../party/invite/InviteButton";
 
 export const LobbyScene = () => {
-	const { totalPlayers } = useGameStore();
+	const { totalPlayers, setSeats } = useGameStore();
 	const { members } = usePartyStore();
 	const { setCurrentScene } = useSceneStore();
 	const { addBotToParty } = useBotStore();
@@ -27,6 +27,8 @@ export const LobbyScene = () => {
 			return;
 		hasRunRef.current = true;
 		partySocket.startGameSession();
+
+		setSeats();
 	}, [members.length, totalPlayers]);
 
 	return (
@@ -126,6 +128,7 @@ export const LobbyScene = () => {
 							)
 						})
 					}
+					{/* <SeatButton /> */}
 					<PartyButton />
 				</div>
 				<SmallLogo />
@@ -133,3 +136,15 @@ export const LobbyScene = () => {
 		</>
 	);
 }
+
+// export const SeatButton = () => {
+// 	return (
+// 		<button
+// 			className="
+// 				h-28 w-20
+// 				bg-b5
+// 				rounded-sm
+// 			"
+// 		/>
+// 	);
+// }

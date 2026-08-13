@@ -1,6 +1,7 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import { useProfileStore, type MEDAL_TYPE } from "./ProfileStore";
+import { usePartyStore } from "./PartyStore";
 
 export const GAMEMODE_LABEL = [
 	"4 Players",
@@ -12,13 +13,14 @@ export type GAMEMODE_TYPE = typeof GAMEMODE_LABEL[number];
 
 interface GameValues {
 	totalPlayers: number,
-	whichSeat: string[],
+	seats: string[],
 	gameStarted: boolean,
 	cardsLeft: number[],
 }
 
 interface GameState extends GameValues {
 	setGameValue: <K extends keyof GameValues>(key: K, value: GameValues[K]) => void;
+	setSeats: () => void;
 	incTotalWin: (uuid: string) => void;
 	incTotalLoss: (uuid: string) => void;
 	unlockMedal: (uuid: string, type: MEDAL_TYPE) => void;
@@ -28,11 +30,21 @@ export const useGameStore = create<GameState>() (
 	persist(
 		(set) => ({
 			totalPlayers: 1,
-			whichSeat: [],
+			seats: [],
 			gameStarted: false,
 			cardsLeft: [],
 
 			setGameValue: (key, value) => set(() => ({ [key]: value })),
+
+			setSeats: () => {
+				const members = usePartyStore.getState().members;
+				const newSeats = members
+					.map((member) => member.uuid)
+					.filter((uuid): uuid is string => uuid !== null);
+				set({
+					seats: newSeats,
+				})
+			},
 
 			incTotalWin: (uuid) => {
 				const profileStore = useProfileStore.getState();
