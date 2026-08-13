@@ -13,22 +13,25 @@ export type GAMEMODE_TYPE = typeof GAMEMODE_LABEL[number];
 
 interface GameValues {
 	totalPlayers: number,
-	seats: string[],
+	seats: (string | null)[],
 	gameStarted: boolean,
 	cardsLeft: number[],
 }
 
 interface GameState extends GameValues {
-	setGameValue: <K extends keyof GameValues>(key: K, value: GameValues[K]) => void;
-	setSeats: () => void;
-	incTotalWin: (uuid: string) => void;
-	incTotalLoss: (uuid: string) => void;
-	unlockMedal: (uuid: string, type: MEDAL_TYPE) => void;
+	setGameValue: <K extends keyof GameValues>(key: K, value: GameValues[K]) => void,
+	initSeats: () => void,
+	setSeatWithUuid: (uuid: string, seatNumber: number) => void,
+	playerUnseats: (uuid: string) => void,
+	autoSetSeats: () => void,
+	incTotalWin: (uuid: string) => void,
+	incTotalLoss: (uuid: string) => void,
+	unlockMedal: (uuid: string, type: MEDAL_TYPE) => void,
 }
 
 export const useGameStore = create<GameState>() (
 	persist(
-		(set) => ({
+		(set, get) => ({
 			totalPlayers: 1,
 			seats: [],
 			gameStarted: false,
@@ -36,14 +39,46 @@ export const useGameStore = create<GameState>() (
 
 			setGameValue: (key, value) => set(() => ({ [key]: value })),
 
-			setSeats: () => {
+			initSeats: () => {
+				const totalPlayers = get().totalPlayers;
+				const newSeats = Array(totalPlayers).fill(null);
+				set({
+					seats: newSeats,
+				})
+			},
+
+			setSeatWithUuid: (uuid, seatNumber) => {
+				const newSeats = [...get().seats];
+
+				const existingIndex = newSeats.findIndex(seat => seat === uuid);
+				if (existingIndex !== -1)
+					newSeats[existingIndex] = null;
+
+				newSeats[seatNumber] = uuid;
+				set({
+					seats: newSeats,
+				});
+			},
+
+			playerUnseats: (uuid) => {
+				const newSeats = [...get().seats];
+				const index = newSeats.findIndex(seat => seat === uuid);
+				if (index !== -1) {
+					newSeats[index] = null;
+					set({
+						seats: newSeats,
+					});
+				}
+			},
+
+			autoSetSeats: () => {
 				const members = usePartyStore.getState().members;
 				const newSeats = members
 					.map((member) => member.uuid)
 					.filter((uuid): uuid is string => uuid !== null);
 				set({
 					seats: newSeats,
-				})
+				});
 			},
 
 			incTotalWin: (uuid) => {

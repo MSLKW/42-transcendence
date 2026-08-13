@@ -1,5 +1,6 @@
 import { useEffect } from "react";
 import { useBotStore } from "../../store/BotStore";
+import { useGameStore } from "../../store/GameStore";
 import { usePartyStore } from "../../store/PartyStore";
 import { useProfileStore } from "../../store/ProfileStore";
 import { HeaderModule } from "../header/HeaderModule";
@@ -9,15 +10,17 @@ import { PartyButton } from "../party/invite/InviteButton";
 import { SmallLogo } from "../logo/SmallLogo";
 
 export const HomeScene = () => {
+	const { removeBotsFromParty } = useBotStore();
+	const { setGameValue } = useGameStore();
 	const { hostUuid, members, set1PlayerParty } = usePartyStore();
 	const { clientUuid } = useProfileStore();
-	const { removeBotsFromParty } = useBotStore();
 	
 	useEffect(() => {
 		console.log("[Home] Client Uuid:", clientUuid, " hostUuid:", hostUuid);
 		removeBotsFromParty();
 		if (members.length <= 0)
 			set1PlayerParty();
+		setGameValue("totalPlayers", 0);
 	}, [])
 
 	return (

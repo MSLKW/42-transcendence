@@ -22,6 +22,7 @@ interface PartyValues {
 	partyGameId: string | null;
 	members: MemberData[];
 	hostUuid: string | null;
+	humans: number;
 };
 
 interface PartyState extends PartyValues {
@@ -41,6 +42,7 @@ export const usePartyStore = create<PartyState>() (
 			partyGameId: null,
 			members: [],
 			hostUuid: null,
+			humans: 0,
 
 			setPartyValue: (key, value) => set(() => ({ [key]: value })),
 
@@ -77,7 +79,10 @@ export const usePartyStore = create<PartyState>() (
 						relation: "Stranger"
 					};
 				});
-				set({ members: newMembers });
+				set({
+					members: newMembers,
+					humans: newMembers.length,
+				});
 			},
 
 			set1PlayerParty: () => {

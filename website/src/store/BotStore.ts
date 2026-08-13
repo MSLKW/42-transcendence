@@ -32,6 +32,12 @@ export const useBotStore = create<BotState>() (
 				avatar: "stock-7.webp",
 				relation: "Bot",
 			},
+			{
+				uuid: "bot-4",
+				name: "SegFault",
+				avatar: "stock-8.webp",
+				relation: "Bot",
+			},
 		],
 
 		getBotData: (index) => {

@@ -1,3 +1,4 @@
+import { partySocket } from "../../../api/party/partySocket";
 import { useGameStore, type GAMEMODE_TYPE } from "../../../store/GameStore";
 import { usePartyStore } from "../../../store/PartyStore";
 import { useProfileStore } from "../../../store/ProfileStore";
@@ -11,22 +12,29 @@ interface HomeProps {
 }
 
 export const HomeCardButton = ({ gameMode, playerCount }: HomeProps) => {
-	const { setGameValue } = useGameStore()
+	const { setGameValue, autoSetSeats, initSeats } = useGameStore()
 	const { setCurrentScene } = useSceneStore();
 	const { clientUuid } = useProfileStore();
-	const { hostUuid } = usePartyStore();
+	const { hostUuid, members } = usePartyStore();
 
 	return (
 		<button
-			// disabled={clientUuid !== hostUuid}
+			data-tip="Host is in control"
+			disabled={clientUuid !== hostUuid}
 			onClick={() => {
 				setGameValue("totalPlayers", playerCount);
+				if (members.length === 1)
+					autoSetSeats();
+				else
+					initSeats();
+
 				if (gameMode === "Tutorial")
 					setCurrentScene("TEST");
 				else
 					setCurrentScene("LOBBY");
+				partySocket.startGameSession();
 			}}
-			className="
+			className={`
 				h-full max-h-150 aspect-2/3
 				bg-linear-to-b from-b3 to-b5 hover:not-disabled:from-b4 hover:not-disabled:to-b5
 				border border-b6 rounded-[clamp(0.375rem,3.462vmin-0.663rem,1.5rem)]
@@ -34,9 +42,11 @@ export const HomeCardButton = ({ gameMode, playerCount }: HomeProps) => {
 				flex flex-col place-content-between
 				hover:not-disabled:scale-105 active:hover:not-disabled:scale-100
 				focus-visible:outline-2 outline-b5 outline-offset-5
-				cursor-pointer
+				${clientUuid === hostUuid ? "cursor-pointer" : ""}
 				snap-center
-		">
+				${clientUuid === hostUuid ? "" : "data-tip-up"}
+			`}
+		>
 			{ gameMode === "4 Players" &&
 				<>
 					<div className="

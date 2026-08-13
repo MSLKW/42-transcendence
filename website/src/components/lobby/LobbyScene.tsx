@@ -1,35 +1,39 @@
-import { useEffect, useRef } from "react";
-import { partySocket } from "../../api/party/partySocket";
+import { useEffect } from "react";
 import { useBotStore } from "../../store/BotStore";
 import { useGameStore } from "../../store/GameStore"; 
 import { usePartyStore } from "../../store/PartyStore";
+import { useProfileStore } from "../../store/ProfileStore";
 import { useSceneStore } from "../../store/SceneStore";
 import { HeaderModule } from "../header/HeaderModule";
 import { SmallLogo } from "../logo/SmallLogo";
 import { AvatarButton } from "../avatar/AvatarButton";
 import { PartyButton } from "../party/invite/InviteButton";
+import { TakeSeatButton } from "./TakeSeatButton";
+import { UnseatButton } from "./UnseatButton";
+
+export const fillWithBots = () => {
+	let i = 0;
+	while (i < useGameStore.getState().totalPlayers) {
+		if (!useGameStore.getState().seats[i]) {
+			useBotStore.getState().addBotToParty(`bot-${i}`);
+			useGameStore.getState().setSeatWithUuid(`bot-${i}`, i);
+		}
+		i++;
+	}
+}
 
 export const LobbyScene = () => {
-	const { totalPlayers, setSeats } = useGameStore();
-	const { members } = usePartyStore();
+	const { totalPlayers, seats } = useGameStore();
+	const { members, humans, hostUuid } = usePartyStore();
+	const { clientUuid } = useProfileStore();
 	const { setCurrentScene } = useSceneStore();
-	const { addBotToParty } = useBotStore();
-	
-	let hasRunRef = useRef(false);
-	useEffect(() => {
-		let i = members.length;
-		while (i < totalPlayers) {
-			addBotToParty(`bot-${i}`);
-			i++;
-		}
-		
-		if (hasRunRef.current)
-			return;
-		hasRunRef.current = true;
-		partySocket.startGameSession();
 
-		setSeats();
-	}, [members.length, totalPlayers]);
+	useEffect(() => {
+		const totalSeated = seats.filter((seat): seat is string => seat !== null).length;
+
+		if (totalSeated === members.length)
+			fillWithBots();
+	}, [members, seats]);
 
 	return (
 		<>
@@ -40,46 +44,43 @@ export const LobbyScene = () => {
 					grid ${ totalPlayers === 3 ? "grid-cols-2" : "grid-cols-1" } grid-rows-1
 					place-content-evenly place-items-center
 				`}>
-					{ totalPlayers === 4 && members[2] && members[2].uuid &&
-						<AvatarButton
-							key={members[2].uuid}
-							uuid={members[2].uuid}
-						/>
+					{ totalPlayers === 4 &&
+						( seats[2]
+							? <AvatarButton key={seats[2]} uuid={seats[2]} cornerButton={seats[2] === hostUuid ? "host" : ""}/>
+							: <TakeSeatButton uuid={clientUuid!} seatNumber={2}/>
+						)
 					}
 					{ totalPlayers === 3 &&
 						<>
-							{ members[1] && members[1].uuid &&
-								<AvatarButton
-									key={members[1].uuid}
-									uuid={members[1].uuid}
-								/>
+							{ seats[1]
+								? <AvatarButton key={seats[1]} uuid={seats[1]} cornerButton={seats[1] === hostUuid ? "host" : ""}/>
+								: <TakeSeatButton uuid={clientUuid!} seatNumber={1}/>
 							}
-							{ members[2] && members[2].uuid &&
-								<AvatarButton
-									key={members[2].uuid}
-									uuid={members[2].uuid}
-								/>
+							{ seats[2]
+								? <AvatarButton key={seats[2]} uuid={seats[2]} cornerButton={seats[2] === hostUuid ? "host" : ""}/>
+								: <TakeSeatButton uuid={clientUuid!} seatNumber={2}/>
 							}
 						</>
 					}
-					{ totalPlayers === 2 && members[1] && members[1].uuid &&
-						<AvatarButton
-							key={members[1].uuid}
-							uuid={members[1].uuid}
-						/>
+					{ totalPlayers === 2 &&
+						( seats[1]
+							? <AvatarButton key={seats[1]} uuid={seats[1]} cornerButton={seats[1] === hostUuid ? "host" : ""}/>
+							: <TakeSeatButton uuid={clientUuid!} seatNumber={1}/>
+						)
 					}
 				</div>
 				<div className={`
 					w-full h-full
 					grid ${totalPlayers === 4 ? "grid-cols-3" : "grid-cols-1" } place-items-center
 				`}>
-					{ totalPlayers === 4 && members[1] && members[1].uuid &&
-						<AvatarButton
-							key={members[1].uuid}
-							uuid={members[1].uuid}
-						/>
+					{ totalPlayers === 4 &&
+						( seats[1]
+							? <AvatarButton key={seats[1]} uuid={seats[1]} cornerButton={seats[1] === hostUuid ? "host" : ""}/>
+							: <TakeSeatButton uuid={clientUuid!} seatNumber={1}/>
+						)
 					}
 					<button
+						disabled={totalPlayers !== seats.filter((seat): seat is string => seat !== null).length}
 						onClick={() => setCurrentScene("GAMEPLAY")}
 						className="
 							btn-text bg-light
@@ -89,19 +90,17 @@ export const LobbyScene = () => {
 					>
 						START
 					</button>
-					{ totalPlayers === 4 && members[3] && members[3].uuid &&
-						<AvatarButton
-							key={members[3].uuid}
-							uuid={members[3].uuid}
-						/>
-					}
+					{ totalPlayers === 4 &&
+						( seats[3]
+							? <AvatarButton key={seats[3]} uuid={seats[3]} cornerButton={seats[3] === hostUuid ? "host" : ""}/>
+							: <TakeSeatButton uuid={clientUuid!} seatNumber={3}/>
+							)
+							}
 				</div>
 				<div className="w-full h-full grid place-items-center place-content-center">
-					{ members[0] && members[0].uuid &&
-						<AvatarButton
-							key={members[0].uuid}
-							uuid={members[0].uuid}
-						/>
+					{ seats[0]
+						? <AvatarButton key={seats[0]} uuid={seats[0]} cornerButton={seats[0] === hostUuid ? "host" : ""} />
+						: <TakeSeatButton uuid={clientUuid!} seatNumber={0}/>
 					}
 				</div>
 			</main>
@@ -116,35 +115,19 @@ export const LobbyScene = () => {
 					gap-2rem
 					sm:overflow-x-visible overflow-x-auto
 				">
-					{ members.length > totalPlayers &&
-						members.slice(totalPlayers).map((member) => {
-							if (!member.uuid)
-								return;
-							return (
-								<AvatarButton
-									key={member.uuid}
-									uuid={member.uuid}
-								/>
-							)
-						})
-					}
-					{/* <SeatButton /> */}
+					{ members.map((member) => (
+						member.uuid && !seats.includes(member.uuid) &&
+							<AvatarButton
+								key={member.uuid}
+								uuid={member.uuid}
+								cornerButton={member.uuid === hostUuid ? "host" : ""}
+							/>
+					))}
 					<PartyButton />
+					{ seats.includes(clientUuid) && humans > 1 && <UnseatButton uuid={clientUuid!} /> }
 				</div>
 				<SmallLogo />
 			</footer>
 		</>
 	);
 }
-
-// export const SeatButton = () => {
-// 	return (
-// 		<button
-// 			className="
-// 				h-28 w-20
-// 				bg-b5
-// 				rounded-sm
-// 			"
-// 		/>
-// 	);
-// }

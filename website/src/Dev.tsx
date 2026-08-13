@@ -7,6 +7,7 @@ import { useGameStore } from "./store/GameStore";
 import { usePartyStore } from "./store/PartyStore";
 import { useProfileStore } from "./store/ProfileStore";
 import { useSceneStore } from "./store/SceneStore";
+import { fillWithBots } from "./components/lobby/LobbyScene";
 
 interface DevBtnProps {
 	label: string,
@@ -42,7 +43,7 @@ export default function Dev() {
 	}, [showFrame]);
 
 	const { friendUuids } = useFriendStore();
-	const { seats, incTotalWin, incTotalLoss } = useGameStore();
+	const { seats, totalPlayers, incTotalWin, incTotalLoss } = useGameStore();
 	const { partySocketId, partyGameId, members, set1PlayerParty } = usePartyStore();
 	const { clientUuid, isAuthenticated, validateResponse, profilesInDb, resetProfilesInDb } = useProfileStore();
 	const { currentScene, setCurrentScene } = useSceneStore();
@@ -62,6 +63,8 @@ export default function Dev() {
 		} else
 			partySocket.connect();
 	}
+
+	const humansSeated = seats.filter((seat): seat is string => typeof seat === "string").length;
 
 	return (
 		<section className="w-full text-r4 py-1rem">
@@ -113,11 +116,15 @@ export default function Dev() {
 				<li>Party Game ID: {partyGameId ? partyGameId : "n/a"}</li>
 				<div className="flex place-content-between">
 					<li>Game Manager Socket ID: n/a</li>
-					<DevBtn label={`seats: ${seats.length}`} call={() => console.log("seats: ", seats)} />
+					<DevBtn label={`seats: ${humansSeated} / ${totalPlayers}`} call={() => console.log("seats: ", seats)} />
 				</div>
 				<div className="flex place-content-between">
 					<li>Friend Manager Socket ID: n/a</li>
 					<DevBtn label={`friendUuids: ${friendUuids.length}`} call={() => console.log("friendUuids: ", friendUuids)} />
+				</div>
+				<div className="flex place-content-between">
+					<li>Bot Manager Socket ID: n/a</li>
+					{/* {currentScene === "LOBBY" && <DevBtn label="Fill with Bots" call={fillWithBots} />} */}
 				</div>
 				<li>Chat Manager Socket ID: n/a</li>
 			</ul>
