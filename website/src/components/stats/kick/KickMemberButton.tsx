@@ -2,11 +2,15 @@ import { partySocket } from "../../../api/party/partySocket";
 import { usePartyStore } from "../../../store/PartyStore";
 import { useProfileStore } from "../../../store/ProfileStore";
 
-export const KickMemberButton = () => {
+interface KickMemberButtonProps {
+	playerUuid: string
+}
+export const KickMemberButton = ({ playerUuid }: KickMemberButtonProps) => {
 	const { clientUuid } = useProfileStore();
-	const { hostUuid } = usePartyStore();
+	const { hostUuid, kickMember } = usePartyStore();
 	const handleKickMember = () => {
-		partySocket.kickMember("12345678-abcd-efgh-ijkl-000000000000", "Player");
+		partySocket.kickMember(playerUuid, "Player");
+		kickMember(playerUuid);
 	}
 	
 	return (

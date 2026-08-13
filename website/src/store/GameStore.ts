@@ -12,7 +12,7 @@ export type GAMEMODE_TYPE = typeof GAMEMODE_LABEL[number];
 
 interface GameValues {
 	totalPlayers: number,
-	whichSeat: number[],
+	whichSeat: string[],
 	gameStarted: boolean,
 	cardsLeft: number[],
 }

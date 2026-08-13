@@ -45,7 +45,7 @@ export const StatsWindow: React.FC = () => {
 						gap-1rem
 					"
 				>
-					{ getMemberData(profileUuid) && <KickMemberButton />}
+					{ getMemberData(profileUuid) && <KickMemberButton playerUuid={profileUuid}/>}
 					<FriendToggleButton uuid={profileUuid!}/>
 				</div>
 			</div>

@@ -27,7 +27,6 @@ export const useFriendStore = create<FriendState>()(
 			},
 
 			toggleFriend: (uuid) => {
-				console.log(uuid);
 				const currentFriends = get().friendUuids;
 				if (currentFriends.includes(uuid)) {
 					set({
