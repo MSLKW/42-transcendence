@@ -1,3 +1,4 @@
+import { useGameStore } from "../../../store/GameStore";
 import { usePartyStore } from "../../../store/PartyStore";
 import { useNotificationStore, NOTIFICATION_TYPE } from "../../../store/NotificationStore"; 
 import { useSceneStore } from "../../../store/SceneStore";
@@ -9,11 +10,14 @@ export const handleSignOut = async () => {
 	try {
 		await signOutFetch();
 
-		partySocket.disconnect();
+		useGameStore.getState().setGameValue("totalPlayers", 0);
+		useGameStore.getState().initSeats();
+
 		usePartyStore.getState().resetMembers();
 		usePartyStore.getState().setPartyValue("partyGameId", null);
 		useProfileStore.getState().setClientUuid("n/a");
-		
+		partySocket.disconnect();
+
 		useSceneStore.getState().setCurrentScene("LOGIN");
 		useNotificationStore.getState().showNotification("Logged out successfully", NOTIFICATION_TYPE.message);
 		console.log("[handleSignOut] Logged out successfully!");
