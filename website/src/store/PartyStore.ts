@@ -79,6 +79,7 @@ export const usePartyStore = create<PartyState>() (
 						relation: "Stranger"
 					};
 				});
+				console.log("newMembers:", newMembers, " newMembers.length:", newMembers.length);
 				set({
 					members: newMembers,
 					humans: newMembers.length,
@@ -104,6 +105,7 @@ export const usePartyStore = create<PartyState>() (
 						}
 					],
 					hostUuid: clientUuid,
+					humans: 1,
 				});
 			},
 
