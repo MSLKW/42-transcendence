@@ -49,7 +49,7 @@ psql -v ON_ERROR_STOP=1 <<-EOSQL
 	FOR EACH ROW EXECUTE FUNCTION set_updated_at();
 
 	CREATE OR REPLACE TRIGGER trg_updated_at
-	BEFORE UPDATE ON profile_system_schema.user_data
+	BEFORE UPDATE ON profile_system_schema.user_info
 	FOR EACH ROW EXECUTE FUNCTION set_updated_at();
 
 	CREATE OR REPLACE TRIGGER trg_updated_at

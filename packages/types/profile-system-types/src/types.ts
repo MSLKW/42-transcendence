@@ -1,9 +1,9 @@
-export type UserFullProfile = {
+export type UserData = {
 	id:				string,
 	username:		string | null,
 	avatarPath:		string | null,
 	badge:			BadgeLabel,
-	achievements:	Record<AchievementLabel, Date>,
+	achievements:	Record<AchievementLabel, Date | null>,
 	userSettings:	UserSettings,
 	createdAt:		Date,
 	lastLogin:		Date,	
@@ -13,7 +13,6 @@ export type UserFullProfile = {
 	totalWins:		number,
 	totalLoss:		number,
 	winStreak:		number,
-	achievements:	Record<AchievementLabel, Date | null>,
 	online:			boolean,
 	inGame:			boolean
 };
