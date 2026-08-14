@@ -8,7 +8,8 @@ export class DrizzlePlayerStatusStore {
 	{
 		try
 		{
-			await postgres.insert(playerStatus)
+			await postgres
+				.insert(playerStatus)
 				.values({ playerId: uuid, isOnline: true})
 				.onConflictDoUpdate({
 					target: playerStatus.playerId,
@@ -25,7 +26,8 @@ export class DrizzlePlayerStatusStore {
 	{
 		try
 		{
-			await postgres.update(playerStatus)
+			await postgres
+				.update(playerStatus)
 				.set({ isOnline: false})
 				.where(eq(playerStatus.playerId, uuid));
 		}
