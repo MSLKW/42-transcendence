@@ -7,7 +7,7 @@ import { useGameStore } from "./store/GameStore";
 import { usePartyStore } from "./store/PartyStore";
 import { useProfileStore } from "./store/ProfileStore";
 import { useSceneStore } from "./store/SceneStore";
-// import { fillWithBots } from "./components/lobby/LobbyScene";
+// import { fillEmptySeatsWithBots } from "./components/lobby/LobbyScene";
 
 interface DevBtnProps {
 	label: string,
@@ -68,13 +68,6 @@ export default function Dev() {
 
 	return (
 		<section className="w-full text-r4 py-1rem">
-			{/* <ul className="flex place-content-evenly">
-				<DevBtn label="Login" call={() => setCurrentScene("LOGIN")}/>
-				<DevBtn label="Home" call={() => setCurrentScene("HOME")}/>
-				<DevBtn label="Lobby" call={() => setCurrentScene("LOBBY")}/>
-				<DevBtn label="Test" call={() => setCurrentScene("TEST")}/>
-				<DevBtn label="Gameplay" call={() => setCurrentScene("GAMEPLAY")}/>
-			</ul> */}
 			<ul className="flex place-content-evenly">
 				<DevBtn label="Frame" call={() => toggleFlag("showFrame")} />
 				<DevBtn label="Stats" call={() => toggleFlag("showStats")} />
@@ -124,7 +117,7 @@ export default function Dev() {
 				</div>
 				<div className="flex place-content-between">
 					<li>Bot Manager Socket ID: n/a</li>
-					{/* {currentScene === "LOBBY" && <DevBtn label="Fill with Bots" call={fillWithBots} />} */}
+					{/* {currentScene === "LOBBY" && <DevBtn label="Fill with Bots" call={fillEmptySeatsWithBots} />} */}
 				</div>
 				<li>Chat Manager Socket ID: n/a</li>
 			</ul>
