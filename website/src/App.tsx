@@ -50,7 +50,7 @@ export default function App() {
 		};
 		validateAuth();
 
-		if (currentScene != "LOGIN") {
+		if (currentScene != "Login") {
 			if (!data?.name)
 				setShowWindow("setup", true);
 			if (!partySocket.isSocketActive())
@@ -63,7 +63,7 @@ export default function App() {
 
 	return (
 		<>
-			{ (currentScene === "LOGIN" || currentScene === "HOME") && <StripeBg /> }
+			{ (currentScene === "Login" || currentScene === "Home") && <StripeBg /> }
 			{showStats && <Stats />}
 			<section className="
 				z-0
@@ -71,12 +71,12 @@ export default function App() {
 				w-full min-w-80 max-w-360
 				h-full min-h-120 max-h-360
 			">
-				{ (currentScene === "LOGIN" || currentScene === "HOME") && 
+				{ (currentScene === "Login" || currentScene === "Home") && 
 					<Canvas>
 						<AdaptiveDpr />
 						<ambientLight intensity={0.5} />
 						<directionalLight position={[0, 5, 5]} intensity={0.5} />
-						{ currentScene === "LOGIN" &&
+						{ currentScene === "Login" &&
 							<Card
 								position={[0,0.25,0]}
 								rotation={[-Math.PI/4,0,0]}
@@ -90,12 +90,12 @@ export default function App() {
 				}
 			</section>
 			<section className="cont-body">
-				{ currentScene === 'LOGIN' && <LoginScene /> }
-				{ currentScene === 'HOME' && <HomeScene /> }
-				{ currentScene === 'LOBBY' && <LobbyScene /> }
-				{ currentScene === 'TEST' && <TestScene /> }
-				{ currentScene === 'GAMEPLAY' && <GameplayScene /> }
-				{ currentScene === 'RESULTS' && <ResultsScene /> }
+				{ currentScene === "Login" && <LoginScene /> }
+				{ currentScene === "Home" && <HomeScene /> }
+				{ currentScene === "Lobby" && <LobbyScene /> }
+				{ currentScene === "Test" && <TestScene /> }
+				{ currentScene === "Gameplay" && <GameplayScene /> }
+				{ currentScene === "Results" && <ResultsScene /> }
 				{ showWindow["bots"] && <BotsWindow /> }
 				{ showWindow["chat"] && <ChatWindow /> }
 				{ showWindow["createAccount"] && <CreateAccountWindow /> }

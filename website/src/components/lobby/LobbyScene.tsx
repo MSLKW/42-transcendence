@@ -37,7 +37,7 @@ export const LobbyScene = () => {
 
 	return (
 		<>
-			<HeaderModule back="HOME"/>
+			<HeaderModule back="Home"/>
 			<main className="flex">
 				<div className="flex place-items-center">
 					<HostSettings />
@@ -88,7 +88,7 @@ export const LobbyScene = () => {
 						}
 						<button
 							disabled={totalPlayers !== seats.filter((seat): seat is string => seat !== null).length}
-							onClick={() => setCurrentScene("GAMEPLAY")}
+							onClick={() => setCurrentScene("Gameplay")}
 							className="
 								btn-text bg-light
 								h-3rem aspect-5/1
@@ -135,7 +135,6 @@ export const LobbyScene = () => {
 					))}
 					<PartyButton />
 					{ seats.includes(clientUuid) && humans > 1 && <UnseatButton uuid={clientUuid!} /> }
-					{/* <UnseatButton uuid={clientUuid!} /> */}
 				</div>
 				<SmallLogo />
 			</footer>

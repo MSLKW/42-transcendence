@@ -36,7 +36,7 @@ export const LoginScene = () => {
 					<SignInButton />
 				</div>
 				<button
-					onClick={() => setCurrentScene("HOME")}
+					onClick={() => setCurrentScene("Home")}
 					className="
 						btn-text bg-clear
 						h-3rem aspect-6/1

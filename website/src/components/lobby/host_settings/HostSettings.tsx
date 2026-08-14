@@ -1,3 +1,4 @@
+import { useBotStore } from "../../../store/BotStore";
 import { usePartyStore } from "../../../store/PartyStore";
 import { useProfileStore } from "../../../store/ProfileStore";
 import { useSceneStore } from "../../../store/SceneStore";
@@ -6,14 +7,15 @@ import { AUTO_PASS_RECORD, useSettingsStore } from "../../../store/SettingsStore
 export const HostSettings = () => {
 	const { allow3OfAKind, allow2OfSpadesEnd, autoPassIndex, endGameCondition, scoreCalculation } = useSettingsStore();
 	const autoPassKeys = Object.keys(AUTO_PASS_RECORD);
-	const { clientUuid } = useProfileStore();
+	const { intel } = useBotStore();
 	const { hostUuid } = usePartyStore();
+	const { clientUuid } = useProfileStore();
 	const { setShowWindow } = useSceneStore();
 
 	return (
 		<button
 			tabIndex={-1}
-			data-tip="Host Settings"
+			data-tip={clientUuid === hostUuid ? "Edit rules" : "Rules set by host"}
 			onClick={
 				clientUuid === hostUuid
 					? () => setShowWindow("settings", true)
@@ -29,6 +31,7 @@ export const HostSettings = () => {
 				data-tip-up
 			`}
 		>
+			<h1>Lobby Rules</h1>
 			<div>
 				<h3><b>Play Three of a Kind?</b></h3>
 				<h3 className="text-a4">
@@ -57,6 +60,12 @@ export const HostSettings = () => {
 				<h3><b>Score Calculation:</b></h3>
 				<h3 className="text-a4">
 					{ scoreCalculation ? "Number of cards" : "Value of cards" }
+				</h3>
+			</div>
+			<div>
+				<h3><b>Bot Difficulty:</b></h3>
+				<h3 className="text-a4">
+					{ intel }
 				</h3>
 			</div>
 		</button>

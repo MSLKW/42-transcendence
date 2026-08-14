@@ -31,9 +31,9 @@ export const BotsWindow = () => {
 							flex
 						"
 					>
-						<BotSetButton name="Easy" intelSelect="EASY"/>
-						<BotSetButton name="Medium" intelSelect="MEDIUM"/>
-						<BotSetButton name="Hard" intelSelect="HARD"/>
+						<BotSetButton name="Easy" />
+						<BotSetButton name="Medium" />
+						<BotSetButton name="Hard" />
 					</div>
 					<div
 						className="
@@ -44,7 +44,7 @@ export const BotsWindow = () => {
 						"
 					>
 						<h3 className="text-n6">
-							Select bot intelligence...
+							Select bot difficulty...
 						</h3>
 						<button
 							onClick={() => setShowWindow("bots", false)}

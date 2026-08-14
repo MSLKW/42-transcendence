@@ -3,9 +3,9 @@ import { usePartyStore, type MemberData } from "./PartyStore";
 import { useGameStore } from "./GameStore";
 
 export const INTEL_LABEL = [
-	"EASY",
-	"MEDIUM",
-	"HARD",
+	"Easy",
+	"Medium",
+	"Hard",
  ] as const;
  export type INTEL_TYPE = typeof INTEL_LABEL[number];
 
@@ -26,31 +26,31 @@ export const useBotStore = create<BotState>() (
 	(set, get) => ({
 		bots: [
 			{
-				uuid: "bot-1",
+				uuid: "bot-0",
 				name: "Norminette",
 				avatar: "stock-5.webp",
 				relation: "Bot",
 			},
 			{
-				uuid: "bot-2",
+				uuid: "bot-1",
 				name: "Moulinette",
 				avatar: "stock-6.webp",
 				relation: "Bot",
 			},
 			{
-				uuid: "bot-3",
+				uuid: "bot-2",
 				name: "Thila-Bot",
 				avatar: "stock-7.webp",
 				relation: "Bot",
 			},
 			{
-				uuid: "bot-4",
+				uuid: "bot-3",
 				name: "SegFault",
 				avatar: "stock-8.webp",
 				relation: "Bot",
 			},
 		],
-		intel: "MEDIUM",
+		intel: "Medium",
 
 		getBotData: (index) => {
 			const bots = get().bots;
@@ -96,10 +96,12 @@ export const useBotStore = create<BotState>() (
 
 		fillSeatsWithBots: () => {
 			let i = 0;
+			let bot_i = 0;
 			while (i < useGameStore.getState().totalPlayers) {
 				if (!useGameStore.getState().seats[i]) {
-					useBotStore.getState().addBotToParty(`bot-${i}`);
-					useGameStore.getState().setSeatWithUuid(`bot-${i}`, i);
+					useBotStore.getState().addBotToParty(`bot-${bot_i}`);
+					useGameStore.getState().setSeatWithUuid(`bot-${bot_i}`, i);
+					bot_i++;
 				}
 				i++;
 			}

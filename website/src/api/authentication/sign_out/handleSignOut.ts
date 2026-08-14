@@ -18,7 +18,7 @@ export const handleSignOut = async () => {
 		useProfileStore.getState().setClientUuid("n/a");
 		partySocket.disconnect();
 
-		useSceneStore.getState().setCurrentScene("LOGIN");
+		useSceneStore.getState().setCurrentScene("Login");
 		useNotificationStore.getState().showNotification("Logged out successfully", NOTIFICATION_TYPE.message);
 		console.log("[handleSignOut] Logged out successfully!");
 	} catch (err) {

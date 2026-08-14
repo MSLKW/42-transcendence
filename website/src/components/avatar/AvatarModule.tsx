@@ -33,18 +33,18 @@ export const AvatarModule = ({
 		>
 			<button
 				data-tip={
-					data.relation === "Self" && currentScene !== "GAMEPLAY" ? "Edit Profile" :
-					(data.relation === "Bot" && currentScene === "LOBBY") ? "Choose Bot" :
+					data.relation === "Self" && currentScene !== "Gameplay" ? "Edit Profile" :
+					(data.relation === "Bot" && currentScene === "Lobby") ? "Set Bot Difficulty" :
 					(data.relation === "Stranger" || data.relation === "Friend") ? "View Stats" :
 					""
 				}
 				onClick={(e) => {
 					e.currentTarget.blur();
 
-					if (data.relation === "Self" && currentScene !== "GAMEPLAY") {
+					if (data.relation === "Self" && currentScene !== "Gameplay") {
 						setShowWindow("profile", true);
 						console.log("Edit Profile button clicked");
-					} else if (data.relation === "Bot" && currentScene === "LOBBY") {
+					} else if (data.relation === "Bot" && currentScene === "Lobby") {
 						setShowWindow("bots", true);
 						console.log("Bots Profile button clicked");
 					} else if (data.relation === "Stranger" || data.relation === "Friend") {
@@ -55,11 +55,11 @@ export const AvatarModule = ({
 				}}
 				className={`
 					rounded-xs
-					${ (data.relation === "Bot" || data.relation === "Self") && currentScene === "GAMEPLAY"
+					${ (data.relation === "Bot" || data.relation === "Self") && currentScene === "Gameplay"
 						? ""
 						: "hover:not-disabled:scale-105 active:hover:not-disabled:scale-100 focus-visible:outline-2 cursor-pointer"
 					}
-					${ (data.relation === "Bot" || data.relation === "Self") && currentScene === "GAMEPLAY"
+					${ (data.relation === "Bot" || data.relation === "Self") && currentScene === "Gameplay"
 						? ""
 						: cornerButton ? "data-tip-up2" : "data-tip-up"
 					}

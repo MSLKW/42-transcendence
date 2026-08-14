@@ -26,7 +26,7 @@ export const HomeScene = () => {
 
 	return (
 		<>
-			<HeaderModule back="LOGIN" />
+			<HeaderModule back="Login" />
 			<main>
 				<div
 					tabIndex={-1}

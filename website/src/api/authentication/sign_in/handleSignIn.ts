@@ -16,7 +16,7 @@ export const handleSignIn = async (email: string, password: string, setIsLoading
 
 		setClientUuid(response.id);
 		setShowWindow("signIn", false);
-		setCurrentScene("HOME");
+		setCurrentScene("Home");
 		partySocket.connect();
 		console.log("[handleSignIn] Successfully signed in! response.id: ", response.id);
 	} catch (err) {

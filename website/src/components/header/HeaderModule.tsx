@@ -15,13 +15,13 @@ export const HeaderModule = ({ back }: HeaderModuleProps) => {
 	return (
 		<header className="flex justify-between">
 			<div className="flex rounded-full bg-dark">
-				{ back === "LOGIN"
+				{ back === "Login"
 					? <SignOutButton />
 					: <BackButton scene={() => {
-						if (currentScene === "GAMEPLAY")
-							setCurrentScene("LOBBY");
+						if (currentScene === "Gameplay")
+							setCurrentScene("Lobby");
 						else
-							setCurrentScene("HOME");
+							setCurrentScene("Home");
 					}}/> }
 				<SettingsButton />
 			</div>

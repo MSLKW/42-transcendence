@@ -76,7 +76,7 @@ export const GameplayScene = () => {
 
 	return (
 		<>
-			<HeaderModule back="LOBBY" />
+			<HeaderModule back="Lobby" />
 			<main>
 				{ totalPlayers === 4 && members.length >= 4 &&
 					<>

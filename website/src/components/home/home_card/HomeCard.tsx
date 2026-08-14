@@ -29,9 +29,9 @@ export const HomeCardButton = ({ gameMode, playerCount }: HomeProps) => {
 					initSeats();
 
 				if (gameMode === "Tutorial")
-					setCurrentScene("TEST");
+					setCurrentScene("Test");
 				else
-					setCurrentScene("LOBBY");
+					setCurrentScene("Lobby");
 				partySocket.startGameSession();
 			}}
 			className={`

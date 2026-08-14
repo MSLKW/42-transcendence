@@ -14,7 +14,7 @@ export const ResultsScene = () => {
 
 	return (
 		<>
-			<HeaderModule back="LOBBY" />
+			<HeaderModule back="Lobby" />
 			<main
 				className="
 					flex place-content-center place-items-center
@@ -46,7 +46,7 @@ export const ResultsScene = () => {
 							<h3 className="text-n6">{winner}</h3>
 							<div className="flex gap-2rem">
 								<button
-									onClick={() => setCurrentScene("HOME")}
+									onClick={() => setCurrentScene("Home")}
 									className="
 										h-3rem aspect-5/1
 										btn-text bg-light
@@ -55,7 +55,7 @@ export const ResultsScene = () => {
 									End
 								</button>
 								<button
-									onClick={() => setCurrentScene("GAMEPLAY")}
+									onClick={() => setCurrentScene("Gameplay")}
 									className="
 										h-3rem aspect-5/1
 										btn-text bg-light

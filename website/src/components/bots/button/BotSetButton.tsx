@@ -2,11 +2,10 @@ import { AvatarName } from "../../avatar/name/AvatarName";
 import { useBotStore, type INTEL_TYPE } from "../../../store/BotStore";
 
 interface BotSetButtonProps {
-	name: string,
-	intelSelect: INTEL_TYPE,
+	name: INTEL_TYPE,
 }
 
-export const BotSetButton = ({ name, intelSelect }: BotSetButtonProps) => {
+export const BotSetButton = ({ name }: BotSetButtonProps) => {
 	const { intel, setIntel } = useBotStore();
 	
 	return (
@@ -19,7 +18,7 @@ export const BotSetButton = ({ name, intelSelect }: BotSetButtonProps) => {
 			"
 		>
 			<button
-				onClick={() => setIntel(intelSelect)}
+				onClick={() => setIntel(name)}
 				className={`
 					w-[clamp(2.5rem,7.5vh+0.5rem,5rem)]
 					aspect-square
@@ -27,7 +26,7 @@ export const BotSetButton = ({ name, intelSelect }: BotSetButtonProps) => {
 					border border-a6 rounded-sm
 					hover:scale-105 cursor-pointer
 					outline-offset-3 outline-b5
-					${intelSelect === intel ? "outline-2" : ""}
+					${name === intel ? "outline-2" : ""}
 				`}
 			/>
 			<AvatarName name={name} />

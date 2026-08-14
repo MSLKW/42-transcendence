@@ -7,7 +7,7 @@ import { useGameStore } from "./store/GameStore";
 import { usePartyStore } from "./store/PartyStore";
 import { useProfileStore } from "./store/ProfileStore";
 import { useSceneStore } from "./store/SceneStore";
-// import { fillEmptySeatsWithBots } from "./components/lobby/LobbyScene";
+import { useBotStore } from "./store/BotStore";
 
 interface DevBtnProps {
 	label: string,
@@ -42,6 +42,7 @@ export default function Dev() {
 			document.documentElement.classList.remove('frame-mode');
 	}, [showFrame]);
 
+	const { fillSeatsWithBots } = useBotStore();
 	const { friendUuids } = useFriendStore();
 	const { seats, totalPlayers, incTotalWin, incTotalLoss } = useGameStore();
 	const { partySocketId, partyGameId, members, set1PlayerParty } = usePartyStore();
@@ -73,9 +74,9 @@ export default function Dev() {
 				<DevBtn label="Stats" call={() => toggleFlag("showStats")} />
 				<DevBtn label="Reset" call={handleReset} />
 			</ul>
-			{ currentScene === "GAMEPLAY" && 
+			{ currentScene === "Gameplay" && 
 				<ul className="flex place-content-evenly">
-					<DevBtn label="Results" call={() => setCurrentScene('RESULTS')}/>
+					<DevBtn label="Results" call={() => setCurrentScene('Results')}/>
 					<DevBtn label="Win Round" call={() => incTotalWin(clientUuid!)}/>
 					<DevBtn label="Lose Round" call={() => incTotalLoss(clientUuid!)}/>
 				</ul>
@@ -117,7 +118,7 @@ export default function Dev() {
 				</div>
 				<div className="flex place-content-between">
 					<li>Bot Manager Socket ID: n/a</li>
-					{/* {currentScene === "LOBBY" && <DevBtn label="Fill with Bots" call={fillEmptySeatsWithBots} />} */}
+					{currentScene === "Lobby" && <DevBtn label="Fill with Bots" call={fillSeatsWithBots} />}
 				</div>
 				<li>Chat Manager Socket ID: n/a</li>
 			</ul>
