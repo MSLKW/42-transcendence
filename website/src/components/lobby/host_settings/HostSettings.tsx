@@ -1,20 +1,33 @@
+import { usePartyStore } from "../../../store/PartyStore";
+import { useProfileStore } from "../../../store/ProfileStore";
+import { useSceneStore } from "../../../store/SceneStore";
 import { AUTO_PASS_RECORD, useSettingsStore } from "../../../store/SettingsStore";
 
 export const HostSettings = () => {
 	const { allow3OfAKind, allow2OfSpadesEnd, autoPassIndex, endGameCondition, scoreCalculation } = useSettingsStore();
 	const autoPassKeys = Object.keys(AUTO_PASS_RECORD);
+	const { clientUuid } = useProfileStore();
+	const { hostUuid } = usePartyStore();
+	const { setShowWindow } = useSceneStore();
 
 	return (
-		<div
-			className="
+		<button
+			tabIndex={-1}
+			data-tip="Host Settings"
+			onClick={
+				clientUuid === hostUuid
+					? () => setShowWindow("settings", true)
+					: undefined
+			}
+			className={`
 				w-max
-				bg-n1/50
-				rounded-xl
+				bg-n1/50 rounded-xl
 				py-1.5rem px-2rem
 				text-n6/80
-				flex flex-col
-				gap-1rem
-			"
+				flex flex-col gap-1rem
+				${ clientUuid === hostUuid ? "hover:not-disabled:scale-105 cursor-pointer" : ""}
+				data-tip-up
+			`}
 		>
 			<div>
 				<h3><b>Play Three of a Kind?</b></h3>
@@ -46,6 +59,6 @@ export const HostSettings = () => {
 					{ scoreCalculation ? "Number of cards" : "Value of cards" }
 				</h3>
 			</div>
-		</div>
+		</button>
 	);
 }

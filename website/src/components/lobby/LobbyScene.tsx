@@ -91,7 +91,7 @@ export const LobbyScene = () => {
 							onClick={() => setCurrentScene("GAMEPLAY")}
 							className="
 								btn-text bg-light
-								h-3rem aspect-4/1
+								h-3rem aspect-5/1
 								text-1.25rem text-n0
 							"
 						>
