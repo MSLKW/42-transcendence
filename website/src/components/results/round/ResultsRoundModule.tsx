@@ -1,6 +1,6 @@
 import { useGameStore } from "../../../store/GameStore";
 import { usePartyStore } from "../../../store/PartyStore";
-import { AvatarImage } from "../../avatar/AvatarImage";
+import { AvatarImage } from "../../avatar/image/AvatarImage";
 
 export const ResultsRoundModule = () => {
 	const { members } = usePartyStore();

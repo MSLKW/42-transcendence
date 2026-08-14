@@ -1,11 +1,11 @@
-interface AvatarSelectButtonProps {
+interface AvatarSetImageButtonProps {
 	id: string,
 	color: string,
 	avatar: string,
 	setAvatar: (img: string) => void;
 }
 
-export const AvatarSelectButton = ({ id, color, avatar, setAvatar }: AvatarSelectButtonProps) => {
+export const AvatarSetImageButton = ({ id, color, avatar, setAvatar }: AvatarSetImageButtonProps) => {
 	return (
 		<button 
 			onClick={() => setAvatar(id)}

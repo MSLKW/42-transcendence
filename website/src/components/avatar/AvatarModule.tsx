@@ -1,22 +1,22 @@
 import { usePartyStore } from "../../store/PartyStore";
 import { useSceneStore } from "../../store/SceneStore";
-import { AvatarImage } from "./AvatarImage";
-import { AvatarName } from "./AvatarNameLabel";
-import { HostIcon } from "./HostIcon";
+import { AvatarImage } from "./image/AvatarImage";
+import { AvatarName } from "./name/AvatarName";
+import { HostIcon } from "./host/HostIcon";
 
-interface AvatarProps {
+interface AvatarModuleProps {
 	uuid: string,
 	cornerButton?: string | number;
 	isActive?: boolean;
 	showName?: boolean;
 }
 
-export const AvatarButton = ({
+export const AvatarModule = ({
 	uuid,
 	cornerButton = "",
 	isActive = false,
 	showName = true,
-}: AvatarProps) => {
+}: AvatarModuleProps) => {
 	const { getMemberData } = usePartyStore();
 	const { currentScene, setShowWindow, setSceneValue } = useSceneStore();
 

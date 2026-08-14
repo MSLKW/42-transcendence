@@ -1,18 +1,27 @@
 import { create } from "zustand";
 import { usePartyStore, type MemberData } from "./PartyStore";
 
+export const INTEL_LABEL = [
+	"EASY",
+	"MEDIUM",
+	"HARD",
+ ] as const;
+ export type INTEL_TYPE = typeof INTEL_LABEL[number];
+
 interface BotValues {
 	bots: MemberData[],
+	intel: INTEL_TYPE,
 };
 
 interface BotState extends BotValues {
-	getBotData: (index: number) => MemberData | undefined;
+	getBotData: (index: number) => MemberData | undefined,
 	addBotToParty: (uuid: string) => void,
-	removeBotsFromParty: () => void, 
+	removeBotsFromParty: () => void,
+	setIntel: (intel: INTEL_TYPE) => void,
 };
 
 export const useBotStore = create<BotState>() (
-	(_set, get) => ({
+	(set, get) => ({
 		bots: [
 			{
 				uuid: "bot-1",
@@ -39,6 +48,7 @@ export const useBotStore = create<BotState>() (
 				relation: "Bot",
 			},
 		],
+		intel: "MEDIUM",
 
 		getBotData: (index) => {
 			const bots = get().bots;
@@ -74,6 +84,12 @@ export const useBotStore = create<BotState>() (
 
 			usePartyStore.setState({
 				members: filteredMembers,
+			});
+		},
+
+		setIntel: (intel) => {
+			set({
+				intel: intel,
 			});
 		},
 	}),

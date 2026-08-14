@@ -1,6 +1,6 @@
 import { useGameStore } from "../../../store/GameStore";
 import { usePartyStore } from "../../../store/PartyStore";
-import { AvatarButton } from "../../avatar/AvatarButton";
+import { AvatarModule } from "../../avatar/AvatarModule";
 
 export const ResultsPodiumModule = () => {
 	const { totalPlayers } = useGameStore();
@@ -14,25 +14,25 @@ export const ResultsPodiumModule = () => {
 		>
 			{ members[0] && members[0].uuid &&
 				<div className="text-center flex flex-col gap-3">
-					<AvatarButton key={members[0].uuid} uuid={members[0].uuid} cornerButton="1st"/>
+					<AvatarModule key={members[0].uuid} uuid={members[0].uuid} cornerButton="1st"/>
 					<span className="text-b5">+0</span>
 				</div>
 			}
 			{ members[1] && members[1].uuid &&
 				<div className="text-center flex flex-col gap-3">
-					<AvatarButton key={members[1].uuid} uuid={members[1].uuid} cornerButton="2nd" />
+					<AvatarModule key={members[1].uuid} uuid={members[1].uuid} cornerButton="2nd" />
 					<span className="text-r4">+6</span>
 				</div>
 			}
 			{ totalPlayers >= 3 && members[2] && members[2].uuid &&
 				<div className="text-center flex flex-col gap-3">
-					<AvatarButton key={members[2].uuid} uuid={members[2].uuid} cornerButton="3rd" />
+					<AvatarModule key={members[2].uuid} uuid={members[2].uuid} cornerButton="3rd" />
 					<span className="text-r4">+8</span>
 				</div>
 			}
 			{ totalPlayers >= 4 && members[3] && members[3].uuid &&
 				<div className="text-center flex flex-col gap-3">
-					<AvatarButton key={members[3].uuid} uuid={members[3].uuid} cornerButton="4th" />
+					<AvatarModule key={members[3].uuid} uuid={members[3].uuid} cornerButton="4th" />
 					<span className="text-r4">+15</span>
 				</div>
 			}

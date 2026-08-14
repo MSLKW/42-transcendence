@@ -1,4 +1,4 @@
-import { AvatarImage } from "../avatar/AvatarImage";
+import { AvatarImage } from "../avatar/image/AvatarImage";
 
 interface ChatProps {
 	senderId?: number;

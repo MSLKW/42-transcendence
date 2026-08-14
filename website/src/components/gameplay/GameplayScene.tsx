@@ -5,7 +5,7 @@ import { useGameStore } from "../../store/GameStore";
 import { usePartyStore } from "../../store/PartyStore";
 import { useSettingsStore, AUTO_PASS_RECORD } from "../../store/SettingsStore";
 import { HeaderModule } from "../header/HeaderModule";
-import { AvatarButton } from "../avatar/AvatarButton";
+import { AvatarModule } from "../avatar/AvatarModule";
 import { RankButton } from "./rank/RankButton";
 import { SortButtons } from "./sort/SortButton";
 
@@ -82,7 +82,7 @@ export const GameplayScene = () => {
 					<>
 						<div className="absolute left-[5%] top-[20%]">
 							{ members[1] && members[1].uuid &&
-								<AvatarButton
+								<AvatarModule
 									key={members[1].uuid ?? ""}
 									uuid={members[1].uuid ?? ""}
 									cornerButton={cardsLeft[1] ?? -1}
@@ -92,7 +92,7 @@ export const GameplayScene = () => {
 						</div>
 						<div className="absolute left-[25%] top-[5%]">
 							{ members[2] && members[2].uuid &&
-								<AvatarButton
+								<AvatarModule
 									key={members[2].uuid ?? ""}
 									uuid={members[2].uuid ?? ""}
 									cornerButton={cardsLeft[2]}
@@ -102,7 +102,7 @@ export const GameplayScene = () => {
 						</div>
 						<div className="absolute right-[5%] top-[20%]">
 							{ members[3] && members[3].uuid &&
-								<AvatarButton
+								<AvatarModule
 									key={members[3].uuid ?? ""}
 									uuid={members[3].uuid ?? ""}
 									cornerButton={cardsLeft[3] ?? -1}
@@ -116,7 +116,7 @@ export const GameplayScene = () => {
 					<>
 						<div className="absolute left-[5%] top-[20%]">
 							{ members[1] && members[1].uuid &&
-								<AvatarButton
+								<AvatarModule
 									key={members[1].uuid ?? ""}
 									uuid={members[1].uuid ?? ""}
 									cornerButton={cardsLeft[1] ?? -1}
@@ -126,7 +126,7 @@ export const GameplayScene = () => {
 						</div>
 						<div className="absolute right-[5%] top-[20%]">
 							{ members[2] && members[2].uuid &&
-								<AvatarButton
+								<AvatarModule
 									key={members[2].uuid ?? ""}
 									uuid={members[2].uuid ?? ""}
 									cornerButton={cardsLeft[2] ?? -1}
@@ -139,7 +139,7 @@ export const GameplayScene = () => {
 				{ totalPlayers === 2 && members.length >= 2 &&
 					<div className="absolute left-[25%] top-[5%]">
 						{ members[1] && members[1].uuid &&
-							<AvatarButton
+							<AvatarModule
 								key={members[1].uuid ?? ""}
 								uuid={members[1].uuid ?? ""}
 								cornerButton={cardsLeft[1] ?? -1}
@@ -181,7 +181,7 @@ export const GameplayScene = () => {
 			</main>
 			<footer className="flex place-content-between place-items-center">
 				{ members[0] && members[0].uuid &&
-					<AvatarButton
+					<AvatarModule
 						key={members[0].uuid}
 						uuid={members[0].uuid}
 						cornerButton={cardsLeft[0]}

@@ -2,7 +2,7 @@
 import { partySocket } from "../../../api/party/partySocket";
 import { useProfileStore } from "../../../store/ProfileStore";
 import { PlayerStatusModule } from "../../player/status/PlayerStatusModule";
-import { AvatarButton } from "../../avatar/AvatarButton";
+import { AvatarModule } from "../../avatar/AvatarModule";
 import { FriendsIcon } from "./FriendsIcon";
 
 interface FriendsProps {
@@ -25,7 +25,7 @@ export const FriendModule = ({ uuid }: FriendsProps) => {
 				gap-1rem
 			"
 		>
-			<AvatarButton
+			<AvatarModule
 				uuid={uuid}
 				showName={false}
 			/>

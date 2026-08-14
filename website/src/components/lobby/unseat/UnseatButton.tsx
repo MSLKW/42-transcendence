@@ -1,6 +1,6 @@
 
-import { useGameStore } from "../../store/GameStore";
-import { AvatarName } from "../avatar/AvatarNameLabel";
+import { useGameStore } from "../../../store/GameStore";
+import { AvatarName } from "../../avatar/name/AvatarName";
 import { UnseatIcon } from "./UnseatIcon";
 
 interface UnseatButtonProps {

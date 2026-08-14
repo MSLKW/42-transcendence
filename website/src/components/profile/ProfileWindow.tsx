@@ -3,8 +3,8 @@ import { usePartyStore } from "../../store/PartyStore";
 import { useProfileStore } from "../../store/ProfileStore";
 import { useSceneStore } from "../../store/SceneStore";
 import { Window } from "../window/Window";
-import { AvatarInputModule } from "../avatar/AvatarInputModule";
-import { AvatarSelectModule } from "../avatar/AvatarSelectModule";
+import { AvatarSetNameModule } from "../avatar/name/AvatarSetNameModule";
+import { AvatarSelectModule } from "../avatar/image/AvatarSetImageModule";
 import { MedalsModule } from "../player/medals/MedalsModule";
 import { PlayerDataModule } from "../player/data/PlayerDataModule";
 import { PlayerStatsModule } from "../player/stats/PlayerStatsModule";
@@ -52,7 +52,7 @@ export const ProfileWindow = () => {
 				"
 			>
 				<div className="flex">
-					<AvatarInputModule
+					<AvatarSetNameModule
 						name={name}
 						setName={setName}
 					/>

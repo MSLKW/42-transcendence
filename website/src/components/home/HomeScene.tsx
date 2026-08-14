@@ -5,7 +5,7 @@ import { usePartyStore } from "../../store/PartyStore";
 import { useProfileStore } from "../../store/ProfileStore";
 import { HeaderModule } from "../header/HeaderModule";
 import { HomeCardButton } from "./home_card/HomeCard";
-import { AvatarButton } from "../avatar/AvatarButton";
+import { AvatarModule } from "../avatar/AvatarModule";
 import { PartyButton } from "../party/invite/InviteButton";
 import { SmallLogo } from "../logo/SmallLogo";
 
@@ -67,7 +67,7 @@ export const HomeScene = () => {
 					"
 				>
 					{clientUuid &&
-						<AvatarButton 
+						<AvatarModule 
 							key={clientUuid}
 							uuid={clientUuid}
 							cornerButton={hostUuid === clientUuid ? "host" : ""}
@@ -75,7 +75,7 @@ export const HomeScene = () => {
 					}
 					{ members.map((member) => (
 						member.uuid && member.uuid != clientUuid &&
-							<AvatarButton
+							<AvatarModule
 								key={member.uuid}
 								uuid={member.uuid}
 								cornerButton={hostUuid === member.uuid ? "host" : ""}

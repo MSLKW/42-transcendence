@@ -1,6 +1,6 @@
 import { useSceneStore } from "../../store/SceneStore";
 import { Window } from "../window/Window";
-import { AvatarMemberModule } from "../avatar/AvatarMemberModule";
+import { BotSetButton } from "./button/BotSetButton";
 
 export const BotsWindow = () => {
 	const { setShowWindow } = useSceneStore();
@@ -31,9 +31,9 @@ export const BotsWindow = () => {
 							flex
 						"
 					>
-						<AvatarMemberModule name="Beginner" image="stock-0.png"/>
-						<AvatarMemberModule name="Intermediate" image="stock-0.png"/>
-						<AvatarMemberModule name="Expert" image="stock-0.png"/>
+						<BotSetButton name="Easy" intelSelect="EASY"/>
+						<BotSetButton name="Medium" intelSelect="MEDIUM"/>
+						<BotSetButton name="Hard" intelSelect="HARD"/>
 					</div>
 					<div
 						className="

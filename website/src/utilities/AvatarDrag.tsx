@@ -116,7 +116,7 @@ export const DraggableSwapButtons: React.FC = () => {
   }, [draggingId]);
 
   return (
-    <div className="relative w-full h-[500px] border border-gray-300 rounded-lg bg-gray-50 overflow-hidden select-none">
+    <div className="relative w-full h-125 border border-gray-300 rounded-lg bg-gray-50 overflow-hidden select-none">
       <div className="absolute top-4 left-4 text-sm text-gray-500 pointer-events-none">
         Click and drag any button over another to swap their positions!
       </div>

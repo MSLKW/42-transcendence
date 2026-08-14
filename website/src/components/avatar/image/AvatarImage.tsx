@@ -1,4 +1,4 @@
-import { useSettingsStore } from "../../store/SettingsStore";
+import { useSettingsStore } from "../../../store/SettingsStore";
 
 interface AvatarProps {
 	isActive?: boolean;

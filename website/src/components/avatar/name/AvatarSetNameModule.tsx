@@ -1,11 +1,11 @@
 import { useRef, useEffect } from "react";
-import { AvatarImage } from "./AvatarImage";
+import { AvatarImage } from "../image/AvatarImage";
 
-interface AvatarInputModuleProps {
+interface AvatarSetNameModuleProps {
 	name: string,
 	setName: (name: string) => void,
 }
-export const AvatarInputModule = ({ name, setName }: AvatarInputModuleProps) => {
+export const AvatarSetNameModule = ({ name, setName }: AvatarSetNameModuleProps) => {
 	const handleInput = (e: React.ChangeEvent<HTMLInputElement>) => {
 		const value = e.target.value;
 		setName(value);

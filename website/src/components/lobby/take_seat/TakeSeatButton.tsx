@@ -1,5 +1,5 @@
-import { useGameStore } from "../../store/GameStore";
-import { AvatarName } from "../avatar/AvatarNameLabel";
+import { useGameStore } from "../../../store/GameStore";
+import { AvatarName } from "../../avatar/name/AvatarName";
 import { TakeSeatIcon } from "./TakeSeatIcon";
 
 interface TakeSeatButtonProps {

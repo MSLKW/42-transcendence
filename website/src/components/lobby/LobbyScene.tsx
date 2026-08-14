@@ -6,10 +6,10 @@ import { useProfileStore } from "../../store/ProfileStore";
 import { useSceneStore } from "../../store/SceneStore";
 import { HeaderModule } from "../header/HeaderModule";
 import { SmallLogo } from "../logo/SmallLogo";
-import { AvatarButton } from "../avatar/AvatarButton";
+import { AvatarModule } from "../avatar/AvatarModule";
 import { PartyButton } from "../party/invite/InviteButton";
-import { TakeSeatButton } from "./TakeSeatButton";
-import { UnseatButton } from "./UnseatButton";
+import { TakeSeatButton } from "./take_seat/TakeSeatButton";
+import { UnseatButton } from "./unseat/UnseatButton";
 
 export const fillWithBots = () => {
 	let i = 0;
@@ -46,25 +46,25 @@ export const LobbyScene = () => {
 				`}>
 					{ totalPlayers === 4 &&
 						( seats[2]
-							? <AvatarButton key={seats[2]} uuid={seats[2]} cornerButton={seats[2] === hostUuid ? "host" : ""}/>
+							? <AvatarModule key={seats[2]} uuid={seats[2]} cornerButton={seats[2] === hostUuid ? "host" : ""}/>
 							: <TakeSeatButton uuid={clientUuid!} seatNumber={2}/>
 						)
 					}
 					{ totalPlayers === 3 &&
 						<>
 							{ seats[1]
-								? <AvatarButton key={seats[1]} uuid={seats[1]} cornerButton={seats[1] === hostUuid ? "host" : ""}/>
+								? <AvatarModule key={seats[1]} uuid={seats[1]} cornerButton={seats[1] === hostUuid ? "host" : ""}/>
 								: <TakeSeatButton uuid={clientUuid!} seatNumber={1}/>
 							}
 							{ seats[2]
-								? <AvatarButton key={seats[2]} uuid={seats[2]} cornerButton={seats[2] === hostUuid ? "host" : ""}/>
+								? <AvatarModule key={seats[2]} uuid={seats[2]} cornerButton={seats[2] === hostUuid ? "host" : ""}/>
 								: <TakeSeatButton uuid={clientUuid!} seatNumber={2}/>
 							}
 						</>
 					}
 					{ totalPlayers === 2 &&
 						( seats[1]
-							? <AvatarButton key={seats[1]} uuid={seats[1]} cornerButton={seats[1] === hostUuid ? "host" : ""}/>
+							? <AvatarModule key={seats[1]} uuid={seats[1]} cornerButton={seats[1] === hostUuid ? "host" : ""}/>
 							: <TakeSeatButton uuid={clientUuid!} seatNumber={1}/>
 						)
 					}
@@ -75,7 +75,7 @@ export const LobbyScene = () => {
 				`}>
 					{ totalPlayers === 4 &&
 						( seats[1]
-							? <AvatarButton key={seats[1]} uuid={seats[1]} cornerButton={seats[1] === hostUuid ? "host" : ""}/>
+							? <AvatarModule key={seats[1]} uuid={seats[1]} cornerButton={seats[1] === hostUuid ? "host" : ""}/>
 							: <TakeSeatButton uuid={clientUuid!} seatNumber={1}/>
 						)
 					}
@@ -92,14 +92,14 @@ export const LobbyScene = () => {
 					</button>
 					{ totalPlayers === 4 &&
 						( seats[3]
-							? <AvatarButton key={seats[3]} uuid={seats[3]} cornerButton={seats[3] === hostUuid ? "host" : ""}/>
+							? <AvatarModule key={seats[3]} uuid={seats[3]} cornerButton={seats[3] === hostUuid ? "host" : ""}/>
 							: <TakeSeatButton uuid={clientUuid!} seatNumber={3}/>
 							)
 							}
 				</div>
 				<div className="w-full h-full grid place-items-center place-content-center">
 					{ seats[0]
-						? <AvatarButton key={seats[0]} uuid={seats[0]} cornerButton={seats[0] === hostUuid ? "host" : ""} />
+						? <AvatarModule key={seats[0]} uuid={seats[0]} cornerButton={seats[0] === hostUuid ? "host" : ""} />
 						: <TakeSeatButton uuid={clientUuid!} seatNumber={0}/>
 					}
 				</div>
@@ -117,7 +117,7 @@ export const LobbyScene = () => {
 				">
 					{ members.map((member) => (
 						member.uuid && !seats.includes(member.uuid) &&
-							<AvatarButton
+							<AvatarModule
 								key={member.uuid}
 								uuid={member.uuid}
 								cornerButton={member.uuid === hostUuid ? "host" : ""}

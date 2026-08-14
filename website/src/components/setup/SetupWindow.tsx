@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Window } from "../window/Window";
-import { AvatarInputModule } from "../avatar/AvatarInputModule";
-import { AvatarSelectModule } from "../avatar/AvatarSelectModule";
+import { AvatarSetNameModule } from "../avatar/name/AvatarSetNameModule";
+import { AvatarSelectModule } from "../avatar/image/AvatarSetImageModule";
 import { SetupValidationModule } from "./SetupValidationModule";
 
 export const SetupWindow = () => {
@@ -30,7 +30,7 @@ export const SetupWindow = () => {
 					divide-y divide-n2/40
 					py-1rem px-3rem
 				">
-					<AvatarInputModule
+					<AvatarSetNameModule
 						name={name}
 						setName={setName}
 					/>
