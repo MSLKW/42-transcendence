@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNotificationStore, NOTIFICATION_TYPE } from "../../../store/NotificationStore";
 import { Window } from "../../window/Window";
-import { FormInputModule } from "../../form/FormInputModule";
+import { FormInputModule } from "../form/FormInputModule";
 import { handleSignIn } from "../../../api/authentication/sign_in/handleSignIn";
 
 export const SignInWindow = () => {

@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useNotificationStore, NOTIFICATION_TYPE } from "../../../store/NotificationStore";
 import { handleSignUp } from "../../../api/authentication/sign_up/handleSignUp";
 import { Window } from "../../window/Window";
-import { FormInputModule } from "../../form/FormInputModule";
+import { FormInputModule } from "../form/FormInputModule";
 
 export const CreateAccountWindow = () => {
 	const { showNotification } = useNotificationStore();

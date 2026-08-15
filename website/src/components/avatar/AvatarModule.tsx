@@ -2,7 +2,7 @@ import { usePartyStore } from "../../store/PartyStore";
 import { useSceneStore } from "../../store/SceneStore";
 import { AvatarImage } from "./image/AvatarImage";
 import { AvatarName } from "./name/AvatarName";
-import { HostIcon } from "./host/HostIcon";
+import { AvatarCornerButton } from "./corner/AvatarCornerButton";
 
 interface AvatarModuleProps {
 	uuid: string,
@@ -68,54 +68,7 @@ export const AvatarModule = ({
 				`}
 			>
 				<AvatarImage isActive={isActive} />
-				{ cornerButton === "host" &&
-					<div
-						data-tip="Host"
-						className="
-							bg-dark rounded-full
-							h-3rem aspect-square
-							data-tip-down
-							absolute top-0 -translate-y-1/2 right-0 translate-x-1/2
-							text-a4
-							cursor-help
-						"
-					>
-						<HostIcon />
-					</div>
-				}
-				{ typeof cornerButton === "number" &&
-					<div
-						data-tip="Cards Left"
-						className="
-							bg-dark rounded-full
-							h-3rem aspect-square
-							absolute top-0 -translate-y-1/2 right-0 translate-x-1/2
-							text-n6
-							flex place-content-center place-items-center
-							data-tip-down
-							cursor-help
-						"
-					>
-						<p>{cornerButton}</p>
-					</div>
-				}
-				{ (cornerButton === "1st" || cornerButton === "2nd" || cornerButton === "3rd" || cornerButton === "4th") &&
-					<div
-						data-tip={cornerButton + " Place"}
-						className={`
-							absolute top-0 -translate-y-1/2 right-0 translate-x-1/2
-							${cornerButton === "1st" ? "bg-accent text-n0" : "bg-dark text-n6" }
-							h-3rem aspect-square
-							rounded-full
-							text-n0
-							flex place-content-center place-items-center
-							cursor-help
-							data-tip-down
-						`}
-					>
-						<p>{cornerButton}</p>
-					</div>
-				}
+				<AvatarCornerButton cornerButton={cornerButton}/>
 			</button>
 			{ showName && data.name && <AvatarName name={data.name} /> }
 		</div>

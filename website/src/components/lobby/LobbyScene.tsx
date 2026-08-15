@@ -5,7 +5,6 @@ import { usePartyStore } from "../../store/PartyStore";
 import { useProfileStore } from "../../store/ProfileStore";
 import { useSceneStore } from "../../store/SceneStore";
 import { HeaderModule } from "../header/HeaderModule";
-import { SmallLogo } from "../logo/SmallLogo";
 import { AvatarModule } from "../avatar/AvatarModule";
 import { PartyCallButton } from "../party/call/PartyCallButton";
 import { BotManagerButton } from "./bots/BotManagerButton";
@@ -28,8 +27,9 @@ export const LobbyScene = () => {
 			fillSeatsWithBots();
 			return;
 		}
-	// }, [members, seats]);
 	}, []);
+
+	const seatsFilled = totalPlayers === seats.filter((seat): seat is string => seat !== null).length;
 
 	return (
 		<>
@@ -83,12 +83,14 @@ export const LobbyScene = () => {
 							)
 						}
 						<button
-							disabled={totalPlayers !== seats.filter((seat): seat is string => seat !== null).length}
+							data-tip={seatsFilled ? "Let's Play!" : "Waiting for seats to be filled"}
+							disabled={!seatsFilled}
 							onClick={() => setCurrentScene("Gameplay")}
 							className="
 								btn-text bg-light
 								h-3rem aspect-5/1
 								text-1.25rem text-n0
+								data-tip-up
 							"
 						>
 							START

@@ -24,7 +24,7 @@ import { InfoWindow } from "./components/info/InfoWindow";
 import { NotificationWindow } from "./components/notification/NotificationWindow";
 import { PartyWindow } from "./components/party/PartyWindow";
 import { ProfileWindow } from "./components/profile/ProfileWindow";
-import { RankWindow } from "./components/rank/RankWindow";
+import { RankWindow } from "./components/gameplay/rank/RankWindow";
 import { SetupWindow } from "./components/setup/SetupWindow";
 import { SettingsWindow } from "./components/settings/SettingsWindow";
 import { StatsWindow } from "./components/stats/StatsWindow";
