@@ -7,7 +7,7 @@ import { useSceneStore } from "../../store/SceneStore";
 import { HeaderModule } from "../header/HeaderModule";
 import { SmallLogo } from "../logo/SmallLogo";
 import { AvatarModule } from "../avatar/AvatarModule";
-import { PartyButton } from "../party/invite/InviteButton";
+import { PartyCallButton } from "../party/call/PartyCallButton";
 import { BotManagerButton } from "./bots/BotManagerButton";
 import { HostSettings } from "./host_settings/HostSettings";
 import { TakeSeatButton } from "./take_seat/TakeSeatButton";
@@ -129,7 +129,7 @@ export const LobbyScene = () => {
 								cornerButton={member.uuid === hostUuid ? "host" : ""}
 							/>
 					))}
-					<PartyButton />
+					<PartyCallButton />
 				</div>
 				<div className="flex gap-2rem">
 					{ seats.includes(clientUuid) && humans > 1 && <UnseatButton uuid={clientUuid!} /> }

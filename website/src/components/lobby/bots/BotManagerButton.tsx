@@ -35,7 +35,7 @@ export const BotManagerButton = () => {
 				<div
 					className="
 						h-[clamp(2.5rem,7.5vh+0.5rem,5rem)] aspect-square
-						border border-b5 rounded-sm
+						bg-dark rounded-sm
 						flex place-content-center place-items-center
 				">
 					{ botCount === 0 ? <AddBotsIcon /> : <RemoveBotsIcon /> }

@@ -6,7 +6,7 @@ import { useProfileStore } from "../../store/ProfileStore";
 import { HeaderModule } from "../header/HeaderModule";
 import { HomeCardButton } from "./home_card/HomeCard";
 import { AvatarModule } from "../avatar/AvatarModule";
-import { PartyButton } from "../party/invite/InviteButton";
+import { PartyCallButton } from "../party/call/PartyCallButton";
 import { SmallLogo } from "../logo/SmallLogo";
 
 export const HomeScene = () => {
@@ -82,7 +82,7 @@ export const HomeScene = () => {
 								cornerButton={hostUuid === member.uuid ? "host" : ""}
 							/>
 					))}
-					<PartyButton />
+					<PartyCallButton />
 				</div>
 				<SmallLogo />
 			</footer>

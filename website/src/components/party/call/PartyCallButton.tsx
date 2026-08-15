@@ -1,8 +1,8 @@
 import { useSceneStore } from "../../../store/SceneStore";
-import { PartyIcon } from "./InviteIcon";
+import { PartyIcon } from "./PartyCallIcon";
 import { AvatarName } from "../../avatar/name/AvatarName";
 
-export const PartyButton = () => {
+export const PartyCallButton = () => {
 	const { showWindow, setShowWindow } = useSceneStore();
 
 	return (

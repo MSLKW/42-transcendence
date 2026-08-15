@@ -8,7 +8,7 @@
 
 @utility bg-dark {
 	@apply
-		bg-n1
+		bg-n1/60
 		border border-n2
 		outline-b5
 		;
