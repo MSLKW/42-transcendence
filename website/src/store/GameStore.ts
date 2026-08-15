@@ -2,7 +2,6 @@ import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import { useProfileStore, type MEDAL_TYPE } from "./ProfileStore";
 import { usePartyStore } from "./PartyStore";
-import { useBotStore } from "./BotStore";
 
 export const GAMEMODE_LABEL = [
 	"4 Players",
@@ -46,19 +45,22 @@ export const useGameStore = create<GameState>() (
 				set({
 					seats: newSeats,
 				})
+				console.log("[initSeats]");
 			},
 
 			setSeatWithUuid: (uuid, seatNumber) => {
-				const newSeats = [...get().seats];
+				const seats = get().seats;
+				if (seats[seatNumber] === uuid)
+					return;
+				const newSeats = [...seats];
 
-				const existingIndex = newSeats.findIndex(seat => seat === uuid);
+				const existingIndex = newSeats.indexOf(uuid);
 				if (existingIndex !== -1)
 					newSeats[existingIndex] = null;
-
 				newSeats[seatNumber] = uuid;
-				set({
-					seats: newSeats,
-				});
+
+				set({ seats: newSeats });
+				console.log("[setSeatWithUuid] newSeats:", newSeats);
 			},
 
 			playerUnseats: (uuid) => {
@@ -70,9 +72,6 @@ export const useGameStore = create<GameState>() (
 						seats: newSeats,
 					});
 				}
-				useBotStore.setState({
-					botCount: 0,
-				})
 			},
 
 			autoSetSeats: () => {

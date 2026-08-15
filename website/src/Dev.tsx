@@ -118,7 +118,7 @@ export default function Dev() {
 				</div>
 				<div className="flex place-content-between">
 					<li>Bot Manager Socket ID: n/a</li>
-					{currentScene === "Lobby" && <DevBtn label="Fill with Bots" call={fillSeatsWithBots} />}
+					{currentScene === "Lobby" && <DevBtn label="Fill Seats w/ Bots" call={fillSeatsWithBots} />}
 				</div>
 				<li>Chat Manager Socket ID: n/a</li>
 			</ul>

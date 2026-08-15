@@ -8,12 +8,13 @@ import { HeaderModule } from "../header/HeaderModule";
 import { SmallLogo } from "../logo/SmallLogo";
 import { AvatarModule } from "../avatar/AvatarModule";
 import { PartyButton } from "../party/invite/InviteButton";
+import { BotManagerButton } from "./bots/BotManagerButton";
+import { HostSettings } from "./host_settings/HostSettings";
 import { TakeSeatButton } from "./take_seat/TakeSeatButton";
 import { UnseatButton } from "./unseat/UnseatButton";
-import { HostSettings } from "./host_settings/HostSettings";
 
 export const LobbyScene = () => {
-	const { removeBotsFromParty, fillSeatsWithBots } = useBotStore();
+	const { fillSeatsWithBots } = useBotStore();
 	const { totalPlayers, seats } = useGameStore();
 	const { members, humans, hostUuid } = usePartyStore();
 	const { clientUuid } = useProfileStore();
@@ -23,17 +24,12 @@ export const LobbyScene = () => {
 		const humansSeated = seats.filter((seat): seat is string => seat !== null && !seats.includes("bot")).length;
 		const totalSeated = seats.filter((seat): seat is string => seat !== null).length;
 
-		const hasBots = seats.some(seat => seat?.startsWith("bot"));
-		if (totalSeated < members.length && hasBots) {
-			removeBotsFromParty();
-			return;
-		}
-
 		if (totalSeated === members.length && humansSeated > 0) {
 			fillSeatsWithBots();
 			return;
 		}
-	}, [members, seats]);
+	// }, [members, seats]);
+	}, []);
 
 	return (
 		<>
@@ -120,7 +116,7 @@ export const LobbyScene = () => {
 				"
 			>
 				<div tabIndex={-1} className="
-					z-1
+					w-full
 					flex
 					gap-2rem
 					sm:overflow-x-visible overflow-x-auto
@@ -134,9 +130,11 @@ export const LobbyScene = () => {
 							/>
 					))}
 					<PartyButton />
-					{ seats.includes(clientUuid) && humans > 1 && <UnseatButton uuid={clientUuid!} /> }
 				</div>
-				<SmallLogo />
+				<div className="flex gap-2rem">
+					{ seats.includes(clientUuid) && humans > 1 && <UnseatButton uuid={clientUuid!} /> }
+					<BotManagerButton />
+				</div>
 			</footer>
 		</>
 	);

@@ -20,6 +20,7 @@ interface BotState extends BotValues {
 	addBotToParty: (uuid: string) => void,
 	removeBotsFromParty: () => void,
 	fillSeatsWithBots: () => void,
+	countSeatedBots: () => void,
 	setIntel: (intel: INTEL_TYPE) => void,
 };
 
@@ -63,21 +64,23 @@ export const useBotStore = create<BotState>() (
 			const bot = get().bots.find(b => b.uuid === uuid);
 			if (!bot)
 				return;
-			const newBot = {
+
+			const partyMembers = usePartyStore.getState().members;
+			if (partyMembers.some(m => m.uuid === uuid))
+				return;
+
+			const newBot: MemberData = {
 				uuid: bot.uuid,
 				name: bot.name,
 				avatar: bot.avatar,
 				relation: bot.relation,
 			}
 
-			const partyMembers = usePartyStore.getState().members;
-			if (partyMembers.some(m => m.uuid === uuid))
-				return;
 			usePartyStore.setState({
-				members: [
-					...partyMembers,
-					newBot,
-				]
+				members: [...partyMembers, newBot]
+			});
+			console.log("[AFTER]", {
+				members: usePartyStore.getState().members,
 			});
 		},
 
@@ -93,20 +96,41 @@ export const useBotStore = create<BotState>() (
 			useGameStore.setState({
 				seats: newSeats,
 			})
+
+			get().countSeatedBots();
 		},
 
 		fillSeatsWithBots: () => {
-			const { totalPlayers, seats, setSeatWithUuid } = useGameStore.getState();
+			const { totalPlayers } = useGameStore.getState();
+			const bots = get().bots;
+
 			let bot_i = 0;
 			for (let i = 0; i < totalPlayers; i++) {
-				if (!seats[i]) {
-					const bot_uuid = `bot-${bot_i}`;
-					get().addBotToParty(bot_uuid);
-					setSeatWithUuid(bot_uuid, i);
+				const { seats, setSeatWithUuid } = useGameStore.getState();
+				if (seats[i])
+					continue;
+
+				while (bot_i < bots.length && seats.includes(bots[bot_i].uuid)) {
 					bot_i++;
-					set({ botCount: bot_i - 1 })
 				}
+				if (bot_i >= bots.length)
+					break;
+
+				const bot = bots[bot_i];
+				get().addBotToParty(bot.uuid!);
+				setSeatWithUuid(bot.uuid!, i);
+				bot_i++;
 			}
+			get().countSeatedBots();
+		},
+
+		countSeatedBots: () => {
+			const seats = useGameStore.getState().seats;
+			const count = seats.filter((s) => s?.includes("bot")).length;
+
+			set({
+				botCount: count,
+			})
 		},
 
 		setIntel: (intel) => {

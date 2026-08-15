@@ -9,8 +9,6 @@ export const AvatarName = ({ name = "Player", style = "default" }: AvatarProps) 
 			className={`
 				w-max min-w-[clamp(2.5rem,7.5vh+0.5rem,5rem)] max-w-32.5
 				h-fit
-				${style === "default" ? "bg-n1" : ""}
-				border border-n2 rounded-full 
 				text-[clamp(0.25rem,1.5vh+0.125rem,1rem)]
 				text-n6
 				truncate
