@@ -1,8 +1,9 @@
-import { useState, useRef, useEffect, useCallback } from "react";
+import { useState, useRef, useEffect, useCallback, useMemo } from "react";
 import { partySocket } from "../../api/party/partySocket";
 import { useBotStore } from "../../store/BotStore";
 import { useGameStore } from "../../store/GameStore";
 import { usePartyStore } from "../../store/PartyStore";
+import { useProfileStore } from "../../store/ProfileStore";
 import { useSettingsStore, AUTO_PASS_RECORD } from "../../store/SettingsStore";
 import { HeaderModule } from "../header/HeaderModule";
 import { AvatarModule } from "../avatar/AvatarModule";
@@ -10,9 +11,21 @@ import { RankButton } from "./rank/RankButton";
 import { SortButtons } from "./sort/SortButton";
 
 export const GameplayScene = () => {
-	const { totalPlayers } = useGameStore();
 	const { addBotToParty } = useBotStore();
+	const { totalPlayers, seats } = useGameStore();
+	if (!seats)
+		return;
 	const { members } = usePartyStore();
+	const { clientUuid } = useProfileStore();
+
+	const seatIndexes = useMemo(() => {
+		const clientIndex = seats.indexOf(clientUuid);
+		if (clientIndex === -1)
+			return new Array(totalPlayers).fill(null);
+		return Array.from({ length: totalPlayers }, (_, i) => {
+			return (i + clientIndex) % totalPlayers;
+		});
+	}, [seats, clientUuid, totalPlayers]);
 
 	const hasRunRef = useRef(false);
 	useEffect(() => {
@@ -78,35 +91,35 @@ export const GameplayScene = () => {
 		<>
 			<HeaderModule back="Lobby" />
 			<main>
-				{ totalPlayers === 4 && members.length >= 4 &&
+				{ totalPlayers === 4 &&
 					<>
 						<div className="absolute left-[5%] top-[20%]">
-							{ members[1] && members[1].uuid &&
+							{ seats[seatIndexes[1]] &&
 								<AvatarModule
-									key={members[1].uuid ?? ""}
-									uuid={members[1].uuid ?? ""}
-									cornerButton={cardsLeft[1] ?? -1}
-									isActive={activePlayer === 1}
+									key={seats[seatIndexes[1]] ?? ""}
+									uuid={seats[seatIndexes[1]] ?? ""}
+									cornerButton={cardsLeft[seatIndexes[1]] ?? -1}
+									isActive={activePlayer === seatIndexes[1]}
 								/>
 							}
 						</div>
 						<div className="absolute left-[25%] top-[5%]">
-							{ members[2] && members[2].uuid &&
+							{ seats[seatIndexes[2]] &&
 								<AvatarModule
-									key={members[2].uuid ?? ""}
-									uuid={members[2].uuid ?? ""}
-									cornerButton={cardsLeft[2]}
-									isActive={activePlayer === 2}
+									key={seats[seatIndexes[2]] ?? ""}
+									uuid={seats[seatIndexes[2]] ?? ""}
+									cornerButton={cardsLeft[seatIndexes[2]] ?? -1}
+									isActive={activePlayer === seatIndexes[2]}
 								/>
 							}
 						</div>
 						<div className="absolute right-[5%] top-[20%]">
-							{ members[3] && members[3].uuid &&
+							{ seats[seatIndexes[3]] &&
 								<AvatarModule
-									key={members[3].uuid ?? ""}
-									uuid={members[3].uuid ?? ""}
-									cornerButton={cardsLeft[3] ?? -1}
-									isActive={activePlayer === 3}
+									key={seats[seatIndexes[3]] ?? ""}
+									uuid={seats[seatIndexes[3]] ?? ""}
+									cornerButton={cardsLeft[seatIndexes[3]] ?? -1}
+									isActive={activePlayer === seatIndexes[3]}
 								/>
 							}
 						</div>
@@ -115,22 +128,22 @@ export const GameplayScene = () => {
 				{ totalPlayers === 3 && members.length >= 3 &&
 					<>
 						<div className="absolute left-[5%] top-[20%]">
-							{ members[1] && members[1].uuid &&
+							{ seats[seatIndexes[1]] &&
 								<AvatarModule
-									key={members[1].uuid ?? ""}
-									uuid={members[1].uuid ?? ""}
-									cornerButton={cardsLeft[1] ?? -1}
-									isActive={activePlayer === 1}
+									key={seats[seatIndexes[1]] ?? ""}
+									uuid={seats[seatIndexes[1]] ?? ""}
+									cornerButton={cardsLeft[seatIndexes[1]] ?? -1}
+									isActive={activePlayer === seatIndexes[1]}
 								/>
 							}
 						</div>
 						<div className="absolute right-[5%] top-[20%]">
-							{ members[2] && members[2].uuid &&
+							{ seats[seatIndexes[2]] &&
 								<AvatarModule
-									key={members[2].uuid ?? ""}
-									uuid={members[2].uuid ?? ""}
-									cornerButton={cardsLeft[2] ?? -1}
-									isActive={activePlayer === 2}
+									key={seats[seatIndexes[2]] ?? ""}
+									uuid={seats[seatIndexes[2]] ?? ""}
+									cornerButton={cardsLeft[seatIndexes[2]] ?? -1}
+									isActive={activePlayer === seatIndexes[2]}
 								/>
 							}
 						</div>
@@ -138,12 +151,12 @@ export const GameplayScene = () => {
 				}
 				{ totalPlayers === 2 && members.length >= 2 &&
 					<div className="absolute left-[25%] top-[5%]">
-						{ members[1] && members[1].uuid &&
+						{ seats[seatIndexes[1]] &&
 							<AvatarModule
-								key={members[1].uuid ?? ""}
-								uuid={members[1].uuid ?? ""}
-								cornerButton={cardsLeft[1] ?? -1}
-								isActive={activePlayer === 1}
+								key={seats[seatIndexes[1]] ?? ""}
+								uuid={seats[seatIndexes[1]] ?? ""}
+								cornerButton={cardsLeft[seatIndexes[1]] ?? -1}
+								isActive={activePlayer === seatIndexes[1]}
 							/>
 						}
 					</div>
@@ -180,12 +193,12 @@ export const GameplayScene = () => {
 				</div>
 			</main>
 			<footer className="flex place-content-between place-items-center">
-				{ members[0] && members[0].uuid &&
+				{ seats[seatIndexes[0]] &&
 					<AvatarModule
-						key={members[0].uuid}
-						uuid={members[0].uuid}
-						cornerButton={cardsLeft[0]}
-						isActive={activePlayer === 0}
+						key={seats[seatIndexes[0]]}
+						uuid={seats[seatIndexes[0]] ?? ""}
+						cornerButton={cardsLeft[seatIndexes[0]]}
+						isActive={activePlayer === seatIndexes[0]}
 					/>
 				}
 				<div className="
