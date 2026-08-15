@@ -42,9 +42,8 @@ export default function Dev() {
 			document.documentElement.classList.remove('frame-mode');
 	}, [showFrame]);
 
-	const { fillSeatsWithBots } = useBotStore();
 	const { friendUuids } = useFriendStore();
-	const { seats, totalPlayers, incTotalWin, incTotalLoss } = useGameStore();
+	const { seats, totalPlayers, playerUnseats, incTotalWin, incTotalLoss } = useGameStore();
 	const { partySocketId, partyGameId, members, set1PlayerParty } = usePartyStore();
 	const { clientUuid, isAuthenticated, validateResponse, profilesInDb, resetProfilesInDb } = useProfileStore();
 	const { currentScene, setCurrentScene } = useSceneStore();
@@ -118,7 +117,7 @@ export default function Dev() {
 				</div>
 				<div className="flex place-content-between">
 					<li>Bot Manager Socket ID: n/a</li>
-					{currentScene === "Lobby" && <DevBtn label="Fill Seats w/ Bots" call={fillSeatsWithBots} />}
+					{currentScene === "Lobby" && <DevBtn label="Unseat" call={() => playerUnseats(clientUuid!)} />}
 				</div>
 				<li>Chat Manager Socket ID: n/a</li>
 			</ul>
