@@ -56,33 +56,32 @@ export const useBotStore = create<BotState>() (
 			const bots = get().bots;
 			return bots[index];
 		},
-		
+
 		addBotToParty: (uuid) => {
 			const bot = get().bots.find(b => b.uuid === uuid);
 			if (!bot)
 				return;
+			const newBot = {
+				uuid: bot.uuid,
+				name: bot.name,
+				avatar: bot.avatar,
+				relation: bot.relation,
+			}
 
-			const currentMembers = usePartyStore.getState().members;
-
-			if (currentMembers.some(m => m.uuid === uuid) || currentMembers.length >= 4)
+			const partyMembers = usePartyStore.getState().members;
+			if (partyMembers.some(m => m.uuid === uuid))
 				return;
-
 			usePartyStore.setState({
 				members: [
-					...currentMembers,
-					{
-						uuid: bot.uuid,
-						name: bot.name,
-						avatar: bot.avatar,
-						relation: bot.relation,
-					}
+					...partyMembers,
+					newBot,
 				]
 			});
 		},
 
 		removeBotsFromParty: () => {
-			const currentMembers = usePartyStore.getState().members;
-			const newMembers = currentMembers.filter(member => member.relation != "Bot");
+			const partyMembers = usePartyStore.getState().members;
+			const newMembers = partyMembers.filter(member => member.relation != "Bot");
 			usePartyStore.setState({
 				members: newMembers,
 			});
@@ -95,15 +94,15 @@ export const useBotStore = create<BotState>() (
 		},
 
 		fillSeatsWithBots: () => {
-			let i = 0;
+			const { totalPlayers, seats, setSeatWithUuid } = useGameStore.getState();
 			let bot_i = 0;
-			while (i < useGameStore.getState().totalPlayers) {
-				if (!useGameStore.getState().seats[i]) {
-					useBotStore.getState().addBotToParty(`bot-${bot_i}`);
-					useGameStore.getState().setSeatWithUuid(`bot-${bot_i}`, i);
+			for (let i = 0; i < totalPlayers; i++) {
+				if (!seats[i]) {
+					const bot_uuid = `bot-${bot_i}`;
+					get().addBotToParty(bot_uuid);
+					setSeatWithUuid(bot_uuid, i);
 					bot_i++;
 				}
-				i++;
 			}
 		},
 
