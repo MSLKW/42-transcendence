@@ -7,7 +7,7 @@ import { AUTO_PASS_RECORD, useSettingsStore } from "../../../store/SettingsStore
 export const HostSettings = () => {
 	const { allow3OfAKind, allow2OfSpadesEnd, autoPassIndex, endGameCondition, scoreCalculation } = useSettingsStore();
 	const autoPassKeys = Object.keys(AUTO_PASS_RECORD);
-	const { intel } = useBotStore();
+	const { intel, botCount } = useBotStore();
 	const { hostUuid } = usePartyStore();
 	const { clientUuid } = useProfileStore();
 	const { setShowWindow } = useSceneStore();
@@ -62,12 +62,14 @@ export const HostSettings = () => {
 					{ scoreCalculation ? "Number of cards" : "Value of cards" }
 				</h3>
 			</div>
-			<div>
-				<h3><b>Bot Difficulty:</b></h3>
-				<h3 className="text-a4">
-					{ intel }
-				</h3>
-			</div>
+			{ botCount > 0 &&
+				<div>
+					<h3><b>Bot Difficulty:</b></h3>
+					<h3 className="text-a4">
+						{ intel }
+					</h3>
+				</div>
+			}
 		</button>
 	);
 }

@@ -12,6 +12,7 @@ export const INTEL_LABEL = [
 interface BotValues {
 	bots: MemberData[],
 	intel: INTEL_TYPE,
+	botCount: number,
 };
 
 interface BotState extends BotValues {
@@ -51,6 +52,7 @@ export const useBotStore = create<BotState>() (
 			},
 		],
 		intel: "Medium",
+		botCount: 0,
 
 		getBotData: (index) => {
 			const bots = get().bots;
@@ -102,6 +104,7 @@ export const useBotStore = create<BotState>() (
 					get().addBotToParty(bot_uuid);
 					setSeatWithUuid(bot_uuid, i);
 					bot_i++;
+					set({ botCount: bot_i - 1 })
 				}
 			}
 		},

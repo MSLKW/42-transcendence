@@ -2,6 +2,7 @@ import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import { useProfileStore, type MEDAL_TYPE } from "./ProfileStore";
 import { usePartyStore } from "./PartyStore";
+import { useBotStore } from "./BotStore";
 
 export const GAMEMODE_LABEL = [
 	"4 Players",
@@ -69,6 +70,9 @@ export const useGameStore = create<GameState>() (
 						seats: newSeats,
 					});
 				}
+				useBotStore.setState({
+					botCount: 0,
+				})
 			},
 
 			autoSetSeats: () => {
