@@ -1,4 +1,4 @@
-import { createDbClient } from "@big2/db-client";
+import { createPostgresClient } from "@big2/postgres-client";
 import * as authSchema from "@big2/auth-schema";
 
-export const postgres = createDbClient(authSchema);
+export const postgres = createPostgresClient(authSchema);

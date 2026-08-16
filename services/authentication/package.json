@@ -27,6 +27,8 @@
 		"typescript": "^6.0.3"
 	},
 	"dependencies": {
+		"@big2/auth-schema": "*",
+		"@big2/postgres-client": "*",
 		"argon2": "^0.44.0",
 		"cookie-parser": "^1.4.7",
 		"dotenv": "^17.4.2",

@@ -20,7 +20,7 @@
   },
   "dependencies": {
     "@big2/party-manager-schema": "*",
-    "@big2/db-client": "*",
+    "@big2/postgres-client": "*",
     "dotenv": "^17.4.2",
     "socket.io": "^4.8.3"
   }
