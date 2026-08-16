@@ -1,3 +1,4 @@
+import { useGameStore } from "../../store/GameStore";
 import { usePartyStore } from "../../store/PartyStore";
 import { useSceneStore } from "../../store/SceneStore";
 import { HeaderModule } from "../header/HeaderModule";
@@ -8,10 +9,19 @@ import { ResultsRoundModule } from "./round/ResultsRoundModule";
 import { ResultsTotalModule } from "./total/ResultsTotalModule";
 
 export const ResultsScene = () => {
+	const { setGameValue, incRound } = useGameStore();
 	const { members } = usePartyStore();
 	const { setCurrentScene } = useSceneStore();
+	const handleEndGame = () => {
+		setGameValue("round", 0);
+		setCurrentScene("Home");
+	}
+	const handlePlayNext = () => {
+		incRound();
+		setCurrentScene("Game");
+	}
 	const winner = "Congratulations " + members[0].name + "! Play next round?";
-
+	
 	return (
 		<>
 			<HeaderModule back="Lobby" />
@@ -46,7 +56,7 @@ export const ResultsScene = () => {
 							<h3 className="text-n6">{winner}</h3>
 							<div className="flex gap-2rem">
 								<button
-									onClick={() => setCurrentScene("Home")}
+									onClick={handleEndGame}
 									className="
 										h-3rem aspect-5/1
 										btn-text bg-light
@@ -55,7 +65,7 @@ export const ResultsScene = () => {
 									End
 								</button>
 								<button
-									onClick={() => setCurrentScene("Gameplay")}
+									onClick={handlePlayNext}
 									className="
 										h-3rem aspect-5/1
 										btn-text bg-light

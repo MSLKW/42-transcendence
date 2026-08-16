@@ -14,7 +14,7 @@ import { LoginScene } from "./components/login/LoginScene";
 import { HomeScene } from "./components/home/HomeScene";
 import { LobbyScene } from "./components/lobby/LobbyScene";
 import { TestScene } from "./components/test/TestScene";
-import { GameplayScene } from "./components/gameplay/GameplayScene";
+import { GameScene } from "./components/game/GameScene";
 import { ResultsScene } from "./components/results/ResultsScene";
 import { BotsWindow } from "./components/bots/BotsWindow";
 import { ChatWindow } from "./components/chat/ChatWindow";
@@ -24,7 +24,7 @@ import { InfoWindow } from "./components/info/InfoWindow";
 import { NotificationWindow } from "./components/notification/NotificationWindow";
 import { PartyWindow } from "./components/party/PartyWindow";
 import { ProfileWindow } from "./components/profile/ProfileWindow";
-import { RankWindow } from "./components/gameplay/rank/RankWindow";
+import { RankWindow } from "./components/game/rank/RankWindow";
 import { SetupWindow } from "./components/setup/SetupWindow";
 import { SettingsWindow } from "./components/settings/SettingsWindow";
 import { StatsWindow } from "./components/stats/StatsWindow";
@@ -94,7 +94,7 @@ export default function App() {
 				{ currentScene === "Home" && <HomeScene /> }
 				{ currentScene === "Lobby" && <LobbyScene /> }
 				{ currentScene === "Test" && <TestScene /> }
-				{ currentScene === "Gameplay" && <GameplayScene /> }
+				{ currentScene === "Game" && <GameScene /> }
 				{ currentScene === "Results" && <ResultsScene /> }
 				{ showWindow["bots"] && <BotsWindow /> }
 				{ showWindow["chat"] && <ChatWindow /> }

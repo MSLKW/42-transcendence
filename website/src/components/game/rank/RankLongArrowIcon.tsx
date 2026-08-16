@@ -1,4 +1,4 @@
-export const RankArrowIcon = () => (
+export const RankLongArrowIcon = () => (
 	<svg
 		fill="none"
 		viewBox="0 0 30 300"

@@ -11,12 +11,28 @@ export const GAMEMODE_LABEL = [
 ] as const;
 export type GAMEMODE_TYPE = typeof GAMEMODE_LABEL[number];
 
+export const HAND_VALUES = {
+	"Straight Flush": 5,
+	"4 of a Kind": 5,
+	"Full House": 5,
+	"Flush": 5,
+	"Straight": 5,
+	"Triple": 3,
+	"Double": 2,
+	"High Card": 1,
+	"Open": 0,
+} as const;
+export type HAND_TYPE = keyof typeof HAND_VALUES;
+export const HAND_LABEL = Object.keys(HAND_VALUES) as HAND_TYPE[];
+
 interface GameValues {
 	totalPlayers: number,
 	seats: (string | null)[],
 	gameStarted: boolean,
 	cardsLeft: number[],
-}
+	currentHand: HAND_TYPE,
+	round: number,
+};
 
 interface GameState extends GameValues {
 	setGameValue: <K extends keyof GameValues>(key: K, value: GameValues[K]) => void,
@@ -27,7 +43,8 @@ interface GameState extends GameValues {
 	incTotalWin: (uuid: string) => void,
 	incTotalLoss: (uuid: string) => void,
 	unlockMedal: (uuid: string, type: MEDAL_TYPE) => void,
-}
+	incRound: () => void;
+};
 
 export const useGameStore = create<GameState>() (
 	persist(
@@ -36,6 +53,8 @@ export const useGameStore = create<GameState>() (
 			seats: [],
 			gameStarted: false,
 			cardsLeft: [],
+			currentHand: "Open",
+			round: 0,
 
 			setGameValue: (key, value) => set(() => ({ [key]: value })),
 
@@ -44,8 +63,7 @@ export const useGameStore = create<GameState>() (
 				const newSeats = Array(totalPlayers).fill(null);
 				set({
 					seats: newSeats,
-				})
-				console.log("[initSeats]");
+				});
 			},
 
 			setSeatWithUuid: (uuid, seatNumber) => {
@@ -60,7 +78,6 @@ export const useGameStore = create<GameState>() (
 				newSeats[seatNumber] = uuid;
 
 				set({ seats: newSeats });
-				console.log("[setSeatWithUuid] newSeats:", newSeats);
 			},
 
 			playerUnseats: (uuid) => {
@@ -159,6 +176,12 @@ export const useGameStore = create<GameState>() (
 							: p
 					)
 				});
+			},
+
+			incRound: () => {
+				set({
+					round: get().round + 1,
+				})
 			},
 		}),
 		{

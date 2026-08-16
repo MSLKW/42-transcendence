@@ -1,5 +1,5 @@
 import { useGameStore } from "../../store/GameStore";
-import { useSettingsStore, AUTO_PASS_RECORD } from "../../store/SettingsStore";
+import { useSettingsStore, autoPassKeys } from "../../store/SettingsStore";
 import { Window } from "../window/Window";
 import { RadioButton } from "./radio/RadioButton";
 import { ToggleButton } from "./toggle/ToggleButton";
@@ -10,7 +10,6 @@ export const SettingsWindow = () => {
 		allow3OfAKind, allow2OfSpadesEnd, autoPassIndex, endGameCondition, scoreCalculation, cardStyle, uiColor, fxLevel, mxLevel,
 		setSettingsValue, toggleSettingsValue,
 	} = useSettingsStore();
-	const autoPassKeys = Object.keys(AUTO_PASS_RECORD);
 
 	return (
 		<Window

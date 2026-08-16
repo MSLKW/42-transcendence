@@ -1,8 +1,10 @@
+import { useGameStore } from "../../../store/GameStore";
 import { useSceneStore } from "../../../store/SceneStore";
 import { RankIcon } from "./RankIcon";
 
-export const RankButton = () => {
+export const RankCallButton = () => {
 	const { setShowWindow } = useSceneStore();
+	const { currentHand } = useGameStore();
 
 	return (
 		<button
@@ -21,7 +23,7 @@ export const RankButton = () => {
 				text-n6
 				relative
 			">
-				<h3>Straight</h3>
+				<h3>{currentHand}</h3>
 			</div>
 			<div className="h-10 aspect-square text-b5">
 				<RankIcon />

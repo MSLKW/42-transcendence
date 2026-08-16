@@ -7,7 +7,7 @@ import { HeaderModule } from "../header/HeaderModule";
 import { HomeCardButton } from "./home_card/HomeCard";
 import { AvatarModule } from "../avatar/AvatarModule";
 import { PartyCallButton } from "../party/call/PartyCallButton";
-import { SmallLogo } from "../logo/SmallLogo";
+import { SmallLogo } from "./logo/SmallLogo";
 
 export const HomeScene = () => {
 	const { removeBotsFromParty } = useBotStore();

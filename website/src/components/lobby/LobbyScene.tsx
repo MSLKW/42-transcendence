@@ -14,7 +14,7 @@ import { UnseatButton } from "./unseat/UnseatButton";
 
 export const LobbyScene = () => {
 	const { fillSeatsWithBots } = useBotStore();
-	const { totalPlayers, seats } = useGameStore();
+	const { totalPlayers, seats, incRound } = useGameStore();
 	const { members, humans, hostUuid } = usePartyStore();
 	const { clientUuid } = useProfileStore();
 	const { setCurrentScene } = useSceneStore();
@@ -28,6 +28,11 @@ export const LobbyScene = () => {
 			return;
 		}
 	}, []);
+
+	const handleStart = () => {
+		setCurrentScene("Game");
+		incRound();
+	}
 
 	const seatsFilled = totalPlayers === seats.filter((seat): seat is string => seat !== null).length;
 
@@ -85,7 +90,7 @@ export const LobbyScene = () => {
 						<button
 							data-tip={seatsFilled ? "Let's Play!" : "Waiting for seats to be filled"}
 							disabled={!seatsFilled}
-							onClick={() => setCurrentScene("Gameplay")}
+							onClick={handleStart}
 							className="
 								btn-text bg-light
 								h-3rem aspect-5/1

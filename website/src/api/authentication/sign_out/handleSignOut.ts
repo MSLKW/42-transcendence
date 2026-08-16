@@ -10,6 +10,7 @@ export const handleSignOut = async () => {
 	try {
 		await signOutFetch();
 
+		useGameStore.getState().setGameValue("round", 0);
 		useGameStore.getState().setGameValue("totalPlayers", 0);
 		useGameStore.getState().initSeats();
 

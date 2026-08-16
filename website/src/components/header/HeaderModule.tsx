@@ -4,6 +4,7 @@ import { ChatButton } from "./chat/ChatButton";
 import { EmojiButton } from "./emoji/EmojiButton";
 import { SignOutButton } from "./sign_out/SignOutButton";
 import { SettingsButton } from "./settings/SettingsButton";
+import { useGameStore } from "../../store/GameStore";
 
 interface HeaderModuleProps {
 	back: string,
@@ -11,6 +12,7 @@ interface HeaderModuleProps {
 
 export const HeaderModule = ({ back }: HeaderModuleProps) => {
 	const { currentScene, setCurrentScene } = useSceneStore();
+	const { setGameValue } = useGameStore();
 
 	return (
 		<header className="flex justify-between">
@@ -18,9 +20,10 @@ export const HeaderModule = ({ back }: HeaderModuleProps) => {
 				{ back === "Login"
 					? <SignOutButton />
 					: <BackButton scene={() => {
-						if (currentScene === "Gameplay")
+						if (currentScene === "Game") {
 							setCurrentScene("Lobby");
-						else
+							setGameValue("round", 0);
+						} else
 							setCurrentScene("Home");
 					}}/> }
 				<SettingsButton />

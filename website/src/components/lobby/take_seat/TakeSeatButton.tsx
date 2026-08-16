@@ -16,7 +16,7 @@ export const TakeSeatButton = ({ uuid, seatNumber }: TakeSeatButtonProps ) => {
 			"
 		>
 			<button 
-				data-tip="Click to sit here"
+				data-tip="Choose this seat"
 				onClick={(e) => {
 					e.currentTarget.blur();
 					setSeatWithUuid(uuid, seatNumber);

@@ -1,4 +1,4 @@
-import { useSceneStore } from "../../store/SceneStore";
+import { useSceneStore } from "../../../store/SceneStore";
 
 export const SmallLogo = () => {
 	const { setShowWindow } = useSceneStore();

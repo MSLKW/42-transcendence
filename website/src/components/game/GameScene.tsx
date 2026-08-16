@@ -4,15 +4,16 @@ import { useBotStore } from "../../store/BotStore";
 import { useGameStore } from "../../store/GameStore";
 import { usePartyStore } from "../../store/PartyStore";
 import { useProfileStore } from "../../store/ProfileStore";
-import { useSettingsStore, AUTO_PASS_RECORD } from "../../store/SettingsStore";
+import { useSettingsStore, autoPassValues } from "../../store/SettingsStore";
 import { HeaderModule } from "../header/HeaderModule";
 import { AvatarModule } from "../avatar/AvatarModule";
-import { RankButton } from "./rank/RankButton";
+import { RankCallButton } from "./rank/RankCallButton";
 import { SortButtons } from "./sort/SortButton";
+import { GameActionButton } from "./action/GameActionButton";
 
-export const GameplayScene = () => {
+export const GameScene = () => {
 	const { addBotToParty } = useBotStore();
-	const { totalPlayers, seats } = useGameStore();
+	const { totalPlayers, seats, round } = useGameStore();
 	if (!seats)
 		return;
 	const { members } = usePartyStore();
@@ -42,11 +43,6 @@ export const GameplayScene = () => {
 		hasRunRef.current = false;
 	}, [members.length, totalPlayers]);
 
-	const [round, setRound] = useState(1);
-	const incRound = () => {
-		setRound((r) => r + 1);
-	}
-
 	const [cardsLeft, setCardsLeft] = useState<number[]>([]);
 	const dealCards = () => {
 		const cards = 52 / totalPlayers;
@@ -74,7 +70,6 @@ export const GameplayScene = () => {
 		setActivePlayer((p) => (p + 1) % totalPlayers)
 	}, [totalPlayers]);
 
-	const autoPassValues = Object.values(AUTO_PASS_RECORD);
 	const { autoPassIndex } = useSettingsStore();
 	useEffect(() => {
 		const autoPassValue = autoPassValues[autoPassIndex];
@@ -164,32 +159,14 @@ export const GameplayScene = () => {
 				<div className="
 					absolute left-1/2 top-[32.5%] -translate-x-1/2
 				">
-					<RankButton />
+					<RankCallButton />
 				</div>
 				<div className="
 					absolute left-1/2 top-[65%] -translate-x-1/2
 					flex gap-2rem
 				">
-					<button
-						onClick={nextTurn}
-						disabled={activePlayer != 0}
-						className="
-							btn-text bg-light
-							h-3rem aspect-5/1
-						"
-					>
-						PASS
-					</button>
-					<button
-						onClick={nextTurn}
-						disabled={activePlayer != 0}
-						className="
-							btn-text bg-light
-							h-3rem aspect-5/1
-						"
-					>
-						PLAY
-					</button>
+					<GameActionButton label="PASS" call={nextTurn} isDisabled={activePlayer !== 0} />
+					<GameActionButton label="PLAY" call={nextTurn} isDisabled={activePlayer !== 0} />
 				</div>
 			</main>
 			<footer className="flex place-content-between place-items-center">

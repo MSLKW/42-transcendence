@@ -2,11 +2,10 @@ import { useBotStore } from "../../../store/BotStore";
 import { usePartyStore } from "../../../store/PartyStore";
 import { useProfileStore } from "../../../store/ProfileStore";
 import { useSceneStore } from "../../../store/SceneStore";
-import { AUTO_PASS_RECORD, useSettingsStore } from "../../../store/SettingsStore";
+import { autoPassKeys, useSettingsStore } from "../../../store/SettingsStore";
 
 export const HostSettings = () => {
 	const { allow3OfAKind, allow2OfSpadesEnd, autoPassIndex, endGameCondition, scoreCalculation } = useSettingsStore();
-	const autoPassKeys = Object.keys(AUTO_PASS_RECORD);
 	const { intel, botCount } = useBotStore();
 	const { hostUuid } = usePartyStore();
 	const { clientUuid } = useProfileStore();

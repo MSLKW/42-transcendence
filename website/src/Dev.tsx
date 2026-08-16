@@ -3,35 +3,11 @@ import { handleSignOut } from "./api/authentication/sign_out/handleSignOut";
 import { partySocket } from "./api/party/partySocket";
 import { useDevStore } from "./store/DevStore";
 import { useFriendStore } from "./store/FriendStore";
-import { useGameStore } from "./store/GameStore";
+import { useGameStore, HAND_LABEL, type HAND_TYPE } from "./store/GameStore";
 import { usePartyStore } from "./store/PartyStore";
 import { useProfileStore } from "./store/ProfileStore";
 import { useSceneStore } from "./store/SceneStore";
-import { useBotStore } from "./store/BotStore";
-
-interface DevBtnProps {
-	label: string,
-	call: () => void,
-}
-
-const DevBtn = ({ label, call }: DevBtnProps) => {
-	return (
-		<li>
-			<button
-				type="button"
-				tabIndex={-1}
-				onClick={call}
-				className="
-					hover:scale-105
-					text-r4 hover:text-r5
-					cursor-pointer
-				"
-			>
-				{label}
-			</button>
-		</li>
-	);
-}
+import { DevButton } from "./components/dev/DevBtn";
 
 export default function Dev() {
 	const { showFrame, toggleFlag } = useDevStore();
@@ -43,7 +19,7 @@ export default function Dev() {
 	}, [showFrame]);
 
 	const { friendUuids } = useFriendStore();
-	const { seats, totalPlayers, playerUnseats, incTotalWin, incTotalLoss } = useGameStore();
+	const { seats, totalPlayers, playerUnseats, currentHand, incTotalWin, incTotalLoss, setGameValue, round } = useGameStore();
 	const { partySocketId, partyGameId, members, set1PlayerParty } = usePartyStore();
 	const { clientUuid, isAuthenticated, validateResponse, profilesInDb, resetProfilesInDb } = useProfileStore();
 	const { currentScene, setCurrentScene } = useSceneStore();
@@ -69,15 +45,15 @@ export default function Dev() {
 	return (
 		<section className="w-full text-r4 py-1rem">
 			<ul className="flex place-content-evenly">
-				<DevBtn label="Frame" call={() => toggleFlag("showFrame")} />
-				<DevBtn label="Stats" call={() => toggleFlag("showStats")} />
-				<DevBtn label="Reset" call={handleReset} />
+				<DevButton label="Frame" call={() => toggleFlag("showFrame")} />
+				<DevButton label="Stats" call={() => toggleFlag("showStats")} />
+				<DevButton label="Reset" call={handleReset} />
 			</ul>
-			{ currentScene === "Gameplay" && 
+			{ currentScene === "Game" && 
 				<ul className="flex place-content-evenly">
-					<DevBtn label="Results" call={() => setCurrentScene('Results')}/>
-					<DevBtn label="Win Round" call={() => incTotalWin(clientUuid!)}/>
-					<DevBtn label="Lose Round" call={() => incTotalLoss(clientUuid!)}/>
+					<DevButton label="Results" call={() => setCurrentScene('Results')}/>
+					<DevButton label="Win Round" call={() => incTotalWin(clientUuid!)}/>
+					<DevButton label="Lose Round" call={() => incTotalLoss(clientUuid!)}/>
 				</ul>
 			}
 			<ul className="flex place-content-center place-items-center gap-1rem">
@@ -88,36 +64,53 @@ export default function Dev() {
 						bg-dark w-[70%]
 					"
 				/>
-				<DevBtn label="Invite" call={() => partySocket.sendInvite(inviteUuid)}/>
+				<DevButton label="Invite" call={() => partySocket.sendInvite(inviteUuid)}/>
 			</ul>
 			<ul className="flex flex-col px-3rem">
 				<div className="flex place-content-between">
 					<li>Client UUID: {clientUuid ? clientUuid : "n/a"}</li>
-					<DevBtn label={`isAuthenticated: ${isAuthenticated ? "Yes" : "No"}`} call={() => console.log("/validate response: ", validateResponse)}/>
+					<DevButton label={`isAuthenticated: ${isAuthenticated ? "Yes" : "No"}`} call={() => console.log("/validate response: ", validateResponse)}/>
 				</div>
 				<div className="flex place-content-between">
 					<li>Profile Manager Socket ID: n/a</li>
-					<DevBtn label={`profilesInDb: ${profilesInDb.length}`} call={() => console.log("profilesInDb: ", profilesInDb)} />
+					<DevButton label={`profilesInDb: ${profilesInDb.length}`} call={() => console.log("profilesInDb: ", profilesInDb)} />
 				</div>
 				<div className="flex place-content-between">
-					<DevBtn
+					<DevButton
 						label={`Party Manager Socket ID: ${partySocketId ? partySocketId : "n/a"}`}
 						call={handlePartyConnection}
 					/>
-					<DevBtn label={`members: ${members.length}`} call={() => console.log("members: ", members)}/>
+					<DevButton label={`members: ${members.length}`} call={() => console.log("members: ", members)}/>
 				</div>
-				<li>Party Game ID: {partyGameId ? partyGameId : "n/a"}</li>
+				<div className="flex place-content-between">
+					<li>Party Game ID: {partyGameId ? partyGameId : "n/a"}</li>
+					<li>Round: {round}</li>
+					<DevButton label={`seats: ${humansSeated} / ${totalPlayers}`} call={() => console.log("seats: ", seats)} />
+				</div>
 				<div className="flex place-content-between">
 					<li>Game Manager Socket ID: n/a</li>
-					<DevBtn label={`seats: ${humansSeated} / ${totalPlayers}`} call={() => console.log("seats: ", seats)} />
+					<select
+						id="currentHand"
+						value={currentHand}
+						onChange={(e) => {setGameValue("currentHand", e.target.value as HAND_TYPE)}}
+					>
+						{HAND_LABEL.map((hand) => (
+							<option
+								key={hand}
+								value={hand}
+							>
+								{hand}
+							</option>
+						))}
+					</select>
 				</div>
 				<div className="flex place-content-between">
 					<li>Friend Manager Socket ID: n/a</li>
-					<DevBtn label={`friendUuids: ${friendUuids.length}`} call={() => console.log("friendUuids: ", friendUuids)} />
+					<DevButton label={`friendUuids: ${friendUuids.length}`} call={() => console.log("friendUuids: ", friendUuids)} />
 				</div>
 				<div className="flex place-content-between">
 					<li>Bot Manager Socket ID: n/a</li>
-					{currentScene === "Lobby" && <DevBtn label="Unseat" call={() => playerUnseats(clientUuid!)} />}
+					{currentScene === "Lobby" && <DevButton label="Unseat" call={() => playerUnseats(clientUuid!)} />}
 				</div>
 				<li>Chat Manager Socket ID: n/a</li>
 			</ul>
