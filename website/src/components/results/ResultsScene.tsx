@@ -9,11 +9,11 @@ import { ResultsRoundModule } from "./round/ResultsRoundModule";
 import { ResultsTotalModule } from "./total/ResultsTotalModule";
 
 export const ResultsScene = () => {
-	const { setGameValue, incRound } = useGameStore();
+	const { endGame, incRound } = useGameStore();
 	const { members } = usePartyStore();
 	const { setCurrentScene } = useSceneStore();
 	const handleEndGame = () => {
-		setGameValue("round", 0);
+		endGame();
 		setCurrentScene("Home");
 	}
 	const handlePlayNext = () => {

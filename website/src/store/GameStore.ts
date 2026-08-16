@@ -44,6 +44,7 @@ interface GameState extends GameValues {
 	incTotalLoss: (uuid: string) => void,
 	unlockMedal: (uuid: string, type: MEDAL_TYPE) => void,
 	incRound: () => void;
+	endGame: () => void;
 };
 
 export const useGameStore = create<GameState>() (
@@ -182,6 +183,17 @@ export const useGameStore = create<GameState>() (
 				set({
 					round: get().round + 1,
 				})
+			},
+
+			endGame: () => {
+				set({
+					totalPlayers: 1,
+					seats: [],
+					gameStarted: false,
+					cardsLeft: [],
+					currentHand: "Open",
+					round: 0,
+				});
 			},
 		}),
 		{

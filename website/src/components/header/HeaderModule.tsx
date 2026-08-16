@@ -12,7 +12,7 @@ interface HeaderModuleProps {
 
 export const HeaderModule = ({ back }: HeaderModuleProps) => {
 	const { currentScene, setCurrentScene } = useSceneStore();
-	const { setGameValue } = useGameStore();
+	const { endGame } = useGameStore();
 
 	return (
 		<header className="flex justify-between">
@@ -22,7 +22,7 @@ export const HeaderModule = ({ back }: HeaderModuleProps) => {
 					: <BackButton scene={() => {
 						if (currentScene === "Game") {
 							setCurrentScene("Lobby");
-							setGameValue("round", 0);
+							endGame();
 						} else
 							setCurrentScene("Home");
 					}}/> }
