@@ -9,7 +9,7 @@ import { ResultsRoundModule } from "./round/ResultsRoundModule";
 import { ResultsTotalModule } from "./total/ResultsTotalModule";
 
 export const ResultsScene = () => {
-	const { endGame, incRound } = useGameStore();
+	const { endGame, startGame } = useGameStore();
 	const { members } = usePartyStore();
 	const { setCurrentScene } = useSceneStore();
 	const handleEndGame = () => {
@@ -17,7 +17,7 @@ export const ResultsScene = () => {
 		setCurrentScene("Home");
 	}
 	const handlePlayNext = () => {
-		incRound();
+		startGame();
 		setCurrentScene("Game");
 	}
 	const winner = "Congratulations " + members[0].name + "! Play next round?";

@@ -32,19 +32,24 @@ interface GameValues {
 	cardsLeft: number[],
 	currentHand: HAND_TYPE,
 	round: number,
+	activeSeat: number,
 };
 
 interface GameState extends GameValues {
 	setGameValue: <K extends keyof GameValues>(key: K, value: GameValues[K]) => void,
+	
 	initSeats: () => void,
 	setSeatWithUuid: (uuid: string, seatNumber: number) => void,
 	playerUnseats: (uuid: string) => void,
 	autoSetSeats: () => void,
+	
+	startGame: () => void;
+	nextTurn: () => void;
+
+	endGame: () => void;
 	incTotalWin: (uuid: string) => void,
 	incTotalLoss: (uuid: string) => void,
 	unlockMedal: (uuid: string, type: MEDAL_TYPE) => void,
-	incRound: () => void;
-	endGame: () => void;
 };
 
 export const useGameStore = create<GameState>() (
@@ -56,6 +61,7 @@ export const useGameStore = create<GameState>() (
 			cardsLeft: [],
 			currentHand: "Open",
 			round: 0,
+			activeSeat: 0,
 
 			setGameValue: (key, value) => set(() => ({ [key]: value })),
 
@@ -66,7 +72,6 @@ export const useGameStore = create<GameState>() (
 					seats: newSeats,
 				});
 			},
-
 			setSeatWithUuid: (uuid, seatNumber) => {
 				const seats = get().seats;
 				if (seats[seatNumber] === uuid)
@@ -80,7 +85,6 @@ export const useGameStore = create<GameState>() (
 
 				set({ seats: newSeats });
 			},
-
 			playerUnseats: (uuid) => {
 				const newSeats = [...get().seats];
 				const index = newSeats.findIndex(seat => seat === uuid);
@@ -91,7 +95,6 @@ export const useGameStore = create<GameState>() (
 					});
 				}
 			},
-
 			autoSetSeats: () => {
 				const members = usePartyStore.getState().members;
 				const newSeats = members
@@ -102,6 +105,28 @@ export const useGameStore = create<GameState>() (
 				});
 			},
 
+			startGame: () => {
+				set({
+					round: get().round + 1,
+				})
+			},
+			nextTurn: () => {
+				const newActiveSeat = (get().activeSeat + 1) % get().totalPlayers;
+				set({
+					activeSeat: newActiveSeat,
+				});
+			},
+
+			endGame: () => {
+				set({
+					totalPlayers: 1,
+					seats: [],
+					gameStarted: false,
+					cardsLeft: [],
+					currentHand: "Open",
+					round: 0,
+				});
+			},
 			incTotalWin: (uuid) => {
 				const profileStore = useProfileStore.getState();
 				const data = profileStore.getProfileData(uuid);
@@ -129,7 +154,6 @@ export const useGameStore = create<GameState>() (
 					),
 				});
 			},
-
 			incTotalLoss: (uuid) => {
 				const profileStore = useProfileStore.getState();
 				const data = profileStore.getProfileData(uuid);
@@ -157,7 +181,6 @@ export const useGameStore = create<GameState>() (
 					),
 				});
 			},
-
 			unlockMedal: (uuid, type) => {
 				const profileStore = useProfileStore.getState();
 				const data = profileStore.getProfileData(uuid);
@@ -176,23 +199,6 @@ export const useGameStore = create<GameState>() (
 							}
 							: p
 					)
-				});
-			},
-
-			incRound: () => {
-				set({
-					round: get().round + 1,
-				})
-			},
-
-			endGame: () => {
-				set({
-					totalPlayers: 1,
-					seats: [],
-					gameStarted: false,
-					cardsLeft: [],
-					currentHand: "Open",
-					round: 0,
 				});
 			},
 		}),

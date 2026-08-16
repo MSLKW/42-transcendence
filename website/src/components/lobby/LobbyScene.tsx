@@ -14,7 +14,7 @@ import { UnseatButton } from "./unseat/UnseatButton";
 
 export const LobbyScene = () => {
 	const { fillSeatsWithBots } = useBotStore();
-	const { totalPlayers, seats, incRound } = useGameStore();
+	const { totalPlayers, seats, startGame } = useGameStore();
 	const { members, humans, hostUuid } = usePartyStore();
 	const { clientUuid } = useProfileStore();
 	const { setCurrentScene } = useSceneStore();
@@ -31,7 +31,7 @@ export const LobbyScene = () => {
 
 	const handleStart = () => {
 		setCurrentScene("Game");
-		incRound();
+		startGame();
 	}
 
 	const seatsFilled = totalPlayers === seats.filter((seat): seat is string => seat !== null).length;

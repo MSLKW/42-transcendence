@@ -19,7 +19,7 @@ export default function Dev() {
 	}, [showFrame]);
 
 	const { friendUuids } = useFriendStore();
-	const { seats, totalPlayers, playerUnseats, currentHand, incTotalWin, incTotalLoss, setGameValue, round } = useGameStore();
+	const { seats, totalPlayers, playerUnseats, currentHand, incTotalWin, incTotalLoss, setGameValue, round, activeSeat } = useGameStore();
 	const { partySocketId, partyGameId, members, set1PlayerParty } = usePartyStore();
 	const { clientUuid, isAuthenticated, validateResponse, profilesInDb, resetProfilesInDb } = useProfileStore();
 	const { currentScene, setCurrentScene } = useSceneStore();
@@ -29,6 +29,7 @@ export default function Dev() {
 	const handleReset = async () => {
 		resetProfilesInDb();
 		await handleSignOut();
+		setCurrentScene("Login");
 		console.log("[Dev] Game have been reset");
 	}
 
@@ -113,6 +114,9 @@ export default function Dev() {
 					{currentScene === "Lobby" && <DevButton label="Unseat" call={() => playerUnseats(clientUuid!)} />}
 				</div>
 				<li>Chat Manager Socket ID: n/a</li>
+				<div className="flex place-content-between">
+					<li>activeSeat: {activeSeat}</li>
+				</div>
 			</ul>
 		</section>
 	);

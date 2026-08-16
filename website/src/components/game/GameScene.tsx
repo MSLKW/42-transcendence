@@ -9,11 +9,12 @@ import { HeaderModule } from "../header/HeaderModule";
 import { AvatarModule } from "../avatar/AvatarModule";
 import { RankCallButton } from "./rank/RankCallButton";
 import { SortButtons } from "./sort/SortButton";
-import { GameActionButton } from "./action/GameActionButton";
+import { GamePassButton } from "./action/GamePassButton";
+import { GamePlayButton } from "./action/GamePlayButton";
 
 export const GameScene = () => {
 	const { addBotToParty } = useBotStore();
-	const { totalPlayers, seats, round } = useGameStore();
+	const { totalPlayers, seats, round, cardsLeft, setGameValue, activeSeat, nextTurn } = useGameStore();
 	if (!seats)
 		return;
 	const { members } = usePartyStore();
@@ -43,7 +44,6 @@ export const GameScene = () => {
 		hasRunRef.current = false;
 	}, [members.length, totalPlayers]);
 
-	const [cardsLeft, setCardsLeft] = useState<number[]>([]);
 	const dealCards = () => {
 		const cards = 52 / totalPlayers;
 		const newCardsLeft: number[] = [];
@@ -59,16 +59,11 @@ export const GameScene = () => {
 			for (let i = 0; i < totalPlayers; i++)
 				newCardsLeft.push(cards);
 		}
-		setCardsLeft(newCardsLeft);
+		setGameValue("cardsLeft", newCardsLeft);
 	}
 	useEffect(() => {
 		dealCards();
 	}, [totalPlayers, round]);
-
-	const [activePlayer, setActivePlayer] = useState<number>(0);
-	const nextTurn = useCallback(() => {
-		setActivePlayer((p) => (p + 1) % totalPlayers)
-	}, [totalPlayers]);
 
 	const { autoPassIndex } = useSettingsStore();
 	useEffect(() => {
@@ -80,11 +75,11 @@ export const GameScene = () => {
 			nextTurn();
 		}, autoPassValue);
 		return () => clearTimeout(timer);
-	}, [autoPassIndex, activePlayer, nextTurn]);
+	}, [autoPassIndex, activeSeat, nextTurn]);
 
 	return (
 		<>
-			<HeaderModule back="Lobby" />
+			<HeaderModule back="Home" />
 			<main>
 				{ totalPlayers === 4 &&
 					<>
@@ -94,7 +89,7 @@ export const GameScene = () => {
 									key={seats[seatIndexes[1]] ?? ""}
 									uuid={seats[seatIndexes[1]] ?? ""}
 									cornerButton={cardsLeft[seatIndexes[1]] ?? -1}
-									isActive={activePlayer === seatIndexes[1]}
+									isActive={activeSeat === seatIndexes[1]}
 								/>
 							}
 						</div>
@@ -104,7 +99,7 @@ export const GameScene = () => {
 									key={seats[seatIndexes[2]] ?? ""}
 									uuid={seats[seatIndexes[2]] ?? ""}
 									cornerButton={cardsLeft[seatIndexes[2]] ?? -1}
-									isActive={activePlayer === seatIndexes[2]}
+									isActive={activeSeat === seatIndexes[2]}
 								/>
 							}
 						</div>
@@ -114,7 +109,7 @@ export const GameScene = () => {
 									key={seats[seatIndexes[3]] ?? ""}
 									uuid={seats[seatIndexes[3]] ?? ""}
 									cornerButton={cardsLeft[seatIndexes[3]] ?? -1}
-									isActive={activePlayer === seatIndexes[3]}
+									isActive={activeSeat === seatIndexes[3]}
 								/>
 							}
 						</div>
@@ -128,7 +123,7 @@ export const GameScene = () => {
 									key={seats[seatIndexes[1]] ?? ""}
 									uuid={seats[seatIndexes[1]] ?? ""}
 									cornerButton={cardsLeft[seatIndexes[1]] ?? -1}
-									isActive={activePlayer === seatIndexes[1]}
+									isActive={activeSeat === seatIndexes[1]}
 								/>
 							}
 						</div>
@@ -138,7 +133,7 @@ export const GameScene = () => {
 									key={seats[seatIndexes[2]] ?? ""}
 									uuid={seats[seatIndexes[2]] ?? ""}
 									cornerButton={cardsLeft[seatIndexes[2]] ?? -1}
-									isActive={activePlayer === seatIndexes[2]}
+									isActive={activeSeat === seatIndexes[2]}
 								/>
 							}
 						</div>
@@ -151,7 +146,7 @@ export const GameScene = () => {
 								key={seats[seatIndexes[1]] ?? ""}
 								uuid={seats[seatIndexes[1]] ?? ""}
 								cornerButton={cardsLeft[seatIndexes[1]] ?? -1}
-								isActive={activePlayer === seatIndexes[1]}
+								isActive={activeSeat === seatIndexes[1]}
 							/>
 						}
 					</div>
@@ -165,8 +160,8 @@ export const GameScene = () => {
 					absolute left-1/2 top-[65%] -translate-x-1/2
 					flex gap-2rem
 				">
-					<GameActionButton label="PASS" call={nextTurn} isDisabled={activePlayer !== 0} />
-					<GameActionButton label="PLAY" call={nextTurn} isDisabled={activePlayer !== 0} />
+					<GamePassButton />
+					<GamePlayButton />
 				</div>
 			</main>
 			<footer className="flex place-content-between place-items-center">
@@ -175,7 +170,7 @@ export const GameScene = () => {
 						key={seats[seatIndexes[0]]}
 						uuid={seats[seatIndexes[0]] ?? ""}
 						cornerButton={cardsLeft[seatIndexes[0]]}
-						isActive={activePlayer === seatIndexes[0]}
+						isActive={activeSeat === seatIndexes[0]}
 					/>
 				}
 				<div className="

@@ -17,23 +17,25 @@ export const HomeCardButton = ({ gameMode, playerCount }: HomeProps) => {
 	const { clientUuid } = useProfileStore();
 	const { hostUuid, members } = usePartyStore();
 
+	const handleCardClick = () => {
+		setGameValue("totalPlayers", playerCount);
+		if (members.length === 1)
+			autoSetSeats();
+		else
+			initSeats();
+
+		if (gameMode === "Tutorial")
+			setCurrentScene("Test");
+		else
+			setCurrentScene("Lobby");
+		partySocket.startGameSession();
+	};
+
 	return (
 		<button
 			data-tip="Host is in control"
 			disabled={clientUuid !== hostUuid}
-			onClick={() => {
-				setGameValue("totalPlayers", playerCount);
-				if (members.length === 1)
-					autoSetSeats();
-				else
-					initSeats();
-
-				if (gameMode === "Tutorial")
-					setCurrentScene("Test");
-				else
-					setCurrentScene("Lobby");
-				partySocket.startGameSession();
-			}}
+			onClick={handleCardClick}
 			className={`
 				h-full max-h-150 aspect-2/3
 				bg-linear-to-b from-b3 to-b5 hover:not-disabled:from-b4 hover:not-disabled:to-b5
