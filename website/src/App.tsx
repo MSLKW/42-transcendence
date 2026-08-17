@@ -4,7 +4,6 @@ import { Stats, PerspectiveCamera, OrbitControls, AdaptiveDpr } from "@react-thr
 import { handleValidate } from "./api/authentication/validate/handleValidate";
 import { partySocket } from "./api/party/partySocket";
 import { useDevStore } from "./store/DevStore";
-import { useNotificationStore } from "./store/NotificationStore";
 import { useProfileStore } from "./store/ProfileStore";
 import { useSceneStore } from "./store/SceneStore";
 import { useScrollToTop } from "./utilities/useScrollToTop";
@@ -34,7 +33,6 @@ import Dev from "./Dev";
 export default function App() {
 	const { clientUuid, getProfileData } = useProfileStore();
 	const { currentScene, showWindow, setShowWindow } = useSceneStore();
-	const { id } = useNotificationStore();
 	const { showDevSection, showStats } = useDevStore();
 	
 	useEffect(() => {
@@ -100,7 +98,7 @@ export default function App() {
 				{ showWindow["chat"] && <ChatWindow /> }
 				{ showWindow["createAccount"] && <CreateAccountWindow /> }
 				{ showWindow["info"] && <InfoWindow /> }
-				{ showWindow["notification"] && <NotificationWindow key={id}/> }
+				{ showWindow["notification"] && <NotificationWindow /> }
 				{ showWindow["party"] && <PartyWindow /> }
 				{ showWindow["profile"] && <ProfileWindow /> }
 				{ showWindow["rank"] && <RankWindow /> }

@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import { createPortal } from "react-dom";
-import { useNotificationStore, NOTIFICATION_TYPE, type NotificationItem } from "../../store/NotificationStore";
+import { useNotificationStore, type NotificationItem } from "../../store/NotificationStore";
 
 export const NotificationWindow = () => {
 	const { notifications } = useNotificationStore();
@@ -12,8 +12,9 @@ export const NotificationWindow = () => {
 			className="
 				absolute z-5 top-11 left-1/2
 				w-[50%] min-w-xs max-w-md
-				flex flex-col items-center
+				flex flex-col items-center gap-0.5rem
 				pointer-events-none
+				transition-all duration-300 ease-in-out
 			"
 		>
 			{ notifications.map((item) => (
@@ -89,6 +90,7 @@ export const SingleNotification = ({ notification }: SingleNotificationProps) =>
 				gap-0.5rem
 				${ isExiting ? "animate-slide-out" : "animate-slide-in" }
 				pointer-events-auto w-full
+				transition-all duration-300 ease-in-out
 			`}
 		>
 			<button
