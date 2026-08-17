@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import { createPortal } from "react-dom";
+import { motion, AnimatePresence } from "motion/react";
 import { useNotificationStore, type NotificationItem } from "../../store/NotificationStore";
 
 export const NotificationWindow = () => {
@@ -14,12 +15,35 @@ export const NotificationWindow = () => {
 				w-[50%] min-w-xs max-w-md
 				flex flex-col items-center gap-0.5rem
 				pointer-events-none
-				transition-all duration-300 ease-in-out
 			"
 		>
-			{ notifications.map((item) => (
-				<SingleNotification key={item.id} notification={item} />
-			))}
+			<AnimatePresence initial={false}>
+				{ notifications.map((item) => (
+					<motion.div
+						key={item.id}
+						layout
+						initial={{ opacity: 0, y: -20 }}
+						animate={{ opacity: 1, y: 0 }}
+						exit={{ opacity: 0, y: -20 }}
+						transition={{
+							layout: {
+								duration: 0.3,
+								ease: "easeInOut",
+							},
+							opacity: {
+								duration: 0.2,
+							},
+							y: {
+								duration: 0.3,
+								ease: "easeInOut",
+							},
+						}}
+						className="w-full"
+					>
+						<SingleNotification key={item.id} notification={item} />
+					</motion.div>
+				))}
+			</AnimatePresence>
 		</div>,
 		document.body
 	);
@@ -88,9 +112,8 @@ export const SingleNotification = ({ notification }: SingleNotificationProps) =>
 			className={`
 				flex flex-col items-center
 				gap-0.5rem
-				${ isExiting ? "animate-slide-out" : "animate-slide-in" }
 				pointer-events-auto w-full
-				transition-all duration-300 ease-in-out
+				${ isExiting ? "animate-slide-out" : "animate-slide-in" }
 			`}
 		>
 			<button
