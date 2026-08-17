@@ -4,10 +4,12 @@ import { partySocket } from "./api/party/partySocket";
 import { useDevStore } from "./store/DevStore";
 import { useFriendStore } from "./store/FriendStore";
 import { useGameStore, HAND_LABEL, type HAND_TYPE } from "./store/GameStore";
+import { useNotificationStore, NOTIFICATION_TYPE } from "./store/NotificationStore";
 import { usePartyStore } from "./store/PartyStore";
 import { useProfileStore } from "./store/ProfileStore";
 import { useSceneStore } from "./store/SceneStore";
 import { DevButton } from "./components/dev/DevBtn";
+import { useScrollToTop } from "./utilities/useScrollToTop";
 
 export default function Dev() {
 	const { showFrame, toggleFlag } = useDevStore();
@@ -19,7 +21,8 @@ export default function Dev() {
 	}, [showFrame]);
 
 	const { friendUuids } = useFriendStore();
-	const { seats, totalPlayers, playerUnseats, currentHand, incTotalWin, incTotalLoss, setGameValue, round, activeSeat } = useGameStore();
+	const { seats, totalPlayers, playerUnseats, currentHand, incTotalWin, incTotalLoss, setGameValue, round } = useGameStore();
+	const { showNotification } = useNotificationStore();
 	const { partySocketId, partyGameId, members, set1PlayerParty } = usePartyStore();
 	const { clientUuid, isAuthenticated, validateResponse, profilesInDb, resetProfilesInDb } = useProfileStore();
 	const { currentScene, setCurrentScene } = useSceneStore();
@@ -115,7 +118,27 @@ export default function Dev() {
 				</div>
 				<li>Chat Manager Socket ID: n/a</li>
 				<div className="flex place-content-between">
-					<li>activeSeat: {activeSeat}</li>
+					<DevButton
+						label="Notify Message"
+						call={() => {
+							useScrollToTop();
+							showNotification("Custom message here", NOTIFICATION_TYPE.message);
+						}}
+					/>
+					<DevButton
+						label="Notify Invite"
+						call={() => {
+							useScrollToTop();
+							showNotification("Custom invite here", NOTIFICATION_TYPE.invite);
+						}}
+					/>
+					<DevButton
+						label="Notify Error"
+						call={() => {
+							useScrollToTop();
+							showNotification("Custom error here", NOTIFICATION_TYPE.error);
+						}}
+					/>
 				</div>
 			</ul>
 		</section>

@@ -177,6 +177,8 @@ export const useGameStore = create<GameState>() (
 					cardsLeft: [],
 					currentHand: "Open",
 					round: 0,
+					seatRef: [],
+					activeSeat: 0,
 				});
 			},
 			incTotalWin: (uuid) => {

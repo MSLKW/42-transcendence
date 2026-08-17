@@ -1,12 +1,13 @@
 import { useEffect } from "react";
 import { Canvas } from "@react-three/fiber";
 import { Stats, PerspectiveCamera, OrbitControls, AdaptiveDpr } from "@react-three/drei";
-import { fetchValidate } from "./api/authentication/validate/fetchValidate";
+import { handleValidate } from "./api/authentication/validate/handleValidate";
 import { partySocket } from "./api/party/partySocket";
 import { useDevStore } from "./store/DevStore";
 import { useNotificationStore } from "./store/NotificationStore";
 import { useProfileStore } from "./store/ProfileStore";
 import { useSceneStore } from "./store/SceneStore";
+import { useScrollToTop } from "./utilities/useScrollToTop";
 import { StripeBg } from "./components/bg/Stripe";
 import { SphereBg } from "./components/3d/Sphere";
 import { Card } from "./components/3d/PCard";
@@ -32,46 +33,36 @@ import Dev from "./Dev";
 
 export default function App() {
 	const { clientUuid, getProfileData } = useProfileStore();
-	const data = getProfileData(clientUuid!);
-
 	const { currentScene, showWindow, setShowWindow } = useSceneStore();
+	const { id } = useNotificationStore();
+	const { showDevSection, showStats } = useDevStore();
+	
 	useEffect(() => {
-		window.scrollTo({
-			top: 0,
-			behavior: 'smooth',
-		});
-
-		const validateAuth = async () => {
-			try {
-				await fetchValidate();
-			} catch(err) {
-				console.log(err);
-			}
-		};
-		validateAuth();
-
-		if (currentScene != "Login") {
+		useScrollToTop();
+		handleValidate();
+		
+		if (currentScene !== "Login") {
+			const data = getProfileData(clientUuid!);
 			if (!data?.name)
 				setShowWindow("setup", true);
+
 			if (!partySocket.isSocketActive())
 				partySocket.connect();
 		}
 	}, [currentScene]);
 
-	const { id } = useNotificationStore();
-	const { showDevSection, showStats } = useDevStore();
-
 	return (
 		<>
 			{ (currentScene === "Login" || currentScene === "Home") && <StripeBg /> }
-			{showStats && <Stats />}
-			<section className="
-				z-0
-				absolute top-0 left-1/2 -translate-x-1/2
-				w-full min-w-80 max-w-360
-				h-full min-h-120 max-h-360
-			">
-				{ (currentScene === "Login" || currentScene === "Home") && 
+			{ showStats && <Stats /> }
+			<section
+				className="
+					z-0 absolute top-0 left-1/2 -translate-x-1/2
+					h-full min-h-120 max-h-360
+					w-full min-w-80 max-w-360
+				"
+			>
+				{ currentScene === "Login" && 
 					<Canvas>
 						<AdaptiveDpr />
 						<ambientLight intensity={0.5} />
@@ -89,7 +80,16 @@ export default function App() {
 					</Canvas>
 				}
 			</section>
-			<section className="cont-body">
+			<section
+				className="
+					h-full min-h-120 max-h-360
+					w-full min-w-80 max-w-360
+					mx-auto p-[clamp(0.125rem,5vw+0.125rem,3.125rem)]
+					flex flex-col
+					z-1 relative
+					pointer-events-none
+				"
+			>
 				{ currentScene === "Login" && <LoginScene /> }
 				{ currentScene === "Home" && <HomeScene /> }
 				{ currentScene === "Lobby" && <LobbyScene /> }

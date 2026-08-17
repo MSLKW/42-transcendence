@@ -1,6 +1,6 @@
 import { useState, type ReactNode } from "react";
 import { useSceneStore } from "../../store/SceneStore";
-import { useWindowDrag } from "../../utilities/windowDrag";
+import { useWindowDrag } from "../../utilities/useWindowDrag";
 import { LightboxButton } from "../lightbox/LightboxButton";
 import { PinActiveIcon } from "./pin/PinActiveIcon";
 import { PinInactiveIcon } from "./pin/PinInactiveIcon";

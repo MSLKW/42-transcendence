@@ -1,13 +1,40 @@
 import { useState, useRef, useEffect } from "react";
 import { createPortal } from "react-dom";
-import { useNotificationStore, NOTIFICATION_TYPE } from "../../store/NotificationStore";
-import { useSceneStore } from "../../store/SceneStore";
+import { useNotificationStore, NOTIFICATION_TYPE, type NotificationItem } from "../../store/NotificationStore";
 
 export const NotificationWindow = () => {
-	const { type, message, isError, isTimed, numOfButtons, onButton1Click, onButton2Click } = useNotificationStore();
-	const { setShowWindow } = useSceneStore();
+	const { notifications } = useNotificationStore();
+	if (notifications.length === 0)
+		return null;
+
+	return createPortal(
+		<div
+			className="
+				absolute z-5 top-11 left-1/2
+				w-[50%] min-w-xs max-w-md
+				flex flex-col items-center
+				pointer-events-none
+			"
+		>
+			{ notifications.map((item) => (
+				<SingleNotification key={item.id} notification={item} />
+			))}
+		</div>,
+		document.body
+	);
+};
+
+interface SingleNotificationProps {
+	notification: NotificationItem;
+}
+
+export const SingleNotification = ({ notification }: SingleNotificationProps) => {
+	const { id, message, isError, isTimed, numOfButtons, onButton1Click, onButton2Click } = notification;
+	const { removeNotification } = useNotificationStore();
+	
 	const [ isExiting, setIsExiting ] = useState(false);
 	const [ animateProgress, setAnimateProgress ] = useState(false);
+
 	const isClosing = useRef(false);
 	const manualUnmountTimer = useRef<number>(0);
 	const exitAnimationTimer = useRef<number>(0);
@@ -26,7 +53,7 @@ export const NotificationWindow = () => {
 		setIsExiting(true);
 
 		manualUnmountTimer.current = window.setTimeout(() => {
-			setShowWindow("notification", false);
+			removeNotification(id);
 		}, 500);
 	};
 
@@ -44,7 +71,7 @@ export const NotificationWindow = () => {
 
 		autoUnmountTimer.current = window.setTimeout(() => {
 			onButton1Click?.();
-			setShowWindow("notification", false);
+			removeNotification(id);
 		}, 5500);
 
 		return () => {
@@ -53,40 +80,45 @@ export const NotificationWindow = () => {
 			clearTimeout(autoUnmountTimer.current);
 			cancelAnimationFrame(animationFrame.current);
 		};
-	}, [isTimed, onButton1Click, setShowWindow, isExiting]);
+	}, [isTimed, onButton1Click, id, removeNotification]);
 
-	return createPortal(
+	return (
 		<div
 			className={`
-				absolute z-5
-				top-10 left-1/2
-				flex flex-col place-content-center place-items-center
+				flex flex-col items-center
 				gap-0.5rem
 				${ isExiting ? "animate-slide-out" : "animate-slide-in" }
-		`}>
+				pointer-events-auto w-full
+			`}
+		>
 			<button
 				type="button"
 				onClick={isTimed ? handleClose : undefined}
 				className={`
-					min-w-50
-					bg-n0
-					border border-n1 rounded-full
-					py-1.5rem px-3rem
-					relative ${numOfButtons === 0 ? "cursor-pointer" : "cursor-default" }
-			`}>
-				<span className={`
-					relative z-1
-					${ isError ? "text-r4" : "text-n6" }
-					text-1.25rem text-center
-				`}>
+					w-full min-w-50
+					bg-n1/40 border border-n1 rounded-full
+					py-1rem px-1rem
+					relative
+					${numOfButtons === 0 ? "cursor-pointer" : "cursor-default" }
+				`}
+			>
+				<span
+					className={`
+						relative z-1
+						text-n6
+						text-1.25rem text-center block
+					`}
+				>
 					{message}
 				</span>
 				{ isTimed &&
-					<div className="
-						absolute top-0 left-0
-						h-full w-full rounded-full
-						overflow-hidden
-					">
+					<div
+						className="
+							absolute top-0 left-0
+							h-full w-full rounded-full
+							overflow-hidden
+						"
+					>
 						<div
 							style={{
 								transitionDuration: "5000ms"
@@ -94,7 +126,7 @@ export const NotificationWindow = () => {
 							className={`
 								h-full rounded-full
 								${ animateProgress ? "w-0" : "w-full" }
-								${ isError ? "bg-r4" : "bg-a2" } opacity-20
+								${ isError ? "bg-r1" : "bg-a1" }
 								transition-[width] ease-linear
 						`}/>
 					</div>
@@ -108,35 +140,34 @@ export const NotificationWindow = () => {
 				">
 					<button
 						type="button"
-						onClick={onButton1Click}
+						onClick={() => {
+							onButton1Click?.();
+							removeNotification(id);
+						}}
 						className="
 							btn-text bg-light
 							h-3rem w-full
 							text-1.25rem text-n0
-							
-					">
-						{ type === NOTIFICATION_TYPE.invite && "Accept" }
-						{ type === NOTIFICATION_TYPE.nextRound && "End" }
-						{ type === NOTIFICATION_TYPE.botSelect && "OK!" }
+						"
+					>
+						Accept
 					</button>
 					<button
 						type="button"
-						onClick={onButton2Click}
+						onClick={() => {
+							onButton2Click?.();
+							removeNotification(id);
+						}}
 						className="
 							btn-text bg-light
 							w-full
 							text-1.25rem text-n0
-					">
-						{ type === NOTIFICATION_TYPE.invite &&
-							"Reject"
-						}
-						{ type === NOTIFICATION_TYPE.nextRound &&
-							"Continue"
-						}
+						"
+					>
+						Reject
 					</button>
 				</div>
 			}
 		</div>
-		, document.body
 	);
 }
