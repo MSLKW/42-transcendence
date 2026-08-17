@@ -1,5 +1,5 @@
 {
-  "name": "@big2/db-client",
+  "name": "@big2/postgres-client",
   "version": "1.0.0",
   "type": "module",
   "description": "",

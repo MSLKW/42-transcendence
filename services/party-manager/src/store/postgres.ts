@@ -1,4 +1,4 @@
 import * as partyManagerSchema from "@big2/party-manager-schema";
-import { createDbClient } from "@big2/db-client";
+import { createPostgresClient } from "@big2/postgres-client";
 
-export const postgres = createDbClient(partyManagerSchema);
+export const postgres = createPostgresClient(partyManagerSchema);

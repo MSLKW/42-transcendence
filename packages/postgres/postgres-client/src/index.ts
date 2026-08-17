@@ -29,7 +29,7 @@ const pool = new Pool({
 // 4. Export the db client instance
 //    Init Drizzle once with the schema
 // export const postgres = drizzle(pool, { schema }); // this is in full definition how other services going to use this function
-export function createDbClient<TSchema extends Record<string, unknown>>(schema: TSchema) {
+export function createPostgresClient<TSchema extends Record<string, unknown>>(schema: TSchema) {
 	return drizzle(pool, { schema });
 }
 
