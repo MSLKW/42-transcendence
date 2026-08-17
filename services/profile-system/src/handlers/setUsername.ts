@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import { authenticate } from "../utils/authenticate";
+import { DrizzleUserInfoStore } from "../store/drizzleUserInfoStore";
 
 export function setUsername()
 {
@@ -14,8 +15,9 @@ export function setUsername()
 			const username = req.body.username;
 			
 			//TODO: put username into Postgres
-
-			return (res.status(204));
+			const userInfoStore = new DrizzleUserInfoStore();
+			await userInfoStore.setUsername(data.id, username);
+			return (res.status(204).send());
 		}
 		catch (err)
 		{

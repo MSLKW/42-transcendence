@@ -1,5 +1,5 @@
 import { users } from "@big2/auth-schema";
-import { AutoPassKeys, BadgeLabel, AchievementLabel } from "@big2/profile-system-types";
+import { NULL_ACHIEVEMENTS, BadgeLabel, AchievementLabel } from "@big2/profile-system-types";
 import { pgSchema, uuid, text, integer, boolean, jsonb, timestamp } from "drizzle-orm/pg-core";
 import { eq } from "drizzle-orm";
 
@@ -24,7 +24,7 @@ export const userInfo = profileSystemSchema.table("user_info", {
 		.notNull(),
 	achievements: jsonb("achievements")
 		.$type<Record<AchievementLabel, Date>>()
-		.default({})
+		.default(NULL_ACHIEVEMENTS)
 		.notNull(),
 	updatedAt: timestamp("updated_at", { withTimezone: true })
 		.defaultNow()
@@ -37,7 +37,6 @@ export const userSettings = profileSystemSchema.table("user_settings", {
 		.primaryKey()
 		.notNull()
 		.references(() => userInfo.id, { onDelete: "cascade" }),
-	autoPassKey: 		jsonb("auto_pass_key").$type<AutoPassKeys>().default("10s").notNull(),
 	allow3OfAKind: 		boolean("allow_3_of_a_kind").default(false).notNull(),
 	allow2OfSpadesEnd: 	boolean("allow_2_of_spades_end").default(false).notNull(),
 	autoPassIndex: 		integer("auto_pass_index").default(0).notNull(),
@@ -62,7 +61,6 @@ export const userProfile = profileSystemSchema.view("user_profile").as((qb) =>
       avatarPath: 			userInfo.avatarPath,
       badge: 				userInfo.badge,
       achievements: 		userInfo.achievements,
-      autoPassKey: 			userSettings.autoPassKey,
       allow3OfAKind: 		userSettings.allow3OfAKind,
       allow2OfSpadesEnd:	userSettings.allow2OfSpadesEnd,
       autoPassIndex: 		userSettings.autoPassIndex,
@@ -77,7 +75,7 @@ export const userProfile = profileSystemSchema.view("user_profile").as((qb) =>
     .leftJoin(userSettings, // <--- THIS IS THE RIGHT TABLE
 		eq(userInfo.id, userSettings.id))
 );
-/
+
 // LEFT JOIN (Anchor-based): Treats userInfo as the source of truth. Every user in userInfo is guaranteed to appear in the view. If they don't have settings yet, setting fields become null, but id: userInfo.id is always guaranteed to be a valid UUID.
 // FULL JOIN (Symmetrical): Includes rows even if userInfo is missing but userSettings exists. In that orphaned scenario, userInfo.id does not exist in Postgres, so your view output maps id: userInfo.id as null.
 

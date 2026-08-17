@@ -14,6 +14,8 @@ import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
 import { OutlinePass } from 'three/addons/postprocessing/OutlinePass.js';
 import { OutputPass } from 'three/examples/jsm/Addons.js';
 import { gsap } from 'gsap';
+import express from "express";
+import { getInternalInfosForProfile } from "../routes/internal.js";
 
 const resolution = new THREE.Vector2(window.innerWidth, window.innerHeight)
 
@@ -226,3 +228,6 @@ function animate(time: DOMHighResTimeStamp) {
 	// console.log(renderer.info.render.calls);
 }
 renderer.setAnimationLoop(animate);
+
+const app = express();
+app.get("/internal/profile/:id", getInternalInfosForProfile()); // REST API FOR dataabse usage

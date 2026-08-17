@@ -1,4 +1,5 @@
 import { Request, Response } from "express";
+import { DrizzleUserInfoStore } from "../store/drizzleUserInfoStore";
 
 export function userSearch()
 {
@@ -7,9 +8,11 @@ export function userSearch()
 		try
 		{
 			const searchTerm = req.body.searchTerm;
-			const searchResults: string[] = [];
+			// const searchResults: string[] = [];
 
 			//TODO: fill in searchResults from Postgres
+			const userInfoStore = new DrizzleUserInfoStore;
+			const searchResults: string[] = await userInfoStore.searchUsersByUsername(searchTerm);
 
 			return (res.status(200).json({searchResults: searchResults}));
 		}

@@ -6,6 +6,8 @@ import { clientManager } from "./client/ClientManager";
 import { registerEventHandlers } from "./client/event_handlers";
 import { PartyState } from "./PartyTransmitTypes";
 import { DrizzlePlayerStatusStore } from "./store/drizzlePlayerStatusStore";
+import { getInternalInfosForProfile } from "./routes/internal";
+import express from "express";
 
 export const playerStatusStore = new DrizzlePlayerStatusStore();
 
@@ -25,6 +27,10 @@ const INTENTIONAL_DISCONNECT_REASONS = new Set([
 ]);
 
 const pendingRemovals = new Map<string, NodeJS.Timeout>();
+
+// REST API FOR dataabse usage
+const app = express();
+app.get("/internal/profile/:id", getInternalInfosForProfile());// REST API FOR dataabse usage
 
 const httpServer = createServer();
 
