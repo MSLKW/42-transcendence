@@ -214,58 +214,72 @@ export const useProfileStore = create<ProfileState>() (
 			validateResponse: undefined,
 			profilesInDb: defaultProfileInDb,
 
-			setClientUuid: (uuid) => set({
-				clientUuid: uuid,
-			}),
-			setIsAuthenticated: (isValid) => set ({
-				isAuthenticated: isValid,	
-			}),
-			setValidateResponse: (validation) => set ({
-				validateResponse: validation,
-			}),
-			createClientProfile: (name, avatar) => 
-				set((profileStore) => {
-					const existingIndex = profileStore.profilesInDb.some((p) => p.uuid === profileStore.clientUuid);
+			setClientUuid: (uuid) => {
+				set({
+					clientUuid: uuid,
+				});
+			},
+			setIsAuthenticated: (isValid) => {
+				set({
+					isAuthenticated: isValid,
+				});
+			},
+			setValidateResponse: (validation) => {
+				set({
+					validateResponse: validation,
+				});
+			},
+			createClientProfile: (name, avatar) => {
+				const { clientUuid, profilesInDb } = get();
+				if (!clientUuid)
+					return;
 
-					if (existingIndex) {
-						return {
-							profilesInDb: profileStore.profilesInDb.map((p) =>
-								p.uuid === profileStore.clientUuid
-									? { ...p, name, avatar }
-									: p
-							)
-						};
-					}
-
-					const newProfile = createDefaultProfile(profileStore.clientUuid!, name, avatar);
+				const profileExists = profilesInDb.some((p) => p.uuid === clientUuid);
+				if (profileExists) {
 					return {
-						profilesInDb: [...profileStore.profilesInDb, newProfile],
-					};
-				}),
-			updateClientProfile: (name, avatar, badge) =>
-				set((profileStore) => {
-					const existingIndex = profileStore.profilesInDb.some((p) => p.uuid === profileStore.clientUuid);
-
-					if (!existingIndex) {
-						const newProfile = createDefaultProfile(profileStore.clientUuid!, name, avatar, badge);
-						return { profilesInDb: [...profileStore.profilesInDb, newProfile] };
-					}
-
-					return {
-						profilesInDb: profileStore.profilesInDb.map((p) =>
-							p.uuid === profileStore.clientUuid
-								? { ...p, name, avatar, badge }
+						profilesInDb: profilesInDb.map((p) =>
+							p.uuid === clientUuid
+								? { ...p, name, avatar }
 								: p
 						)
 					};
-				}),
+				}
+
+				const newProfile = createDefaultProfile(clientUuid!, name, avatar);
+				set({
+					profilesInDb: [...profilesInDb, newProfile],
+				});
+			},
+			updateClientProfile: (name, avatar, badge) => {
+				const { clientUuid, profilesInDb } = get();
+				if (!clientUuid)
+					return;
+
+				const profileExists = profilesInDb.some((p) => p.uuid === clientUuid);
+				if (!profileExists) {
+					const newProfile = createDefaultProfile(clientUuid!, name, avatar, badge);
+					set({
+						profilesInDb: [...profilesInDb, newProfile],
+					});
+					return;
+				}
+
+				set({
+					profilesInDb: profilesInDb.map((p) => p.uuid === clientUuid
+						? { ...p, name, avatar, badge }
+						: p
+					),
+				});
+			},
 			getProfileData: (uuid) => {
 				const profiles = get().profilesInDb;
 				return profiles.find(p => p.uuid === uuid);
 			},
-			resetProfilesInDb: () => set({
-				profilesInDb: defaultProfileInDb,
-			}),
+			resetProfilesInDb: () => {
+				set({
+					profilesInDb: defaultProfileInDb,
+				});
+			},
 		}),
 		{
 			name: 'profile-storage',

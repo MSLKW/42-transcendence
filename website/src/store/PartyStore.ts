@@ -1,6 +1,7 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import { useProfileStore } from "./ProfileStore";
+import { useBotStore } from "./BotStore";
 
 export const RELATION_LABEL = [
 	"Stranger",
@@ -79,11 +80,12 @@ export const usePartyStore = create<PartyState>() (
 						relation: "Stranger"
 					};
 				});
-				console.log("newMembers:", newMembers, " newMembers.length:", newMembers.length);
+				const humanCount = newMembers.filter((m) => m.relation !== "Bot").length;
 				set({
 					members: newMembers,
-					humans: newMembers.length,
+					humans: humanCount,
 				});
+				useBotStore.getState().addBotIfMissing();
 			},
 
 			set1PlayerParty: () => {
@@ -115,7 +117,7 @@ export const usePartyStore = create<PartyState>() (
 				if (!data)
 					return;
 				set({
-					members: currentMembers.filter((d) => d !== data),
+					members: currentMembers.filter((d) => d.uuid !== uuid),
 				})
 			}
 		}),

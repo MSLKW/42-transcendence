@@ -2,6 +2,7 @@ import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import { useProfileStore, type MEDAL_TYPE } from "./ProfileStore";
 import { usePartyStore } from "./PartyStore";
+import { useBotStore } from "./BotStore";
 
 export const GAMEMODE_LABEL = [
 	"4 Players",
@@ -32,6 +33,7 @@ interface GameValues {
 	cardsLeft: number[],
 	currentHand: HAND_TYPE,
 	round: number,
+	seatRef: number[],
 	activeSeat: number,
 };
 
@@ -43,6 +45,8 @@ interface GameState extends GameValues {
 	playerUnseats: (uuid: string) => void,
 	autoSetSeats: () => void,
 	
+	setSeatRef: () => void;
+	dealCards: () => void;
 	startGame: () => void;
 	nextTurn: () => void;
 
@@ -61,9 +65,14 @@ export const useGameStore = create<GameState>() (
 			cardsLeft: [],
 			currentHand: "Open",
 			round: 0,
+			seatRef: [],
 			activeSeat: 0,
 
-			setGameValue: (key, value) => set(() => ({ [key]: value })),
+			setGameValue: (key, value) => {
+				set({
+					[key]: value,
+				})
+			},
 
 			initSeats: () => {
 				const totalPlayers = get().totalPlayers;
@@ -105,10 +114,53 @@ export const useGameStore = create<GameState>() (
 				});
 			},
 
+			setSeatRef: () => {
+				const seats = get().seats;
+				const clientUuid = useProfileStore.getState().clientUuid;
+				const totalPlayers = get().totalPlayers;
+				const clientIndex = seats.indexOf(clientUuid);
+				if (clientIndex === -1) {
+					set({
+						seatRef: new Array(totalPlayers).fill(null),
+					});
+					return;
+				}
+
+				const newSeatRef = Array.from({ length: totalPlayers }, (_, i) => {
+					return (i + clientIndex) % totalPlayers;
+				});
+				set({
+					seatRef: newSeatRef,
+				});
+			},
+			dealCards: () => {
+				const totalPlayers = get().totalPlayers;
+				const round = get().round;
+				const cards = 52 / totalPlayers;
+				const newCardsLeft: number[] = [];
+
+				if (totalPlayers === 3) {
+					for (let i = 0; i < totalPlayers; i++) {
+						if (i === round % totalPlayers)
+							newCardsLeft.push(Math.ceil(cards));
+						else
+							newCardsLeft.push(Math.floor(cards));
+					}
+				} else {
+					for (let i = 0; i < totalPlayers; i++)
+						newCardsLeft.push(cards);
+				}
+				set({
+					cardsLeft: newCardsLeft,
+				});
+			},
 			startGame: () => {
 				set({
 					round: get().round + 1,
-				})
+				});
+				useBotStore.getState().addBotIfMissing();
+				get().setSeatRef();
+				get().dealCards();
 			},
 			nextTurn: () => {
 				const newActiveSeat = (get().activeSeat + 1) % get().totalPlayers;
@@ -137,20 +189,19 @@ export const useGameStore = create<GameState>() (
 				const newTotalWins = data.totalWins + 1;
 				const newTotalPlayed = data.totalPlayed + 1;
 				const newWinStreak = data.winStreak + 1;
-				const newLevel = Math.floor(data.xp / 1000) + 1;
+				const newLevel = Math.floor(newXp / 1000) + 1;
 
 				useProfileStore.setState({
-					profilesInDb: profileStore.profilesInDb.map((p) =>
-						p.uuid === uuid
-							? {
-								...p,
-								xp: newXp,
-								totalWins: newTotalWins,
-								totalPlayed: newTotalPlayed,
-								winStreak: newWinStreak,
-								level: newLevel,
-							}
-							: p
+					profilesInDb: profileStore.profilesInDb.map((p) => p.uuid === uuid
+						? {
+							...p,
+							xp: newXp,
+							totalWins: newTotalWins,
+							totalPlayed: newTotalPlayed,
+							winStreak: newWinStreak,
+							level: newLevel,
+						}
+						: p
 					),
 				});
 			},
@@ -163,8 +214,8 @@ export const useGameStore = create<GameState>() (
 				const newXp = data.xp + 67;
 				const newTotalPlayed = data.totalPlayed + 1;
 				const newTotalLoss = data.totalLoss + 1;
-				const newWinStreak = data.winStreak + 1;
-				const newLevel = Math.floor(data.xp / 1000) + 1;
+				const newWinStreak = 0;
+				const newLevel = Math.floor(newXp / 1000) + 1;
 
 				useProfileStore.setState({
 					profilesInDb: profileStore.profilesInDb.map((p) =>

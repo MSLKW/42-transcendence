@@ -18,6 +18,7 @@ interface BotValues {
 interface BotState extends BotValues {
 	getBotData: (index: number) => MemberData | undefined,
 	addBotToParty: (uuid: string) => void,
+	addBotIfMissing: () => void;
 	removeBotsFromParty: () => void,
 	fillSeatsWithBots: () => void,
 	countSeatedBots: () => void,
@@ -79,14 +80,25 @@ export const useBotStore = create<BotState>() (
 			usePartyStore.setState({
 				members: [...partyMembers, newBot]
 			});
-			console.log("[AFTER]", {
-				members: usePartyStore.getState().members,
-			});
+		},
+
+		addBotIfMissing: () => {
+			const totalPlayers = useGameStore.getState().totalPlayers;
+			const seats = useGameStore.getState().seats;
+
+			let i = 0;
+			while (i < totalPlayers) {
+				const bot_uuid = `bot-${i}`;
+				const botExistInParty = usePartyStore.getState().getMemberData(bot_uuid);
+				if (seats.includes(bot_uuid) && !botExistInParty)
+					useBotStore.getState().addBotToParty(bot_uuid);
+				i++;
+			}
 		},
 
 		removeBotsFromParty: () => {
 			const partyMembers = usePartyStore.getState().members;
-			const newMembers = partyMembers.filter(member => member.relation != "Bot");
+			const newMembers = partyMembers.filter(member => member.relation !== "Bot");
 			usePartyStore.setState({
 				members: newMembers,
 			});
@@ -127,10 +139,9 @@ export const useBotStore = create<BotState>() (
 		countSeatedBots: () => {
 			const seats = useGameStore.getState().seats;
 			const count = seats.filter((s) => s?.includes("bot")).length;
-
 			set({
 				botCount: count,
-			})
+			});
 		},
 
 		setIntel: (intel) => {

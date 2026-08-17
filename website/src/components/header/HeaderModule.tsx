@@ -14,18 +14,19 @@ export const HeaderModule = ({ back }: HeaderModuleProps) => {
 	const { currentScene, setCurrentScene } = useSceneStore();
 	const { endGame } = useGameStore();
 
+	const handleBackClick = () => {
+		if (currentScene === "Game")
+			endGame();
+		setCurrentScene("Home");
+	};
+
 	return (
 		<header className="flex justify-between">
 			<div className="flex rounded-full bg-dark">
 				{ back === "Login"
 					? <SignOutButton />
-					: <BackButton scene={() => {
-						if (currentScene === "Game") {
-							setCurrentScene("Lobby");
-							endGame();
-						} else
-							setCurrentScene("Home");
-					}}/> }
+					: <BackButton scene={handleBackClick} />
+				}
 				<SettingsButton />
 			</div>
 			<div className="flex rounded-full bg-dark">
