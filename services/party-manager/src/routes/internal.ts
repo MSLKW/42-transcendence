@@ -8,7 +8,7 @@ import { playerStatus } from "@big2/party-manager-schema";
 export function getInternalInfosForProfile() {
 	return ( async (req: Request, res: Response) => {
 		
-		const id = req.body.id;
+		const id = req.params.id;
 		if (!id)
 			return res.status(404).json({ error: "User not found "});
 

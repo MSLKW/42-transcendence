@@ -11,8 +11,11 @@ import { postgres } from "../store/postgres";
 export function startSessionCleanupJob() {
   cron.schedule('*/5 * * * *', async () => {
 	try {
-	  await postgres.delete(sessions).where(lt(sessions.expiresAt, new Date()));
-	} catch (err) {
+	  await postgres
+	  	.delete(sessions)
+		.where(lt(sessions.expiresAt, new Date()));
+	} 
+	catch (err) {
 	  console.error('Session cleanup job failed:', err);
 	}
   });

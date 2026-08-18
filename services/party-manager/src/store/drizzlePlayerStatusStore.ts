@@ -11,10 +11,11 @@ export class DrizzlePlayerStatusStore {
 			await postgres
 				.insert(playerStatus)
 				.values({ playerId: uuid, isOnline: true})
-				.onConflictDoUpdate({
+				.onConflictDoUpdate({ // newly added
 					target: playerStatus.playerId,
 					set: { isOnline: true}
-				});
+				})
+				.returning(); // newly added
 		}
 		catch (postgresErr)
 		{

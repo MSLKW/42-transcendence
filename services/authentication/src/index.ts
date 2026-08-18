@@ -25,7 +25,7 @@ app.post("/signin", signinHandler(userStore, sessionStore));
 app.post("/guest", guestHandler(sessionStore));
 app.delete("/logout", logoutHandler(sessionStore));
 app.get("/validate", validateSessionHandler(sessionStore));
-app.get("/internal/profile/:id", getInternalInfosForProfile()); // REST API FOR dataabse usage
+app.get("/internal/profile/:id", getInternalInfosForProfile()); // REST API FOR database usage
 
 app.use((err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {
 	if (err.type === "entity.parse.failed") {

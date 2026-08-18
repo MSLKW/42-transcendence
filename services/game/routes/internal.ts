@@ -7,7 +7,7 @@ import { eq } from "drizzle-orm";
 // export function getInternalPlayerStats() {
 export function getInternalInfosForProfile() {
 	return ( async ( req: Request, res: Response ) => {
-		const id = req.body.id;
+		const id = req.params.id;
 		if (!id)
 			return res.status(404).json({ error: "User not found" });
 		

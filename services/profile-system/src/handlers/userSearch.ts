@@ -11,10 +11,10 @@ export function userSearch()
 			// const searchResults: string[] = [];
 
 			//TODO: fill in searchResults from Postgres
-			const userInfoStore = new DrizzleUserInfoStore;
+			const userInfoStore = new DrizzleUserInfoStore();
 			const searchResults: string[] = await userInfoStore.searchUsersByUsername(searchTerm);
 
-			return (res.status(200).json({searchResults: searchResults}));
+			return (res.status(200).json({searchResults}));
 		}
 		catch (err)
 		{
@@ -23,3 +23,8 @@ export function userSearch()
 		}
 	});
 }
+
+// {searchResults: searchResults} 
+// =>	{ label: theActualVariable } 
+// 		ts lets you just write it once if both label and var is the same name, 
+// 		Labels can be any word you want, they're not typed at all, not connected to any variable

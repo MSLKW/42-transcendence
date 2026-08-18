@@ -1,5 +1,5 @@
 import "dotenv/config";
-import { postgres } from "postgres";
+import { postgres } from "./postgres";
 import { userProfile } from "@big2/profile-system-schema";
 import { eq } from "drizzle-orm";
 import type { UserData } from "@big2/profile-system-types";
@@ -41,9 +41,9 @@ export class DrizzleUserProfileStore {
 
 		// 2. REST calls to the services that own the rest, in parallel => named to authData, gameData, partyData
 		const [authData, gameData, partyData] = await Promise.all([
-			fetchJson(`http://authentication:3000/internal/profile/${id}`),
-			fetchJson(`http://game:3000/internal/profile/${id}`),
-			fetchJson(`http://party-manager:3000/internal/profile/${id}`),
+			fetchJson(`${AUTH_SERVICE_URL}/internal/profile/${id}`),
+			fetchJson(`${GAME_SERVICE_URL}/internal/profile/${id}`),
+			fetchJson(`${PARTY_MANAGER_SERVICE_URL}/internal/profile/${id}`),
 		]);
 
 

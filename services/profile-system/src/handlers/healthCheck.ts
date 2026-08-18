@@ -7,6 +7,6 @@ export function healthCheck()
 	{
 		if (!AUTH_SERVICE_URL || !AVATAR_DIR)
 			return (res.status(500));
-		return (res.status(204));
+		return (res.status(204).send());
 	});
 }

@@ -28,9 +28,9 @@ const INTENTIONAL_DISCONNECT_REASONS = new Set([
 
 const pendingRemovals = new Map<string, NodeJS.Timeout>();
 
-// REST API FOR dataabse usage
+// REST API FOR database usage
 const app = express();
-app.get("/internal/profile/:id", getInternalInfosForProfile());// REST API FOR dataabse usage
+app.get("/internal/profile/:id", getInternalInfosForProfile());// REST API FOR database usage
 
 const httpServer = createServer();
 

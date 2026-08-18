@@ -230,4 +230,4 @@ function animate(time: DOMHighResTimeStamp) {
 renderer.setAnimationLoop(animate);
 
 const app = express();
-app.get("/internal/profile/:id", getInternalInfosForProfile()); // REST API FOR dataabse usage
+app.get("/internal/profile/:id", getInternalInfosForProfile()); // REST API FOR database usage
