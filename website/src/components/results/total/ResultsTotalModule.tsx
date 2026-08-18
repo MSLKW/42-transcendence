@@ -21,13 +21,15 @@ export const ResultsTotalModule = () => {
 			">
 				<h3>5</h3>
 			</div>
-			<div className="
-				row-start-3 row-end-3
-				flex place-content-center place-items-center
-				h-full w-full
-			">
-				<h3>10</h3>
-			</div>
+			{ totalPlayers >= 2 &&
+				<div className="
+					row-start-3 row-end-3
+					flex place-content-center place-items-center
+					h-full w-full
+				">
+					<h3>10</h3>
+				</div>
+			}
 			{ totalPlayers >= 3 &&
 				<div className="
 					row-start-4 row-end-4

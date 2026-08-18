@@ -1,9 +1,9 @@
 import { useSceneStore } from "../../../store/SceneStore";
-import { PartyIcon } from "./PartyCallIcon";
 import { AvatarName } from "../../avatar/name/AvatarName";
+import { ResultsIcon } from "./ResultsIcons";
 
-export const PartyCallButton = () => {
-	const { showWindow, setShowWindow } = useSceneStore();
+export const ResultsCallButton = () => {
+	const { setShowWindow } = useSceneStore();
 
 	return (
 		<div
@@ -13,11 +13,8 @@ export const PartyCallButton = () => {
 			"
 		>
 			<button 
-				data-tip="Find Party Members"
-				onClick={(e) => {
-					e.currentTarget.blur();
-					setShowWindow("party", !showWindow.party);
-				}}
+				data-tip="View Last Results"
+				onClick={() => setShowWindow("results", true)}
 				className="
 					rounded-xs
 					hover:not-disabled:scale-105 active:hover:not-disabled:scale-100
@@ -32,10 +29,10 @@ export const PartyCallButton = () => {
 						bg-dark rounded-sm
 						flex place-content-center place-items-center
 				">
-					<PartyIcon />
+					<ResultsIcon />
 				</div>
 			</button>
-			<AvatarName name="Party" />
+			<AvatarName name="Results" />
 		</div>
 	);
 }

@@ -3,8 +3,8 @@ import { usePartyStore } from "../../../store/PartyStore";
 import { AvatarImage } from "../../avatar/image/AvatarImage";
 
 export const ResultsRoundModule = () => {
+	const { totalPlayers, seats } = useGameStore();
 	const { members } = usePartyStore();
-	const { totalPlayers } = useGameStore();
 
 	return (
 		<>
@@ -16,23 +16,21 @@ export const ResultsRoundModule = () => {
 			">
 				<h2>Rounds Played: 2</h2>
 			</div>
-			{ members[0] && members[0].name &&
-				<div className="
-					row-start-2 row-end-2
-					flex place-items-center
-					gap-5
-					h-full w-full
-					bg-b2
-					border-r border-n2/40
-				">
-					<AvatarImage />
-					<div className="flex flex-col place-content-center place-items-start">
-						<h3>{members[0].name}</h3>
-						<p>Total Wins: 1</p>
-					</div>
+			<div className="
+				row-start-2 row-end-2
+				flex place-items-center
+				gap-5
+				h-full w-full
+				bg-b2
+				border-r border-n2/40
+			">
+				<AvatarImage />
+				<div className="flex flex-col place-content-center place-items-start">
+					<h3>{members[0].name}</h3>
+					<p>Total Wins: 1</p>
 				</div>
-			}
-			{ members[1] && members[1].name &&
+			</div>
+			{ totalPlayers >= 2 && members[1] && members[1].name &&
 				<div className="
 					row-start-3 row-end-3
 					flex place-items-center

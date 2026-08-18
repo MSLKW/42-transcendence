@@ -11,10 +11,11 @@ import { BotManagerButton } from "./bots/BotManagerButton";
 import { HostSettings } from "./host_settings/HostSettings";
 import { TakeSeatButton } from "./take_seat/TakeSeatButton";
 import { UnseatButton } from "./unseat/UnseatButton";
+import { ResultsCallButton } from "../results/call/ResultsCallButton";
 
 export const LobbyScene = () => {
 	const { fillSeatsWithBots } = useBotStore();
-	const { totalPlayers, seats, startGame } = useGameStore();
+	const { totalPlayers, seats, startGame, round } = useGameStore();
 	const { members, humans, hostUuid } = usePartyStore();
 	const { clientUuid } = useProfileStore();
 	const { setCurrentScene } = useSceneStore();
@@ -122,12 +123,15 @@ export const LobbyScene = () => {
 					relative
 				"
 			>
-				<div tabIndex={-1} className="
-					w-full
-					flex
-					gap-2rem
-					sm:overflow-x-visible overflow-x-auto
-				">
+				<div
+					tabIndex={-1}
+					className="
+						w-full
+						flex
+						gap-2rem
+						sm:overflow-x-visible overflow-x-auto
+					"
+				>
 					{ members.map((member) => (
 						member.uuid && !seats.includes(member.uuid) &&
 							<AvatarModule
@@ -141,6 +145,7 @@ export const LobbyScene = () => {
 				<div className="flex gap-2rem">
 					{ seats.includes(clientUuid) && humans > 1 && <UnseatButton uuid={clientUuid!} /> }
 					<BotManagerButton />
+					{ round > 1 && <ResultsCallButton /> }
 				</div>
 			</footer>
 		</>

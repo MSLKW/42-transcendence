@@ -25,14 +25,16 @@ export const ResultsChangeModule = () => {
 			">
 				<GreenTriangle />
 			</div>
-			<div className="
-				row-start-3 row-end-3
-				flex place-content-center place-items-center
-				h-full w-full
-				border-r border-n2/40
-			">
-				<GreenTriangle />
-			</div>
+			{ totalPlayers >= 2 &&
+				<div className="
+					row-start-3 row-end-3
+					flex place-content-center place-items-center
+					h-full w-full
+					border-r border-n2/40
+				">
+					<GreenTriangle />
+				</div>
+			}
 			{ totalPlayers >= 3 &&
 				<div className="
 					row-start-4 row-end-4

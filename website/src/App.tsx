@@ -19,14 +19,15 @@ import { ResultsScene } from "./components/results/ResultsScene";
 import { BotsWindow } from "./components/bots/BotsWindow";
 import { ChatWindow } from "./components/chat/ChatWindow";
 import { CreateAccountWindow } from "./components/login/create_account/CreateAccountWindow";
-import { SignInWindow } from "./components/login/sign_in/SignInWindow";
 import { InfoWindow } from "./components/info/InfoWindow";
 import { NotificationWindow } from "./components/notification/NotificationWindow";
 import { PartyWindow } from "./components/party/PartyWindow";
 import { ProfileWindow } from "./components/profile/ProfileWindow";
 import { RankWindow } from "./components/game/rank/RankWindow";
-import { SetupWindow } from "./components/setup/SetupWindow";
+import { ResultsWindow } from "./components/results/ResultsWindow";
+import { SignInWindow } from "./components/login/sign_in/SignInWindow";
 import { SettingsWindow } from "./components/settings/SettingsWindow";
+import { SetupWindow } from "./components/setup/SetupWindow";
 import { StatsWindow } from "./components/stats/StatsWindow";
 import Dev from "./Dev";
 
@@ -102,6 +103,7 @@ export default function App() {
 				{ showWindow["party"] && <PartyWindow /> }
 				{ showWindow["profile"] && <ProfileWindow /> }
 				{ showWindow["rank"] && <RankWindow /> }
+				{ showWindow["results"] && <ResultsWindow /> }
 				{ showWindow["setup"] && <SetupWindow /> }
 				{ showWindow["settings"] && <SettingsWindow /> }
 				{ showWindow["signIn"] && <SignInWindow /> }

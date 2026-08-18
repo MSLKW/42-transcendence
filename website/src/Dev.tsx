@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { handleSignOut } from "./api/authentication/sign_out/handleSignOut";
 import { partySocket } from "./api/party/partySocket";
 import { useDevStore } from "./store/DevStore";
@@ -9,24 +9,16 @@ import { usePartyStore } from "./store/PartyStore";
 import { useProfileStore } from "./store/ProfileStore";
 import { useSceneStore } from "./store/SceneStore";
 import { DevButton } from "./components/dev/DevBtn";
-import { useScrollToTop } from "./utilities/useScrollToTop";
+import { useFrameView } from "./utilities/useFrameView";
 
 export default function Dev() {
-	const { showFrame, toggleFlag } = useDevStore();
-	useEffect(() => {
-		if (showFrame)
-			document.documentElement.classList.add('frame-mode');
-		else
-			document.documentElement.classList.remove('frame-mode');
-	}, [showFrame]);
-
+	const { toggleFlag } = useDevStore();
 	const { friendUuids } = useFriendStore();
 	const { seats, totalPlayers, playerUnseats, currentHand, incTotalWin, incTotalLoss, setGameValue, round } = useGameStore();
 	const { showNotification } = useNotificationStore();
 	const { partySocketId, partyGameId, members, set1PlayerParty } = usePartyStore();
 	const { clientUuid, isAuthenticated, validateResponse, profilesInDb, resetProfilesInDb } = useProfileStore();
-	const { currentScene, setCurrentScene } = useSceneStore();
-
+	const { currentScene, setCurrentScene, setShowWindow } = useSceneStore();
 	const [inviteUuid, setInviteUuid] = useState("");
 
 	const handleReset = async () => {
@@ -45,6 +37,8 @@ export default function Dev() {
 	}
 
 	const humansSeated = seats.filter((seat): seat is string => typeof seat === "string").length;
+	
+	useFrameView();
 
 	return (
 		<section className="w-full text-r4 py-1rem">
@@ -53,13 +47,20 @@ export default function Dev() {
 				<DevButton label="Stats" call={() => toggleFlag("showStats")} />
 				<DevButton label="Reset" call={handleReset} />
 			</ul>
-			{ currentScene === "Game" && 
-				<ul className="flex place-content-evenly">
-					<DevButton label="Results" call={() => setCurrentScene('Results')}/>
-					<DevButton label="Win Round" call={() => incTotalWin(clientUuid!)}/>
-					<DevButton label="Lose Round" call={() => incTotalLoss(clientUuid!)}/>
-				</ul>
-			}
+			<ul className="flex place-content-evenly px-3rem">
+				<DevButton label="Notify Message" call={() => showNotification("This is a message notification", NOTIFICATION_TYPE.message)} />
+				<DevButton label="Notify Invite" call={() => showNotification("This is an invite notification", NOTIFICATION_TYPE.invite)} />
+				<DevButton label="Notify Error" call={() => showNotification("This is an error notification", NOTIFICATION_TYPE.error)} />
+			</ul>
+			<ul className="flex place-content-evenly">
+				{ currentScene === "Game" &&
+					<>
+						<DevButton label="Win Round" call={() => incTotalWin(clientUuid!)}/>
+						<DevButton label="Lose Round" call={() => incTotalLoss(clientUuid!)}/>
+					</>
+				}
+				<DevButton label="Results" call={() => setShowWindow("results", true)}/>
+			</ul>
 			<ul className="flex place-content-center place-items-center gap-1rem">
 				<input
 					id="inviteUuid"
@@ -117,29 +118,6 @@ export default function Dev() {
 					{currentScene === "Lobby" && <DevButton label="Unseat" call={() => playerUnseats(clientUuid!)} />}
 				</div>
 				<li>Chat Manager Socket ID: n/a</li>
-				<div className="flex place-content-between">
-					<DevButton
-						label="Notify Message"
-						call={() => {
-							useScrollToTop();
-							showNotification("Custom message here", NOTIFICATION_TYPE.message);
-						}}
-					/>
-					<DevButton
-						label="Notify Invite"
-						call={() => {
-							useScrollToTop();
-							showNotification("Custom invite here", NOTIFICATION_TYPE.invite);
-						}}
-					/>
-					<DevButton
-						label="Notify Error"
-						call={() => {
-							useScrollToTop();
-							showNotification("Custom error here", NOTIFICATION_TYPE.error);
-						}}
-					/>
-				</div>
 			</ul>
 		</section>
 	);

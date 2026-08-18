@@ -16,8 +16,6 @@ export const StatsWindow: React.FC = () => {
 
 	const { getProfileData } = useProfileStore();
 	const data = getProfileData(profileUuid!);
-	// if (!data)
-		// return null;
 
 	const { getMemberData } = usePartyStore();
 
