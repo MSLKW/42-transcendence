@@ -1,0 +1,76 @@
+{
+  "hash": "f9bf7905",
+  "configHash": "231f5bce",
+  "lockfileHash": "52238f7c",
+  "browserHash": "f02b62aa",
+  "optimized": {
+    "@react-three/drei": {
+      "src": "../../node_modules/@react-three/drei/index.js",
+      "file": "@react-three_drei.js",
+      "fileHash": "b6e2891a",
+      "needsInterop": false
+    },
+    "@react-three/fiber": {
+      "src": "../../node_modules/@react-three/fiber/dist/react-three-fiber.esm.js",
+      "file": "@react-three_fiber.js",
+      "fileHash": "895f0399",
+      "needsInterop": false
+    },
+    "react-dom/client": {
+      "src": "../../node_modules/react-dom/client.js",
+      "file": "react-dom_client.js",
+      "fileHash": "eeb7a90b",
+      "needsInterop": true
+    },
+    "react": {
+      "src": "../../node_modules/react/index.js",
+      "file": "react.js",
+      "fileHash": "f2befc45",
+      "needsInterop": true
+    },
+    "react/jsx-dev-runtime": {
+      "src": "../../node_modules/react/jsx-dev-runtime.js",
+      "file": "react_jsx-dev-runtime.js",
+      "fileHash": "e2a20eb5",
+      "needsInterop": true
+    },
+    "zustand": {
+      "src": "../../node_modules/zustand/esm/index.mjs",
+      "file": "zustand.js",
+      "fileHash": "d8ca581d",
+      "needsInterop": false
+    },
+    "zustand/middleware": {
+      "src": "../../node_modules/zustand/esm/middleware.mjs",
+      "file": "zustand_middleware.js",
+      "fileHash": "0bdb0c48",
+      "needsInterop": false
+    }
+  },
+  "chunks": {
+    "client-DBgrsBm8": {
+      "file": "client-DBgrsBm8.js",
+      "isDynamicEntry": false
+    },
+    "react-CZunmVaX": {
+      "file": "react-CZunmVaX.js",
+      "isDynamicEntry": false
+    },
+    "react-three-fiber.esm-CYitOmog": {
+      "file": "react-three-fiber.esm-CYitOmog.js",
+      "isDynamicEntry": false
+    },
+    "scheduler-CIujkFb1": {
+      "file": "scheduler-CIujkFb1.js",
+      "isDynamicEntry": false
+    },
+    "vanilla-DCS0UZ51": {
+      "file": "vanilla-DCS0UZ51.js",
+      "isDynamicEntry": false
+    },
+    "vision_bundle-CIcccGj7": {
+      "file": "vision_bundle-CIcccGj7.js",
+      "isDynamicEntry": true
+    }
+  }
+}

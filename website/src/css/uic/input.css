@@ -1,0 +1,13 @@
+@utility input-chat {
+	@apply
+		z-0
+		w-full
+		h-3rem
+		bg-n6
+		border border-n5 rounded-3xl
+		px-5
+		text-n0
+		pointer-events-auto
+		focus:outline-2 outline-b5 outline-offset-5
+		;
+}

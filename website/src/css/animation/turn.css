@@ -1,0 +1,16 @@
+@property --wipe-angle {
+	syntax: '<angle>';
+	inherits: false;
+	initial-value: 0deg;
+}
+
+@keyframes radialWipe {
+	0% { --wipe-angle: 0deg; }
+	100% { --wipe-angle: 360deg; }
+}
+
+.animate-turn-wipe {
+	mask-image: conic-gradient(transparent var(--wipe-angle), black var(--wipe-angle));
+	-webkit-mask-image: conic-gradient(transparent var(--wipe-angle), black var(--wipe-angle));
+	animation: radialWipe var(--wipe-duration, 1s) linear infinite;
+}

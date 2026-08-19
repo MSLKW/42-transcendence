@@ -1,0 +1,31 @@
+@utility bg-party-online {
+	@apply
+		hover:bg-green-600/4
+		border border-green-600/40 rounded-sm outline-b5
+		hover:scale-105
+		cursor-pointer
+		data-tip-up
+		;
+}
+
+@utility bg-party-offline {
+	@apply
+		border border-red-500/40 rounded-sm outline-b5
+		;
+}
+
+@utility bg-party-busy {
+	@apply
+		hover:bg-yellow-600/4
+		border border-yellow-600/40 rounded-sm outline-b5
+		hover:scale-105
+		cursor-pointer
+		data-tip-up
+		;
+}
+
+@utility bg-party-self {
+	@apply
+		border border-a3/40 rounded-sm outline-b5
+		;
+}

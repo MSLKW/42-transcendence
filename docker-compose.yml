@@ -11,35 +11,57 @@ services:
     networks:
       - big2
   
+  # # Game Client Website
+  # website:
+  #   container_name: website
+  #   build:
+  #     context: ./game_client
+  #     dockerfile: Dockerfile
+  #     additional_contexts:
+  #       root: .
+  #       game-types: ./packages/game-types
+  #   image: website:test
+  #   restart: unless-stopped
+  #   volumes: # temporary for vite hmr
+  #     - ./game_client:/app/game_client
+  #     - /app/node_modules
+  #     - /app/game_client/node_modules
+  #   networks:
+  #     - big2
+  
   website:
     container_name: website
     build:
-      context: ./game_client
+      context: ./website
       dockerfile: Dockerfile
       additional_contexts:
         root: .
         game-types: ./packages/game-types
     image: website:test
     restart: unless-stopped
-    volumes: # temporary for vite hmr
-      - ./game_client:/app/game_client
-      - /app/node_modules
-      - /app/game_client/node_modules
     networks:
       - big2
   
-  # authentication:
-  #   build: authentication
-  #   image: authentication:test
-  #   restart: unless-stopped
+  authentication:
+    container_name: authentication
+    build:
+      context: ./authentication
+    image: authentication:test
+    restart: unless-stopped
+    networks:
+      - big2
 
-  # party_manager:
-  #   build: party-manager
-  #   image: party:test
-  #   restart: unless-stopped
-  #   environment:
-  #     AUTH_SERVICE_URL: http://authentication:3000
-  #     GAME_SERVICE_URL: http://game:3000
+  party_manager:
+    container_name: party_manager
+    build:
+      context: ./party-manager
+    image: party:test
+    restart: unless-stopped
+    environment:
+      AUTH_SERVICE_URL: http://authentication:3000
+      GAME_SERVICE_URL: http://game_server:3000
+    networks:
+      - big2
 
   game_server:
     container_name: game_server
