@@ -73,8 +73,8 @@ light.position.set(0, 7, 0);
 light.target.position.set(0, 0, 0);
 scene.add(light);
 
-const lightHelper = new THREE.SpotLightHelper(light);
-scene.add(lightHelper);
+// const lightHelper = new THREE.SpotLightHelper(light);
+// scene.add(lightHelper);
 
 export const cameraLight = new THREE.PointLight(0xffffff, 20, 20);
 cameraLight.position.set(0, 5, 7);
@@ -106,9 +106,9 @@ spotlightFolder.add(light, 'distance', 0, 100, 1).name('Distance');
 spotlightFolder.add(light, 'angle', 0, Math.PI / 2, 0.01).name('Angle');
 spotlightFolder.add(light, 'penumbra', 0, 2, 0.01).name('Penumbra');
 spotlightFolder.add(light, 'decay', 0, 5, 0.1).name('Decay');
-spotlightFolder.onChange(() => {
-	lightHelper.update();
-})
+// spotlightFolder.onChange(() => {
+// 	lightHelper.update();
+// })
 
 const ambientLightFolder = gui.addFolder('AmbientLight');
 ambientLightFolder.add(ambientLight, 'intensity', 0, 1, 0.01).name('Intensity');

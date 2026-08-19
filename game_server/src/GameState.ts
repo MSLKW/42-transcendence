@@ -3,7 +3,7 @@ import { io } from './server.js';
 import { PlayerState } from './PlayerState.js';
 import { CardDeckState } from './CardDeckState.js'
 import { CardHeapState } from './CardHeapState.js'
-import { CardRank, CardSuit, GameStateTransmit, GameEndStatsTransmit, StatusTransmit, PlayerTurnTransmit, GameStartRequest, SkipTurnTransmit, CardTransmit } from '@big2/game-types';
+import { CardRank, CardSuit, GameStateTransmit, GameEndStatsTransmit, StatusTransmit, PlayerTurnTransmit, GameStartRequest, SkipTurnTransmit, CardTransmit, GameSettingsTransmit } from '@big2/game-types';
 import { UserState } from './UserState.js';
 
 export class GameState {
@@ -17,7 +17,7 @@ export class GameState {
 	public	gameRoomId: string;
 
 	// Game Settings
-	public	turnTimerInSeconds: number;
+	public	settings: GameSettingsTransmit;
 	// Play until last player or when the first player finishes
 	// if play until last player finishes, will score based on finishing ranking?
 	// if play until first player finishes, will score based on cards held by the losers
@@ -30,8 +30,14 @@ export class GameState {
 		this.isGameStarted = false;
 		this.playerTurnIndex = -1;
 		this.playerTurnTimeoutId = undefined;
-		this.turnTimerInSeconds = 0;
 		this.gameRoomId = "game" + sessionId;
+		this.settings = {
+			allow3OfAKind: true,
+			allow2OfSpadesEnd: false,
+			autoPassInMilliseconds: 0,
+			endGameCondition: 0,
+			scoreCalculation: 0,
+		}
 	}
 
 	public emit(event: string, payload: any) {
@@ -185,10 +191,10 @@ export class GameState {
 		const playerTurnTransmit: PlayerTurnTransmit = {
 			playerId: player.playerId,
 			skippable: !this.cardHeap.isPlayerLeading(player.playerId),
-			timer: this.turnTimerInSeconds
+			timer: this.settings.autoPassInMilliseconds
 		}
-		if (this.turnTimerInSeconds > 0) {
-			this.playerTurnTimeoutId = setTimeout(() => {this.playerTimeout(player)}, this.turnTimerInSeconds * 1000);
+		if (this.settings.autoPassInMilliseconds > 0) {
+			this.playerTurnTimeoutId = setTimeout(() => {this.playerTimeout(player)}, this.settings.autoPassInMilliseconds);
 		}
 		this.emit("player_turn", playerTurnTransmit);
 	}

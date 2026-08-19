@@ -24,6 +24,7 @@ services:
     volumes: # temporary for vite hmr
       - ./game_client:/app/game_client
       - /app/node_modules
+      - /app/game_client/node_modules
     networks:
       - big2
   

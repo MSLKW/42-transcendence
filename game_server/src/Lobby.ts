@@ -2,7 +2,7 @@ import { Socket } from 'socket.io';
 import { io, kickSocket, LobbyRequest } from './server.js';
 import { UserState } from './UserState.js';
 import { GameState } from './GameState.js';
-import { GameStartRequest, SeatOrderTransmit, StatusTransmit } from '@big2/game-types';
+import { GameSettingsTransmit, GameStartRequest, SeatOrderTransmit, StatusTransmit } from '@big2/game-types';
 import { EventEmitter } from 'node:events';
 import { success } from 'zod';
 
@@ -87,14 +87,21 @@ export class Lobby {
 			this.disconnectUser(user);
 		});
 
-		user.socket.on("game_start_request", (gameStartRequest: GameStartRequest) => {
-			this.GameStartRequest(user, gameStartRequest);
+		user.socket.on("game_start_request", () => {
+			this.GameStartRequest(user);
 		});
 
 		user.socket.on("user_seat_change", (totalSeats: number) => {
-			const status = this.initSeats(totalSeats, user.uuid);
-			user.socket.emit("user_seat_change", status);
-		})
+			user.socket.emit("user_seat_change", this.initSeats(totalSeats, user.uuid));
+		});
+
+		user.socket.on("game_settings_set", (gameSettings: GameSettingsTransmit) => {
+			const status = this.GameSetSettings(user, gameSettings);
+			user.socket.emit("game_settings_set", status);
+			if (status.success === true) {
+				this.emit("game_settings_update", this.game.settings);
+			}
+		});
 	}
 
 	private disconnectUser(disconnectedUser: UserState) {
@@ -115,7 +122,7 @@ export class Lobby {
 		}
 	}
 
-	private GameStartRequest(user: UserState, gameStartRequest: GameStartRequest) {
+	private GameStartRequest(user: UserState) {
 		if (this.hostUuid !== user.uuid) {
 			const status: StatusTransmit = {
 				success: false,
@@ -133,6 +140,21 @@ export class Lobby {
 			this.game.addSpectator(userSpectators[i]);
 		}
 		user.socket.emit("game_start_request", this.game.startGame());
+	}
+
+	public GameSetSettings(user: UserState, settings: GameSettingsTransmit): StatusTransmit {
+		const status: StatusTransmit = {
+			success: false,
+			message: ""
+		}
+		if (this.hostUuid !== user.uuid) {
+			status.message = "Not the host";
+			return (status);
+		}
+		this.game.settings = settings;
+		status.success = true;
+		status.message = "Successfully set game settings";
+		return (status);
 	}
 
 	public isActive() {

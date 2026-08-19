@@ -1,10 +1,10 @@
 import * as THREE from 'three';
 import { io, Socket } from 'socket.io-client';
-import { CardHandTransmit, CardRank, CardSuit, GameStateTransmit, GameStartRequest, StatusTransmit, SeatOrderTransmit } from '@big2/game-types';
+import { CardHandTransmit, CardRank, CardSuit, GameStateTransmit, GameStartRequest, StatusTransmit, SeatOrderTransmit, GameSettingsTransmit } from '@big2/game-types';
 import { CardHeap } from './CardHeap.ts';
 import { Player } from './Player.ts';
 import { Opponent } from './Opponent.ts';
-import { camera, cameraLight, orbitControls } from './main.ts';
+import { camera, cameraLight, gameStatus, orbitControls } from './main.ts';
 import { Deck } from './Deck.ts';
 import { gsap } from 'gsap';
 import { Participant } from './Participant.ts';
@@ -107,6 +107,10 @@ export class Game {
 		this.socket.on("user_list_update", (list: Array<string>) => {
 			console.log(list);
 		})
+
+		this.socket.on("game_settings_update", (gameSettings: GameSettingsTransmit) => {
+			console.log(gameSettings);
+		});
 	
 		this.socket.on("game_state", (gameState: GameStateTransmit) => {
 			this.initGame(gameState);

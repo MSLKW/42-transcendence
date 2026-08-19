@@ -65,6 +65,14 @@ export type GameStartRequest = {
 	playerId: string
 }
 
+export type GameSettingsTransmit = {
+	allow3OfAKind: boolean,
+	allow2OfSpadesEnd: boolean,
+	autoPassInMilliseconds: number,
+	endGameCondition: number,
+	scoreCalculation: number,
+}
+
 export type GameEndStatsTransmit = {
 	winnerPlayerId: string,
 	playerFinalCardAmounts: Record<string, number>
