@@ -47,7 +47,7 @@ export class PlayerState {
 
 	public disconnect() {
 		this.isDisconnected = true;
-		if (this.gameStateRef.turnTimerInSeconds === 0)
+		if (this.gameStateRef.settings.autoPassInMilliseconds === 0)
 			this.skipTurn();
 		console.log(`Player<${this.playerId}> has disconnected`)
 	}
