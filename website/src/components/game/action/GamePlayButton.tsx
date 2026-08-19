@@ -1,11 +1,9 @@
 import { useGameStore, HAND_VALUES } from "../../../store/GameStore";
 import { useProfileStore } from "../../../store/ProfileStore";
-import { useSceneStore } from "../../../store/SceneStore";
 
 export const GamePlayButton = () => {
 	const { currentHand, cardsLeft, seats, setGameValue, activeSeat, nextTurn } = useGameStore();
 	const { clientUuid } = useProfileStore();
-	const { setCurrentScene } = useSceneStore();
 
 	const clientSeat = seats.indexOf(clientUuid);
 
@@ -17,8 +15,6 @@ export const GamePlayButton = () => {
 
 		if (clientCardsLeft > 0)
 			nextTurn();
-		else
-			setCurrentScene("Results");
 	};
 
 	return (

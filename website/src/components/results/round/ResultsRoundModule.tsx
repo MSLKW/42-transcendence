@@ -4,7 +4,7 @@ import { AvatarImage } from "../../avatar/image/AvatarImage";
 
 export const ResultsRoundModule = () => {
 	const { totalPlayers, seats } = useGameStore();
-	const { members } = usePartyStore();
+	const { members, getMemberData } = usePartyStore();
 
 	return (
 		<>
@@ -26,7 +26,7 @@ export const ResultsRoundModule = () => {
 			">
 				<AvatarImage />
 				<div className="flex flex-col place-content-center place-items-start">
-					<h3>{members[0].name}</h3>
+					<h3>{getMemberData(seats[0])?.name}</h3>
 					<p>Total Wins: 1</p>
 				</div>
 			</div>

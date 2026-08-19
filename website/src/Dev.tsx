@@ -14,9 +14,9 @@ import { useFrameView } from "./utilities/useFrameView";
 export default function Dev() {
 	const { toggleFlag } = useDevStore();
 	const { friendUuids } = useFriendStore();
-	const { seats, totalPlayers, playerUnseats, currentHand, incTotalWin, incTotalLoss, setGameValue, round } = useGameStore();
+	const { seats, totalPlayers, playerUnseats, currentHand, setGameValue, round } = useGameStore();
 	const { showNotification } = useNotificationStore();
-	const { partySocketId, partyGameId, members, set1PlayerParty } = usePartyStore();
+	const { partySocketId, partyGameId, members, set1PlayerParty, hostUuid, getMemberData } = usePartyStore();
 	const { clientUuid, isAuthenticated, validateResponse, profilesInDb, resetProfilesInDb } = useProfileStore();
 	const { currentScene, setCurrentScene, setShowWindow } = useSceneStore();
 	const [inviteUuid, setInviteUuid] = useState("");
@@ -37,8 +37,15 @@ export default function Dev() {
 	}
 
 	const humansSeated = seats.filter((seat): seat is string => typeof seat === "string").length;
-	
+
 	useFrameView();
+
+	const playerWins = (player: number) => {
+		const newCardsLeft = Array.from({ length: totalPlayers }, (_, index) => {
+			return (Math.abs(totalPlayers - (index - player)) % totalPlayers) * 3;
+		});
+		setGameValue("cardsLeft", newCardsLeft);
+	}
 
 	return (
 		<section className="w-full text-r4 py-1rem">
@@ -53,10 +60,12 @@ export default function Dev() {
 				<DevButton label="Notify Error" call={() => showNotification("This is an error notification", NOTIFICATION_TYPE.error)} />
 			</ul>
 			<ul className="flex place-content-evenly">
-				{ currentScene === "Game" &&
+				{ currentScene === "Game" && clientUuid === hostUuid &&
 					<>
-						<DevButton label="Win Round" call={() => incTotalWin(clientUuid!)}/>
-						<DevButton label="Lose Round" call={() => incTotalLoss(clientUuid!)}/>
+						{ seats[0] && <DevButton label={`${getMemberData(seats[0])?.name} Wins`} call={() => playerWins(0)}/> }
+						{ seats[1] && <DevButton label={`${getMemberData(seats[1])?.name} Wins`} call={() => playerWins(1)}/> }
+						{ seats[2] && <DevButton label={`${getMemberData(seats[2])?.name} Wins`} call={() => playerWins(2)}/> }
+						{ seats[3] && <DevButton label={`${getMemberData(seats[3])?.name} Wins`} call={() => playerWins(3)}/> }
 					</>
 				}
 				<DevButton label="Results" call={() => setShowWindow("results", true)}/>
@@ -65,9 +74,7 @@ export default function Dev() {
 				<input
 					id="inviteUuid"
 					onChange={(e) => setInviteUuid(e.target.value)}
-					className="
-						bg-dark w-[70%]
-					"
+					className="bg-dark w-[70%]"
 				/>
 				<DevButton label="Invite" call={() => partySocket.sendInvite(inviteUuid)}/>
 			</ul>

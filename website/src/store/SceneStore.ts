@@ -3,7 +3,7 @@ import { persist } from "zustand/middleware";
 import { useGameStore } from "./GameStore";
 import type { BADGE_TYPE } from "./ProfileStore";
 
-export type SCENES = "Badge" | "Login" | "Home" | "Lobby" | "Test" | "Game" | "Results";
+export type SCENES = "Badge" | "Login" | "Home" | "Lobby" | "Test" | "Game";
 
 interface SceneValues {
 	currentScene: SCENES;

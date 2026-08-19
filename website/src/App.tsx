@@ -15,7 +15,6 @@ import { HomeScene } from "./components/home/HomeScene";
 import { LobbyScene } from "./components/lobby/LobbyScene";
 import { TestScene } from "./components/test/TestScene";
 import { GameScene } from "./components/game/GameScene";
-import { ResultsScene } from "./components/results/ResultsScene";
 import { BotsWindow } from "./components/bots/BotsWindow";
 import { ChatWindow } from "./components/chat/ChatWindow";
 import { CreateAccountWindow } from "./components/login/create_account/CreateAccountWindow";
@@ -94,7 +93,6 @@ export default function App() {
 				{ currentScene === "Lobby" && <LobbyScene /> }
 				{ currentScene === "Test" && <TestScene /> }
 				{ currentScene === "Game" && <GameScene /> }
-				{ currentScene === "Results" && <ResultsScene /> }
 				{ showWindow["bots"] && <BotsWindow /> }
 				{ showWindow["chat"] && <ChatWindow /> }
 				{ showWindow["createAccount"] && <CreateAccountWindow /> }

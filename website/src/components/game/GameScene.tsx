@@ -1,5 +1,8 @@
+import { useEffect } from "react";
 import { useGameStore } from "../../store/GameStore";
 import { usePartyStore } from "../../store/PartyStore";
+import { useResultsStore } from "../../store/ResultsStore";
+import { useSceneStore } from "../../store/SceneStore";
 import { useAutoPass } from "../../utilities/useAutoPass";
 import { HeaderModule } from "../header/HeaderModule";
 import { AvatarModule } from "../avatar/AvatarModule";
@@ -9,9 +12,20 @@ import { GamePassButton } from "./action/GamePassButton";
 import { GamePlayButton } from "./action/GamePlayButton";
 
 export const GameScene = () => {
-	const { totalPlayers, seats, seatRef, cardsLeft, activeSeat } = useGameStore();
+	const { totalPlayers, seats, seatRef, cardsLeft, activeSeat, gameStarted, setGameValue } = useGameStore();
 	const { members } = usePartyStore();
+	const { setResults, results } = useResultsStore();
+	const { setShowWindow } = useSceneStore();
+
 	useAutoPass();
+	useEffect(() => {
+		if (cardsLeft.includes(0)) {
+			setGameValue("gameStarted", false);
+			setResults();
+			console.log(results);
+			setShowWindow("results", true);
+		}
+	}, [cardsLeft]);
 
 	return (
 		<>
@@ -25,7 +39,7 @@ export const GameScene = () => {
 									key={seats[seatRef[1]] ?? ""}
 									uuid={seats[seatRef[1]] ?? ""}
 									cornerButton={cardsLeft[seatRef[1]] ?? -1}
-									isActive={activeSeat === seatRef[1]}
+									isActive={gameStarted && activeSeat === seatRef[1]}
 								/>
 							}
 						</div>
@@ -35,7 +49,7 @@ export const GameScene = () => {
 									key={seats[seatRef[2]] ?? ""}
 									uuid={seats[seatRef[2]] ?? ""}
 									cornerButton={cardsLeft[seatRef[2]] ?? -1}
-									isActive={activeSeat === seatRef[2]}
+									isActive={gameStarted && activeSeat === seatRef[2]}
 								/>
 							}
 						</div>
@@ -45,7 +59,7 @@ export const GameScene = () => {
 									key={seats[seatRef[3]] ?? ""}
 									uuid={seats[seatRef[3]] ?? ""}
 									cornerButton={cardsLeft[seatRef[3]] ?? -1}
-									isActive={activeSeat === seatRef[3]}
+									isActive={gameStarted && activeSeat === seatRef[3]}
 								/>
 							}
 						</div>
@@ -59,7 +73,7 @@ export const GameScene = () => {
 									key={seats[seatRef[1]] ?? ""}
 									uuid={seats[seatRef[1]] ?? ""}
 									cornerButton={cardsLeft[seatRef[1]] ?? -1}
-									isActive={activeSeat === seatRef[1]}
+									isActive={gameStarted && activeSeat === seatRef[1]}
 								/>
 							}
 						</div>
@@ -69,7 +83,7 @@ export const GameScene = () => {
 									key={seats[seatRef[2]] ?? ""}
 									uuid={seats[seatRef[2]] ?? ""}
 									cornerButton={cardsLeft[seatRef[2]] ?? -1}
-									isActive={activeSeat === seatRef[2]}
+									isActive={gameStarted && activeSeat === seatRef[2]}
 								/>
 							}
 						</div>
@@ -82,7 +96,7 @@ export const GameScene = () => {
 								key={seats[seatRef[1]] ?? ""}
 								uuid={seats[seatRef[1]] ?? ""}
 								cornerButton={cardsLeft[seatRef[1]] ?? -1}
-								isActive={activeSeat === seatRef[1]}
+								isActive={gameStarted && activeSeat === seatRef[1]}
 							/>
 						}
 					</div>
@@ -106,7 +120,7 @@ export const GameScene = () => {
 						key={seats[seatRef[0]]}
 						uuid={seats[seatRef[0]] ?? ""}
 						cornerButton={cardsLeft[seatRef[0]]}
-						isActive={activeSeat === seatRef[0]}
+						isActive={gameStarted && activeSeat === seatRef[0]}
 					/>
 				}
 				<div

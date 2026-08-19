@@ -78,7 +78,7 @@ export const ResultsWindow = () => {
 				<div
 					className="
 						grid grid-cols-[7.5rem_15rem_7.5rem_7.5rem] grid-rows-[5rem]
-						text-center text-n6
+						text-center text-n6 space-y-5
 					"
 				>
 					<ResultsRankModule />
