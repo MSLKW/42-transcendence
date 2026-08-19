@@ -16,13 +16,13 @@
 #!/bin/sh
 set -e
 
-psql -v ON_ERROR_STOP=1 <<-EOSQL
+psql -v ON_ERROR_STOP=1 <<-"EOSQL"
 
 	CREATE OR REPLACE FUNCTION set_updated_at()
 	RETURNS TRIGGER AS $$
 	BEGIN
-	NEW.updated_at = now();
-	RETURN NEW;
+		NEW.updated_at = now();
+		RETURN NEW;
 	END;
 	$$ LANGUAGE plpgsql;
 
@@ -44,16 +44,16 @@ psql -v ON_ERROR_STOP=1 <<-EOSQL
 	BEFORE UPDATE ON party_manager_schema.player_status
 	FOR EACH ROW EXECUTE FUNCTION set_updated_at();
 
-	CREATE OR REPLACE TRIGGER trg_updated_at
-	BEFORE UPDATE ON game_schema.player_stats
-	FOR EACH ROW EXECUTE FUNCTION set_updated_at();
+	-- CREATE OR REPLACE TRIGGER trg_updated_at
+	-- BEFORE UPDATE ON profile_system_schema.user_info
+	-- FOR EACH ROW EXECUTE FUNCTION set_updated_at();
 
-	CREATE OR REPLACE TRIGGER trg_updated_at
-	BEFORE UPDATE ON profile_system_schema.user_info
-	FOR EACH ROW EXECUTE FUNCTION set_updated_at();
+	-- CREATE OR REPLACE TRIGGER trg_updated_at
+	-- BEFORE UPDATE ON profile_system_schema.user_settings
+	-- FOR EACH ROW EXECUTE FUNCTION set_updated_at();
 
-	CREATE OR REPLACE TRIGGER trg_updated_at
-	BEFORE UPDATE ON profile_system_schema.user_settings
-	FOR EACH ROW EXECUTE FUNCTION set_updated_at();
+	-- CREATE OR REPLACE TRIGGER trg_updated_at
+	-- BEFORE UPDATE ON game_schema.player_stats
+	-- FOR EACH ROW EXECUTE FUNCTION set_updated_at();
 
 EOSQL

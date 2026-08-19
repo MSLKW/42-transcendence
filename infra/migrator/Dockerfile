@@ -19,7 +19,8 @@ COPY infra/migrator/drizzle.config.ts ./infra/migrator/drizzle.config.ts
 # Copy the script using the correct path from the root
 COPY infra/migrator/scripts/migrator-entrypoint.sh /usr/local/bin/entrypoint.sh
 COPY infra/migrator/scripts/grant-permissions.sh /usr/local/bin/grant-permissions.sh
-RUN chmod +x /usr/local/bin/entrypoint.sh /usr/local/bin/grant-permissions.sh
+COPY infra/migrator/scripts/apply-triggers.sh /usr/local/bin/apply-triggers.sh
+RUN chmod +x /usr/local/bin/entrypoint.sh /usr/local/bin/grant-permissions.sh /usr/local/bin/apply-triggers.sh
 
 # Use the script as the entrypoint
 WORKDIR /app/infra/migrator
