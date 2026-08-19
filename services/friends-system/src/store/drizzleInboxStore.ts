@@ -1,0 +1,1 @@
+import { inbox } from "@big2/friend-system-schema";

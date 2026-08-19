@@ -1,0 +1,1 @@
+beginning of friends system readme will update later

@@ -56,4 +56,12 @@ psql -v ON_ERROR_STOP=1 <<-"EOSQL"
 	-- BEFORE UPDATE ON game_schema.player_stats
 	-- FOR EACH ROW EXECUTE FUNCTION set_updated_at();
 
+	-- CREATE OR REPLACE TRIGGER trg_updated_at
+	-- BEFORE UPDATE ON friends_system_schema.connections
+	-- FOR EACH ROW EXECUTE FUNCTION set_updated_at();
+
+	-- CREATE OR REPLACE TRIGGER trg_updated_at
+	-- BEFORE UPDATE ON friends_system_schema.inbox
+	-- FOR EACH ROW EXECUTE FUNCTION set_updated_at();
+
 EOSQL
