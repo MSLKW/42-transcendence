@@ -18,5 +18,8 @@
 		"noUncheckedSideEffectImports": true,
 		"moduleDetection": "force"
 	},
-	"include": ["src/**/*.ts"]
+	"include": ["src/**/*.ts"],
+	"references": [
+		{ "path": "../auth-schema" }
+	]
 }

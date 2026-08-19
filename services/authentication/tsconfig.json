@@ -16,6 +16,6 @@
 	"include": ["src/**/*.ts"],
 	"references": [
 		{ "path": "../../packages/postgres/auth-schema" },
-		{ "path": "../../packages/postgres/db-client" }
+		{ "path": "../../packages/postgres/postgres-client" }
 	]
 }

@@ -17,7 +17,7 @@
 	"references": [
 		{ "path": [
 			"../../packages/postgres/party-manager-schema",
-			"../../packages/postgres/db-client"
+			"../../packages/postgres/postgres-client"
 	 ] }
 	]
 }

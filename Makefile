@@ -6,7 +6,7 @@
 #    By: aimokhta <aimokhta@student.42kl.edu.my>    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2026/06/16 09:31:30 by aimokhta          #+#    #+#              #
-#    Updated: 2026/08/07 03:38:51 by aimokhta         ###   ########.fr        #
+#    Updated: 2026/08/19 18:43:37 by aimokhta         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -49,6 +49,7 @@ clean:
 fclean: clean
 	@echo "$(PURPLE)\n🗑️🚨 Removing Docker Named Volumes...\n$(RESET)"
 	@docker compose -f ./docker-compose.yml down --volumes
+	@docker volume prune -a
 	@echo "$(PURPLE)\n🗑️💥 Done, Absolutely everything are removed now!\n$(RESET)"
 
 re: fclean all
@@ -56,45 +57,64 @@ re: fclean all
 logs:
 	@echo "$(PURPLE)docker logs postgresql$(RESET)"
 	@docker logs postgresql
-	@echo "$(PURPLE)docker logs migrator$(RESET)"
+	@echo "$(PURPLE)\ndocker logs migrator$(RESET)"
 	@docker logs migrator
-	@echo "$(PURPLE)docker logs drizzle-gateway$(RESET)"
+	@echo "$(PURPLE)\ndocker logs drizzle-gateway$(RESET)"
 	@docker logs drizzle-gateway
-	@echo "$(PURPLE)docker logs auth$(RESET)"
-	@docker logs auth
-	@echo "$(PURPLE)docker logs party-manager$(RESET)"
+	@echo "$(PURPLE)\ndocker logs authentication$(RESET)"
+	@docker logs authentication
+	@echo "$(PURPLE)\ndocker logs party-manager$(RESET)"
 	@docker logs party-manager
-# 	docker logs profile-system
-# 	docker logs website
-# 	docker logs game
-# 	docker logs bot
-# 	docker logs chat
+# 	@echo "$(PURPLE)\ndocker logs profile-system$(RESET)"
+# 	@docker logs profile-system
+# 	@echo "$(PURPLE)\ndocker logs friend-system$(RESET)"
+# 	@docker logs friend-system
+# 	@echo "$(PURPLE)\ndocker logs game-stats$(RESET)"
+# 	@docker logs game-stats
+# 	@echo "$(PURPLE)\ndocker logs website$(RESET)"
+# 	@docker logs website
+# 	@echo "$(PURPLE)\ndocker logs game$(RESET)"
+# 	@docker logs game
+# 	@echo "$(PURPLE)\ndocker logs bot$(RESET)"
+# 	@docker logs bot
+# 	@echo "$(PURPLE)\ndocker logs chat$(RESET)"
+# 	@docker logs chat
+
+ls:
+	@echo "$(PURPLE)docker ps$(RESET)"
+	@docker ps
+	@echo "$(PURPLE)\ndocker network ls$(RESET)"
+	@docker network ls
+	@echo "$(PURPLE)\ndocker image ls$(RESET)"
+	@docker image ls
+	@echo "$(PURPLE)\ndocker volume ls$(RESET)"
+	@docker volume ls
 
 nuclear:
-	@docker system prune -a --volumes -f
+	@docker system prune -a -v -f
 # -a: Removes all unused images, not just dangling ones.
 # --volumes: Removes all unused volumes.
 # -f: Forces removal without prompting.
 
 # complete-clean:
-# 1. Stop all running containers
-# 2. Remove all containers
-# 3. Remove all images
-# 4. Remove all volumes
-# 5. Remove all networks
-# 	docker stop $(docker ps -aq)
-# 	docker rm $(docker ps -aq)
-# 	docker rmi $(docker images -q)
-# 	docker volume prune -f
-# 	docker network prune -f
+# # 1. Stop all running containers
+# # 2. Remove all containers
+# # 3. Remove all images
+# # 4. Remove all volumes
+# # 5. Remove all networks
+# 	@docker stop $(docker ps -aq)
+# 	@docker rm $(docker ps -aq)
+# 	@docker rmi $(docker images -q)
+# 	@docker volume prune -f
+# 	@docker network prune -f
 
-debug-logs:
+progress:
 # This will force Docker to print the full output of every step, including the exact error message from npm
 	@docker compose build --progress=plain
 
-debug-config:
+config:
 # 	to see what docker reads from docker compose
 	@docker compose config 
 
 
-.PHONY: all down recreate clean fclean re logs nuclear debug-logs
+.PHONY: all down recreate clean fclean re logs nuclear complete-clean progress config ls
