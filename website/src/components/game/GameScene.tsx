@@ -22,7 +22,6 @@ export const GameScene = () => {
 		if (cardsLeft.includes(0)) {
 			setGameValue("gameStarted", false);
 			setResults();
-			console.log(results);
 			setShowWindow("results", true);
 		}
 	}, [cardsLeft]);
