@@ -19,9 +19,9 @@ export const LobbyScene = () => {
 	const { members, humans, hostUuid } = usePartyStore();
 	const { clientUuid } = useProfileStore();
 	const { setCurrentScene } = useSceneStore();
+	const humansSeated = seats.filter((seat): seat is string => seat !== null && !seats.includes("bot")).length;
 
 	useEffect(() => {
-		const humansSeated = seats.filter((seat): seat is string => seat !== null && !seats.includes("bot")).length;
 		const totalSeated = seats.filter((seat): seat is string => seat !== null).length;
 
 		if (totalSeated === members.length && humansSeated > 0) {
@@ -94,7 +94,7 @@ export const LobbyScene = () => {
 							onClick={handleStart}
 							className="
 								btn-text bg-light
-								h-3rem aspect-5/1
+								h-3rem aspect-4/1
 								text-1.25rem text-n0
 								data-tip-up
 							"
@@ -128,7 +128,7 @@ export const LobbyScene = () => {
 					className="
 						w-full
 						flex
-						gap-2rem
+						gap-0.5rem pt-2rem
 						sm:overflow-x-visible overflow-x-auto
 					"
 				>
@@ -142,7 +142,7 @@ export const LobbyScene = () => {
 					))}
 					<PartyCallButton />
 				</div>
-				<div className="flex gap-2rem">
+				<div className="flex gap-0.5rem pt-2rem">
 					{ seats.includes(clientUuid) && humans > 1 && <UnseatButton uuid={clientUuid!} /> }
 					{ humans > 1 && <BotManagerButton /> }
 					{ round >= 1 && <ResultsCallButton /> }

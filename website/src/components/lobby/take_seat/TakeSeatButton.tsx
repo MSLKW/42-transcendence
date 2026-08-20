@@ -22,21 +22,13 @@ export const TakeSeatButton = ({ uuid, seatNumber }: TakeSeatButtonProps ) => {
 					setSeatWithUuid(uuid, seatNumber);
 				}}
 				className="
-					rounded-xs
-					hover:not-disabled:scale-105 active:hover:not-disabled:scale-100
-					focus-visible:outline-2 outline-b5
+					h-5rem aspect-square
+					bg-dark btn-icon rounded-sm
 					data-tip-up
-					cursor-pointer
+					flex place-content-center place-items-center
 				"
 			>
-				<div
-					className="
-						h-[clamp(2.5rem,7.5vh+0.5rem,5rem)] aspect-square
-						bg-dark border-b5 rounded-sm
-						flex place-content-center place-items-center
-				">
-					<TakeSeatIcon />
-				</div>
+				<TakeSeatIcon />
 			</button>
 			<AvatarName name={`Take Seat ${seatNumber}`} style="seat"/>
 		</div>

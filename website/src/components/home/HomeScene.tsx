@@ -60,11 +60,10 @@ export const HomeScene = () => {
 				<div
 					tabIndex={-1}
 					className="
-						z-1
+						w-full
 						flex
-						gap-2rem
+						gap-0.5rem pt-2rem
 						sm:overflow-x-visible overflow-x-auto
-						pt-5
 					"
 				>
 					{clientUuid &&

@@ -1,4 +1,5 @@
 import { useBotStore } from "../../../store/BotStore";
+import { useGameStore } from "../../../store/GameStore";
 import { AvatarName } from "../../avatar/name/AvatarName";
 import { AddBotsIcon } from "./AddBotsIcon";
 import { RemoveBotsIcon } from "./RemoveBotsIcon";
@@ -13,6 +14,8 @@ export const BotManagerButton = () => {
 		else
 			removeBotsFromParty();
 	}
+	const { seats } = useGameStore();
+	const humansSeated = seats.filter((seat): seat is string => seat !== null && !seats.includes("bot")).length;
 
 	return (
 		<div
@@ -23,23 +26,16 @@ export const BotManagerButton = () => {
 		>
 			<button 
 				data-tip={botCount === 0 ? "Fill With Bots" : "Remove All Bots"}
+				disabled={humansSeated <= 0}
 				onClick={(e) => {handleBotCount(e)}}
 				className="
-					rounded-xs
-					hover:not-disabled:scale-105 active:hover:not-disabled:scale-100
-					focus-visible:outline-2 outline-b5
+					h-5rem aspect-square
+					bg-dark btn-icon rounded-sm
 					data-tip-up
-					cursor-pointer
+					flex place-content-center place-items-center
 				"
 			>
-				<div
-					className="
-						h-[clamp(2.5rem,7.5vh+0.5rem,5rem)] aspect-square
-						bg-dark rounded-sm
-						flex place-content-center place-items-center
-				">
-					{ botCount === 0 ? <AddBotsIcon /> : <RemoveBotsIcon /> }
-				</div>
+				{ botCount === 0 ? <AddBotsIcon /> : <RemoveBotsIcon /> }
 			</button>
 			<AvatarName name="Bots" style="seat"/>
 		</div>
