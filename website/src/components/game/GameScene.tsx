@@ -33,7 +33,7 @@ export const GameScene = () => {
 			<main>
 				{ totalPlayers === 4 && members.length >= 4 &&
 					<>
-						<div className="absolute left-[4%] top-[16%]">
+						<div className="absolute left-[4%] top-[20%]">
 							{ seats[seatRef[1]] &&
 								<AvatarModule
 									key={seats[seatRef[1]] ?? ""}
@@ -43,7 +43,7 @@ export const GameScene = () => {
 								/>
 							}
 						</div>
-						<div className="absolute left-[16%] top-[4%]">
+						<div className="absolute left-[20%] top-[4%]">
 							{ seats[seatRef[2]] &&
 								<AvatarModule
 									key={seats[seatRef[2]] ?? ""}
@@ -53,7 +53,7 @@ export const GameScene = () => {
 								/>
 							}
 						</div>
-						<div className="absolute right-[4%] top-[16%]">
+						<div className="absolute right-[4%] top-[20%]">
 							{ seats[seatRef[3]] &&
 								<AvatarModule
 									key={seats[seatRef[3]] ?? ""}
@@ -67,7 +67,7 @@ export const GameScene = () => {
 				}
 				{ totalPlayers === 3 && members.length >= 3 &&
 					<>
-						<div className="absolute left-[4%] top-[16%]">
+						<div className="absolute left-[4%] top-[20%]">
 							{ seats[seatRef[1]] &&
 								<AvatarModule
 									key={seats[seatRef[1]] ?? ""}
@@ -77,7 +77,7 @@ export const GameScene = () => {
 								/>
 							}
 						</div>
-						<div className="absolute right-[4%] top-[16%]">
+						<div className="absolute right-[4%] top-[20%]">
 							{ seats[seatRef[2]] &&
 								<AvatarModule
 									key={seats[seatRef[2]] ?? ""}
@@ -90,7 +90,7 @@ export const GameScene = () => {
 					</>
 				}
 				{ totalPlayers === 2 && members.length >= 2 &&
-					<div className="absolute left-[16%] top-[4%]">
+					<div className="absolute left-[20%] top-[4%]">
 						{ seats[seatRef[1]] &&
 							<AvatarModule
 								key={seats[seatRef[1]] ?? ""}
@@ -101,12 +101,12 @@ export const GameScene = () => {
 						}
 					</div>
 				}
-				<div className="absolute left-1/2 top-[32.5%] -translate-x-1/2">
+				<div className="absolute left-1/2 top-[24%] -translate-x-1/2">
 					<RankCallButton />
 				</div>
 				<div
 					className="
-						absolute left-1/2 top-[65%] -translate-x-1/2
+						absolute left-1/2 top-[64%] -translate-x-1/2
 						flex gap-2rem
 					"
 				>

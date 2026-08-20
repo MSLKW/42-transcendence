@@ -37,7 +37,7 @@ export const BotManagerButton = () => {
 			>
 				{ botCount === 0 ? <AddBotsIcon /> : <RemoveBotsIcon /> }
 			</button>
-			<AvatarName name="Bots" style="seat"/>
+			<AvatarName name="Bots"/>
 		</div>
 	);
 }

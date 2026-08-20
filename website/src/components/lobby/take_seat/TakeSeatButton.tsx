@@ -30,7 +30,7 @@ export const TakeSeatButton = ({ uuid, seatNumber }: TakeSeatButtonProps ) => {
 			>
 				<TakeSeatIcon />
 			</button>
-			<AvatarName name={`Take Seat ${seatNumber}`} style="seat"/>
+			<AvatarName name={`Take Seat ${seatNumber}`}/>
 		</div>
 	);
 }

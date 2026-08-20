@@ -35,7 +35,7 @@ export const UnseatButton = ({ uuid }: UnseatButtonProps) => {
 			>
 				<UnseatIcon />
 			</button>
-			<AvatarName name="Unseat" style="seat"/>
+			<AvatarName name="Unseat"/>
 		</div>
 	);
 }
