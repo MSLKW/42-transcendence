@@ -43,7 +43,7 @@ export const GameScene = () => {
 								/>
 							}
 						</div>
-						<div className="absolute left-[20%] top-[4%]">
+						<div className="absolute left-[16%] top-[4%]">
 							{ seats[seatRef[2]] &&
 								<AvatarModule
 									key={seats[seatRef[2]] ?? ""}
@@ -90,7 +90,7 @@ export const GameScene = () => {
 					</>
 				}
 				{ totalPlayers === 2 && members.length >= 2 &&
-					<div className="absolute left-[20%] top-[4%]">
+					<div className="absolute left-[16%] top-[4%]">
 						{ seats[seatRef[1]] &&
 							<AvatarModule
 								key={seats[seatRef[1]] ?? ""}
