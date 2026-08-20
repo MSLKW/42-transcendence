@@ -27,7 +27,7 @@ export const UnseatButton = ({ uuid }: UnseatButtonProps) => {
 					playerUnseats(uuid);
 				}}
 				className="
-					h-5rem aspect-square
+					h-6rem aspect-square
 					bg-dark btn-icon rounded-sm
 					data-tip-up
 					flex place-content-center place-items-center

@@ -121,7 +121,7 @@ export const LobbyScene = () => {
 					className="
 						w-full
 						flex
-						gap-0.5rem pt-2rem
+						gap-1rem pt-2rem
 						sm:overflow-x-visible overflow-x-auto
 					"
 				>
@@ -135,7 +135,7 @@ export const LobbyScene = () => {
 					))}
 					<PartyCallButton />
 				</div>
-				<div className="flex gap-0.5rem pt-2rem">
+				<div className="flex gap-1rem pt-2rem">
 					{ humans > 1 && <UnseatButton uuid={clientUuid!} /> }
 					{ humans > 1 && <BotManagerButton /> }
 					{ round >= 1 && <ResultsCallButton /> }

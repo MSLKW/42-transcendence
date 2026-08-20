@@ -34,8 +34,8 @@ export const AvatarModule = ({
 			<button
 				data-tip={
 					data.relation === "Self" && currentScene !== "Game" ? "Edit Profile" :
-					data.relation === "Bot" ? "View Bot Settings" :
-					(data.relation === "Stranger" || data.relation === "Friend") ? "View Stats" :
+					data.relation === "Bot" ? "Set Bot Settings" :
+					(data.relation === "Stranger" || data.relation === "Friend") ? "View Profile" :
 					""
 				}
 				onClick={(e) => {

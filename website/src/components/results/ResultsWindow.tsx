@@ -23,6 +23,7 @@ export const ResultsWindow = () => {
 		<Window
 			title={`Results of Round ${round}`}
 			dismissKey="results"
+			hasPinButton={false}
 		>
 			<div
 				className="

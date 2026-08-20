@@ -23,8 +23,7 @@ export const BotSetButton = ({ name }: BotSetButtonProps) => {
 				disabled={currentScene === "Game"}
 				onClick={() => setIntel(name)}
 				className={`
-					w-[clamp(2.5rem,7.5vh+0.5rem,5rem)]
-					aspect-square
+					h-6rem aspect-square
 					bg-a5
 					border border-a6 rounded-sm
 					${ currentScene === "Game" ? "cursor-default" : "hover:scale-105 cursor-pointer" }

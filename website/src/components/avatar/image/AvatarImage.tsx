@@ -12,7 +12,7 @@ export const AvatarImage = ({ isActive }: AvatarProps) => {
 	return (
 		<div
 			className="
-				h-5rem aspect-square
+				h-6rem aspect-square
 				bg-a5
 				border border-a6 rounded-sm
 				flex place-content-center place-items-center

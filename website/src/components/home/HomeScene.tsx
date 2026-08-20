@@ -32,16 +32,14 @@ export const HomeScene = () => {
 					className="
 						absolute top-0 left-0
 						w-full h-full
-						pt-[clamp(5rem,25vh,20rem)] pb-[clamp(10rem,32vh,20rem)]
-						flex
-						overflow-x-auto
-						snap-x snap-mandatory
+						flex pt-[clamp(5rem,25vh,20rem)] pb-[clamp(10rem,32vh,20rem)]
+						overflow-x-auto snap-x snap-mandatory
 					"
 				>
 					<div className="
-						flex place-content-center-safe place-items-center gap-2rem
 						w-full h-full
-						flex-5
+						flex place-content-center-safe place-items-center
+						gap-4rem
 						pointer-events-auto
 					">
 						<HomeCardButton gameMode="4 Players" playerCount={4}/>
@@ -61,7 +59,7 @@ export const HomeScene = () => {
 					className="
 						w-full
 						flex
-						gap-0.5rem pt-2rem
+						gap-1rem pt-2rem
 						sm:overflow-x-visible overflow-x-auto
 					"
 				>
