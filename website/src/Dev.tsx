@@ -7,6 +7,7 @@ import { useGameStore, HAND_LABEL, type HAND_TYPE } from "./store/GameStore";
 import { useNotificationStore, NOTIFICATION_TYPE } from "./store/NotificationStore";
 import { usePartyStore } from "./store/PartyStore";
 import { useProfileStore } from "./store/ProfileStore";
+import { useResultsStore } from "./store/ResultsStore";
 import { useSceneStore } from "./store/SceneStore";
 import { DevButton } from "./components/dev/DevBtn";
 import { useFrameView } from "./utilities/useFrameView";
@@ -18,6 +19,7 @@ export default function Dev() {
 	const { showNotification } = useNotificationStore();
 	const { partySocketId, partyGameId, members, set1PlayerParty, hostUuid, getMemberData } = usePartyStore();
 	const { clientUuid, isAuthenticated, validateResponse, profilesInDb, resetProfilesInDb } = useProfileStore();
+	const { results } = useResultsStore();
 	const { currentScene, setCurrentScene, setShowWindow } = useSceneStore();
 	const [inviteUuid, setInviteUuid] = useState("");
 
@@ -68,7 +70,7 @@ export default function Dev() {
 						{ seats[3] && <DevButton label={`${getMemberData(seats[3])?.name} Wins`} call={() => playerWins(3)}/> }
 					</>
 				}
-				<DevButton label="Results" call={() => setShowWindow("results", true)}/>
+				<DevButton label={`results: ${ results.length }`} call={() => console.log("results: ", results)}/>
 			</ul>
 			<ul className="flex place-content-center place-items-center gap-1rem">
 				<input

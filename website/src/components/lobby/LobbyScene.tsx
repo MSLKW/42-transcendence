@@ -144,8 +144,8 @@ export const LobbyScene = () => {
 				</div>
 				<div className="flex gap-2rem">
 					{ seats.includes(clientUuid) && humans > 1 && <UnseatButton uuid={clientUuid!} /> }
-					<BotManagerButton />
-					{ round > 1 && <ResultsCallButton /> }
+					{ humans > 1 && <BotManagerButton /> }
+					{ round >= 1 && <ResultsCallButton /> }
 				</div>
 			</footer>
 		</>

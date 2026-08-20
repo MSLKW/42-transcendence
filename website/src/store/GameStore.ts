@@ -3,6 +3,8 @@ import { persist } from "zustand/middleware";
 import { useProfileStore, type MEDAL_TYPE } from "./ProfileStore";
 import { usePartyStore } from "./PartyStore";
 import { useBotStore } from "./BotStore";
+import { useResultsStore } from "./ResultsStore";
+import { useSceneStore } from "./SceneStore";
 
 export const GAMEMODE_LABEL = [
 	"4 Players",
@@ -180,6 +182,8 @@ export const useGameStore = create<GameState>() (
 					seatRef: [],
 					activeSeat: 0,
 				});
+				useResultsStore.getState().resetResults();
+				useSceneStore.getState().setShowWindow("results", false);
 			},
 			incTotalWin: (uuid) => {
 				const profileStore = useProfileStore.getState();

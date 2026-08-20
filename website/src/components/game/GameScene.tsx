@@ -14,14 +14,15 @@ import { GamePlayButton } from "./action/GamePlayButton";
 export const GameScene = () => {
 	const { totalPlayers, seats, seatRef, cardsLeft, activeSeat, gameStarted, setGameValue } = useGameStore();
 	const { members } = usePartyStore();
-	const { setResults, results } = useResultsStore();
-	const { setShowWindow } = useSceneStore();
+	const { setResults } = useResultsStore();
+	const { setCurrentScene, setShowWindow } = useSceneStore();
 
 	useAutoPass();
 	useEffect(() => {
 		if (cardsLeft.includes(0)) {
 			setGameValue("gameStarted", false);
 			setResults();
+			setCurrentScene("Lobby");
 			setShowWindow("results", true);
 		}
 	}, [cardsLeft]);

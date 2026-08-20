@@ -10,14 +10,15 @@ export const AvatarImage = ({ isActive }: AvatarProps) => {
 	const autoPassDuration = autoPassOptions[autoPassIndex];
 
 	return (
-		<div className="
-			w-[clamp(2.5rem,7.5vh+0.5rem,5rem)]
-			aspect-square
-			bg-a5
-			border border-a6 rounded-sm
-			flex place-content-center place-items-center
-			relative
-		">
+		<div
+			className="
+				h-5rem aspect-square
+				bg-a5
+				border border-a6 rounded-sm
+				flex place-content-center place-items-center
+				relative
+			"
+		>
 			{ isActive && autoPassDuration != -1 &&
 				<div
 					style={{ ["--wipe-duration" as any]: `${autoPassDuration}s` }}

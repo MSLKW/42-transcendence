@@ -17,6 +17,8 @@ interface ResultsValues {
 
 interface ResultsState extends ResultsValues {
 	setResults: () => void,
+	resetResults: () => void,
+	getLeaderboard: () => ResultsItem[];
 };
 
 export const useResultsStore = create<ResultsState>() (
@@ -84,6 +86,16 @@ export const useResultsStore = create<ResultsState>() (
 				set({
 					results: newResults,
 				});
+			},
+
+			resetResults: () => {
+				set({
+					results: [],
+				});
+			},
+
+			getLeaderboard: () => {
+				return [...get().results].sort((a, b) => a.totalPoints - b.totalPoints);
 			}
 		}),
 		{

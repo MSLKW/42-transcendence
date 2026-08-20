@@ -1,11 +1,11 @@
+import { useGameStore } from "../../store/GameStore";
 import { usePartyStore } from "../../store/PartyStore";
 import { useSceneStore } from "../../store/SceneStore";
-import { useGameStore } from "../../store/GameStore";
 import { Window } from "../window/Window";
 import { ResultsChangeModule } from "./change/ResultsChangeModule";
 import { ResultsPodiumModule } from "./podium/ResultsPodiumModule";
 import { ResultsRankModule } from "./rank/ResultsRankModule";
-import { ResultsRoundModule } from "./round/ResultsRoundModule";
+import { ResultsPlayedModule } from "./played/ResultsPlayedModule";
 import { ResultsTotalModule } from "./total/ResultsTotalModule";
 
 export const ResultsWindow = () => {
@@ -29,7 +29,6 @@ export const ResultsWindow = () => {
 		<Window
 			title={`Results of Round ${round}`}
 			dismissKey="results"
-			pinState={false}
 		>
 			<div
 				className="
@@ -82,7 +81,7 @@ export const ResultsWindow = () => {
 					"
 				>
 					<ResultsRankModule />
-					<ResultsRoundModule />
+					<ResultsPlayedModule />
 					<ResultsChangeModule />
 					<ResultsTotalModule />
 				</div>
