@@ -15,7 +15,10 @@ export const ResultsWindow = () => {
 	const { getLeaderboard } = useResultsStore();
 
 	const leaderboard = getLeaderboard();
-	const winner = "Congratulations " + (getMemberData(leaderboard[0].uuid)?.name) + "!";
+	const topPlayer = leaderboard[0];
+	const playerName = topPlayer ? getMemberData(topPlayer.uuid)?.name : "Winner";
+	const winner = `Congratulations ${playerName ?? "Player"}!`;
+	// const winner = "Congratulations Player";
 
 	return (
 		<Window
@@ -45,7 +48,7 @@ export const ResultsWindow = () => {
 						<h3 className="text-n6">{winner}</h3>
 						<div className="flex gap-2rem">
 							<button
-								onClick={() => endGame()}
+								onClick={endGame}
 								className="
 									h-3rem aspect-6/1
 									btn-text bg-light
@@ -54,7 +57,7 @@ export const ResultsWindow = () => {
 								End Game
 							</button>
 							<button
-								onClick={() => startGame()}
+								onClick={startGame}
 								className="
 									h-3rem aspect-6/1
 									btn-text bg-light

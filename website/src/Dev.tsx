@@ -25,7 +25,7 @@ export default function Dev() {
 	const { currentScene, setCurrentScene } = useSceneStore();
 	const [inviteUuid, setInviteUuid] = useState("");
 
-	const handleResetGame = async () => {
+	const handleResetAll = async () => {
 		resetProfilesInDb();
 		await handleSignOut();
 		setCurrentScene("Login");
@@ -56,7 +56,7 @@ export default function Dev() {
 			<ul className="flex place-content-evenly">
 				<DevButton label="Frame" call={() => toggleFlag("showFrame")} />
 				<DevButton label="Stats" call={() => toggleFlag("showStats")} />
-				<DevButton label="Reset Game" call={handleResetGame} />
+				<DevButton label="Reset All" call={handleResetAll} />
 			</ul>
 			<ul className="flex place-content-evenly px-3rem">
 				<DevButton label="Notify Message" call={() => showNotification("This is a message notification", NOTIFICATION_TYPE.message)} />

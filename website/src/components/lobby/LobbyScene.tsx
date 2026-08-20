@@ -3,7 +3,7 @@ import { useBotStore } from "../../store/BotStore";
 import { useGameStore } from "../../store/GameStore"; 
 import { usePartyStore } from "../../store/PartyStore";
 import { useProfileStore } from "../../store/ProfileStore";
-import { useSceneStore } from "../../store/SceneStore";
+import { useResultsStore } from "../../store/ResultsStore";
 import { HeaderModule } from "../header/HeaderModule";
 import { AvatarModule } from "../avatar/AvatarModule";
 import { PartyCallButton } from "../party/call/PartyCallButton";
@@ -18,19 +18,15 @@ export const LobbyScene = () => {
 	const { totalPlayers, seats, startGame, round } = useGameStore();
 	const { members, humans, hostUuid } = usePartyStore();
 	const { clientUuid } = useProfileStore();
-	const { setCurrentScene } = useSceneStore();
+	const { resetResults} = useResultsStore();
 	const humansSeated = seats.filter((seat): seat is string => seat !== null && !seats.includes("bot")).length;
-
+	
 	useEffect(() => {
-		if (humans === humansSeated) {
+		if (seats.includes(null))
+			resetResults();
+		if (humans === humansSeated)
 			fillSeatsWithBots();
-		}
-	}, [humans, humansSeated]);
-
-	const handleStart = () => {
-		setCurrentScene("Game");
-		startGame();
-	}
+	}, [humans, humansSeated, seats]);
 
 	const seatsFilled = totalPlayers === seats.filter((seat): seat is string => seat !== null).length;
 
@@ -88,7 +84,7 @@ export const LobbyScene = () => {
 						<button
 							data-tip={seatsFilled ? "Let's Play!" : "Waiting for seats to be filled"}
 							disabled={!seatsFilled}
-							onClick={handleStart}
+							onClick={startGame}
 							className="
 								btn-text bg-light
 								h-3rem aspect-4/1

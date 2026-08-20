@@ -12,7 +12,7 @@ export const ResultsPodiumModule = () => {
 				flex place-content-evenly
 			"
 		>
-			{ results[0] &&
+			{ totalPlayers >= 1 && results[0] &&
 				<div className="text-center flex flex-col gap-0.25rem">
 					<AvatarModule key={results[0].uuid} uuid={results[0].uuid} cornerButton="1st"/>
 					<span className={`${results[0].points > 0 ? "text-r4" : "text-c4"}`}>
@@ -28,7 +28,7 @@ export const ResultsPodiumModule = () => {
 					</span>
 				</div>
 			}
-			{ totalPlayers >= 3 && results[2].uuid &&
+			{ totalPlayers >= 3 && results[2] &&
 				<div className="text-center flex flex-col gap-0.25rem">
 					<AvatarModule key={results[2].uuid} uuid={results[2].uuid} cornerButton="3rd" />
 					<span className={`${results[2].points > 0 ? "text-r4" : "text-c4"}`}>
@@ -36,7 +36,7 @@ export const ResultsPodiumModule = () => {
 					</span>
 				</div>
 			}
-			{ totalPlayers >= 4 && results[3].uuid &&
+			{ totalPlayers >= 4 && results[3] &&
 				<div className="text-center flex flex-col gap-0.25rem">
 					<AvatarModule key={results[3].uuid} uuid={results[3].uuid} cornerButton="4th" />
 					<span className={`${results[3].points > 0 ? "text-r4" : "text-c4"}`}>

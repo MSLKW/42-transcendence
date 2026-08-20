@@ -1,4 +1,3 @@
-import { useSceneStore } from "../../store/SceneStore";
 import { BackButton } from "./back/BackButton";
 import { ChatButton } from "./chat/ChatButton";
 import { EmojiButton } from "./emoji/EmojiButton";
@@ -11,13 +10,10 @@ interface HeaderModuleProps {
 }
 
 export const HeaderModule = ({ back }: HeaderModuleProps) => {
-	const { currentScene, setCurrentScene } = useSceneStore();
 	const { endGame } = useGameStore();
 
 	const handleBackClick = () => {
-		if (currentScene === "Game")
-			endGame();
-		setCurrentScene("Home");
+		endGame();
 	};
 
 	return (

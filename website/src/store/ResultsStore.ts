@@ -59,9 +59,6 @@ export const useResultsStore = create<ResultsState>() (
 				combined.sort((a, b) => a.totalPoints - b.totalPoints);
 
 				const newResults: ResultsItem[] = combined.map((item, index) => {
-					// const roundPoints = item.cards;
-					// const previousTotalPoints = item.existingPlayer ? item.existingPlayer.totalPoints : 0;
-
 					const currentRank = index;
 					let rankChanged = 0;
 					if (isFirstRound) {
@@ -75,7 +72,6 @@ export const useResultsStore = create<ResultsState>() (
 							rankChanged = -1;
 						else
 							rankChanged = 0;
-						console.log("currentRank:", currentRank, " previousRank:", previousRank, " uuid:", item.existingPlayer.uuid);
 					}
 
 					return {
@@ -96,6 +92,14 @@ export const useResultsStore = create<ResultsState>() (
 			resetResults: () => {
 				set({
 					results: [],
+				});
+				useGameStore.setState({
+					gameStarted: false,
+					cardsLeft: [],
+					currentHand: "Open",
+					round: 0,
+					seatRef: [],
+					activeSeat: 0,
 				});
 			},
 

@@ -13,7 +13,7 @@ export const ResultsCallButton = () => {
 			"
 		>
 			<button 
-				data-tip="View Last Results"
+				data-tip="View Results"
 				onClick={() => setShowWindow("results", true)}
 				className="
 					h-5rem aspect-square
