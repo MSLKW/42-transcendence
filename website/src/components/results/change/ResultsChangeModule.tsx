@@ -18,10 +18,10 @@ export const ResultsChangeModule = () => {
 					row-start-1 row-end-1
 					flex place-content-center place-items-center
 					h-full w-full
-					border-t border-r border-n2/40
+					bg-n0/20 border-r border-n0/20
 				"
 			>
-				<h2>Change</h2>
+				<h3>Change</h3>
 			</div>
 			{ totalPlayers >= 1 && leaderboard[0] &&
 				<div
@@ -29,7 +29,7 @@ export const ResultsChangeModule = () => {
 						row-start-2 row-end-2
 						flex place-content-center place-items-center
 						h-full w-full
-						border-r border-n2/40
+						border-r border-n0/20
 						${clientUuid === leaderboard[0].uuid ? "bg-b2" : ""}
 					`}
 				>
@@ -46,7 +46,7 @@ export const ResultsChangeModule = () => {
 						row-start-3 row-end-3
 						flex place-content-center place-items-center
 						h-full w-full
-						border-r border-n2/40
+						border-r border-n0/20
 						${clientUuid === leaderboard[1].uuid ? "bg-b2" : ""}
 					`}
 				>
@@ -63,7 +63,7 @@ export const ResultsChangeModule = () => {
 						row-start-4 row-end-4
 						flex place-content-center place-items-center
 						h-full w-full
-						border-r border-n2/40
+						border-r border-n0/20
 						${clientUuid === leaderboard[2].uuid ? "bg-b2" : ""}
 					`}
 				>
@@ -80,7 +80,7 @@ export const ResultsChangeModule = () => {
 						row-start-5 row-end-5
 						flex place-content-center place-items-center
 						h-full w-full
-						border-r border-n2/40
+						border-r border-n0/20
 						${clientUuid === leaderboard[3].uuid ? "bg-b2" : ""}
 					`}
 				>

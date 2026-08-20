@@ -166,3 +166,45 @@
 		box-border
 		;
 }
+
+@utility p-3rem {
+	@apply
+		p-[clamp(1.5rem,4.615vmin+0.115rem,3rem)]
+		box-border
+		;
+}
+
+@utility p-2.5rem {
+	@apply
+		p-[clamp(1.25rem,3.846vmin+0.096rem,2.5rem)]
+		box-border
+		;
+}
+
+@utility p-2rem {
+	@apply
+		p-[clamp(1rem,3.077vmin+0.077rem,2rem)]
+		box-border
+		;
+}
+
+@utility p-1.5rem {
+	@apply
+		p-[clamp(0.75rem,2.308vmin+0.058rem,1.5rem)]
+		box-border
+		;
+}
+
+@utility p-1rem {
+	@apply
+		p-[clamp(0.5rem,1.538vmin+0.038rem,1rem)]
+		box-border
+		;
+}
+
+@utility p-0.5rem {
+	@apply
+		p-[clamp(0.25rem,0.769vmin+0.019rem,0.5rem)]
+		box-border
+		;
+}

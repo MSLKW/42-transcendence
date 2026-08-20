@@ -15,10 +15,10 @@ export const ResultsTotalModule = () => {
 					row-start-1 row-end-1
 					flex place-content-center place-items-center
 					h-full w-full
-					border-t border-n2/40
+					bg-n0/20 rounded-r-xl
 				"
 			>
-				<h2>Total</h2>
+				<h3>Total</h3>
 			</div>
 			{ totalPlayers >= 1 && leaderboard[0] &&
 				<div

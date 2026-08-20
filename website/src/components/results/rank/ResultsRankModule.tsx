@@ -15,10 +15,10 @@ export const ResultsRankModule = () => {
 					row-start-1 row-end-1
 					flex place-content-center place-items-center
 					h-full w-full
-					border-t border-r border-n2/40
+					bg-n0/20 rounded-l-xl border-r border-n0/20
 				`}
 			>
-				<h2>Rank</h2>
+				<h3>Rank</h3>
 			</div>
 			{ totalPlayers >= 1 && leaderboard[0] && 
 				<div
@@ -26,7 +26,7 @@ export const ResultsRankModule = () => {
 						row-start-2 row-end-2
 						flex place-content-center place-items-center
 						h-full w-full
-						border-r border-n2/40 rounded-l-xl
+						border-r border-n0/20 rounded-l-xl
 						${clientUuid === leaderboard[0].uuid ? "bg-b2" : ""}
 					`}
 				>
@@ -39,7 +39,7 @@ export const ResultsRankModule = () => {
 						row-start-3 row-end-3
 						flex place-content-center place-items-center
 						h-full w-full
-						border-r border-n2/40 rounded-l-xl
+						border-r border-n0/20 rounded-l-xl
 						${clientUuid === leaderboard[1].uuid ? "bg-b2" : ""}
 					`}
 				>
@@ -52,7 +52,7 @@ export const ResultsRankModule = () => {
 						row-start-4 row-end-4
 						flex place-content-center place-items-center
 						h-full w-full
-						border-r border-n2/40 rounded-l-xl
+						border-r border-n0/20 rounded-l-xl
 						${clientUuid === leaderboard[2].uuid ? "bg-b2" : ""}
 					`}
 				>
@@ -65,7 +65,7 @@ export const ResultsRankModule = () => {
 						row-start-5 row-end-5
 						flex place-content-center place-items-center
 						h-full w-full
-						border-r border-n2/40 rounded-l-xl
+						border-r border-n0/20 rounded-l-xl
 						${clientUuid === leaderboard[3].uuid ? "bg-b2" : ""}
 					`}
 				>

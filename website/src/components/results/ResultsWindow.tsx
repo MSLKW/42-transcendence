@@ -18,7 +18,6 @@ export const ResultsWindow = () => {
 	const topPlayer = leaderboard[0];
 	const playerName = topPlayer ? getMemberData(topPlayer.uuid)?.name : "Winner";
 	const winner = `Congratulations ${playerName ?? "Player"}!`;
-	// const winner = "Congratulations Player";
 
 	return (
 		<Window
@@ -27,7 +26,7 @@ export const ResultsWindow = () => {
 		>
 			<div
 				className="
-					py-3rem px-3rem
+					py-2rem px-3rem
 					max-h-[85vh] overflow-y-scroll pointer-events-auto
 				"
 			>
@@ -45,7 +44,7 @@ export const ResultsWindow = () => {
 							gap-1rem
 						"
 					>
-						<h3 className="text-n6">{winner}</h3>
+						<h2 className="text-n6">{winner}</h2>
 						<div className="flex gap-2rem">
 							<button
 								onClick={endGame}
@@ -71,8 +70,9 @@ export const ResultsWindow = () => {
 				</div>
 				<div
 					className="
-						grid grid-cols-[7.5rem_15rem_7.5rem_7.5rem] grid-rows-[5rem]
-						text-center text-n6 space-y-5
+						grid grid-cols-[6rem_15rem_6rem_6rem] grid-rows-[4rem]
+						text-center text-n6 
+						bg-n0/20 rounded-xl border border-n1/60
 					"
 				>
 					<ResultsRankModule />

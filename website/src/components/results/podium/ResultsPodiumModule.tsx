@@ -10,6 +10,8 @@ export const ResultsPodiumModule = () => {
 		<div
 			className="
 				flex place-content-evenly
+				bg-n0/20 rounded-xl border border-n1/60
+				pt-2rem pb-1rem
 			"
 		>
 			{ totalPlayers >= 1 && results[0] &&
