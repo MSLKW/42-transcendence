@@ -122,8 +122,9 @@ export const useGameStore = create<GameState>() (
 				const totalPlayers = get().totalPlayers;
 				const clientIndex = seats.indexOf(clientUuid);
 				if (clientIndex === -1) {
+					const defaultSeatRef = Array.from({ length: totalPlayers }, (_, i) => i);
 					set({
-						seatRef: new Array(totalPlayers).fill(null),
+						seatRef: defaultSeatRef,
 					});
 					return;
 				}
@@ -163,6 +164,8 @@ export const useGameStore = create<GameState>() (
 				useBotStore.getState().addBotIfMissing();
 				get().setSeatRef();
 				get().dealCards();
+				useSceneStore.getState().setShowWindow("results", false);
+				useSceneStore.getState().setCurrentScene("Game");
 			},
 			nextTurn: () => {
 				const newActiveSeat = (get().activeSeat + 1) % get().totalPlayers;
@@ -184,6 +187,7 @@ export const useGameStore = create<GameState>() (
 				});
 				useResultsStore.getState().resetResults();
 				useSceneStore.getState().setShowWindow("results", false);
+				useSceneStore.getState().setCurrentScene("Home");
 			},
 			incTotalWin: (uuid) => {
 				const profileStore = useProfileStore.getState();

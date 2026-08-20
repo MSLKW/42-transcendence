@@ -1,29 +1,21 @@
 import { useGameStore } from "../../store/GameStore";
 import { usePartyStore } from "../../store/PartyStore";
-import { useSceneStore } from "../../store/SceneStore";
 import { Window } from "../window/Window";
 import { ResultsChangeModule } from "./change/ResultsChangeModule";
 import { ResultsPodiumModule } from "./podium/ResultsPodiumModule";
 import { ResultsRankModule } from "./rank/ResultsRankModule";
 import { ResultsPlayedModule } from "./played/ResultsPlayedModule";
 import { ResultsTotalModule } from "./total/ResultsTotalModule";
+import { useResultsStore } from "../../store/ResultsStore";
 
 export const ResultsWindow = () => {
 	const { round } = useGameStore();
 	const { endGame, startGame } = useGameStore();
-	const { members } = usePartyStore();
-	const { setCurrentScene } = useSceneStore();
+	const { getMemberData } = usePartyStore();
+	const { getLeaderboard } = useResultsStore();
 
-	const winner = "Congratulations " + members[0].name + "! Play next round?";
-
-	const handleEndGame = () => {
-		endGame();
-		setCurrentScene("Home");
-	}
-	const handlePlayNext = () => {
-		startGame();
-		setCurrentScene("Game");
-	}
+	const leaderboard = getLeaderboard();
+	const winner = "Congratulations " + (getMemberData(leaderboard[0].uuid)?.name) + "!";
 
 	return (
 		<Window
@@ -53,22 +45,22 @@ export const ResultsWindow = () => {
 						<h3 className="text-n6">{winner}</h3>
 						<div className="flex gap-2rem">
 							<button
-								onClick={handleEndGame}
+								onClick={() => endGame()}
 								className="
-									h-3rem aspect-5/1
+									h-3rem aspect-6/1
 									btn-text bg-light
 								"
 							>
-								End
+								End Game
 							</button>
 							<button
-								onClick={handlePlayNext}
+								onClick={() => startGame()}
 								className="
-									h-3rem aspect-5/1
+									h-3rem aspect-6/1
 									btn-text bg-light
 								"
 							>
-								Let's Go!
+								Play Next Round
 							</button>
 						</div>
 					</div>

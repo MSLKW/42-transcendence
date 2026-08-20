@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { handleSignOut } from "./api/authentication/sign_out/handleSignOut";
 import { partySocket } from "./api/party/partySocket";
+import { useBotStore } from "./store/BotStore";
 import { useDevStore } from "./store/DevStore";
 import { useFriendStore } from "./store/FriendStore";
 import { useGameStore, HAND_LABEL, type HAND_TYPE } from "./store/GameStore";
@@ -13,17 +14,18 @@ import { DevButton } from "./components/dev/DevBtn";
 import { useFrameView } from "./utilities/useFrameView";
 
 export default function Dev() {
+	const { fillSeatsWithBots, removeBots } = useBotStore();
 	const { toggleFlag } = useDevStore();
 	const { friendUuids } = useFriendStore();
-	const { seats, totalPlayers, playerUnseats, currentHand, setGameValue, round } = useGameStore();
+	const { seats, totalPlayers, playerUnseats, currentHand, setGameValue, round, endGame } = useGameStore();
 	const { showNotification } = useNotificationStore();
 	const { partySocketId, partyGameId, members, set1PlayerParty, hostUuid, getMemberData } = usePartyStore();
 	const { clientUuid, isAuthenticated, validateResponse, profilesInDb, resetProfilesInDb } = useProfileStore();
 	const { results } = useResultsStore();
-	const { currentScene, setCurrentScene, setShowWindow } = useSceneStore();
+	const { currentScene, setCurrentScene } = useSceneStore();
 	const [inviteUuid, setInviteUuid] = useState("");
 
-	const handleReset = async () => {
+	const handleResetGame = async () => {
 		resetProfilesInDb();
 		await handleSignOut();
 		setCurrentScene("Login");
@@ -54,7 +56,7 @@ export default function Dev() {
 			<ul className="flex place-content-evenly">
 				<DevButton label="Frame" call={() => toggleFlag("showFrame")} />
 				<DevButton label="Stats" call={() => toggleFlag("showStats")} />
-				<DevButton label="Reset" call={handleReset} />
+				<DevButton label="Reset Game" call={handleResetGame} />
 			</ul>
 			<ul className="flex place-content-evenly px-3rem">
 				<DevButton label="Notify Message" call={() => showNotification("This is a message notification", NOTIFICATION_TYPE.message)} />
@@ -71,6 +73,7 @@ export default function Dev() {
 					</>
 				}
 				<DevButton label={`results: ${ results.length }`} call={() => console.log("results: ", results)}/>
+				<DevButton label="End Game" call={() => endGame()}/>
 			</ul>
 			<ul className="flex place-content-center place-items-center gap-1rem">
 				<input
@@ -124,6 +127,8 @@ export default function Dev() {
 				</div>
 				<div className="flex place-content-between">
 					<li>Bot Manager Socket ID: n/a</li>
+					{currentScene === "Lobby" && <DevButton label="Fill Bots" call={() => fillSeatsWithBots()} />}
+					{currentScene === "Lobby" && <DevButton label="Remove Bots" call={() => removeBots()} />}
 					{currentScene === "Lobby" && <DevButton label="Unseat" call={() => playerUnseats(clientUuid!)} />}
 				</div>
 				<li>Chat Manager Socket ID: n/a</li>

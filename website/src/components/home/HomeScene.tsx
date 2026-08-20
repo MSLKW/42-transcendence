@@ -10,14 +10,13 @@ import { PartyCallButton } from "../party/call/PartyCallButton";
 import { SmallLogo } from "./logo/SmallLogo";
 
 export const HomeScene = () => {
-	const { removeBotsFromParty } = useBotStore();
+	const { removeBots } = useBotStore();
 	const { setGameValue, initSeats } = useGameStore();
 	const { hostUuid, members, set1PlayerParty } = usePartyStore();
 	const { clientUuid } = useProfileStore();
 	
 	useEffect(() => {
-		console.log("[Home] Client Uuid:", clientUuid, " hostUuid:", hostUuid);
-		removeBotsFromParty();
+		removeBots();
 		if (members.length <= 0)
 			set1PlayerParty();
 		setGameValue("totalPlayers", 0);

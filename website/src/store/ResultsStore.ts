@@ -42,23 +42,28 @@ export const useResultsStore = create<ResultsState>() (
 					if (cards === 0 && playerUuid !== "")
 						wins += 1;
 
+					const roundPoints = cards;
+					const previousTotalPoints = existingPlayer ? existingPlayer.totalPoints : 0;
+					const totalPoints = previousTotalPoints + roundPoints;
+					
 					return {
 						uuid: playerUuid,
 						cards,
 						totalWins: wins,
+						points: roundPoints,
+						totalPoints,
 						existingPlayer,
 					};
 				}).filter(item => item.uuid !== "");
 
-				combined.sort((a, b) => a.cards - b.cards);
+				combined.sort((a, b) => a.totalPoints - b.totalPoints);
 
 				const newResults: ResultsItem[] = combined.map((item, index) => {
+					// const roundPoints = item.cards;
+					// const previousTotalPoints = item.existingPlayer ? item.existingPlayer.totalPoints : 0;
+
 					const currentRank = index;
-					const roundPoints = item.cards;
-					const previousTotalPoints = item.existingPlayer ? item.existingPlayer.totalPoints : 0;
-
 					let rankChanged = 0;
-
 					if (isFirstRound) {
 						rankChanged = currentRank === 0 ? 0 : -1;
 					} else if (item.existingPlayer && item.existingPlayer.rank !== undefined) {
@@ -70,16 +75,16 @@ export const useResultsStore = create<ResultsState>() (
 							rankChanged = -1;
 						else
 							rankChanged = 0;
+						console.log("currentRank:", currentRank, " previousRank:", previousRank, " uuid:", item.existingPlayer.uuid);
 					}
 
 					return {
 						uuid: item.uuid,
-						points: roundPoints,
-						totalPoints: previousTotalPoints + roundPoints,
+						points: item.points,
+						totalPoints: item.totalPoints,
 						totalWins: item.totalWins,
 						rank: currentRank,
 						rankChanged: rankChanged,
-
 					}
 				});
 

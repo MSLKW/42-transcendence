@@ -1,5 +1,6 @@
 
 import { useGameStore } from "../../../store/GameStore";
+import { useProfileStore } from "../../../store/ProfileStore";
 import { AvatarName } from "../../avatar/name/AvatarName";
 import { UnseatIcon } from "./UnseatIcon";
 
@@ -8,6 +9,9 @@ interface UnseatButtonProps {
 }
 export const UnseatButton = ({ uuid }: UnseatButtonProps) => {
 	const { playerUnseats } = useGameStore();
+	const { seats } = useGameStore();
+	const { clientUuid } = useProfileStore();
+
 	return (
 		<div
 			className="
@@ -17,6 +21,7 @@ export const UnseatButton = ({ uuid }: UnseatButtonProps) => {
 		>
 			<button 
 				data-tip="Sit out from game"
+				disabled={!seats.includes(clientUuid)}
 				onClick={(e) => {
 					e.currentTarget.blur();
 					playerUnseats(uuid);

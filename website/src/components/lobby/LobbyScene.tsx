@@ -22,13 +22,10 @@ export const LobbyScene = () => {
 	const humansSeated = seats.filter((seat): seat is string => seat !== null && !seats.includes("bot")).length;
 
 	useEffect(() => {
-		const totalSeated = seats.filter((seat): seat is string => seat !== null).length;
-
-		if (totalSeated === members.length && humansSeated > 0) {
+		if (humans === humansSeated) {
 			fillSeatsWithBots();
-			return;
 		}
-	}, []);
+	}, [humans, humansSeated]);
 
 	const handleStart = () => {
 		setCurrentScene("Game");
@@ -143,7 +140,7 @@ export const LobbyScene = () => {
 					<PartyCallButton />
 				</div>
 				<div className="flex gap-0.5rem pt-2rem">
-					{ seats.includes(clientUuid) && humans > 1 && <UnseatButton uuid={clientUuid!} /> }
+					{ humans > 1 && <UnseatButton uuid={clientUuid!} /> }
 					{ humans > 1 && <BotManagerButton /> }
 					{ round >= 1 && <ResultsCallButton /> }
 				</div>

@@ -19,7 +19,7 @@ interface BotState extends BotValues {
 	getBotData: (index: number) => MemberData | undefined,
 	addBotToParty: (uuid: string) => void,
 	addBotIfMissing: () => void;
-	removeBotsFromParty: () => void,
+	removeBots: () => void,
 	fillSeatsWithBots: () => void,
 	countSeatedBots: () => void,
 	setIntel: (intel: INTEL_TYPE) => void,
@@ -96,7 +96,7 @@ export const useBotStore = create<BotState>() (
 			}
 		},
 
-		removeBotsFromParty: () => {
+		removeBots: () => {
 			const partyMembers = usePartyStore.getState().members;
 			const newMembers = partyMembers.filter(member => member.relation !== "Bot");
 			usePartyStore.setState({

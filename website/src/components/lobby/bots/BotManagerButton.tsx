@@ -5,14 +5,14 @@ import { AddBotsIcon } from "./AddBotsIcon";
 import { RemoveBotsIcon } from "./RemoveBotsIcon";
 
 export const BotManagerButton = () => {
-	const { fillSeatsWithBots, removeBotsFromParty, botCount } = useBotStore();
+	const { fillSeatsWithBots, removeBots, botCount } = useBotStore();
 	const handleBotCount = (e?: React.MouseEvent<HTMLButtonElement>) => {
 		if (e)
 			e.currentTarget.blur();
 		if (botCount === 0)
 			fillSeatsWithBots();
 		else
-			removeBotsFromParty();
+			removeBots();
 	}
 	const { seats } = useGameStore();
 	const humansSeated = seats.filter((seat): seat is string => seat !== null && !seats.includes("bot")).length;
