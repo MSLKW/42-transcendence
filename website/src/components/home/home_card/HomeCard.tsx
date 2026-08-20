@@ -145,7 +145,7 @@ export const HomeCardButton = ({ gameMode, playerCount }: HomeProps) => {
 			{ gameMode === "Tutorial" &&
 				<>
 					<div className="
-						w-[clamp(2.5rem,3.571vmin+1.786rem,5rem)] aspect-square
+						h-[clamp(2.5rem,3.571vmin+1.786rem,5rem)] aspect-square w-max
 					">
 						<TutorialIcon />
 					</div>

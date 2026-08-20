@@ -33,7 +33,7 @@ export const GameScene = () => {
 			<main>
 				{ totalPlayers === 4 && members.length >= 4 &&
 					<>
-						<div className="absolute left-[5%] top-[20%]">
+						<div className="absolute left-[4%] top-[16%]">
 							{ seats[seatRef[1]] &&
 								<AvatarModule
 									key={seats[seatRef[1]] ?? ""}
@@ -43,7 +43,7 @@ export const GameScene = () => {
 								/>
 							}
 						</div>
-						<div className="absolute left-[25%] top-[5%]">
+						<div className="absolute left-[20%] top-[4%]">
 							{ seats[seatRef[2]] &&
 								<AvatarModule
 									key={seats[seatRef[2]] ?? ""}
@@ -53,7 +53,7 @@ export const GameScene = () => {
 								/>
 							}
 						</div>
-						<div className="absolute right-[5%] top-[20%]">
+						<div className="absolute right-[4%] top-[16%]">
 							{ seats[seatRef[3]] &&
 								<AvatarModule
 									key={seats[seatRef[3]] ?? ""}
@@ -67,7 +67,7 @@ export const GameScene = () => {
 				}
 				{ totalPlayers === 3 && members.length >= 3 &&
 					<>
-						<div className="absolute left-[5%] top-[20%]">
+						<div className="absolute left-[4%] top-[16%]">
 							{ seats[seatRef[1]] &&
 								<AvatarModule
 									key={seats[seatRef[1]] ?? ""}
@@ -77,7 +77,7 @@ export const GameScene = () => {
 								/>
 							}
 						</div>
-						<div className="absolute right-[5%] top-[20%]">
+						<div className="absolute right-[4%] top-[16%]">
 							{ seats[seatRef[2]] &&
 								<AvatarModule
 									key={seats[seatRef[2]] ?? ""}
@@ -90,7 +90,7 @@ export const GameScene = () => {
 					</>
 				}
 				{ totalPlayers === 2 && members.length >= 2 &&
-					<div className="absolute left-[25%] top-[5%]">
+					<div className="absolute left-[20%] top-[4%]">
 						{ seats[seatRef[1]] &&
 							<AvatarModule
 								key={seats[seatRef[1]] ?? ""}
