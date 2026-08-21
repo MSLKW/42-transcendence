@@ -21,8 +21,8 @@ export const AvatarModule = ({
 	const { currentScene, setShowWindow, setSceneValue } = useSceneStore();
 
 	const data = getMemberData(uuid);
-	if (!data)
-		return null;
+	// if (!data)
+		// return null;
 
 	return (
 		<div
@@ -33,30 +33,30 @@ export const AvatarModule = ({
 		>
 			<button
 				data-tip={
-					data.relation === "Self" && currentScene !== "Game" ? "Edit Profile" :
-					data.relation === "Bot" ? "Set Bot Settings" :
-					(data.relation === "Stranger" || data.relation === "Friend") ? "View Profile" :
+					data?.relation === "Self" && currentScene !== "Game" ? "Edit Profile" :
+					data?.relation === "Bot" ? "Set Bot Settings" :
+					(data?.relation === "Stranger" || data?.relation === "Friend") ? "View Profile" :
 					""
 				}
 				onClick={(e) => {
 					e.currentTarget.blur();
 
-					if (data.relation === "Self" && currentScene !== "Game")
+					if (data?.relation === "Self" && currentScene !== "Game")
 						setShowWindow("profile", true);
-					else if (data.relation === "Bot")
+					else if (data?.relation === "Bot")
 						setShowWindow("bots", true);
-					else if (data.relation === "Stranger" || data.relation === "Friend") {
+					else if (data?.relation === "Stranger" || data?.relation === "Friend") {
 						setSceneValue("profileUuid", uuid);
 						setShowWindow("stats", true, uuid);
 					}
 				}}
 				className={`
 					rounded-xs
-					${ data.relation === "Self" && currentScene === "Game"
+					${ data?.relation === "Self" && currentScene === "Game"
 						? ""
 						: "hover:not-disabled:scale-105 active:hover:not-disabled:scale-100 focus-visible:outline-2 cursor-pointer"
 					}
-					${ data.relation === "Self" && currentScene === "Game"
+					${ data?.relation === "Self" && currentScene === "Game"
 						? ""
 						: cornerButton ? "data-tip-up" : "data-tip-up"
 					}
@@ -67,7 +67,7 @@ export const AvatarModule = ({
 				<AvatarImage isActive={isActive} />
 				<AvatarCornerButton cornerButton={cornerButton}/>
 			</button>
-			{ showName && data.name && <AvatarName name={data.name} /> }
+			{ showName && data?.name && <AvatarName name={data?.name} /> }
 		</div>
 	);
 }

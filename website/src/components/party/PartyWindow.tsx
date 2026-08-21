@@ -1,24 +1,21 @@
 import { useState } from "react";
-// import { useFriendStore } from "../../store/FriendStore";
-// import { useProfileStore } from "../../store/ProfileStore";
+import { useFriendStore } from "../../store/FriendStore";
+import { useProfileStore } from "../../store/ProfileStore";
 import { Window } from "../window/Window";
-// import { FriendModule } from "./friends/FriendsModule";
 import { SearchModule } from "./search/SearchModule";
+import { PartyPlayerModule } from "./player/PartyPlayerModule";
 
 export const PartyWindow = () => {
-	// const { } = useFriendStore();
-	// const { profilesInDb } = useProfileStore();
+	const { friends } = useFriendStore();
+	const { profilesInDb } = useProfileStore();
 	const [searchQuery, setSearchQuery] = useState("");
 
-	// const publicList = profilesInDb.filter(p => p.relation === "STRANGER" || p.relation === "FRIEND" || p.relation === "SELF");
-	// const friendsList = profilesInDb.filter(p => p.relation === "FRIEND");
-
-	// const filteredResults = searchQuery.trim() === ""
-	// 	? []
-	// 	: publicList.filter((profile) => {
-	// 		const matchesQuery = profile.name?.toLowerCase().includes(searchQuery.toLowerCase());
-	// 		return matchesQuery;
-	// 	});
+	const filteredResults = searchQuery.trim() === ""
+		? []
+		: profilesInDb.filter((profile) => {
+			const matchesQuery = profile.name?.toLowerCase().includes(searchQuery.toLowerCase());
+			return matchesQuery;
+		});
 
 
 	return (
@@ -49,26 +46,20 @@ export const PartyWindow = () => {
 					{searchQuery.trim() === "" ? (
 						<>
 							<h2>Friends List</h2>
-							{/* {friendsList.map((profile) => (
-								<FriendModule
-									key={profile.uuid!}
-									uuid={profile.uuid!}
-								/>
-							))} */}
+							{friends.map((f) => (
+								<PartyPlayerModule uuid={f}/>
+							))}
 						</>
 					) : (
 						<>
 							<h2>Search Results</h2>
-							{/* {filteredResults.length > 0 ? (
-								filteredResults.map((profile) => (
-									<FriendModule
-										key={profile.uuid!}
-										uuid={profile.uuid!}
-									/>
+							{filteredResults.length > 0 ? (
+								filteredResults.map((p) => (
+									<PartyPlayerModule uuid={p.uuid!}/>
 								))
-							) : ( */}
+							) : (
 								<h2>No players found</h2>
-							{/* )} */}
+							)}
 						</>
 					)}
 				</div>

@@ -16,7 +16,7 @@ import { useFrameView } from "./utilities/useFrameView";
 export default function Dev() {
 	const { fillSeatsWithBots, removeBots } = useBotStore();
 	const { toggleFlag } = useDevStore();
-	const { friendUuids } = useFriendStore();
+	const { friends } = useFriendStore();
 	const { seats, totalPlayers, playerUnseats, currentHand, setGameValue, round, endGame } = useGameStore();
 	const { showNotification } = useNotificationStore();
 	const { partySocketId, partyGameId, members, set1PlayerParty, hostUuid, getMemberData } = usePartyStore();
@@ -123,7 +123,7 @@ export default function Dev() {
 				</div>
 				<div className="flex place-content-between">
 					<li>Friend Manager Socket ID: n/a</li>
-					<DevButton label={`friendUuids: ${friendUuids.length}`} call={() => console.log("friendUuids: ", friendUuids)} />
+					<DevButton label={`friends: ${friends.length}`} call={() => console.log("friends: ", friends)} />
 				</div>
 				<div className="flex place-content-between">
 					<li>Bot Manager Socket ID: n/a</li>

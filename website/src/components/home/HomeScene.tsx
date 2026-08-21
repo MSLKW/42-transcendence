@@ -59,7 +59,7 @@ export const HomeScene = () => {
 					className="
 						w-full
 						flex
-						gap-1rem pt-2rem
+						gap-2rem pt-2rem
 						sm:overflow-x-visible overflow-x-auto
 					"
 				>

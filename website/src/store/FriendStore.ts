@@ -2,41 +2,58 @@ import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
 interface FriendValues {
-	friendUuids: string[],
+	friends: string[],
 }
 
 interface FriendState extends FriendValues {
-	setFriendUuids: (uuids: string[]) => void;
-	isAFriend: (uuid: string) => boolean;
+	setFriendUuids: (uuids: string[]) => void,
+	isAFriend: (uuid: string) => boolean,
 	toggleFriend: (uuid: string) => void,
+	resetFriends: () => void;
 }
 
 export const useFriendStore = create<FriendState>()(
 	persist(
 		(set, get) => ({
-			friendUuids: [],
+			friends: [
+				"12345678-abcd-efgh-dev0-azrul0000000",
+				"12345678-abcd-efgh-dev0-max000000000",
+				"12345678-abcd-efgh-dev0-jeremy000000",
+				"12345678-abcd-efgh-dev0-aisyah000000",
+			],
 
 			setFriendUuids: (uuids) => {
 				set ({
-					friendUuids: uuids
+					friends: uuids
 				});
 			},
 
 			isAFriend: (uuid) => {
-				return get().friendUuids.includes(uuid);
+				return get().friends.includes(uuid);
 			},
 
 			toggleFriend: (uuid) => {
-				const currentFriends = get().friendUuids;
+				const currentFriends = get().friends;
 				if (currentFriends.includes(uuid)) {
 					set({
-						friendUuids: currentFriends.filter((id) => id !== uuid),
+						friends: currentFriends.filter((id) => id !== uuid),
 					})
 				} else {
 					set ({
-						friendUuids: [...currentFriends, uuid],
+						friends: [...currentFriends, uuid],
 					});
 				}
+			},
+
+			resetFriends: () => {
+				set({
+					friends: [
+						"12345678-abcd-efgh-dev0-azrul0000000",
+						"12345678-abcd-efgh-dev0-max000000000",
+						"12345678-abcd-efgh-dev0-jeremy000000",
+						"12345678-abcd-efgh-dev0-aisyah000000",
+					],
+				})
 			}
 		}),
 		{
