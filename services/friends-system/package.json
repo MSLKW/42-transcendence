@@ -21,6 +21,9 @@
   "dependencies": {
     "@big2/friends-system-schema": "*",
     "@big2/postgres-client": "*",
-    "dotenv": "^17.4.2"
+    "@types/express": "^5.0.6",
+    "cors": "^2.8.6",
+    "dotenv": "^17.4.2",
+    "express": "^5.2.1"
   }
 }
