@@ -1,13 +1,11 @@
 import { useGameStore } from "../../../store/GameStore";
-import { usePartyStore } from "../../../store/PartyStore";
 import { useProfileStore } from "../../../store/ProfileStore";
 import { useResultsStore } from "../../../store/ResultsStore";
 import { AvatarImage } from "../../avatar/image/AvatarImage";
 
 export const ResultsPlayedModule = () => {
 	const { totalPlayers, round } = useGameStore();
-	const { getMemberData } = usePartyStore();
-	const { clientUuid } = useProfileStore();
+	const { clientUuid, getCachedData } = useProfileStore();
 	const { getLeaderboard } = useResultsStore();
 	const leaderboard = getLeaderboard();
 
@@ -30,13 +28,13 @@ export const ResultsPlayedModule = () => {
 						flex place-items-center
 						gap-0.5rem p-0.5rem
 						h-full w-full
-						border-r border-n0/20
-						${clientUuid === leaderboard[0].uuid ? "bg-b2" : ""}
+						border-n0/20
+						${clientUuid === leaderboard[0].uuid ? "bg-b2" : "border-r"}
 					`}
 				>
 					<AvatarImage />
 					<div className="flex flex-col place-content-center place-items-start">
-						<h3>{getMemberData(leaderboard[0].uuid)?.name}</h3>
+						<h3>{getCachedData(leaderboard[0].uuid)?.name}</h3>
 						<p>Total Wins: {leaderboard[0].totalWins}</p>
 					</div>
 				</div>
@@ -48,13 +46,13 @@ export const ResultsPlayedModule = () => {
 						flex place-items-center
 						gap-0.5rem p-0.5rem
 						h-full w-full
-						border-r border-n0/20
-						${clientUuid === leaderboard[1].uuid ? "bg-b2" : ""}
+						border-n0/20
+						${clientUuid === leaderboard[1].uuid ? "bg-b2" : "border-r"}
 					`}
 				>
 					<AvatarImage />
 					<div className="flex flex-col place-content-center place-items-start">
-						<h3>{getMemberData(leaderboard[1].uuid)?.name}</h3>
+						<h3>{getCachedData(leaderboard[1].uuid)?.name}</h3>
 						<p>Total Wins: {leaderboard[1].totalWins}</p>
 					</div>
 				</div>
@@ -66,13 +64,13 @@ export const ResultsPlayedModule = () => {
 						flex place-items-center
 						gap-0.5rem p-0.5rem
 						h-full w-full
-						border-r border-n0/20
-						${clientUuid === leaderboard[2].uuid ? "bg-b2" : ""}
+						border-n0/20
+						${clientUuid === leaderboard[2].uuid ? "bg-b2" : "border-r"}
 					`}
 				>
 					<AvatarImage />
 					<div className="flex flex-col place-content-center place-items-start">
-						<h3>{getMemberData(leaderboard[2].uuid)?.name}</h3>
+						<h3>{getCachedData(leaderboard[2].uuid)?.name}</h3>
 						<p>Total Wins: {leaderboard[2].totalWins}</p>
 					</div>
 				</div>
@@ -84,13 +82,13 @@ export const ResultsPlayedModule = () => {
 						flex place-items-center
 						gap-0.5rem p-0.5rem
 						h-full w-full
-						border-r border-n0/20
-						${clientUuid === leaderboard[3].uuid ? "bg-b2" : ""}
+						border-n0/20
+						${clientUuid === leaderboard[3].uuid ? "bg-b2" : "border-r"}
 					`}
 				>
 					<AvatarImage />
 					<div className="flex flex-col place-content-center place-items-start">
-						<h3>{getMemberData(leaderboard[3].uuid)?.name}</h3>
+						<h3>{getCachedData(leaderboard[3].uuid)?.name}</h3>
 						<p>Total Wins: {leaderboard[3].totalWins}</p>
 					</div>
 				</div>

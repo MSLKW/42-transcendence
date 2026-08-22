@@ -1,5 +1,7 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
+import { usePartyStore } from "./PartyStore";
+import { useFriendStore } from "./FriendStore";
 
 export const BADGE_LABEL = [
 	"Newcomer",
@@ -33,6 +35,14 @@ export const AVAILABILITY_LABEL = [
 ] as const;
 export type AVAILABILITY_TYPE = typeof AVAILABILITY_LABEL[number];
 
+export const RELATION_LABEL = [
+	"Stranger",
+	"Friend",
+	"Bot",
+	"Self",
+] as const;
+export type RELATION_TYPE = typeof RELATION_LABEL[number];
+
 export interface ProfileData {
 	uuid: string | null;
 	name: string | null;
@@ -48,9 +58,16 @@ export interface ProfileData {
 	winStreak: number;
 	medals: Record<MEDAL_TYPE, Date | null>;
 	availability: AVAILABILITY_TYPE;
-};
+}
 
-const createDefaultProfile = (uuid: string, name: string, avatar: string, badge: BADGE_TYPE = "Newcomer"): ProfileData => ({
+export interface CachedData {
+	uuid: string | null;
+	name: string | null;
+	avatar: string | null;
+	relation: RELATION_TYPE;
+}
+
+export const createDefaultProfile = (uuid: string, name: string, avatar: string, badge: BADGE_TYPE = "Newcomer"): ProfileData => ({
 	uuid,
 	name,
 	avatar,
@@ -189,7 +206,7 @@ const defaultProfileInDb: ProfileData[] = [
 	},
 	{
 		uuid: "12345678-abcd-efgh-dev0-bunyod000000",
-		name: "Dev-Bun Yod",
+		name: "Dev-Bunyod",
 		avatar: "stock-5.webp",
 		badge: "Newcomer",
 		level: 6,
@@ -243,21 +260,48 @@ const defaultProfileInDb: ProfileData[] = [
 	},
 ];
 
+export const cachedBotData: CachedData[] = [
+	{
+		uuid: "bot-0",
+		name: "Norminette",
+		avatar: "stock-9.webp",
+		relation: "Bot",
+	},
+	{
+		uuid: "bot-1",
+		name: "Moulinette",
+		avatar: "stock-10.webp",
+		relation: "Bot",
+	},
+	{
+		uuid: "bot-2",
+		name: "Thila-Bot",
+		avatar: "stock-11.webp",
+		relation: "Bot",
+	},
+	{
+		uuid: "bot-3",
+		name: "Segfault",
+		avatar: "stock-12.webp",
+		relation: "Bot",
+	},
+];
+
 interface ProfileValues {
-	clientUuid: string | null;
-	isAuthenticated: boolean;
-	validateResponse: Response | undefined;
-	profilesInDb: ProfileData[];
+	clientUuid: string | null,
+	isAuthenticated: boolean,
+	validateResponse: Response | undefined,
+	profilesInDb: ProfileData[],
+	cachedData: CachedData[],
 };
 
 interface ProfileState extends ProfileValues {
-	setClientUuid: (uuid: string) => void;
-	setIsAuthenticated: (isValid: boolean) => void;
-	setValidateResponse: (validation: Response) => void;
-	createClientProfile: (name: string, avatar: string) => void;
-	updateClientProfile: (name: string, avatar: string, badge: BADGE_TYPE) => void;
-	getProfileData: (uuid: string) => ProfileData | undefined;
-	resetProfilesInDb: () => void;
+	createClientProfile: (name: string, avatar: string) => void,
+	updateClientProfile: (name: string, avatar: string, badge: BADGE_TYPE) => void,
+	getProfileData: (uuid: string | null) => ProfileData | undefined,
+	resetProfilesInDb: () => void,
+	setCachedData: () => void,
+	getCachedData: (uuid: string | null) => CachedData | undefined,
 };
 
 export const useProfileStore = create<ProfileState>() (
@@ -267,24 +311,10 @@ export const useProfileStore = create<ProfileState>() (
 			isAuthenticated: false, 
 			validateResponse: undefined,
 			profilesInDb: defaultProfileInDb,
+			cachedData: [],
 
-			setClientUuid: (uuid) => {
-				set({
-					clientUuid: uuid,
-				});
-			},
-			setIsAuthenticated: (isValid) => {
-				set({
-					isAuthenticated: isValid,
-				});
-			},
-			setValidateResponse: (validation) => {
-				set({
-					validateResponse: validation,
-				});
-			},
 			createClientProfile: (name, avatar) => {
-				const { clientUuid, profilesInDb } = get();
+				const { clientUuid, profilesInDb, setCachedData } = get();
 				if (!clientUuid)
 					return;
 
@@ -300,21 +330,18 @@ export const useProfileStore = create<ProfileState>() (
 				}
 
 				const newProfile = createDefaultProfile(clientUuid!, name, avatar);
-				set({
-					profilesInDb: [...profilesInDb, newProfile],
-				});
+				set({ profilesInDb: [...profilesInDb, newProfile] });
+				setCachedData();
 			},
 			updateClientProfile: (name, avatar, badge) => {
-				const { clientUuid, profilesInDb } = get();
+				const { clientUuid, profilesInDb, setCachedData } = get();
 				if (!clientUuid)
 					return;
 
 				const profileExists = profilesInDb.some((p) => p.uuid === clientUuid);
 				if (!profileExists) {
 					const newProfile = createDefaultProfile(clientUuid!, name, avatar, badge);
-					set({
-						profilesInDb: [...profilesInDb, newProfile],
-					});
+					set({ profilesInDb: [...profilesInDb, newProfile] });
 					return;
 				}
 
@@ -324,15 +351,57 @@ export const useProfileStore = create<ProfileState>() (
 						: p
 					),
 				});
+
+				setCachedData();
 			},
 			getProfileData: (uuid) => {
-				const profiles = get().profilesInDb;
-				return profiles.find(p => p.uuid === uuid);
+				if (!uuid)
+					return undefined;
+				const profilesInDb = get().profilesInDb;
+				return profilesInDb.find(p => p.uuid === uuid);
 			},
 			resetProfilesInDb: () => {
 				set({
 					profilesInDb: defaultProfileInDb,
+					cachedData: [],
 				});
+			},
+			setCachedData: () => {
+				const clientUuid = get().clientUuid;
+				const members = usePartyStore.getState().members;
+				const friends = useFriendStore.getState().friends;
+
+				const allUuids = Array.from(
+					new Set([...members, ...(clientUuid ? [clientUuid] : [])])
+				);
+				const cachedMemberData = allUuids.map((memberUuid: string | null) : CachedData | null => {
+					if (!memberUuid)
+						return null;
+
+					const data = get().getProfileData(memberUuid);
+					if (!data)
+						return null;
+					
+					const humanRelation: RELATION_TYPE = 
+						memberUuid === clientUuid ? "Self" :
+						friends.includes(memberUuid) ? "Friend" :
+						"Stranger";
+
+					return {
+						uuid: memberUuid!,
+						name: data?.name,
+						avatar: data?.avatar,
+						relation: humanRelation,
+					}
+				}).filter((profile): profile is CachedData => profile !== null);
+
+				set({ cachedData: [...cachedBotData, ...cachedMemberData] });
+			},
+			getCachedData: (uuid) => {
+				if (!uuid)
+					return;
+				const cachedData = get().cachedData;
+				return cachedData.find(p => p.uuid === uuid);
 			},
 		}),
 		{

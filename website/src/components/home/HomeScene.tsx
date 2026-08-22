@@ -11,15 +11,20 @@ import { SmallLogo } from "./logo/SmallLogo";
 
 export const HomeScene = () => {
 	const { removeBots } = useBotStore();
-	const { setGameValue, initSeats } = useGameStore();
-	const { hostUuid, members, set1PlayerParty } = usePartyStore();
-	const { clientUuid } = useProfileStore();
+	const { initSeats } = useGameStore();
+	const { hostUuid, members } = usePartyStore();
+	const { clientUuid, setCachedData } = useProfileStore();
 	
 	useEffect(() => {
 		removeBots();
-		if (members.length <= 0)
-			set1PlayerParty();
-		setGameValue("totalPlayers", 0);
+		if (members.length <= 0) {
+			setCachedData();
+			usePartyStore.setState({
+				members: [ clientUuid ],
+				hostUuid: clientUuid,
+			});
+		}
+		useGameStore.setState({ totalPlayers: 0 });
 		initSeats();
 	}, [])
 
@@ -70,12 +75,12 @@ export const HomeScene = () => {
 							cornerButton={hostUuid === clientUuid ? "host" : ""}
 						/>
 					}
-					{ members.map((member) => (
-						member.uuid && member.uuid != clientUuid &&
+					{ members.map((uuid) => (
+						uuid && uuid != clientUuid &&
 							<AvatarModule
-								key={member.uuid}
-								uuid={member.uuid}
-								cornerButton={hostUuid === member.uuid ? "host" : ""}
+								key={uuid}
+								uuid={uuid}
+								cornerButton={hostUuid === uuid ? "host" : ""}
 							/>
 					))}
 					<PartyCallButton />

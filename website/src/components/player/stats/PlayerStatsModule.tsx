@@ -3,6 +3,7 @@ import type { ProfileData } from "../../../store/ProfileStore";
 interface PlayerStatsModuleProps {
 	profile: ProfileData | undefined;
 }
+
 export const PlayerStatsModule = ({ profile }: PlayerStatsModuleProps) => {
 	if (!profile)
 		return;

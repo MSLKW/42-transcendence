@@ -20,17 +20,17 @@ export const PartyWindow = () => {
 
 	return (
 		<Window
-			title="Add To Party"
+			title="Find Party Members"
 			dismissKey="party"
 			placement="br"
 			pinState={false}
 		>
 			<div
 				className={`
+					min-w-90
 					flex flex-col place-content-center place-items-center
 					text-n6
-					py-1.5rem px-0.5rem
-					gap-1rem
+					py-1.5rem px-0.5rem gap-1rem
 					pointer-events-auto
 				`}
 			>

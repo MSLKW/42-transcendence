@@ -6,7 +6,7 @@ import { SettingsButton } from "./settings/SettingsButton";
 import { useGameStore } from "../../store/GameStore";
 
 interface HeaderModuleProps {
-	back: string,
+	back: string;
 }
 
 export const HeaderModule = ({ back }: HeaderModuleProps) => {

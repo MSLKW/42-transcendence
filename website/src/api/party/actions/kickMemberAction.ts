@@ -1,5 +1,8 @@
 import { Socket } from "socket.io-client";
 import { useNotificationStore, NOTIFICATION_TYPE } from "../../../store/NotificationStore";
+import { usePartyStore } from "../../../store/PartyStore";
+import { useProfileStore } from "../../../store/ProfileStore";
+import { useSceneStore } from "../../../store/SceneStore";
 
 export function kickMemberAction(socket: Socket | null, recipientUuid: string, recipientName?: string) {
 	const { showNotification } = useNotificationStore.getState();
@@ -10,11 +13,18 @@ export function kickMemberAction(socket: Socket | null, recipientUuid: string, r
 		);
 		return;
 	}
-	
+
 	socket?.emit("kick_player", { recipientUuid });
 	showNotification(
 		`${recipientName} removed from your party`,
 		NOTIFICATION_TYPE.message
 	);
+
+	usePartyStore.getState().kickMember(recipientUuid);
+
+	useProfileStore.getState().setCachedData();
+
+	useSceneStore.getState().setShowWindow("stats", false);
+
 	console.log("[partySocket] 'kick_player' recipientUuid:", recipientUuid);
 }

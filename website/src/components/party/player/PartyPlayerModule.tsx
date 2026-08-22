@@ -3,11 +3,11 @@ import { partySocket } from "../../../api/party/partySocket";
 import { useProfileStore } from "../../../store/ProfileStore";
 import { PlayerStatusModule } from "../../player/status/PlayerStatusModule";
 import { AvatarModule } from "../../avatar/AvatarModule";
-import { FriendsIcon } from "../friends/FriendsIcon";
+import { InviteIcon } from "../invite/InviteIcon";
 import { useFriendStore } from "../../../store/FriendStore";
 
 interface PartyPlayerModuleProps {
-	uuid: string,
+	uuid: string;
 }
 
 export const PartyPlayerModule = ({ uuid }: PartyPlayerModuleProps) => {
@@ -61,13 +61,17 @@ export const PartyPlayerModule = ({ uuid }: PartyPlayerModuleProps) => {
 				<div
 					className={`
 						flex
-						${ (data?.availability === "Online" && relation != "Self") ? "place-content-between" : "place-content-center" }
+						${
+							((data.availability === "Online" || data.availability === "Busy") && relation != "Self")
+								? "place-content-between"
+								: "place-content-center"
+						}
 						place-items-center
 						gap-1rem
 					`}
 				>
 					<PlayerStatusModule status={data?.availability!}/>
-					{ data.availability === "Online" && relation != "Self" &&
+					{ (data.availability === "Online" || data.availability === "Busy") && relation != "Self" &&
 						<div
 							className="
 								flex place-content-center place-items-center
@@ -75,7 +79,7 @@ export const PartyPlayerModule = ({ uuid }: PartyPlayerModuleProps) => {
 								gap-0.5rem
 							"
 						>
-							<FriendsIcon />
+							<InviteIcon />
 							<p>Invite To Party</p>
 						</div>
 					}

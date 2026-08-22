@@ -1,11 +1,11 @@
-import { usePartyStore } from "../../store/PartyStore";
+import { useProfileStore } from "../../store/ProfileStore";
 import { useSceneStore } from "../../store/SceneStore";
 import { AvatarImage } from "./image/AvatarImage";
 import { AvatarName } from "./name/AvatarName";
 import { AvatarCornerButton } from "./corner/AvatarCornerButton";
 
 interface AvatarModuleProps {
-	uuid: string,
+	uuid: string;
 	cornerButton?: string | number;
 	isActive?: boolean;
 	showName?: boolean;
@@ -17,12 +17,11 @@ export const AvatarModule = ({
 	isActive = false,
 	showName = true,
 }: AvatarModuleProps) => {
-	const { getMemberData } = usePartyStore();
-	const { currentScene, setShowWindow, setSceneValue } = useSceneStore();
+	const { getCachedData } = useProfileStore();
+	const { currentScene, setShowWindow } = useSceneStore();
 
-	const data = getMemberData(uuid);
-	// if (!data)
-		// return null;
+	const data = getCachedData(uuid) ?? null;
+	const relation = data ? data.relation : null;
 
 	return (
 		<div
@@ -33,30 +32,27 @@ export const AvatarModule = ({
 		>
 			<button
 				data-tip={
-					data?.relation === "Self" && currentScene !== "Game" ? "Edit Profile" :
-					data?.relation === "Bot" ? "Set Bot Settings" :
-					(data?.relation === "Stranger" || data?.relation === "Friend") ? "View Profile" :
-					""
+					relation === "Self" && currentScene !== "Game" ? "Edit Profile" :
+					relation === "Bot" ? "Set Bot Settings" :
+					"View Profile"
 				}
 				onClick={(e) => {
 					e.currentTarget.blur();
 
-					if (data?.relation === "Self" && currentScene !== "Game")
+					if (relation === "Self" && currentScene !== "Game")
 						setShowWindow("profile", true);
-					else if (data?.relation === "Bot")
+					else if (relation === "Bot")
 						setShowWindow("bots", true);
-					else if (data?.relation === "Stranger" || data?.relation === "Friend") {
-						setSceneValue("profileUuid", uuid);
+					else
 						setShowWindow("stats", true, uuid);
-					}
 				}}
 				className={`
 					rounded-xs
-					${ data?.relation === "Self" && currentScene === "Game"
+					${ relation === "Self" && currentScene === "Game"
 						? ""
 						: "hover:not-disabled:scale-105 active:hover:not-disabled:scale-100 focus-visible:outline-2 cursor-pointer"
 					}
-					${ data?.relation === "Self" && currentScene === "Game"
+					${ relation === "Self" && currentScene === "Game"
 						? ""
 						: cornerButton ? "data-tip-up" : "data-tip-up"
 					}
@@ -65,9 +61,9 @@ export const AvatarModule = ({
 				`}
 			>
 				<AvatarImage isActive={isActive} />
-				<AvatarCornerButton cornerButton={cornerButton}/>
+				<AvatarCornerButton cornerButton={cornerButton} />
 			</button>
-			{ showName && data?.name && <AvatarName name={data?.name} /> }
+			{ showName && <AvatarName name={data?.name ?? "Player"} /> }
 		</div>
 	);
 }

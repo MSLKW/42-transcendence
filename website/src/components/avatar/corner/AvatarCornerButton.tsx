@@ -1,7 +1,7 @@
 import { HostIcon } from "../host/HostIcon";
 
 interface AvatarCornerButtonProps {
-	cornerButton?: string | number,
+	cornerButton?: string | number;
 }
 
 export const AvatarCornerButton = ({ cornerButton }: AvatarCornerButtonProps) => {

@@ -3,23 +3,23 @@ import { persist } from "zustand/middleware";
 import { useGameStore } from "./GameStore";
 
 interface ResultsItem {
-	uuid: string,
-	points: number,
-	totalPoints: number,
-	totalWins: number,
-	rank: number,
-	rankChanged: number,
+	uuid: string;
+	points: number;
+	totalPoints: number;
+	totalWins: number;
+	rank: number;
+	rankChanged: number;
 }
 
 interface ResultsValues {
-	results: ResultsItem[],
-};
+	results: ResultsItem[];
+}
 
 interface ResultsState extends ResultsValues {
-	setResults: () => void,
-	resetResults: () => void,
+	setResults: () => void;
+	resetResults: () => void;
 	getLeaderboard: () => ResultsItem[];
-};
+}
 
 export const useResultsStore = create<ResultsState>() (
 	persist(
@@ -90,9 +90,7 @@ export const useResultsStore = create<ResultsState>() (
 			},
 
 			resetResults: () => {
-				set({
-					results: [],
-				});
+				set({ results: [] });
 				useGameStore.setState({
 					gameStarted: false,
 					cardsLeft: [],

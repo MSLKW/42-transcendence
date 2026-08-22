@@ -1,7 +1,7 @@
 interface AvatarSetImageButtonProps {
-	id: string,
-	color: string,
-	avatar: string,
+	id: string;
+	color: string;
+	avatar: string;
 	setAvatar: (img: string) => void;
 }
 

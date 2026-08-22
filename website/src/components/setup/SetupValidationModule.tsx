@@ -1,13 +1,12 @@
-import { usePartyStore } from "../../store/PartyStore";
 import { useProfileStore } from "../../store/ProfileStore";
 import { useSceneStore } from "../../store/SceneStore";
 
 interface SetupValidationModuleProps {
-	name: string,
-	avatar: string,
+	name: string;
+	avatar: string;
 }
+
 export const SetupValidationModule = ({ name, avatar }: SetupValidationModuleProps) => {
-	const { set1PlayerParty, hostUuid } = usePartyStore();
 	const { createClientProfile } = useProfileStore();
 	const { setShowWindow } = useSceneStore();
 
@@ -16,9 +15,7 @@ export const SetupValidationModule = ({ name, avatar }: SetupValidationModulePro
 		if (!isValid)
 			return;
 		createClientProfile(name, avatar);
-		set1PlayerParty();
 		setShowWindow("setup", false);
-		console.log("[handleSetupComplete] hostUuid:", hostUuid);
 	};
 
 	return (

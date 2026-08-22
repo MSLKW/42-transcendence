@@ -6,7 +6,7 @@ import { autoPassKeys, useSettingsStore } from "../../../store/SettingsStore";
 
 export const HostSettings = () => {
 	const { allow3OfAKind, allow2OfSpadesEnd, autoPassIndex, endGameCondition, scoreCalculation } = useSettingsStore();
-	const { intel, botCount } = useBotStore();
+	const { currentIntel, botCount } = useBotStore();
 	const { hostUuid } = usePartyStore();
 	const { clientUuid } = useProfileStore();
 	const { setShowWindow } = useSceneStore();
@@ -65,7 +65,7 @@ export const HostSettings = () => {
 				<div>
 					<h3><b>Bot Difficulty:</b></h3>
 					<h3 className="text-a4">
-						{ intel }
+						{ currentIntel }
 					</h3>
 				</div>
 			}

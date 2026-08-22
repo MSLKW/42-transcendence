@@ -3,8 +3,8 @@ import { AvatarName } from "../../avatar/name/AvatarName";
 import { TakeSeatIcon } from "./TakeSeatIcon";
 
 interface TakeSeatButtonProps {
-	uuid: string,
-	seatNumber: number,
+	uuid: string;
+	seatNumber: number;
 }
 export const TakeSeatButton = ({ uuid, seatNumber }: TakeSeatButtonProps ) => {
 	const { setSeatWithUuid } = useGameStore();

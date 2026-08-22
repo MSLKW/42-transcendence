@@ -12,54 +12,48 @@ interface SceneValues {
 }
 
 interface SceneState extends SceneValues {
-	setSceneValue: <K extends keyof SceneValues>(key: K, value: SceneValues[K]) => void;
 	setCurrentScene: (scene: SCENES) => void;
 	setShowWindow: (window: string, show: boolean, uuid?: string | BADGE_TYPE) => void;
-} 
+}
+
+export const defaultShowWindow = {
+	badge: false,
+	bots: false,
+	chat: false,
+	createAccount: false,
+	info: false,
+	notification: false,
+	party: false,
+	profile: false,
+	rank: false,
+	results: false,
+	signIn: false,
+	settings: false,
+	setup: false,
+	stats: false,
+} as const;
 
 export const useSceneStore = create<SceneState>() (
 	persist( 
-		(set) => ({
+		(set, get) => ({
 			currentScene: "Login",
-			showWindow: {
-				badge: false,
-				bots: false,
-				chat: false,
-				createAccount: false,
-				info: false,
-				notification: false,
-				party: false,
-				profile: false,
-				rank: false,
-				results: false,
-				signIn: false,
-				settings: false,
-				setup: false,
-				stats: false,
-			},
+			showWindow: defaultShowWindow,
 			profileUuid: null,
 
-			setSceneValue: (key, value) => {
-				set({
-					[key]: value
-				});
-			},
 			setCurrentScene: (scene) => {
+				set({ currentScene: scene });
+				useGameStore.setState({ gameStarted: scene === "Game" });
+			},
+			setShowWindow: (window, show, uuid) => {
+				const showWindow = get().showWindow;
 				set({
-					currentScene: scene
-				});
-				useGameStore.setState({
-					gameStarted: scene === "Game",
+					profileUuid: uuid,
+					showWindow: {
+						...showWindow,
+						[window]: show,
+					},
 				});
 			},
-			setShowWindow: (window, show) => set((sceneStore) => {
-				return {
-					showWindow: {
-						...sceneStore.showWindow,
-						[window]: show,
-					}
-				}
-			}),
 		}),
 		{
 			name: 'scene-storage',

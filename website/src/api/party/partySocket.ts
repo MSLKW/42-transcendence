@@ -10,6 +10,7 @@ import { gameSessionStartHandler } from "./handlers/gameSessionStartHandler";
 import { inviteReceivedHandler } from "./handlers/inviteReceivedHandler";
 import { kickedHandler } from "./handlers/kickedHandler";
 import { partyStateHandler } from "./handlers/partyStateHandler";
+import { useProfileStore } from "../../store/ProfileStore";
 
 class PartySocketService {
 	private socket: Socket | null = null;
@@ -49,7 +50,7 @@ class PartySocketService {
 		startGameSessionAction(this.socket);
 	}
 	public acceptInvite(hostUuid: string) {
-		acceptInviteAction(this.socket, hostUuid)
+		acceptInviteAction(this.socket, hostUuid);
 	}
 	public rejectInvite(hostUuid: string) {
 		rejectInviteAction(this.socket, hostUuid);

@@ -1,6 +1,5 @@
 import { useEffect } from "react";
 import { useGameStore } from "../../store/GameStore";
-import { usePartyStore } from "../../store/PartyStore";
 import { useResultsStore } from "../../store/ResultsStore";
 import { useSceneStore } from "../../store/SceneStore";
 import { useAutoPass } from "../../utilities/useAutoPass";
@@ -12,15 +11,13 @@ import { GamePassButton } from "./action/GamePassButton";
 import { GamePlayButton } from "./action/GamePlayButton";
 
 export const GameScene = () => {
-	const { totalPlayers, seats, seatRef, cardsLeft, activeSeat, gameStarted, setGameValue } = useGameStore();
-	const { members } = usePartyStore();
+	const { totalPlayers, seats, seatRef, cardsLeft, activeSeat, gameStarted } = useGameStore();
 	const { setResults } = useResultsStore();
 	const { setCurrentScene, setShowWindow } = useSceneStore();
 
 	useAutoPass();
 	useEffect(() => {
 		if (cardsLeft.includes(0)) {
-			setGameValue("gameStarted", false);
 			setResults();
 			setCurrentScene("Lobby");
 			setShowWindow("results", true);
@@ -31,7 +28,7 @@ export const GameScene = () => {
 		<>
 			<HeaderModule back="Home" />
 			<main>
-				{ totalPlayers === 4 && members.length >= 4 &&
+				{ totalPlayers === 4 && seats.length >= 4 &&
 					<>
 						<div className="absolute left-[4%] top-[20%]">
 							{ seats[seatRef[1]] &&
@@ -65,7 +62,7 @@ export const GameScene = () => {
 						</div>
 					</>
 				}
-				{ totalPlayers === 3 && members.length >= 3 &&
+				{ totalPlayers === 3 && seats.length >= 3 &&
 					<>
 						<div className="absolute left-[4%] top-[20%]">
 							{ seats[seatRef[1]] &&
@@ -89,7 +86,7 @@ export const GameScene = () => {
 						</div>
 					</>
 				}
-				{ totalPlayers === 2 && members.length >= 2 &&
+				{ totalPlayers === 2 && seats.length >= 2 &&
 					<div className="absolute left-[20%] top-[4%]">
 						{ seats[seatRef[1]] &&
 							<AvatarModule

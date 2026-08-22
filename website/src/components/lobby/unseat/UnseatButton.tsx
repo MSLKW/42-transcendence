@@ -5,8 +5,9 @@ import { AvatarName } from "../../avatar/name/AvatarName";
 import { UnseatIcon } from "./UnseatIcon";
 
 interface UnseatButtonProps {
-	uuid: string,
+	uuid: string;
 }
+
 export const UnseatButton = ({ uuid }: UnseatButtonProps) => {
 	const { playerUnseats } = useGameStore();
 	const { seats } = useGameStore();

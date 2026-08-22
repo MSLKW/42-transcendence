@@ -31,9 +31,9 @@ export const BotsWindow = () => {
 							flex
 						"
 					>
-						<BotSetButton name="Easy" />
-						<BotSetButton name="Medium" />
-						<BotSetButton name="Hard" />
+						<BotSetButton intel="Easy" />
+						<BotSetButton intel="Medium" />
+						<BotSetButton intel="Hard" />
 					</div>
 					<div
 						className="

@@ -26,8 +26,8 @@ export const ResultsRankModule = () => {
 						row-start-2 row-end-2
 						flex place-content-center place-items-center
 						h-full w-full
-						border-r border-n0/20 rounded-l-xl
-						${clientUuid === leaderboard[0].uuid ? "bg-b2" : ""}
+						border-n0/20 rounded-l-xl
+						${clientUuid === leaderboard[0].uuid ? "bg-b2" : "border-r"}
 					`}
 				>
 					<h3>1</h3>
@@ -39,8 +39,8 @@ export const ResultsRankModule = () => {
 						row-start-3 row-end-3
 						flex place-content-center place-items-center
 						h-full w-full
-						border-r border-n0/20 rounded-l-xl
-						${clientUuid === leaderboard[1].uuid ? "bg-b2" : ""}
+						border-n0/20 rounded-l-xl
+						${clientUuid === leaderboard[1].uuid ? "bg-b2" : "border-r"}
 					`}
 				>
 					<h3>2</h3>
@@ -52,8 +52,8 @@ export const ResultsRankModule = () => {
 						row-start-4 row-end-4
 						flex place-content-center place-items-center
 						h-full w-full
-						border-r border-n0/20 rounded-l-xl
-						${clientUuid === leaderboard[2].uuid ? "bg-b2" : ""}
+						border-n0/20 rounded-l-xl
+						${clientUuid === leaderboard[2].uuid ? "bg-b2" : "border-r"}
 					`}
 				>
 					<h3>3</h3>
@@ -65,8 +65,8 @@ export const ResultsRankModule = () => {
 						row-start-5 row-end-5
 						flex place-content-center place-items-center
 						h-full w-full
-						border-r border-n0/20 rounded-l-xl
-						${clientUuid === leaderboard[3].uuid ? "bg-b2" : ""}
+						border-n0/20 rounded-l-xl
+						${clientUuid === leaderboard[3].uuid ? "bg-b2" : "border-r"}
 					`}
 				>
 					<h3>4</h3>

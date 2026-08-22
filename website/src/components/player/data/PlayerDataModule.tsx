@@ -5,8 +5,8 @@ import { BadgeWindow } from "./badge/BadgeWindow";
 import { PlayerStatusModule } from "../status/PlayerStatusModule";
 
 interface PlayerDataModule {
-	profile: ProfileData | undefined,
-	badge?: BADGE_TYPE,
+	profile: ProfileData | undefined;
+	badge?: BADGE_TYPE;
 	setBadge?: (type: BADGE_TYPE) => void;
 }
 export const PlayerDataModule = ({ profile, badge, setBadge }: PlayerDataModule) => {

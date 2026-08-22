@@ -8,7 +8,7 @@ export const SettingsWindow = () => {
 	const { gameStarted } = useGameStore();
 	const {
 		allow3OfAKind, allow2OfSpadesEnd, autoPassIndex, endGameCondition, scoreCalculation, cardStyle, uiColor, fxLevel, mxLevel,
-		setSettingsValue, toggleSettingsValue,
+		toggleSettingsValue,
 	} = useSettingsStore();
 
 	return (
@@ -71,7 +71,7 @@ export const SettingsWindow = () => {
 						disabled={gameStarted}
 						onChange={ (e) => {
 							const index = parseInt(e.target.value, 10);
-							setSettingsValue("autoPassIndex", index);
+							useSettingsStore.setState({ autoPassIndex: index });
 						}}
 						className="accent-b5 cursor-pointer"
 					/>
@@ -89,7 +89,7 @@ export const SettingsWindow = () => {
 						<RadioButton
 							name="game-ends"
 							value="first-player"
-							onChange={() => setSettingsValue("endGameCondition", 0)}
+							onChange={() => useSettingsStore.setState({ endGameCondition: 0 })}
 							checked={endGameCondition === 0}
 							disabled={gameStarted}
 						/>
@@ -103,7 +103,7 @@ export const SettingsWindow = () => {
 						<RadioButton
 							name="game-ends"
 							value="last-hand"
-							onChange={() => setSettingsValue("endGameCondition", 1)}
+							onChange={() => useSettingsStore.setState({ autoPassIndex: 1 })}
 							checked={endGameCondition === 1}
 							disabled={gameStarted}
 						/>
@@ -123,7 +123,7 @@ export const SettingsWindow = () => {
 						<RadioButton
 							name="calculate-score"
 							value="number"
-							onChange={() => setSettingsValue("scoreCalculation", 0)}
+							onChange={() => useSettingsStore.setState({ scoreCalculation: 0 })}
 							checked={scoreCalculation === 0}
 							disabled={gameStarted}
 						/>
@@ -137,7 +137,7 @@ export const SettingsWindow = () => {
 						<RadioButton
 							name="calculate-score"
 							value="value"
-							onChange={() => setSettingsValue("scoreCalculation", 1)}
+							onChange={() => useSettingsStore.setState({ scoreCalculation: 1 })}
 							checked={scoreCalculation === 1}
 							disabled={gameStarted}
 						/>
@@ -154,7 +154,7 @@ export const SettingsWindow = () => {
 						<RadioButton
 							name="pCardLook"
 							value="modern"
-							onChange={() => setSettingsValue("cardStyle", 0)}
+							onChange={() => useSettingsStore.setState({ cardStyle: 0 })}
 							checked={cardStyle === 0}
 						/>
 						<h3>Modern</h3>
@@ -163,7 +163,7 @@ export const SettingsWindow = () => {
 						<RadioButton
 							name="pCardLook"
 							value="classic"
-							onChange={() => setSettingsValue("cardStyle", 1)}
+							onChange={() => useSettingsStore.setState({ cardStyle: 1 })}
 							checked={cardStyle === 1}
 						/>
 						<h3>Classic</h3>
@@ -178,7 +178,7 @@ export const SettingsWindow = () => {
 						<RadioButton
 							name="UIColors"
 							value="main"
-							onChange={() => setSettingsValue("uiColor", 0)}
+							onChange={() => useSettingsStore.setState({ uiColor: 0 })}
 							checked={uiColor === 0}
 						/>
 						<div className="h-2rem aspect-1/2 flex border border-n6 overflow-clip">
@@ -190,7 +190,7 @@ export const SettingsWindow = () => {
 						<RadioButton
 							name="UIColors"
 							value="alt"
-							onChange={() => setSettingsValue("uiColor", 1)}
+							onChange={() => useSettingsStore.setState({ uiColor: 1 })}
 							checked={uiColor === 1}
 						/>
 						<div className="h-2rem aspect-1/2 flex border border-n6 overflow-clip">
@@ -214,7 +214,7 @@ export const SettingsWindow = () => {
 						max={100}
 						step={1}
 						value={fxLevel}
-						onChange={(e) => setSettingsValue("fxLevel", parseFloat(e.target.value))}
+						onChange={(e) => useSettingsStore.setState({ fxLevel: parseFloat(e.target.value) })}
 						className="accent-b5 cursor-pointer"
 					/>
 				</div>
@@ -232,7 +232,7 @@ export const SettingsWindow = () => {
 						max={100}
 						step={1}
 						value={mxLevel}
-						onChange={(e) => setSettingsValue("mxLevel", parseFloat(e.target.value))}
+						onChange={(e) => useSettingsStore.setState({ mxLevel: parseFloat(e.target.value) })}
 						className="accent-b5 cursor-pointer"
 					/>
 				</div>

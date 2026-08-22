@@ -1,7 +1,7 @@
 interface ToggleButtonProps {
-	checked: boolean,
-	onChange: () => void,
-	disabled?: boolean,
+	checked: boolean;
+	onChange: () => void;
+	disabled?: boolean;
 }
 
 export const ToggleButton = ({checked, onChange, disabled}: ToggleButtonProps) => {

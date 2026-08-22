@@ -17,18 +17,16 @@ export const SearchModule = ({ value, onChange }: SearchModuleProps) => {
 		<div className="
 			w-[90%]
 			flex place-content-center place-items-center
-			gap-3
+			gap-1rem
 		">
 			<input
 				ref={focusRef}
 				id="search"
 				type="text"
 				value={value}
-				placeholder="Search For Party Members"
+				placeholder="Search By Name"
 				onChange={(e) => onChange(e.target.value)}
-				className="
-					input-chat
-				"
+				className="input-chat"
 			/>
 			<SearchButton />
 		</div>

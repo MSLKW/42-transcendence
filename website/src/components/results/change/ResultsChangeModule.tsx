@@ -29,8 +29,8 @@ export const ResultsChangeModule = () => {
 						row-start-2 row-end-2
 						flex place-content-center place-items-center
 						h-full w-full
-						border-r border-n0/20
-						${clientUuid === leaderboard[0].uuid ? "bg-b2" : ""}
+						border-n0/20
+						${clientUuid === leaderboard[0].uuid ? "bg-b2" : "border-r"}
 					`}
 				>
 					{
@@ -46,8 +46,8 @@ export const ResultsChangeModule = () => {
 						row-start-3 row-end-3
 						flex place-content-center place-items-center
 						h-full w-full
-						border-r border-n0/20
-						${clientUuid === leaderboard[1].uuid ? "bg-b2" : ""}
+						border-n0/20
+						${clientUuid === leaderboard[1].uuid ? "bg-b2" : "border-r"}
 					`}
 				>
 					{
@@ -63,8 +63,8 @@ export const ResultsChangeModule = () => {
 						row-start-4 row-end-4
 						flex place-content-center place-items-center
 						h-full w-full
-						border-r border-n0/20
-						${clientUuid === leaderboard[2].uuid ? "bg-b2" : ""}
+						border-n0/20
+						${clientUuid === leaderboard[2].uuid ? "bg-b2" : "border-r"}
 					`}
 				>
 					{
@@ -80,8 +80,8 @@ export const ResultsChangeModule = () => {
 						row-start-5 row-end-5
 						flex place-content-center place-items-center
 						h-full w-full
-						border-r border-n0/20
-						${clientUuid === leaderboard[3].uuid ? "bg-b2" : ""}
+						border-n0/20
+						${clientUuid === leaderboard[3].uuid ? "bg-b2" : "border-r"}
 					`}
 				>
 					{

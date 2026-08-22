@@ -3,9 +3,10 @@ import { useSceneStore } from "../../../../store/SceneStore";
 import { LightboxButton } from "../../../lightbox/LightboxButton";
 
 interface BadgeWindowProps {
-	badge: BADGE_TYPE,
-	setBadge: (type: BADGE_TYPE) => void,
+	badge: BADGE_TYPE;
+	setBadge: (type: BADGE_TYPE) => void;
 }
+
 export const BadgeWindow = ({ badge, setBadge }: BadgeWindowProps) => {
 	const { clientUuid, getProfileData } = useProfileStore();
 	const data = getProfileData(clientUuid!);

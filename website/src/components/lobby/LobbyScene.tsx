@@ -14,19 +14,24 @@ import { UnseatButton } from "./unseat/UnseatButton";
 import { ResultsCallButton } from "../results/call/ResultsCallButton";
 
 export const LobbyScene = () => {
-	const { fillSeatsWithBots } = useBotStore();
+	const { fillSeatsWithBots, removeBots } = useBotStore();
 	const { totalPlayers, seats, startGame, round } = useGameStore();
-	const { members, humans, hostUuid } = usePartyStore();
+	const { members, hostUuid } = usePartyStore();
 	const { clientUuid } = useProfileStore();
-	const { resetResults} = useResultsStore();
-	const humansSeated = seats.filter((seat): seat is string => seat !== null && !seats.includes("bot")).length;
+	const { resetResults } = useResultsStore();
 	
 	useEffect(() => {
-		if (seats.includes(null))
-			resetResults();
-		if (humans === humansSeated)
+		const humansSeated = seats.filter((seat): seat is string => seat !== null && !seat.includes("bot")).length;
+		if (humansSeated === members.length) {
 			fillSeatsWithBots();
-	}, [humans, humansSeated, seats]);
+			return;
+		}
+		
+		if (seats.includes(null)) {
+			resetResults();
+			removeBots();
+		}
+	}, [members, seats]);
 
 	const seatsFilled = totalPlayers === seats.filter((seat): seat is string => seat !== null).length;
 
@@ -125,19 +130,19 @@ export const LobbyScene = () => {
 						sm:overflow-x-visible overflow-x-auto
 					"
 				>
-					{ members.map((member) => (
-						member.uuid && !seats.includes(member.uuid) &&
+					{ members.map((uuid) => (
+						uuid && !seats.includes(uuid) &&
 							<AvatarModule
-								key={member.uuid}
-								uuid={member.uuid}
-								cornerButton={member.uuid === hostUuid ? "host" : ""}
+								key={uuid}
+								uuid={uuid}
+								cornerButton={uuid === hostUuid ? "host" : ""}
 							/>
 					))}
 					<PartyCallButton />
 				</div>
 				<div className="flex gap-2rem pt-2rem">
-					{ humans > 1 && <UnseatButton uuid={clientUuid!} /> }
-					{ humans > 1 && <BotManagerButton /> }
+					{ members.length > 1 && <UnseatButton uuid={clientUuid!} /> }
+					{ members.length > 1 && <BotManagerButton /> }
 					{ round >= 1 && <ResultsCallButton /> }
 				</div>
 			</footer>

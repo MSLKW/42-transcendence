@@ -2,7 +2,6 @@ import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import { useProfileStore, type MEDAL_TYPE } from "./ProfileStore";
 import { usePartyStore } from "./PartyStore";
-import { useBotStore } from "./BotStore";
 import { useResultsStore } from "./ResultsStore";
 import { useSceneStore } from "./SceneStore";
 
@@ -29,23 +28,21 @@ export type HAND_TYPE = keyof typeof HAND_VALUES;
 export const HAND_LABEL = Object.keys(HAND_VALUES) as HAND_TYPE[];
 
 interface GameValues {
-	totalPlayers: number,
-	seats: (string | null)[],
-	gameStarted: boolean,
-	cardsLeft: number[],
-	currentHand: HAND_TYPE,
-	round: number,
-	seatRef: number[],
-	activeSeat: number,
-};
+	totalPlayers: number;
+	seats: (string | null)[];
+	gameStarted: boolean;
+	cardsLeft: number[];
+	currentHand: HAND_TYPE;
+	round: number;
+	seatRef: number[];
+	activeSeat: number;
+}
 
 interface GameState extends GameValues {
-	setGameValue: <K extends keyof GameValues>(key: K, value: GameValues[K]) => void,
-	
-	initSeats: () => void,
-	setSeatWithUuid: (uuid: string, seatNumber: number) => void,
-	playerUnseats: (uuid: string) => void,
-	autoSetSeats: () => void,
+	initSeats: () => void;
+	setSeatWithUuid: (uuid: string, seatNumber: number) => void;
+	playerUnseats: (uuid: string) => void;
+	autoSetSeats: () => void;
 	
 	setSeatRef: () => void;
 	dealCards: () => void;
@@ -53,10 +50,10 @@ interface GameState extends GameValues {
 	nextTurn: () => void;
 
 	endGame: () => void;
-	incTotalWin: (uuid: string) => void,
-	incTotalLoss: (uuid: string) => void,
-	unlockMedal: (uuid: string, type: MEDAL_TYPE) => void,
-};
+	incTotalWin: (uuid: string) => void;
+	incTotalLoss: (uuid: string) => void;
+	unlockMedal: (uuid: string, type: MEDAL_TYPE) => void;
+}
 
 export const useGameStore = create<GameState>() (
 	persist(
@@ -70,18 +67,10 @@ export const useGameStore = create<GameState>() (
 			seatRef: [],
 			activeSeat: 0,
 
-			setGameValue: (key, value) => {
-				set({
-					[key]: value,
-				})
-			},
-
 			initSeats: () => {
 				const totalPlayers = get().totalPlayers;
 				const newSeats = Array(totalPlayers).fill(null);
-				set({
-					seats: newSeats,
-				});
+				set({ seats: newSeats });
 			},
 			setSeatWithUuid: (uuid, seatNumber) => {
 				const seats = get().seats;
@@ -108,12 +97,8 @@ export const useGameStore = create<GameState>() (
 			},
 			autoSetSeats: () => {
 				const members = usePartyStore.getState().members;
-				const newSeats = members
-					.map((member) => member.uuid)
-					.filter((uuid): uuid is string => uuid !== null);
-				set({
-					seats: newSeats,
-				});
+				const newSeats = members.map((member) => member).filter((uuid): uuid is string => uuid !== null);
+				set({ seats: newSeats });
 			},
 
 			setSeatRef: () => {
@@ -161,7 +146,6 @@ export const useGameStore = create<GameState>() (
 				set({
 					round: get().round + 1,
 				});
-				useBotStore.getState().addBotIfMissing();
 				get().setSeatRef();
 				get().dealCards();
 				useSceneStore.getState().setShowWindow("results", false);
@@ -169,9 +153,7 @@ export const useGameStore = create<GameState>() (
 			},
 			nextTurn: () => {
 				const newActiveSeat = (get().activeSeat + 1) % get().totalPlayers;
-				set({
-					activeSeat: newActiveSeat,
-				});
+				set({ activeSeat: newActiveSeat });
 			},
 
 			endGame: () => {

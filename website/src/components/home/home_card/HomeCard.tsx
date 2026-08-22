@@ -7,19 +7,19 @@ import { PersonIcon } from "./person/PersonIcon";
 import { TutorialIcon } from "./tutorial/TutorialIcon";
 
 interface HomeProps {
-	gameMode: GAMEMODE_TYPE,
-	playerCount: number,
+	gameMode: GAMEMODE_TYPE;
+	playerCount: number;
 }
 
 export const HomeCardButton = ({ gameMode, playerCount }: HomeProps) => {
-	const { setGameValue, autoSetSeats, initSeats } = useGameStore()
+	const { autoSetSeats, initSeats } = useGameStore()
 	const { setCurrentScene } = useSceneStore();
 	const { clientUuid } = useProfileStore();
 	const { hostUuid, members } = usePartyStore();
 
 	const handleCardClick = () => {
-		setGameValue("totalPlayers", playerCount);
-		if (members.length === 1)
+		useGameStore.setState({ totalPlayers: playerCount });
+		if (members.length <= 1)
 			autoSetSeats();
 		else
 			initSeats();

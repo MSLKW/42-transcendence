@@ -1,9 +1,9 @@
 import { useSceneStore } from "../../store/SceneStore";
 
 interface LightboxButtonProps {
-	dismiss: string,
-	blur?: boolean,
-	isDismissable?: boolean,
+	dismiss: string;
+	blur?: boolean;
+	isDismissable?: boolean;
 	call?: () => void;
 }
 

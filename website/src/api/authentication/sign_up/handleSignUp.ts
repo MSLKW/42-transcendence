@@ -8,7 +8,6 @@ import { useSceneStore } from "../../../store/SceneStore";
 
 export const handleSignUp = async (email: string, password: string, setIsLoading: Dispatch<SetStateAction<boolean>>) => {
 	const { showNotification } = useNotificationStore.getState();
-	const setClientUuid = useProfileStore.getState().setClientUuid;
 	const { setShowWindow, setCurrentScene } = useSceneStore.getState();
 
 	try {
@@ -16,7 +15,7 @@ export const handleSignUp = async (email: string, password: string, setIsLoading
 		await signUpFetch(email, password);
 
 		const response = await signInFetch(email, password);
-		setClientUuid(response.id);
+		useProfileStore.setState({ clientUuid: response.id });
 		console.log("[handleSignUp] Success, response.id:", response.id);
 
 		setShowWindow("createAccount", false);

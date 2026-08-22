@@ -15,7 +15,7 @@ export const BotManagerButton = () => {
 			removeBots();
 	}
 	const { seats } = useGameStore();
-	const humansSeated = seats.filter((seat): seat is string => seat !== null && !seats.includes("bot")).length;
+	const humansSeated = seats.filter((seat): seat is string => seat !== null && !seat.includes("bot")).length;
 
 	return (
 		<div

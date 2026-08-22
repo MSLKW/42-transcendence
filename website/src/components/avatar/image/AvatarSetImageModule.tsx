@@ -1,7 +1,7 @@
 import { AvatarSetImageButton } from "./AvatarSetImageButton";
 
 interface AvatarSelectModuleProps {
-	avatar: string,
+	avatar: string;
 	setAvatar: (avatar: string) => void;
 }
 export const AvatarSelectModule = ({ avatar, setAvatar }: AvatarSelectModuleProps) => {

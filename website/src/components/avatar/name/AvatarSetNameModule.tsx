@@ -2,8 +2,8 @@ import { useRef, useEffect } from "react";
 import { AvatarImage } from "../image/AvatarImage";
 
 interface AvatarSetNameModuleProps {
-	name: string,
-	setName: (name: string) => void,
+	name: string;
+	setName: (name: string) => void;
 }
 export const AvatarSetNameModule = ({ name, setName }: AvatarSetNameModuleProps) => {
 	const handleInput = (e: React.ChangeEvent<HTMLInputElement>) => {

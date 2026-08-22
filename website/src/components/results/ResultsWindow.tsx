@@ -1,5 +1,4 @@
 import { useGameStore } from "../../store/GameStore";
-import { usePartyStore } from "../../store/PartyStore";
 import { Window } from "../window/Window";
 import { ResultsChangeModule } from "./change/ResultsChangeModule";
 import { ResultsPodiumModule } from "./podium/ResultsPodiumModule";
@@ -7,16 +6,17 @@ import { ResultsRankModule } from "./rank/ResultsRankModule";
 import { ResultsPlayedModule } from "./played/ResultsPlayedModule";
 import { ResultsTotalModule } from "./total/ResultsTotalModule";
 import { useResultsStore } from "../../store/ResultsStore";
+import { useProfileStore } from "../../store/ProfileStore";
 
 export const ResultsWindow = () => {
 	const { round } = useGameStore();
 	const { endGame, startGame } = useGameStore();
-	const { getMemberData } = usePartyStore();
+	const { getCachedData } = useProfileStore();
 	const { getLeaderboard } = useResultsStore();
 
 	const leaderboard = getLeaderboard();
 	const topPlayer = leaderboard[0];
-	const playerName = topPlayer ? getMemberData(topPlayer.uuid)?.name : "Winner";
+	const playerName = topPlayer ? getCachedData(topPlayer.uuid)?.name : "Winner";
 	const winner = `Congratulations ${playerName ?? "Player"}!`;
 
 	return (
