@@ -158,7 +158,7 @@ export const useGameStore = create<GameState>() (
 
 			endGame: () => {
 				set({
-					totalPlayers: 1,
+					totalPlayers: 0,
 					seats: [],
 					gameStarted: false,
 					cardsLeft: [],

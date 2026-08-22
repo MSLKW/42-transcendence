@@ -72,8 +72,6 @@ export default function Dev() {
 						{ seats[3] && <DevButton label={`${getCachedData(seats[3])?.name} Wins`} call={() => playerWins(3)}/> }
 					</>
 				}
-				<DevButton label={`results: ${ results.length }`} call={() => console.log("results: ", results)}/>
-				<DevButton label="End Game" call={() => endGame()}/>
 			</ul>
 			<ul className="flex place-content-center place-items-center gap-1rem">
 				<input
@@ -106,6 +104,7 @@ export default function Dev() {
 				</div>
 				<div className="flex place-content-between">
 					<li>Game Manager Socket ID: n/a</li>
+					<DevButton label={`results: ${ results.length }`} call={() => console.log("results: ", results)}/>
 					<select
 						id="currentHand"
 						value={currentHand}
@@ -130,7 +129,6 @@ export default function Dev() {
 					{currentScene === "Lobby" && <DevButton label="Fill Bots" call={() => fillSeatsWithBots()} />}
 					{currentScene === "Lobby" && <DevButton label="Remove Bots" call={() => removeBots()} />}
 					{currentScene === "Lobby" && <DevButton label="Unseat" call={() => playerUnseats(clientUuid!)} />}
-					<li>botCount:{botCount}</li>
 				</div>
 				<li>Chat Manager Socket ID: n/a</li>
 			</ul>

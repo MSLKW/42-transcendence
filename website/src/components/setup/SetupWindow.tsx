@@ -21,7 +21,7 @@ export const SetupWindow = () => {
 			<Window
 				title="Setup"
 				dismissKey="setup"
-				hasHeader={false}
+				headerType="None"
 			>
 				<div className="
 					h-fit w-140

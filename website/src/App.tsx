@@ -19,6 +19,7 @@ import { BotsWindow } from "./components/bots/BotsWindow";
 import { ChatWindow } from "./components/chat/ChatWindow";
 import { CreateAccountWindow } from "./components/login/create_account/CreateAccountWindow";
 import { InfoWindow } from "./components/info/InfoWindow";
+import { LeaveWindow } from "./components/leave/Leave";
 import { NotificationWindow } from "./components/notification/NotificationWindow";
 import { PartyWindow } from "./components/party/PartyWindow";
 import { ProfileWindow } from "./components/profile/ProfileWindow";
@@ -98,6 +99,7 @@ export default function App() {
 				{ showWindow["createAccount"] && <CreateAccountWindow /> }
 				{ showWindow["info"] && <InfoWindow /> }
 				{ showWindow["notification"] && <NotificationWindow /> }
+				{ showWindow["leave"] && <LeaveWindow /> }
 				{ showWindow["party"] && <PartyWindow /> }
 				{ showWindow["profile"] && <ProfileWindow /> }
 				{ showWindow["rank"] && <RankWindow /> }

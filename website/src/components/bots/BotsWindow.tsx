@@ -18,7 +18,7 @@ export const BotsWindow = () => {
 			<Window
 				title="Bots"
 				dismissKey="bots"
-				hasHeader={false}
+				headerType="None"
 			>
 				<div
 					className="
