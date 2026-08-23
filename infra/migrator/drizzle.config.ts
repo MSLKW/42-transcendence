@@ -15,14 +15,6 @@ import { defineConfig } from "drizzle-kit";
 
 // 2. Helper to safely read the password
 function requirePassword(): string {
-  if (process.env.PGPASSWORD) { // just for dev stage only (local testing)
-    return process.env.PGPASSWORD;
-  }
-
-  if (process.env.PGPASSWORD_ENV_DUMMY) { // just for dev stage only (local testing)
-    return process.env.PGPASSWORD_ENV_DUMMY;
-  }
-
   const passwordFile = "/run/secrets/db-admin-password";
   try {
     const password = fs.readFileSync(passwordFile, "utf-8").trim();
@@ -32,33 +24,9 @@ function requirePassword(): string {
     return password;
   } 
   catch {
-    throw new Error("CRITICAL: Database password could not be loaded from PGPASSWORD_ENV_DUMMY or PGPASSWORD or the secrete file itself");
+    throw new Error("CRITICAL: Database password could not be loaded from the secret file itself");
   }
 }
-
-
-// import 'dotenv/config'; // 1. Load .env files
-// import { defineConfig } from "drizzle-kit";
-
-// const password = process.env.PGPASSWORD;
-// if (!password) {
-//   throw new Error("CRITICAL: Database password could not be loaded.");
-// }
-
-// 2. Helper to safely read .env vars and secret
-// function requireEnv(name: string): string {
-//   const value = process.env[name];
-//   if (!value) {
-//     throw new Error(`CRITICAL: Missing required environment variable: ${name}`);
-//   }
-//   return value;
-// }
-
-// const dbPort = Number(requireEnv("PGPORT"));
-// const dbHost = requireEnv("PGHOST");
-// const dbUser = requireEnv("PGUSER");
-// const dbName = requireEnv("PGDATABASE");
-// const dbPassword = requireEnv("PGPASSWORD");
 
 
 // 3. Define the main guidance of how Drizzle do its work
@@ -74,11 +42,6 @@ export default defineConfig({
     ], 
     out: "./migrations", // naming is following industry standard / drizzle kit's default behaviour / drizzle's documentation
     dbCredentials: {
-      // host: dbHost,
-      // port: dbPort,
-      // user: dbUser,
-      // password: dbPassword,
-      // database: dbName,
         // Construct the URL using the helper
         url: `postgresql://${process.env.PGUSER}:${requirePassword()}@${process.env.PGHOST}:${process.env.PGPORT}/${process.env.PGDATABASE}`,
     },
