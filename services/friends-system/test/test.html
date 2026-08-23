@@ -21,13 +21,16 @@
 
 <div id="uuid-box">
   <b>My UUID:</b>
-  <input id="my-uuid" placeholder="e.g. alice" />
+  <!-- <input id="my-uuid" placeholder="e.g. alice" /> -->
+  <input id="my-uuid" placeholder="e.g. alice" onkeydown="if(event.key==='Enter') start()" />
   <button onclick="start()">Connect</button>
+  <button onclick="disconnect()">Disconnect</button> 
   <button onclick="openTab()">+ Open another tester tab</button>
 </div>
 
 <h2>Send a friend request</h2>
-<input id="target-uuid" placeholder="friend's uuid" />
+<!-- <input id="target-uuid" placeholder="friend's uuid" /> -->
+<input id="target-uuid" placeholder="friend's uuid" onkeydown="if(event.key==='Enter') sendRequest()" />
 <button onclick="sendRequest()">Send request</button>
 
 <h2>Inbox (received, pending)</h2>
@@ -36,7 +39,8 @@
 <h2>Sent requests</h2>
 <ul id="sent"></ul>
 
-<h2>Friends list</h2>
+<!-- <h2>Friends list</h2> -->
+<h2>Friends list <button onclick="refreshFriends()" style="font-size:12px;">Refresh</button></h2>
 <ul id="friends"></ul>
 
 <h2>Notification log</h2>
@@ -45,6 +49,8 @@
 <script>
 const API = "http://localhost:3000";
 let myUuid = null;
+let evtSource = null;   // single shared connection — never a local `const` inside start()
+let pollTimer = null;   // single shared timer, same reason
 
 function log(msg) {
   const el = document.getElementById("log");
@@ -56,11 +62,15 @@ function openTab() {
 }
 
 function start() {
+  // bug 1 fix: refuse to open a second connection if one is already open
+  if (evtSource) return log("already connected — click Disconnect first to reconnect");
+  //
   myUuid = document.getElementById("my-uuid").value.trim();
   if (!myUuid) return alert("enter a uuid first");
   document.title = "tester: " + myUuid;
 
-  const evtSource = new EventSource(`${API}/events?uuid=${myUuid}`);
+  // const evtSource = new EventSource(`${API}/events?uuid=${myUuid}`);
+  evtSource = new EventSource(`${API}/events?uuid=${myUuid}`);
   evtSource.addEventListener("connected", () => log("SSE connected as " + myUuid));
 
   evtSource.addEventListener("friend_request_received", e => {
@@ -89,7 +99,8 @@ function start() {
   });
 
   refreshInbox(); refreshSent(); refreshFriends();
-  setInterval(refreshFriends, 5000);
+  // setInterval(refreshFriends, 5000);
+  pollTimer = setInterval(refreshFriends, 5000);
   window.addEventListener("focus", refreshFriends);
 }
 
@@ -103,10 +114,27 @@ function start() {
 //   log(res.ok ? `Sent request to ${target}` : `Error: ${data.error}`);
 //   refreshSent();
 // }
+
+//
+function disconnect() {
+  if (!evtSource) return log("already disconnected");
+  evtSource.close();
+  evtSource = null;
+  clearInterval(pollTimer);
+  pollTimer = null;
+  log(`SSE disconnected as ${myUuid} — live updates paused until you Connect again.`);
+}
+//
+
 async function sendRequest() {
   const input = document.getElementById("target-uuid");
   const target = input.value.trim();
-  input.value = "";  // ← this line is the new part: clears the box immediately
+  //
+  // bug 6 fix: don't even attempt the request if the field is empty
+  if (!target) 
+    return log("enter a friend's uuid before sending a request");
+  input.value = "";  // ← this clears the box immediately
+  //
   const res = await fetch(`${API}/friend-requests`, {
     method: "POST", headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ senderId: myUuid, receiverId: target })
@@ -139,7 +167,12 @@ async function refreshInbox() {
 }
 
 async function respond(id, action) {
-  await fetch(`${API}/friend-requests/${id}/${action}`, { method: "POST" });
+  // await fetch(`${API}/friend-requests/${id}/${action}`, { method: "POST" });
+    const res = await fetch(`${API}/friend-requests/${id}/${action}`, { method: "POST" });
+  if (!res.ok) {
+    const data = await res.json();
+    log(`Error: ${data.error}`);
+  }
   refreshInbox(); refreshFriends();
 }
 
@@ -168,7 +201,9 @@ async function refreshFriends() {
 }
 
 async function removeFriend(friendUuid) {
-  await fetch(`${API}/friends/${friendUuid}?uuid=${myUuid}`, { method: "DELETE" });
+  // await fetch(`${API}/friends/${friendUuid}?uuid=${myUuid}`, { method: "DELETE" });
+  const res = await fetch(`${API}/friends/${friendUuid}?uuid=${myUuid}`, { method: "DELETE" });
+  if (res.status === 404) log(`${friendUuid} was already removed (they removed you first)`);
   refreshFriends();
 }
 </script>

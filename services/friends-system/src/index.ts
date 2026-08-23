@@ -17,26 +17,49 @@ interface FriendRequest { id: string; senderId: string; receiverId: string; stat
 const friendRequests: FriendRequest[] = [];
 const friendships: { a: string; b: string }[] = []; // unordered pair, always store sorted
 
-const sseClients: Record<string, express.Response[]> = {};
+// one connection per uuid, strictly enforced (see /events below)
+// const sseClients: Record<string, express.Response[]> = {};
+const sseClients: Record<string, express.Response> = {};
+
 
 function pairKey(a: string, b: string) { return [a, b].sort().join("|"); }
 function areFriends(a: string, b: string) {
   return friendships.some(f => pairKey(f.a, f.b) === pairKey(a, b));
 }
 function notify(uuid: string, event: string, data: any) {
-  (sseClients[uuid] || []).forEach(res => res.write(`event: ${event}\ndata: ${JSON.stringify(data)}\n\n`));
+  // (sseClients[uuid] || []).forEach(res => res.write(`event: ${event}\ndata: ${JSON.stringify(data)}\n\n`));
+  const res = sseClients[uuid];
+  if (res) res.write(`event: ${event}\ndata: ${JSON.stringify(data)}\n\n`);
 }
 
-
-// ---- 2. SSE ----
+// ---- 2. SSE — exactly one live connection per uuid ----
 app.get("/events", (req, res) => {
   const uuid = req.query.uuid as string;
+  // new addition - prevents uuid to be null 
+    if (!uuid) 
+      return res.status(400).end();
+
+  // if this uuid already has a connection open, close it first — enforces "1 uuid, 1 connection"
+  const existing = sseClients[uuid];
+  if (existing) 
+    existing.end();
+  //
   res.set({ "Content-Type": "text/event-stream", "Cache-Control": "no-cache", Connection: "keep-alive" });
   res.flushHeaders();
-  sseClients[uuid] = sseClients[uuid] || [];
-  sseClients[uuid].push(res);
+  // sseClients[uuid] = sseClients[uuid] || [];
+  // sseClients[uuid].push(res);
+  //
+    sseClients[uuid] = res;
+  //
   res.write(`event: connected\ndata: "ok"\n\n`);
-  req.on("close", () => { sseClients[uuid] = (sseClients[uuid] || []).filter(r => r !== res); });
+  // req.on("close", () => { sseClients[uuid] = (sseClients[uuid] || []).filter(r => r !== res); });
+  //
+  req.on("close", () => {
+    // only delete if this response object is still the current one for that uuid
+    // (avoids a race where a newer connection's cleanup gets wiped by an older one closing late)
+    if (sseClients[uuid] === res) delete sseClients[uuid];
+  });
+  //
 });
 
 
@@ -55,7 +78,19 @@ app.get("/events", (req, res) => {
 // });
 app.post("/friend-requests", (req, res) => {
   const { senderId, receiverId } = req.body;
+  //
+  
+  // bug 6: reject empty/missing uuids outright, before any lookup logic runs
+  if (!senderId || !receiverId || typeof receiverId !== "string" || receiverId.trim() === "") {
+    return res.status(400).json({ error: "a valid receiver uuid is required" });
+  }
+  //
   if (senderId === receiverId) return res.status(400).json({ error: "cannot friend yourself" });
+
+  // TODO: Check if friendUUID exist in Postgres
+  // const receiverExists = await .......
+  // if (!receiverExists) return res.status(404).json({ error: "no such user" });
+
   if (areFriends(senderId, receiverId)) return res.status(409).json({ error: "already friends" });
  
   const existingSameDirection = friendRequests.find(r => r.senderId === senderId && r.receiverId === receiverId && r.status === "pending");
@@ -100,6 +135,12 @@ app.get("/friend-requests/sent", (req, res) => {
 app.post("/friend-requests/:id/accept", (req, res) => {
   const request = friendRequests.find(r => r.id === req.params.id);
   if (!request) return res.status(404).end();
+//
+  // bug 8: irreversible — can only accept a request that is still pending
+  if (request.status !== "pending") {
+    return res.status(409).json({ error: `this request was already ${request.status} — it can't be changed` });
+  }
+//
   request.status = "accepted";
 
   // avoid creating a duplicate row if a reverse request gets accepted too
@@ -122,6 +163,14 @@ app.post("/friend-requests/:id/accept", (req, res) => {
 app.post("/friend-requests/:id/reject", (req, res) => {
   const request = friendRequests.find(r => r.id === req.params.id);
   if (!request) return res.status(404).end();
+  //
+
+  // bug 8: irreversible — can only reject a request that is still pending
+  if (request.status !== "pending") {
+    return res.status(409).json({ error: `this request was already ${request.status} — it can't be changed` });
+  }
+
+  //
   request.status = "rejected";
   notify(request.senderId, "friend_request_rejected", { by: request.receiverId, requestId: request.id });
   res.json(request);
