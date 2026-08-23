@@ -3,13 +3,12 @@
 	@apply
 		w-max h-max
 		absolute
-		bg-a2
-		border border-n2 rounded-full
-		text-n6 text-1.25rem leading-tight
+		bg-dark btn-text
+		border border-n2
+		text-n6 text-1.25rem leading-relaxed
 		py-0.5rem px-1rem
 		pointer-events-none
 		scale-0 opacity-0
-		transition-all ease-in-out duration-100
 		;
 }
 
@@ -20,22 +19,6 @@
 			data-tip-after
 			origin-bottom
 			bottom-[calc(100%+clamp(0.25rem,0.769vmin+0.019rem,0.5rem))]
-			left-1/2 -translate-x-1/2
-			;
-	}
-	&:focus-visible::after,
-	&:hover::after {
-		@apply scale-100 opacity-100;
-	}
-}
-
-@utility data-tip-up2 {
-	@apply relative;
-	&::after {
-		@apply
-			data-tip-after
-			origin-bottom
-			bottom-[calc(100%+clamp(1rem,3.077vmin+0.077rem,2rem))]
 			left-1/2 -translate-x-1/2
 			;
 	}
@@ -71,6 +54,46 @@
 			top-1/2 -translate-y-1/2
 			;
 	}
+	&:focus-visible::after,
+	&:hover::after {
+		@apply scale-100 opacity-100;
+	}
+}
+
+@utility data-tip-dual {
+	@apply
+		w-max h-max
+		absolute
+		bg-dark btn-text
+		text-n6 text-1rem leading-normal
+		py-0.5rem px-1.5rem whitespace-pre-line
+		pointer-events-none
+		scale-0 opacity-0
+		;
+}
+
+@utility data-tip-medal {
+	@apply relative;
+	
+	&::before {
+		content: attr(data-tip-title);
+		@apply
+			data-tip-dual origin-bottom
+			bottom-[200%] left-1/2 -translate-x-1/2
+			;
+	}
+
+	&::after {
+		content: attr(data-tip-subtitle);
+		@apply
+			data-tip-dual origin-bottom
+			bottom-[120%] left-1/2 -translate-x-1/2
+			italic text-1rem
+			;
+	}
+
+	&:focus-visible::before,
+	&:hover::before,
 	&:focus-visible::after,
 	&:hover::after {
 		@apply scale-100 opacity-100;

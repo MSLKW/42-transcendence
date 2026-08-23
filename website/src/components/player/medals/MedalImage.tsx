@@ -1,9 +1,25 @@
-export const MedalImage = () => {
+import React from "react";
+
+interface MedalImageProp {
+	icon: React.ReactNode,
+	title: string,
+	subtitle: string,
+}
+
+export const MedalImage = ({ icon, title, subtitle }: MedalImageProp) => {
 	return (
-		<button className="
-			h-10 aspect-square rounded-full bg-a4
-			hover:not-disabled:scale-105 active:hover:not-disabled:scale-100
-			focus-visible:outline-2 outline-b5 outline-offset-5
-		" />
+		<button
+			data-tip-title={title}
+			data-tip-subtitle={subtitle}
+			type="button"
+			aria-label={`${title}, ${subtitle}`}
+			className="
+				h-12.5 aspect-square
+				btn-icon bg-dark rounded-full
+				data-tip-medal
+			"
+		>
+			{icon}
+		</button>
 	);
 }

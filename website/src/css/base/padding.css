@@ -1,3 +1,17 @@
+@utility py-5rem {
+	@apply
+		py-[clamp(2.5rem,7.692vmin+0.192rem,5rem)]
+		box-border
+		;
+}
+
+@utility py-4rem {
+	@apply
+		py-[clamp(2rem,6.154vmin+0.154rem,4rem)]
+		box-border
+		;
+}
+
 @utility py-3rem {
 	@apply
 		py-[clamp(1.5rem,4.615vmin+0.115rem,3rem)]
@@ -36,6 +50,20 @@
 @utility py-0.5rem {
 	@apply
 		py-[clamp(0.25rem,0.769vmin+0.019rem,0.5rem)]
+		box-border
+		;
+}
+
+@utility px-5rem {
+	@apply
+		px-[clamp(2.5rem,3.571vmin+1.786rem,5rem)]
+		box-border
+		;
+}
+
+@utility px-4rem {
+	@apply
+		px-[clamp(2rem,2.857vmin+1.429rem,4rem)]
 		box-border
 		;
 }

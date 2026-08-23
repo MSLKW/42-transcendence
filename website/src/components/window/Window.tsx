@@ -14,7 +14,7 @@ interface WindowProps {
 	dismissKey: string;
 	children: ReactNode;
 	placement?: string;
-	headerType: HEADER_TYPE;
+	headerType?: HEADER_TYPE;
 	hasPinButton?: boolean;
 	pinState?: boolean;
 	isDismissable?: boolean;
@@ -141,7 +141,7 @@ export const Window: React.FC<WindowProps> = ({
 										? call
 										: () => setShowWindow(dismissKey, false)
 								}
-								className="btn-icon data-tip-up"
+								className="btn-icon data-tip-down"
 							>
 								<CloseIcon />
 							</button>
