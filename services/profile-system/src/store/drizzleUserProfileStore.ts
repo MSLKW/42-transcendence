@@ -49,7 +49,7 @@ export class DrizzleUserProfileStore {
 
     	// 3. the view is flat — UserSettings needs to be nested to match UserData, possible through ???? as this return is in ?????
 		return {
-			id: profile.id,
+			uuid: profile.uuid,
 			username: profile.username,
 			avatarPath: profile.avatarPath,
 			badge: profile.badge,

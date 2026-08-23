@@ -1,5 +1,5 @@
 export type UserData = {
-	id:				string,
+	uuid:			string,
 	username:		string | null,
 	avatarPath:		string | null,
 	badge:			BadgeLabel,
