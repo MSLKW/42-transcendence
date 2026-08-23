@@ -18,25 +18,31 @@ export const ChatWindow = () => {
 			placement="br"
 			pinState={false}
 		>
-			<div className="
-				w-[clamp(12.5rem,65vw+1rem,30rem)] h-[clamp(20rem,50vh+1rem,30rem)]
-				p-[clamp(0.25rem,5vw+0.125rem,1rem)]
-				flex flex-col place-content-start place-items-center
-				gap-5		
-				pointer-events-auto
-			">
-				<div tabIndex={-1}
+			<div
+				className="
+					w-[clamp(12.5rem,65vw+1rem,30rem)] h-[clamp(20rem,50vh+1rem,30rem)]
+					p-[clamp(0.25rem,5vw+0.125rem,1rem)]
+					flex flex-col place-content-start place-items-center
+					gap-5		
+					pointer-events-auto
+				"
+			>
+				<div
+					tabIndex={-1}
 					className="
 						w-full h-[calc(100%-50px)]
 						overflow-scroll
 						pointer-events-auto
-				">
-					<div className="
-						w-full h-fit
-						text-n6
-						p-7.5
-						flex flex-col gap-5
-					">
+					"
+				>
+					<div
+						className="
+							w-full h-fit
+							text-n6
+							p-7.5
+							flex flex-col gap-5
+						"
+					>
 						<ChatReport message="1 person in chat" />
 						<ChatReport message="Max has joined your party!" />
 						<ChatBubble senderId={0} senderName="Azrul" message="Sup Max!"/>

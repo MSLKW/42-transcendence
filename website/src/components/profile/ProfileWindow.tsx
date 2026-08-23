@@ -64,7 +64,7 @@ export const ProfileWindow = () => {
 					avatar={avatar}
 					setAvatar={setAvatar}
 				/>
-				<MedalsModule />
+				<MedalsModule uuid={clientUuid}/>
 				<PlayerStatsModule profile={data} />
 				{ members.length > 1 && <LeavePartyModule /> }
 			</div>

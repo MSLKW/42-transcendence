@@ -30,7 +30,7 @@ export const StatsWindow: React.FC = () => {
 					<AvatarMemberModule name={data?.name ?? "Player"} image={data?.avatar ?? "stock-0.png"} />
 					<PlayerDataModule profile={data ?? undefined} />
 				</div>
-				<MedalsModule />
+				<MedalsModule uuid={profileUuid}/>
 				<PlayerStatsModule profile={data ?? undefined} />
 				<div
 					className="
