@@ -89,7 +89,7 @@ export const Window: React.FC<WindowProps> = ({
 								<button
 									data-tip={isPinned ? "Unpin Window" : "Pin Window"}
 									onClick={() => setIsPinned(!isPinned)}
-									className="btn-icon data-tip-up"
+									className="btn-icon data-tip-down"
 								>
 									{ isPinned ? <PinActiveIcon /> : <PinInactiveIcon /> }
 								</button>
@@ -128,7 +128,7 @@ export const Window: React.FC<WindowProps> = ({
 										window.open(url, "_blank", "width=500,height=700");
 										setShowWindow(dismissKey, false);
 									}}
-									className="btn-icon data-tip-up"
+									className="btn-icon data-tip-down"
 								>
 									<MaximizeIcon />
 								</button>

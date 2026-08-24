@@ -138,14 +138,10 @@ export const useGameStore = create<GameState>() (
 					for (let i = 0; i < totalPlayers; i++)
 						newCardsLeft.push(cards);
 				}
-				set({
-					cardsLeft: newCardsLeft,
-				});
+				set({ cardsLeft: newCardsLeft });
 			},
 			startGame: () => {
-				set({
-					round: get().round + 1,
-				});
+				set({ round: get().round + 1 });
 				get().setSeatRef();
 				get().dealCards();
 				useSceneStore.getState().setShowWindow("results", false);

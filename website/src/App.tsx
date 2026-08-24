@@ -35,11 +35,11 @@ export default function App() {
 	const { clientUuid, getProfileData } = useProfileStore();
 	const { currentScene, showWindow, setShowWindow } = useSceneStore();
 	const { showDevSection, showStats } = useDevStore();
-	
+
 	useEffect(() => {
 		useScrollToTop();
 		handleValidate();
-		
+
 		if (currentScene !== "Login") {
 			const data = getProfileData(clientUuid!);
 			if (!data?.name)
