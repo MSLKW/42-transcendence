@@ -213,6 +213,3 @@ Look for these specific terminal logs to confirm the database and its migrator h
    2. Refresh the `player_status` table in **Drizzle-Gateway**.
    3. **Expected Result:**  The said session_token within `is_online` column is set to `FALSE` 🔴
 </div>
-
-## 6. Live Database Testing: Auth Service
-updates soon!

@@ -31,8 +31,6 @@ secrets: # auto make all secret files just read only mode
     file: ./secrets/database-passwords/db-party-manager-password.txt
   db-profile-system-password:
     file: ./secrets/database-passwords/db-profile-system-password.txt
-  db-friends-system-password:
-    file: ./secrets/database-passwords/db-friends-system-password.txt
   db-game-password:
     file: ./secrets/database-passwords/db-game-password.txt
   dg-masterpass:
@@ -58,7 +56,6 @@ services:
       - db-auth-password
       - db-party-manager-password
       - db-profile-system-password
-      - db-friends-system-password
       - db-game-password
     env_file:
       - .env
@@ -199,30 +196,6 @@ services:
     depends_on:
       migrator:
         condition: service_completed_successfully  # Waits for migrator to finish and exit with code 0
-
-
-  # #     BACKEND MICORSERVICE
-  # friends-system:
-  #   build:
-  #     context: .                                        # Set workdir to the repo's root
-  #     dockerfile: ./services/friends-system/Dockerfile    # Point to the Dockerfile's relative path
-  #   pull_policy: never
-  #   image: friends:aisyah
-  #   container_name: friends-system
-  #   restart: unless-stopped
-  #   environment:
-  #     PGUSER: ${PGUSER_FRIENDS_SYSTEM}
-  #     PGPASSWORD: /run/secrets/db-friends-system-password
-  #   env_file:
-  #     - .env                                             # Loads global configs
-  #   secrets:
-  #     - db-friends-system-password
-  #   networks:
-  #     - transcendence
-  #     - database
-  #   depends_on:
-  #     migrator:
-  #       condition: service_completed_successfully  # Waits for migrator to finish and exit with code 0
 
 
 #   #     BACKEND MICORSERVICE

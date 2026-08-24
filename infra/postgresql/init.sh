@@ -17,7 +17,6 @@ unset PGHOST PGPORT
 AUTH_PW="$( cat /run/secrets/db-auth-password)"
 PARTY_MANAGER_PW="$( cat /run/secrets/db-party-manager-password)"
 PROFILE_SYSTEM_PW="$( cat /run/secrets/db-profile-system-password)"
-FRIENDS_SYSTEM_PW="$( cat /run/secrets/db-friends-system-password)"
 GAME_PW="$( cat /run/secrets/db-game-password)"
 
 psql -v ON_ERROR_STOP=1 --username "${PGUSER}" --dbname "${PGDATABASE}" <<-EOSQL
@@ -29,7 +28,6 @@ psql -v ON_ERROR_STOP=1 --username "${PGUSER}" --dbname "${PGDATABASE}" <<-EOSQL
 	CREATE USER "${PGUSER_AUTH}" WITH PASSWORD '${AUTH_PW}';
 	CREATE USER "${PGUSER_PARTY_MANAGER}" WITH PASSWORD '${PARTY_MANAGER_PW}';
 	CREATE USER "${PGUSER_PROFILE_SYSTEM}" WITH PASSWORD '${PROFILE_SYSTEM_PW}';
-	CREATE USER "${PGUSER_FRIENDS_SYSTEM}" WITH PASSWORD '${FRIENDS_SYSTEM_PW}';
 	CREATE USER "${PGUSER_GAME}" WITH PASSWORD '${GAME_PW}';
 
 	-- 3. Revoke default public schema's access from everyone
@@ -40,7 +38,6 @@ psql -v ON_ERROR_STOP=1 --username "${PGUSER}" --dbname "${PGDATABASE}" <<-EOSQL
 	GRANT CONNECT ON DATABASE "${PGDATABASE}" TO "${PGUSER_AUTH}";
 	GRANT CONNECT ON DATABASE "${PGDATABASE}" TO "${PGUSER_PARTY_MANAGER}";
 	GRANT CONNECT ON DATABASE "${PGDATABASE}" TO "${PGUSER_PROFILE_SYSTEM}";
-	GRANT CONNECT ON DATABASE "${PGDATABASE}" TO "${PGUSER_FRIENDS_SYSTEM}";
 	GRANT CONNECT ON DATABASE "${PGDATABASE}" TO "${PGUSER_GAME}";
 
 EOSQL
