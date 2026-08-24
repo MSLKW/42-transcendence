@@ -4,14 +4,11 @@
 // Missing Node Definitions: process is a global object injected by the Node.js runtime, not standard JavaScript. TypeScript needs the @types/node package to understand it.
 // The Triple-Slash Fix: The /// <reference types="..." /> directive acts as a local emergency override. It explicitly tells the TypeScript compiler: "For this specific file, explicitly pull in the Node.js type definitions right now."
 
+
 import fs from "fs";
 import 'dotenv/config'; // 1. Load .env files
 import { defineConfig } from "drizzle-kit";
 
-// const password = fs.readFileSync(process.env.PGPASSWORD!, "utf8").trim();
-// if (!password) {
-//   throw new Error("CRITICAL: Database password could not be loaded.");
-// }
 
 // 2. Helper to safely read the password
 function requirePassword(): string {
