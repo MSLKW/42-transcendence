@@ -14,8 +14,7 @@ This guide focuses entirely on how to set up your environment, run containers, c
 Before starting, ensure your database configuration and container secrets are in place at the project root:
 (Obtained from the provided GitHub Gist link in the WhatsApp group chat)
 * `.env` 
-* `secrets/database-passwords/db-admin-password.txt`
-* `secrets/drizzle-gateway/dg-masterpass.txt`
+* `secrets/database-passwords/*.txt`
 
 
 ## 2. Running Docker
@@ -42,6 +41,15 @@ Look for these specific terminal logs to confirm the database and its migrator h
 
 * **Party-Manager Service:**
   ![Party-Manager Running](./pictures/docker/d-pm.png)
+
+<!-- * **Profile-System Service:**
+  ![Profile-System Running](./pictures/docker/d-ps.png)
+
+* **Friends-System Service:**
+  ![Friends-System Running](./pictures/docker/d-fs.png)
+
+* **Chat Service:**
+  ![Chat Running](./pictures/docker/d-c.png) -->
 
 ---
 
@@ -185,9 +193,9 @@ Look for these specific terminal logs to confirm the database and its migrator h
 
 <div style="background-color: #071422; border-left: 4px solid #0066cc; padding: 12px; border-radius: 4px;">
   <strong>1. Setup Test Client 🛠️</strong><br>
-   > Locate the test file at `services/party-manager/test/test.html`.<br>
-   > Save the file into your host.<br>
-   > Open it in your web browser by double-click `test.html` in your host's library
+   1. Locate the test file at services/party-manager/test/test.html.<br>
+   2. Right click on the file, go to `Reveal in File Explorer` <br>
+   3. Open it in your web browser by double-click the `test.html` in your File Explorer
 </div>
 <div style="background-color: #0d133d; border-left: 4px solid #0066cc; padding: 12px; border-radius: 4px;">
   <strong>2. Connection Configuration ⚙️</strong><br>
@@ -214,5 +222,11 @@ Look for these specific terminal logs to confirm the database and its migrator h
    3. **Expected Result:**  The said session_token within `is_online` column is set to `FALSE` 🔴
 </div>
 
-## 6. Live Database Testing: Auth Service
+## 6. Live Database Testing: Profile-System Service
+updates soon!
+
+## 7. Live Database Testing: Friends-System Service
+updates soon!
+
+## 8. Live Database Testing: Achievements Service
 updates soon!
