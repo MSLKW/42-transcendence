@@ -26,6 +26,7 @@
   <button onclick="start()">Connect</button>
   <button onclick="disconnect()">Disconnect</button> 
   <button onclick="openTab()">+ Open another tester tab</button>
+  <div id="status" style="margin-top:6px; font-size:13px;">⚪ not connected</div>
 </div>
 
 <h2>Send a friend request</h2>
@@ -57,6 +58,10 @@ function log(msg) {
   el.innerHTML = `<div>[${new Date().toLocaleTimeString()}] ${msg}</div>` + el.innerHTML;
 }
 
+function setStatus(text) {
+  document.getElementById("status").textContent = text;
+}
+
 function openTab() {
   window.open(window.location.pathname, "_blank");
 }
@@ -71,7 +76,13 @@ function start() {
 
   // const evtSource = new EventSource(`${API}/events?uuid=${myUuid}`);
   evtSource = new EventSource(`${API}/events?uuid=${myUuid}`);
-  evtSource.addEventListener("connected", () => log("SSE connected as " + myUuid));
+  // evtSource.addEventListener("connected", () => log("SSE connected as " + myUuid));
+  evtSource.addEventListener("connected", () => {
+    log("SSE connected as " + myUuid);
+    setStatus("🟢 live (SSE connected)");
+  });
+  evtSource.onerror = () => setStatus("🔴 disconnected — use Refresh until this reconnects");
+
 
   evtSource.addEventListener("friend_request_received", e => {
     const data = JSON.parse(e.data);
@@ -122,6 +133,7 @@ function disconnect() {
   evtSource = null;
   clearInterval(pollTimer);
   pollTimer = null;
+  setStatus("⚪ not connected");
   log(`SSE disconnected as ${myUuid} — live updates paused until you Connect again.`);
 }
 //
