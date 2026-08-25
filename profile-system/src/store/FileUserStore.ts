@@ -10,12 +10,7 @@ if (!fs.existsSync(DATA_DIR))
 
 export class FileUserStore implements UserStore
 {
-	private getFilePath(uuid: string): string
-	{
-		return path.join(DATA_DIR, `${uuid}.json`);
-	}
-
-	async getDataByUuid(uuid: string): Promise<UserData | null>
+	async getUserData(uuid: string): Promise<UserData | null>
 	{
 		try
 		{
@@ -30,7 +25,22 @@ export class FileUserStore implements UserStore
 		}
 	}
 
-	async getUuidsBySearchTerm(searchTerm: string): Promise<string[]>
+	async getUserSettings(uuid: string): Promise<UserSettings | null>
+	{
+		try
+		{
+			const raw = await fs.promises.readFile(this.getFilePath(uuid), "utf-8");
+			return (JSON.parse(raw) as UserSettings);
+		}
+		catch (err: any)
+		{
+			if (err.code === "ENOENT")
+				return (null);
+			throw (err);
+		}
+	}
+
+	async getUuidsByQuery(query: string): Promise<string[]>
 	{
 		const files = await fs.promises.readdir(DATA_DIR);
 		const jsonFiles = files.filter(f => f.endsWith(".json"));
@@ -38,23 +48,50 @@ export class FileUserStore implements UserStore
 		const matches = await Promise.all(
 			jsonFiles.map(async (file) => {
 				const uuid = path.basename(file, ".json");
-				const data = await this.getDataByUuid(uuid);
-				return (data?.username?.toLowerCase().includes(searchTerm.toLowerCase()) ? uuid : null);
+				const data = await this.getUserData(uuid);
+				return (data?.username?.toLowerCase().includes(query.toLowerCase()) ? uuid : null);
 			})
 		);
-
 		return (matches.filter((uuid): uuid is string => uuid !== null));
 	}
 
-	async setUsername(uuid: string, username: string): Promise<void>
+	async updateUserProfile(uuid: string, partial: Partial<UserData>): Promise<void>
 	{
-		try
-		{
-			await this.updateData(uuid, { username: username });
-		}
-		catch (err)
-		{
-			const userSettings: UserSettings = {
+		const existing = await this.getUserData(uuid);
+		if (!existing)
+			await this.createUser(uuid);
+		await this.setData(uuid, { ...existing!, ...partial }, (await this.getUserSettings(uuid))!);
+	}
+
+	async updateUserSettings(uuid: string, partial: Partial<UserSettings>): Promise<void>
+	{
+		const existing = await this.getUserSettings(uuid);
+		if (!existing)
+			await this.createUser(uuid);
+		await this.setData(uuid, (await this.getUserData(uuid))!, { ...existing!, ...partial });
+	}
+
+	private async createUser(uuid: string)
+	{
+		const userData: UserData = {
+			uuid:			uuid,
+			username:		null,
+			avatarPath:		null,
+			badge:			"Beginner's Luck",
+			level:			0,
+			xp:				0,
+			createdAt:		new Date(),
+			lastLogin:		new Date(),
+			totalPlayed:	0,
+			totalWins:		0,
+			totalLoss:		0,
+			winStreak:		0,
+			achievements:	structuredClone(NULL_ACHIEVEMENTS),
+			online:			false,
+			inGame:			false
+		};
+		
+		const userSettings: UserSettings = {
 			allow3OfAKind:		true,
 			allow2OfSpadesEnd:	true,
 			autoPassIndex:		0,
@@ -66,53 +103,22 @@ export class FileUserStore implements UserStore
 			mxLevel:			0
 			};
 
-			const userData: UserData = {
-				uuid:			uuid,
-				username:		username,
-				avatarPath:		"",
-				settings:		userSettings,
-				badge:			"Beginner's Luck",
-				level:			0,
-				xp:				0,
-				createdAt:		new Date(),
-				lastLogin:		new Date(),
-				totalPlayed:	0,
-				totalWins:		0,
-				totalLoss:		0,
-				winStreak:		0,
-				achievements:	structuredClone(NULL_ACHIEVEMENTS),
-				online:			false,
-				inGame:			false
-			};
-			await this.setData(uuid, userData);
-		}
+		await this.setData(uuid, userData, userSettings);
 	}
 
-	async setAvatarPath(uuid: string, avatarPath: string): Promise<void>
+	private async setData(uuid: string, userData: UserData, userSettings: UserSettings): Promise<void>
 	{
-		await this.updateData(uuid, { avatarPath: avatarPath });
-	}
+		const union: UserData | UserSettings = {...userData, ...userSettings};
 
-	async setSettings(uuid: string, userSettings: UserSettings): Promise<void>
-	{
-		await this.updateData(uuid, { settings: userSettings });
-	}
-
-	async updateData(uuid: string, partial: Partial<UserData>): Promise<void>
-	{
-		const existing = await this.getDataByUuid(uuid);
-		if (!existing)
-			throw new Error(`No user data found for uuid: ${uuid}`);
-
-		await this.setData(uuid, { ...existing, ...partial });
-	}
-
-	private async setData(uuid: string, userData: UserData): Promise<void>
-	{
 		await fs.promises.writeFile(
 			this.getFilePath(uuid),
-			JSON.stringify(userData, null, 2),
+			JSON.stringify(union),
 			"utf-8"
 		);
+	}
+	
+	private getFilePath(uuid: string): string
+	{
+		return path.join(DATA_DIR, `${uuid}.json`);
 	}
 }
