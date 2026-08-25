@@ -1,10 +1,12 @@
 import { useState } from "react";
+import { useProfileStore } from "../../store/ProfileStore";
 import { Window } from "../window/Window";
 import { AvatarSetNameModule } from "../avatar/name/AvatarSetNameModule";
 import { AvatarSelectModule } from "../avatar/image/AvatarSetImageModule";
 import { SetupValidationModule } from "./SetupValidationModule";
 
 export const SetupWindow = () => {
+	const { clientUuid } = useProfileStore();
 	const [name, setName] = useState("");
 	const [avatar, setAvatar] = useState("");
 
@@ -33,6 +35,8 @@ export const SetupWindow = () => {
 					<AvatarSetNameModule
 						name={name}
 						setName={setName}
+						avatar={avatar}
+						uuid={clientUuid ?? undefined}
 					/>
 					<AvatarSelectModule
 						avatar={avatar}

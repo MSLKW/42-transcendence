@@ -1,5 +1,6 @@
 import { useEffect } from "react";
 import { useGameStore } from "../../store/GameStore";
+import { useProfileStore } from "../../store/ProfileStore";
 import { useResultsStore } from "../../store/ResultsStore";
 import { useSceneStore } from "../../store/SceneStore";
 import { useAutoPass } from "../../utilities/useAutoPass";
@@ -12,6 +13,7 @@ import { GamePlayButton } from "./action/GamePlayButton";
 
 export const GameScene = () => {
 	const { totalPlayers, seats, seatRef, cardsLeft, activeSeat, gameStarted } = useGameStore();
+	const { getCachedData } = useProfileStore();
 	const { setResults } = useResultsStore();
 	const { setCurrentScene, setShowWindow } = useSceneStore();
 
@@ -35,6 +37,7 @@ export const GameScene = () => {
 								<AvatarModule
 									key={seats[seatRef[1]] ?? ""}
 									uuid={seats[seatRef[1]] ?? ""}
+									image={getCachedData(seats[1])?.avatar ?? "avatar-unknown.webp"}
 									cornerButton={cardsLeft[seatRef[1]] ?? -1}
 									isActive={gameStarted && activeSeat === seatRef[1]}
 								/>
@@ -45,6 +48,7 @@ export const GameScene = () => {
 								<AvatarModule
 									key={seats[seatRef[2]] ?? ""}
 									uuid={seats[seatRef[2]] ?? ""}
+									image={getCachedData(seats[2])?.avatar ?? "avatar-unknown.webp"}
 									cornerButton={cardsLeft[seatRef[2]] ?? -1}
 									isActive={gameStarted && activeSeat === seatRef[2]}
 								/>
@@ -55,6 +59,7 @@ export const GameScene = () => {
 								<AvatarModule
 									key={seats[seatRef[3]] ?? ""}
 									uuid={seats[seatRef[3]] ?? ""}
+									image={getCachedData(seats[3])?.avatar ?? "avatar-unknown.webp"}
 									cornerButton={cardsLeft[seatRef[3]] ?? -1}
 									isActive={gameStarted && activeSeat === seatRef[3]}
 								/>
@@ -69,6 +74,7 @@ export const GameScene = () => {
 								<AvatarModule
 									key={seats[seatRef[1]] ?? ""}
 									uuid={seats[seatRef[1]] ?? ""}
+									image={getCachedData(seats[1])?.avatar ?? "avatar-unknown.webp"}
 									cornerButton={cardsLeft[seatRef[1]] ?? -1}
 									isActive={gameStarted && activeSeat === seatRef[1]}
 								/>
@@ -79,6 +85,7 @@ export const GameScene = () => {
 								<AvatarModule
 									key={seats[seatRef[2]] ?? ""}
 									uuid={seats[seatRef[2]] ?? ""}
+									image={getCachedData(seats[2])?.avatar ?? "avatar-unknown.webp"}
 									cornerButton={cardsLeft[seatRef[2]] ?? -1}
 									isActive={gameStarted && activeSeat === seatRef[2]}
 								/>
@@ -92,6 +99,7 @@ export const GameScene = () => {
 							<AvatarModule
 								key={seats[seatRef[1]] ?? ""}
 								uuid={seats[seatRef[1]] ?? ""}
+								image={getCachedData(seats[1])?.avatar ?? "avatar-unknown.webp"}
 								cornerButton={cardsLeft[seatRef[1]] ?? -1}
 								isActive={gameStarted && activeSeat === seatRef[1]}
 							/>
@@ -116,6 +124,7 @@ export const GameScene = () => {
 					<AvatarModule
 						key={seats[seatRef[0]]}
 						uuid={seats[seatRef[0]] ?? ""}
+						image={getCachedData(seats[0])?.avatar ?? "avatar-unknown.webp"}
 						cornerButton={cardsLeft[seatRef[0]]}
 						isActive={gameStarted && activeSeat === seatRef[0]}
 					/>

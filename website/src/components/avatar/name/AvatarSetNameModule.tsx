@@ -5,8 +5,9 @@ interface AvatarSetNameModuleProps {
 	name: string;
 	setName: (name: string) => void;
 	avatar: string;
+	uuid: string | undefined;
 }
-export const AvatarSetNameModule = ({ name, setName, avatar }: AvatarSetNameModuleProps) => {
+export const AvatarSetNameModule = ({ name, setName, avatar, uuid }: AvatarSetNameModuleProps) => {
 	const handleInput = (e: React.ChangeEvent<HTMLInputElement>) => {
 		const value = e.target.value;
 		setName(value);
@@ -33,9 +34,7 @@ export const AvatarSetNameModule = ({ name, setName, avatar }: AvatarSetNameModu
 					gap-3
 				"
 			>
-				<AvatarImage
-					srcImg={avatar}
-				/>
+				<AvatarImage uuid={uuid} image={avatar} />
 				<input
 					ref={inputRef}
 					id="name"

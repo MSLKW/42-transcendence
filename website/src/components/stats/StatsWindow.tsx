@@ -27,7 +27,7 @@ export const StatsWindow: React.FC = () => {
 				"
 			>
 				<div className="flex">
-					<AvatarMemberModule name={data?.name ?? "Player"} image={data?.avatar ?? "stock-0.png"} />
+					<AvatarMemberModule uuid={profileUuid} name={data?.name ?? "Player"} image={data?.avatar ?? "avatar-unknown.webp"} />
 					<PlayerDataModule profile={data ?? undefined} />
 				</div>
 				<MedalsModule uuid={profileUuid}/>

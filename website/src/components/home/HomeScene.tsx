@@ -73,7 +73,7 @@ export const HomeScene = () => {
 						<AvatarModule 
 							key={clientUuid}
 							uuid={clientUuid}
-							srcImg={data?.avatar ?? "avatar-unknown.webp"}
+							image={data?.avatar ?? "avatar-unknown.webp"}
 							cornerButton={hostUuid === clientUuid ? "host" : ""}
 						/>
 					}
@@ -82,6 +82,7 @@ export const HomeScene = () => {
 							<AvatarModule
 								key={uuid}
 								uuid={uuid}
+								image={getCachedData(uuid)?.avatar ?? "avatar-unknown.webp"}
 								cornerButton={hostUuid === uuid ? "host" : ""}
 							/>
 					))}

@@ -10,7 +10,8 @@ export const AvatarSetImageButton = ({ id, avatar, setAvatar }: AvatarSetImageBu
 			onClick={() => setAvatar(id)}
 			className={`
 				hover:not-disabled:scale-105 active:hover:not-disabled:scale-100
-				focus-visible:outline-double hover:not-disabled:outline-double outline-b5 outline-offset-5 ${id === avatar && "outline-2"}
+				focus-visible:outline-double hover:not-disabled:outline-double outline-b5 outline-offset-5
+				${id === avatar && "outline-2 bg-b5"}
 				h-6rem aspect-square
 				border border-a5 rounded-sm
 				cursor-pointer

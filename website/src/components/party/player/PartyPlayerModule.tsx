@@ -38,6 +38,7 @@ export const PartyPlayerModule = ({ uuid }: PartyPlayerModuleProps) => {
 		>
 			<AvatarModule
 				uuid={uuid}
+				image={data.avatar ?? undefined}
 				showName={false}
 			/>
 			<button

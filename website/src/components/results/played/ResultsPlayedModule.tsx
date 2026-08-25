@@ -32,7 +32,7 @@ export const ResultsPlayedModule = () => {
 						${clientUuid === leaderboard[0].uuid ? "bg-b2" : "border-r"}
 					`}
 				>
-					<AvatarImage />
+					<AvatarImage uuid={leaderboard[0].uuid} image={getCachedData(leaderboard[0].uuid)?.avatar ?? "avatar-unknown.webp"} />
 					<div className="flex flex-col place-content-center place-items-start">
 						<h3>{getCachedData(leaderboard[0].uuid)?.name}</h3>
 						<p>Total Wins: {leaderboard[0].totalWins}</p>
@@ -50,7 +50,7 @@ export const ResultsPlayedModule = () => {
 						${clientUuid === leaderboard[1].uuid ? "bg-b2" : "border-r"}
 					`}
 				>
-					<AvatarImage />
+					<AvatarImage uuid={leaderboard[1].uuid}  image={getCachedData(leaderboard[1].uuid)?.avatar ?? "avatar-unknown.webp"} />
 					<div className="flex flex-col place-content-center place-items-start">
 						<h3>{getCachedData(leaderboard[1].uuid)?.name}</h3>
 						<p>Total Wins: {leaderboard[1].totalWins}</p>
@@ -68,7 +68,7 @@ export const ResultsPlayedModule = () => {
 						${clientUuid === leaderboard[2].uuid ? "bg-b2" : "border-r"}
 					`}
 				>
-					<AvatarImage />
+					<AvatarImage uuid={leaderboard[2].uuid}  image={getCachedData(leaderboard[2].uuid)?.avatar ?? "avatar-unknown.webp"} />
 					<div className="flex flex-col place-content-center place-items-start">
 						<h3>{getCachedData(leaderboard[2].uuid)?.name}</h3>
 						<p>Total Wins: {leaderboard[2].totalWins}</p>
@@ -86,7 +86,7 @@ export const ResultsPlayedModule = () => {
 						${clientUuid === leaderboard[3].uuid ? "bg-b2" : "border-r"}
 					`}
 				>
-					<AvatarImage />
+					<AvatarImage uuid={leaderboard[3].uuid}  image={getCachedData(leaderboard[3].uuid)?.avatar ?? "avatar-unknown.webp"} />
 					<div className="flex flex-col place-content-center place-items-start">
 						<h3>{getCachedData(leaderboard[3].uuid)?.name}</h3>
 						<p>Total Wins: {leaderboard[3].totalWins}</p>

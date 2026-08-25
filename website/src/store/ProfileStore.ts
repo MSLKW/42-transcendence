@@ -103,7 +103,7 @@ const defaultProfileInDb: ProfileData[] = [
 	{
 		uuid: "12345678-abcd-efgh-dev0-azrul0000000",
 		name: "Dev-Azrul",
-		avatar: "stock-1.webp",
+		avatar: "avatar-animal-8.webp",
 		badge: "Risk Taker",
 		level: 2,
 		xp: 1111,
@@ -132,7 +132,7 @@ const defaultProfileInDb: ProfileData[] = [
 	{
 		uuid: "12345678-abcd-efgh-dev0-max000000000",
 		name: "Dev-Max",
-		avatar: "stock-2.webp",
+		avatar: "avatar-animal-2.webp",
 		badge: "The Strategist",
 		level: 3,
 		xp: 2222,
@@ -161,7 +161,7 @@ const defaultProfileInDb: ProfileData[] = [
 	{
 		uuid: "12345678-abcd-efgh-dev0-jeremy000000",
 		name: "Dev-Jeremy",
-		avatar: "stock-3.webp",
+		avatar: "avatar-animal-3.webp",
 		badge: "Big 2 Champion",
 		level: 4,
 		xp: 3333,
@@ -190,7 +190,7 @@ const defaultProfileInDb: ProfileData[] = [
 	{
 		uuid: "12345678-abcd-efgh-dev0-aisyah000000",
 		name: "Dev-Aisyah",
-		avatar: "stock-4.webp",
+		avatar: "avatar-animal-0.webp",
 		badge: "Newcomer",
 		level: 5,
 		xp: 4444,
@@ -219,7 +219,7 @@ const defaultProfileInDb: ProfileData[] = [
 	{
 		uuid: "12345678-abcd-efgh-dev0-bunyod000000",
 		name: "Dev-Bunyod",
-		avatar: "stock-5.webp",
+		avatar: "avatar-animal-4.webp",
 		badge: "Newcomer",
 		level: 6,
 		xp: 5555,
@@ -248,7 +248,7 @@ const defaultProfileInDb: ProfileData[] = [
 	{
 		uuid: "12345678-abcd-efgh-dev0-prag00000000",
 		name: "Dev-Prag",
-		avatar: "stock-6.webp",
+		avatar: "avatar-animal-5.webp",
 		badge: "Newcomer",
 		level: 7,
 		xp: 6666,
@@ -280,25 +280,25 @@ export const cachedBotData: CachedData[] = [
 	{
 		uuid: "bot-0",
 		name: "Norminette",
-		avatar: "stock-9.webp",
+		avatar: "avatar-bot-0.webp",
 		relation: "Bot",
 	},
 	{
 		uuid: "bot-1",
 		name: "Moulinette",
-		avatar: "stock-10.webp",
+		avatar: "avatar-bot-1.webp",
 		relation: "Bot",
 	},
 	{
 		uuid: "bot-2",
 		name: "Thila-Bot",
-		avatar: "stock-11.webp",
+		avatar: "avatar-bot-2.webp",
 		relation: "Bot",
 	},
 	{
 		uuid: "bot-3",
 		name: "Segfault",
-		avatar: "stock-12.webp",
+		avatar: "avatar-bot-3.webp",
 		relation: "Bot",
 	},
 ];

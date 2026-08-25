@@ -54,6 +54,7 @@ export const ProfileWindow = () => {
 						name={name}
 						setName={setName}
 						avatar={avatar}
+						uuid={clientUuid}
 					/>
 					<PlayerDataModule
 						profile={data}

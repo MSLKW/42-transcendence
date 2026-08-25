@@ -17,7 +17,7 @@ export const LobbyScene = () => {
 	const { fillSeatsWithBots, removeBots } = useBotStore();
 	const { totalPlayers, seats, startGame, round } = useGameStore();
 	const { members, hostUuid } = usePartyStore();
-	const { clientUuid } = useProfileStore();
+	const { clientUuid, getCachedData } = useProfileStore();
 	const { resetResults } = useResultsStore();
 	
 	useEffect(() => {
@@ -50,25 +50,49 @@ export const LobbyScene = () => {
 					`}>
 						{ totalPlayers === 4 &&
 							( seats[2]
-								? <AvatarModule key={seats[2]} uuid={seats[2]} cornerButton={seats[2] === hostUuid ? "host" : ""}/>
+								?
+									<AvatarModule
+										key={seats[2]}
+										uuid={seats[2]}
+										image={getCachedData(seats[2])?.avatar ?? "avatar-unknown.webp"}
+										cornerButton={seats[2] === hostUuid ? "host" : ""}
+									/>
 								: <TakeSeatButton uuid={clientUuid!} seatNumber={2}/>
 							)
 						}
 						{ totalPlayers === 3 &&
 							<>
 								{ seats[1]
-									? <AvatarModule key={seats[1]} uuid={seats[1]} cornerButton={seats[1] === hostUuid ? "host" : ""}/>
+									? 
+										<AvatarModule
+											key={seats[1]}
+											uuid={seats[1]}
+											image={getCachedData(seats[1])?.avatar ?? "avatar-unknown.webp"}
+											cornerButton={seats[1] === hostUuid ? "host" : ""}
+										/>
 									: <TakeSeatButton uuid={clientUuid!} seatNumber={1}/>
 								}
 								{ seats[2]
-									? <AvatarModule key={seats[2]} uuid={seats[2]} cornerButton={seats[2] === hostUuid ? "host" : ""}/>
+									?
+										<AvatarModule
+											key={seats[2]}
+											uuid={seats[2]}
+											image={getCachedData(seats[2])?.avatar ?? "avatar-unknown.webp"}
+											cornerButton={seats[2] === hostUuid ? "host" : ""}
+										/>
 									: <TakeSeatButton uuid={clientUuid!} seatNumber={2}/>
 								}
 							</>
 						}
 						{ totalPlayers === 2 &&
 							( seats[1]
-								? <AvatarModule key={seats[1]} uuid={seats[1]} cornerButton={seats[1] === hostUuid ? "host" : ""}/>
+								?
+									<AvatarModule
+										key={seats[1]}
+										uuid={seats[1]}
+										image={getCachedData(seats[1])?.avatar ?? "avatar-unknown.webp"}
+										cornerButton={seats[1] === hostUuid ? "host" : ""}
+									/>
 								: <TakeSeatButton uuid={clientUuid!} seatNumber={1}/>
 							)
 						}
@@ -82,7 +106,13 @@ export const LobbyScene = () => {
 					>
 						{ totalPlayers === 4 &&
 							( seats[1]
-								? <AvatarModule key={seats[1]} uuid={seats[1]} cornerButton={seats[1] === hostUuid ? "host" : ""}/>
+								?
+									<AvatarModule
+										key={seats[1]}
+										uuid={seats[1]}
+										image={getCachedData(seats[1])?.avatar ?? "avatar-unknown.webp"}
+										cornerButton={seats[1] === hostUuid ? "host" : ""}
+									/>
 								: <TakeSeatButton uuid={clientUuid!} seatNumber={1}/>
 							)
 						}
@@ -101,14 +131,26 @@ export const LobbyScene = () => {
 						</button>
 						{ totalPlayers === 4 &&
 							( seats[3]
-								? <AvatarModule key={seats[3]} uuid={seats[3]} cornerButton={seats[3] === hostUuid ? "host" : ""}/>
+								?
+									<AvatarModule
+										key={seats[3]}
+										uuid={seats[3]}
+										image={getCachedData(seats[3])?.avatar ?? "avatar-unknown.webp"}
+										cornerButton={seats[3] === hostUuid ? "host" : ""}
+									/>
 								: <TakeSeatButton uuid={clientUuid!} seatNumber={3}/>
 								)
 								}
 					</div>
 					<div className="w-full h-full grid place-items-center place-content-center">
 						{ seats[0]
-							? <AvatarModule key={seats[0]} uuid={seats[0]} cornerButton={seats[0] === hostUuid ? "host" : ""} />
+							?
+								<AvatarModule
+									key={seats[0]}
+									uuid={seats[0]}
+									image={getCachedData(seats[0])?.avatar ?? "avatar-unknown.webp"}
+									cornerButton={seats[0] === hostUuid ? "host" : ""}
+								/>
 							: <TakeSeatButton uuid={clientUuid!} seatNumber={0}/>
 						}
 					</div>
@@ -135,6 +177,7 @@ export const LobbyScene = () => {
 							<AvatarModule
 								key={uuid}
 								uuid={uuid}
+								image={getCachedData(uuid)?.avatar ?? "avatar-unknown.webp"}
 								cornerButton={uuid === hostUuid ? "host" : ""}
 							/>
 					))}

@@ -1,28 +1,31 @@
+import { useProfileStore } from "../../../store/ProfileStore";
 import { useSettingsStore } from "../../../store/SettingsStore";
 
 interface AvatarProps {
-	srcImg: string | undefined;
+	uuid: string | undefined;
+	image: string | undefined;
 	isActive?: boolean;
 }
 
-export const AvatarImage = ({ srcImg, isActive }: AvatarProps) => {
-	const autoPassIndex = useSettingsStore((settingsStore) => settingsStore.autoPassIndex);
+export const AvatarImage = ({ uuid, image, isActive }: AvatarProps) => {
+	const clientUuid = useProfileStore.getState().clientUuid;
+	const autoPassIndex = useSettingsStore.getState().autoPassIndex;
 	const autoPassOptions = [1, 3, 5, 10, 15, 30, 42, 60, 120, -1];
 	const autoPassDuration = autoPassOptions[autoPassIndex];
 
 	return (
 		<div
-			className="
+			className={`
 				h-6rem aspect-square
 				bg-n6/10
-				border border-b4 rounded-sm
+				border ${uuid === clientUuid ? "border-b4" : "border-a4"} rounded-sm
 				flex place-content-center place-items-center
 				relative
-			"
+			`}
 		>
-			{ srcImg &&
+			{ image &&
 				<img
-					src={srcImg}
+					src={image}
 					alt="alt text"
 					loading="lazy"
 				/>

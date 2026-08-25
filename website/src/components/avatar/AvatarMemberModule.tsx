@@ -2,14 +2,15 @@ import { AvatarImage } from "./image/AvatarImage";
 import { AvatarName } from "./name/AvatarName";
 
 interface AvatarMemberProps {
+	uuid: string | null;
 	name: string;
 	image: string;
 }
 
-export const AvatarMemberModule = ({ name, image = "stock-0.png" }: AvatarMemberProps) => {
+export const AvatarMemberModule = ({ uuid, name, image }: AvatarMemberProps) => {
 	if (!name)
 		return;
-	
+
 	return (
 		<div className="
 			flex place-content-evenly place-items-center
@@ -17,7 +18,7 @@ export const AvatarMemberModule = ({ name, image = "stock-0.png" }: AvatarMember
 			gap-5
 		">
 			<div className="flex flex-col gap-3 place-content-center place-items-center">
-				{image && <AvatarImage />}
+				{image && <AvatarImage uuid={uuid ?? undefined} image={image} />}
 				{name && <AvatarName name={name} />}
 			</div>
 		</div>
