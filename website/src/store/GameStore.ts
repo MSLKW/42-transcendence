@@ -92,6 +92,7 @@ export const useGameStore = create<GameState>() (
 				if (existingIndex !== -1)
 					newSeats[existingIndex] = null;
 				newSeats[seatNumber] = uuid;
+				gameInstance?.takeSeat(seatNumber);
 
 				set({ seats: newSeats });
 			},
@@ -104,6 +105,7 @@ export const useGameStore = create<GameState>() (
 						seats: newSeats,
 					});
 				}
+				gameInstance?.leaveSeat();
 			},
 			autoSetSeats: () => {
 				const members = usePartyStore.getState().members;

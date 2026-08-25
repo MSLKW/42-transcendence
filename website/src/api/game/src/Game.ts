@@ -8,7 +8,8 @@ import { camera, cameraLight, gameStatus, orbitControls } from './main.ts';
 import { Deck } from './Deck.ts';
 import { gsap } from 'gsap';
 import { Participant } from './Participant.ts';
-import { useGameStore } from '../../../store/GameStore.tsx';
+import { useGameStore } from "../../../store/GameStore.ts";
+import { usePartyStore } from "../../../store/PartyStore.ts";
 
 export class Game {
 	private socket: Socket;
@@ -19,10 +20,10 @@ export class Game {
 
 	// Buttons
 	private startGameButton = document.getElementById('start-game-button') as HTMLButtonElement;
-	private takeSeatButton = document.getElementById('take-seat-button') as HTMLButtonElement;
-	private leaveSeatButton = document.getElementById('leave-seat-button') as HTMLButtonElement;
-	private takeSeatInput = document.getElementById('take-seat-input') as HTMLInputElement;
-	private seatChangeButton = document.getElementById('seat-change-button') as HTMLButtonElement;
+	// private takeSeatButton = document.getElementById('take-seat-button') as HTMLButtonElement;
+	// private leaveSeatButton = document.getElementById('leave-seat-button') as HTMLButtonElement;
+	// private takeSeatInput = document.getElementById('take-seat-input') as HTMLInputElement;
+	// private seatChangeButton = document.getElementById('seat-change-button') as HTMLButtonElement;
 
 
 	constructor(sessionId: string, playerId: string) {
@@ -35,6 +36,9 @@ export class Game {
 			}
 			
 		})
+		if (this.playerId === usePartyStore.getState().hostUuid) {
+			this.socket.emit("user_seat_change", useGameStore.getState().totalPlayers);
+		}
 
 		this.participants = [];
 
@@ -49,22 +53,32 @@ export class Game {
 		this.socket.emit("game_start_request", gameStartRequest);
 	}
 
+	public takeSeat(seatIndex: number) {
+		console.log(`taking seat: ${seatIndex}`)
+		this.socket.emit("user_seat_take", seatIndex);
+	}
+
+	public leaveSeat() {
+		console.log(`leaving seat`);
+		this.socket.emit("user_seat_leave");
+	}
+
 	private bindButtonEvents() {
-		this.startGameButton.addEventListener('click', () => {
-			this.startGame();
-		});
+		// this.startGameButton.addEventListener('click', () => {
+		// 	this.startGame();
+		// });
 
-		this.takeSeatButton.addEventListener('click', () => {
-			this.socket.emit("user_seat_take", Number(this.takeSeatInput.value));
-		});
+		// this.takeSeatButton.addEventListener('click', () => {
+		// 	this.socket.emit("user_seat_take", Number(this.takeSeatInput.value));
+		// });
 
-		this.leaveSeatButton.addEventListener('click', () => {
-			this.socket.emit("user_seat_leave");
-		});
+		// this.leaveSeatButton.addEventListener('click', () => {
+		// 	this.socket.emit("user_seat_leave");
+		// });
 
-		this.seatChangeButton.addEventListener('click', () => {
-			this.socket.emit("user_seat_change", Number(this.takeSeatInput.value));
-		})
+		// this.seatChangeButton.addEventListener('click', () => {
+		// 	this.socket.emit("user_seat_change", Number(this.takeSeatInput.value));
+		// })
 	}
 
 	private bindSocketEvents() {
@@ -102,8 +116,18 @@ export class Game {
 			console.log(`Left Seat: ${status.success} | ${status.message}`);
 		});
 	
-		this.socket.on("user_seat_update", (seatOrder: SeatOrderTransmit) => {
-			console.log(seatOrder);
+		this.socket.on("user_seat_update", (seatData: SeatOrderTransmit) => {
+			const totalPlayers = useGameStore.getState().totalPlayers;
+			if (totalPlayers !== seatData.totalSeats) {
+				useGameStore.setState({totalPlayers: seatData.totalSeats})
+				useGameStore.getState().initSeats();
+			}
+			else {
+				const seats: string[] = Object.entries(seatData.seatOrder)
+					.sort((a, b) => a[1] - b[1])
+					.map(([key]) => key);
+				useGameStore.setState({seats: seats});
+			}
 		});
 
 		this.socket.on("user_seat_change", (status: StatusTransmit) => {
@@ -135,7 +159,7 @@ export class Game {
 			universalTimeline.add(deck.shuffleAnimation(3));
 		}
 		else {
-		// 	// resynchronize so that the player card hands are immediately in, skip the deck init stuff
+			// resynchronize so that the player card hands are immediately in, skip the deck init stuff
 			this.cardHeap.sync(gameState.cardHeap);
 			for (let i = 0; i < this.participants.length; i++) {
 				this.participants[i].sync(gameState);

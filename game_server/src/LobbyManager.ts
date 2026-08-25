@@ -14,8 +14,8 @@ export class LobbyManager {
 
 		io.on("connection", (socket) => {
 			const lobbyId = socket.handshake.auth.lobbyId;
-			// const uuid = socket.data.uuid;
-			const uuid = socket.handshake.auth.uuid;
+			const uuid = socket.data.uuid;
+			// const uuid = socket.handshake.auth.uuid;
 			const lobby = this.lobbies[lobbyId];
 			if (uuid === undefined || uuid === null) {
 				console.log(`Authentication failed and could not give uuid`)

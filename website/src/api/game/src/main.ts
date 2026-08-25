@@ -9,7 +9,8 @@ import { OutlinePass } from 'three/addons/postprocessing/OutlinePass.js';
 import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
 import { gsap } from 'gsap';
 import { Socket } from 'socket.io-client';
-// import { useSceneStore } from '../../../store/SceneStore.ts';
+import { useSceneStore } from '../../../store/SceneStore.ts';
+import { useGameStore } from "../../../store/GameStore.ts";
 
 export const scene = new THREE.Scene();
 export let camera: THREE.PerspectiveCamera;
@@ -192,17 +193,18 @@ export function joinGameLobby(gameSessionId: string, playerId: string) {
 		console.log("[Game] Game Session is already ongoing");	
 	}
 	gameInstance = new Game(gameSessionId, playerId);
-	// useSceneStore.getState().setCurrentScene("Lobby");
+
+	useSceneStore.getState().setCurrentScene("Lobby");
 }
 
-const urlParams = new URLSearchParams(window.location.search);
-const playerId = urlParams.get('id');
-const sessionId = urlParams.get('sessionId');
+// const urlParams = new URLSearchParams(window.location.search);
+// const playerId = urlParams.get('id');
+// const sessionId = urlParams.get('sessionId');
 
-const container = document.getElementById("threejs-canvas");
-if (container) {
-	initGameClient(container);
-	if (sessionId && playerId) {
-		joinGameLobby(sessionId, playerId);
-	}
-}
+// const container = document.getElementById("threejs-canvas");
+// if (container) {
+// 	initGameClient(container);
+// 	if (sessionId && playerId) {
+// 		joinGameLobby(sessionId, playerId);
+// 	}
+// }

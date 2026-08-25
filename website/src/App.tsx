@@ -77,8 +77,8 @@ export default function App() {
 					w-full min-w-80 max-w-360
 				"
 			>
-				<Canvas>
 					{ currentScene === "Login" && 
+						<Canvas>
 						<>
 							<AdaptiveDpr />
 							<ambientLight intensity={0.5} />
@@ -94,11 +94,11 @@ export default function App() {
 							<PerspectiveCamera makeDefault position={[0, 0, 2.25]} />
 							<OrbitControls enableZoom={false} />
 						</>
+						</Canvas>
 					}
 					{
 						currentScene == "Game" && <div ref={containerRef}></div>
 					}
-				</Canvas>
 			</section>
 			<section
 				className="

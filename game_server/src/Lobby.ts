@@ -5,10 +5,12 @@ import { GameState } from './GameState.js';
 import { GameSettingsTransmit, GameStartRequest, SeatOrderTransmit, StatusTransmit } from '@big2/game-types';
 import { EventEmitter } from 'node:events';
 import { success } from 'zod';
+import { privateDecrypt } from 'node:crypto';
 
 export class Lobby {
 	private hostUuid: string;
 	private users: Array<UserState>;
+	private totalSeats: number;
 	public	availableSeats: Array<number>;
 	private whitelist: Array<string>;
 	private totalUsersLimit: number;
@@ -21,6 +23,7 @@ export class Lobby {
 		this.hostUuid = data.hostUuid;
 		this.users = [];
 		this.whitelist = data.playerUuids;
+		this.totalSeats = 4;
 		this.availableSeats = [];
 		this.totalUsersLimit = 5;
 		this.sessionId = sessionId;
@@ -45,11 +48,16 @@ export class Lobby {
 		return (seatOrder);
 	}
 
-	public emitSeatOrder() {
-		const seatOrder: SeatOrderTransmit = {
+	public getSeatData() {
+		const seatData: SeatOrderTransmit = {
+			totalSeats: this.totalSeats,
 			seatOrder: this.getSeatOrder()
 		}
-		this.emit("user_seat_update", seatOrder);
+		return (seatData);
+	}
+
+	public emitSeatOrder() {
+		this.emit("user_seat_update", this.getSeatData());
 	}
 
 	public emitUserList() {
@@ -75,6 +83,7 @@ export class Lobby {
 		this.users.push(user);
 		console.log(`User<${user.uuid}> has connected`);
 		this.emitUserList();
+		user.socket.emit("user_seat_update", this.getSeatData());
 
 		if (this.game.uuidInGame(user.uuid) === true) {
 			this.game.playerReconnect(user);
@@ -191,11 +200,12 @@ export class Lobby {
 		for (let i = 0; i < this.users.length; i++) {
 			this.users[i].leaveSeat();
 		}
-		this.emitSeatOrder();
 		this.availableSeats.length = 0;
 		for (let i = 0; i < totalSeats; i++) {
 			this.availableSeats.push(i);
 		}
+		this.totalSeats = totalSeats;
+		this.emitSeatOrder();
 		status.success = true;
 		status.message = "Successfully initialized seats";
 		return (status);

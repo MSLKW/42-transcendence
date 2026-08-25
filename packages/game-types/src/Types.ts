@@ -80,6 +80,7 @@ export type GameEndStatsTransmit = {
 }
 
 export type SeatOrderTransmit = {
+	totalSeats: number,
 	seatOrder: Record<string, number>
 }
 

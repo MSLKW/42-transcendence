@@ -12,22 +12,16 @@ interface HomeProps {
 }
 
 export const HomeCardButton = ({ gameMode, playerCount }: HomeProps) => {
-	const { setGameValue, autoSetSeats, initSeats } = useGameStore()
+	// const { setGameValue, autoSetSeats, initSeats } = useGameStore()
 	const { setCurrentScene } = useSceneStore();
 	const { clientUuid } = useProfileStore();
 	const { hostUuid, members } = usePartyStore();
 
 	const handleCardClick = () => {
-		setGameValue("totalPlayers", playerCount);
-		if (members.length === 1)
-			autoSetSeats();
-		else
-			initSeats();
+		useGameStore.setState({totalPlayers: playerCount});
 
 		if (gameMode === "Tutorial")
 			setCurrentScene("Test");
-		else
-			setCurrentScene("Lobby");
 		partySocket.startGameSession();
 	};
 
