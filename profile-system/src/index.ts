@@ -1,9 +1,15 @@
 import "dotenv/config";
 import express from "express";
+import { UserStore } from "./store/UserStore";
+import { FileUserStore } from "./store/FileUserStore";
+
 import { healthCheck } from "./handlers/healthCheck";
 import { userSearch } from "./handlers/userSearch";
-import { getProfile } from "./handlers/getProfile";
-import { setUsername } from "./handlers/setUsername";
+
+import { getUserProfile } from "./handlers/getUserProfile";
+import { getUserSettings } from "./handlers/getUserSettings"
+
+import { setUserProfile } from "./handlers/setUserProfile";
 import { setUserSettings } from "./handlers/setUserSettings";
 import { uploadAvatar } from "./handlers/uploadAvatar";
 
@@ -14,14 +20,19 @@ const ERROR_MESSAGES: Record<string, string> = {
 	EADDRNOTAVAIL: "The specified address is not available."
 };
 
+const userStore: UserStore = new FileUserStore;
+
 const app = express();
 app.use(express.json());
 app.use(express.static("test"));
 
 app.get("/health", healthCheck());
 app.get("/search", userSearch());
-app.get("/:uuid", getProfile());
-app.put("/username", setUsername());
+
+app.get("/profile/:uuid", getUserProfile());
+app.get("/settings/:uuid", getUserSettings());
+
+app.put("/profile", setUserProfile());
 app.put("/settings", setUserSettings());
 app.put("/avatar", uploadAvatar());
 
