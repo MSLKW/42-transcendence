@@ -29,7 +29,7 @@ app.use(express.static("test"));
 app.get("/health", healthCheck());
 app.get("/search", userSearch());
 
-app.get("/profile/:uuid", getUserProfile());
+app.get("/profile/:uuid", getUserProfile(userStore));
 app.get("/settings/:uuid", getUserSettings());
 
 app.put("/profile", setUserProfile());

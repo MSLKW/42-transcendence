@@ -98,7 +98,7 @@ export class FileUserStore implements UserStore
 		await this.updateData(uuid, { settings: userSettings });
 	}
 
-	private async updateData(uuid: string, partial: Partial<UserData>): Promise<void>
+	async updateData(uuid: string, partial: Partial<UserData>): Promise<void>
 	{
 		const existing = await this.getDataByUuid(uuid);
 		if (!existing)

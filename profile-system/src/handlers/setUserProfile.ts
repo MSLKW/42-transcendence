@@ -1,7 +1,9 @@
 import { Request, Response } from "express"
+import { UserStore } from "../store/UserStore";
+import { UserData } from "../types";
 import { authenticate } from "../utils/authenticate";
 
-export function setUserProfile()
+export function setUserProfile(store: UserStore)
 {
 	return (async (req: Request, res: Response) =>
 	{
@@ -11,12 +13,18 @@ export function setUserProfile()
 			const data = await authRes.json();
 			if (!authRes.ok)
 				return (res.status(authRes.status).json(data));
-			const username = req.body.username;
-			const badgeLabel = req.body.badgeLabel;
-			const avatarPath = req.body.avatarPath;
 			
-			//TODO: put username into Postgres
+			const uuid = data.userId;
 
+			const partial: Partial<UserData> = {};
+			if (typeof(req.body.username) === "string")
+				partial.username = req.body.username;
+			if (typeof(req.body.username) === "string")
+				partial.avatarPath = req.body.avatarPath;
+			if (typeof(req.body.badgeLabel) === "string")
+				partial.badge = req.body.badgeLabel;
+
+			store.updateUserProfile(uuid, partial);
 			return (res.status(204));
 		}
 		catch (err)
