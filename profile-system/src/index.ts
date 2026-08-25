@@ -27,13 +27,13 @@ app.use(express.json());
 app.use(express.static("test"));
 
 app.get("/health", healthCheck());
-app.get("/search", userSearch());
+app.get("/search/:query", userSearch(userStore));
 
 app.get("/profile/:uuid", getUserProfile(userStore));
-app.get("/settings/:uuid", getUserSettings());
+app.get("/settings/:uuid", getUserSettings(userStore));
 
-app.put("/profile", setUserProfile());
-app.put("/settings", setUserSettings());
+app.put("/profile", setUserProfile(userStore));
+app.put("/settings", setUserSettings(userStore));
 app.put("/avatar", uploadAvatar());
 
 const server = app.listen(PORT, () =>
