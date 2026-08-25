@@ -44,15 +44,16 @@ export const ProfileWindow = () => {
 		>
 			<div
 				className="
-					divide-y divide-n2/40
+					max-h-[85vh] w-[80vw] max-w-215
 					py-1rem px-3rem
-					max-h-[85vh] overflow-y-scroll
+					overflow-y-scroll
 				"
 			>
 				<div className="flex">
 					<AvatarSetNameModule
 						name={name}
 						setName={setName}
+						avatar={avatar}
 					/>
 					<PlayerDataModule
 						profile={data}

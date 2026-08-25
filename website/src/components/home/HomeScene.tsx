@@ -13,7 +13,8 @@ export const HomeScene = () => {
 	const { removeBots } = useBotStore();
 	const { initSeats } = useGameStore();
 	const { hostUuid, members } = usePartyStore();
-	const { clientUuid, setCachedData } = useProfileStore();
+	const { clientUuid, setCachedData, getCachedData } = useProfileStore();
+	const data = getCachedData(clientUuid);
 	
 	useEffect(() => {
 		removeBots();
@@ -72,6 +73,7 @@ export const HomeScene = () => {
 						<AvatarModule 
 							key={clientUuid}
 							uuid={clientUuid}
+							srcImg={data?.avatar ?? "avatar-unknown.webp"}
 							cornerButton={hostUuid === clientUuid ? "host" : ""}
 						/>
 					}

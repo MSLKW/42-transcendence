@@ -6,6 +6,7 @@ import { AvatarCornerButton } from "./corner/AvatarCornerButton";
 
 interface AvatarModuleProps {
 	uuid: string;
+	srcImg?: string | undefined;
 	cornerButton?: string | number;
 	isActive?: boolean;
 	showName?: boolean;
@@ -13,6 +14,7 @@ interface AvatarModuleProps {
 
 export const AvatarModule = ({
 	uuid,
+	srcImg,
 	cornerButton = "",
 	isActive = false,
 	showName = true,
@@ -60,7 +62,7 @@ export const AvatarModule = ({
 					relative
 				`}
 			>
-				<AvatarImage isActive={isActive} />
+				<AvatarImage srcImg={srcImg} isActive={isActive}/>
 				<AvatarCornerButton cornerButton={cornerButton} />
 			</button>
 			{ showName && <AvatarName name={data?.name ?? "Player"} /> }

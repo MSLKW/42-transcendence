@@ -4,8 +4,9 @@ import { AvatarImage } from "../image/AvatarImage";
 interface AvatarSetNameModuleProps {
 	name: string;
 	setName: (name: string) => void;
+	avatar: string;
 }
-export const AvatarSetNameModule = ({ name, setName }: AvatarSetNameModuleProps) => {
+export const AvatarSetNameModule = ({ name, setName, avatar }: AvatarSetNameModuleProps) => {
 	const handleInput = (e: React.ChangeEvent<HTMLInputElement>) => {
 		const value = e.target.value;
 		setName(value);
@@ -18,17 +19,23 @@ export const AvatarSetNameModule = ({ name, setName }: AvatarSetNameModuleProps)
 	}, []);
 
 	return (
-		<div className="
-			flex place-content-evenly place-items-center
-			py-2rem px-4rem
-			gap-2rem
-		">
-			<div className="
-				flex flex-col
-				place-content-center place-items-center
-				gap-3
-			">
-				<AvatarImage />
+		<div
+			className="
+				flex place-content-evenly place-items-center
+				py-2rem px-4rem
+				gap-2rem
+			"
+		>
+			<div
+				className="
+					flex flex-col
+					place-content-center place-items-center
+					gap-3
+				"
+			>
+				<AvatarImage
+					srcImg={avatar}
+				/>
 				<input
 					ref={inputRef}
 					id="name"

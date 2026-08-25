@@ -24,7 +24,7 @@ export const SetupWindow = () => {
 				headerType="None"
 			>
 				<div className="
-					h-fit w-140
+					max-h-[85vh] w-[80vw] max-w-215
 					bg-linear-to-b from-n0 to-n1
 					border border-n1 rounded-xl
 					divide-y divide-n2/40
