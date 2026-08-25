@@ -8,26 +8,11 @@ import { SortButtons } from "./sort/SortButton";
 import { GamePassButton } from "./action/GamePassButton";
 import { GamePlayButton } from "./action/GamePlayButton";
 
-import { initGame } from '../../api/game_client/src/main';
-import { useEffect, useRef } from 'react';
 
 export const GameScene = () => {
 	const { totalPlayers, seats, seatRef, cardsLeft, activeSeat } = useGameStore();
 	const { members } = usePartyStore();
 	useAutoPass();
-
-	const containerRef = useRef<HTMLDivElement>(null);
-	useEffect(() => {
-		let destroyGame: (() => void) | null = null;
-
-		if (containerRef.current)
-			destroyGame = initGame('threejs-canvas');
-
-		return () => {
-			if (destroyGame)
-				destroyGame();
-		};
-	}, []);
 
 	return (
 		<>
@@ -114,9 +99,6 @@ export const GameScene = () => {
 				>
 					<GamePassButton />
 					<GamePlayButton />
-				</div>
-				<div id="threejs-canvas" ref={containerRef}>
-					
 				</div>
 			</main>
 			<footer className="flex place-content-between place-items-center">

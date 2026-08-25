@@ -25,7 +25,7 @@ export const LobbyScene = () => {
 		const totalSeated = seats.filter((seat): seat is string => seat !== null).length;
 
 		if (totalSeated === members.length && humansSeated > 0) {
-			fillSeatsWithBots();
+			// fillSeatsWithBots();
 			return;
 		}
 	}, []);

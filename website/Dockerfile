@@ -12,17 +12,19 @@
 FROM node:24
 WORKDIR /app
 
-COPY . ./website/.
+COPY ./package*.json ./website/.
 COPY --from=game-types . ./packages/game-types/.
 COPY --from=root package*.json ./
 
 RUN npm install --workspace=@big2/game-types
 RUN cd ./packages/game-types && npm run build
 
-RUN npm ci
+RUN npm install
+
+COPY . ./website/.
 
 EXPOSE 5173
 
 WORKDIR /app/website
 
-CMD ["npm", "run", "dev", "--", "--host"]
+CMD ["npm", "run", "dev"]

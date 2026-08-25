@@ -9,11 +9,10 @@ import { OutlinePass } from 'three/addons/postprocessing/OutlinePass.js';
 import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
 import { gsap } from 'gsap';
 import { Socket } from 'socket.io-client';
-
-const resolution = new THREE.Vector2(window.innerWidth, window.innerHeight)
+// import { useSceneStore } from '../../../store/SceneStore.ts';
 
 export const scene = new THREE.Scene();
-export const camera = new THREE.PerspectiveCamera(75, resolution.x / resolution.y, 0.1, 100);
+export let camera: THREE.PerspectiveCamera;
 export const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
 export const gameStatus = new GameStatus();
 
@@ -22,19 +21,29 @@ export let outlinePass: OutlinePass;
 export let cameraLight: THREE.PointLight;
 export let orbitControls: OrbitControls;
 
+export let gameInstance: Game | null = null;
+
 let cleanupGame: (() => void) | null = null;
 
-export function initGame(containerId: string) {
+/*
+	Will Initialize in the a container specified by containerId
+*/
+export function initGameClient(container: HTMLElement) {
+	const resolution = new THREE.Vector2(window.innerWidth, window.innerHeight);
+	camera = new THREE.PerspectiveCamera(75, resolution.x / resolution.y, 0.1, 100);
 	const effectComposer = new EffectComposer(renderer);
 	const renderPass = new RenderPass(scene, camera);
 	outlinePass = new OutlinePass(new THREE.Vector2(resolution.x, resolution.y), scene, camera);
 	const outputPass = new OutputPass();
+
+	// const cameraAudioListener = new THREE.AudioListener();
+	// camera.add(cameraAudioListener);
 	
 	const pixelRatio = Math.min(window.devicePixelRatio, 2);
 	renderer.setPixelRatio(pixelRatio);
 	effectComposer.setPixelRatio(pixelRatio);
 	
-	effectComposer.setSize(window.innerWidth, window.innerHeight);
+	effectComposer.setSize(resolution.x, resolution.y);
 	outlinePass.visibleEdgeColor.set("#ffffff");
 	outlinePass.hiddenEdgeColor.set("#ffffff");
 	outlinePass.edgeStrength = 5.0;
@@ -47,12 +56,9 @@ export function initGame(containerId: string) {
 	effectComposer.addPass(outlinePass);
 	effectComposer.addPass(outputPass);
 	
-	renderer.setSize(window.innerWidth, window.innerHeight);
-	const container = document.getElementById('threejs-canvas');
+	renderer.setSize(resolution.x, resolution.y);
 	container?.appendChild(renderer.domElement);
-	
-	// Setup Scene
-	
+		
 	// scene.background = new THREE.Color("#383B3D")
 	
 	const tableGeometry = new THREE.CylinderGeometry(5, 4.9, 1, 64);
@@ -125,8 +131,9 @@ export function initGame(containerId: string) {
 	gsap.ticker.lagSmoothing(false);
 	
 	function resize() {
-		const width = window.innerWidth;
-		const height = window.innerHeight;
+		const rect = container.getBoundingClientRect();
+		const width = rect.width;
+		const height = rect.height;
 	
 		camera.aspect = width / height;
 		camera.updateProjectionMatrix();
@@ -139,16 +146,6 @@ export function initGame(containerId: string) {
 		effectComposer.setPixelRatio(pixelRatio);
 	}
 	window.addEventListener('resize', resize);
-	
-	// temp for playerid, should use cookies or smth else
-	const urlParams = new URLSearchParams(window.location.search);
-	const playerId = urlParams.get('id');
-	const sessionId = urlParams.get('sessionId');
-	const authId = playerId; // get authId from authentication server
-	
-	if (authId && sessionId && playerId) {
-		const game = new Game(authId, sessionId, playerId);
-	}
 	
 	function animate(time: DOMHighResTimeStamp) {
 		orbitControls.update();
@@ -165,12 +162,47 @@ export function initGame(containerId: string) {
 		orbitControls.dispose();
 		renderer.dispose();
 
+		gui.destroy();
+
 		scene.remove(tableMesh);
 		tableGeometry.dispose();
 		tableMaterial.dispose();
 
-		if (container && renderer.domElement && container.contains(renderer.domElement))
+		scene.remove(ambientLight);
+		scene.remove(light);
+		if (cameraLight) {
+			scene.remove(cameraLight);
+		}
+
+		effectComposer.dispose();
+		renderPass.dispose();
+		outlinePass.dispose();
+		outputPass.dispose();
+
+		if (container && renderer.domElement) {
 			container.removeChild(renderer.domElement);
+		}
+		renderer.dispose();
 	}
 	return (cleanupGame);
+}
+
+export function joinGameLobby(gameSessionId: string, playerId: string) {
+	if (gameInstance !== null) {
+		console.log("[Game] Game Session is already ongoing");	
+	}
+	gameInstance = new Game(gameSessionId, playerId);
+	// useSceneStore.getState().setCurrentScene("Lobby");
+}
+
+const urlParams = new URLSearchParams(window.location.search);
+const playerId = urlParams.get('id');
+const sessionId = urlParams.get('sessionId');
+
+const container = document.getElementById("threejs-canvas");
+if (container) {
+	initGameClient(container);
+	if (sessionId && playerId) {
+		joinGameLobby(sessionId, playerId);
+	}
 }

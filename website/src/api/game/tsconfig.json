@@ -7,6 +7,7 @@
 		"declarationMap": true,
 		"sourceMap": true,
 
+		"rootDir": "../../.",
 		"outDir": "./tsc",
 		"declarationDir": "./tsc/types",
 

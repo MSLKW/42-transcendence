@@ -4,6 +4,6 @@
 	"workspaces": [
 		"packages/*",
 		"game_server",
-		"game_client"
+		"website"
 	]
 }

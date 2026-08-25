@@ -31,6 +31,9 @@ import { SetupWindow } from "./components/setup/SetupWindow";
 import { StatsWindow } from "./components/stats/StatsWindow";
 import Dev from "./Dev";
 
+import { initGameClient } from './api/game/src/main';
+import { useRef } from 'react';
+
 export default function App() {
 	const { clientUuid, getProfileData } = useProfileStore();
 	const { currentScene, showWindow, setShowWindow } = useSceneStore();
@@ -50,6 +53,19 @@ export default function App() {
 		}
 	}, [currentScene]);
 
+	const containerRef = useRef<HTMLDivElement>(null);
+	useEffect(() => {
+		let destroyGame: (() => void) | null = null;
+
+		if (containerRef.current)
+			destroyGame = initGameClient(containerRef.current);
+
+		return () => {
+			if (destroyGame)
+				destroyGame();
+		};
+	}, []);
+
 	return (
 		<>
 			{ (currentScene === "Login" || currentScene === "Home") && <StripeBg /> }
@@ -61,23 +77,28 @@ export default function App() {
 					w-full min-w-80 max-w-360
 				"
 			>
-				{ currentScene === "Login" && 
-					<Canvas>
-						<AdaptiveDpr />
-						<ambientLight intensity={0.5} />
-						<directionalLight position={[0, 5, 5]} intensity={0.5} />
-						{ currentScene === "Login" &&
-							<Card
+				<Canvas>
+					{ currentScene === "Login" && 
+						<>
+							<AdaptiveDpr />
+							<ambientLight intensity={0.5} />
+							<directionalLight position={[0, 5, 5]} intensity={0.5} />
+							{ currentScene === "Login" &&
+								<Card
 								position={[0,0.25,0]}
 								rotation={[-Math.PI/4,0,0]}
 								color="gold"
-							/>
-						}
-						<SphereBg />
-						<PerspectiveCamera makeDefault position={[0, 0, 2.25]} />
-						<OrbitControls enableZoom={false} />
-					</Canvas>
-				}
+								/>
+							}
+							<SphereBg />
+							<PerspectiveCamera makeDefault position={[0, 0, 2.25]} />
+							<OrbitControls enableZoom={false} />
+						</>
+					}
+					{
+						currentScene == "Game" && <div ref={containerRef}></div>
+					}
+				</Canvas>
 			</section>
 			<section
 				className="

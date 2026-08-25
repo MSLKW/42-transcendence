@@ -8,6 +8,7 @@ import { camera, cameraLight, gameStatus, orbitControls } from './main.ts';
 import { Deck } from './Deck.ts';
 import { gsap } from 'gsap';
 import { Participant } from './Participant.ts';
+import { useGameStore } from '../../../store/GameStore.tsx';
 
 export class Game {
 	private socket: Socket;
@@ -24,14 +25,15 @@ export class Game {
 	private seatChangeButton = document.getElementById('seat-change-button') as HTMLButtonElement;
 
 
-	constructor(authId: string, sessionId: string, playerId: string) {
+	constructor(sessionId: string, playerId: string) {
 		this.playerId = playerId;
 		this.socket = io('http://localhost:80', {
 			path: "/socket/game/",
 			auth: {
-				token: authId,
-				lobbyId: sessionId
+				lobbyId: sessionId,
+				uuid: playerId
 			}
+			
 		})
 
 		this.participants = [];
@@ -40,12 +42,16 @@ export class Game {
 		this.bindButtonEvents();
 	}
 
+	public startGame() {
+		const gameStartRequest: GameStartRequest = {
+			playerId: this.playerId
+		}
+		this.socket.emit("game_start_request", gameStartRequest);
+	}
+
 	private bindButtonEvents() {
 		this.startGameButton.addEventListener('click', () => {
-			const gameStartRequest: GameStartRequest = {
-				playerId: this.playerId
-			}
-			this.socket.emit("game_start_request", gameStartRequest);
+			this.startGame();
 		});
 
 		this.takeSeatButton.addEventListener('click', () => {

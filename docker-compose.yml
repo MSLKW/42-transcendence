@@ -11,11 +11,28 @@ services:
     networks:
       - big2
   
-  # # Game Client Website
+  # Game Client Website
+  website:
+    container_name: website
+    build:
+      context: ./website/src/api/game
+      dockerfile: Dockerfile
+      additional_contexts:
+        root: .
+        game-types: ./packages/game-types
+    image: website:test
+    restart: unless-stopped
+    volumes: # temporary for vite hmr
+      - ./website/src/api/game:/app/game
+      - /app/node_modules
+      - /app/game/node_modules
+    networks:
+      - big2
+  
   # website:
   #   container_name: website
   #   build:
-  #     context: ./game_client
+  #     context: ./website
   #     dockerfile: Dockerfile
   #     additional_contexts:
   #       root: .
@@ -23,24 +40,11 @@ services:
   #   image: website:test
   #   restart: unless-stopped
   #   volumes: # temporary for vite hmr
-  #     - ./game_client:/app/game_client
+  #     - ./website:/app/website
   #     - /app/node_modules
-  #     - /app/game_client/node_modules
+  #     - /app/website/node_modules
   #   networks:
   #     - big2
-  
-  website:
-    container_name: website
-    build:
-      context: ./website
-      dockerfile: Dockerfile
-      additional_contexts:
-        root: .
-        game-types: ./packages/game-types
-    image: website:test
-    restart: unless-stopped
-    networks:
-      - big2
   
   authentication:
     container_name: authentication
@@ -73,6 +77,8 @@ services:
         game-types: ./packages/game-types
     image: game_server:test
     restart: unless-stopped
+    environment:
+      AUTH_SERVICE_URL: http://authentication:3000
     networks:
       - big2
 

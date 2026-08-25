@@ -13,18 +13,21 @@ export class LobbyManager {
 		this.lobbyLimit = 100;
 
 		io.on("connection", (socket) => {
-			const authId = socket.handshake.auth.token;
 			const lobbyId = socket.handshake.auth.lobbyId;
-			const uuid = this.authenticateSocket(authId);
-			
+			// const uuid = socket.data.uuid;
+			const uuid = socket.handshake.auth.uuid;
 			const lobby = this.lobbies[lobbyId];
-			if (lobby !== undefined) {
-				lobby.connectUser(socket, uuid);
+			if (uuid === undefined || uuid === null) {
+				console.log(`Authentication failed and could not give uuid`)
+				kickSocket(socket);
+				return ;
 			}
-			else {
+			if (lobby === undefined) {
 				console.log(`Lobby<${lobbyId}> not found`);
 				kickSocket(socket);
+				return ;
 			}
+			lobby.connectUser(socket, uuid);
 		});
 	}
 
@@ -58,11 +61,5 @@ export class LobbyManager {
 			return ;
 		delete(this.lobbies[lobby.sessionId]);
 		console.log(`Lobby<${lobby.sessionId}> deleted`);
-	}
-
-	private authenticateSocket(authId: string): string {
-		// Get associated player uuid from checking with authentication service
-		// if auth service doesn't return player uuid, means that the player is not authenticated, raise some error
-		return (authId);
 	}
 }

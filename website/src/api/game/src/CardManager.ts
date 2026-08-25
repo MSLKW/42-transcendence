@@ -35,6 +35,7 @@ export class CardManager {
 	/* Dragging */
 	public	draggedCard: Card | undefined;
 	private dragPlane: THREE.Plane;
+	private dropThresholdY: number = 2;
 
 	/* Fanning Effect */
 	private fanRotation: number = 30;
@@ -329,17 +330,21 @@ export class CardManager {
 	}
 
 	private	selectCard(card: Card) {
-		if (this.selectedCards.receiveCard(card) == true) {
+		const selected = this.selectedCards.receiveCard(card);
+		if (selected) {
 			this.removeCard(card);
 			card.isHover = false;
 			this.selectedSlots = this.calculateSlots(this.selectedCards.cards, this.selectedBoundSpaceLimit, this.selectedOffset);
 			this.updateCardObjects(this.selectedCards.cards, this.selectedSlots);
 		}
+		return (selected);
 	}
 
-	private deselectCard(card: Card) {
+	private deselectCard(card: Card, receiveCard: boolean = true) {
 		if (this.selectedCards.removeCard(card)) {
-			this.receiveCard(card);
+			if (receiveCard === true) {
+				this.receiveCard(card);
+			}
 			card.isHover = false;
 			this.selectedSlots = this.calculateSlots(this.selectedCards.cards, this.selectedBoundSpaceLimit, this.selectedOffset);
 			this.updateCardObjects(this.selectedCards.cards, this.selectedSlots);
@@ -350,11 +355,17 @@ export class CardManager {
 		if (this.draggedCard !== undefined || this.isLocked === true)
 			return ;
 		let cardObjects = Card.getCardObjects(this.cards);
-		let intersected = raycaster.intersectObjects(cardObjects);
+		let cardHandObjects = Card.getCardObjects(this.selectedCards.cards);
+		let intersected = raycaster.intersectObjects(cardObjects.concat(cardHandObjects));
 		if (intersected.length > 0) {
 			let card: Card = intersected[0].object.userData.instance;
 			this.draggedCard = card;
-			this.removeCard(card);
+			if (this.cards.indexOf(card) >= 0) {
+				this.removeCard(card);
+			}
+			else if (this.selectedCards.cards.indexOf(card) >= 0) {
+				this.deselectCard(card, false);
+			}
 		}
 	}
 
@@ -370,8 +381,14 @@ export class CardManager {
 	public dropDraggedCard(raycaster: THREE.Raycaster) {
 		if (this.draggedCard === undefined)
 			return ;
-		this.receiveCard(this.draggedCard, this.getInsertIndex(this.draggedCard));
-		this.draggedCard = undefined;
+		if (this.localizePosition(this.draggedCard.object.position).y > this.dropThresholdY && this.selectCard(this.draggedCard) === true) {
+			this.draggedCard = undefined;
+		}
+		else {
+			this.receiveCard(this.draggedCard, this.getInsertIndex(this.draggedCard));
+			this.draggedCard = undefined;
+		}
+		console.log(this.selectedCards.cards);
 	}
 
 	private getInsertIndex(draggedCard: Card): number {
@@ -413,6 +430,11 @@ export class CardManager {
 			card.isHover = true;
 		}
 		this.updateCardObjects(this.cards, this.slots);
+	}
+
+	private  localizePosition(position: THREE.Vector3) {
+		const invQuat = this.rotation.clone().invert();
+		return (position.clone().sub(this.position).applyQuaternion(invQuat));
 	}
 
 	public reset() {

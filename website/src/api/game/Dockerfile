@@ -1,7 +1,7 @@
 FROM node:24 AS builder
 WORKDIR /app
 
-COPY . ./game_client/.
+COPY . ./game/.
 COPY --from=game-types . ./packages/game-types/.
 COPY --from=root package*.json ./
 
@@ -10,7 +10,7 @@ RUN cd ./packages/game-types && npm run build
 
 RUN npm ci
 
-RUN cd ./game_client && npm run build
+# RUN cd ./website/src/api/game && npm run build
 
 # FROM node:24-slim AS runner
 # WORKDIR /app
@@ -19,6 +19,6 @@ RUN cd ./game_client && npm run build
 
 EXPOSE 5000
 
-WORKDIR /app/game_client
+WORKDIR /app/game
 
 CMD ["npm", "run", "dev"]

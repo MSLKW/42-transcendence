@@ -18,7 +18,6 @@ export class CardHand {
 			return (false);
 		}
 		this.cards.push(card);
-		this.cards.sort(this.sortCards);
 		this.evaluateHandType();
 		return (true);
 	}
@@ -32,7 +31,6 @@ export class CardHand {
 			return (false);
 		}
 		this.cards.splice(index, 1);
-		this.cards.sort(this.sortCards);
 		this.evaluateHandType();
 		return (true);
 	}
@@ -52,18 +50,19 @@ export class CardHand {
 	}
 
 	private evaluateHandType() {
-		if (this.cards.length === 1) {
+		const sortedCards: Card[] = [...this.cards].sort(this.sortCards);
+		if (sortedCards.length === 1) {
 			this.handType = HandType.Single;
 		}
-		else if (this.cards.length === 2 && this.isDouble()) {
+		else if (sortedCards.length === 2 && this.isDouble(sortedCards)) {
 			this.handType = HandType.Double;
 		}
-		else if (this.cards.length === 3 && this.isTriple()) {
+		else if (sortedCards.length === 3 && this.isTriple(sortedCards)) {
 			this.handType = HandType.Triple;
 		}
-		else if (this.cards.length === 5) {
+		else if (sortedCards.length === 5) {
 			this.handType = HandType.Pentuple;
-			this.pentupleType = this.evaluatePentupleType();
+			this.pentupleType = this.evaluatePentupleType(sortedCards);
 		}
 		else {
 			this.handType = HandType.None;
@@ -71,84 +70,83 @@ export class CardHand {
 		}
 	}
 
-	private evaluatePentupleType(): PentupleType {
-		if (this.cards.length !== 5)
+	private evaluatePentupleType(cards: Card[]): PentupleType {
+		if (cards.length !== 5)
 			return (PentupleType.None);
-		if (this.isStraight() && this.isFlush())
+		if (this.isStraight(cards) && this.isFlush(cards))
 			return (PentupleType.StraightFlush);
-		if (this.isFourOfAKind())
+		if (this.isFourOfAKind(cards))
 			return (PentupleType.FourOfAKind);
-		if (this.isFullHouse())
+		if (this.isFullHouse(cards))
 			return (PentupleType.FullHouse);
-		if (this.isFlush())
+		if (this.isFlush(cards))
 			return (PentupleType.Flush);
-		if (this.isStraight())
+		if (this.isStraight(cards))
 			return (PentupleType.Straight);
 		return (PentupleType.None);
 	}
 
-	private isDouble(): boolean {
-		if (this.cards.length !== 2)
+	private isDouble(cards: Card[]): boolean {
+		if (cards.length !== 2)
 			return (false);
-		if (this.cards[0].rank !== this.cards[1].rank)
+		if (cards[0].rank !== cards[1].rank)
 			return (false);
 		return (true);
 	}
 
-	private isTriple(): boolean {
-		if (this.cards.length !== 3)
+	private isTriple(cards: Card[]): boolean {
+		if (cards.length !== 3)
 			return (false);
-		if (this.cards[0].rank === this.cards[1].rank && this.cards[1].rank === this.cards[2].rank)
+		if (cards[0].rank === cards[1].rank && cards[1].rank === cards[2].rank)
 			return (true);
 		return (false);
 	}
 
-	private isStraight(): boolean {
-		if (this.cards.length !== 5)
+	private isStraight(cards: Card[]): boolean {
+		if (cards.length !== 5)
 			return (false);
-		let rank: CardRank = this.cards[0].rank;
+		let rank: CardRank = cards[0].rank;
 		for (let i = 1; i < 5; i++) {
-			if (this.cards[i].rank !== rank - 1)
+			if (cards[i].rank !== rank - 1)
 				return (false);
-			rank = this.cards[i].rank;
+			rank = cards[i].rank;
 		}
 		return (true);
 	}
 
-	private isFlush(): boolean  {
-		if (this.cards.length !== 5)
+	private isFlush(cards: Card[]): boolean  {
+		if (cards.length !== 5)
 			return (false);
-		let suit: CardSuit = this.cards[0].suit;
 		for (let i = 1; i < 5; i++) {
-			if (this.cards[i].suit !== suit)
+			if (cards[i].suit !== cards[0].suit)
 				return (false)
 		}
 		return (true);
 	}
 
-	private isFullHouse(): boolean {
-		if (this.cards.length !== 5)
+	private isFullHouse(cards: Card[]): boolean {
+		if (cards.length !== 5)
 			return (false);
-		const biggerThree = this.cards[0].rank === this.cards[1].rank && 
-							this.cards[1].rank === this.cards[2].rank && 
-							this.cards[3].rank == this.cards[4].rank;
-		const smallerThree = this.cards[0].rank === this.cards[1].rank && 
-							this.cards[2].rank === this.cards[3].rank && 
-							this.cards[3].rank === this.cards[4].rank;
+		const biggerThree = cards[0].rank === cards[1].rank && 
+							cards[1].rank === cards[2].rank && 
+							cards[3].rank == cards[4].rank;
+		const smallerThree = cards[0].rank === cards[1].rank && 
+							cards[2].rank === cards[3].rank && 
+							cards[3].rank === cards[4].rank;
 		if (biggerThree || smallerThree)
 			return (true);
 		return (false);
 	}
 
-	private isFourOfAKind(): boolean {
-		if (this.cards.length !== 5)
+	private isFourOfAKind(cards: Card[]): boolean {
+		if (cards.length !== 5)
 			return (false);
-		let rank: CardRank = this.cards[1].rank;
+		let rank: CardRank = cards[1].rank;
 		for (let i = 2; i < 4; i++) {
-			if (this.cards[i].rank !== rank)
+			if (cards[i].rank !== rank)
 				return (false);
 		}
-		if (this.cards[0].rank !== rank && this.cards[4].rank !== rank)
+		if (cards[0].rank !== rank && cards[4].rank !== rank)
 			return (false);
 		return (true);
 	}

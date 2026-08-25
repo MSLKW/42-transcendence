@@ -12,8 +12,10 @@ const app = express();
 const httpServer = createServer(app);
 const port = 3000;
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+const AUTH_SERVICE_URL = process.env.AUTH_SERVICE_URL;
+
+if (!AUTH_SERVICE_URL)
+	throw new Error("AUTH_SERVICE_URL is not set");
 
 app.use(express.static('dist'));
 
@@ -24,6 +26,47 @@ httpServer.listen(port, () => {
 });
 
 export const io = new Server(httpServer);
+
+// io.use(async (socket, next) => {
+// 	const sessionToken = socket.handshake.headers.cookie
+// 		?.split("; ")
+// 		.find(c => c.startsWith("session_token="))
+// 		?.split("=")[1];	
+// 	const token = sessionToken || socket.handshake.auth?.token;
+
+// 	if (!token || typeof token !== "string")
+// 		return next(new Error("UNAUTHORIZED: no session token provided"));
+
+// 	try
+// 	{
+// 		const response = await fetch(`${AUTH_SERVICE_URL}/validate`, {
+// 			headers: {
+// 				Cookie: socket.handshake.headers.cookie || "",
+// 				Authorization: `Bearer ${token}`
+// 			},
+// 			signal: AbortSignal.timeout(5000)
+// 		});
+
+// 		if (!response.ok)
+// 			return next(new Error("UNAUTHORIZED: invalid or expired session"));
+
+// 		const data = await response.json();
+
+// 		if (!data.userId || typeof data.userId !== "string")
+// 		{
+// 			console.error("Auth service returned an OK response with no valid uuid");
+// 			return next(new Error("UNAUTHORIZED: malformed validation response"));
+// 		}
+
+// 		socket.data.uuid = data.userId;
+// 		next();
+// 	}
+// 	catch (err)
+// 	{
+// 		console.error("Auth validation failed:", err);
+// 		return next(new Error("UNAUTHORIZED: could not validate session"));
+// 	}
+// });
 
 const lobbyManager = new LobbyManager();
 

@@ -3,6 +3,7 @@ import { persist } from "zustand/middleware";
 import { useProfileStore, type MEDAL_TYPE } from "./ProfileStore";
 import { usePartyStore } from "./PartyStore";
 import { useBotStore } from "./BotStore";
+import { gameInstance } from '../api/game/src/main';
 
 export const GAMEMODE_LABEL = [
 	"4 Players",
@@ -161,6 +162,9 @@ export const useGameStore = create<GameState>() (
 				useBotStore.getState().addBotIfMissing();
 				get().setSeatRef();
 				get().dealCards();
+				if (gameInstance === null)
+					return ;
+				gameInstance.startGame();
 			},
 			nextTurn: () => {
 				const newActiveSeat = (get().activeSeat + 1) % get().totalPlayers;
