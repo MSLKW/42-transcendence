@@ -1,4 +1,5 @@
 import { partySocket } from "../../../api/party/partySocket";
+import { handleValidate } from "../../../api/authentication/validate/handleValidate";
 import { useGameStore, type GAMEMODE_TYPE } from "../../../store/GameStore";
 import { usePartyStore } from "../../../store/PartyStore";
 import { useProfileStore } from "../../../store/ProfileStore";
@@ -18,6 +19,8 @@ export const HomeCardButton = ({ gameMode, playerCount }: HomeProps) => {
 	const { hostUuid, members } = usePartyStore();
 
 	const handleCardClick = () => {
+		handleValidate();
+
 		useGameStore.setState({ totalPlayers: playerCount });
 		if (members.length <= 1)
 			autoSetSeats();

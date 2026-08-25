@@ -9,14 +9,15 @@ export const fetchValidate = async () => {
 	});
 	useProfileStore.setState({ validateResponse: response });
 
-	if (!response.ok) {
+	if (!response.ok && useProfileStore.getState().isAuthenticated) {
 		useProfileStore.setState({ isAuthenticated: false });
 		useSceneStore.getState().setCurrentScene("Login");
 		useNotificationStore.getState().showNotification("Invalid or expired session", NOTIFICATION_TYPE.error);
 		console.log("[/api/auth/validate] error: Invalid or expired session");
 		return;
 	}
-	
-	useProfileStore.setState({ isAuthenticated: true });
-	console.log("[/api/auth/validate] 200 OK");
+	if (response.ok && !useProfileStore.getState().isAuthenticated) {
+		useProfileStore.setState({ isAuthenticated: true });
+		console.log("[/api/auth/validate] 200 OK");
+	}
 }

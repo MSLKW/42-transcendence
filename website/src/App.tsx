@@ -1,7 +1,6 @@
 import { useEffect } from "react";
 import { Canvas } from "@react-three/fiber";
 import { Stats, PerspectiveCamera, OrbitControls, AdaptiveDpr } from "@react-three/drei";
-import { handleValidate } from "./api/authentication/validate/handleValidate";
 import { partySocket } from "./api/party/partySocket";
 import { useDevStore } from "./store/DevStore";
 import { useProfileStore } from "./store/ProfileStore";
@@ -38,7 +37,6 @@ export default function App() {
 
 	useEffect(() => {
 		useScrollToTop();
-		handleValidate();
 
 		if (currentScene !== "Login") {
 			const data = getProfileData(clientUuid!);
