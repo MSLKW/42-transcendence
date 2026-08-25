@@ -14,8 +14,8 @@ export function setUserSettings(store: UserStore)
 				return (res.status(authRes.status).json(data));
 
 			const uuid = data.userId;
-			store.updateUserSettings(uuid, req.body);
-			return (res.status(204));
+			await store.updateUserSettings(uuid, req.body);
+			return (res.status(204).end());
 		}
 		catch (err)
 		{

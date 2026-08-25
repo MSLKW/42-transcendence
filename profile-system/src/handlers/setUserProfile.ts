@@ -24,8 +24,8 @@ export function setUserProfile(store: UserStore)
 			if (typeof(req.body.badgeLabel) === "string")
 				partial.badge = req.body.badgeLabel;
 
-			store.updateUserProfile(uuid, partial);
-			return (res.status(204));
+			await store.updateUserProfile(uuid, partial);
+			return (res.status(204).end());
 		}
 		catch (err)
 		{
