@@ -8,10 +8,10 @@ export function getUserProfile(store: UserStore)
 	{
 		const uuid = req.params.uuid as string;
 
-		const userData = await store.getDataByUuid(uuid);
+		const userData = await store.getUserData(uuid);
 
 		if (userData)
-			return (res.status(200).json({userData: userData}));
-		return (res.status(404).json({"error": `uuid <${uuid}> not found`}));
+			return (res.status(200).json(userData));
+		return (res.status(404).json({error: `uuid <${uuid}> not found`}));
 	});
 }

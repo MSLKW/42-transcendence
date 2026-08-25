@@ -1,7 +1,8 @@
 import { Request, Response } from "express";
+import { UserStore } from "../store/UserStore";
 import { authenticate } from "../utils/authenticate";
 
-export function setUserSettings()
+export function setUserSettings(store: UserStore)
 {
 	return (async (req: Request, res: Response) =>
 	{
@@ -11,10 +12,9 @@ export function setUserSettings()
 			const data = await authRes.json();
 			if (!authRes.ok)
 				return (res.status(authRes.status).json(data));
-			const userSettings = req.body.userSettings;
-			
-			//TODO: put settings into Postgres
 
+			const uuid = data.userId;
+			store.updateUserSettings(uuid, req.body);
 			return (res.status(204));
 		}
 		catch (err)
