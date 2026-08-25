@@ -14,8 +14,25 @@ export class FileUserStore implements UserStore
 	{
 		try
 		{
-			const raw = await fs.promises.readFile(this.getFilePath(uuid), "utf-8");
-			return (JSON.parse(raw) as UserData);
+			const raw = JSON.parse(await fs.promises.readFile(this.getFilePath(uuid), "utf-8")) as UserData;
+			const userData: UserData = {
+				uuid:			raw.uuid,
+				username:		raw.username,
+				avatarPath:		raw.avatarPath,
+				badge:			raw.badge,
+				level:			raw.level,
+				xp:				raw.xp,
+				createdAt:		raw.createdAt,
+				lastLogin:		raw.lastLogin,
+				totalPlayed:	raw.totalPlayed,
+				totalWins:		raw.totalWins,
+				totalLoss:		raw.totalLoss,
+				winStreak:		raw.winStreak,
+				achievements:	raw.achievements,
+				online:			raw.online,
+				inGame:			raw.inGame
+			};
+			return (userData);
 		}
 		catch (err: any)
 		{
@@ -29,8 +46,19 @@ export class FileUserStore implements UserStore
 	{
 		try
 		{
-			const raw = await fs.promises.readFile(this.getFilePath(uuid), "utf-8");
-			return (JSON.parse(raw) as UserSettings);
+			const raw = JSON.parse(await fs.promises.readFile(this.getFilePath(uuid), "utf-8")) as UserSettings;
+			const userSettings: UserSettings = {
+				allow3OfAKind:		raw.allow3OfAKind,
+				allow2OfSpadesEnd:	raw.allow2OfSpadesEnd,
+				autoPassIndex:		raw.autoPassIndex,
+				endGameCondition:	raw.endGameCondition,
+				scoreCalculation:	raw.scoreCalculation,
+				cardStyle:			raw.cardStyle,
+				uiColor:			raw.uiColor,
+				fxLevel:			raw.fxLevel,
+				mxLevel:			raw.mxLevel
+			};
+			return (userSettings);
 		}
 		catch (err: any)
 		{
@@ -57,17 +85,19 @@ export class FileUserStore implements UserStore
 
 	async updateUserProfile(uuid: string, partial: Partial<UserData>): Promise<void>
 	{
-		const existing = await this.getUserData(uuid);
+		let existing = await this.getUserData(uuid);
 		if (!existing)
 			await this.createUser(uuid);
+		existing = await this.getUserData(uuid);
 		await this.setData(uuid, { ...existing!, ...partial }, (await this.getUserSettings(uuid))!);
 	}
 
 	async updateUserSettings(uuid: string, partial: Partial<UserSettings>): Promise<void>
 	{
-		const existing = await this.getUserSettings(uuid);
+		let existing = await this.getUserSettings(uuid);
 		if (!existing)
 			await this.createUser(uuid);
+		existing = await this.getUserSettings(uuid);
 		await this.setData(uuid, (await this.getUserData(uuid))!, { ...existing!, ...partial });
 	}
 
