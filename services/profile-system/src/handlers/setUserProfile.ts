@@ -1,9 +1,9 @@
-import { Request, Response } from "express";
+import { Request, Response } from "express"
 import { UserStore } from "../store/UserStore";
+import { UserData } from "../types";
 import { authenticate } from "../utils/authenticate";
-import { DrizzleUserSettingsStore } from "../store/drizzleUserSettingsStore";
 
-export function setUserSettings(store: UserStore)
+export function setUserProfile(store: UserStore)
 {
 	return (async (req: Request, res: Response) =>
 	{
@@ -13,9 +13,18 @@ export function setUserSettings(store: UserStore)
 			const data = await authRes.json();
 			if (!authRes.ok)
 				return (res.status(authRes.status).json(data));
-
+			
 			const uuid = data.userId;
-			await store.updateUserSettings(uuid, req.body);
+
+			const partial: Partial<UserData> = {};
+			if (typeof(req.body.username) === "string")
+				partial.username = req.body.username;
+			if (typeof(req.body.username) === "string")
+				partial.avatarPath = req.body.avatarPath;
+			if (typeof(req.body.badgeLabel) === "string")
+				partial.badge = req.body.badgeLabel;
+
+			await store.updateUserProfile(uuid, partial);
 			return (res.status(204).end());
 		}
 		catch (err)
