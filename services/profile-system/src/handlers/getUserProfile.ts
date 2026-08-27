@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { UserStore } from "../store/UserStore";
-import { UserData, UserSettings, NULL_ACHIEVEMENTS } from "../types";
+import { UserData, UserSettings, NULL_ACHIEVEMENTS } from "@big2/profile-system-types";
 
 export function getUserProfile(store: UserStore)
 {

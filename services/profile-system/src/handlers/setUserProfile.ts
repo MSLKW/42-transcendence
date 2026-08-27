@@ -1,6 +1,6 @@
 import { Request, Response } from "express"
 import { UserStore } from "../store/UserStore";
-import { UserData } from "../types";
+import { UserData } from "@big2/profile-system-types";
 import { authenticate } from "../utils/authenticate";
 
 export function setUserProfile(store: UserStore)
