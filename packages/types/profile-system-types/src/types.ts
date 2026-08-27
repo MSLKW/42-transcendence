@@ -2,9 +2,6 @@ export type UserData = {
 	uuid:			string,
 	username:		string | null,
 	avatarPath:		string | null,
-	badge:			BadgeLabel,
-	achievements:	Record<AchievementLabel, Date | null>,
-	userSettings:	UserSettings,
 	createdAt:		Date,
 	lastLogin:		Date,	
 	level:			number,
@@ -14,7 +11,9 @@ export type UserData = {
 	totalLoss:		number,
 	winStreak:		number,
 	online:			boolean,
-	inGame:			boolean
+	inGame:			boolean,
+	badge:			BadgeLabel,
+	achievements:	Record<AchievementLabel, Date | null>
 };
 
 export type UserSettings = {
