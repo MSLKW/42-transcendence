@@ -36,7 +36,7 @@ export class DrizzleUserProfileStore {
 			.from(userProfile)
 			.where(eq(userProfile.id, id));
 		if (!profile) 
-			return null; // no user_info row for this id at all
+			return null; // no user_data row for this id at all
 
 
 		// 2. REST calls to the services that own the rest, in parallel => named to authData, gameData, partyData

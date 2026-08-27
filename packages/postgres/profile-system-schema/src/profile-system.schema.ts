@@ -7,7 +7,7 @@ import { eq } from "drizzle-orm";
 export const profileSystemSchema = pgSchema("profile_system_schema");
 
 
-export const userInfo = profileSystemSchema.table("user_info", {
+export const userData = profileSystemSchema.table("user_data", {
 	// owned by auth
 	id: uuid("id")
 		.primaryKey()
@@ -36,7 +36,7 @@ export const userSettings = profileSystemSchema.table("user_settings", {
 	id: uuid("id")
 		.primaryKey()
 		.notNull()
-		.references(() => userInfo.id, { onDelete: "cascade" }),
+		.references(() => userData.id, { onDelete: "cascade" }),
 	allow3OfAKind: 		boolean("allow_3_of_a_kind").default(false).notNull(),
 	allow2OfSpadesEnd: 	boolean("allow_2_of_spades_end").default(false).notNull(),
 	autoPassIndex: 		integer("auto_pass_index").default(0).notNull(),
@@ -56,11 +56,11 @@ export const userSettings = profileSystemSchema.table("user_settings", {
 export const userProfile = profileSystemSchema.view("user_profile").as((qb) => 
   qb
     .select({
-      id: 					userInfo.id,
-      username: 			userInfo.username,
-      avatarPath: 			userInfo.avatarPath,
-      badge: 				userInfo.badge,
-      achievements: 		userInfo.achievements,
+      id: 					userData.id,
+      username: 			userData.username,
+      avatarPath: 			userData.avatarPath,
+      badge: 				userData.badge,
+      achievements: 		userData.achievements,
       allow3OfAKind: 		userSettings.allow3OfAKind,
       allow2OfSpadesEnd:	userSettings.allow2OfSpadesEnd,
       autoPassIndex: 		userSettings.autoPassIndex,
@@ -71,13 +71,13 @@ export const userProfile = profileSystemSchema.view("user_profile").as((qb) =>
       fxLevel: 				userSettings.fxLevel,
       mxLevel: 				userSettings.mxLevel,
     })
-    .from(userInfo) 		// <--- THIS IS THE LEFT TABLE (The Anchor) => userInfo's id is empty? userProfile's row ignored that id
+    .from(userData) 		// <--- THIS IS THE LEFT TABLE (The Anchor) => userData's id is empty? userProfile's row ignored that id
     .leftJoin(userSettings, // <--- THIS IS THE RIGHT TABLE
-		eq(userInfo.id, userSettings.id))
+		eq(userData.id, userSettings.id))
 );
 
-// LEFT JOIN (Anchor-based): Treats userInfo as the source of truth. Every user in userInfo is guaranteed to appear in the view. If they don't have settings yet, setting fields become null, but id: userInfo.id is always guaranteed to be a valid UUID.
-// FULL JOIN (Symmetrical): Includes rows even if userInfo is missing but userSettings exists. In that orphaned scenario, userInfo.id does not exist in Postgres, so your view output maps id: userInfo.id as null.
+// LEFT JOIN (Anchor-based): Treats userData as the source of truth. Every user in userData is guaranteed to appear in the view. If they don't have settings yet, setting fields become null, but id: userData.id is always guaranteed to be a valid UUID.
+// FULL JOIN (Symmetrical): Includes rows even if userData is missing but userSettings exists. In that orphaned scenario, userData.id does not exist in Postgres, so your view output maps id: userData.id as null.
 
 
 // userFullProfile 
