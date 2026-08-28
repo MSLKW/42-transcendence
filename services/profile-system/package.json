@@ -3,9 +3,10 @@
 	"version": "1.0.0",
 	"description": "",
 	"main": "./dist/index.js",
+	"type": "module",
 	"scripts": {
 		"dev": "tsc --noEmit && tsx src/index.ts",
-		"build": "tsc",
+		"build": "tsup src/index.ts --format esm --clean",
 		"start": "node dist/index.js",
 		"clean": "rm -rf ./dist .tsbuildinfo"
 	},
@@ -16,14 +17,15 @@
 		"@types/express": "^5.0.6",
 		"@types/multer": "^2.2.0",
 		"@types/node": "^26.0.0",
+		"tsup": "^8.5.1",
 		"tsx": "^4.22.4",
 		"typescript": "^6.0.3"
 	},
 	"dependencies": {
 		"@big2/auth-schema": "*",
+		"@big2/postgres-client": "*",
 		"@big2/profile-system-schema": "*",
 		"@big2/profile-system-types": "*",
-		"@big2/postgres-client": "*",
 		"dotenv": "^17.4.2",
 		"express": "^5.2.1",
 		"multer": "^2.2.0"
