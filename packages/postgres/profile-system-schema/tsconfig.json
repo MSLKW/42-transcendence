@@ -9,7 +9,8 @@
 		"esModuleInterop": true,
 		"strict": true,
 		"skipLibCheck": true,
-		"composite": true,
+		// "composite": true,
+		"composite": false,
 		"sourceMap": true,
 		"declaration": true,
 		"declarationMap": true,
@@ -18,9 +19,9 @@
 		"noUncheckedSideEffectImports": true,
 		"moduleDetection": "force"
 	},
-	"include": ["src/**/*.ts"],
-	"references": [
-		{ "path": "../auth-schema" },
-		{ "path": "../../types/profile-system-types" }
-	]
+	"include": ["src/**/*.ts"]
+	// "references": [ // this is for tsc -b
+	// 	{ "path": "../auth-schema" },
+	// 	{ "path": "../../types/profile-system-types" }
+	// ]
 }

@@ -41,7 +41,7 @@ COPY --from=builder /app/services/party-manager/dist ./services/party-manager/di
 
 EXPOSE 3000
 
-COPY services/party-manager/scripts/party-manager_entrypoint.sh /usr/local/bin/entrypoint.sh
+COPY services/party-manager/scripts/party-manager-entrypoint.sh /usr/local/bin/entrypoint.sh
 RUN chmod +x /usr/local/bin/entrypoint.sh
 
 WORKDIR /app/services/party-manager

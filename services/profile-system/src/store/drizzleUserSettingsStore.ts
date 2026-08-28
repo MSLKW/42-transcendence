@@ -1,6 +1,6 @@
 import { postgres } from "./postgres";
 import { userSettings } from "@big2/profile-system-schema";
-import type { UserSettings } from "@big2/profile-system-types";
+import { type UserSettings } from "@big2/profile-system-types";
 import { eq } from "drizzle-orm";
 
 

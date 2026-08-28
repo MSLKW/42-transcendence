@@ -21,7 +21,13 @@ export class DrizzleUserDataStore {
 			// .limit(20); // cap it — an unbounded search can accidentally hand back your whole user table - sure, no harm on that. 
 			
 		return results
-			.map((r: { username: string | null }) => r.username)
-			.filter((u: string | null): u is string => u !== null); // users with no username yet shouldn't show up in search
+			.map((r: { username: string | null }) => r.username)	// r = row
+			.filter((u: string | null): u is string => u !== null); // u = username (users with no username yet shouldn't show up in search)
   }
 }
+// r & u are short variables naming that i randomly choose in the functions used
+// .maps() for the return value of row objects
+// After .map() runs, you no longer have row objects—you have a list of raw username values.
+// .filter(), 
+// The TypeScript predicate u is string tells TS: 
+// "If this function returns true, narrow the array's type from (string | null)[] to just string[]".

@@ -198,29 +198,29 @@ services:
         condition: service_completed_successfully  # Waits for migrator to finish and exit with code 0
 
 
-#   #     BACKEND MICORSERVICE
-#   profile-system:
-#     build:
-#       context: .                                         # Set workdir to the repo's root
-#       dockerfile: ./services/profile-system/Dockerfile    # Point to the Dockerfile's relative path
-#     pull_policy: never
-#     image: profile:test
-#     container_name: profile-system
-#     restart: unless-stopped
-#     environment:
-#       PGUSER: ${PGUSER_PROFILE_SYSTEM}
-#       PGPASSWORD: /run/secrets/db-profile-system-password
-#     env_file:
-#       - .env                                             # Loads global configs
-#     secrets:
-#       - db-profile-system-password
-#     networks:
-#       - transcendence
-#       - database
-#       # - backend-internal
-#     depends_on:
-#       migrator:
-#         condition: service_completed_successfully  # Waits for migrator to finish and exit with code 0
+  #     BACKEND MICORSERVICE
+  profile-system:
+    build:
+      context: .                                         # Set workdir to the repo's root
+      dockerfile: ./services/profile-system/Dockerfile    # Point to the Dockerfile's relative path
+    pull_policy: never
+    image: profile:test
+    container_name: profile-system
+    restart: unless-stopped
+    environment:
+      PGUSER: ${PGUSER_PROFILE_SYSTEM}
+      PGPASSWORD: /run/secrets/db-profile-system-password
+    env_file:
+      - .env                                             # Loads global configs
+    secrets:
+      - db-profile-system-password
+    networks:
+      - transcendence
+      - database
+      # - backend-internal
+    depends_on:
+      migrator:
+        condition: service_completed_successfully  # Waits for migrator to finish and exit with code 0
 
 
 #   #     BACKEND MICORSERVICE

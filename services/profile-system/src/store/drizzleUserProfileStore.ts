@@ -2,20 +2,8 @@ import "dotenv/config";
 import { postgres } from "./postgres";
 import { userProfile } from "@big2/profile-system-schema";
 import { eq } from "drizzle-orm";
-import type { UserData } from "@big2/profile-system-types";
-
-
-const AUTH_SERVICE_URL = process.env.AUTH_SERVICE_URL;
-if (!AUTH_SERVICE_URL)
-	throw new Error("AUTH_SERVICE_URL is not set");
-
-const GAME_SERVICE_URL = process.env.GAME_SERVICE_URL;
-if (!GAME_SERVICE_URL)
-	throw new Error("GAME_SERVICE_URL is not set");
-
-const PARTY_MANAGER_SERVICE_URL = process.env.PARTY_MANAGER_SERVICE_URL;
-if (!PARTY_MANAGER_SERVICE_URL)
-	throw new Error("PARTY_MANAGER_SERVICE_URL is not set");
+import { type UserData } from "@big2/profile-system-types";
+import { AUTH_SERVICE_URL, GAME_SERVICE_URL, PARTY_MANAGER_SERVICE_URL } from "../config";
 
 
 async function fetchJson(url: string) {
@@ -54,17 +42,17 @@ export class DrizzleUserProfileStore {
 			avatarPath: profile.avatarPath,
 			badge: profile.badge,
 			achievements: profile.achievements,
-			userSettings: {
-				allow3OfAKind: profile.allow3OfAKind,
-				allow2OfSpadesEnd: profile.allow2OfSpadesEnd,
-				autoPassIndex: profile.autoPassIndex,
-				endGameCondition: profile.endGameCondition,
-				scoreCalculation: profile.scoreCalculation,
-				cardStyle: profile.cardStyle,
-				uiColor: profile.uiColor,
-				fxLevel: profile.fxLevel,
-				mxLevel: profile.mxLevel,
-			},
+			// userSettings: {
+			// 	allow3OfAKind: profile.allow3OfAKind,
+			// 	allow2OfSpadesEnd: profile.allow2OfSpadesEnd,
+			// 	autoPassIndex: profile.autoPassIndex,
+			// 	endGameCondition: profile.endGameCondition,
+			// 	scoreCalculation: profile.scoreCalculation,
+			// 	cardStyle: profile.cardStyle,
+			// 	uiColor: profile.uiColor,
+			// 	fxLevel: profile.fxLevel,
+			// 	mxLevel: profile.mxLevel,
+			// },
 			createdAt: authData.createdAt,
 			lastLogin: authData.lastLogin,
 			level: gameData.level,

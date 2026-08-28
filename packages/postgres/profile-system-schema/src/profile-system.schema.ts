@@ -1,5 +1,5 @@
 import { users } from "@big2/auth-schema";
-import { NULL_ACHIEVEMENTS, BadgeLabel, AchievementLabel } from "@big2/profile-system-types";
+import { NULL_ACHIEVEMENTS, type BadgeLabel, type AchievementLabel } from "@big2/profile-system-types";
 import { pgSchema, uuid, text, integer, boolean, jsonb, timestamp } from "drizzle-orm/pg-core";
 import { eq } from "drizzle-orm";
 
@@ -23,7 +23,7 @@ export const userData = profileSystemSchema.table("user_data", {
 		.default("Newcomer")
 		.notNull(),
 	achievements: jsonb("achievements")
-		.$type<Record<AchievementLabel, Date>>()
+		.$type<Record<AchievementLabel, Date | null>>()
 		.default(NULL_ACHIEVEMENTS)
 		.notNull(),
 	updatedAt: timestamp("updated_at", { withTimezone: true })
