@@ -1,39 +1,33 @@
-import { usePartyStore } from "../../store/PartyStore";
-import { useSceneStore } from "../../store/SceneStore";
 import { useGameStore } from "../../store/GameStore";
 import { Window } from "../window/Window";
 import { ResultsChangeModule } from "./change/ResultsChangeModule";
 import { ResultsPodiumModule } from "./podium/ResultsPodiumModule";
 import { ResultsRankModule } from "./rank/ResultsRankModule";
-import { ResultsRoundModule } from "./round/ResultsRoundModule";
+import { ResultsPlayedModule } from "./played/ResultsPlayedModule";
 import { ResultsTotalModule } from "./total/ResultsTotalModule";
+import { useResultsStore } from "../../store/ResultsStore";
+import { useProfileStore } from "../../store/ProfileStore";
 
 export const ResultsWindow = () => {
 	const { round } = useGameStore();
 	const { endGame, startGame } = useGameStore();
-	const { members } = usePartyStore();
-	const { setCurrentScene } = useSceneStore();
+	const { getCachedData } = useProfileStore();
+	const { getLeaderboard } = useResultsStore();
 
-	const winner = "Congratulations " + members[0].name + "! Play next round?";
-
-	const handleEndGame = () => {
-		endGame();
-		setCurrentScene("Home");
-	}
-	const handlePlayNext = () => {
-		startGame();
-		setCurrentScene("Game");
-	}
+	const leaderboard = getLeaderboard();
+	const topPlayer = leaderboard[0];
+	const playerName = topPlayer ? getCachedData(topPlayer.uuid)?.name : "Winner";
+	const winner = `Congratulations ${playerName ?? "Player"}!`;
 
 	return (
 		<Window
 			title={`Results of Round ${round}`}
 			dismissKey="results"
-			pinState={false}
+			hasPinButton={false}
 		>
 			<div
 				className="
-					py-3rem px-3rem
+					py-2rem px-3rem
 					max-h-[85vh] overflow-y-scroll pointer-events-auto
 				"
 			>
@@ -51,25 +45,25 @@ export const ResultsWindow = () => {
 							gap-1rem
 						"
 					>
-						<h3 className="text-n6">{winner}</h3>
+						<h2 className="text-n6">{winner}</h2>
 						<div className="flex gap-2rem">
 							<button
-								onClick={handleEndGame}
+								onClick={endGame}
 								className="
-									h-3rem aspect-5/1
+									h-3rem aspect-6/1
 									btn-text bg-light
 								"
 							>
-								End
+								End Game
 							</button>
 							<button
-								onClick={handlePlayNext}
+								onClick={startGame}
 								className="
-									h-3rem aspect-5/1
+									h-3rem aspect-6/1
 									btn-text bg-light
 								"
 							>
-								Let's Go!
+								Play Next Round
 							</button>
 						</div>
 					</div>
@@ -77,12 +71,13 @@ export const ResultsWindow = () => {
 				</div>
 				<div
 					className="
-						grid grid-cols-[7.5rem_15rem_7.5rem_7.5rem] grid-rows-[5rem]
-						text-center text-n6
+						grid grid-cols-[6rem_15rem_6rem_6rem] grid-rows-[4rem]
+						text-center text-n6 
+						bg-n0/20 rounded-xl border border-n1/60
 					"
 				>
 					<ResultsRankModule />
-					<ResultsRoundModule />
+					<ResultsPlayedModule />
 					<ResultsChangeModule />
 					<ResultsTotalModule />
 				</div>

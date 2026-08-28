@@ -1,7 +1,6 @@
 import { useEffect } from "react";
 import { Canvas } from "@react-three/fiber";
 import { Stats, PerspectiveCamera, OrbitControls, AdaptiveDpr } from "@react-three/drei";
-import { handleValidate } from "./api/authentication/validate/handleValidate";
 import { partySocket } from "./api/party/partySocket";
 import { useDevStore } from "./store/DevStore";
 import { useProfileStore } from "./store/ProfileStore";
@@ -15,11 +14,11 @@ import { HomeScene } from "./components/home/HomeScene";
 import { LobbyScene } from "./components/lobby/LobbyScene";
 import { TestScene } from "./components/test/TestScene";
 import { GameScene } from "./components/game/GameScene";
-import { ResultsScene } from "./components/results/ResultsScene";
 import { BotsWindow } from "./components/bots/BotsWindow";
 import { ChatWindow } from "./components/chat/ChatWindow";
 import { CreateAccountWindow } from "./components/login/create_account/CreateAccountWindow";
 import { InfoWindow } from "./components/info/InfoWindow";
+import { LeaveWindow } from "./components/leave/Leave";
 import { NotificationWindow } from "./components/notification/NotificationWindow";
 import { PartyWindow } from "./components/party/PartyWindow";
 import { ProfileWindow } from "./components/profile/ProfileWindow";
@@ -38,11 +37,10 @@ export default function App() {
 	const { clientUuid, getProfileData } = useProfileStore();
 	const { currentScene, showWindow, setShowWindow } = useSceneStore();
 	const { showDevSection, showStats } = useDevStore();
-	
+
 	useEffect(() => {
 		useScrollToTop();
-		handleValidate();
-		
+
 		if (currentScene !== "Login") {
 			const data = getProfileData(clientUuid!);
 			if (!data?.name)
@@ -77,28 +75,26 @@ export default function App() {
 					w-full min-w-80 max-w-360
 				"
 			>
-					{ currentScene === "Login" && 
-						<Canvas>
-						<>
-							<AdaptiveDpr />
-							<ambientLight intensity={0.5} />
-							<directionalLight position={[0, 5, 5]} intensity={0.5} />
-							{ currentScene === "Login" &&
-								<Card
+				{ currentScene === "Login" && 
+					<Canvas>
+						<AdaptiveDpr />
+						<ambientLight intensity={0.5} />
+						<directionalLight position={[0, 5, 5]} intensity={0.5} />
+						{ currentScene === "Login" &&
+							<Card
 								position={[0,0.25,0]}
 								rotation={[-Math.PI/4,0,0]}
 								color="gold"
-								/>
-							}
-							<SphereBg />
-							<PerspectiveCamera makeDefault position={[0, 0, 2.25]} />
-							<OrbitControls enableZoom={false} />
-						</>
-						</Canvas>
-					}
-					{
-						currentScene == "Game" && <div ref={containerRef}></div>
-					}
+							/>
+						}
+						<SphereBg />
+						<PerspectiveCamera makeDefault position={[0, 0, 2.25]} />
+						<OrbitControls enableZoom={false} />
+					</Canvas>
+				}
+				{
+					currentScene == "Game" && <div ref={containerRef}></div>
+				}
 			</section>
 			<section
 				className="
@@ -115,12 +111,12 @@ export default function App() {
 				{ currentScene === "Lobby" && <LobbyScene /> }
 				{ currentScene === "Test" && <TestScene /> }
 				{ currentScene === "Game" && <GameScene /> }
-				{ currentScene === "Results" && <ResultsScene /> }
 				{ showWindow["bots"] && <BotsWindow /> }
 				{ showWindow["chat"] && <ChatWindow /> }
 				{ showWindow["createAccount"] && <CreateAccountWindow /> }
 				{ showWindow["info"] && <InfoWindow /> }
 				{ showWindow["notification"] && <NotificationWindow /> }
+				{ showWindow["leave"] && <LeaveWindow /> }
 				{ showWindow["party"] && <PartyWindow /> }
 				{ showWindow["profile"] && <ProfileWindow /> }
 				{ showWindow["rank"] && <RankWindow /> }

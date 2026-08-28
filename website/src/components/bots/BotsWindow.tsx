@@ -1,6 +1,6 @@
 import { useSceneStore } from "../../store/SceneStore";
 import { Window } from "../window/Window";
-import { BotSetButton } from "./button/BotSetButton";
+import { BotSetButton } from "./call/BotCallButton";
 
 export const BotsWindow = () => {
 	const { currentScene, setShowWindow } = useSceneStore();
@@ -18,7 +18,7 @@ export const BotsWindow = () => {
 			<Window
 				title="Bots"
 				dismissKey="bots"
-				hasHeader={false}
+				headerType="None"
 			>
 				<div
 					className="
@@ -31,9 +31,9 @@ export const BotsWindow = () => {
 							flex
 						"
 					>
-						<BotSetButton name="Easy" />
-						<BotSetButton name="Medium" />
-						<BotSetButton name="Hard" />
+						<BotSetButton intel="Easy" />
+						<BotSetButton intel="Medium" />
+						<BotSetButton intel="Hard" />
 					</div>
 					<div
 						className="

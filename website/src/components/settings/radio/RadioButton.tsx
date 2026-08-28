@@ -1,9 +1,9 @@
 interface RadioButtonProps {
-	name: string,
-	value: string,
-	onChange: () => void,
-	checked: boolean,
-	disabled?: boolean,
+	name: string;
+	value: string;
+	onChange: () => void;
+	checked: boolean;
+	disabled?: boolean;
 }
 
 export const RadioButton = ({ name, value, onChange, checked, disabled }: RadioButtonProps) => {

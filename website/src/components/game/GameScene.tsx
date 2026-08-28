@@ -1,5 +1,8 @@
+import { useEffect } from "react";
 import { useGameStore } from "../../store/GameStore";
-import { usePartyStore } from "../../store/PartyStore";
+import { useProfileStore } from "../../store/ProfileStore";
+import { useResultsStore } from "../../store/ResultsStore";
+import { useSceneStore } from "../../store/SceneStore";
 import { useAutoPass } from "../../utilities/useAutoPass";
 import { HeaderModule } from "../header/HeaderModule";
 import { AvatarModule } from "../avatar/AvatarModule";
@@ -8,92 +11,107 @@ import { SortButtons } from "./sort/SortButton";
 import { GamePassButton } from "./action/GamePassButton";
 import { GamePlayButton } from "./action/GamePlayButton";
 
-
 export const GameScene = () => {
-	const { totalPlayers, seats, seatRef, cardsLeft, activeSeat } = useGameStore();
-	const { members } = usePartyStore();
+	const { totalPlayers, seats, seatRef, cardsLeft, activeSeat, gameStarted } = useGameStore();
+	const { getCachedData } = useProfileStore();
+	const { setResults } = useResultsStore();
+	const { setCurrentScene, setShowWindow } = useSceneStore();
+
 	useAutoPass();
+	useEffect(() => {
+		if (cardsLeft.includes(0)) {
+			setResults();
+			setCurrentScene("Lobby");
+			setShowWindow("results", true);
+		}
+	}, [cardsLeft]);
 
 	return (
 		<>
 			<HeaderModule back="Home" />
 			<main>
-				{ totalPlayers === 4 && members.length >= 4 &&
+				{ totalPlayers === 4 && seats.length >= 4 &&
 					<>
-						<div className="absolute left-[5%] top-[20%]">
+						<div className="absolute left-[4%] top-[20%]">
 							{ seats[seatRef[1]] &&
 								<AvatarModule
 									key={seats[seatRef[1]] ?? ""}
 									uuid={seats[seatRef[1]] ?? ""}
+									image={getCachedData(seats[1])?.avatar ?? "avatar-unknown.webp"}
 									cornerButton={cardsLeft[seatRef[1]] ?? -1}
-									isActive={activeSeat === seatRef[1]}
+									isActive={gameStarted && activeSeat === seatRef[1]}
 								/>
 							}
 						</div>
-						<div className="absolute left-[25%] top-[5%]">
+						<div className="absolute left-[20%] top-[4%]">
 							{ seats[seatRef[2]] &&
 								<AvatarModule
 									key={seats[seatRef[2]] ?? ""}
 									uuid={seats[seatRef[2]] ?? ""}
+									image={getCachedData(seats[2])?.avatar ?? "avatar-unknown.webp"}
 									cornerButton={cardsLeft[seatRef[2]] ?? -1}
-									isActive={activeSeat === seatRef[2]}
+									isActive={gameStarted && activeSeat === seatRef[2]}
 								/>
 							}
 						</div>
-						<div className="absolute right-[5%] top-[20%]">
+						<div className="absolute right-[4%] top-[20%]">
 							{ seats[seatRef[3]] &&
 								<AvatarModule
 									key={seats[seatRef[3]] ?? ""}
 									uuid={seats[seatRef[3]] ?? ""}
+									image={getCachedData(seats[3])?.avatar ?? "avatar-unknown.webp"}
 									cornerButton={cardsLeft[seatRef[3]] ?? -1}
-									isActive={activeSeat === seatRef[3]}
+									isActive={gameStarted && activeSeat === seatRef[3]}
 								/>
 							}
 						</div>
 					</>
 				}
-				{ totalPlayers === 3 && members.length >= 3 &&
+				{ totalPlayers === 3 && seats.length >= 3 &&
 					<>
-						<div className="absolute left-[5%] top-[20%]">
+						<div className="absolute left-[4%] top-[20%]">
 							{ seats[seatRef[1]] &&
 								<AvatarModule
 									key={seats[seatRef[1]] ?? ""}
 									uuid={seats[seatRef[1]] ?? ""}
+									image={getCachedData(seats[1])?.avatar ?? "avatar-unknown.webp"}
 									cornerButton={cardsLeft[seatRef[1]] ?? -1}
-									isActive={activeSeat === seatRef[1]}
+									isActive={gameStarted && activeSeat === seatRef[1]}
 								/>
 							}
 						</div>
-						<div className="absolute right-[5%] top-[20%]">
+						<div className="absolute right-[4%] top-[20%]">
 							{ seats[seatRef[2]] &&
 								<AvatarModule
 									key={seats[seatRef[2]] ?? ""}
 									uuid={seats[seatRef[2]] ?? ""}
+									image={getCachedData(seats[2])?.avatar ?? "avatar-unknown.webp"}
 									cornerButton={cardsLeft[seatRef[2]] ?? -1}
-									isActive={activeSeat === seatRef[2]}
+									isActive={gameStarted && activeSeat === seatRef[2]}
 								/>
 							}
 						</div>
 					</>
 				}
-				{ totalPlayers === 2 && members.length >= 2 &&
-					<div className="absolute left-[25%] top-[5%]">
+				{ totalPlayers === 2 && seats.length >= 2 &&
+					<div className="absolute left-[20%] top-[4%]">
 						{ seats[seatRef[1]] &&
 							<AvatarModule
 								key={seats[seatRef[1]] ?? ""}
 								uuid={seats[seatRef[1]] ?? ""}
+								image={getCachedData(seats[1])?.avatar ?? "avatar-unknown.webp"}
 								cornerButton={cardsLeft[seatRef[1]] ?? -1}
-								isActive={activeSeat === seatRef[1]}
+								isActive={gameStarted && activeSeat === seatRef[1]}
 							/>
 						}
 					</div>
 				}
-				<div className="absolute left-1/2 top-[32.5%] -translate-x-1/2">
+				<div className="absolute left-1/2 top-[24%] -translate-x-1/2">
 					<RankCallButton />
 				</div>
 				<div
 					className="
-						absolute left-1/2 top-[65%] -translate-x-1/2
+						absolute left-1/2 top-[64%] -translate-x-1/2
 						flex gap-2rem
 					"
 				>
@@ -106,8 +124,9 @@ export const GameScene = () => {
 					<AvatarModule
 						key={seats[seatRef[0]]}
 						uuid={seats[seatRef[0]] ?? ""}
+						image={getCachedData(seats[0])?.avatar ?? "avatar-unknown.webp"}
 						cornerButton={cardsLeft[seatRef[0]]}
-						isActive={activeSeat === seatRef[0]}
+						isActive={gameStarted && activeSeat === seatRef[0]}
 					/>
 				}
 				<div

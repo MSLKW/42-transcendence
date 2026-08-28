@@ -10,17 +10,22 @@ import { PartyCallButton } from "../party/call/PartyCallButton";
 import { SmallLogo } from "./logo/SmallLogo";
 
 export const HomeScene = () => {
-	const { removeBotsFromParty } = useBotStore();
-	const { setGameValue, initSeats } = useGameStore();
-	const { hostUuid, members, set1PlayerParty } = usePartyStore();
-	const { clientUuid } = useProfileStore();
+	const { removeBots } = useBotStore();
+	const { initSeats } = useGameStore();
+	const { hostUuid, members } = usePartyStore();
+	const { clientUuid, setCachedData, getCachedData } = useProfileStore();
+	const data = getCachedData(clientUuid);
 	
 	useEffect(() => {
-		console.log("[Home] Client Uuid:", clientUuid, " hostUuid:", hostUuid);
-		removeBotsFromParty();
-		if (members.length <= 0)
-			set1PlayerParty();
-		setGameValue("totalPlayers", 0);
+		removeBots();
+		if (members.length <= 0) {
+			setCachedData();
+			usePartyStore.setState({
+				members: [ clientUuid ],
+				hostUuid: clientUuid,
+			});
+		}
+		useGameStore.setState({ totalPlayers: 0 });
 		initSeats();
 	}, [])
 
@@ -33,16 +38,14 @@ export const HomeScene = () => {
 					className="
 						absolute top-0 left-0
 						w-full h-full
-						pt-[clamp(5rem,25vh,20rem)] pb-[clamp(10rem,32vh,20rem)]
-						flex
-						overflow-x-auto
-						snap-x snap-mandatory
+						flex pt-[clamp(5rem,25vh,20rem)] pb-[clamp(10rem,32vh,20rem)]
+						overflow-x-auto snap-x snap-mandatory
 					"
 				>
 					<div className="
-						flex place-content-center-safe place-items-center gap-2rem
 						w-full h-full
-						flex-5
+						flex place-content-center-safe place-items-center
+						gap-4rem
 						pointer-events-auto
 					">
 						<HomeCardButton gameMode="4 Players" playerCount={4}/>
@@ -60,26 +63,27 @@ export const HomeScene = () => {
 				<div
 					tabIndex={-1}
 					className="
-						z-1
+						w-full
 						flex
-						gap-2rem
+						gap-2rem pt-2rem
 						sm:overflow-x-visible overflow-x-auto
-						pt-5
 					"
 				>
 					{clientUuid &&
 						<AvatarModule 
 							key={clientUuid}
 							uuid={clientUuid}
+							image={data?.avatar ?? "avatar-unknown.webp"}
 							cornerButton={hostUuid === clientUuid ? "host" : ""}
 						/>
 					}
-					{ members.map((member) => (
-						member.uuid && member.uuid != clientUuid &&
+					{ members.map((uuid) => (
+						uuid && uuid != clientUuid &&
 							<AvatarModule
-								key={member.uuid}
-								uuid={member.uuid}
-								cornerButton={hostUuid === member.uuid ? "host" : ""}
+								key={uuid}
+								uuid={uuid}
+								image={getCachedData(uuid)?.avatar ?? "avatar-unknown.webp"}
+								cornerButton={hostUuid === uuid ? "host" : ""}
 							/>
 					))}
 					<PartyCallButton />

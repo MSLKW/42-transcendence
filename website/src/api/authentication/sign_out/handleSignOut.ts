@@ -11,9 +11,9 @@ export const handleSignOut = async () => {
 		await signOutFetch();
 
 		useGameStore.getState().endGame();
-		usePartyStore.getState().resetMembers();
-		usePartyStore.getState().setPartyValue("partyGameId", null);
-		useProfileStore.getState().setClientUuid("n/a");
+		usePartyStore.setState({ members: [] });
+		usePartyStore.setState({ partyGameId: null });
+		useProfileStore.setState({ clientUuid: "n/a" });
 		partySocket.disconnect();
 
 		useSceneStore.getState().setCurrentScene("Login");

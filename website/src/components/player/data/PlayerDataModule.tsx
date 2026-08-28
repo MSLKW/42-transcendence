@@ -5,8 +5,8 @@ import { BadgeWindow } from "./badge/BadgeWindow";
 import { PlayerStatusModule } from "../status/PlayerStatusModule";
 
 interface PlayerDataModule {
-	profile: ProfileData | undefined,
-	badge?: BADGE_TYPE,
+	profile: ProfileData | undefined;
+	badge?: BADGE_TYPE;
 	setBadge?: (type: BADGE_TYPE) => void;
 }
 export const PlayerDataModule = ({ profile, badge, setBadge }: PlayerDataModule) => {
@@ -57,8 +57,7 @@ export const PlayerDataModule = ({ profile, badge, setBadge }: PlayerDataModule)
 			</div>
 			<div className="
 				w-full
-				flex
-				place-content-between place-items-center
+				flex place-content-between place-items-center
 				gap-2rem
 			">
 				<div className="relative w-full flex">

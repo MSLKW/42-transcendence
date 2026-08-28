@@ -1,18 +1,23 @@
+import { NOTIFICATION_TYPE, useNotificationStore } from "../../../store/NotificationStore";
 import { useProfileStore } from "../../../store/ProfileStore";
+import { useSceneStore } from "../../../store/SceneStore";
 
 export const fetchValidate = async () => {
 	const response = await fetch("/api/auth/validate", {
 		method: "GET",
 		credentials: "include",
 	});
-	useProfileStore.getState().setValidateResponse(response);
+	useProfileStore.setState({ validateResponse: response });
 
-	if (!response.ok) {
-		useProfileStore.getState().setIsAuthenticated(false);
+	if (!response.ok && useProfileStore.getState().isAuthenticated) {
+		useProfileStore.setState({ isAuthenticated: false });
+		useSceneStore.getState().setCurrentScene("Login");
+		useNotificationStore.getState().showNotification("Invalid or expired session", NOTIFICATION_TYPE.error);
 		console.log("[/api/auth/validate] error: Invalid or expired session");
 		return;
 	}
-	
-	useProfileStore.getState().setIsAuthenticated(true);
-	console.log("[/api/auth/validate] 200 OK");
+	if (response.ok && !useProfileStore.getState().isAuthenticated) {
+		useProfileStore.setState({ isAuthenticated: true });
+		console.log("[/api/auth/validate] 200 OK");
+	}
 }

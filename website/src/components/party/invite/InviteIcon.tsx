@@ -1,4 +1,4 @@
-export const FriendsIcon = () => (
+export const InviteIcon = () => (
     <svg
         fill="none"
         viewBox="0 0 50 50"

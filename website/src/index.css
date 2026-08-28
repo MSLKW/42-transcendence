@@ -1,6 +1,5 @@
 @import "tailwindcss";
 @import "./css/base/bg.css";
-@import "./css/base/clamp.css";
 @import "./css/base/container.css";
 @import "./css/base/gap.css";
 @import "./css/base/height.css";

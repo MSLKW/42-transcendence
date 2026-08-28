@@ -4,8 +4,9 @@ import { useProfileStore } from "../../../store/ProfileStore";
 import { KickIcon } from "./KickIcon";
 
 interface KickMemberButtonProps {
-	playerUuid: string
+	playerUuid: string;
 }
+
 export const KickMemberButton = ({ playerUuid }: KickMemberButtonProps) => {
 	const { clientUuid } = useProfileStore();
 	const { hostUuid, kickMember } = usePartyStore();

@@ -7,12 +7,14 @@ import { PinInactiveIcon } from "./pin/PinInactiveIcon";
 import { CloseIcon } from "./close/CloseIcon";
 // import { MaximizeIcon } from "./maximize/MaximizeIcon";
 
+export type HEADER_TYPE = "Standard" | "None" | "Warning";
+
 interface WindowProps {
 	title: string;
 	dismissKey: string;
 	children: ReactNode;
 	placement?: string;
-	hasHeader?: boolean;
+	headerType?: HEADER_TYPE;
 	hasPinButton?: boolean;
 	pinState?: boolean;
 	isDismissable?: boolean;
@@ -24,7 +26,7 @@ export const Window: React.FC<WindowProps> = ({
 	dismissKey,
 	children,
 	placement = "c",
-	hasHeader = true,
+	headerType = "Standard",
 	hasPinButton = true,
 	pinState = true,
 	isDismissable = true,
@@ -42,7 +44,7 @@ export const Window: React.FC<WindowProps> = ({
 			flex place-content-center place-items-center
 			pointer-events-none
 		">
-			{ hasHeader && isPinned &&
+			{ headerType === "Standard" && isPinned &&
 				<LightboxButton
 					dismiss={dismissKey}
 					blur={true}
@@ -61,12 +63,13 @@ export const Window: React.FC<WindowProps> = ({
 					will-change-transform
 				`}
 			>
-				{ hasHeader &&
+				{ headerType !== "None" &&
 					<div
 						onMouseDown={!isPinned ? handleMouseDown : undefined}
 						className={`
 							h-4rem
-							bg-a2 rounded-t-lg
+							${ headerType === "Standard" ? "bg-a2" : "bg-r2" }
+							rounded-t-lg
 							flex place-content-between place-items-center
 							${ !isPinned && "cursor-grab active:cursor-grabbing" }
 							select-none
@@ -86,7 +89,7 @@ export const Window: React.FC<WindowProps> = ({
 								<button
 									data-tip={isPinned ? "Unpin Window" : "Pin Window"}
 									onClick={() => setIsPinned(!isPinned)}
-									className="btn-icon data-tip-up"
+									className="btn-icon data-tip-down"
 								>
 									{ isPinned ? <PinActiveIcon /> : <PinInactiveIcon /> }
 								</button>
@@ -125,7 +128,7 @@ export const Window: React.FC<WindowProps> = ({
 										window.open(url, "_blank", "width=500,height=700");
 										setShowWindow(dismissKey, false);
 									}}
-									className="btn-icon data-tip-up"
+									className="btn-icon data-tip-down"
 								>
 									<MaximizeIcon />
 								</button>
@@ -138,7 +141,7 @@ export const Window: React.FC<WindowProps> = ({
 										? call
 										: () => setShowWindow(dismissKey, false)
 								}
-								className="btn-icon data-tip-up"
+								className="btn-icon data-tip-down"
 							>
 								<CloseIcon />
 							</button>

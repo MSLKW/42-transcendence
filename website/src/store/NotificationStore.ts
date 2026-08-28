@@ -24,12 +24,7 @@ interface NotificationValues {
 }
 
 interface NotificationState extends NotificationValues {
-	showNotification: (
-		msg: string,
-		type: number,
-		btn1?: () => void,
-		btn2?: () => void,
-	) => void;
+	showNotification: (msg: string, type: number, btn1?: () => void, btn2?: () => void) => void;
 	removeNotification: (id: string) => void;
 	setIsValid: (id: string, valid: boolean) => void;
 }

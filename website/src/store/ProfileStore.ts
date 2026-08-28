@@ -1,5 +1,7 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
+import { usePartyStore } from "./PartyStore";
+import { useFriendStore } from "./FriendStore";
 
 export const BADGE_LABEL = [
 	"Newcomer",
@@ -13,16 +15,18 @@ export const BADGE_LABEL = [
 export type BADGE_TYPE = typeof BADGE_LABEL[number];
 
 export const MEDAL_LABEL = [
-	"First Login",
-	"Login 1 Week",
-	"Played 1 Game",
-	"Played 10 Games",
-	"Played 42 Games",
+	"High",
+	"Double",
+	"Triple",
+	"Straight",
+	"Flush",
+	"Full House",
+	"4 Of A Kind",
+	"Straight Flush",
 	"First Win",
-	"Win Streak 2",
-	"Win Streak 5",
-	"Win Streak 10",
-	"Master Collector",
+	"3 Of Diamonds",
+	"2 Of Spades",
+	"No Pass",
 ] as const;
 export type MEDAL_TYPE = typeof MEDAL_LABEL[number];
 
@@ -32,6 +36,14 @@ export const AVAILABILITY_LABEL = [
 	"Busy",
 ] as const;
 export type AVAILABILITY_TYPE = typeof AVAILABILITY_LABEL[number];
+
+export const RELATION_LABEL = [
+	"Stranger",
+	"Friend",
+	"Bot",
+	"Self",
+] as const;
+export type RELATION_TYPE = typeof RELATION_LABEL[number];
 
 export interface ProfileData {
 	uuid: string | null;
@@ -48,9 +60,16 @@ export interface ProfileData {
 	winStreak: number;
 	medals: Record<MEDAL_TYPE, Date | null>;
 	availability: AVAILABILITY_TYPE;
-};
+}
 
-const createDefaultProfile = (uuid: string, name: string, avatar: string, badge: BADGE_TYPE = "Newcomer"): ProfileData => ({
+export interface CachedData {
+	uuid: string | null;
+	name: string | null;
+	avatar: string | null;
+	relation: RELATION_TYPE;
+}
+
+export const createDefaultProfile = (uuid: string, name: string, avatar: string, badge: BADGE_TYPE = "Newcomer"): ProfileData => ({
 	uuid,
 	name,
 	avatar,
@@ -64,25 +83,27 @@ const createDefaultProfile = (uuid: string, name: string, avatar: string, badge:
     totalLoss: 0,
     winStreak: 0,
     medals: {
-        "First Login": null,
-        "Login 1 Week": null,
-        "Played 1 Game": null,
-        "Played 10 Games": null,
-        "Played 42 Games": null,
-        "First Win": null,
-        "Win Streak 2": null,
-        "Win Streak 5": null,
-        "Win Streak 10": null,
-        "Master Collector": null,
+		"High": null,
+		"Double": null,
+		"Triple": null,
+		"Straight": null,
+		"Flush": null,
+		"Full House": null,
+		"4 Of A Kind": null,
+		"Straight Flush": null,
+		"First Win": null,
+		"3 Of Diamonds": null,
+		"2 Of Spades": null,
+		"No Pass": null,
     },
     availability: "Online",
 });
 
 const defaultProfileInDb: ProfileData[] = [
 	{
-		uuid: "12345678-abcd-efgh-ijkl-000000000001",
+		uuid: "12345678-abcd-efgh-dev0-azrul0000000",
 		name: "Dev-Azrul",
-		avatar: "stock-1.webp",
+		avatar: "avatar-animal-8.webp",
 		badge: "Risk Taker",
 		level: 2,
 		xp: 1111,
@@ -93,23 +114,25 @@ const defaultProfileInDb: ProfileData[] = [
 		totalLoss: 1,
 		winStreak: 1,
 		medals: {
-			"First Login": new Date("2026-08-01T01:01:01+08:00"),
-			"Login 1 Week": new Date("2026-08-01T01:01:01+08:00"),
-			"Played 1 Game": null,
-			"Played 10 Games": null,
-			"Played 42 Games": null,
+			"High": new Date("2026-08-01T01:01:01+08:00"),
+			"Double": null,
+			"Triple": null,
+			"Straight": null,
+			"Flush": null,
+			"Full House": null,
+			"4 Of A Kind": null,
+			"Straight Flush": null,
 			"First Win": null,
-			"Win Streak 2": null,
-			"Win Streak 5": null,
-			"Win Streak 10": null,
-			"Master Collector": null,
+			"3 Of Diamonds": null,
+			"2 Of Spades": null,
+			"No Pass": null,
 		},
 		availability: "Offline",
 	},
 	{
-		uuid: "12345678-abcd-efgh-ijkl-000000000002",
+		uuid: "12345678-abcd-efgh-dev0-max000000000",
 		name: "Dev-Max",
-		avatar: "stock-2.webp",
+		avatar: "avatar-animal-2.webp",
 		badge: "The Strategist",
 		level: 3,
 		xp: 2222,
@@ -120,23 +143,25 @@ const defaultProfileInDb: ProfileData[] = [
 		totalLoss: 2,
 		winStreak: 2,
 		medals: {
-			"First Login": new Date("2026-08-01T02:02:02+08:00"),
-			"Login 1 Week": new Date("2026-08-01T02:02:02+08:00"),
-			"Played 1 Game": new Date("2026-08-01T02:02:02+08:00"),
-			"Played 10 Games": null,
-			"Played 42 Games": null,
+			"High": new Date("2026-08-01T02:02:02+08:00"),
+			"Double": new Date("2026-08-01T02:02:02+08:00"),
+			"Triple": null,
+			"Straight": null,
+			"Flush": null,
+			"Full House": null,
+			"4 Of A Kind": null,
+			"Straight Flush": null,
 			"First Win": null,
-			"Win Streak 2": null,
-			"Win Streak 5": null,
-			"Win Streak 10": null,
-			"Master Collector": null,
+			"3 Of Diamonds": null,
+			"2 Of Spades": null,
+			"No Pass": null,
 		},
 		availability: "Offline",
 	},
 	{
-		uuid: "12345678-abcd-efgh-ijkl-000000000003",
+		uuid: "12345678-abcd-efgh-dev0-jeremy000000",
 		name: "Dev-Jeremy",
-		avatar: "stock-3.webp",
+		avatar: "avatar-animal-3.webp",
 		badge: "Big 2 Champion",
 		level: 4,
 		xp: 3333,
@@ -147,23 +172,25 @@ const defaultProfileInDb: ProfileData[] = [
 		totalLoss: 3,
 		winStreak: 3,
 		medals: {
-			"First Login": new Date("2026-08-01T03:03:03+08:00"),
-			"Login 1 Week": new Date("2026-08-01T03:03:03+08:00"),
-			"Played 1 Game": new Date("2026-08-01T03:03:03+08:00"),
-			"Played 10 Games": new Date("2026-08-01T03:03:03+08:00"),
-			"Played 42 Games": null,
+			"High": new Date("2026-08-01T03:03:03+08:00"),
+			"Double": new Date("2026-08-01T03:03:03+08:00"),
+			"Triple": new Date("2026-08-01T03:03:03+08:00"),
+			"Straight": null,
+			"Flush": null,
+			"Full House": null,
+			"4 Of A Kind": null,
+			"Straight Flush": null,
 			"First Win": null,
-			"Win Streak 2": null,
-			"Win Streak 5": null,
-			"Win Streak 10": null,
-			"Master Collector": null,
+			"3 Of Diamonds": null,
+			"2 Of Spades": null,
+			"No Pass": null,
 		},
 		availability: "Offline",
 	},
 	{
-		uuid: "12345678-abcd-efgh-ijkl-000000000004",
+		uuid: "12345678-abcd-efgh-dev0-aisyah000000",
 		name: "Dev-Aisyah",
-		avatar: "stock-4.webp",
+		avatar: "avatar-animal-0.webp",
 		badge: "Newcomer",
 		level: 5,
 		xp: 4444,
@@ -174,36 +201,123 @@ const defaultProfileInDb: ProfileData[] = [
 		totalLoss: 4,
 		winStreak: 4,
 		medals: {
-			"First Login": new Date("2026-08-01T04:04:04+08:00"),
-			"Login 1 Week": new Date("2026-08-01T04:04:04+08:00"),
-			"Played 1 Game": new Date("2026-08-01T04:04:04+08:00"),
-			"Played 10 Games": new Date("2026-08-01T04:04:04+08:00"),
-			"Played 42 Games": new Date("2026-08-01T04:04:04+08:00"),
+			"High": new Date("2026-08-01T04:04:04+08:00"),
+			"Double": new Date("2026-08-01T04:04:04+08:00"),
+			"Triple": new Date("2026-08-01T04:04:04+08:00"),
+			"Straight": new Date("2026-08-01T04:04:04+08:00"),
+			"Flush": null,
+			"Full House": null,
+			"4 Of A Kind": null,
+			"Straight Flush": null,
 			"First Win": null,
-			"Win Streak 2": null,
-			"Win Streak 5": null,
-			"Win Streak 10": null,
-			"Master Collector": null,
+			"3 Of Diamonds": null,
+			"2 Of Spades": null,
+			"No Pass": null,
 		},
 		availability: "Offline",
+	},
+	{
+		uuid: "12345678-abcd-efgh-dev0-bunyod000000",
+		name: "Dev-Bunyod",
+		avatar: "avatar-animal-4.webp",
+		badge: "Newcomer",
+		level: 6,
+		xp: 5555,
+		createdAt: new Date("2026-08-01T05:05:05+08:00"),
+		lastLogin: new Date("2026-08-01T05:05:05+08:00"),
+		totalPlayed: 5,
+		totalWins: 5,
+		totalLoss: 5,
+		winStreak: 5,
+		medals: {
+			"High": new Date("2026-08-01T05:05:05+08:00"),
+			"Double": new Date("2026-08-01T05:05:05+08:00"),
+			"Triple": new Date("2026-08-01T05:05:05+08:00"),
+			"Straight": new Date("2026-08-01T05:05:05+08:00"),
+			"Flush": new Date("2026-08-01T05:05:05+08:00"),
+			"Full House": null,
+			"4 Of A Kind": null,
+			"Straight Flush": null,
+			"First Win": null,
+			"3 Of Diamonds": null,
+			"2 Of Spades": null,
+			"No Pass": null,
+		},
+		availability: "Online",
+	},
+	{
+		uuid: "12345678-abcd-efgh-dev0-prag00000000",
+		name: "Dev-Prag",
+		avatar: "avatar-animal-5.webp",
+		badge: "Newcomer",
+		level: 7,
+		xp: 6666,
+		createdAt: new Date("2026-08-01T06:06:06+08:00"),
+		lastLogin: new Date("2026-08-01T06:06:06+08:00"),
+		totalPlayed: 6,
+		totalWins: 6,
+		totalLoss: 6,
+		winStreak: 6,
+		medals: {
+			"High": new Date("2026-08-01T06:06:06+08:00"),
+			"Double": new Date("2026-08-01T06:06:06+08:00"),
+			"Triple": new Date("2026-08-01T06:06:06+08:00"),
+			"Straight": new Date("2026-08-01T06:06:06+08:00"),
+			"Flush": new Date("2026-08-01T06:06:06+08:00"),
+			"Full House": new Date("2026-08-01T06:06:06+08:00"),
+			"4 Of A Kind": null,
+			"Straight Flush": null,
+			"First Win": null,
+			"3 Of Diamonds": null,
+			"2 Of Spades": null,
+			"No Pass": null,
+		},
+		availability: "Busy",
+	},
+];
+
+export const cachedBotData: CachedData[] = [
+	{
+		uuid: "bot-0",
+		name: "Norminette",
+		avatar: "avatar-bot-0.webp",
+		relation: "Bot",
+	},
+	{
+		uuid: "bot-1",
+		name: "Moulinette",
+		avatar: "avatar-bot-1.webp",
+		relation: "Bot",
+	},
+	{
+		uuid: "bot-2",
+		name: "Thila-Bot",
+		avatar: "avatar-bot-2.webp",
+		relation: "Bot",
+	},
+	{
+		uuid: "bot-3",
+		name: "Segfault",
+		avatar: "avatar-bot-3.webp",
+		relation: "Bot",
 	},
 ];
 
 interface ProfileValues {
-	clientUuid: string | null;
-	isAuthenticated: boolean;
-	validateResponse: Response | undefined;
-	profilesInDb: ProfileData[];
+	clientUuid: string | null,
+	isAuthenticated: boolean,
+	validateResponse: Response | undefined,
+	profilesInDb: ProfileData[],
+	cachedData: CachedData[],
 };
 
 interface ProfileState extends ProfileValues {
-	setClientUuid: (uuid: string) => void;
-	setIsAuthenticated: (isValid: boolean) => void;
-	setValidateResponse: (validation: Response) => void;
-	createClientProfile: (name: string, avatar: string) => void;
-	updateClientProfile: (name: string, avatar: string, badge: BADGE_TYPE) => void;
-	getProfileData: (uuid: string) => ProfileData | undefined;
-	resetProfilesInDb: () => void;
+	createClientProfile: (name: string, avatar: string) => void,
+	updateClientProfile: (name: string, avatar: string, badge: BADGE_TYPE) => void,
+	getProfileData: (uuid: string | null) => ProfileData | undefined,
+	resetProfilesInDb: () => void,
+	setCachedData: () => void,
+	getCachedData: (uuid: string | null) => CachedData | undefined,
 };
 
 export const useProfileStore = create<ProfileState>() (
@@ -213,24 +327,10 @@ export const useProfileStore = create<ProfileState>() (
 			isAuthenticated: false, 
 			validateResponse: undefined,
 			profilesInDb: defaultProfileInDb,
+			cachedData: [],
 
-			setClientUuid: (uuid) => {
-				set({
-					clientUuid: uuid,
-				});
-			},
-			setIsAuthenticated: (isValid) => {
-				set({
-					isAuthenticated: isValid,
-				});
-			},
-			setValidateResponse: (validation) => {
-				set({
-					validateResponse: validation,
-				});
-			},
 			createClientProfile: (name, avatar) => {
-				const { clientUuid, profilesInDb } = get();
+				const { clientUuid, profilesInDb, setCachedData } = get();
 				if (!clientUuid)
 					return;
 
@@ -246,21 +346,18 @@ export const useProfileStore = create<ProfileState>() (
 				}
 
 				const newProfile = createDefaultProfile(clientUuid!, name, avatar);
-				set({
-					profilesInDb: [...profilesInDb, newProfile],
-				});
+				set({ profilesInDb: [...profilesInDb, newProfile] });
+				setCachedData();
 			},
 			updateClientProfile: (name, avatar, badge) => {
-				const { clientUuid, profilesInDb } = get();
+				const { clientUuid, profilesInDb, setCachedData } = get();
 				if (!clientUuid)
 					return;
 
 				const profileExists = profilesInDb.some((p) => p.uuid === clientUuid);
 				if (!profileExists) {
 					const newProfile = createDefaultProfile(clientUuid!, name, avatar, badge);
-					set({
-						profilesInDb: [...profilesInDb, newProfile],
-					});
+					set({ profilesInDb: [...profilesInDb, newProfile] });
 					return;
 				}
 
@@ -270,15 +367,57 @@ export const useProfileStore = create<ProfileState>() (
 						: p
 					),
 				});
+
+				setCachedData();
 			},
 			getProfileData: (uuid) => {
-				const profiles = get().profilesInDb;
-				return profiles.find(p => p.uuid === uuid);
+				if (!uuid)
+					return undefined;
+				const profilesInDb = get().profilesInDb;
+				return profilesInDb.find(p => p.uuid === uuid);
 			},
 			resetProfilesInDb: () => {
 				set({
 					profilesInDb: defaultProfileInDb,
+					cachedData: [],
 				});
+			},
+			setCachedData: () => {
+				const clientUuid = get().clientUuid;
+				const members = usePartyStore.getState().members;
+				const friends = useFriendStore.getState().friends;
+
+				const allUuids = Array.from(
+					new Set([...members, ...(clientUuid ? [clientUuid] : [])])
+				);
+				const cachedMemberData = allUuids.map((memberUuid: string | null) : CachedData | null => {
+					if (!memberUuid)
+						return null;
+
+					const data = get().getProfileData(memberUuid);
+					if (!data)
+						return null;
+					
+					const humanRelation: RELATION_TYPE = 
+						memberUuid === clientUuid ? "Self" :
+						friends.includes(memberUuid) ? "Friend" :
+						"Stranger";
+
+					return {
+						uuid: memberUuid!,
+						name: data?.name,
+						avatar: data?.avatar,
+						relation: humanRelation,
+					}
+				}).filter((profile): profile is CachedData => profile !== null);
+
+				set({ cachedData: [...cachedBotData, ...cachedMemberData] });
+			},
+			getCachedData: (uuid) => {
+				if (!uuid)
+					return;
+				const cachedData = get().cachedData;
+				return cachedData.find(p => p.uuid === uuid);
 			},
 		}),
 		{

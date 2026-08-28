@@ -1,6 +1,6 @@
 interface DevButtonProps {
-	label: string,
-	call: () => void,
+	label: string;
+	call: () => void;
 }
 
 export const DevButton = ({ label, call }: DevButtonProps) => {

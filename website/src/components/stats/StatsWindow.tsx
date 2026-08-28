@@ -11,13 +11,9 @@ import { KickMemberButton } from "./kick/KickMemberButton";
 
 export const StatsWindow: React.FC = () => {
 	const { profileUuid } = useSceneStore();
-	if (!profileUuid)
-		return;
-
 	const { getProfileData } = useProfileStore();
 	const data = getProfileData(profileUuid!);
-
-	const { getMemberData } = usePartyStore();
+	const { members } = usePartyStore();
 
 	return (
 		<Window
@@ -31,10 +27,10 @@ export const StatsWindow: React.FC = () => {
 				"
 			>
 				<div className="flex">
-					<AvatarMemberModule name={data?.name ?? "Player"} image={data?.avatar ?? "stock-0.png"} />
+					<AvatarMemberModule uuid={profileUuid} name={data?.name ?? "Player"} image={data?.avatar ?? "avatar-unknown.webp"} />
 					<PlayerDataModule profile={data ?? undefined} />
 				</div>
-				<MedalsModule />
+				<MedalsModule uuid={profileUuid}/>
 				<PlayerStatsModule profile={data ?? undefined} />
 				<div
 					className="
@@ -43,7 +39,7 @@ export const StatsWindow: React.FC = () => {
 						gap-1rem
 					"
 				>
-					{ getMemberData(profileUuid) && <KickMemberButton playerUuid={profileUuid}/>}
+					{ members && profileUuid && members.includes(profileUuid) && <KickMemberButton playerUuid={profileUuid}/>}
 					<FriendToggleButton uuid={profileUuid!}/>
 				</div>
 			</div>

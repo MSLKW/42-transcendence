@@ -5,8 +5,9 @@ import { AddFriendIcon } from "./AddFriendIcon";
 interface FriendToggleButtonProps {
 	uuid: string;
 }
+
 export const FriendToggleButton = ({ uuid }: FriendToggleButtonProps) => {	
-	const { isAFriend, toggleFriend } = useFriendStore();
+	const { toggleFriend, friends } = useFriendStore();
 
 	return (
 		<button
@@ -19,7 +20,7 @@ export const FriendToggleButton = ({ uuid }: FriendToggleButtonProps) => {
 				gap-0.5rem
 			"
 		>
-			{ isAFriend(uuid) ? (
+			{ friends.includes(uuid) ? (
 				<>
 					<UnfriendIcon />
 					<h3>Unfriend</h3>

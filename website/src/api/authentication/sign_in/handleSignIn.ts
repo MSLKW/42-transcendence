@@ -6,7 +6,6 @@ import { useProfileStore } from "../../../store/ProfileStore";
 import { useSceneStore } from "../../../store/SceneStore";
 
 export const handleSignIn = async (email: string, password: string, setIsLoading: Dispatch<SetStateAction<boolean>>) => {
-	const setClientUuid = useProfileStore.getState().setClientUuid;
 	const { setShowWindow, setCurrentScene } = useSceneStore.getState();
 	const { showNotification } = useNotificationStore.getState();
 
@@ -14,7 +13,7 @@ export const handleSignIn = async (email: string, password: string, setIsLoading
 		setIsLoading(true);
 		const response = await signInFetch(email, password);
 
-		setClientUuid(response.id);
+		useProfileStore.setState({ clientUuid: response.id });
 		setShowWindow("signIn", false);
 		setCurrentScene("Home");
 		partySocket.connect();

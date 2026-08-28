@@ -13,24 +13,16 @@ export const ResultsCallButton = () => {
 			"
 		>
 			<button 
-				data-tip="View Last Results"
+				data-tip="View Results"
 				onClick={() => setShowWindow("results", true)}
 				className="
-					rounded-xs
-					hover:not-disabled:scale-105 active:hover:not-disabled:scale-100
-					focus-visible:outline-2 outline-b5
+					h-6rem aspect-square
+					bg-dark btn-icon rounded-sm
 					data-tip-up
-					cursor-pointer
+					flex place-content-center place-items-center
 				"
 			>
-				<div
-					className="
-						h-[clamp(2.5rem,7.5vh+0.5rem,5rem)] aspect-square
-						bg-dark rounded-sm
-						flex place-content-center place-items-center
-				">
-					<ResultsIcon />
-				</div>
+				<ResultsIcon />
 			</button>
 			<AvatarName name="Results" />
 		</div>

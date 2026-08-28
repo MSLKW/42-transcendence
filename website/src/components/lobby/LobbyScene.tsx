@@ -3,7 +3,7 @@ import { useBotStore } from "../../store/BotStore";
 import { useGameStore } from "../../store/GameStore"; 
 import { usePartyStore } from "../../store/PartyStore";
 import { useProfileStore } from "../../store/ProfileStore";
-import { useSceneStore } from "../../store/SceneStore";
+import { useResultsStore } from "../../store/ResultsStore";
 import { HeaderModule } from "../header/HeaderModule";
 import { AvatarModule } from "../avatar/AvatarModule";
 import { PartyCallButton } from "../party/call/PartyCallButton";
@@ -14,26 +14,24 @@ import { UnseatButton } from "./unseat/UnseatButton";
 import { ResultsCallButton } from "../results/call/ResultsCallButton";
 
 export const LobbyScene = () => {
-	const { fillSeatsWithBots } = useBotStore();
+	const { fillSeatsWithBots, removeBots } = useBotStore();
 	const { totalPlayers, seats, startGame, round } = useGameStore();
-	const { members, humans, hostUuid } = usePartyStore();
-	const { clientUuid } = useProfileStore();
-	const { setCurrentScene } = useSceneStore();
-
+	const { members, hostUuid } = usePartyStore();
+	const { clientUuid, getCachedData } = useProfileStore();
+	const { resetResults } = useResultsStore();
+	
 	useEffect(() => {
-		const humansSeated = seats.filter((seat): seat is string => seat !== null && !seats.includes("bot")).length;
-		const totalSeated = seats.filter((seat): seat is string => seat !== null).length;
-
-		if (totalSeated === members.length && humansSeated > 0) {
+		const humansSeated = seats.filter((seat): seat is string => seat !== null && !seat.includes("bot")).length;
+		if (humansSeated === members.length) {
 			// fillSeatsWithBots();
 			return;
 		}
-	}, []);
-
-	const handleStart = () => {
-		setCurrentScene("Game");
-		startGame();
-	}
+		
+		if (seats.includes(null)) {
+			resetResults();
+			removeBots();
+		}
+	}, [members, seats]);
 
 	const seatsFilled = totalPlayers === seats.filter((seat): seat is string => seat !== null).length;
 
@@ -52,25 +50,49 @@ export const LobbyScene = () => {
 					`}>
 						{ totalPlayers === 4 &&
 							( seats[2]
-								? <AvatarModule key={seats[2]} uuid={seats[2]} cornerButton={seats[2] === hostUuid ? "host" : ""}/>
+								?
+									<AvatarModule
+										key={seats[2]}
+										uuid={seats[2]}
+										image={getCachedData(seats[2])?.avatar ?? "avatar-unknown.webp"}
+										cornerButton={seats[2] === hostUuid ? "host" : ""}
+									/>
 								: <TakeSeatButton uuid={clientUuid!} seatNumber={2}/>
 							)
 						}
 						{ totalPlayers === 3 &&
 							<>
 								{ seats[1]
-									? <AvatarModule key={seats[1]} uuid={seats[1]} cornerButton={seats[1] === hostUuid ? "host" : ""}/>
+									? 
+										<AvatarModule
+											key={seats[1]}
+											uuid={seats[1]}
+											image={getCachedData(seats[1])?.avatar ?? "avatar-unknown.webp"}
+											cornerButton={seats[1] === hostUuid ? "host" : ""}
+										/>
 									: <TakeSeatButton uuid={clientUuid!} seatNumber={1}/>
 								}
 								{ seats[2]
-									? <AvatarModule key={seats[2]} uuid={seats[2]} cornerButton={seats[2] === hostUuid ? "host" : ""}/>
+									?
+										<AvatarModule
+											key={seats[2]}
+											uuid={seats[2]}
+											image={getCachedData(seats[2])?.avatar ?? "avatar-unknown.webp"}
+											cornerButton={seats[2] === hostUuid ? "host" : ""}
+										/>
 									: <TakeSeatButton uuid={clientUuid!} seatNumber={2}/>
 								}
 							</>
 						}
 						{ totalPlayers === 2 &&
 							( seats[1]
-								? <AvatarModule key={seats[1]} uuid={seats[1]} cornerButton={seats[1] === hostUuid ? "host" : ""}/>
+								?
+									<AvatarModule
+										key={seats[1]}
+										uuid={seats[1]}
+										image={getCachedData(seats[1])?.avatar ?? "avatar-unknown.webp"}
+										cornerButton={seats[1] === hostUuid ? "host" : ""}
+									/>
 								: <TakeSeatButton uuid={clientUuid!} seatNumber={1}/>
 							)
 						}
@@ -84,17 +106,23 @@ export const LobbyScene = () => {
 					>
 						{ totalPlayers === 4 &&
 							( seats[1]
-								? <AvatarModule key={seats[1]} uuid={seats[1]} cornerButton={seats[1] === hostUuid ? "host" : ""}/>
+								?
+									<AvatarModule
+										key={seats[1]}
+										uuid={seats[1]}
+										image={getCachedData(seats[1])?.avatar ?? "avatar-unknown.webp"}
+										cornerButton={seats[1] === hostUuid ? "host" : ""}
+									/>
 								: <TakeSeatButton uuid={clientUuid!} seatNumber={1}/>
 							)
 						}
 						<button
 							data-tip={seatsFilled ? "Let's Play!" : "Waiting for seats to be filled"}
 							disabled={!seatsFilled}
-							onClick={handleStart}
+							onClick={startGame}
 							className="
 								btn-text bg-light
-								h-3rem aspect-5/1
+								h-3rem aspect-4/1
 								text-1.25rem text-n0
 								data-tip-up
 							"
@@ -103,14 +131,26 @@ export const LobbyScene = () => {
 						</button>
 						{ totalPlayers === 4 &&
 							( seats[3]
-								? <AvatarModule key={seats[3]} uuid={seats[3]} cornerButton={seats[3] === hostUuid ? "host" : ""}/>
+								?
+									<AvatarModule
+										key={seats[3]}
+										uuid={seats[3]}
+										image={getCachedData(seats[3])?.avatar ?? "avatar-unknown.webp"}
+										cornerButton={seats[3] === hostUuid ? "host" : ""}
+									/>
 								: <TakeSeatButton uuid={clientUuid!} seatNumber={3}/>
 								)
 								}
 					</div>
 					<div className="w-full h-full grid place-items-center place-content-center">
 						{ seats[0]
-							? <AvatarModule key={seats[0]} uuid={seats[0]} cornerButton={seats[0] === hostUuid ? "host" : ""} />
+							?
+								<AvatarModule
+									key={seats[0]}
+									uuid={seats[0]}
+									image={getCachedData(seats[0])?.avatar ?? "avatar-unknown.webp"}
+									cornerButton={seats[0] === hostUuid ? "host" : ""}
+								/>
 							: <TakeSeatButton uuid={clientUuid!} seatNumber={0}/>
 						}
 					</div>
@@ -128,24 +168,25 @@ export const LobbyScene = () => {
 					className="
 						w-full
 						flex
-						gap-2rem
+						gap-2rem pt-2rem
 						sm:overflow-x-visible overflow-x-auto
 					"
 				>
-					{ members.map((member) => (
-						member.uuid && !seats.includes(member.uuid) &&
+					{ members.map((uuid) => (
+						uuid && !seats.includes(uuid) &&
 							<AvatarModule
-								key={member.uuid}
-								uuid={member.uuid}
-								cornerButton={member.uuid === hostUuid ? "host" : ""}
+								key={uuid}
+								uuid={uuid}
+								image={getCachedData(uuid)?.avatar ?? "avatar-unknown.webp"}
+								cornerButton={uuid === hostUuid ? "host" : ""}
 							/>
 					))}
 					<PartyCallButton />
 				</div>
-				<div className="flex gap-2rem">
-					{ seats.includes(clientUuid) && humans > 1 && <UnseatButton uuid={clientUuid!} /> }
-					<BotManagerButton />
-					{ round > 1 && <ResultsCallButton /> }
+				<div className="flex gap-2rem pt-2rem">
+					{ members.length > 1 && <UnseatButton uuid={clientUuid!} /> }
+					{ members.length > 1 && <BotManagerButton /> }
+					{ round >= 1 && <ResultsCallButton /> }
 				</div>
 			</footer>
 		</>

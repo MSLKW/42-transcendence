@@ -20,7 +20,7 @@ export const ProfileWindow = () => {
 	const data = getProfileData(clientUuid!);
 	if (!data || !data.name)
 		return;
-	const { members, set1PlayerParty } = usePartyStore();
+	const { members } = usePartyStore();
 
 	const [name, setName] = useState(data.name);
 	const [avatar, setAvatar] = useState(data.avatar!);
@@ -31,8 +31,6 @@ export const ProfileWindow = () => {
 		if (!isValid)
 			return;
 		updateClientProfile(name, avatar, badge);
-		if (members.length <= 0)
-			set1PlayerParty();
 		setShowWindow("profile", false);
 	}
 
@@ -46,15 +44,17 @@ export const ProfileWindow = () => {
 		>
 			<div
 				className="
-					divide-y divide-n2/40
+					max-h-[85vh] w-[80vw] max-w-215
 					py-1rem px-3rem
-					max-h-[85vh] overflow-y-scroll
+					overflow-y-scroll
 				"
 			>
 				<div className="flex">
 					<AvatarSetNameModule
 						name={name}
 						setName={setName}
+						avatar={avatar}
+						uuid={clientUuid}
 					/>
 					<PlayerDataModule
 						profile={data}
@@ -66,7 +66,7 @@ export const ProfileWindow = () => {
 					avatar={avatar}
 					setAvatar={setAvatar}
 				/>
-				<MedalsModule />
+				<MedalsModule uuid={clientUuid}/>
 				<PlayerStatsModule profile={data} />
 				{ members.length > 1 && <LeavePartyModule /> }
 			</div>

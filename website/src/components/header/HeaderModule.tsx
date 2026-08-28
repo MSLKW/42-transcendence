@@ -1,23 +1,28 @@
+import { useState } from "react";
+import { useGameStore } from "../../store/GameStore";
 import { useSceneStore } from "../../store/SceneStore";
 import { BackButton } from "./back/BackButton";
 import { ChatButton } from "./chat/ChatButton";
 import { EmojiButton } from "./emoji/EmojiButton";
 import { SignOutButton } from "./sign_out/SignOutButton";
 import { SettingsButton } from "./settings/SettingsButton";
-import { useGameStore } from "../../store/GameStore";
 
 interface HeaderModuleProps {
-	back: string,
+	back: string;
 }
 
 export const HeaderModule = ({ back }: HeaderModuleProps) => {
-	const { currentScene, setCurrentScene } = useSceneStore();
 	const { endGame } = useGameStore();
+	const { currentScene, setShowWindow } = useSceneStore();
+
 
 	const handleBackClick = () => {
-		if (currentScene === "Game")
-			endGame();
-		setCurrentScene("Home");
+		if (currentScene === "Game") {
+			setShowWindow("leave", true);
+			return;
+		}
+		
+		endGame();
 	};
 
 	return (

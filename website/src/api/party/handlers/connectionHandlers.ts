@@ -4,13 +4,13 @@ import { usePartyStore } from "../../../store/PartyStore";
 export function registerConnectionHandlers(socket: Socket, setIsConnecting: (value: boolean) => void) {
 	socket.on("connect", () => {
 		setIsConnecting(false);
-		usePartyStore.getState().setPartySocketId(socket?.id);
+		usePartyStore.setState({ partySocketId: socket?.id });
 		console.log("[partySocket] 'connect' id:", socket?.id);
 	});
 
 	socket.on("disconnect", (reason) => {
 		setIsConnecting(false);
-		usePartyStore.getState().setPartySocketId("n/a");
+		usePartyStore.setState({ partySocketId: "n/a" });
 		console.log("[partySocket] 'disconnect' reason:", reason);
 	});
 

@@ -3,11 +3,11 @@ import { usePartyStore } from "../../store/PartyStore";
 import { useProfileStore } from "../../store/ProfileStore";
 
 export const LeavePartyModule = () => {
-	const { set1PlayerParty, hostUuid } = usePartyStore();
+	const { hostUuid } = usePartyStore();
 	const { clientUuid } = useProfileStore();
+
 	const handleLeaveParty = () => {
 		partySocket.leaveParty();
-		set1PlayerParty();
 	}
 
 	return (

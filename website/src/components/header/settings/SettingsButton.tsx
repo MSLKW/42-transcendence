@@ -7,7 +7,6 @@ export const SettingsButton = () => {
 	return (
 		<button data-tip="Settings"
 			onClick={() => setShowWindow("settings", true)}
-			// onClick={() => console.log("setShowWindow")}
 			className="btn-icon data-tip-down"
 		>
 			<SettingsIcon />

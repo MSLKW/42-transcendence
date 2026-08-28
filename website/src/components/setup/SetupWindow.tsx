@@ -1,10 +1,12 @@
 import { useState } from "react";
+import { useProfileStore } from "../../store/ProfileStore";
 import { Window } from "../window/Window";
 import { AvatarSetNameModule } from "../avatar/name/AvatarSetNameModule";
 import { AvatarSelectModule } from "../avatar/image/AvatarSetImageModule";
 import { SetupValidationModule } from "./SetupValidationModule";
 
 export const SetupWindow = () => {
+	const { clientUuid } = useProfileStore();
 	const [name, setName] = useState("");
 	const [avatar, setAvatar] = useState("");
 
@@ -21,10 +23,10 @@ export const SetupWindow = () => {
 			<Window
 				title="Setup"
 				dismissKey="setup"
-				hasHeader={false}
+				headerType="None"
 			>
 				<div className="
-					h-fit w-140
+					max-h-[85vh] w-[80vw] max-w-215
 					bg-linear-to-b from-n0 to-n1
 					border border-n1 rounded-xl
 					divide-y divide-n2/40
@@ -33,6 +35,8 @@ export const SetupWindow = () => {
 					<AvatarSetNameModule
 						name={name}
 						setName={setName}
+						avatar={avatar}
+						uuid={clientUuid ?? undefined}
 					/>
 					<AvatarSelectModule
 						avatar={avatar}

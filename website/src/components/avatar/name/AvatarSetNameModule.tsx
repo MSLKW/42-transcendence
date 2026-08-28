@@ -2,10 +2,12 @@ import { useRef, useEffect } from "react";
 import { AvatarImage } from "../image/AvatarImage";
 
 interface AvatarSetNameModuleProps {
-	name: string,
-	setName: (name: string) => void,
+	name: string;
+	setName: (name: string) => void;
+	avatar: string;
+	uuid: string | undefined;
 }
-export const AvatarSetNameModule = ({ name, setName }: AvatarSetNameModuleProps) => {
+export const AvatarSetNameModule = ({ name, setName, avatar, uuid }: AvatarSetNameModuleProps) => {
 	const handleInput = (e: React.ChangeEvent<HTMLInputElement>) => {
 		const value = e.target.value;
 		setName(value);
@@ -18,17 +20,21 @@ export const AvatarSetNameModule = ({ name, setName }: AvatarSetNameModuleProps)
 	}, []);
 
 	return (
-		<div className="
-			flex place-content-evenly place-items-center
-			py-2rem px-4rem
-			gap-2rem
-		">
-			<div className="
-				flex flex-col
-				place-content-center place-items-center
-				gap-3
-			">
-				<AvatarImage />
+		<div
+			className="
+				flex place-content-evenly place-items-center
+				py-2rem px-4rem
+				gap-2rem
+			"
+		>
+			<div
+				className="
+					flex flex-col
+					place-content-center place-items-center
+					gap-3
+				"
+			>
+				<AvatarImage uuid={uuid} image={avatar} />
 				<input
 					ref={inputRef}
 					id="name"

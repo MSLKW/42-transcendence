@@ -3,11 +3,11 @@ import { useBotStore, type INTEL_TYPE } from "../../../store/BotStore";
 import { useSceneStore } from "../../../store/SceneStore";
 
 interface BotSetButtonProps {
-	name: INTEL_TYPE,
+	intel: INTEL_TYPE;
 }
 
-export const BotSetButton = ({ name }: BotSetButtonProps) => {
-	const { intel, setIntel } = useBotStore();
+export const BotSetButton = ({ intel }: BotSetButtonProps) => {
+	const { currentIntel } = useBotStore();
 	const { currentScene } = useSceneStore();
 	
 	return (
@@ -21,18 +21,17 @@ export const BotSetButton = ({ name }: BotSetButtonProps) => {
 		>
 			<button
 				disabled={currentScene === "Game"}
-				onClick={() => setIntel(name)}
+				onClick={() => useBotStore.setState({ currentIntel: intel })}
 				className={`
-					w-[clamp(2.5rem,7.5vh+0.5rem,5rem)]
-					aspect-square
+					h-6rem aspect-square
 					bg-a5
 					border border-a6 rounded-sm
 					${ currentScene === "Game" ? "cursor-default" : "hover:scale-105 cursor-pointer" }
 					outline-offset-3 outline-b5
-					${name === intel ? "outline-2" : ""}
+					${currentIntel === intel ? "outline-2" : ""}
 				`}
 			/>
-			<AvatarName name={name} />
+			<AvatarName name={intel} />
 		</div>
 	);
 }

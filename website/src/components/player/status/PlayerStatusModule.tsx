@@ -3,6 +3,7 @@ import type { AVAILABILITY_TYPE } from "../../../store/ProfileStore";
 interface PlayerStatusModuleProps {
 	status: AVAILABILITY_TYPE;
 }
+
 export const PlayerStatusModule = ({ status }: PlayerStatusModuleProps) => {
 	return (
 		<div
@@ -27,7 +28,7 @@ export const PlayerStatusModule = ({ status }: PlayerStatusModuleProps) => {
 				{
 					status === "Offline" ? "Offline" :
 					status === "Online" ? "Online" :
-					"In another party"
+					"Busy"
 				}
 			</h3>
 		</div>
