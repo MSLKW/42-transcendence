@@ -18,7 +18,7 @@ export const userData = profileSystemSchema.table("user_data", {
 	// owned by profile-system ( yeay! )
 	username: text("username").unique(),
 	avatarPath: text("avatar_path"),
-	badge: jsonb("badge")
+	badge: text("badge")
 		.$type<BadgeLabel>()
 		.default("Newcomer")
 		.notNull(),

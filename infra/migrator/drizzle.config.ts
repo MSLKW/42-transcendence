@@ -11,16 +11,18 @@ import { defineConfig } from "drizzle-kit";
 
 
 // 2. Helper to safely read the password
-function requirePassword(): string {
-  const passwordFile = "/run/secrets/db-admin-password";
-  try {
+function requirePassword(): string 
+{
+  try 
+  {
+    const passwordFile = "/run/secrets/db-admin-password";
     const password = fs.readFileSync(passwordFile, "utf-8").trim();
-    if (!password) {
+    if (!password)
       throw new Error("empty password");
-    }
     return password;
   } 
-  catch {
+  catch (err: any) 
+  {
     throw new Error("CRITICAL: Database password could not be loaded from the secret file itself");
   }
 }
@@ -34,7 +36,7 @@ export default defineConfig({
     schema: [ // points to the "Source of Truth."
       "../../packages/postgres/auth-schema/src/index.ts", 
       "../../packages/postgres/party-manager-schema/src/index.ts", 
-      // "../../packages/postgres/profile-system-schema/src/index.ts",
+      "../../packages/postgres/profile-system-schema/src/index.ts",
       "../../packages/postgres/game-schema/src/index.ts"
     ], 
     out: "./migrations", // naming is following industry standard / drizzle kit's default behaviour / drizzle's documentation
