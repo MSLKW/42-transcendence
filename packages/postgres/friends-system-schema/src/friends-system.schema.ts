@@ -1,5 +1,6 @@
 import { users } from "@big2/auth-schema";
-import { pgSchema, uuid, jsonb, timestamp } from "drizzle-orm/pg-core";
+import { pgSchema, uuid, jsonb, timestamp, index, check, uniqueIndex } from "drizzle-orm/pg-core";
+import { sql } from "drizzle-orm";
 import { RequestStatus } from "@big2/friends-system-types";
 
 
@@ -23,12 +24,16 @@ export const friendships = friendsSystemSchema.table("friendships", {
 	updatedAt: timestamp("updated_at", { withTimezone: true})
 		.defaultNow()
 		.notNull(),
-});
+}, (table) => ({
+  friendsPairUniqueIdx: uniqueIndex("friends_pair_unique_idx").on(table.friendSmallId, table.friendBigId),
+  orderedFriendsPairCheck: check("ordered_friends_pair_check", sql`${table.friendSmallId} < ${table.friendBigId}`),
+}));
+
 
 
 export const friendRequests = friendsSystemSchema.table("friend_requests", {
 	id: uuid("id") // id for the friend_requests, not for user_id
-		.unique()
+		// .unique() => primaryKey already guarantees uniqueness
 		.primaryKey()
 		.defaultRandom(),
 	senderId: uuid("sender_id")
@@ -47,4 +52,6 @@ export const friendRequests = friendsSystemSchema.table("friend_requests", {
 	updatedAt: timestamp("updated_at", { withTimezone: true })
 		.defaultNow()
 		.notNull(),
-});
+}, (table) => ({
+  senderReceiverIdx: index("sender_receiver_indx").on(table.senderId, table.receiverId),
+}));
