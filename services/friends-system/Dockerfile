@@ -4,6 +4,7 @@ WORKDIR /app
 
 COPY package*.json ./
 COPY packages/postgres/auth-schema/package.json ./packages/postgres/auth-schema/
+COPY packages/types/friends-system-types/package.json ./packages/types/friends-system-types/
 COPY packages/postgres/friends-system-schema/package.json ./packages/postgres/friends-system-schema/
 COPY packages/postgres/postgres-client/package.json ./packages/postgres/postgres-client/
 COPY services/friends-system/package.json ./services/friends-system/
@@ -13,6 +14,7 @@ RUN npm ci
 COPY . .
 
 RUN npm run --prefix packages/postgres/auth-schema build
+RUN npm run --prefix packages/types/friends-system-types build
 RUN npm run --prefix packages/postgres/friends-system-schema build
 RUN npm run --prefix packages/postgres/postgres-client build
 RUN npm run --prefix services/friends-system build
@@ -23,6 +25,7 @@ WORKDIR /app
 
 COPY package*.json ./
 COPY packages/postgres/auth-schema/package.json ./packages/postgres/auth-schema/
+COPY packages/types/friends-system-types/package.json ./packages/postgres/friends-system-types/
 COPY packages/postgres/friends-system-schema/package.json ./packages/postgres/friends-system-schema/
 COPY packages/postgres/postgres-client/package.json ./packages/postgres/postgres-client/
 COPY services/friends-system/package.json ./services/friends-system/
@@ -35,6 +38,7 @@ ENV NODE_ENV=production
 RUN npm ci --omit=dev
 
 COPY --from=builder /app/packages/postgres/auth-schema/dist ./packages/postgres/auth-schema/dist
+COPY --from=builder /app/packages/types/friends-system-types/dist ./packages/types/friends-system-types/dist
 COPY --from=builder /app/packages/postgres/friends-system-schema/dist ./packages/postgres/friends-system-schema/dist
 COPY --from=builder /app/packages/postgres/postgres-client/dist ./packages/postgres/postgres-client/dist
 COPY --from=builder /app/services/friends-system/dist ./services/friends-system/dist
