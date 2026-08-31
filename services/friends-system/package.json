@@ -20,10 +20,12 @@
   },
   "dependencies": {
     "@big2/friends-system-schema": "*",
+    "@big2/friends-system-types": "*",
     "@big2/postgres-client": "*",
     "@types/express": "^5.0.6",
     "cors": "^2.8.6",
     "dotenv": "^17.4.2",
+    "drizzle-orm": "^0.45.2",
     "express": "^5.2.1"
   }
 }

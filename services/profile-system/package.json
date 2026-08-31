@@ -20,11 +20,11 @@
 		"typescript": "^6.0.3"
 	},
 	"dependencies": {
-		"@big2/auth-schema": "*",
+		"@big2/postgres-client": "*",
 		"@big2/profile-system-schema": "*",
 		"@big2/profile-system-types": "*",
-		"@big2/postgres-client": "*",
 		"dotenv": "^17.4.2",
+		"drizzle-orm": "^0.45.2",
 		"express": "^5.2.1",
 		"multer": "^2.2.0"
 	}
