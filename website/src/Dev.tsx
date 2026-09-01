@@ -15,6 +15,7 @@ import { useResultsStore } from "./store/ResultsStore";
 import { defaultShowWindow, useSceneStore } from "./store/SceneStore";
 import { DevButton } from "./components/dev/DevBtn";
 import { useFrameView } from "./utilities/useFrameView";
+import { useBubbleStore } from "./store/BubbleStore";
 
 export default function Dev() {
 	const { fillSeatsWithBots, removeBots } = useBotStore();
@@ -167,6 +168,10 @@ export default function Dev() {
 					<DevButton
 						label={`chatRoomId: ${chatRoomId ? chatRoomId : "n/a"}`}
 						call={() => useChatStore.setState({ chatRoomId: hostUuid })}
+					/>
+					<DevButton
+						label={"bubbles"}
+						call={() => console.log("bubbles: ", useBubbleStore.getState().bubbles)}
 					/>
 					<DevButton
 						label={"joinRoom"}

@@ -1,33 +1,47 @@
-import type { ChatMessage } from "../../store/ChatStore";
-import { useProfileStore } from "../../store/ProfileStore";
-import { AvatarImage } from "../avatar/image/AvatarImage";
+import { useBubbleStore, EMPTY_BUBBLES } from "../../store/BubbleStore";
+import { useSceneStore } from "../../store/SceneStore";
 
-interface ChatProps {
-	data: ChatMessage;
+interface ChatBubbleProps {
+	uuid: string;
 }
 
-export const ChatBubble = ({ data }: ChatProps) => {
-	const { clientUuid } = useProfileStore();
+export const ChatBubbles = ({ uuid }: ChatBubbleProps) => {
+	const bubbles = useBubbleStore((state) => state.bubbles[uuid] ?? EMPTY_BUBBLES);
+	const removeBubble = useBubbleStore((state) => state.removeBubble);
+	const setShowWindow = useSceneStore((state) => state.setShowWindow);
+	if (!bubbles.length)
+		return null;
 
 	return (
-		<>
-			{data.uuid === clientUuid ? (
-				<div className="flex place-content-end place-items-start gap-5">
-					<div className="flex flex-col gap-1 text-right bg-a3 border border-a4 rounded-xl px-5 py-3">
-						<p className="text-b5 font-bold">{data.name}</p>
-						<p>{data.msg}</p>
-					</div>
-					<AvatarImage uuid={data.uuid} image={data.avatar}/>
-				</div>
-			) : (
-				<div className="flex place-content-start place-items-start gap-5">
-					<AvatarImage uuid={data.uuid} image={data.avatar}/>
-					<div className="flex flex-col gap-1 text-left bg-a3 border border-a4 rounded-xl px-5 py-3">
-						<p className="text-b5 font-bold">{data.name}</p>
-						<p>{data.msg}</p>
-					</div>
-				</div>
-			)}
-		</>
+		<div
+			className="
+				absolute z-20
+				bottom-full left-1/2 -translate-x-1/2 mb-2
+				w-max max-w-48
+				flex flex-col-reverse
+				place-items-center gap-2
+				pointer-events-none
+			"
+		>
+			{bubbles.map((b) => (
+				<button
+					key={b.id}
+					onClick={() => {
+						removeBubble(uuid, b.id);
+						setShowWindow("chat", true);
+					}}
+					className="
+						max-w-48
+						px-3 py-2
+						bg-dark rounded-full
+						text-n6 text-left text-1rem wrap-break-word
+						hover:scale-105 active:scale-100 transition
+						cursor-pointer pointer-events-auto
+					"
+				>
+					{b.message}
+				</button>
+			))}
+		</div>
 	);
 }

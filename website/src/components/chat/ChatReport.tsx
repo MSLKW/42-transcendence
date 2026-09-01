@@ -1,7 +1,7 @@
-import type { ChatMessage } from "../../store/ChatStore";
+import type { ChatData } from "../../store/ChatStore";
 
 interface ChatReportProps {
-	data: ChatMessage;
+	data: ChatData;
 }
 
 export const ChatReport = ({ data }: ChatReportProps) => {

@@ -3,7 +3,7 @@ import { chatSocket } from "../../api/chat/chatSocket";
 import { useChatStore } from "../../store/ChatStore";
 import { Window } from "../window/Window";
 import { SendButton } from "./send/SendButton";
-import { ChatBubble } from "./ChatBubble";
+import { ChatMessage } from "./ChatMessage";
 import { ChatReport } from "./ChatReport";
 
 export const ChatWindow = () => {
@@ -63,7 +63,7 @@ export const ChatWindow = () => {
 							{cachedChat.map((data, index) => (
 								<li key={`${data.uuid}-${index}`}>
 									{data.type === "MESSAGE"
-										? <ChatBubble data={data}/>
+										? <ChatMessage data={data}/>
 										: <ChatReport data={data}/>
 									}
 								</li>

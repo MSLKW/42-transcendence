@@ -3,6 +3,7 @@ import { useSceneStore } from "../../store/SceneStore";
 import { AvatarImage } from "./image/AvatarImage";
 import { AvatarName } from "./name/AvatarName";
 import { AvatarCornerButton } from "./corner/AvatarCornerButton";
+import { ChatBubbles } from "../chat/ChatBubble";
 
 interface AvatarModuleProps {
 	uuid: string;
@@ -30,8 +31,10 @@ export const AvatarModule = ({
 			className="
 				flex flex-col place-content-center place-items-center
 				gap-0.75rem
+				relative
 			"
 		>
+			<ChatBubbles uuid={uuid} />
 			<button
 				data-tip={
 					relation === "Self" && currentScene !== "Game" ? "Edit Profile" :
@@ -62,7 +65,11 @@ export const AvatarModule = ({
 					relative
 				`}
 			>
-				<AvatarImage uuid={uuid} image={image ?? "avatar-unknown.webp"} isActive={isActive}/>
+				<AvatarImage
+					uuid={uuid}
+					image={image ?? "avatar-unknown.webp"}
+					isActive={isActive}
+				/>
 				<AvatarCornerButton cornerButton={cornerButton} />
 			</button>
 			{ showName && <AvatarName name={data?.name ?? "Player"} /> }

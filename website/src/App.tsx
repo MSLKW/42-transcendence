@@ -48,25 +48,30 @@ export default function App() {
 
 	//inital profile setup
 	useEffect(() => {
-		if (currentScene !== "Login") {
-			const data = getProfileData(clientUuid!);
-			if (!data?.name)
-				setShowWindow("setup", true);
-		}
+		if (currentScene === "Login")
+			return;
+
+		const data = getProfileData(clientUuid!);
+		if (!data?.name)
+			setShowWindow("setup", true);
 	}, [currentScene]);
 
 	//socket connections
 	useEffect(() => {
-		if (currentScene !== "Login") {
-			if (!partySocket.isConnected())
-				partySocket.connect();
-			if (!chatSocket.isConnected())
-				chatSocket.connect();
-		}
+		if (currentScene === "Login")
+			return;
+
+		if (!partySocket.isConnected())
+			partySocket.connect();
+		if (!chatSocket.isConnected())
+			chatSocket.connect();
 	}, [currentScene]);
 
 	//chat subscriptions
 	useEffect(() => {
+		if (currentScene === "Login")
+			return;
+
 		const unsubscribeFromMessages = subscribeToMessages();
 		const unsubscribeFromUserJoined = subscribeToUserJoined();
 		const unsubscribeFromUserLeft = subscribeToUserLeft();
@@ -76,10 +81,13 @@ export default function App() {
 			unsubscribeFromUserJoined();
 			unsubscribeFromUserLeft();
 		};
-	}, []);
+	}, [currentScene]);
 
 	//party/room changes
 	useEffect(() => {
+		if (currentScene !== "Login")
+			return;
+		
 		if (hostUuid)
 			chatSocket.joinRoom(hostUuid);
 		else if (clientUuid)
@@ -97,23 +105,25 @@ export default function App() {
 					w-full min-w-80 max-w-360
 				"
 			>
-				{ currentScene === "Login" && 
-					<Canvas>
-						<AdaptiveDpr />
-						<ambientLight intensity={0.5} />
-						<directionalLight position={[0, 5, 5]} intensity={0.5} />
-						{ currentScene === "Login" &&
-							<Card
+				<Canvas>
+					{ currentScene === "Login" && 
+						<>
+							<AdaptiveDpr />
+							<ambientLight intensity={0.5} />
+							<directionalLight position={[0, 5, 5]} intensity={0.5} />
+							{ currentScene === "Login" &&
+								<Card
 								position={[0,0.25,0]}
 								rotation={[-Math.PI/4,0,0]}
 								color="gold"
-							/>
-						}
-						<SphereBg />
-						<PerspectiveCamera makeDefault position={[0, 0, 2.25]} />
-						<OrbitControls enableZoom={false} />
-					</Canvas>
-				}
+								/>
+							}
+							<SphereBg />
+							<PerspectiveCamera makeDefault position={[0, 0, 2.25]} />
+							<OrbitControls enableZoom={false} />
+						</>
+					}
+				</Canvas>
 			</section>
 			<section
 				className="

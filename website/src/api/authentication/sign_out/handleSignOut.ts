@@ -7,6 +7,7 @@ import { partySocket } from "../../party/partySocket";
 import { useProfileStore } from "../../../store/ProfileStore";
 import { chatSocket } from "../../chat/chatSocket";
 import { useChatStore } from "../../../store/ChatStore";
+import { useBubbleStore } from "../../../store/BubbleStore";
 
 export const handleSignOut = async () => {
 	try {
@@ -16,15 +17,21 @@ export const handleSignOut = async () => {
 		
 		useProfileStore.setState({ clientUuid: "n/a" });
 
-		usePartyStore.setState({ members: [] });
-		usePartyStore.setState({ partyGameId: null });
+		usePartyStore.setState({
+			members: [],
+			partyGameId: null,
+		});
 		partySocket.disconnect();
 
 		useChatStore.setState({ cachedChat: [] });
 		chatSocket.disconnect();
 
-		useSceneStore.setState({ showWindow: defaultShowWindow });
-		useSceneStore.getState().setCurrentScene("Login");
+		useBubbleStore.getState().clearAllBubbles();
+
+		useSceneStore.setState({
+			showWindow: defaultShowWindow,
+			currentScene: "Login",
+		});
 
 		useNotificationStore.getState().showNotification("Logged out successfully", NOTIFICATION_TYPE.message);
 		console.log("[handleSignOut] Logged out successfully!");

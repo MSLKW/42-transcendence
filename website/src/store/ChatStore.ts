@@ -3,7 +3,7 @@ import { persist } from "zustand/middleware";
 
 export type CHAT_TYPE = "MESSAGE" | "NOTIFICATION";
 
-export interface ChatMessage {
+export interface ChatData {
 	type: CHAT_TYPE,
 	uuid: string,
 	name: string,
@@ -14,7 +14,7 @@ export interface ChatMessage {
 interface ChatValues {
 	chatSocketId: string | null;
 	chatRoomId: string | null;
-	cachedChat: ChatMessage[];
+	cachedChat: ChatData[];
 }
 
 interface ChatState extends ChatValues {
