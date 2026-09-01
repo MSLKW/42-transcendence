@@ -1,75 +1,16 @@
 import { useState, useRef, useEffect } from "react";
 import { chatSocket } from "../../api/chat/chatSocket";
 import { useChatStore } from "../../store/ChatStore";
-import { usePartyStore } from "../../store/PartyStore";
-import { useProfileStore } from "../../store/ProfileStore";
 import { Window } from "../window/Window";
 import { SendButton } from "./send/SendButton";
 import { ChatBubble } from "./ChatBubble";
 import { ChatReport } from "./ChatReport";
 
 export const ChatWindow = () => {
-	const { cachedChat, addToCachedChat } = useChatStore();
-	const { hostUuid } = usePartyStore();
-	const { clientUuid, getCachedData } = useProfileStore();
+	const { cachedChat } = useChatStore();
 	const [ message, setMessage ] = useState("");
 	const focusRef = useRef<HTMLInputElement | null>(null);
 	const messagesEndRef = useRef<HTMLLIElement | null>(null);
-
-	//socket lifecycle / listeners
-	useEffect(() => {
-		const unsubMessage = chatSocket.onMessage((chat) => {
-			const data = getCachedData(chat.senderUuid);
-			addToCachedChat(
-				"MESSAGE",
-				chat.senderUuid,
-				data?.name ?? "Player",
-				data?.avatar ?? "avatar-unknown.webp",
-				chat.message
-			);
-			console.log(`[unsubMessage] uuid:${chat.senderUuid} message:${chat.message} timestamp:${chat.timestamp}`);
-		});
-
-		const unsubJoined = chatSocket.onUserJoined((notif) => {
-			const data = getCachedData(notif.senderUuid);
-			const name = data?.name ?? "A player";
-			addToCachedChat(
-				"NOTIFICATION",
-				notif.senderUuid,
-				name,
-				"",
-				`${name} has joined your party!`
-			);
-			console.log(`[unsubJoined] uuid:${notif.senderUuid} timestamp:${notif.timestamp}`);
-		});
-
-		const unsubLeft = chatSocket.onUserLeft((notif) => {
-			const data = getCachedData(notif.senderUuid);
-			const name = data?.name ?? "A player";
-			addToCachedChat(
-				"NOTIFICATION",
-				notif.senderUuid,
-				name,
-				"",
-				`${name} has left your party!`
-			);
-			console.log(`[unsubLeft] uuid:${notif.senderUuid} timestamp:${notif.timestamp}`);
-		})
-
-		return () => {
-			unsubMessage();
-			unsubJoined();
-			unsubLeft();
-		};
-	}, []);
-
-	//party/room changes
-	useEffect(() => {
-		if (hostUuid)
-			chatSocket.joinRoom(hostUuid);
-		else if (clientUuid)
-			chatSocket.joinRoom(clientUuid);
-	}, [hostUuid, clientUuid]);
 
 	//focus
 	useEffect(() => {
@@ -85,7 +26,6 @@ export const ChatWindow = () => {
 
 	const handleSend = (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
-
 		chatSocket.sendMessage(message);
 		setMessage("");
 		focusRef.current?.focus();

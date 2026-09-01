@@ -102,9 +102,9 @@ class ChatSocketService {
 
 	public onMessage(callback: (data: ChatMessage ) => void) {
 		if (!this.socket)
-			return () => {};
+			this.connect();
 
-		this.socket.on("chat_message", callback);
+		this.socket?.on("chat_message", callback);
 		return () => {
 			this.socket?.off("chat_message", callback);
 		};
@@ -112,9 +112,9 @@ class ChatSocketService {
 
 	public onUserJoined(callback: (data: ChatNotification) => void) {
 		if (!this.socket)
-			return () => {};
+			this.connect();
 
-		this.socket.on("chat_user_joined", callback);
+		this.socket?.on("chat_user_joined", callback);
 		return () => {
 			this.socket?.off("chat_user_joined", callback);
 		};
@@ -122,9 +122,9 @@ class ChatSocketService {
 
 	public onUserLeft(callback: (data: ChatNotification) => void) {
 		if (!this.socket)
-			return () => {};
+			this.connect();
 
-		this.socket.on("chat_user_left", callback);
+		this.socket?.on("chat_user_left", callback);
 		return () => {
 			this.socket?.off("chat_user_left", callback);
 		};

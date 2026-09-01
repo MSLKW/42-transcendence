@@ -4,8 +4,12 @@ import { Stats, PerspectiveCamera, OrbitControls, AdaptiveDpr } from "@react-thr
 import { chatSocket } from "./api/chat/chatSocket";
 import { partySocket } from "./api/party/partySocket";
 import { useDevStore } from "./store/DevStore";
+import { usePartyStore } from "./store/PartyStore";
 import { useProfileStore } from "./store/ProfileStore";
 import { useSceneStore } from "./store/SceneStore";
+import { subscribeToMessages } from "./api/chat/subscribe/subscribeToMessages";
+import { subscribeToUserJoined } from "./api/chat/subscribe/subscribeToUserJoined";
+import { subscribeToUserLeft } from "./api/chat/subscribe/subscribeToUserLeft";
 import { useScrollToTop } from "./utilities/useScrollToTop";
 import { StripeBg } from "./components/bg/Stripe";
 import { SphereBg } from "./components/3d/Sphere";
@@ -32,24 +36,55 @@ import { StatsWindow } from "./components/stats/StatsWindow";
 import Dev from "./Dev";
 
 export default function App() {
+	const { hostUuid } = usePartyStore();
 	const { clientUuid, getProfileData } = useProfileStore();
 	const { currentScene, showWindow, setShowWindow } = useSceneStore();
 	const { showDevSection, showStats } = useDevStore();
 
+	//scroll to top
 	useEffect(() => {
 		useScrollToTop();
+	}, [currentScene]);
 
+	//inital profile setup
+	useEffect(() => {
 		if (currentScene !== "Login") {
 			const data = getProfileData(clientUuid!);
 			if (!data?.name)
 				setShowWindow("setup", true);
+		}
+	}, [currentScene]);
 
+	//socket connections
+	useEffect(() => {
+		if (currentScene !== "Login") {
 			if (!partySocket.isConnected())
 				partySocket.connect();
 			if (!chatSocket.isConnected())
 				chatSocket.connect();
 		}
 	}, [currentScene]);
+
+	//chat subscriptions
+	useEffect(() => {
+		const unsubscribeFromMessages = subscribeToMessages();
+		const unsubscribeFromUserJoined = subscribeToUserJoined();
+		const unsubscribeFromUserLeft = subscribeToUserLeft();
+
+		return () => {
+			unsubscribeFromMessages();
+			unsubscribeFromUserJoined();
+			unsubscribeFromUserLeft();
+		};
+	}, []);
+
+	//party/room changes
+	useEffect(() => {
+		if (hostUuid)
+			chatSocket.joinRoom(hostUuid);
+		else if (clientUuid)
+			chatSocket.joinRoom(clientUuid);
+	}, [hostUuid, clientUuid]);
 
 	return (
 		<>
