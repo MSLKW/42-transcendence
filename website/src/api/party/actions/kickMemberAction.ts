@@ -1,4 +1,5 @@
 import { Socket } from "socket.io-client";
+import { chatSocket } from "../../chat/chatSocket";
 import { useNotificationStore, NOTIFICATION_TYPE } from "../../../store/NotificationStore";
 import { usePartyStore } from "../../../store/PartyStore";
 import { useProfileStore } from "../../../store/ProfileStore";
@@ -19,6 +20,8 @@ export function kickMemberAction(socket: Socket | null, recipientUuid: string, r
 		`${recipientName} removed from your party`,
 		NOTIFICATION_TYPE.message
 	);
+
+	chatSocket.disconnect();
 
 	usePartyStore.getState().kickMember(recipientUuid);
 

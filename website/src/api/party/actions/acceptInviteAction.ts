@@ -1,5 +1,6 @@
 import { Socket } from "socket.io-client";
 import { useNotificationStore, NOTIFICATION_TYPE } from "../../../store/NotificationStore";
+import { useChatStore } from "../../../store/ChatStore";
 
 export function acceptInviteAction(socket: Socket | null, hostUuid: string) {
 	const { showNotification } = useNotificationStore.getState();
@@ -19,5 +20,8 @@ export function acceptInviteAction(socket: Socket | null, hostUuid: string) {
 		"You just joined a party!",
 		NOTIFICATION_TYPE.message
 	);
+
+	useChatStore.setState({ chatRoomId: hostUuid });
+	
 	console.log("[partySocket] 'accept_invite' hostUuid:", hostUuid);
 }

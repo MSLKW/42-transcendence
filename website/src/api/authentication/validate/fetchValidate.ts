@@ -7,8 +7,7 @@ export const fetchValidate = async () => {
 		method: "GET",
 		credentials: "include",
 	});
-	useProfileStore.setState({ validateResponse: response });
-
+	
 	if (!response.ok && useProfileStore.getState().isAuthenticated) {
 		useProfileStore.setState({ isAuthenticated: false });
 		useSceneStore.getState().setCurrentScene("Login");
@@ -16,8 +15,8 @@ export const fetchValidate = async () => {
 		console.log("[/api/auth/validate] error: Invalid or expired session");
 		return;
 	}
-	if (response.ok && !useProfileStore.getState().isAuthenticated) {
-		useProfileStore.setState({ isAuthenticated: true });
-		console.log("[/api/auth/validate] 200 OK");
-	}
+	
+	useProfileStore.setState({ isAuthenticated: true });
+	console.log("[/api/auth/validate] 200 OK");
+	return response;
 }

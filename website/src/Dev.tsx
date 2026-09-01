@@ -1,5 +1,8 @@
 import { useState } from "react";
 import { handleSignOut } from "./api/authentication/sign_out/handleSignOut";
+import { handleValidate } from "./api/authentication/validate/handleValidate";
+import { useChatStore } from "./store/ChatStore";
+import { chatSocket } from "./api/chat/chatSocket";
 import { partySocket } from "./api/party/partySocket";
 import { useBotStore } from "./store/BotStore";
 import { useDevStore } from "./store/DevStore";
@@ -14,10 +17,11 @@ import { DevButton } from "./components/dev/DevBtn";
 import { useFrameView } from "./utilities/useFrameView";
 
 export default function Dev() {
-	const { fillSeatsWithBots, removeBots, botCount } = useBotStore();
+	const { fillSeatsWithBots, removeBots } = useBotStore();
+	const { chatSocketId, chatRoomId, cachedChat } = useChatStore();
 	const { toggleFlag } = useDevStore();
 	const { friends } = useFriendStore();
-	const { seats, totalPlayers, playerUnseats, currentHand, endGame } = useGameStore();
+	const { seats, totalPlayers, playerUnseats, currentHand } = useGameStore();
 	const { showNotification } = useNotificationStore();
 	const { partySocketId, partyGameId, members, hostUuid } = usePartyStore();
 	const { clientUuid, isAuthenticated, validateResponse, profilesInDb, resetProfilesInDb, cachedData, getCachedData } = useProfileStore();
@@ -30,14 +34,25 @@ export default function Dev() {
 		await handleSignOut();
 		setCurrentScene("Login");
 		useSceneStore.setState({ showWindow: defaultShowWindow });
+		useChatStore.setState({ cachedChat: [] });
 		console.log("[Dev] Game have been reset");
 	}
 
-	const handlePartyConnection = () => {
-		if (partySocket.isSocketActive())
-			partySocket.disconnect();
+	const handleChatConnection = () => {
+		if (chatSocket.isConnected())
+			chatSocket.disconnect();
 		else
+			chatSocket.connect();
+	}
+
+	const handlePartyConnection = () => {
+		if (partySocket.isConnected()) {
+			partySocket.disconnect();
+			chatSocket.disconnect();
+		} else {
 			partySocket.connect();
+			chatSocket.connect();
+		}
 	}
 
 	const seated = seats.filter((seat): seat is string => typeof seat === "string").length;
@@ -50,6 +65,10 @@ export default function Dev() {
 		});
 		useGameStore.setState({ cardsLeft: newCardsLeft });
 	}
+
+	const doValidate = async () => {
+		await handleValidate();
+	};
 
 	return (
 		<section className="w-full text-r4 py-1rem">
@@ -83,7 +102,8 @@ export default function Dev() {
 			</ul>
 			<ul className="flex flex-col px-3rem">
 				<div className="flex place-content-between">
-					<DevButton label={`Client UUID: ${clientUuid ? clientUuid : "n/a"}`} call={() => navigator.clipboard.writeText(clientUuid ?? "")}/>
+					<DevButton label={`clientUuid: ${clientUuid ? clientUuid : "n/a"}`} call={() => navigator.clipboard.writeText(clientUuid ?? "")}/>
+					<DevButton label="Validate" call={doValidate}/>
 					<DevButton label={`isAuthenticated: ${isAuthenticated ? "Yes" : "No"}`} call={() => console.log("/validate response: ", validateResponse)}/>
 				</div>
 				<div className="flex place-content-between">
@@ -96,10 +116,12 @@ export default function Dev() {
 						label={`Party Manager Socket ID: ${partySocketId ? partySocketId : "n/a"}`}
 						call={handlePartyConnection}
 					/>
+					<DevButton label="isConnected" call={() => partySocket.isConnected()}/>
 					<DevButton label={`members: ${members.length}`} call={() => console.log("members: ", members)}/>
 				</div>
 				<div className="flex place-content-between">
 					<li>Party Game ID: {partyGameId ? partyGameId : "n/a"}</li>
+					<DevButton label="Connect" call={() => partySocket.connect()} />
 					<DevButton label={`seats: ${seated} / ${totalPlayers}`} call={() => console.log("seats: ", seats)} />
 				</div>
 				<div className="flex place-content-between">
@@ -130,7 +152,30 @@ export default function Dev() {
 					{currentScene === "Lobby" && <DevButton label="Remove Bots" call={() => removeBots()} />}
 					{currentScene === "Lobby" && <DevButton label="Unseat" call={() => playerUnseats(clientUuid!)} />}
 				</div>
-				<li>Chat Manager Socket ID: n/a</li>
+				<div className="flex place-content-between">
+					<DevButton
+						label={`chatSocketId: ${chatSocketId}`}
+						call={handleChatConnection}
+					/>
+					<DevButton label="isConnected" call={() => chatSocket.isConnected()}/>
+					<DevButton
+						label={`cachedChat: ${cachedChat.length}`}
+						call={() => useChatStore.setState({ cachedChat: [] })}
+					/>
+				</div>
+				<div className="flex place-content-between">
+					<DevButton
+						label={`chatRoomId: ${chatRoomId ? chatRoomId : "n/a"}`}
+						call={() => useChatStore.setState({ chatRoomId: hostUuid })}
+					/>
+					<DevButton
+						label={"joinRoom"}
+						call={() => {
+							if (chatRoomId)
+								chatSocket.joinRoom(chatRoomId ?? null);
+						}}
+					/>
+				</div>
 			</ul>
 		</section>
 	);

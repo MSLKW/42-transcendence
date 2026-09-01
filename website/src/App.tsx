@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import { Canvas } from "@react-three/fiber";
 import { Stats, PerspectiveCamera, OrbitControls, AdaptiveDpr } from "@react-three/drei";
+import { chatSocket } from "./api/chat/chatSocket";
 import { partySocket } from "./api/party/partySocket";
 import { useDevStore } from "./store/DevStore";
 import { useProfileStore } from "./store/ProfileStore";
@@ -43,8 +44,10 @@ export default function App() {
 			if (!data?.name)
 				setShowWindow("setup", true);
 
-			if (!partySocket.isSocketActive())
+			if (!partySocket.isConnected())
 				partySocket.connect();
+			if (!chatSocket.isConnected())
+				chatSocket.connect();
 		}
 	}, [currentScene]);
 

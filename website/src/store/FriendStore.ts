@@ -17,7 +17,7 @@ const defaultFriends = [
 	"12345678-abcd-efgh-dev0-aisyah000000",
 ] as const;
 
-export const useFriendStore = create<FriendState>()(
+export const useFriendStore = create<FriendState>() (
 	persist(
 		(set, get) => ({
 			friends: [...defaultFriends],

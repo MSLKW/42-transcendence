@@ -1,15 +1,95 @@
-import { useRef, useEffect } from "react";
+import { useState, useRef, useEffect } from "react";
+import { chatSocket } from "../../api/chat/chatSocket";
+import { useChatStore } from "../../store/ChatStore";
+import { usePartyStore } from "../../store/PartyStore";
+import { useProfileStore } from "../../store/ProfileStore";
 import { Window } from "../window/Window";
 import { SendButton } from "./send/SendButton";
-import { ChatBubble } from "./ChatBubble"
-import { ChatReport } from "./ChatReport"
+import { ChatBubble } from "./ChatBubble";
+import { ChatReport } from "./ChatReport";
 
 export const ChatWindow = () => {
+	const { cachedChat, addToCachedChat } = useChatStore();
+	const { hostUuid } = usePartyStore();
+	const { clientUuid, getCachedData } = useProfileStore();
+	const [ message, setMessage ] = useState("");
 	const focusRef = useRef<HTMLInputElement | null>(null);
+	const messagesEndRef = useRef<HTMLLIElement | null>(null);
+
+	//socket lifecycle / listeners
 	useEffect(() => {
-		if (focusRef.current)
-			focusRef.current.focus();
+		const unsubMessage = chatSocket.onMessage((chat) => {
+			const data = getCachedData(chat.senderUuid);
+			addToCachedChat(
+				"MESSAGE",
+				chat.senderUuid,
+				data?.name ?? "Player",
+				data?.avatar ?? "avatar-unknown.webp",
+				chat.message
+			);
+			console.log(`[unsubMessage] uuid:${chat.senderUuid} message:${chat.message} timestamp:${chat.timestamp}`);
+		});
+
+		const unsubJoined = chatSocket.onUserJoined((notif) => {
+			const data = getCachedData(notif.senderUuid);
+			const name = data?.name ?? "A player";
+			addToCachedChat(
+				"NOTIFICATION",
+				notif.senderUuid,
+				name,
+				"",
+				`${name} has joined your party!`
+			);
+			console.log(`[unsubJoined] uuid:${notif.senderUuid} timestamp:${notif.timestamp}`);
+		});
+
+		const unsubLeft = chatSocket.onUserLeft((notif) => {
+			const data = getCachedData(notif.senderUuid);
+			const name = data?.name ?? "A player";
+			addToCachedChat(
+				"NOTIFICATION",
+				notif.senderUuid,
+				name,
+				"",
+				`${name} has left your party!`
+			);
+			console.log(`[unsubLeft] uuid:${notif.senderUuid} timestamp:${notif.timestamp}`);
+		})
+
+		return () => {
+			unsubMessage();
+			unsubJoined();
+			unsubLeft();
+		};
 	}, []);
+
+	//party/room changes
+	useEffect(() => {
+		if (hostUuid)
+			chatSocket.joinRoom(hostUuid);
+		else if (clientUuid)
+			chatSocket.joinRoom(clientUuid);
+	}, [hostUuid, clientUuid]);
+
+	//focus
+	useEffect(() => {
+		focusRef.current?.focus();
+	}, []);
+
+	//scroll
+	useEffect(() => {
+		messagesEndRef.current?.scrollIntoView({
+			behavior: "smooth"
+		});
+	}, [cachedChat.length]);
+
+	const handleSend = (e: React.FormEvent<HTMLFormElement>) => {
+		e.preventDefault();
+
+		chatSocket.sendMessage(message);
+		setMessage("");
+		focusRef.current?.focus();
+	};
 
 	return (
 		<Window
@@ -20,57 +100,56 @@ export const ChatWindow = () => {
 		>
 			<div
 				className="
-					w-[clamp(12.5rem,65vw+1rem,30rem)] h-[clamp(20rem,50vh+1rem,30rem)]
-					p-[clamp(0.25rem,5vw+0.125rem,1rem)]
+					w-100 max-h-[75vh]
 					flex flex-col place-content-start place-items-center
-					gap-5		
+					py-1rem px-1rem gap-1rem
 					pointer-events-auto
 				"
 			>
 				<div
 					tabIndex={-1}
 					className="
-						w-full h-[calc(100%-50px)]
-						overflow-scroll
-						pointer-events-auto
+						w-full h-full
+						bg-dark rounded-xl
+						py-1rem px-1rem
+						overflow-y-auto
+						flex place-content-center place-items-center
 					"
 				>
-					<div
-						className="
-							w-full h-fit
-							text-n6
-							p-7.5
-							flex flex-col gap-5
-						"
-					>
-						<ChatReport message="1 person in chat" />
-						<ChatReport message="Max has joined your party!" />
-						<ChatBubble senderId={0} senderName="Azrul" message="Sup Max!"/>
-						<ChatBubble senderId={1} senderName="Max" message="Hey. How's the website coming along?"/>
-						<ChatBubble senderId={0} senderName="Azrul" message="It's coming along great! Just need to finish up the last few details"/>
-						<ChatReport message="Jeremy has joined your party!" />
-						<ChatBubble senderId={2} senderName="Jeremy" message="Yo check out the cpu bots i just made... ~Beep boop~"/>
-						<ChatReport message="Aisyah has joined your party!" />
-						<ChatBubble senderId={3} senderName="Aisyah" message="Guys... I'm done with my Inception!"/>
-						<ChatBubble senderId={3} senderName="Aisyah" message="Also soooo excited for this SQL talk!!!"/>
-						<ChatReport message="Max has left the party" />
-						<ChatReport message="Jeremy has left the party" />
-						<ChatReport message="Aisyah has left the party" />
-					</div>
+					{!cachedChat.length ?
+						<h2 className="text-n6/50">Chat messages appear here</h2>
+					:
+						<ul className="space-y-2 text-n6 w-full">
+							{cachedChat.map((data, index) => (
+								<li key={`${data.uuid}-${index}`}>
+									{data.type === "MESSAGE"
+										? <ChatBubble data={data}/>
+										: <ChatReport data={data}/>
+									}
+								</li>
+							))}
+							<li ref={messagesEndRef} />
+						</ul>
+					}
 				</div>
-				<hr className="w-full h-[0.3rem] text-n2"/>
-				<div className="
-					w-full h-max
-					flex place-content-between place-items-center
-					gap-3
-				">
+				<form
+					onSubmit={handleSend}
+					className="
+						w-full
+						flex place-content-between place-items-center
+						gap-3
+					"
+				>
 					<input
 						ref={focusRef}
+						type="text"
 						placeholder="Message"
+						value={message}
+						onChange={(e) => setMessage(e.target.value)}
 						className="input-chat"
 					/>
-					<SendButton />
-				</div>
+					<SendButton message={message}/>
+				</form>
 			</div>
 		</Window>
 	);

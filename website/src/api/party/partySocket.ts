@@ -1,4 +1,5 @@
 import { io, Socket } from "socket.io-client";
+import { chatSocket } from "../chat/chatSocket";
 import { acceptInviteAction } from "./actions/acceptInviteAction";
 import { kickMemberAction } from "./actions/kickMemberAction";
 import { leavePartyAction } from "./actions/leavePartyAction";
@@ -10,7 +11,6 @@ import { gameSessionStartHandler } from "./handlers/gameSessionStartHandler";
 import { inviteReceivedHandler } from "./handlers/inviteReceivedHandler";
 import { kickedHandler } from "./handlers/kickedHandler";
 import { partyStateHandler } from "./handlers/partyStateHandler";
-import { useProfileStore } from "../../store/ProfileStore";
 
 class PartySocketService {
 	private socket: Socket | null = null;
@@ -38,6 +38,7 @@ class PartySocketService {
 			this.socket.disconnect();
 			this.socket = null;
 		}
+		chatSocket.disconnect();
 	}
 	
 	public sendInvite(recipientUuid: string, recipientName?: string) {
@@ -58,8 +59,9 @@ class PartySocketService {
 	public leaveParty() {
 		leavePartyAction(this.socket);
 	}
-	public isSocketActive(): boolean {
-		return !!(this.socket && this.socket.connected && this.socket.id) || this.isConnecting;
+	public isConnected(): boolean {
+		console.log("<isConnected> socket:", this.socket, " id:", this.socket?.id);
+		return this.socket?.connected === true;
 	}
 }
 

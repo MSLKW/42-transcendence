@@ -10,7 +10,7 @@ export function registerConnectionHandlers(socket: Socket, setIsConnecting: (val
 
 	socket.on("disconnect", (reason) => {
 		setIsConnecting(false);
-		usePartyStore.setState({ partySocketId: "n/a" });
+		usePartyStore.setState({ partySocketId: null });
 		console.log("[partySocket] 'disconnect' reason:", reason);
 	});
 

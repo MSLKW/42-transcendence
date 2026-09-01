@@ -1,16 +1,15 @@
 import { SendIcon } from "./SendIcon";
 
-export const SendButton = () => {
-    const handleSend = (e?: React.MouseEvent<HTMLButtonElement>) => {
-		if (e)
-			e.currentTarget.blur();
-	}
-
+interface SendButtonProps {
+    message: string;
+}
+export const SendButton = ({ message }: SendButtonProps) => {
     return (
         <button
-            data-tip="Send"
+            type="submit"
+            disabled={message.length === 0}
+            data-tip="Send Message"
             className="btn-icon bg-accent data-tip-up"
-            onClick={(e) => {handleSend(e)}}
         >
             <SendIcon />
         </button>

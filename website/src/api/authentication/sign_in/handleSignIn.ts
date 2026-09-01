@@ -13,6 +13,7 @@ export const handleSignIn = async (email: string, password: string, setIsLoading
 		setIsLoading(true);
 		const response = await signInFetch(email, password);
 
+		useProfileStore.setState({ validateResponse: response });
 		useProfileStore.setState({ clientUuid: response.id });
 		setShowWindow("signIn", false);
 		setCurrentScene("Home");

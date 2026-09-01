@@ -1,22 +1,31 @@
 import { useGameStore } from "../../../store/GameStore";
 import { usePartyStore } from "../../../store/PartyStore";
 import { useNotificationStore, NOTIFICATION_TYPE } from "../../../store/NotificationStore"; 
-import { useSceneStore } from "../../../store/SceneStore";
+import { useSceneStore, defaultShowWindow } from "../../../store/SceneStore";
 import { signOutFetch } from "./fetchSignOut";
 import { partySocket } from "../../party/partySocket";
 import { useProfileStore } from "../../../store/ProfileStore";
+import { chatSocket } from "../../chat/chatSocket";
+import { useChatStore } from "../../../store/ChatStore";
 
 export const handleSignOut = async () => {
 	try {
 		await signOutFetch();
 
 		useGameStore.getState().endGame();
+		
+		useProfileStore.setState({ clientUuid: "n/a" });
+
 		usePartyStore.setState({ members: [] });
 		usePartyStore.setState({ partyGameId: null });
-		useProfileStore.setState({ clientUuid: "n/a" });
 		partySocket.disconnect();
 
+		useChatStore.setState({ cachedChat: [] });
+		chatSocket.disconnect();
+
+		useSceneStore.setState({ showWindow: defaultShowWindow });
 		useSceneStore.getState().setCurrentScene("Login");
+
 		useNotificationStore.getState().showNotification("Logged out successfully", NOTIFICATION_TYPE.message);
 		console.log("[handleSignOut] Logged out successfully!");
 	} catch (err) {

@@ -1,8 +1,10 @@
-interface ChatProps {
-	message?: string;
+import type { ChatMessage } from "../../store/ChatStore";
+
+interface ChatReportProps {
+	data: ChatMessage;
 }
 
-export const ChatReport = ({ message }: ChatProps) => {
+export const ChatReport = ({ data }: ChatReportProps) => {
 	return (
 		<div className="
 			w-full h-max
@@ -17,7 +19,7 @@ export const ChatReport = ({ message }: ChatProps) => {
 				px-[clamp(0.25rem,2vw+0.125rem,1.25rem)]
 				py-[clamp(0.0625rem,0.5vh+0.03125rem,0.5rem)]
 			">
-				<p>{message}</p>
+				<p>{data.msg}</p>
 			</div>
 		</div>
 	);
