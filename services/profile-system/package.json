@@ -1,7 +1,10 @@
 {
 	"name": "profile-system",
+  	"private": true,
 	"version": "1.0.0",
 	"description": "",
+	"author": "",
+	"license": "ISC",
 	"main": "./dist/index.js",
 	"scripts": {
 		"dev": "tsc --noEmit && tsx src/index.ts",
@@ -9,8 +12,6 @@
 		"start": "node dist/index.js",
 		"clean": "rm -rf ./dist .tsbuildinfo"
 	},
-	"author": "",
-	"license": "ISC",
 	"devDependencies": {
 		"@types/cookie-parser": "^1.4.10",
 		"@types/express": "^5.0.6",

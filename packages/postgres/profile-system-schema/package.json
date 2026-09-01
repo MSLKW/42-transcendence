@@ -1,5 +1,6 @@
 {
   "name": "@big2/profile-system-schema",
+  "private": true,
   "version": "1.0.0",
   "type": "module",
   "description": "",
