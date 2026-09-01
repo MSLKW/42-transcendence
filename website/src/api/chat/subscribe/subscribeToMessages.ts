@@ -7,7 +7,7 @@ export const subscribeToMessages = () => {
 	return chatSocket.onMessage((chat) => {
 		const addBubble = useBubbleStore.getState().addBubble;
 		const addToCachedChat = useChatStore.getState().addToCachedChat;
-		const clientUuid = useProfileStore.getState().clientUuid;
+		// const clientUuid = useProfileStore.getState().clientUuid;
 		const data = useProfileStore.getState().getCachedData(chat.senderUuid);
 
 		addToCachedChat(

@@ -10,7 +10,7 @@ export const ChatWindow = () => {
 	const { cachedChat } = useChatStore();
 	const [ message, setMessage ] = useState("");
 	const focusRef = useRef<HTMLInputElement | null>(null);
-	const messagesEndRef = useRef<HTMLLIElement | null>(null);
+	const scrollContainerRef = useRef<HTMLDivElement | null>(null);
 
 	//focus
 	useEffect(() => {
@@ -19,9 +19,12 @@ export const ChatWindow = () => {
 
 	//scroll
 	useEffect(() => {
-		messagesEndRef.current?.scrollIntoView({
-			behavior: "smooth"
-		});
+		if (scrollContainerRef.current) {
+			scrollContainerRef.current.scrollTo({
+				top: scrollContainerRef.current.scrollHeight,
+				behavior: "smooth"
+			});
+		}
 	}, [cachedChat.length]);
 
 	const handleSend = (e: React.FormEvent<HTMLFormElement>) => {
@@ -47,6 +50,7 @@ export const ChatWindow = () => {
 				"
 			>
 				<div
+					ref={scrollContainerRef}
 					tabIndex={-1}
 					className="
 						w-full h-full
@@ -59,17 +63,16 @@ export const ChatWindow = () => {
 					{!cachedChat.length ?
 						<h2 className="text-n6/50">Chat messages appear here</h2>
 					:
-						<ul className="space-y-2 text-n6 w-full">
-							{cachedChat.map((data, index) => (
-								<li key={`${data.uuid}-${index}`}>
-									{data.type === "MESSAGE"
-										? <ChatMessage data={data}/>
-										: <ChatReport data={data}/>
-									}
-								</li>
-							))}
-							<li ref={messagesEndRef} />
-						</ul>
+					<ul className="space-y-2 text-n6 w-full">
+						{cachedChat.map((data, index) => (
+							<li key={`${data.uuid}-${index}`}>
+								{data.type === "MESSAGE"
+									? <ChatMessage data={data}/>
+									: <ChatReport data={data}/>
+								}
+							</li>
+						))}
+					</ul>
 					}
 				</div>
 				<form
