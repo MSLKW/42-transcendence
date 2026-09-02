@@ -26,13 +26,13 @@
   <button onclick="start()">Connect</button>
   <button onclick="disconnect()">Disconnect</button> 
   <button onclick="openTab()">+ Open another tester tab</button>
-  <div id="status" style="margin-top:6px; font-size:13px;">⚪ not connected</div>
+  <div id="fReqStatus" style="margin-top:6px; font-size:13px;">⚪ not connected</div>
 </div>
 
 <h2>Send a friend request</h2>
 <!-- <input id="target-uuid" placeholder="friend's uuid" /> -->
 <input id="target-uuid" placeholder="friend's uuid" onkeydown="if(event.key==='Enter') sendRequest()" />
-<button onclick="sendRequest()">Send request</button>
+<button onclick="sendRequest()">Send friend request</button>
 
 <h2>Inbox (received, pending)</h2>
 <ul id="inbox"></ul>
@@ -60,7 +60,7 @@ function log(msg) {
 }
 
 function setStatus(text) {
-  document.getElementById("status").textContent = text;
+  document.getElementById("fReqStatus").textContent = text;
 }
 
 function openTab() {
@@ -123,7 +123,7 @@ function start() {
 //     body: JSON.stringify({ senderId: myUuid, receiverId: target })
 //   });
 //   const data = await res.json();
-//   log(res.ok ? `Sent request to ${target}` : `Error: ${data.error}`);
+//   log(res.ok ? `Sent friend request to ${target}` : `Error: ${data.error}`);
 //   refreshSent();
 // }
 
@@ -143,9 +143,9 @@ async function sendRequest() {
   const input = document.getElementById("target-uuid");
   const target = input.value.trim();
   //
-  // bug 6 fix: don't even attempt the request if the field is empty
+  // bug 6 fix: don't even attempt the friend request if the field is empty
   if (!target) 
-    return log("enter a friend's uuid before sending a request");
+    return log("enter a friend's uuid before sending a friend request");
   input.value = "";  // ← this clears the box immediately
   //
   const res = await fetch(`${API}/friend-requests`, {
@@ -154,9 +154,9 @@ async function sendRequest() {
   });
   const data = await res.json();
   if (res.ok) {
-    log(`Sent request to ${target}`);
+    log(`Sent friend request to ${target}`);
   } else if (data.requestId) {
-    log(`${target} already sent you a request — check your inbox below to respond`);
+    log(`${target} already sent you a friend request — check your inbox below to respond`);
   } else {
     log(`Error: ${data.error}`);
   }
@@ -196,7 +196,7 @@ async function refreshSent() {
   list.innerHTML = "";
   requests.forEach(r => {
     const li = document.createElement("li");
-    li.textContent = `${r.receiverId} — ${r.status}`;
+    li.textContent = `${r.receiverId} — ${r.fReqStatus}`;
     list.appendChild(li);
   });
 }
@@ -216,7 +216,7 @@ async function refreshFriends() {
 async function removeFriend(friendUuid) {
   // await fetch(`${API}/friends/${friendUuid}?uuid=${myUuid}`, { method: "DELETE" });
   const res = await fetch(`${API}/friends/${friendUuid}?uuid=${myUuid}`, { method: "DELETE" });
-  if (res.status === 404) log(`${friendUuid} was already removed (they removed you first)`);
+  if (res.fReqStatus === 404) log(`${friendUuid} was already removed (they removed you first)`);
   refreshFriends();
 }
 </script>

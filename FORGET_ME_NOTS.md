@@ -1,4 +1,4 @@
-notes for me to remember FOR ACTUAL PROJECT IMPLEMENTATIONS
+## notes for me to remember, FOR ACTUAL PROJECT IMPLEMENTATIONS
 
 1. node modules only exist at root 
 	- entire project depends on 1 single same node_modules/ at root
@@ -17,6 +17,7 @@ notes for me to remember FOR ACTUAL PROJECT IMPLEMENTATIONS
 		- deeply-nested .gitignore can override parent's .gitignore. ex:
 			- root's .gitignore => *.log, 
 			- services/friends-system/.gitignore => specifically un-ignore one particular log file with a ! prefix
+			- BUT, !services/friends-system/keep-this.txt only works if services/friends-system/ itself was never ignored as a whole directory
 	- .prettierignore
 		- `https://prettier.io/docs/ignore`:
 			- To exclude files from formatting, create a .prettierignore file in the root of your project. .prettierignore uses gitignore syntax.
@@ -90,3 +91,7 @@ notes for me to remember FOR ACTUAL PROJECT IMPLEMENTATIONS
 			- dbdocs.io stays closer to drawSQL's interactive & colorful style, 
 			- but shares the same limitation as drawSQL: real precision and hover-highlighting only exist in the `live interactive canvas`
 			- can try to see later if we can screen record the precision during live, and make it as .gif! 
+
+
+## revise, forgot!
+- why postgres.ts can do import * ?  i thought cannot do * for imports ?

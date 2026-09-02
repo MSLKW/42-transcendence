@@ -15,7 +15,7 @@
 | POST | `/friend-requests/:id/accept` | accept |
 | POST | `/friend-requests/:id/reject` | reject |
 | GET | `/friends` | list of client's friends' UUIDs |
-| GET | `/events` | SSE stream — push live notifications (new request, accepted, online/offline) |
+| GET | `/events` | SSE stream — push live notifications (new friend request, accepted, online/offline) |
 
 Main objectives in friends-system
 - getter to see your own friends
@@ -35,9 +35,9 @@ Main objectives in friends-system
 - No action needed beyond confirming the connection is live.
 
 ### 2. event: "friend_request_received"
-- data: { id: string, senderId: string, receiverId: string, status: "Pending", createdAt: string }
+- data: { id: string, senderId: string, receiverId: string, fReqStatus: "Pending", createdAt: string }
 - Fired to the RECEIVER when someone sends them a new friend request.
-- The full request object is included — no extra fetch is required to get its contents, though re-fetching the inbox is still fine.
+- The full friend request object is included — no extra fetch is required to get its contents, though re-fetching the inbox is still fine.
 
 ### 3. event: "friend_request_accepted"
 - data: { by: string, requestId: string }
@@ -62,13 +62,13 @@ Main objectives in friends-system
 ### **Test operation guide, refer the logs**
 - Open `test.html` in two browser tabs with different UUIDs.
 - Register uuid, watch it registered a SSE connection for each UUID
-- Send a request from one, watch it appear live in the other's console/alert.
-- Reciever accept/reject request, both are added into each other's friend list.
+- Send a friend request from one, watch it appear live in the other's console/alert.
+- Reciever accept/reject friend request, both are added into each other's friend list.
 
 ### **Stress tests**
-- **1:** Sender resend a request while current is pending
-- **2:** Reciever try to send request to the sender , while the same sender's request is pending
-- **3:** After request sent, test both uuid logout & re-login (disconnect & connect), and the pending request is still there.
+- **1:** Sender resend a friend request while current is pending
+- **2:** Reciever try to send friend request to the sender , while the same sender's friend request is pending
+- **3:** After friend request sent, test both uuid logout & re-login (disconnect & connect), and the pending friend request is still there.
 - **4:** Connect the same UUID multiple times. 
 - **5:** Disconnect the same UUID multiple times. 
 - **6:** Connect the same UUID on multiple tabs *(!! Bugs, both tabs' logs increment SSE connections non-stop)*
@@ -77,4 +77,4 @@ Main objectives in friends-system
 - **8.1:** User remove friend and idle -> friend's friends list will __eventually__ remove the user too
 - **8.2:** User remove friend and refresh user's friends list -> friend's friends list will __eventually__ remove the user too
 - **8.3:** User remove friend and refresh friend's friends list -> friend's friends list will **instantly** remove the user too.
-- **9:** User recieve pending request, duplicate a new tab, and accept on the new tab, then accept on the original tab *(need to test this when integrate with auth later since auth guarantees 1 session only)*
+- **9:** User recieve pending friend request, duplicate a new tab, and accept on the new tab, then accept on the original tab *(need to test this when integrate with auth later since auth guarantees 1 session only)*

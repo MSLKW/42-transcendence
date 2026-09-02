@@ -3,8 +3,9 @@ so i can relax after record it somewhere, here,
 and focus back to my MVP
 
 ## MVPs
+### Backend & Database (in sequence)
 1. types in general:
-	- fs.status -> enum -> pgEnum,
+	- fs.status -> enum -> pgEnum, (status -> renamed to fReqStatus in db too)
     - ps.badge  -> enum -> pgEnum,
 	- ps.acheievements -> jsonb -> leave it. 
 	- push
@@ -32,7 +33,19 @@ and focus back to my MVP
 	- any fixes needed upon schema 
 	- any fixes needed upon types 
 	- push
-	
+
+5. later when I add new Game-stats service
+	- adjust every users/password/schema namings used permissions etc related to game
+		- change: game => game-stats
+	- adjust existing game-schema 
+		- pull in badges and acheievements from profile-system into game-stats instead
+	- ask azrul what are the updated badges / achievements that he setup already on website
+	- create backend business logic , discuss with the azrul & team
+	- int with database
+	- testings
+	- debugging
+	- successful? done!
+
 ## NON-MVPs
 ### Database
 
@@ -53,7 +66,7 @@ and focus back to my MVP
 		- `dbdocs.io`
 		- > REJECT MERMAID CHART (FK linking has HIGH INACCURACY of from which column to which column)
 
-### Overall
+### Overall polishing
 
 1. perf docker: 
 	- d-c.yml: add additional_context
@@ -62,7 +75,11 @@ and focus back to my MVP
 
 2. pnpm is better than npm for microservices 
 	- discuss with teammates after finish development only 
-	- explanationn detail is in FORGET_ME_NOTS.md
+	- explain the bugs in npm that resolved by pnpm (solves disk size & phantom dependencies)
+	- explanations in detail is in FORGET_ME_NOTS.md
+	- agreement needed by the whole team, understandably everyone are used already to do commands of "npm ..."
+	- alternative solution: eslint-plugin-import-x as root's devDep
+		- only solves phantom dependencies, not disk size
 
 3. prettier
 	- implement it after finish debugging and NONMVP , before submitting,
