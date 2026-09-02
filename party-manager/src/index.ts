@@ -1,4 +1,6 @@
 import "dotenv/config";
+import express from "express"
+import { healthCheck } from "./handlers/healthCheck"
 import { createServer } from "http";
 import { DisconnectReason, Server, Socket } from "socket.io";
 import { Client } from "./client/Client";
@@ -24,7 +26,11 @@ const INTENTIONAL_DISCONNECT_REASONS = new Set([
 
 const pendingRemovals = new Map<string, NodeJS.Timeout>();
 
-const httpServer = createServer();
+const app = express();
+app.use(express.json());
+app.get("/health", healthCheck());
+
+const httpServer = createServer(app);
 
 const io = new Server(httpServer, {
 	cors: {

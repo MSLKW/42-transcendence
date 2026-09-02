@@ -60,4 +60,11 @@ export function registerEventHandlers(socket: Socket, client: Client)
 			return ;
 		client.party.startGameSession();
 	});
+
+	socket.on("refresh", () =>
+	{
+		if (!client.party)
+			return ;
+		client.party.sendUpdates();
+	});
 }
