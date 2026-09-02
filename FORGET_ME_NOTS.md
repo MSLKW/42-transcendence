@@ -1,15 +1,62 @@
 notes for me to remember FOR ACTUAL PROJECT IMPLEMENTATIONS
 
 1. node modules only exist at root 
-	- entore project depends on 1 sigle same node_modules/ at root
+	- entire project depends on 1 single same node_modules/ at root
 	- coz we use root's package.json that uses workspace field
 	- so even in Docker they will depend on the root's node_modules/ alone, which generated in Docker, not taken from host
 	- root's package-lock.json is copied into Docker to minimize buildtime huhu. or else lama nak ...
 
-2. Dockerfile's selective copying is what makes this a true, isolated microservice build
-	- !! genuine question, what about "COPY . ."? that dosent look like microservice tho?
+2. multiple .*ignore
+	- `.dockerignore`
+		- Docker only ever reads one. period.
+		- it must sits at the root of `context`
+	- `.gitignore`
+		- Git explicitly supports having a .gitignore in every folder
+		- all of them apply simultaneously
+		- combining the root .gitignore with every nested one along that path
+		- deeply-nested .gitignore can override parent's .gitignore. ex:
+			- root's .gitignore => *.log, 
+			- services/friends-system/.gitignore => specifically un-ignore one particular log file with a ! prefix
+	- .prettierignore
+		- `https://prettier.io/docs/ignore`:
+			- To exclude files from formatting, create a .prettierignore file in the root of your project. .prettierignore uses gitignore syntax.
+			- other specific ways on other file extensions
 
-3. Does pnpm migration touch tsconfig.json?
+3. implementing `microservices` in `Docker`
+	- Dockerfile's selective copying is what makes this a true, isolated microservice build
+	- QUESTION: what about "COPY . ."? that dosent look like microservice tho? 
+		- YUP, its def not microservice like this
+		- SOLUTION: 
+			1. exclude everything unrelated to the microservice in .dockerignore 
+			   (LOTS OF MANUAL WORK, have to edit every time there's new additions to the project)
+			2. implement `additional_context` in dc.yml + Dockerfile 
+			   (WILL DEF DO THIS IN NON-MVP)
+				- Dockerfile cannot COPY backwards. it only go onwards from what defined as `context` in docker-compose.yml
+				- so just dockerignore within context, yeayy EASY!
+				- 
+
+4. pnpm is better than npm for microservices 
+	- npm(2010) = it's the default, "just works" choice.
+	- pnpm arrived later (2016) specifically because npm's design has two real, related costs::
+		- disk waste: 
+			- every single project on your machine gets its own full copy of every dependency 
+			- even if ten projects all use the exact same version of express 
+		- phantom dependencies: 
+			- hoisting lets code silently use packages it never declared.
+			- hoisting: dosent include its imports in its own package.json, but took from its other dependencies that listed the said imports in their package.json
+			- esp since all workspaces using the same and only node_modules/ used/exist in the entire project Docker
+	- pnpm offers solution for these 2 issues above by:
+		- disk-space
+			- it keeps one single global store of every package version on your entire machine (not per-project),
+			- and links files into each project via hard links/symlinks instead of copying 
+		- phantom dependencies
+			- it builds each workspace's node_modules as a strict, 
+			- symlinked structure containing only what that specific package explicitly declared
+			- nothing hoisted, nothing borrowed from a sibling.
+	- result of implementing this:
+		- pnpm makes that import fail immediately — turning the bug class into something structurally impossible, rather than something you have to remember to check manually or lint for.
+
+5. Does pnpm migration touch tsconfig.json?
 	- No, tsconfig.json governs TypeScript's own compilation behavior (moduleResolution, target, etc.)
 	- completely independent of which package manager installed the files on disk. 
 	- What actually changes: 
@@ -19,7 +66,7 @@ notes for me to remember FOR ACTUAL PROJECT IMPLEMENTATIONS
 			- since pnpm doesn't read the "workspaces" array inside package.json the way npm does, it requires its own separate file listing the same folders. 
 	- Everything else — your actual .ts source files, tsconfig.json, imports — untouched.
 
-4. for generating DATABASE DIAGRAM later:
+6. for generating DATABASE DIAGRAM later:
 	- criteria:
 		- priority: ACCURACY OF LINKING FK, FROM WHICH COLUMN TO WHICH COLUMN
 		- good to have: colours
@@ -43,26 +90,3 @@ notes for me to remember FOR ACTUAL PROJECT IMPLEMENTATIONS
 			- dbdocs.io stays closer to drawSQL's interactive & colorful style, 
 			- but shares the same limitation as drawSQL: real precision and hover-highlighting only exist in the `live interactive canvas`
 			- can try to see later if we can screen record the precision during live, and make it as .gif! 
-
-5. pnpm is better than npm for microservices 
-	- npm(2010) = it's the default, "just works" choice.
-	- pnpm arrived later (2016) specifically because npm's design has two real, related costs::
-		- disk waste: 
-			- every single project on your machine gets its own full copy of every dependency 
-			- even if ten projects all use the exact same version of express 
-		- phantom dependencies: 
-			- hoisting lets code silently use packages it never declared.
-			- hoisting: dosent include its imports in its own package.json, but took from its other dependencies that listed the said imports in their package.json
-			- esp since all workspaces using the same and only node_modules/ used/exist in the entire project Docker
-	- pnpm offers solution for these 2 issues above by:
-		- disk-space
-			- it keeps one single global store of every package version on your entire machine (not per-project),
-			- and links files into each project via hard links/symlinks instead of copying 
-		- phantom dependencies
-			- it builds each workspace's node_modules as a strict, 
-			- symlinked structure containing only what that specific package explicitly declared
-			- nothing hoisted, nothing borrowed from a sibling.
-	- result of implementing this:
-		- pnpm makes that import fail immediately — turning the bug class into something structurally impossible, rather than something you have to remember to check manually or lint for.
-
-6. Dockerfile cannot COPY backwards. it only go onwards from what defined as context in docker-compose.yml
