@@ -1,6 +1,7 @@
 import { Socket, Server } from "socket.io";
 import { Client } from "./Client";
 import { ClientToServerEvents, ServerToClientEvents } from "../events";
+import { clientManager } from "./ClientManager";
 
 type ChatSocket = Socket<ClientToServerEvents, ServerToClientEvents>;
 
@@ -39,6 +40,24 @@ export function registerEventHandlers(
 			timestamp: new Date().toISOString()
 		});
 		console.log(`User<${client.uuid}> joined chat room: ${newRoomId}`);
+	});
+
+	socket.on("chat_typing", (payload) => {
+		if (!payload || typeof payload.isTyping !== "boolean")
+			return;
+
+		const client = clientManager.getBySocketId(socket.id);
+		if (!client || !client.roomId)
+			return;
+
+		const roomId = client.roomId;
+		if (!roomId || !socket.rooms.has(roomId))
+			return;
+
+		socket.to(client.roomId).emit("chat_user_typing", {
+			senderUuid: client.uuid,
+			isTyping: payload.isTyping,
+		});
 	});
 
 	socket.on("chat_message", (payload) => {

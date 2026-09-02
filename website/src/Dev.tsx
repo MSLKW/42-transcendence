@@ -16,6 +16,7 @@ import { defaultShowWindow, useSceneStore } from "./store/SceneStore";
 import { DevButton } from "./components/dev/DevBtn";
 import { useFrameView } from "./utilities/useFrameView";
 import { useBubbleStore } from "./store/BubbleStore";
+import { useTypingStore } from "./store/TypingStore";
 
 export default function Dev() {
 	const { fillSeatsWithBots, removeBots } = useBotStore();
@@ -161,7 +162,7 @@ export default function Dev() {
 					/>
 					<DevButton label="isConnected" call={() => chatSocket.isConnected()}/>
 					<DevButton
-						label={`cachedChat: ${cachedChat.length}`}
+						label={`Clear cachedChat: ${cachedChat.length}`}
 						call={() => useChatStore.setState({ cachedChat: [] })}
 					/>
 				</div>
@@ -171,8 +172,8 @@ export default function Dev() {
 						call={() => useChatStore.setState({ chatRoomId: hostUuid })}
 					/>
 					<DevButton
-						label={"bubbles"}
-						call={() => console.log("bubbles: ", useBubbleStore.getState().bubbles)}
+						label={"typingUsers"}
+						call={() => console.log("typingUsers: ", useTypingStore.getState().typingUsers)}
 					/>
 					<DevButton
 						label={"joinRoom"}

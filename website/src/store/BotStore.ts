@@ -65,4 +65,4 @@ export const useBotStore = create<BotState>() (
 			set({ botCount: count });
 		},
 	}),
-)
+);

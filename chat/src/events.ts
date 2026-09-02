@@ -1,9 +1,4 @@
-export interface ChatMessagePayload {
-	senderUuid: string;
-	type:string;
-	message: string;
-	timestamp: string;
-}
+export type ChatType = "MESSAGE" | "EMOTE";
 
 export interface ChatUserJoinedPayload {
 	senderUuid: string;
@@ -15,13 +10,29 @@ export interface ChatUserLeftPayload {
 	timestamp: string;
 }
 
+export interface ChatIsTypingPayload {
+	senderUuid: string;
+	isTyping: boolean;
+}
+
+export interface ChatMessagePayload {
+	senderUuid: string;
+	type: ChatType;
+	message: string;
+	timestamp: string;
+}
+
 export interface ClientToServerEvents {
 	chat_join_room: (payload: {
 		roomId: string;
 	}) => void;
 
+	chat_typing: (paylod: {
+		isTyping: boolean;
+	}) => void;
+
 	chat_message: (payload: {
-		type: string;
+		type: ChatType;
 		message: string;
 	}) => void;
 }
@@ -29,5 +40,6 @@ export interface ClientToServerEvents {
 export interface ServerToClientEvents {
 	chat_user_joined: (payload: ChatUserJoinedPayload) => void;
 	chat_user_left: (payload: ChatUserLeftPayload) => void;
+	chat_user_typing: (payload: ChatIsTypingPayload) => void;
 	chat_message: (payload: ChatMessagePayload) => void;
 }

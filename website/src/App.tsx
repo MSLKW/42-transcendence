@@ -10,6 +10,7 @@ import { useSceneStore } from "./store/SceneStore";
 import { subscribeToMessages } from "./api/chat/subscribe/subscribeToMessages";
 import { subscribeToUserJoined } from "./api/chat/subscribe/subscribeToUserJoined";
 import { subscribeToUserLeft } from "./api/chat/subscribe/subscribeToUserLeft";
+import { subscribeToUserTyping } from "./api/chat/subscribe/subscribeToUserTyping";
 import { useScrollToTop } from "./utilities/useScrollToTop";
 import { StripeBg } from "./components/bg/Stripe";
 import { SphereBg } from "./components/3d/Sphere";
@@ -75,11 +76,13 @@ export default function App() {
 		const unsubscribeFromMessages = subscribeToMessages();
 		const unsubscribeFromUserJoined = subscribeToUserJoined();
 		const unsubscribeFromUserLeft = subscribeToUserLeft();
+		const unsubscribeFromUserTyping = subscribeToUserTyping();
 
 		return () => {
 			unsubscribeFromMessages();
 			unsubscribeFromUserJoined();
 			unsubscribeFromUserLeft();
+			unsubscribeFromUserTyping();
 		};
 	}, [currentScene]);
 

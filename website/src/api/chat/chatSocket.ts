@@ -15,6 +15,11 @@ export type ChatNotification = {
 	timestamp: string;
 }
 
+export type ChatTyping = {
+	senderUuid: string;
+	isTyping: boolean;
+}
+
 class ChatSocketService {
 	private socket: Socket | null = null;
 	private isConnecting: boolean = false;
@@ -101,6 +106,16 @@ class ChatSocketService {
 		this.socket.emit("chat_message", { type: chatType, message: trimmedMessage } );
 	}
 
+	public sendTyping(isTyping: boolean) {
+		if (!this.socket?.connected) {
+			console.warn("[sendTyping] Cannot send typing state, socket is not connected");
+			return;
+		}
+
+		console.log("[sendTyping] isTyping:", isTyping);
+		this.socket?.emit("chat_typing", { isTyping });
+	}
+
 	public onMessage(callback: (data: ChatMessage ) => void) {
 		if (!this.socket)
 			this.connect();
@@ -128,6 +143,16 @@ class ChatSocketService {
 		this.socket?.on("chat_user_left", callback);
 		return () => {
 			this.socket?.off("chat_user_left", callback);
+		};
+	}
+
+	public onUserTyping(callback: (data: ChatTyping) => void) {
+		if (!this.socket)
+			this.connect();
+
+		this.socket?.on("chat_user_typing", callback);
+		return () => {
+			this.socket?.off("chat_user_typing", callback);
 		};
 	}
 

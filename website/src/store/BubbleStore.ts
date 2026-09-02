@@ -91,6 +91,6 @@ export const useBubbleStore = create<BubbleState>(
 				clearTimeout(timer);
 			bubbleTimers.clear();
 			set({ bubbles: {} });
-		}
-	})
-)
+		},
+	}),
+);

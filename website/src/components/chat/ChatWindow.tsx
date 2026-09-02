@@ -5,6 +5,7 @@ import { Window } from "../window/Window";
 import { SendButton } from "./send/SendButton";
 import { ChatMessage } from "./ChatMessage";
 import { ChatReport } from "./ChatReport";
+import { ChatTypingIndicator } from "./ChatTypingIndicator";
 
 export const ChatWindow = () => {
 	const { cachedChat } = useChatStore();
@@ -27,11 +28,36 @@ export const ChatWindow = () => {
 		}
 	}, [cachedChat.length]);
 
+	const wasTyping = useRef(false);
+	useEffect(() => {
+		return () => {
+			if (wasTyping.current)
+				chatSocket.sendTyping(false);
+		};
+	}, []);
+
+	const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+		const value = e.target.value;
+		setMessage(value);
+
+		const isTyping = value.trim().length > 0;
+		if (isTyping !== wasTyping.current) {
+			wasTyping.current = isTyping;
+			chatSocket.sendTyping(isTyping);
+		}
+	};
+
 	const handleSend = (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
+
 		chatSocket.sendChat("MESSAGE", message);
 		setMessage("");
 		focusRef.current?.focus();
+		
+		if (wasTyping.current) {
+			wasTyping.current = false;
+			chatSocket.sendTyping(false);
+		}
 	};
 
 	return (
@@ -57,7 +83,8 @@ export const ChatWindow = () => {
 						bg-dark rounded-xl
 						py-1rem px-1rem
 						overflow-y-auto
-						flex place-content-center place-items-center
+						flex flex-col place-content-center place-items-center
+						gap-1rem
 					"
 				>
 					{!cachedChat.length ?
@@ -75,6 +102,7 @@ export const ChatWindow = () => {
 					</ul>
 					}
 				</div>
+				<ChatTypingIndicator />
 				<form
 					onSubmit={handleSend}
 					className="
@@ -88,7 +116,7 @@ export const ChatWindow = () => {
 						type="text"
 						placeholder="Message"
 						value={message}
-						onChange={(e) => setMessage(e.target.value)}
+						onChange={handleChange}
 						className="input-chat"
 					/>
 					<SendButton message={message}/>
