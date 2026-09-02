@@ -15,9 +15,7 @@
 	},
 	"include": ["src/**/*.ts"],
 	"references": [
-		{ "path": [
-			"../../packages/postgres/party-manager-schema",
-			"../../packages/postgres/postgres-client"
-	 ] }
+		{ "path": "../../packages/postgres/party-manager-schema"},
+		{ "path": "../../packages/postgres/postgres-client"}
 	]
 }

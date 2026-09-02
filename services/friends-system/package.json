@@ -1,10 +1,11 @@
 {
   "name": "friends-system",
+  "private": true,
+  "type": "module",
   "version": "1.0.0",
   "description": "",
   "license": "ISC",
   "author": "",
-  "type": "module",
   "main": "dist/index.js",
   "scripts": {
     "dev": "tsc --noEmit && tsx src/index.ts",
@@ -20,10 +21,12 @@
   },
   "dependencies": {
     "@big2/friends-system-schema": "*",
+    "@big2/friends-system-types": "*",
     "@big2/postgres-client": "*",
     "@types/express": "^5.0.6",
     "cors": "^2.8.6",
     "dotenv": "^17.4.2",
+    "drizzle-orm": "^0.45.2",
     "express": "^5.2.1"
   }
 }

@@ -1,8 +1,11 @@
 {
 	"name": "login-backend",
-	"version": "1.0.0",
+  	"private": true,
 	"type": "module",
+	"version": "1.0.0",
 	"description": "",
+	"author": "",
+	"license": "ISC",
 	"main": "./dist/index.js",
 	"scripts": {
 		"dev": "tsc --noEmit && tsx src/index.ts",
@@ -16,8 +19,6 @@
 		"build:run": "npm run build && npm run start",
 		"clean": "rm -rf ./dist .tsbuildinfo"
 	},
-	"author": "",
-	"license": "ISC",
 	"devDependencies": {
 		"@types/cookie-parser": "^1.4.10",
 		"@types/express": "^5.0.6",
@@ -33,6 +34,7 @@
 		"argon2": "^0.44.0",
 		"cookie-parser": "^1.4.7",
 		"dotenv": "^17.4.2",
+		"drizzle-orm": "^0.45.2",
 		"express": "^5.2.1",
 		"node-cron": "^4.6.0"
 	}

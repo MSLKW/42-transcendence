@@ -1,10 +1,11 @@
 {
   "name": "party-manager",
+  "private": true,
+  "type": "module",
   "version": "1.0.0",
   "description": "",
   "license": "ISC",
   "author": "",
-  "type": "module",
   "main": "dist/index.js",
   "scripts": {
     "dev": "tsc --noEmit && tsx src/index.ts",
@@ -22,6 +23,7 @@
     "@big2/party-manager-schema": "*",
     "@big2/postgres-client": "*",
     "dotenv": "^17.4.2",
+    "drizzle-orm": "^0.45.2",
     "express": "^5.2.1",
     "socket.io": "^4.8.3"
   }

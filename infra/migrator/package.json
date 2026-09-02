@@ -1,8 +1,8 @@
 {
-  "name": "@big2/migrator",
-  "version": "1.0.0",
+  "name": "migrator",
   "private": true,
   "type": "module",
+  "version": "1.0.0",
   "description": "",
   "keywords": [],
   "author": "",
@@ -16,14 +16,6 @@
     "pg": "^8.22.0",
     "dotenv": "^17.4.2",
     "drizzle-orm": "^0.45.2",
-    "drizzle-kit": "^0.31.10",
-    "typescript": "^5.9.3"
-  },
-  "devDependencies": {
-    "@types/node": "^26.1.1",
-    "@big2/auth-schema": "*",
-    "@big2/game-schema": "*",
-    "@big2/party-manager-schema": "*",
-    "@big2/profile-system-schema": "*"  
+    "drizzle-kit": "^0.31.10"
   }
 }

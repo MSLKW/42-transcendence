@@ -1,7 +1,10 @@
 {
 	"name": "profile-system",
+  	"private": true,
 	"version": "1.0.0",
 	"description": "",
+	"author": "",
+	"license": "ISC",
 	"main": "./dist/index.js",
 	"scripts": {
 		"dev": "tsc --noEmit && tsx src/index.ts",
@@ -9,8 +12,6 @@
 		"start": "node dist/index.js",
 		"clean": "rm -rf ./dist .tsbuildinfo"
 	},
-	"author": "",
-	"license": "ISC",
 	"devDependencies": {
 		"@types/cookie-parser": "^1.4.10",
 		"@types/express": "^5.0.6",
@@ -20,11 +21,11 @@
 		"typescript": "^6.0.3"
 	},
 	"dependencies": {
-		"@big2/auth-schema": "*",
+		"@big2/postgres-client": "*",
 		"@big2/profile-system-schema": "*",
 		"@big2/profile-system-types": "*",
-		"@big2/postgres-client": "*",
 		"dotenv": "^17.4.2",
+		"drizzle-orm": "^0.45.2",
 		"express": "^5.2.1",
 		"multer": "^2.2.0"
 	}

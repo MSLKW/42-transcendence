@@ -13,5 +13,10 @@
 		"incremental": true,
 		"tsBuildInfoFile": "./.tsbuildinfo"
 	},
-	"include": ["src/**/*.ts"]
+	"include": ["src/**/*.ts"],
+	"references": [
+		{ "path": "../../packages/types/profile-system-types"},
+		{ "path": "../../packages/postgres/profile-system-schema"},
+		{ "path": "../../packages/postgres/postgres-client"}
+	]
 }

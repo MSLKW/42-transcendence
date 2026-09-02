@@ -1,14 +1,15 @@
 import { users } from "@big2/auth-schema";
-import { pgSchema, uuid, jsonb, timestamp, index, check, uniqueIndex } from "drizzle-orm/pg-core";
+import { pgSchema, uuid, timestamp, index, check, uniqueIndex } from "drizzle-orm/pg-core";
 import { sql } from "drizzle-orm";
-import { RequestStatus } from "@big2/friends-system-types";
+import { REQUEST_STATUSES } from "@big2/friends-system-types";
 
 
 export const friendsSystemSchema = pgSchema("friends_system_schema");
+export const friendRequestStatusEnum = friendsSystemSchema.enum("friend_request_status_enum", REQUEST_STATUSES);
 
 
 export const friendships = friendsSystemSchema.table("friendships", {
-	id: uuid("id") // id for the friendship connections, not for user_id
+	id: uuid("id") // id for the friendships, not for user_id
 		.defaultRandom()
 		.primaryKey()
 		.notNull(),
@@ -24,10 +25,12 @@ export const friendships = friendsSystemSchema.table("friendships", {
 	updatedAt: timestamp("updated_at", { withTimezone: true})
 		.defaultNow()
 		.notNull(),
-}, (table) => ({
-  friendsPairUniqueIdx: uniqueIndex("friends_pair_unique_idx").on(table.friendSmallId, table.friendBigId),
-  orderedFriendsPairCheck: check("ordered_friends_pair_check", sql`${table.friendSmallId} < ${table.friendBigId}`),
-}));
+	},
+	(table) => ({
+		friendsPairUniqueIdx: uniqueIndex("friends_pair_unique_idx").on(table.friendSmallId, table.friendBigId),
+		orderedFriendsPairCheck: check("ordered_friends_pair_check", sql`${table.friendSmallId} < ${table.friendBigId}`),
+	})
+);
 
 
 
@@ -42,8 +45,7 @@ export const friendRequests = friendsSystemSchema.table("friend_requests", {
 	receiverId: uuid("receiver_id")
 		.notNull()
 		.references(() => users.id, { onDelete: "cascade" }),
-	status: jsonb("status")
-		.$type<RequestStatus>()
+	friendRequestStatus: friendRequestStatusEnum("friend_request_status")
 		.default("Pending")
 		.notNull(),
 	createdAt: timestamp("created_at", { withTimezone: true})
@@ -52,6 +54,8 @@ export const friendRequests = friendsSystemSchema.table("friend_requests", {
 	updatedAt: timestamp("updated_at", { withTimezone: true })
 		.defaultNow()
 		.notNull(),
-}, (table) => ({
-  senderReceiverIdx: index("sender_receiver_indx").on(table.senderId, table.receiverId),
-}));
+	},
+	(table) => ({
+		senderReceiverIdx: index("sender_receiver_idx").on(table.senderId, table.receiverId),
+	})
+);

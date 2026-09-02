@@ -1,7 +1,8 @@
 {
   "name": "@big2/game-schema",
-  "version": "1.0.0",
+  "private": true,
   "type": "module",
+  "version": "1.0.0",
   "description": "",
   "keywords": [],
   "author": "",
