@@ -1,8 +1,8 @@
 {
   "name": "@big2/party-manager-schema",
   "private": true,
-  "version": "1.0.0",
   "type": "module",
+  "version": "1.0.0",
   "description": "",
   "keywords": [],
   "author": "",

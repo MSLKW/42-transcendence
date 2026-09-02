@@ -1,11 +1,11 @@
 {
   "name": "friends-system",
   "private": true,
+  "type": "module",
   "version": "1.0.0",
   "description": "",
   "license": "ISC",
   "author": "",
-  "type": "module",
   "main": "dist/index.js",
   "scripts": {
     "dev": "tsc --noEmit && tsx src/index.ts",
