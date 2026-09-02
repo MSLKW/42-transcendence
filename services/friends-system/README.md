@@ -35,7 +35,7 @@ Main objectives in friends-system
 - No action needed beyond confirming the connection is live.
 
 ### 2. event: "friend_request_received"
-- data: { id: string, senderId: string, receiverId: string, status: "pending", createdAt: string }
+- data: { id: string, senderId: string, receiverId: string, status: "Pending", createdAt: string }
 - Fired to the RECEIVER when someone sends them a new friend request.
 - The full request object is included — no extra fetch is required to get its contents, though re-fetching the inbox is still fine.
 

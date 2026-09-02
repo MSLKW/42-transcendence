@@ -1,8 +1,8 @@
 import type { Request, Response } from "express";
 import crypto from "crypto";
-import { friendRequests, areFriends, FriendRequest } from "../../data/memoryFriendData";
-import { notify } from "../../events/notify.js";
-import { EVENTS } from "../../events/eventNames.js";
+import { friendRequests, areFriends, FriendRequest } from "../../store/memoryFriendData";
+import { notify } from "../../events/notify";
+import { EVENTS } from "../../events/eventNames";
 
 export function sendFriendRequest(req: Request, res: Response): void {
   const { senderId, receiverId } = req.body;
@@ -26,7 +26,7 @@ export function sendFriendRequest(req: Request, res: Response): void {
   }
 
   const existingSameDirection = friendRequests.find(
-    r => r.senderId === senderId && r.receiverId === receiverId && r.status === "pending"
+    r => r.senderId === senderId && r.receiverId === receiverId && r.status === "Pending"
   );
   if (existingSameDirection) {
     res.status(409).json({ error: "request already pending" });
@@ -34,7 +34,7 @@ export function sendFriendRequest(req: Request, res: Response): void {
   }
 
   const reverseRequest = friendRequests.find(
-    r => r.senderId === receiverId && r.receiverId === senderId && r.status === "pending"
+    r => r.senderId === receiverId && r.receiverId === senderId && r.status === "Pending"
   );
   if (reverseRequest) {
     res.status(409).json({
@@ -48,7 +48,7 @@ export function sendFriendRequest(req: Request, res: Response): void {
     id: crypto.randomUUID(),
     senderId,
     receiverId,
-    status: "pending",
+    status: "Pending",
     createdAt: new Date().toISOString(),
   };
   friendRequests.push(request);

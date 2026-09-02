@@ -5,7 +5,7 @@
 // to point at the real store instead.
 import { pairKey } from "../utils/pairKey";
 
-export type Status = "pending" | "accepted" | "rejected";
+export type Status = "Pending" | "Accepted" | "Rejected";
 
 export interface FriendRequest {
   id: string;

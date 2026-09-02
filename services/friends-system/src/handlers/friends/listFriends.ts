@@ -1,5 +1,5 @@
 import type { Request, Response } from "express";
-import { friendships } from "../../data/memoryFriendData";
+import { friendships } from "../../store/memoryFriendData";
 
 export function listFriends(req: Request, res: Response): void {
   const uuid = req.query.uuid as string;
