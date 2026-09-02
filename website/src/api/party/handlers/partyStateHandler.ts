@@ -17,6 +17,14 @@ export function partyStateHandler(socket: Socket) {
 
 		useProfileStore.getState().setCachedData();
 
+		usePartyStore.setState({
+			partyStateResponse: {
+				hostUuid: partyData.hostUuid,
+				members: partyData.members,
+				gameId: partyData.gameId,
+			},
+		});
+
 		console.log("[partySocket] 'party_state' partyData:", partyData);
 	});
 }

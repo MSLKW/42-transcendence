@@ -66,7 +66,7 @@ export const ChatWindow = () => {
 					<ul className="space-y-2 text-n6 w-full">
 						{cachedChat.map((data, index) => (
 							<li key={`${data.uuid}-${index}`}>
-								{data.type === "NOTIFICATION"
+								{data.type === "REPORT"
 									? <ChatReport data={data}/>
 									: <ChatMessage data={data}/>
 								}

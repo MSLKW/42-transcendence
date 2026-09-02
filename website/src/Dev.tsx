@@ -114,7 +114,7 @@ export default function Dev() {
 				</div>
 				<div className="flex place-content-between">
 					<DevButton
-						label={`Party Manager Socket ID: ${partySocketId ? partySocketId : "n/a"}`}
+						label={`partySocketId: ${partySocketId ? partySocketId : "n/a"}`}
 						call={handlePartyConnection}
 					/>
 					<DevButton label="isConnected" call={() => partySocket.isConnected()}/>
@@ -123,6 +123,7 @@ export default function Dev() {
 				<div className="flex place-content-between">
 					<li>Party Game ID: {partyGameId ? partyGameId : "n/a"}</li>
 					<DevButton label="Connect" call={() => partySocket.connect()} />
+					<DevButton label="party_state" call={() => console.log("party_state:", usePartyStore.getState().partyStateResponse)} />
 					<DevButton label={`seats: ${seated} / ${totalPlayers}`} call={() => console.log("seats: ", seats)} />
 				</div>
 				<div className="flex place-content-between">

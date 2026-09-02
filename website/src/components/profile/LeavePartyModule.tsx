@@ -1,3 +1,4 @@
+import { chatSocket } from "../../api/chat/chatSocket";
 import { partySocket } from "../../api/party/partySocket";
 import { usePartyStore } from "../../store/PartyStore";
 import { useProfileStore } from "../../store/ProfileStore";
@@ -8,6 +9,7 @@ export const LeavePartyModule = () => {
 
 	const handleLeaveParty = () => {
 		partySocket.leaveParty();
+		chatSocket.joinRoom(clientUuid!);
 	}
 
 	return (

@@ -9,7 +9,7 @@ export const subscribeToUserJoined = () => {
 
 		const addToCachedChat = useChatStore.getState().addToCachedChat;
 		addToCachedChat(
-			"NOTIFICATION",
+			"REPORT",
 			notif.senderUuid,
 			name,
 			"",

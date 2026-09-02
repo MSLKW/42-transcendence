@@ -1,11 +1,16 @@
 import { Socket } from "socket.io-client";
+import { useChatStore } from "../../../store/ChatStore";
 import { useNotificationStore, NOTIFICATION_TYPE } from "../../../store/NotificationStore";
 import { usePartyStore } from "../../../store/PartyStore";
 import { useProfileStore } from "../../../store/ProfileStore";
 import { useSceneStore } from "../../../store/SceneStore";
 
 export function leavePartyAction(socket: Socket | null) {
-	const { showNotification } = useNotificationStore.getState();
+	const addToCachedChat = useChatStore.getState().addToCachedChat;
+	const showNotification = useNotificationStore.getState().showNotification;
+	const clientUuid = useProfileStore.getState().clientUuid ?? "";
+	const data = useProfileStore.getState().getCachedData(clientUuid);
+
 	if (!socket?.connected) {
 		showNotification(
 			"Cannot leave party: Socket not connected",
@@ -22,13 +27,20 @@ export function leavePartyAction(socket: Socket | null) {
 
 	useProfileStore.getState().setCachedData();
 	
-	const clientUuid = useProfileStore.getState().clientUuid;
 	usePartyStore.setState({
 		members: [ clientUuid ],
 		hostUuid: clientUuid,
 	});
 
 	useSceneStore.getState().setShowWindow("profile", false);
+
+	addToCachedChat(
+		"REPORT",
+		clientUuid,
+		data?.name ?? "Client",
+		data?.avatar ?? "avatar-unknown.webp",
+		`You left a party`,
+	)
 
 	console.log("[partySocket] 'leave_party'");
 }

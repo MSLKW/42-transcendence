@@ -1,5 +1,6 @@
 import { Socket } from "socket.io-client";
 import { chatSocket } from "../../chat/chatSocket";
+import { useChatStore } from "../../../store/ChatStore";
 import { useNotificationStore, NOTIFICATION_TYPE } from "../../../store/NotificationStore";
 import { usePartyStore } from "../../../store/PartyStore";
 import { useProfileStore } from "../../../store/ProfileStore";
@@ -7,6 +8,10 @@ import { useSceneStore } from "../../../store/SceneStore";
 
 export function kickMemberAction(socket: Socket | null, recipientUuid: string, recipientName?: string) {
 	const { showNotification } = useNotificationStore.getState();
+	const addToCachedChat = useChatStore.getState().addToCachedChat;
+	const clientUuid = useProfileStore.getState().clientUuid ?? "";
+	const data = useProfileStore.getState().getCachedData(recipientUuid);
+	
 	if (!socket?.connected) {
 		showNotification(
 			"Cannot kick member: Socket not connected",
@@ -28,6 +33,14 @@ export function kickMemberAction(socket: Socket | null, recipientUuid: string, r
 	useProfileStore.getState().setCachedData();
 
 	useSceneStore.getState().setShowWindow("stats", false);
+
+	addToCachedChat(
+		"REPORT",
+		clientUuid,
+		"",
+		"",
+		`${data?.name ?? "A player"} has been kicked from party`
+	);
 
 	console.log("[partySocket] 'kick_player' recipientUuid:", recipientUuid);
 }

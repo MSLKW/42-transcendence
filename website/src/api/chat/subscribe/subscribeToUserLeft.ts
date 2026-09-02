@@ -9,11 +9,11 @@ export const subscribeToUserLeft = () => {
 
 		const addToCachedChat = useChatStore.getState().addToCachedChat;
 		addToCachedChat(
-			"NOTIFICATION",
+			"REPORT",
 			notif.senderUuid,
 			name,
 			"",
-			`${name} has left your party!`
+			`${name} has been removed from party`
 		);
 		console.log(`[subscribeToUserLeft] uuid:${notif.senderUuid} timestamp:${notif.timestamp}`);
 	});
