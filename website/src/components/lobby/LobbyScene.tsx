@@ -172,6 +172,7 @@ export const LobbyScene = () => {
 						sm:overflow-x-visible overflow-x-auto
 					"
 				>
+					<PartyCallButton />
 					{ members.map((uuid) => (
 						uuid && !seats.includes(uuid) &&
 							<AvatarModule
@@ -181,7 +182,6 @@ export const LobbyScene = () => {
 								cornerButton={uuid === hostUuid ? "host" : ""}
 							/>
 					))}
-					<PartyCallButton />
 				</div>
 				<div className="flex gap-2rem pt-2rem">
 					{ members.length > 1 && <UnseatButton uuid={clientUuid!} /> }

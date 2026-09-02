@@ -29,7 +29,7 @@ export const ChatWindow = () => {
 
 	const handleSend = (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
-		chatSocket.sendMessage(message);
+		chatSocket.sendChat("MESSAGE", message);
 		setMessage("");
 		focusRef.current?.focus();
 	};
@@ -66,9 +66,9 @@ export const ChatWindow = () => {
 					<ul className="space-y-2 text-n6 w-full">
 						{cachedChat.map((data, index) => (
 							<li key={`${data.uuid}-${index}`}>
-								{data.type === "MESSAGE"
-									? <ChatMessage data={data}/>
-									: <ChatReport data={data}/>
+								{data.type === "NOTIFICATION"
+									? <ChatReport data={data}/>
+									: <ChatMessage data={data}/>
 								}
 							</li>
 						))}

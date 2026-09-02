@@ -3,7 +3,7 @@ import { useSceneStore } from "../../store/SceneStore";
 import { AvatarImage } from "./image/AvatarImage";
 import { AvatarName } from "./name/AvatarName";
 import { AvatarCornerButton } from "./corner/AvatarCornerButton";
-import { ChatBubbles } from "../chat/ChatBubble";
+import { ChatBubbles } from "../bubble/ChatBubble";
 
 interface AvatarModuleProps {
 	uuid: string;

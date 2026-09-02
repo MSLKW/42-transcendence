@@ -17,7 +17,7 @@ export const AvatarImage = ({ uuid, image, isActive }: AvatarProps) => {
 		<div
 			className={`
 				h-6rem aspect-square
-				border ${uuid === clientUuid ? "border-b4 bg-b5/40" : "border-n2 bg-n3/10"} rounded-sm
+				border ${uuid === clientUuid ? "border-b4 bg-b5/40" : "border-n2 bg-n3/20"} rounded-sm
 				flex place-content-center place-items-center
 				relative
 			`}

@@ -1,9 +1,10 @@
 import { io, Socket } from "socket.io-client";
-import { useChatStore } from "../../store/ChatStore";
+import { useChatStore, type CHAT_TYPE } from "../../store/ChatStore";
 import { usePartyStore } from "../../store/PartyStore";
 import { useProfileStore } from "../../store/ProfileStore";
 
 export type ChatMessage = {
+	type: CHAT_TYPE;
 	senderUuid: string;
 	message: string;
 	timestamp: string;
@@ -88,16 +89,16 @@ class ChatSocketService {
 		}
 	}
 
-	public sendMessage(message: string) {
+	public sendChat(chatType: string, message: string) {
 		if (!this.socket?.connected) {
-			console.warn("[sendMessage] Cannot send message, socket is not connected");
+			console.warn("[sendChat] Cannot send message, socket is not connected");
 			return;
 		}
 
 		const trimmedMessage = message.trim();
 		if (!trimmedMessage)
 			return;
-		this.socket.emit("chat_message", { message: trimmedMessage } );
+		this.socket.emit("chat_message", { type: chatType, message: trimmedMessage } );
 	}
 
 	public onMessage(callback: (data: ChatMessage ) => void) {

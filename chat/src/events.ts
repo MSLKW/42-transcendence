@@ -1,5 +1,6 @@
 export interface ChatMessagePayload {
 	senderUuid: string;
+	type:string;
 	message: string;
 	timestamp: string;
 }
@@ -20,6 +21,7 @@ export interface ClientToServerEvents {
 	}) => void;
 
 	chat_message: (payload: {
+		type: string;
 		message: string;
 	}) => void;
 }

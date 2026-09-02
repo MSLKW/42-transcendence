@@ -42,7 +42,7 @@ export function registerEventHandlers(
 	});
 
 	socket.on("chat_message", (payload) => {
-		if (!payload || typeof payload.message !== "string")
+		if (!payload || typeof payload.message !== "string" || typeof payload.type !== "string" || !payload.type)
 			return;
 
 		const trimmedMessage = payload.message.trim();
@@ -62,10 +62,11 @@ export function registerEventHandlers(
 
 		const msgPayload = {
 			senderUuid: client.uuid,
+			type: payload.type,
 			message: trimmedMessage,
 			timestamp: new Date().toISOString()
 		};
 		io.to(roomId).emit("chat_message", msgPayload);
-		console.log(`<chat_message> roomId:${client.roomId} senderUuid:${msgPayload.senderUuid} message:${msgPayload.message} timestamp:${msgPayload.timestamp}`);
+		console.log(`<chat_message> roomId:${client.roomId} senderUuid:${msgPayload.senderUuid} type:${msgPayload.type} message:${msgPayload.message} timestamp:${msgPayload.timestamp}`);
 	});
 }

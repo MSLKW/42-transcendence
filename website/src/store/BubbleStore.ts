@@ -1,7 +1,9 @@
 import { create } from "zustand";
+import type { CHAT_TYPE } from "./ChatStore";
 
 export interface BubbleMsg {
 	id: string;
+	type: CHAT_TYPE;
 	message: string;
 }
 
@@ -12,7 +14,7 @@ interface BubbleValues {
 }
 
 interface BubbleState extends BubbleValues {
-	addBubble: (uuid: string, message: string) => void;
+	addBubble: (uuid: string, type: CHAT_TYPE, message: string) => void;
 	removeBubble: (uuid: string, bubbleId: string) => void;
 	clearBubbles: (uuid: string) => void;
 	clearAllBubbles: () => void;
@@ -24,7 +26,7 @@ export const useBubbleStore = create<BubbleState>(
 	(set, get) => ({
 		bubbles: {},
 
-		addBubble: (uuid, message) => {
+		addBubble: (uuid, type, message) => {
 			const id = crypto.randomUUID();
 			set((state) => ({
 				bubbles: {
@@ -33,6 +35,7 @@ export const useBubbleStore = create<BubbleState>(
 						...(state.bubbles[uuid] ?? []),
 						{
 							id,
+							type,
 							message,
 						},
 					],

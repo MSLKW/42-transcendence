@@ -1,9 +1,8 @@
-import { useState } from "react";
 import { useGameStore } from "../../store/GameStore";
 import { useSceneStore } from "../../store/SceneStore";
 import { BackButton } from "./back/BackButton";
 import { ChatButton } from "./chat/ChatButton";
-import { EmojiButton } from "./emoji/EmojiButton";
+import { EmoteGroup } from "./emote/EmoteGroup";
 import { SignOutButton } from "./sign_out/SignOutButton";
 import { SettingsButton } from "./settings/SettingsButton";
 
@@ -35,7 +34,7 @@ export const HeaderModule = ({ back }: HeaderModuleProps) => {
 				<SettingsButton />
 			</div>
 			<div className="flex rounded-full bg-dark">
-				<EmojiButton />
+				<EmoteGroup />
 				<ChatButton />
 			</div>
 		</header>

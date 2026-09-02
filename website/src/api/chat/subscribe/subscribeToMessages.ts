@@ -7,19 +7,17 @@ export const subscribeToMessages = () => {
 	return chatSocket.onMessage((chat) => {
 		const addBubble = useBubbleStore.getState().addBubble;
 		const addToCachedChat = useChatStore.getState().addToCachedChat;
-		// const clientUuid = useProfileStore.getState().clientUuid;
 		const data = useProfileStore.getState().getCachedData(chat.senderUuid);
 
 		addToCachedChat(
-			"MESSAGE",
+			chat.type,
 			chat.senderUuid,
 			data?.name ?? "Player",
 			data?.avatar ?? "avatar-unknown.webp",
 			chat.message
 		);
 
-		// if (chat.senderUuid != clientUuid)
-			addBubble(chat.senderUuid, chat.message);
+		addBubble(chat.senderUuid, chat.type, chat.message);
 
 		console.log(`[subscribeToMessages] uuid:${chat.senderUuid} message:${chat.message} timestamp:${chat.timestamp}`);
 	});

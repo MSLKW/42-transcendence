@@ -1,7 +1,7 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
-export type CHAT_TYPE = "MESSAGE" | "NOTIFICATION";
+export type CHAT_TYPE = "MESSAGE" | "NOTIFICATION" | "EMOTE";
 
 export interface ChatData {
 	type: CHAT_TYPE,

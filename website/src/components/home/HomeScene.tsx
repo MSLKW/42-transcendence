@@ -69,6 +69,7 @@ export const HomeScene = () => {
 						sm:overflow-x-visible overflow-x-auto
 					"
 				>
+					<PartyCallButton />
 					{clientUuid &&
 						<AvatarModule 
 							key={clientUuid}
@@ -86,7 +87,6 @@ export const HomeScene = () => {
 								cornerButton={hostUuid === uuid ? "host" : ""}
 							/>
 					))}
-					<PartyCallButton />
 				</div>
 				<SmallLogo />
 			</footer>
