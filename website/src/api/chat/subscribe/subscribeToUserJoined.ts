@@ -10,8 +10,8 @@ export const subscribeToUserJoined = () => {
 		const addToCachedChat = useChatStore.getState().addToCachedChat;
 		addToCachedChat(
 			"REPORT",
-			notif.senderUuid,
-			name,
+			"server",
+			"",
 			"",
 			`${name} has joined your party!`
 		);

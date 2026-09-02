@@ -36,7 +36,7 @@ export function kickMemberAction(socket: Socket | null, recipientUuid: string, r
 
 	addToCachedChat(
 		"REPORT",
-		clientUuid,
+		"server",
 		"",
 		"",
 		`${data?.name ?? "A player"} has been kicked from party`

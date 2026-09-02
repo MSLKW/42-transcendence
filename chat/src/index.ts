@@ -2,7 +2,7 @@ import { DisconnectReason, Server, Socket } from "socket.io";
 import { createServer } from "http";
 import { Client } from "./client/Client";
 import { clientManager } from "./client/ClientManager";
-import { registerEventHandlers } from "./client/event_handlers";
+import { registerEventHandlers, removeRateLimiters } from "./client/event_handlers";
 import { ClientToServerEvents, ServerToClientEvents } from "./events";
 
 const PORT = Number(process.env.PORT) || 3000;
@@ -92,6 +92,7 @@ io.on("connection", (socket: ChatSocket) => {
 			return ;
 
 		if (PERMANENT_DISCONNECT_REASONS.has(reason)) {
+			removeRateLimiters(client.uuid);
 			finalizeRemoval(uuid, reason);
 			return;
 		}
@@ -99,6 +100,7 @@ io.on("connection", (socket: ChatSocket) => {
 			uuid,
 			RECONNECT_GRACE_PERIOD_MS,
 			(client) => {
+				removeRateLimiters(client.uuid);
 				finalizeRemoval(client.uuid, "reconnection grace period ended");
 			}
 		);

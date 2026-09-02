@@ -6,9 +6,11 @@ import { SendButton } from "./send/SendButton";
 import { ChatMessage } from "./ChatMessage";
 import { ChatReport } from "./ChatReport";
 import { ChatTypingIndicator } from "./ChatTypingIndicator";
+import { ChatRateLimit } from "./ChatRateLimit";
 
 export const ChatWindow = () => {
-	const { cachedChat } = useChatStore();
+	const cachedChat = useChatStore((state) => state.cachedChat);
+	const rateLimitMessage = useChatStore((state) => state.rateLimitMessage);
 	const [ message, setMessage ] = useState("");
 	const focusRef = useRef<HTMLInputElement | null>(null);
 	const scrollContainerRef = useRef<HTMLDivElement | null>(null);
@@ -53,7 +55,7 @@ export const ChatWindow = () => {
 		chatSocket.sendChat("MESSAGE", message);
 		setMessage("");
 		focusRef.current?.focus();
-		
+
 		if (wasTyping.current) {
 			wasTyping.current = false;
 			chatSocket.sendTyping(false);
@@ -103,6 +105,7 @@ export const ChatWindow = () => {
 					}
 				</div>
 				<ChatTypingIndicator />
+				<ChatRateLimit />
 				<form
 					onSubmit={handleSend}
 					className="
@@ -113,6 +116,7 @@ export const ChatWindow = () => {
 				>
 					<input
 						ref={focusRef}
+						disabled={rateLimitMessage ? true : false}
 						type="text"
 						placeholder="Message"
 						value={message}

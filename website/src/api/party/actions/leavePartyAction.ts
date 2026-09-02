@@ -36,10 +36,10 @@ export function leavePartyAction(socket: Socket | null) {
 
 	addToCachedChat(
 		"REPORT",
-		clientUuid,
-		data?.name ?? "Client",
-		data?.avatar ?? "avatar-unknown.webp",
-		`You left a party`,
+		"server",
+		"",
+		"",
+		"You left a party",
 	)
 
 	console.log("[partySocket] 'leave_party'");

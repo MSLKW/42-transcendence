@@ -22,6 +22,11 @@ export interface ChatMessagePayload {
 	timestamp: string;
 }
 
+export interface ChatRateLimitedPayload {
+	type: "MESSAGE" | "EMOTE";
+	message: string;
+}
+
 export interface ClientToServerEvents {
 	chat_join_room: (payload: {
 		roomId: string;
@@ -42,4 +47,5 @@ export interface ServerToClientEvents {
 	chat_user_left: (payload: ChatUserLeftPayload) => void;
 	chat_user_typing: (payload: ChatIsTypingPayload) => void;
 	chat_message: (payload: ChatMessagePayload) => void;
+	chat_rate_limited: (payload: ChatRateLimitedPayload) => void;
 }

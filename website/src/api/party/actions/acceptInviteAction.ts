@@ -29,9 +29,9 @@ export function acceptInviteAction(socket: Socket | null, hostUuid: string) {
 
 	addToCachedChat(
 		"REPORT",
-		clientUuid,
-		data?.name ?? "Client",
-		data?.avatar ?? "avatar-unknown.webp",
+		"server",
+		"",
+		"",
 		`You joined a party!`,
 	)
 

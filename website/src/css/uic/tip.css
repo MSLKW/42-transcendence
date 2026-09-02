@@ -3,7 +3,7 @@
 	@apply
 		w-max h-max
 		absolute
-		bg-dark btn-text
+		bg-n1 btn-text
 		border border-n2
 		text-n6 text-1.25rem leading-relaxed
 		py-0.5rem px-1rem

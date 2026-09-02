@@ -2,10 +2,28 @@ import { Socket, Server } from "socket.io";
 import { Client } from "./Client";
 import { ClientToServerEvents, ServerToClientEvents } from "../events";
 import { clientManager } from "./ClientManager";
+import { RateLimiter } from "../RateLimiter";
 
 type ChatSocket = Socket<ClientToServerEvents, ServerToClientEvents>;
 
 const MAX_MESSAGE_LENGTH = 500;
+
+const messageLimiter= new RateLimiter({
+	maxRequests: 5,
+	windowMs: 5000,
+});
+
+const emoteLimiter = new RateLimiter({
+	maxRequests: 3,
+	windowMs: 2000,
+});
+
+const typingLimiter = new RateLimiter({
+	maxRequests: 20,
+	windowMs: 5000,
+});
+
+const VALID_CHAT_TYPE = new Set(["MESSAGE", "EMOTE"]);
 
 export function registerEventHandlers(
 	io: Server<ClientToServerEvents, ServerToClientEvents>,
@@ -54,6 +72,9 @@ export function registerEventHandlers(
 		if (!roomId || !socket.rooms.has(roomId))
 			return;
 
+		if (!typingLimiter.allow(client.uuid))
+			return;
+
 		socket.to(client.roomId).emit("chat_user_typing", {
 			senderUuid: client.uuid,
 			isTyping: payload.isTyping,
@@ -61,7 +82,7 @@ export function registerEventHandlers(
 	});
 
 	socket.on("chat_message", (payload) => {
-		if (!payload || typeof payload.message !== "string" || typeof payload.type !== "string" || !payload.type)
+		if (!payload || typeof payload.message !== "string" || typeof payload.type !== "string" || !VALID_CHAT_TYPE.has(payload.type))
 			return;
 
 		const trimmedMessage = payload.message.trim();
@@ -79,13 +100,32 @@ export function registerEventHandlers(
 			return;
 		}
 
+		const limiter = payload.type === "EMOTE"
+			? emoteLimiter
+			: messageLimiter;
+
+		if (!limiter.allow(client.uuid)) {
+			console.warn(`User<${client.uuid}> exceeded ${payload.type} rate limit`);
+			socket.emit("chat_rate_limited", {
+				type: payload.type,
+				message: "Rate limited - too many messages sent",
+			});
+			return;
+		}
+
 		const msgPayload = {
 			senderUuid: client.uuid,
 			type: payload.type,
 			message: trimmedMessage,
-			timestamp: new Date().toISOString()
+			timestamp: new Date().toISOString(),
 		};
 		io.to(roomId).emit("chat_message", msgPayload);
 		console.log(`<chat_message> roomId:${client.roomId} senderUuid:${msgPayload.senderUuid} type:${msgPayload.type} message:${msgPayload.message} timestamp:${msgPayload.timestamp}`);
 	});
+}
+
+export function removeRateLimiters(uuid: string): void {
+	messageLimiter.remove(uuid);
+	emoteLimiter.remove(uuid);
+	typingLimiter.remove(uuid);
 }

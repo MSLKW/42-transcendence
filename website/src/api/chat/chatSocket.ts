@@ -13,12 +13,17 @@ export type ChatMessage = {
 export type ChatNotification = {
 	senderUuid: string;
 	timestamp: string;
-}
+};
 
 export type ChatTyping = {
 	senderUuid: string;
 	isTyping: boolean;
-}
+};
+
+export type ChatRateLimited = {
+	type: CHAT_TYPE;
+	message: string;
+};
 
 class ChatSocketService {
 	private socket: Socket | null = null;
@@ -153,6 +158,17 @@ class ChatSocketService {
 		this.socket?.on("chat_user_typing", callback);
 		return () => {
 			this.socket?.off("chat_user_typing", callback);
+		};
+	}
+
+	public onRateLimited(callback: (data: ChatRateLimited) => void) {
+		if (!this.socket)
+			this.connect();
+
+		this.socket?.on("chat_rate_limited", callback);
+
+		return () => {
+			this.socket?.off("chat_rate_limited", callback);
 		};
 	}
 

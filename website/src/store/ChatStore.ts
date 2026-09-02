@@ -11,10 +11,13 @@ export interface ChatData {
 	msg: string,
 }
 
+let rateLimitTimeout: ReturnType<typeof setTimeout> | null = null;
+
 interface ChatValues {
 	chatSocketId: string | null;
 	chatRoomId: string | null;
 	cachedChat: ChatData[];
+	rateLimitMessage: string | null;
 }
 
 interface ChatState extends ChatValues {
@@ -25,6 +28,8 @@ interface ChatState extends ChatValues {
 		avatar: string,
 		msg: string
 	) => void;
+
+	showRateLimitMessage: (message: string) => void;
 }
 
 export const useChatStore = create<ChatState>() (
@@ -33,6 +38,7 @@ export const useChatStore = create<ChatState>() (
 			chatSocketId: null,
 			chatRoomId: null,
 			cachedChat: [],
+			rateLimitMessage: null,
 
 			addToCachedChat: (type, uuid, name, avatar, msg) => {
 				set((state) => ({
@@ -42,6 +48,17 @@ export const useChatStore = create<ChatState>() (
 					]
 				}));
 			},
+
+			showRateLimitMessage: (message) => {
+				if (rateLimitTimeout)
+					clearTimeout(rateLimitTimeout);
+
+				set({ rateLimitMessage: message });
+				rateLimitTimeout = setTimeout(() => {
+					set({ rateLimitMessage: null });
+					rateLimitTimeout = null;
+				}, 3000);
+			}
 		}),
 		{
 			name: 'chat-storage',
