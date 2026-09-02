@@ -10,6 +10,7 @@
 | "reject_invite" | hostUuid: string | <center>-</center> |
 | "leave_party" | <center>-</center>|<center>-</center> |
 | "start_game_session" | <center>-</center>|<center>-</center> |
+| "refresh" | <center>-</center> | <center>-</center> |
 
 ## Party Manager To Frontend Socket Transmits
 | <center>Event Name</center> | <center>JSON Payload</center> | <center>Callback</center> |
