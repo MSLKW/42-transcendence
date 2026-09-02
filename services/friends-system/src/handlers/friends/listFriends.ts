@@ -1,5 +1,5 @@
 import type { Request, Response } from "express";
-import { friendships } from "../../store/memoryFriendData";
+import { drizzleFriendshipStore } from "../../stores/drizzleFriendshipStore";
 
 export function listFriends(req: Request, res: Response): void {
   const uuid = req.query.uuid as string;

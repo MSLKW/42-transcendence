@@ -1,7 +1,7 @@
-export const REQUEST_STATUSES = [
+export const FRIEND_REQUEST_STATUSES = [
 	"Pending",
 	"Accepted",
 	"Rejected"
 ] as const;
 
-export type RequestStatus = typeof REQUEST_STATUSES[number];
+export type FriendRequestStatus = typeof FRIEND_REQUEST_STATUSES[number];

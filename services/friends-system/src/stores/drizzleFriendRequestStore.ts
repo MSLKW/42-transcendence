@@ -1,0 +1,96 @@
+import type { FriendRequestStatus } from "@big2/friends-system-types";
+import { friendRequests } from "@big2/friends-system-schema";
+import { eq, and, or } from "drizzle-orm";
+import { postgres } from "./postgres";
+import { FriendRequest } from "../models/friendRequest";
+import { FriendRequestStore } from "./friendRequestStore";
+
+
+export class DrizzleFriendRequestStore implements FriendRequestStore {
+
+	async sendRequest(senderId: string, receiverId: string): Promise<void> {
+		await postgres
+			.insert(friendRequests)
+			.values({ 
+				senderId: senderId, 
+				receiverId: receiverId,
+			})
+			.returning();
+	}
+
+	async findRequestId(id: string): Promise<FriendRequest | null> {
+		const [resultRow] = await postgres
+			.select()
+			.from(friendRequests)
+			.where(eq(friendRequests.id, id))
+			.limit(1);
+		return (resultRow ?? null);
+	}
+
+	async findPendingBothSides(senderId: string, receiverId: string): Promise<FriendRequest | null> {
+		const [resultRow] = await postgres
+			.select()
+			.from(friendRequests)
+			.where(and(
+				eq(friendRequests.senderId, senderId),
+				eq(friendRequests.receiverId, receiverId),
+				eq(friendRequests.status, "Pending" as FriendRequestStatus)
+			))
+			.limit(1);
+		return (resultRow ?? null);
+	}
+
+	async findPendingBothSidesReverseCheck(senderId: string, receiverId: string): Promise<FriendRequest | null> {
+		const [resultRow] = await postgres
+			.select()
+			.from(friendRequests)
+			.where(and(
+				eq(friendRequests.senderId, receiverId),
+				eq(friendRequests.receiverId, senderId),
+				eq(friendRequests.status, "Pending" as FriendRequestStatus),
+			))
+			.limit(1);
+		return (resultRow ?? null);
+	}
+
+	async listRecievedAndPending(receiverId: string): Promise<FriendRequest[] | null> {
+		const resultRows =  await postgres
+			.select()
+			.from(friendRequests)
+			.where(and(
+				eq(friendRequests.receiverId, receiverId),
+				eq(friendRequests.status, "Pending" as FriendRequestStatus)
+			));
+		return (resultRows ?? null);
+	}
+
+	async listSent(senderId: string): Promise<FriendRequest[] | null> {
+		const resultRows = await postgres
+			.select()
+			.from(friendRequests)
+			.where(eq(friendRequests.senderId, senderId));
+		return (resultRows ?? null);
+	}
+
+	async updateStatus(requestId: string, status: FriendRequestStatus): Promise<void> {
+		await postgres
+			.update(friendRequests)
+			.set({ status: status })
+			.where(eq(friendRequests.id, requestId));
+	}
+
+	async updatePendingRequest(userA: string, userB: string, status: FriendRequestStatus): Promise<void> {
+		await postgres
+			.update(friendRequests)
+			.set({ status: status })
+			.where(
+				and(eq(friendRequests.status, "Pending" as FriendRequestStatus),
+				or(
+					and(eq(friendRequests.senderId, userA), eq(friendRequests.receiverId, userB)),
+					and(eq(friendRequests.senderId, userB), eq(friendRequests.receiverId, userA))
+				)
+			));
+	}
+};
+
+export const drizzleFriendRequestStore = new DrizzleFriendRequestStore();

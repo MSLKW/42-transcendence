@@ -1,11 +1,11 @@
 import { users } from "@big2/auth-schema";
 import { pgSchema, uuid, timestamp, index, check, uniqueIndex } from "drizzle-orm/pg-core";
 import { sql } from "drizzle-orm";
-import { REQUEST_STATUSES } from "@big2/friends-system-types";
+import { FRIEND_REQUEST_STATUSES } from "@big2/friends-system-types";
 
 
 export const friendsSystemSchema = pgSchema("friends_system_schema");
-export const friendRequestStatusEnum = friendsSystemSchema.enum("friend_request_status_enum", REQUEST_STATUSES);
+export const statusEnum = friendsSystemSchema.enum("friend_request_status_enum", FRIEND_REQUEST_STATUSES);
 
 
 export const friendships = friendsSystemSchema.table("friendships", {
@@ -45,7 +45,7 @@ export const friendRequests = friendsSystemSchema.table("friend_requests", {
 	receiverId: uuid("receiver_id")
 		.notNull()
 		.references(() => users.id, { onDelete: "cascade" }),
-	friendRequestStatus: friendRequestStatusEnum("friend_request_status")
+	status: statusEnum("friend_request_status")
 		.default("Pending")
 		.notNull(),
 	createdAt: timestamp("created_at", { withTimezone: true})

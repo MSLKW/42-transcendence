@@ -1,5 +1,5 @@
 import type { Request, Response } from "express";
-import { friendships } from "../../store/memoryFriendData";
+import { drizzleFriendshipStore } from "../../stores/drizzleFriendshipStore";
 import { pairKey } from "../../utils/pairKey";
 import { notify } from "../../events/notify";
 import { EVENTS } from "../../events/eventNames";

@@ -63,11 +63,11 @@ Main objectives in friends-system
 - Open `test.html` in two browser tabs with different UUIDs.
 - Register uuid, watch it registered a SSE connection for each UUID
 - Send a friend request from one, watch it appear live in the other's console/alert.
-- Reciever accept/reject friend request, both are added into each other's friend list.
+- receiver accept/reject friend request, both are added into each other's friend list.
 
 ### **Stress tests**
 - **1:** Sender resend a friend request while current is pending
-- **2:** Reciever try to send friend request to the sender , while the same sender's friend request is pending
+- **2:** receiver try to send friend request to the sender , while the same sender's friend request is pending
 - **3:** After friend request sent, test both uuid logout & re-login (disconnect & connect), and the pending friend request is still there.
 - **4:** Connect the same UUID multiple times. 
 - **5:** Disconnect the same UUID multiple times. 
