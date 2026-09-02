@@ -161,26 +161,11 @@ export default function Dev() {
 						call={handleChatConnection}
 					/>
 					<DevButton label="isConnected" call={() => chatSocket.isConnected()}/>
-					<DevButton
-						label={`Clear cachedChat: ${cachedChat.length}`}
-						call={() => useChatStore.setState({ cachedChat: [] })}
-					/>
 				</div>
 				<div className="flex place-content-between">
 					<DevButton
 						label={`chatRoomId: ${chatRoomId ? chatRoomId : "n/a"}`}
 						call={() => useChatStore.setState({ chatRoomId: hostUuid })}
-					/>
-					<DevButton
-						label={"typingUsers"}
-						call={() => console.log("typingUsers: ", useTypingStore.getState().typingUsers)}
-					/>
-					<DevButton
-						label={"joinRoom"}
-						call={() => {
-							if (chatRoomId)
-								chatSocket.joinRoom(chatRoomId ?? null);
-						}}
 					/>
 				</div>
 			</ul>

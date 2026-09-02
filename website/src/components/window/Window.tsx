@@ -1,7 +1,9 @@
 import { useState, type ReactNode } from "react";
+import { useChatStore } from "../../store/ChatStore";
 import { useSceneStore } from "../../store/SceneStore";
 import { useWindowDrag } from "../../utilities/useWindowDrag";
 import { LightboxButton } from "../lightbox/LightboxButton";
+import { ClearIcon } from "./clear/ClearIcon";
 import { PinActiveIcon } from "./pin/PinActiveIcon";
 import { PinInactiveIcon } from "./pin/PinInactiveIcon";
 import { CloseIcon } from "./close/CloseIcon";
@@ -17,6 +19,7 @@ interface WindowProps {
 	headerType?: HEADER_TYPE;
 	hasPinButton?: boolean;
 	pinState?: boolean;
+	hasClearChatButton?: boolean;
 	isDismissable?: boolean;
 	call?: () => void | undefined;
 }
@@ -29,6 +32,7 @@ export const Window: React.FC<WindowProps> = ({
 	headerType = "Standard",
 	hasPinButton = true,
 	pinState = true,
+	hasClearChatButton = false,
 	isDismissable = true,
 	call,
 }) => {
@@ -85,6 +89,15 @@ export const Window: React.FC<WindowProps> = ({
 							{title}
 						</h2>
 						<div className="flex">
+							{ hasClearChatButton &&
+								<button
+									data-tip="Clear Chat"
+									onClick={() => useChatStore.setState({ cachedChat: [] })}
+									className="btn-icon data-tip-down"
+								>
+									<ClearIcon />
+								</button>
+							}
 							{ hasPinButton &&
 								<button
 									data-tip={isPinned ? "Unpin Window" : "Pin Window"}
