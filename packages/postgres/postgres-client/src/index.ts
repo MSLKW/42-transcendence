@@ -46,4 +46,4 @@ process.on('SIGINT', async () => {
 });
 
 
-console.log(`~~~ Database connection pool initialized & database client is created & exported successfully ~~~`);
+console.log(`Database connection pool initialized & database client is created & exported successfully!!`);

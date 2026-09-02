@@ -13,4 +13,7 @@ app.use(eventsRouter);
 app.use(friendRequestsRouter);
 app.use(friendsRouter);
 
-app.listen(PORT, () => console.log(`friends-system on :${PORT}`));
+// app.listen(PORT, () => console.log(`friends-system on :${PORT}`));
+const server = app.listen(PORT, () => {
+	console.log(`Server running on http://localhost:${PORT}`);
+});
