@@ -68,6 +68,7 @@ export const ChatWindow = () => {
 			dismissKey="chat"
 			placement="br"
 			hasPinButton={false}
+			pinState={false}
 			hasClearChatButton={true}
 		>
 			<div
@@ -90,19 +91,38 @@ export const ChatWindow = () => {
 						gap-1rem
 					"
 				>
-					{!cachedChat.length ?
-						<h2 className="text-n6/50">Chat messages appear here</h2>
-					:
-					<ul className="space-y-2 text-n6 w-full">
-						{cachedChat.map((data, index) => (
-							<li key={`${data.uuid}-${index}`}>
-								{data.type === "REPORT"
-									? <ChatReport data={data}/>
-									: <ChatMessage data={data}/>
-								}
-							</li>
-						))}
-					</ul>
+					{!cachedChat.length
+						?
+							<h2 className="text-n6/50">Chat messages appear here</h2>
+						:
+							<ul
+								className="
+									w-full
+									flex flex-col gap-0.5rem
+									text-n6
+								"
+							>
+								{cachedChat.map((data, index) => {
+									const isFirstFromClient = index === 0 || cachedChat[index - 1].uuid !== data.uuid;
+									const nextMessage = cachedChat[index + 1];
+									const isLastFromClient = nextMessage && nextMessage?.uuid !== data.uuid;
+
+									return (
+										<li key={`${data.uuid}-${index}`}>
+											{data.type === "REPORT"
+												?
+													<ChatReport data={data}/>
+												:
+													<ChatMessage
+														data={data}
+														isFirstFromClient={isFirstFromClient}
+														isLastFromClient={isLastFromClient}
+													/>
+											}
+										</li>
+									);
+								})}
+							</ul>
 					}
 				</div>
 				<ChatTypingIndicator />

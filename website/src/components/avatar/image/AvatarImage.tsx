@@ -5,9 +5,10 @@ interface AvatarProps {
 	uuid: string | undefined;
 	image: string | undefined;
 	isActive?: boolean;
+	isChat?: boolean
 }
 
-export const AvatarImage = ({ uuid, image, isActive }: AvatarProps) => {
+export const AvatarImage = ({ uuid, image, isActive, isChat = false }: AvatarProps) => {
 	const clientUuid = useProfileStore.getState().clientUuid;
 	const autoPassIndex = useSettingsStore.getState().autoPassIndex;
 	const autoPassOptions = [1, 3, 5, 10, 15, 30, 42, 60, 120, -1];
@@ -16,7 +17,7 @@ export const AvatarImage = ({ uuid, image, isActive }: AvatarProps) => {
 	return (
 		<div
 			className={`
-				h-6rem aspect-square
+				${isChat ? "h-full w-full" : "h-6rem aspect-square"}
 				border ${uuid === clientUuid ? "border-b4 bg-b5/40" : "border-n2 bg-n3/20"} rounded-sm
 				flex place-content-center place-items-center
 				relative

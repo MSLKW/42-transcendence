@@ -12,12 +12,9 @@ export const ChatReport = ({ data }: ChatReportProps) => {
 		">
 			<div className="
 				w-max h-max
-				bg-n2
-				border border-n3 rounded-3xl
+				bg-dark rounded-full
 				text-n6
-				text-[clamp(0.25rem,2vw+0.125rem,0.75rem)]
-				px-[clamp(0.25rem,2vw+0.125rem,1.25rem)]
-				py-[clamp(0.0625rem,0.5vh+0.03125rem,0.5rem)]
+				py-0.5rem px-1rem mb-5
 			">
 				<p>{data.msg}</p>
 			</div>

@@ -4,44 +4,66 @@ import { AvatarImage } from "../avatar/image/AvatarImage";
 
 interface ChatProps {
 	data: ChatData;
+	isFirstFromClient: boolean;
+	isLastFromClient: boolean;
 }
 
-export const ChatMessage = ({ data }: ChatProps) => {
+export const ChatMessage = ({ data, isFirstFromClient, isLastFromClient }: ChatProps) => {
 	const { clientUuid } = useProfileStore();
 
 	return (
 		<>
-			{data.uuid === clientUuid ? (
-				<div className="flex place-content-end place-items-start gap-5">
-					<div
-						className="
-							max-w-[75%]
-							flex flex-col
-							text-right wrap-break-word
-							bg-a3 border border-a4 rounded-xl
-							px-1rem py-1rem
-						">
-						<h3 className="text-b5 font-bold">{data.name}</h3>
-						<p>{data.msg}</p>
-					</div>
-					<AvatarImage uuid={data.uuid} image={data.avatar}/>
-				</div>
-			) : (
-				<div className="flex place-content-start place-items-start gap-5">
-					<AvatarImage uuid={data.uuid} image={data.avatar}/>
-					<div
-						className="
-							max-w-[75%]
-							flex flex-col
-							text-left wrap-break-word
-							bg-a3 border border-a4 rounded-xl
-							px-1rem py-1rem
-						">
-						<h3 className="text-b5 font-bold">{data.name}</h3>
-						<p>{data.msg}</p>
-					</div>
-				</div>
-			)}
+			{ data.type === "MESSAGE" &&
+				<>
+					{data.uuid === clientUuid ? (
+						<div className="flex place-content-end place-items-start gap-1rem">
+							<div
+								className={`
+									max-w-[75%]
+									flex flex-col
+									text-right wrap-break-word
+									bg-a3 border border-a4 rounded-md
+									px-1rem py-0.5rem
+									${ isLastFromClient && "mb-8" }
+								`}
+							>
+								<p className="text-b5 font-bold">{data.name}</p>
+								<span className={`${data.type === "MESSAGE" ? "text-1.25rem" : "text-xl"}`}>
+									{data.msg}
+								</span>
+							</div>
+							<div className="h-5rem aspect-square">
+								{isFirstFromClient &&
+									<AvatarImage uuid={data.uuid} image={data.avatar} isChat={true}/>
+								}
+							</div>
+						</div>
+					) : (
+						<div className="flex place-content-start place-items-start gap-1rem">
+							<div className="h-5rem aspect-square">
+								{isFirstFromClient &&
+									<AvatarImage uuid={data.uuid} image={data.avatar} isChat={true}/>
+								}
+							</div>
+							<div
+								className={`
+									max-w-[75%]
+									flex flex-col
+									text-left wrap-break-word
+									bg-a3 border border-a4 rounded-md
+									px-1rem py-0.5rem
+									${ isLastFromClient && "mb-8" }
+								`}
+							>
+								<p className="text-b5 font-bold">{data.name}</p>
+								<span className={`${data.type === "MESSAGE" ? "text-1.25rem" : "text-xl"}`}>
+									{data.msg}
+								</span>
+							</div>
+						</div>
+					)}
+				</>
+			}
 		</>
 	);
 }
