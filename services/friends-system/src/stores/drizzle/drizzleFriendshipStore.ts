@@ -1,8 +1,8 @@
 import { friendships } from "@big2/friends-system-schema";
 import { eq, and, or } from "drizzle-orm";
-import { postgres } from "./postgres";
+import { postgres } from "../../config/postgres";
 // import { Friendship } from "../models/friendship";
-import { FriendshipStore } from "./friendshipStore";
+import { FriendshipStore } from "../interfaces/friendshipStore";
 
 
 export class DrizzleFriendshipStore implements FriendshipStore {

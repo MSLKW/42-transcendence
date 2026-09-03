@@ -1,6 +1,6 @@
 import type { Request, Response } from "express";
 import crypto from "crypto";
-import { drizzleFriendRequestStore } from "../../stores/drizzleFriendRequestStore";
+import { drizzleFriendRequestStore } from "../../stores/drizzle/drizzleFriendRequestStore";
 import { notify } from "../../events/notify";
 import { EVENTS } from "../../events/eventNames";
 

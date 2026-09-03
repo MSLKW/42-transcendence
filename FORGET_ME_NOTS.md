@@ -93,5 +93,42 @@
 			- can try to see later if we can screen record the precision during live, and make it as .gif! 
 
 
+7. database/store's job:
+	- just read/write the row you ask for
+8. backend's job:
+	- decide business rules
+	- throw and catch
+	- error handling on situational edge cases
+9. .limit(1) on .returning() — not needed, and here's the actual reason
+	- .returning() only returns rows that were actually affected by that specific INSERT/UPDATE/DELETE statement, not rows found by a search. 
+	- Since your .values({ senderId, receiverId }) inserts exactly one row (in sendRequest()), .returning() only hand back exactly one row, period.
+	- .limit() only earns its keep on .select()
+10. my implementations = standard industry practice
+	- Repository pattern (or "ports and adapters" more formally): 
+		- an interface (FriendRequestStore) as the "port,"
+		- a concrete implementation (DrizzleFriendRequestStore) as the "adapter." 
+		- This is genuinely how larger production codebases are structured, not a school-project simplification
+	- service layer:
+		- One real gap at larger scale, worth knowing even if you don't build it now: 
+		- bigger systems usually add a `service layer` between handlers and stores
+		- handlers stay thin (parse request → call service → format response),
+		- business rules (the "must still be Pending" check, the "auto-close reverse request" logic) live in a FriendRequestService rather than directly in the handler. 
+		- At your current size, keeping that logic in handlers is completely reasonable — just know the next layer up has a name, in case you ever want to point to it.
+
+11. terminology used:
+	- Drizzle: "Drizzle queries" or "Drizzle's query builder API."
+		- Drizzle isn't a heavy, hides-everything ORM like some others — it's specifically marketed as a query builder that stays close to real SQL shape (.select().from().where() mirrors SQL structure directly). So "I'm writing Drizzle queries" is accurate; calling it "SQL" is technically wrong (you're writing TypeScript that Drizzle compiles into SQL, not SQL itself) — worth keeping that distinction crisp in your own head and your README.
+	- dbclient
+		- On your actual goal (a): wanting the code to explicitly say "we talk to Postgres" is a completely reasonable instinct, and doesn't need to disappear — it just needs a small adjustment to stay precise. The issue isn't the word "postgres," it's that a bare postgres reads as "this variable is the database," when it's actually the client/connection object pointed at the database. Better: postgresClient (file postgresClient.ts, export export const postgresClient = createPostgresClient(...)) — keeps your explicit "we're on Postgres" signal, adds clarity that it's a client/connection, and sidesteps the naming collision entirely. This also directly answers your multi-database future-proofing goal in point 10: if you ever add a second database technology later, postgresClient sits naturally alongside a hypothetical mongoClient or redisClient — same pattern, unambiguous which is which.
+	- "querying Postgres"
+		- "querying" is the correct, precise word for what your store classes do (select/insert/update/delete are all queries). "Communicating with the database" is fine as looser prose in a README or verbal explanation, but in code comments, "queries Postgres via Drizzle" is the tighter, more accurate phrasing.
+12. "Store" vs "Repository" directory naming
+	- both real, one is more universally recognized
+	- "Store" isn't wrong, 
+	- but the more common industry term specifically for this exact pattern (backend data-access classes) is "Repository" — FriendRequestRepository, DrizzleFriendRequestRepository. 
+	- Worth knowing the more common name, because "Store" carries a specific other association in the JS ecosystem — Redux/Zustand "stores" (frontend state management)
+	- so a reader skimming your backend code might briefly expect frontend-style reactive state rather than a data-access class. 
+	- Not a functional problem, just a naming collision with an unrelated, very common concept in the same language ecosystem.
+
 ## revise, forgot!
 - why postgres.ts can do import * ?  i thought cannot do * for imports ?

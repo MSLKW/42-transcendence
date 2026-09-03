@@ -1,21 +1,22 @@
 import type { FriendRequestStatus } from "@big2/friends-system-types";
 import { friendRequests } from "@big2/friends-system-schema";
 import { eq, and, or } from "drizzle-orm";
-import { postgres } from "./postgres";
-import { FriendRequest } from "../models/friendRequest";
-import { FriendRequestStore } from "./friendRequestStore";
+import { postgres } from "../../config/postgres";
+import { FriendRequest } from "../../models/friendRequest";
+import { FriendRequestStore } from "../interfaces/friendRequestStore";
 
 
 export class DrizzleFriendRequestStore implements FriendRequestStore {
 
-	async sendRequest(senderId: string, receiverId: string): Promise<void> {
-		await postgres
+	async sendRequest(senderId: string, receiverId: string): Promise<FriendRequest> {
+		const [resultRow] = await postgres
 			.insert(friendRequests)
 			.values({ 
 				senderId: senderId, 
 				receiverId: receiverId,
 			})
 			.returning();
+		return (resultRow);
 	}
 
 	async findRequestId(id: string): Promise<FriendRequest | null> {

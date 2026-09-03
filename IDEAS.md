@@ -5,7 +5,7 @@ and focus back to my MVP
 ## MVPs
 ### Backend & Database (in sequence)
 1. types in general:
-	- fs.status -> enum -> pgEnum, (status -> renamed to fReqStatus in db too)
+	- ~~fs.status -> enum -> pgEnum, (status -> renamed to fReqStatus in db too)~~
     - ps.badge  -> enum -> pgEnum,
 	- ps.acheievements -> jsonb -> leave it. 
 	- push
@@ -15,16 +15,17 @@ and focus back to my MVP
 	- TS codebase adapt to types update
 	- it runs well using in-memory files
 	- push 
-	- add 2 drizzle files
-	- add postgres.ts
 	- change import from drizzle files instead of in-memory files
 	- push
 
 3. int/fs-db
-	- merge dev-fs into int/fs-db
-	- schema
-	- index/uniqueIndex/check
-	- Drizzle code adapt to types update: pgEnum & enum in schema
+	- ~~merge dev-fs into int/fs-db~~
+	- ~~schema~~
+	- ~~index/uniqueIndex/check~~
+	- ~~add 2 drizzle files~~
+	- ~~add postgres.ts~~
+	- ~~Drizzle code adapt to types update: pgEnum & enum in schema~~
+	- backend codebase need to be adapted to database integration
 	- it runs well with real database integration 
 	- push
 

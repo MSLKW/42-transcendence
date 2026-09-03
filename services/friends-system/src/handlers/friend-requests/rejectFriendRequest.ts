@@ -1,5 +1,5 @@
 import type { Request, Response } from "express";
-import { drizzleFriendRequestStore } from "../../stores/drizzleFriendRequestStore";
+import { drizzleFriendRequestStore } from "../../stores/drizzle/drizzleFriendRequestStore";
 import { notify } from "../../events/notify";
 import { EVENTS } from "../../events/eventNames";
 
