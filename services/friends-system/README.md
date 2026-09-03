@@ -3,26 +3,29 @@
 ### Index: 
 * [1. Friends-System REST API Endpoints Documentation](#1-friends-system-rest-api-endpoints-documentation)
 * [2. SSE Event Contract Documentation](#2-sse-event-contract-documentation)
-* [3. Minimal working version (no DB yet. Tester runs on in-memory)](#3-minimal-working-version-no-db-yet-tester-runs-on-in-memory)
+* [3. Local testing guide (via test.html)](#3-local-testing-guide-via-testhtml)
 
 
 ## 1. Friends-System REST API Endpoints Documentation
 
 | Method | Path | Purpose |
 |---|---|---|
-| POST | `/friend-requests` | client send a friend request `{ toUuid }` |
-| GET | `/friend-requests` | client's inbox — pending incoming requests |
-| POST | `/friend-requests/:id/accept` | accept |
-| POST | `/friend-requests/:id/reject` | reject |
-| GET | `/friends` | list of client's friends' UUIDs |
-| GET | `/events` | SSE stream — push live notifications (new friend request, accepted, online/offline) |
+| POST | `/friend-requests` | send a friend request — body: `{ senderId, receiverId }` |
+| GET | `/friend-requests/received?uuid=` | client's inbox — pending incoming requests |
+| GET | `/friend-requests/sent?uuid=` | requests the client has sent, any status |
+| POST | `/friend-requests/:id/accept` | accept a pending request (`:id` = the request's own row id) |
+| POST | `/friend-requests/:id/reject` | reject a pending request (`:id` = the request's own row id) |
+| GET | `/friends?uuid=` | list of client's friends' UUIDs |
+| DELETE | `/friends/:friendUuid?uuid=` | remove a friend — silent, the removed side is not notified |
+| GET | `/events?uuid=` | SSE stream — push live notifications (new friend request, accepted, rejected, friends list changes) |
+
 
 Main objectives in friends-system
-- getter to see your own friends
-- accept/reject
-- send req
-- live noti via SSE.
-
+- **Query(read):** see full friend list (list of uuids)
+- **Action(write):** accept/reject a pending friend request
+- **Action(write):** send a friend request
+- **Action(write):** remove a friend
+- **Live notifications** via SSE
 
 
 ## 2. SSE Event Contract Documentation
@@ -35,7 +38,7 @@ Main objectives in friends-system
 - No action needed beyond confirming the connection is live.
 
 ### 2. event: "friend_request_received"
-- data: { id: string, senderId: string, receiverId: string, fReqStatus: "Pending", createdAt: string }
+- data: { id: string, senderId: string, receiverId: string, status: "Pending", createdAt: string }
 - Fired to the RECEIVER when someone sends them a new friend request.
 - The full friend request object is included — no extra fetch is required to get its contents, though re-fetching the inbox is still fine.
 
@@ -58,23 +61,29 @@ Main objectives in friends-system
 
 
 
-## 3. Minimal working version (no DB yet. Tester runs on in-memory)
-### **Test operation guide, refer the logs**
+## 3. Local testing guide (via test.html)
+
+The tester works identically whether the service is running against the in-memory placeholder or real Postgres — it only ever talks to the REST/SSE contract above, never the storage layer directly.
+
+### **Basic walkthrough**
 - Open `test.html` in two browser tabs with different UUIDs.
-- Register uuid, watch it registered a SSE connection for each UUID
-- Send a friend request from one, watch it appear live in the other's console/alert.
-- receiver accept/reject friend request, both are added into each other's friend list.
+- Register a UUID in each tab and click Connect — watch each tab open its own SSE connection.
+- Send a friend request from one tab, watch it appear live in the other's inbox.
+- Accept or reject — on accept, both UUIDs appear in each other's friends list.
 
 ### **Stress tests**
-- **1:** Sender resend a friend request while current is pending
-- **2:** receiver try to send friend request to the sender , while the same sender's friend request is pending
-- **3:** After friend request sent, test both uuid logout & re-login (disconnect & connect), and the pending friend request is still there.
-- **4:** Connect the same UUID multiple times. 
-- **5:** Disconnect the same UUID multiple times. 
-- **6:** Connect the same UUID on multiple tabs *(!! Bugs, both tabs' logs increment SSE connections non-stop)*
-- **7:** Do various actions while the either one user is disconnected or immediately disconnected after the action made.
-- **8.0:** After A remove B from friend list, B's friend list will also auto remove A (its a bit laggy using SSE, but latency is not the biggest concern for friend removals)
-- **8.1:** User remove friend and idle -> friend's friends list will __eventually__ remove the user too
-- **8.2:** User remove friend and refresh user's friends list -> friend's friends list will __eventually__ remove the user too
-- **8.3:** User remove friend and refresh friend's friends list -> friend's friends list will **instantly** remove the user too.
-- **9:** User recieve pending friend request, duplicate a new tab, and accept on the new tab, then accept on the original tab *(need to test this when integrate with auth later since auth guarantees 1 session only)*
+
+| # | Scenario | Expected result |
+|---|---|---|
+| 1 | Sender resends a friend request while the current one is still pending | Rejected — "request already pending" |
+| 2 | Receiver tries to send a request back to the sender, while the sender's original request is still pending | Rejected — told to respond to the existing request instead |
+| 3 | After a request is sent, both UUIDs disconnect and reconnect (simulating logout/login) | The pending request is still there after reconnecting |
+| 4 | Connect the same UUID multiple times (same tab) | Refused — "already connected, disconnect first" |
+| 5 | Disconnect the same UUID multiple times | Refused gracefully — "already disconnected" |
+| 6 | Connect the same UUID on multiple tabs simultaneously | ⚠️ Known bug — both tabs' logs increment SSE connections non-stop |
+| 7 | Perform an action while the other user is disconnected, or disconnects immediately after | Action still completes; the disconnected user catches up once reconnected |
+| 8.0 | User A removes User B | B's friends list also auto-removes A (slight SSE lag; not a concern for friend removals) |
+| 8.1 | User removes a friend, then stays idle | Friend's list *eventually* reflects the removal (poll interval) |
+| 8.2 | User removes a friend, then refreshes their own list | Friend's list *eventually* reflects the removal |
+| 8.3 | User removes a friend, then the friend refreshes their own list | Removal reflected **instantly** |
+| 9 | User receives a pending request, opens a duplicate tab, accepts on the new tab, then accepts again on the original tab | Second accept correctly rejected — *(re-test once integrated with auth, since auth guarantees only 1 session)* |

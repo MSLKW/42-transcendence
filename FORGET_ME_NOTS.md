@@ -122,6 +122,7 @@
 		- On your actual goal (a): wanting the code to explicitly say "we talk to Postgres" is a completely reasonable instinct, and doesn't need to disappear — it just needs a small adjustment to stay precise. The issue isn't the word "postgres," it's that a bare postgres reads as "this variable is the database," when it's actually the client/connection object pointed at the database. Better: postgresClient (file postgresClient.ts, export export const postgresClient = createPostgresClient(...)) — keeps your explicit "we're on Postgres" signal, adds clarity that it's a client/connection, and sidesteps the naming collision entirely. This also directly answers your multi-database future-proofing goal in point 10: if you ever add a second database technology later, postgresClient sits naturally alongside a hypothetical mongoClient or redisClient — same pattern, unambiguous which is which.
 	- "querying Postgres"
 		- "querying" is the correct, precise word for what your store classes do (select/insert/update/delete are all queries). "Communicating with the database" is fine as looser prose in a README or verbal explanation, but in code comments, "queries Postgres via Drizzle" is the tighter, more accurate phrasing.
+		
 12. "Store" vs "Repository" directory naming
 	- both real, one is more universally recognized
 	- "Store" isn't wrong, 
@@ -129,6 +130,18 @@
 	- Worth knowing the more common name, because "Store" carries a specific other association in the JS ecosystem — Redux/Zustand "stores" (frontend state management)
 	- so a reader skimming your backend code might briefly expect frontend-style reactive state rather than a data-access class. 
 	- Not a functional problem, just a naming collision with an unrelated, very common concept in the same language ecosystem.
+
+13. "Repository" vs. "git repo" naming conventions
+	- create confusions and genuinely funny coincidence, but truly a coincidence, not a shared origin
+	- Good instinct to question this rather than assume a connection — there isn't one. 
+	- The Repository pattern name traces back to Martin Fowler's Patterns of Enterprise Application Architecture (2002) and Eric Evans' Domain-Driven Design (2003) — both using "repository" in its plain, everyday English sense: a place where a collection of things is kept and retrieved from, same root meaning as "a repository of knowledge" or "a seed repository." 
+	- Git itself wasn't created until 2005 — three years after Fowler's book coined this exact software pattern name. 
+	- So there's no derivation in either direction; 
+	- both just independently picked the same ordinary English word because it fits their respective concepts (a collection you store and fetch things from)
+	- pure coincidence of timing and word choice, not one borrowing from the other.
+	- Given that mental snag is real for you, and "Store" doesn't carry that particular confusion (even though it has its own minor collision with frontend state-management naming) — no pressure to rename anything. 
+	- Sticking with DrizzleFriendRequestStore is completely fine; 
+	- it was worth knowing the industry's more common term exists, not a reason you're obligated to switch to it.
 
 ## revise, forgot!
 - why postgres.ts can do import * ?  i thought cannot do * for imports ?
