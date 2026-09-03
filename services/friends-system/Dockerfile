@@ -45,7 +45,7 @@ COPY --from=builder /app/services/friends-system/dist ./services/friends-system/
 
 EXPOSE 3000
 
-COPY services/friends-system/scripts/friends-system_entrypoint.sh /usr/local/bin/entrypoint.sh
+COPY services/friends-system/scripts/friends-system-entrypoint.sh /usr/local/bin/entrypoint.sh
 RUN chmod +x /usr/local/bin/entrypoint.sh
 
 WORKDIR /app/services/friends-system
