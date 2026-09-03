@@ -14,7 +14,7 @@ export const ChatReport = ({ data }: ChatReportProps) => {
 				w-max h-max
 				bg-dark rounded-full
 				text-n6
-				py-0.5rem px-1rem mb-5
+				py-0.5rem px-1rem my-1
 			">
 				<p>{data.msg}</p>
 			</div>
