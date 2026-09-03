@@ -24,7 +24,7 @@ export const ChatMessage = ({ data, isFirstFromClient, isLastFromClient }: ChatP
 									text-right wrap-break-word
 									bg-a3 border border-a4 rounded-md
 									px-1rem py-0.5rem
-									${ isLastFromClient && "mb-8" }
+									${ isLastFromClient ? "mb-8" : "mb-2" }
 								`}
 							>
 								<p className="text-b5 font-bold">{data.name}</p>
@@ -52,7 +52,7 @@ export const ChatMessage = ({ data, isFirstFromClient, isLastFromClient }: ChatP
 									text-left wrap-break-word
 									bg-a3 border border-a4 rounded-md
 									px-1rem py-0.5rem
-									${ isLastFromClient && "mb-8" }
+									${ isLastFromClient ? "mb-8" : "mb-2" }
 								`}
 							>
 								<p className="text-b5 font-bold">{data.name}</p>

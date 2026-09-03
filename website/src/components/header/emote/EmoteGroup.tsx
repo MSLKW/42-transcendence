@@ -17,15 +17,15 @@ export const EmoteGroup = () => {
 					grid grid-cols-3 grid-rows-3
 				"
 			>
-				<EmoteOptions emoji="😎" tip="~Cool~" />
-				<EmoteOptions emoji="😄" tip="~Happy~" />
-				<EmoteOptions emoji="😩" tip="~Weary~" />
-				<EmoteOptions emoji="🫡" tip="~Respect~" />
-				<EmoteOptions emoji="🥳" tip="~Celebrate~" />
-				<EmoteOptions emoji="🤬" tip="~Mad~" />
-				<EmoteOptions emoji="☠️" tip="~Dead~" />
-				<EmoteOptions emoji="🔥" tip="~Too Hot~" />
-				<EmoteOptions emoji="🚑" tip="~Send Help~" />
+				<EmoteOptions emoji="😄" tip="Feelin' Good" />
+				<EmoteOptions emoji="😎" tip="It's Sunny" />
+				<EmoteOptions emoji="🥳" tip="Lets Celebrate" />
+				<EmoteOptions emoji="😩" tip="No Luck" />
+				<EmoteOptions emoji="🫠" tip="Pass Again?" />
+				<EmoteOptions emoji="🤬" tip="Translate This" />
+				<EmoteOptions emoji="🔥" tip="Too Hot" />
+				<EmoteOptions emoji="🚑" tip="Send Help" />
+				<EmoteOptions emoji="🏆" tip="That's Mine" />
 			</div>
 		</div>
 	)

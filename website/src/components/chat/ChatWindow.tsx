@@ -98,7 +98,7 @@ export const ChatWindow = () => {
 							<ul
 								className="
 									w-full
-									flex flex-col gap-0.5rem
+									flex flex-col
 									text-n6
 								"
 							>
