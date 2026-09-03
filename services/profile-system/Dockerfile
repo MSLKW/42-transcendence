@@ -42,6 +42,7 @@ COPY --from=builder /app/packages/types/profile-system-types/dist ./packages/typ
 COPY --from=builder /app/packages/postgres/profile-system-schema/dist ./packages/postgres/profile-system-schema/dist
 COPY --from=builder /app/packages/postgres/postgres-client/dist ./packages/postgres/postgres-client/dist
 COPY --from=builder /app/services/profile-system/dist ./services/profile-system/dist
+COPY --from=builder /app/services/profile-system/test ./services/profile-system/test
 
 EXPOSE 3000
 
