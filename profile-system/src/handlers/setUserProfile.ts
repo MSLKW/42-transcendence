@@ -19,7 +19,7 @@ export function setUserProfile(store: UserStore)
 			const partial: Partial<UserData> = {};
 			if (typeof(req.body.username) === "string")
 				partial.username = req.body.username;
-			if (typeof(req.body.username) === "string")
+			if (typeof(req.body.avatarPath) === "string")
 				partial.avatarPath = req.body.avatarPath;
 			if (typeof(req.body.badgeLabel) === "string")
 				partial.badge = req.body.badgeLabel;
