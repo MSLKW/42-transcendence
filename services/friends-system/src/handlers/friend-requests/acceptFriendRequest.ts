@@ -1,35 +1,42 @@
 import type { Request, Response } from "express";
-import { friendRequests, friendships, areFriends } from "../../store/memoryFriendData";
-import { pairKey } from "../../utils/pairKey";
+import { drizzleFriendRequestStore } from "../../stores/drizzle/drizzleFriendRequestStore";
+import { drizzleFriendshipStore } from "../../stores/drizzle/drizzleFriendshipStore";
 import { notify } from "../../events/notify";
 import { EVENTS } from "../../events/eventNames";
+import { getRouteParam } from "../../utils/getRouteParam";
 
-export function acceptFriendRequest(req: Request, res: Response): void {
-  const request = friendRequests.find(r => r.id === req.params.id);
+export async function acceptFriendRequest(req: Request, res: Response): Promise<void> {
+  // req.params.id is the friend REQUEST's own row id — senderId/receiverId
+  // come bundled inside the object findRequestId returns, not from the URL
+  const requestId = getRouteParam(req.params.id);
+  if (!requestId) {
+    res.status(400).json({ error: "invalid request id" });
+    return;
+  }
+  
+  const request = await drizzleFriendRequestStore.findRequestId(requestId);
   if (!request) {
     res.status(404).end();
     return;
   }
 
-  // irreversible: only a still-pending request can be accepted
+  // irreversible: only a still-Pending request can be accepted
   if (request.status !== "Pending") {
     res.status(409).json({ error: `this request was already ${request.status} — it can't be changed` });
     return;
   }
 
-  request.status = "Accepted";
+  await drizzleFriendRequestStore.updateStatus(request.id, "Accepted");
 
-  if (!areFriends(request.senderId, request.receiverId)) {
-    friendships.push({ a: request.senderId, b: request.receiverId });
+  if (!(await drizzleFriendshipStore.areFriends(request.senderId, request.receiverId))) {
+    await drizzleFriendshipStore.add(request.senderId, request.receiverId);
   }
-  // any other pending request between the same two people is now redundant — auto-close it
-  friendRequests
-    .filter(r => r.status === "Pending" && pairKey(r.senderId, r.receiverId) === pairKey(request.senderId, request.receiverId))
-    .forEach(r => { r.status = "Accepted"; });
+  // if the other person had also sent a request the other way, close it too
+  await drizzleFriendRequestStore.updatePendingRequest(request.senderId, request.receiverId, "Accepted");
 
   notify(request.senderId, EVENTS.FRIEND_REQUEST_ACCEPTED, { by: request.receiverId, requestId: request.id });
   notify(request.receiverId, EVENTS.FRIENDS_LIST_UPDATED, { newFriend: request.senderId });
   notify(request.senderId, EVENTS.FRIENDS_LIST_UPDATED, { newFriend: request.receiverId });
 
-  res.json(request);
+  res.json({ ...request, status: "Accepted" });
 }

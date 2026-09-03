@@ -1,7 +1,7 @@
 import type { Request, Response } from "express";
 import { drizzleFriendRequestStore } from "../../stores/drizzle/drizzleFriendRequestStore";
 
-export function listReceivedRequests(req: Request, res: Response): void {
+export async function listReceivedRequests(req: Request, res: Response): Promise<void> {
   const uuid = req.query.uuid as string;
-  res.json(friendRequests.filter(r => r.receiverId === uuid && r.status === "Pending"));
+  res.json(await drizzleFriendRequestStore.listRecievedAndPending(uuid));
 }

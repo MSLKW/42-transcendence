@@ -1,20 +1,20 @@
 import type { Request, Response } from "express";
 import { drizzleFriendshipStore } from "../../stores/drizzle/drizzleFriendshipStore";
-import { pairKey } from "../../utils/pairKey";
 import { notify } from "../../events/notify";
 import { EVENTS } from "../../events/eventNames";
+import { getRouteParam } from "../../utils/getRouteParam";
 
-export function removeFriend(req: Request, res: Response): void {
+export async function removeFriend(req: Request, res: Response): Promise<void> {
   const uuid = req.query.uuid as string;
-  const friendUuid = req.params.friendUuid;
-
-  const before = friendships.length;
-  for (let i = friendships.length - 1; i >= 0; i--) {
-    if (pairKey(friendships[i].a, friendships[i].b) === pairKey(uuid, friendUuid)) {
-      friendships.splice(i, 1);
-    }
+  // const friendUuid = req.params.friendUuid;
+  const friendUuid = getRouteParam(req.params.id);
+  if (!friendUuid) {
+    res.status(400).json({ error: "invalid request id" });
+    return;
   }
-  if (friendships.length === before) {
+
+  const removed = await drizzleFriendshipStore.remove(uuid, friendUuid);
+  if (!removed) {
     res.status(404).end();
     return;
   }

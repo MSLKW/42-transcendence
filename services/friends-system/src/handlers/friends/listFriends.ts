@@ -1,10 +1,7 @@
 import type { Request, Response } from "express";
 import { drizzleFriendshipStore } from "../../stores/drizzle/drizzleFriendshipStore";
 
-export function listFriends(req: Request, res: Response): void {
+export async function listFriends(req: Request, res: Response): Promise<void> {
   const uuid = req.query.uuid as string;
-  const friends = friendships
-    .filter(f => f.a === uuid || f.b === uuid)
-    .map(f => (f.a === uuid ? f.b : f.a));
-  res.json(friends);
+  res.json(await drizzleFriendshipStore.fullFriendList(uuid));
 }
