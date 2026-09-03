@@ -8,6 +8,13 @@
       "when": 1787135276653,
       "tag": "0000_updated_schema",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1788425353576,
+      "tag": "0001_friends_system_schema",
+      "breakpoints": true
     }
   ]
 }

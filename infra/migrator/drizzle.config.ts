@@ -8,15 +8,11 @@ import fs from "fs";
 import 'dotenv/config'; // 1. Load .env files
 import { defineConfig } from "drizzle-kit";
 
-// const password = fs.readFileSync(process.env.PGPASSWORD!, "utf8").trim();
-// if (!password) {
-//   throw new Error("CRITICAL: Database password could not be loaded.");
-// }
 
 // 2. Helper to safely read the password
 function requirePassword(): string {
-  const passwordFile = "/run/secrets/db-admin-password";
   try {
+    const passwordFile = "/run/secrets/db-admin-password";
     const password = fs.readFileSync(passwordFile, "utf-8").trim();
     if (!password) {
       throw new Error("empty password");
@@ -37,6 +33,7 @@ export default defineConfig({
     schema: [ // points to the "Source of Truth."
       "../../packages/postgres/auth-schema/src/index.ts", 
       "../../packages/postgres/party-manager-schema/src/index.ts", 
+      "../../packages/postgres/friends-system-schema/src/index.ts", 
       // "../../packages/postgres/profile-system-schema/src/index.ts",
       "../../packages/postgres/game-schema/src/index.ts"
     ], 
@@ -50,4 +47,4 @@ export default defineConfig({
     strict: true,  // safety feature. In strict mode, Drizzle is more aggressive about ensuring your TypeScript schema matches your database exactly. If there are extra tables in your DB that aren't in your schema, it might warn you or complain, helping you keep your database "clean."
 });
 
-console.log("~~~yeayy done doing all drizzle.config.ts!~~~");
+console.log("Complete running through drizzle.config.ts");

@@ -6,7 +6,7 @@
 #    By: aimokhta <aimokhta@student.42kl.edu.my>    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2026/06/16 09:31:30 by aimokhta          #+#    #+#              #
-#    Updated: 2026/08/19 21:47:02 by aimokhta         ###   ########.fr        #
+#    Updated: 2026/09/03 16:43:06 by aimokhta         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -65,10 +65,10 @@ logs:
 	@docker logs authentication
 	@echo "$(PURPLE)\ndocker logs party-manager$(RESET)"
 	@docker logs party-manager
+	@echo "$(PURPLE)\ndocker logs friends-system$(RESET)"
+	@docker logs friends-system
 # 	@echo "$(PURPLE)\ndocker logs profile-system$(RESET)"
 # 	@docker logs profile-system
-# 	@echo "$(PURPLE)\ndocker logs friends-system$(RESET)"
-# 	@docker logs friends-system
 # 	@echo "$(PURPLE)\ndocker logs game-stats$(RESET)"
 # 	@docker logs game-stats
 # 	@echo "$(PURPLE)\ndocker logs website$(RESET)"
@@ -91,7 +91,7 @@ ls:
 	@docker volume ls
 
 nuclear:
-	@docker system prune -a -v -f
+	@docker system prune -a --volumes -f
 # -a: Removes all unused images, not just dangling ones.
 # --volumes: Removes all unused volumes.
 # -f: Forces removal without prompting.
@@ -115,6 +115,10 @@ progress:
 config:
 # 	to see what docker reads from docker compose
 	@docker compose config 
+
+# guide users what make commands available to use
+# --help:
+# 	@echo 
 
 
 .PHONY: all down recreate clean fclean re logs nuclear complete-clean progress config ls
