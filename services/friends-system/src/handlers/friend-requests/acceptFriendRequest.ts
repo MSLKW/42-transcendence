@@ -1,6 +1,6 @@
 import type { Request, Response } from "express";
-import { drizzleFriendRequestStore } from "../../stores/drizzle/drizzleFriendRequestStore";
-import { drizzleFriendshipStore } from "../../stores/drizzle/drizzleFriendshipStore";
+import { drizzleFriendRequestRepository } from "../../repositories/drizzle/DrizzleFriendRequestRepository";
+import { drizzleFriendshipRepository } from "../../repositories/drizzle/DrizzleFriendshipRepository";
 import { notify } from "../../events/notify";
 import { EVENTS } from "../../events/eventNames";
 import { getRouteParam } from "../../utils/getRouteParam";
@@ -14,7 +14,7 @@ export async function acceptFriendRequest(req: Request, res: Response): Promise<
     return;
   }
   
-  const request = await drizzleFriendRequestStore.findRequestId(requestId);
+  const request = await drizzleFriendRequestRepository.findRequestId(requestId);
   if (!request) {
     res.status(404).end();
     return;
@@ -26,13 +26,13 @@ export async function acceptFriendRequest(req: Request, res: Response): Promise<
     return;
   }
 
-  await drizzleFriendRequestStore.updateStatus(request.id, "Accepted");
+  await drizzleFriendRequestRepository.updateStatus(request.id, "Accepted");
 
-  if (!(await drizzleFriendshipStore.areFriends(request.senderId, request.receiverId))) {
-    await drizzleFriendshipStore.add(request.senderId, request.receiverId);
+  if (!(await drizzleFriendshipRepository.areFriends(request.senderId, request.receiverId))) {
+    await drizzleFriendshipRepository.add(request.senderId, request.receiverId);
   }
   // if the other person had also sent a request the other way, close it too
-  await drizzleFriendRequestStore.updatePendingRequest(request.senderId, request.receiverId, "Accepted");
+  await drizzleFriendRequestRepository.updatePendingRequest(request.senderId, request.receiverId, "Accepted");
 
   notify(request.senderId, EVENTS.FRIEND_REQUEST_ACCEPTED, { by: request.receiverId, requestId: request.id });
   notify(request.receiverId, EVENTS.FRIENDS_LIST_UPDATED, { newFriend: request.senderId });

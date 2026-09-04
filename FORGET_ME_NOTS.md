@@ -28,13 +28,13 @@
 	- QUESTION: what about "COPY . ."? that dosent look like microservice tho? 
 		- YUP, its def not microservice like this
 		- SOLUTION: 
-			1. exclude everything unrelated to the microservice in .dockerignore 
-			   (LOTS OF MANUAL WORK, have to edit every time there's new additions to the project)
+			1. `context` is the own service's path itself
 			2. implement `additional_context` in dc.yml + Dockerfile 
-			   (WILL DEF DO THIS IN NON-MVP)
 				- Dockerfile cannot COPY backwards. it only go onwards from what defined as `context` in docker-compose.yml
 				- so just dockerignore within context, yeayy EASY!
-				- 
+			3. minimize Dockerfile lines using `tsc -b` 
+				- for dockerfile use only, dev will use, depends, tsc or tsup instead
+				- automated through the deoendency chain
 
 4. pnpm is better than npm for microservices 
 	- npm(2010) = it's the default, "just works" choice.
@@ -103,10 +103,11 @@
 	- .returning() only returns rows that were actually affected by that specific INSERT/UPDATE/DELETE statement, not rows found by a search. 
 	- Since your .values({ senderId, receiverId }) inserts exactly one row (in sendRequest()), .returning() only hand back exactly one row, period.
 	- .limit() only earns its keep on .select()
-10. my implementations = standard industry practice
+
+10. Standard industry practice
 	- Repository pattern (or "ports and adapters" more formally): 
-		- an interface (FriendRequestStore) as the "port,"
-		- a concrete implementation (DrizzleFriendRequestStore) as the "adapter." 
+		- an interface (FriendRequestRepository) as the "port,"
+		- a concrete implementation (DrizzleFriendRequestRepository) as the "adapter." 
 		- This is genuinely how larger production codebases are structured, not a school-project simplification
 	- service layer:
 		- One real gap at larger scale, worth knowing even if you don't build it now: 

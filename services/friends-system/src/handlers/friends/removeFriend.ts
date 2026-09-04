@@ -1,5 +1,5 @@
 import type { Request, Response } from "express";
-import { drizzleFriendshipStore } from "../../stores/drizzle/drizzleFriendshipStore";
+import { drizzleFriendshipRepository } from "../../repositories/drizzle/DrizzleFriendshipRepository";
 import { notify } from "../../events/notify";
 import { EVENTS } from "../../events/eventNames";
 import { getRouteParam } from "../../utils/getRouteParam";
@@ -13,7 +13,7 @@ export async function removeFriend(req: Request, res: Response): Promise<void> {
     return;
   }
 
-  const removed = await drizzleFriendshipStore.remove(uuid, friendUuid);
+  const removed = await drizzleFriendshipRepository.remove(uuid, friendUuid);
   if (!removed) {
     res.status(404).end();
     return;

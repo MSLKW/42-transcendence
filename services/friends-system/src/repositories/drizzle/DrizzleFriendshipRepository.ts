@@ -2,10 +2,10 @@ import { friendships } from "@big2/friends-system-schema";
 import { eq, and, or } from "drizzle-orm";
 import { postgres } from "../../config/postgres";
 // import { Friendship } from "../models/friendship";
-import { FriendshipStore } from "../interfaces/friendshipStore";
+import { FriendshipRepository } from "../interfaces/FriendshipRepository";
 
 
-export class DrizzleFriendshipStore implements FriendshipStore {
+export class DrizzleFriendshipRepository implements FriendshipRepository {
 
 	sortPair(a: string, b: string): [string, string] {
 		return (a < b ? [a,b] : [b,a]);
@@ -61,4 +61,4 @@ export class DrizzleFriendshipStore implements FriendshipStore {
 	}
 };
 
-export const drizzleFriendshipStore = new DrizzleFriendshipStore();
+export const drizzleFriendshipRepository = new DrizzleFriendshipRepository();

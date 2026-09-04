@@ -1,5 +1,5 @@
 import type { Request, Response } from "express";
-import { drizzleFriendRequestStore } from "../../stores/drizzle/drizzleFriendRequestStore";
+import { drizzleFriendRequestRepository } from "../../repositories/drizzle/DrizzleFriendRequestRepository";
 import { notify } from "../../events/notify";
 import { EVENTS } from "../../events/eventNames";
 import { getRouteParam } from "../../utils/getRouteParam";
@@ -11,7 +11,7 @@ export async function rejectFriendRequest(req: Request, res: Response): Promise<
     return;
   }
 
-  const request = await drizzleFriendRequestStore.findRequestId(requestId);
+  const request = await drizzleFriendRequestRepository.findRequestId(requestId);
   if (!request) {
     res.status(404).end();
     return;
@@ -22,7 +22,7 @@ export async function rejectFriendRequest(req: Request, res: Response): Promise<
     return;
   }
 
-  await drizzleFriendRequestStore.updateStatus(request.id, "Rejected");
+  await drizzleFriendRequestRepository.updateStatus(request.id, "Rejected");
   notify(request.senderId, EVENTS.FRIEND_REQUEST_REJECTED, { by: request.receiverId, requestId: request.id });
   res.json({ ...request, status: "Rejected" });
 }

@@ -3,10 +3,10 @@ import { friendRequests } from "@big2/friends-system-schema";
 import { eq, and, or } from "drizzle-orm";
 import { postgres } from "../../config/postgres";
 import { FriendRequest } from "../../models/friendRequest";
-import { FriendRequestStore } from "../interfaces/friendRequestStore";
+import { FriendRequestRepository } from "../interfaces/FriendRequestRepository";
 
 
-export class DrizzleFriendRequestStore implements FriendRequestStore {
+export class DrizzleFriendRequestRepository implements FriendRequestRepository {
 
 	async sendRequest(senderId: string, receiverId: string): Promise<FriendRequest> {
 		const [resultRow] = await postgres
@@ -94,4 +94,4 @@ export class DrizzleFriendRequestStore implements FriendRequestStore {
 	}
 };
 
-export const drizzleFriendRequestStore = new DrizzleFriendRequestStore();
+export const drizzleFriendRequestRepository = new DrizzleFriendRequestRepository();
