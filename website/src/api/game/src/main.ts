@@ -11,6 +11,7 @@ import { gsap } from 'gsap';
 import { Socket } from 'socket.io-client';
 import { useSceneStore } from '../../../store/SceneStore.ts';
 import { useGameStore } from "../../../store/GameStore.ts";
+import { SceneContainer } from '../../../components/3d/SceneContainer.ts';
 
 export const scene = new THREE.Scene();
 export let camera: THREE.PerspectiveCamera;
@@ -102,51 +103,32 @@ export function initGameClient(container: HTMLElement) {
 	
 	// camera.rotation.set();
 	
-	const gui = new GUI();
-	const cameraFolder = gui.addFolder('Camera Position');
-	const lensFolder = gui.addFolder('Camera Lens');
+	// const gui = new GUI();
+	// const cameraFolder = gui.addFolder('Camera Position');
+	// const lensFolder = gui.addFolder('Camera Lens');
 	
-	cameraFolder.add(camera.position, 'x', 0, 10, 0.1).name('X').listen();
-	cameraFolder.add(camera.position, 'y', 0, 10, 0.1).name('Y').listen();
-	cameraFolder.add(camera.position, 'z', 0, 10, 0.1).name('Z').listen();
+	// cameraFolder.add(camera.position, 'x', 0, 10, 0.1).name('X').listen();
+	// cameraFolder.add(camera.position, 'y', 0, 10, 0.1).name('Y').listen();
+	// cameraFolder.add(camera.position, 'z', 0, 10, 0.1).name('Z').listen();
 	
-	lensFolder.add(camera, 'fov', 20, 100, 1).name("FOV").onChange(() => {
-		camera.updateProjectionMatrix();
-	})
+	// lensFolder.add(camera, 'fov', 20, 100, 1).name("FOV").onChange(() => {
+	// 	camera.updateProjectionMatrix();
+	// })
 	
-	const spotlightFolder = gui.addFolder('Spotlight');
+	// const spotlightFolder = gui.addFolder('Spotlight');
 	
-	spotlightFolder.add(light.position, 'y', 0, 100, 1).name('Height');
-	spotlightFolder.add(light, 'intensity', 0, 100, 1).name('Intensity');
-	spotlightFolder.add(light, 'distance', 0, 100, 1).name('Distance');
-	spotlightFolder.add(light, 'angle', 0, Math.PI / 2, 0.01).name('Angle');
-	spotlightFolder.add(light, 'penumbra', 0, 2, 0.01).name('Penumbra');
-	spotlightFolder.add(light, 'decay', 0, 5, 0.1).name('Decay');
-	// spotlightFolder.onChange(() => {
+	// spotlightFolder.add(light.position, 'y', 0, 100, 1).name('Height');
+	// spotlightFolder.add(light, 'intensity', 0, 100, 1).name('Intensity');
+	// spotlightFolder.add(light, 'distance', 0, 100, 1).name('Distance');
+	// spotlightFolder.add(light, 'angle', 0, Math.PI / 2, 0.01).name('Angle');
+	// spotlightFolder.add(light, 'penumbra', 0, 2, 0.01).name('Penumbra');
+	// spotlightFolder.add(light, 'decay', 0, 5, 0.1).name('Decay');
+	// // spotlightFolder.onChange(() => {
 	// 	lightHelper.update();
 	// })
 	
-	const ambientLightFolder = gui.addFolder('AmbientLight');
-	ambientLightFolder.add(ambientLight, 'intensity', 0, 1, 0.01).name('Intensity');
-	
-	gsap.ticker.lagSmoothing(false);
-	
-	function resize() {
-		const rect = container.getBoundingClientRect();
-		const width = rect.width;
-		const height = rect.height;
-	
-		camera.aspect = width / height;
-		camera.updateProjectionMatrix();
-	
-		renderer.setSize(width, height);
-		effectComposer.setSize(width, height);
-	
-		const pixelRatio = Math.min(window.devicePixelRatio, 2);
-		renderer.setPixelRatio(pixelRatio);
-		effectComposer.setPixelRatio(pixelRatio);
-	}
-	window.addEventListener('resize', resize);
+	// const ambientLightFolder = gui.addFolder('AmbientLight');
+	// ambientLightFolder.add(ambientLight, 'intensity', 0, 1, 0.01).name('Intensity');
 	
 	function animate(time: DOMHighResTimeStamp) {
 		orbitControls.update();
@@ -156,36 +138,36 @@ export function initGameClient(container: HTMLElement) {
 	}
 	renderer.setAnimationLoop(animate);
 
-	cleanupGame = () => {
-		window.removeEventListener('resize', resize);
-		renderer.setAnimationLoop(null);
-		// socket.disconnect()
-		orbitControls.dispose();
-		renderer.dispose();
+	// cleanupGame = () => {
+	// 	window.removeEventListener('resize', resize);
+	// 	renderer.setAnimationLoop(null);
+	// 	// socket.disconnect()
+	// 	orbitControls.dispose();
+	// 	renderer.dispose();
 
-		gui.destroy();
+	// 	gui.destroy();
 
-		scene.remove(tableMesh);
-		tableGeometry.dispose();
-		tableMaterial.dispose();
+	// 	scene.remove(tableMesh);
+	// 	tableGeometry.dispose();
+	// 	tableMaterial.dispose();
 
-		scene.remove(ambientLight);
-		scene.remove(light);
-		if (cameraLight) {
-			scene.remove(cameraLight);
-		}
+	// 	scene.remove(ambientLight);
+	// 	scene.remove(light);
+	// 	if (cameraLight) {
+	// 		scene.remove(cameraLight);
+	// 	}
 
-		effectComposer.dispose();
-		renderPass.dispose();
-		outlinePass.dispose();
-		outputPass.dispose();
+	// 	effectComposer.dispose();
+	// 	renderPass.dispose();
+	// 	outlinePass.dispose();
+	// 	outputPass.dispose();
 
-		if (container && renderer.domElement) {
-			container.removeChild(renderer.domElement);
-		}
-		renderer.dispose();
-	}
-	return (cleanupGame);
+	// 	if (container && renderer.domElement) {
+	// 		container.removeChild(renderer.domElement);
+	// 	}
+	// 	renderer.dispose();
+	// }
+	// return (cleanupGame);
 }
 
 export function joinGameLobby(gameSessionId: string, playerId: string) {

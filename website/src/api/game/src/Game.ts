@@ -10,6 +10,7 @@ import { gsap } from 'gsap';
 import { Participant } from './Participant.ts';
 import { useGameStore } from "../../../store/GameStore.ts";
 import { usePartyStore } from "../../../store/PartyStore.ts";
+import { useSceneStore } from "../../../store/SceneStore.ts";
 
 export class Game {
 	private socket: Socket;
@@ -19,7 +20,7 @@ export class Game {
 	private participants: Array<Participant>;
 
 	// Buttons
-	private startGameButton = document.getElementById('start-game-button') as HTMLButtonElement;
+	// private startGameButton = document.getElementById('start-game-button') as HTMLButtonElement;
 	// private takeSeatButton = document.getElementById('take-seat-button') as HTMLButtonElement;
 	// private leaveSeatButton = document.getElementById('leave-seat-button') as HTMLButtonElement;
 	// private takeSeatInput = document.getElementById('take-seat-input') as HTMLInputElement;
@@ -50,6 +51,7 @@ export class Game {
 		const gameStartRequest: GameStartRequest = {
 			playerId: this.playerId
 		}
+		console.log("[game] Sending game_start_request");
 		this.socket.emit("game_start_request", gameStartRequest);
 	}
 
@@ -93,14 +95,10 @@ export class Game {
 		});
 
 		this.socket.on("game_start_request", (status: StatusTransmit) => {
-			if (status.success === true) {
-				this.startGameButton.disabled = true;
-			}
 			console.log(`Start Game: ${status.success} | ${status.message}`);
 		});
 	
 		this.socket.on("game_end", () => {
-			this.startGameButton.disabled = false;
 			this.cardHeap.reset();
 		});
 	
@@ -143,13 +141,13 @@ export class Game {
 		});
 	
 		this.socket.on("game_state", (gameState: GameStateTransmit) => {
+			console.log("[game] Received game_state");
+			useSceneStore.getState().setCurrentScene("Game");
 			this.initGame(gameState);
 		});
 	}
 
 	private initGame(gameState: GameStateTransmit) {
-		this.startGameButton.disabled = true;
-
 		this.initParticipants(gameState);
 	
 		const deck = new Deck(this.centerPosition);

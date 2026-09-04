@@ -10,21 +10,22 @@ export default defineConfig({
 		watch: {
 			usePolling: true,
 		},
-		hmr: {
+		ws: {
 			host: 'localhost',
 			port: 5173,
-			clientPort: 5173,
+			clientPort: 80,
 		},
-		allowedHosts: [
-			"website"
-		],
-		proxy: {
-			"/api": {
-				target: "http://localhost:3000",
-				changeOrigin: true,
-				rewrite: (path) => path.replace(/^\/api/, ""),
-			}
-		}
+		allowedHosts: true,
+		// allowedHosts: [
+		// 	"website"
+		// ],
+		// proxy: {
+		// 	"/api": {
+		// 		target: "http://localhost:3000",
+		// 		changeOrigin: true,
+		// 		rewrite: (path) => path.replace(/^\/api/, ""),
+		// 	}
+		// }
 	},
 	plugins: [
 		react(),

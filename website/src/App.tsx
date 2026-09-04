@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useLayoutEffect } from "react";
 import { Canvas } from "@react-three/fiber";
 import { Stats, PerspectiveCamera, OrbitControls, AdaptiveDpr } from "@react-three/drei";
 import { partySocket } from "./api/party/partySocket";
@@ -30,8 +30,10 @@ import { SetupWindow } from "./components/setup/SetupWindow";
 import { StatsWindow } from "./components/stats/StatsWindow";
 import Dev from "./Dev";
 
-import { initGameClient } from './api/game/src/main';
 import { useRef } from 'react';
+import { ThreeJsManager } from './components/3d/ThreeJsManager';
+
+export let threejsManager: ThreeJsManager | undefined;
 
 export default function App() {
 	const { clientUuid, getProfileData } = useProfileStore();
@@ -53,15 +55,24 @@ export default function App() {
 
 	const containerRef = useRef<HTMLDivElement>(null);
 	useEffect(() => {
-		let destroyGame: (() => void) | null = null;
-
-		if (containerRef.current)
-			destroyGame = initGameClient(containerRef.current);
+		if (!containerRef.current) {
+			return ;
+		}
+		threejsManager = new ThreeJsManager(containerRef.current);
+		window.addEventListener('keydown', (event) => {
+			if (threejsManager && event.key === 'y') {
+				threejsManager.changeScene("game");
+			}
+		})
+		if (currentScene === "Login") {
+			threejsManager.changeScene("login");
+		}
 
 		return () => {
-			if (destroyGame)
-				destroyGame();
-		};
+			if (threejsManager) {
+				threejsManager.dispose()
+			}
+		}
 	}, []);
 
 	return (
@@ -75,8 +86,9 @@ export default function App() {
 					w-full min-w-80 max-w-360
 				"
 			>
-				{ currentScene === "Login" && 
-					<Canvas>
+				{ <div className="w-full h-full" ref={containerRef}/> }
+				{/* { (currentScene === "Login" || currentScene === "Game") && <div className="w-full h-full" ref={containerRef} /> } */}
+					{/* <Canvas>
 						<AdaptiveDpr />
 						<ambientLight intensity={0.5} />
 						<directionalLight position={[0, 5, 5]} intensity={0.5} />
@@ -93,8 +105,8 @@ export default function App() {
 					</Canvas>
 				}
 				{
-					currentScene == "Game" && <div ref={containerRef}></div>
-				}
+					currentScene === "Game" && <div ref={containerRef}></div>
+				} */}
 			</section>
 			<section
 				className="

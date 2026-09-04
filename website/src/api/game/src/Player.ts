@@ -16,7 +16,7 @@ export class Player extends Participant {
 	private sendCardsButton: HTMLButtonElement;
 	private skipTurnButton: HTMLButtonElement;
 	private sortCardsByRankButton: HTMLButtonElement;
-	private sortCardsBySuitButton: HTMLButtonElement
+	private sortCardsBySuitButton: HTMLButtonElement;
 
 
 	constructor(socket: Socket, playerId: string, cardHeapRef: CardHeap) {

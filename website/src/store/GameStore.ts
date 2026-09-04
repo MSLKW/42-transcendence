@@ -148,7 +148,8 @@ export const useGameStore = create<GameState>() (
 				get().setSeatRef();
 				get().dealCards();
 				useSceneStore.getState().setShowWindow("results", false);
-				useSceneStore.getState().setCurrentScene("Game");
+				// useSceneStore.getState().setCurrentScene("Game");
+				gameInstance?.startGame();
 			},
 			nextTurn: () => {
 				const newActiveSeat = (get().activeSeat + 1) % get().totalPlayers;
