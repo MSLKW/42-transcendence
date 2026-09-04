@@ -1,1 +1,1 @@
-export * from "./party-manager.schema";
+export * from "./party-manager.schema.js";

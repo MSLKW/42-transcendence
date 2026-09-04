@@ -25,7 +25,7 @@ WORKDIR /app
 
 COPY package*.json ./
 COPY packages/postgres/auth-schema/package.json ./packages/postgres/auth-schema/
-COPY packages/types/friends-system-types/package.json ./packages/postgres/friends-system-types/
+COPY packages/types/friends-system-types/package.json ./packages/types/friends-system-types/
 COPY packages/postgres/friends-system-schema/package.json ./packages/postgres/friends-system-schema/
 COPY packages/postgres/postgres-client/package.json ./packages/postgres/postgres-client/
 COPY services/friends-system/package.json ./services/friends-system/

@@ -43,13 +43,13 @@ CREATE OR REPLACE TRIGGER trg_updated_at
 BEFORE UPDATE ON party_manager_schema.player_status
 FOR EACH ROW EXECUTE FUNCTION set_updated_at();
 
--- CREATE OR REPLACE TRIGGER trg_updated_at
--- BEFORE UPDATE ON friends_system_schema.friendships
--- FOR EACH ROW EXECUTE FUNCTION set_updated_at();
+CREATE OR REPLACE TRIGGER trg_updated_at
+BEFORE UPDATE ON friends_system_schema.friendships
+FOR EACH ROW EXECUTE FUNCTION set_updated_at();
 
--- CREATE OR REPLACE TRIGGER trg_updated_at
--- BEFORE UPDATE ON friends_system_schema.friend_requests
--- FOR EACH ROW EXECUTE FUNCTION set_updated_at();
+CREATE OR REPLACE TRIGGER trg_updated_at
+BEFORE UPDATE ON friends_system_schema.friend_requests
+FOR EACH ROW EXECUTE FUNCTION set_updated_at();
 
 -- CREATE OR REPLACE TRIGGER trg_updated_at
 -- BEFORE UPDATE ON profile_system_schema.user_info
