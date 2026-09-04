@@ -16,7 +16,7 @@
     }
   },
   "scripts": {
-    "build": "tsup src/index.ts --format esm --dts --clean"
+    "build": "tsc"
   },
   "dependencies": {
     "dotenv": "^17.4.2",

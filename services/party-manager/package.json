@@ -10,6 +10,7 @@
   "scripts": {
     "dev": "tsc --noEmit && tsx src/index.ts",
     "build": "tsup src/index.ts --format esm --clean",
+		"build:docker": "tsc -b",
     "start": "node dist/index.js",
     "clean": "rm -rf ./dist .tsbuildinfo"
   },

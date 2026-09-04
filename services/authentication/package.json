@@ -15,6 +15,7 @@
 		"test:logout": "bash scripts/test-logout.sh",
 		"test:validate": "bash scripts/test-validate.sh",
 		"build": "tsup src/index.ts --format esm --clean",
+		"build:docker": "tsc -b",
 		"start": "node dist/index.js",
 		"build:run": "npm run build && npm run start",
 		"clean": "rm -rf ./dist .tsbuildinfo"

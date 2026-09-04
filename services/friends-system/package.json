@@ -10,6 +10,7 @@
   "scripts": {
     "dev": "tsc --noEmit && tsx src/index.ts",
     "build": "tsup src/index.ts --format esm --clean",
+		"build:docker": "tsc -b",
     "start": "node dist/index.js",
     "clean": "rm -rf ./dist .tsbuildinfo"
   },
@@ -20,8 +21,8 @@
     "typescript": "^6.0.3"
   },
   "dependencies": {
-    "@big2/friends-system-schema": "*",
     "@big2/friends-system-types": "*",
+    "@big2/friends-system-schema": "*",
     "@big2/postgres-client": "*",
     "@types/express": "^5.0.6",
     "cors": "^2.8.6",
