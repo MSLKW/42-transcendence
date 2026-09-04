@@ -7,9 +7,9 @@ import { getRouteParam } from "../../utils/getRouteParam";
 export async function removeFriend(req: Request, res: Response): Promise<void> {
   const uuid = req.query.uuid as string;
   // const friendUuid = req.params.friendUuid;
-  const friendUuid = getRouteParam(req.params.id);
+  const friendUuid = getRouteParam(req.params.friendUuid);
   if (!friendUuid) {
-    res.status(400).json({ error: "invalid request id" });
+    res.status(400).json({ error: "invalid friend uuid" });
     return;
   }
 
