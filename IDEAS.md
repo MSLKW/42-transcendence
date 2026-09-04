@@ -90,3 +90,5 @@ and focus back to my MVP
 	- pg-18 is only "pretty-to-have", not "practically-helpful"
 	- pg-18's uuidv7() main benefit (better index performance from time-ordered inserts) matters at a data scale you're nowhere near for a school project, you're testing with a handful of manually-created UUIDs, not millions of rows where insert-order-driven index fragmentation becomes measurable.
 	- if you want to mention it at all, note it as a "future consideration" in your README
+
+5. Healthchecks in docker-compose.yml for every services possible / that has it

@@ -119,8 +119,6 @@
 11. terminology used:
 	- Drizzle: "Drizzle queries" or "Drizzle's query builder API."
 		- Drizzle isn't a heavy, hides-everything ORM like some others — it's specifically marketed as a query builder that stays close to real SQL shape (.select().from().where() mirrors SQL structure directly). So "I'm writing Drizzle queries" is accurate; calling it "SQL" is technically wrong (you're writing TypeScript that Drizzle compiles into SQL, not SQL itself) — worth keeping that distinction crisp in your own head and your README.
-	- dbclient
-		- On your actual goal (a): wanting the code to explicitly say "we talk to Postgres" is a completely reasonable instinct, and doesn't need to disappear — it just needs a small adjustment to stay precise. The issue isn't the word "postgres," it's that a bare postgres reads as "this variable is the database," when it's actually the client/connection object pointed at the database. Better: postgresClient (file postgresClient.ts, export export const postgresClient = createPostgresClient(...)) — keeps your explicit "we're on Postgres" signal, adds clarity that it's a client/connection, and sidesteps the naming collision entirely. This also directly answers your multi-database future-proofing goal in point 10: if you ever add a second database technology later, postgresClient sits naturally alongside a hypothetical mongoClient or redisClient — same pattern, unambiguous which is which.
 	- "querying Postgres"
 		- "querying" is the correct, precise word for what your store classes do (select/insert/update/delete are all queries). "Communicating with the database" is fine as looser prose in a README or verbal explanation, but in code comments, "queries Postgres via Drizzle" is the tighter, more accurate phrasing.
 		
@@ -143,6 +141,32 @@
 	- Given that mental snag is real for you, and "Store" doesn't carry that particular confusion (even though it has its own minor collision with frontend state-management naming) — no pressure to rename anything. 
 	- Sticking with DrizzleFriendRequestStore is completely fine; 
 	- it was worth knowing the industry's more common term exists, not a reason you're obligated to switch to it.
+
+14. Dockerfile optimizations:
+	- `-w`
+		- Alternative: npm --workspace=@big2/auth-schema run build works
+		- but placing -w <package-name> at the end of npm run build is standard practice
+	- `--form=<additional_context>`
+		- can be used for: `COPY --from=...` (Most Common)
+		- not a valid flag for standard Linux terminal commands inside a Docker `RUN`
+		- --from= is a flag, not a target path:
+			- You cannot pass --from= twice in a single COPY command. 
+			- Docker uses --from=<stage_name> to know where to copy from, followed by <source_path> and <destination_path>.
+
+15. dbclient namings (currently `postgres` in drizzle query)
+	- On your actual goal (a): wanting the code to explicitly say "we talk to Postgres" is a completely reasonable instinct, and doesn't need to disappear
+	- it just needs a small adjustment to stay precise. 
+	- The issue isn't the word "postgres," 
+	- it's that a bare postgres reads as "this variable is the database," when it's actually the client/connection object pointed at the database. 
+	- Better: `postgresClient` (file postgresClient.ts, export export const postgresClient = createPostgresClient(...))
+		- keeps your explicit "we're on Postgres" signal
+		- adds clarity that it's a client/connection
+		- sidesteps the naming collision entirely. 
+		- This also directly answers your multi-database future-proofing goal:
+			- if you ever add a second database technology later, 
+			- postgresClient sits naturally alongside a hypothetical mongoClient or redisClient 
+			- same pattern, unambiguous which is which.
+
 
 ## revise, forgot!
 - why postgres.ts can do import * ?  i thought cannot do * for imports ?
