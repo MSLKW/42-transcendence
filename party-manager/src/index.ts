@@ -99,6 +99,7 @@ io.on("connection", (socket: Socket) =>
 		existing.socket = socket;
 		registerEventHandlers(socket, existing);
 		existing.emitState();
+		oldSocket.emit("disconnect_with_reason", {reason: "you have connected somewhere else"});
 		oldSocket.disconnect(true);
 		console.log(`User<${uuid}> switched sockets: ${oldSocket.id} -> ${socket.id}`);
 	}
