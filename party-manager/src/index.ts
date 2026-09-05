@@ -105,7 +105,7 @@ io.on("connection", (socket: Socket) =>
 	}
 	else
 	{
-		const client = new Client(uuid, "", socket);
+		const client = new Client(uuid, socket);
 		clientManager.add(client);
 		registerEventHandlers(socket, client);
 		console.log(`User<${uuid}> connected on socket ${socket.id}`);
