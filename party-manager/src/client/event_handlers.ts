@@ -29,6 +29,7 @@ export function registerEventHandlers(socket: Socket, client: Client)
 			return ;
 		recipient.party.removeUser(payload.recipientUuid);
 		recipient.emit("kicked", {message: "you were kicked by the host"});
+		recipient.emitState();
 	});
 
 	socket.on("accept_invite", (payload: {hostUuid: string}, callback) =>
@@ -50,6 +51,7 @@ export function registerEventHandlers(socket: Socket, client: Client)
 	socket.on("leave_party", () =>
 	{
 		client.party?.removeUser(client.uuid);
+		client.emitState();
 	});
 
 	socket.on("start_game_session", () =>

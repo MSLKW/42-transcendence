@@ -98,8 +98,7 @@ io.on("connection", (socket: Socket) =>
 		clientManager.rebindSocket(oldSocket.id, socket.id);
 		existing.socket = socket;
 		registerEventHandlers(socket, existing);
-		if (existing.party)
-			existing.emit("party_state", existing.party.getState());
+		existing.emitState();
 		oldSocket.disconnect(true);
 		console.log(`User<${uuid}> switched sockets: ${oldSocket.id} -> ${socket.id}`);
 	}
