@@ -103,8 +103,9 @@ services:
   #     ONE-SHOT MICORSERVICE => "run once per deploy" job container
   migrator:
     build:
-      context: .
-      dockerfile: ./infra/migrator/Dockerfile
+      context: ./infra/migrator
+      additional_contexts:
+        root: .
     pull_policy: never
     image: migrator:aisyah
     container_name: migrator
@@ -141,8 +142,11 @@ services:
   #     BACKEND MICORSERVICE
   authentication:
     build:
-      context: .                                         # Set workdir to the repo's root
-      dockerfile: ./services/authentication/Dockerfile    # Point to the Dockerfile's relative path
+      context: ./services/authentication                                        # Set workdir to the repo's root
+      additional_contexts:
+        root: .
+        auth-schema: ./packages/postgres/auth-schema
+        postgres-client: packages/postgres/postgres-client
     pull_policy: never
     image: authentication:test
     container_name: authentication
@@ -178,8 +182,12 @@ services:
   #     BACKEND MICORSERVICE
   party-manager:
     build:
-      context: .                                        # Set workdir to the repo's root
-      dockerfile: ./services/party-manager/Dockerfile    # Point to the Dockerfile's relative path
+      context: ./services/party-manager
+      additional_contexts:
+        root: .
+        auth-schema: ./packages/postgres/auth-schema
+        party-manager-schema: ./packages/postgres/party-manager-schema
+        postgres-client: ./packages/postgres/postgres-client
     pull_policy: never
     image: party:test
     container_name: party-manager
@@ -204,8 +212,13 @@ services:
   #     BACKEND MICORSERVICE
   friends-system:
     build:
-      context: .                                        # Set workdir to the repo's root
-      dockerfile: ./services/friends-system/Dockerfile    # Point to the Dockerfile's relative path
+      context: ./services/friends-system
+      additional_contexts:
+        root: .
+        auth-schema: ./packages/postgres/auth-schema
+        friends-system-types: ./packages/types/friends-system-types
+        friends-system-schema: ./packages/postgres/friends-system-schema
+        postgres-client: ./packages/postgres/postgres-client
     pull_policy: never
     image: friends:aisyah
     container_name: friends-system
@@ -227,9 +240,13 @@ services:
 
 #   #     BACKEND MICORSERVICE
 #   profile-system:
-#     build:
-#       context: .                                         # Set workdir to the repo's root
-#       dockerfile: ./services/profile-system/Dockerfile    # Point to the Dockerfile's relative path
+#   build:
+#     context: ./services/profile-system/Dockerfile
+#     additional_contexts:
+#       root: .
+#       profile-system-types: ./packages/types/profile-system-types
+#       profile-system-schema: ./packages/postgres/profile-system-schema
+#       postgres-client: ./packages/postgres/postgres-client
 #     pull_policy: never
 #     image: profile:test
 #     container_name: profile-system
@@ -253,8 +270,10 @@ services:
 #   #     BACKEND MICORSERVICE
 #   game:
 #     build:
-#       context: .
-#       dockerfile: ./services/game/Dockerfile
+#       context: ./services/game
+#     additional_contexts:
+#       root: .
+#       game-types: ./packages/types/game-types
 #     pull_policy: never
 #     image: game:test
 #     container_name: game
@@ -266,11 +285,12 @@ services:
 
 
 #   #     FRONTEND MICORSERVICE
-#   website:
-#     build:
-#       context: .
-#       dockerfile: ./services/website/Dockerfile
-#     pull_policy: never
+# website:
+#   build:
+#     context: ./services/website
+#     additional_contexts:
+#       root: .
+#   pull_policy: never
 #     image: website:test
 #     container_name: website
 #     restart: unless-stopped

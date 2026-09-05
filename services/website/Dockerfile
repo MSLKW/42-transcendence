@@ -8,7 +8,7 @@ RUN npm install
 
 COPY . .
 
-FROM node:24-slim
+FROM node:24-slim AS runner
 WORKDIR /app
 
 COPY --from=builder /app ./

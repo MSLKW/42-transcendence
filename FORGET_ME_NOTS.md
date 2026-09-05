@@ -152,6 +152,8 @@
 		- --from= is a flag, not a target path:
 			- You cannot pass --from= twice in a single COPY command. 
 			- Docker uses --from=<stage_name> to know where to copy from, followed by <source_path> and <destination_path>.
+	- `COPY`
+		- In older versions of Docker, every single line created a massive overhead. In modern Docker (using the BuildKit engine), multiple COPY instructions are heavily optimized. If the files being copied are small scripts, having 2 or 3 separate COPY lines results in virtually zero difference in speed or final image size compared to combining them.
 
 15. dbclient namings (currently `postgres` in drizzle query)
 	- On your actual goal (a): wanting the code to explicitly say "we talk to Postgres" is a completely reasonable instinct, and doesn't need to disappear
