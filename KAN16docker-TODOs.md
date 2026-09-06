@@ -27,11 +27,27 @@ optimize only. its workable already once database successfully integrated with t
 	- =>Running chmod inside a standard Windows terminal won't change the Git metadata.
 	- solution:
 		- on host, run this: 
-			- git add --chmod=+x services/**/scripts/*
+			- `git add --chmod=+x services/**/scripts/*.sh`
 		- If your terminal throws a "no matches found" error, wrap the path in quotes to force Git to handle the matching instead of your shell:
-			- git add --chmod=+x "services/**/scripts/*"
+			- `git add --chmod=+x "services/**/scripts/*"`
+			- `IMPORTANT!! discuss with jeremy first` 
+			- asks first if he is okay his tests files for authentication be executable
+			- these files get executed using `bash` anyway too.
+		- full process:
+			```
+			# preview what will match
+			git ls-files "**/scripts/*.sh"
+
+			# stage the mode change
+			git add --chmod=+x "**/scripts/*.sh"
+
+			# confirm it's a pure mode change, no content diffs
+			git diff --cached
+
+			# then, safe to commit & push!
+			```
 		- after that, can remove entirely manually executable conversions in Dockerfiles.
-	- remove lines + make their path as additional_contexts + copy in runner stage only after copy package.json(s) + their copy destination must be to /usr/local/bin/
+	- remove manual executable conversions lines in Dockerfiles + make their path as additional_contexts + copy in runner stage only after copy package.json(s) + these executable files' copy destination must be to /usr/local/bin/
 
 - solution on npm’s phantom dependencies, refer the section below.
 
