@@ -25,7 +25,7 @@ const io = new Server<ClientToServerEvents, ServerToClientEvents>(httpServer, {
 		// credentials: true
 	},
 	path: "/socket/chat/",
-});
+}); 
 
 type ChatSocket = Socket<ClientToServerEvents, ServerToClientEvents>;
 
