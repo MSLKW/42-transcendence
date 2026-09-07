@@ -32,7 +32,7 @@ const pendingRemovals = new Map<string, NodeJS.Timeout>();
 const app = express();
 app.get("/internal/profile/:id", getInternalInfosForProfile());// REST API FOR database usage
 
-const httpServer = createServer();
+const httpServer = createServer(app);
 
 const io = new Server(httpServer, {
 	cors: {

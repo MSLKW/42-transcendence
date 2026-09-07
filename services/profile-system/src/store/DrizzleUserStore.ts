@@ -3,7 +3,9 @@ import { userData, userSettings, userProfile } from "@big2/profile-system-schema
 import { eq, ilike, and, isNotNull } from "drizzle-orm";
 import { postgres } from "./postgres";
 import { UserStore } from "./UserStore";
-import { AUTH_SERVICE_URL, GAME_SERVICE_URL, PARTY_MANAGER_SERVICE_URL } from "../config";
+import { AUTH_SERVICE_URL, 
+		 GAME_STATS_SERVICE_URL, 
+		 PARTY_MANAGER_SERVICE_URL } from "../config";
 
 
 // import fs from "fs";
@@ -28,19 +30,40 @@ export class DrizzleUserStore implements UserStore
 			if (!profile) 
 				return null;
 
-			// 2. REST calls to the services that own the rest, in parallel => named to authData, gameData, partyData
+			// 2. REST calls to the services that own the rest, in parallel => named to authData, gameStatsData, partyData
 			if (!AUTH_SERVICE_URL)
 				throw new Error("[Error] AUTH_SERVICE_URL not set");
 
-			if (!GAME_SERVICE_URL)
-				throw new Error("[Error] GAME_SERVICE_URL is not set");
+			// commented as game-stats is not yet built, as for now. 
+			// handled below by the temporary ternary instead
+			// if (!GAME_STATS_SERVICE_URL)
+			// 	throw new Error("[Error] GAME_STATS_SERVICE_URL is not set");
 
 			if (!PARTY_MANAGER_SERVICE_URL)
 				throw new Error("[Error] PARTY_MANAGER_SERVICE_URL is not set");
 			
-			const [authData, gameData, partyData] = await Promise.all([
+			// commented as game-stats is not yet built, as for now. 
+			// handled below by the temporary ternary instead
+			// const [authData, gameStatsData, partyData] = await Promise.all([
+			// 	this.fetchJson(`${AUTH_SERVICE_URL}/internal/profile/${uuid}`),
+			// 	this.fetchJson(`${GAME_STATS_SERVICE_URL}/internal/profile/${uuid}`),
+			// 	this.fetchJson(`${PARTY_MANAGER_SERVICE_URL}/internal/profile/${uuid}`),
+			// ]);
+
+			const DEFAULT_GAME_STATS_DATA = {
+				level: 0,
+				xp: 0,
+				totalPlayed: 0,
+				totalWins: 0,
+				totalLoss: 0,
+				winStreak: 0,
+			};
+
+			const [authData, gameStatsData, partyData] = await Promise.all([
 				this.fetchJson(`${AUTH_SERVICE_URL}/internal/profile/${uuid}`),
-				this.fetchJson(`${GAME_SERVICE_URL}/internal/profile/${uuid}`),
+				GAME_STATS_SERVICE_URL
+					? this.fetchJson(`${GAME_STATS_SERVICE_URL}/internal/profile/${uuid}`).catch(() => DEFAULT_GAME_STATS_DATA)
+					: Promise.resolve(DEFAULT_GAME_STATS_DATA),
 				this.fetchJson(`${PARTY_MANAGER_SERVICE_URL}/internal/profile/${uuid}`),
 			]);
 			
@@ -51,12 +74,12 @@ export class DrizzleUserStore implements UserStore
 				avatarPath: profile.avatarPath,
 				createdAt: authData.createdAt,
 				lastLogin: authData.lastLogin,
-				level: gameData.level,
-				xp: gameData.xp,
-				totalPlayed: gameData.totalPlayed,
-				totalWins: gameData.totalWins,
-				totalLoss: gameData.totalLoss,
-				winStreak: gameData.winStreak,
+				level: gameStatsData.level,
+				xp: gameStatsData.xp,
+				totalPlayed: gameStatsData.totalPlayed,
+				totalWins: gameStatsData.totalWins,
+				totalLoss: gameStatsData.totalLoss,
+				winStreak: gameStatsData.winStreak,
 				online: partyData.online,
 				inGame: partyData.inGame,
 				badge: profile.badge, // puth these 2 at the bottom to prepare of possibility to create Achievements service soon
@@ -102,25 +125,44 @@ export class DrizzleUserStore implements UserStore
 	{
 		try
 		{
-			const [result] = await postgres
+			const [profile] = await postgres
+				.select()
+				.from(userProfile)
+				.where(eq(userProfile.id, uuid))
+				.limit(1);
+			if (!profile)
+				return (null);
+
+			// const DEFAULT_USER_SETTINGS = {
+			// 	allow3OfAKind: false,
+			// 	allow2OfSpadesEnd: false,
+			// 	autoPassIndex: 0,
+			// 	endGameCondition: 0,
+			// 	scoreCalculation: 0,
+			// 	cardStyle: 0,
+			// 	uiColor: 0,
+			// 	fxLevel: 0,
+			// 	mxLevel: 0
+			// };
+
+			const [settings] = await postgres
 				.select()
 				.from(userSettings)
 				.where(eq(userSettings.id, uuid))
 				.limit(1);
-
-			if (!result)
-				return null;
+			// if (!settings)
+			// 	return (DEFAULT_USER_SETTINGS);
 
 			return {
-				allow3OfAKind: 		result.allow3OfAKind,
-				allow2OfSpadesEnd: 	result.allow2OfSpadesEnd,
-				autoPassIndex: 		result.autoPassIndex,
-				endGameCondition: 	result.endGameCondition,
-				scoreCalculation: 	result.scoreCalculation,
-				cardStyle: 			result.cardStyle,
-				uiColor: 			result.uiColor,
-				fxLevel: 			result.fxLevel,
-				mxLevel: 			result.mxLevel,
+				allow3OfAKind: 		settings.allow3OfAKind,
+				allow2OfSpadesEnd: 	settings.allow2OfSpadesEnd,
+				autoPassIndex: 		settings.autoPassIndex,
+				endGameCondition: 	settings.endGameCondition,
+				scoreCalculation: 	settings.scoreCalculation,
+				cardStyle: 			settings.cardStyle,
+				uiColor: 			settings.uiColor,
+				fxLevel: 			settings.fxLevel,
+				mxLevel: 			settings.mxLevel,
 			};
 		}
 		catch (err: any) 
@@ -265,11 +307,38 @@ export class DrizzleUserStore implements UserStore
 		// await this.setData(uuid, (await this.getUserData(uuid))!, { ...existing!, ...partial });
 	}
 
-	private async fetchJson(url: string) {
-		const res = await fetch(url);
-		if (!res.ok) 
-			throw new Error(`Request to ${url} failed with ${res.status}`);
-		return res.json();
+	// private async fetchJson(url: string) {
+	// 	const res = await fetch(url);
+	// 	if (!res.ok) 
+	// 		throw new Error(`Request to ${url} failed with ${res.status}`);
+	// 	return res.json();
+	// }
+
+	// timeout, esp when game-stats couldnt return anything yet as it dosent existss yet
+	private async fetchJson(url: string, timeoutMs = 5000): Promise<any>
+	{
+		const controller = new AbortController();
+		const timer = setTimeout(() => controller.abort(), timeoutMs);
+
+		try
+		{
+			const res = await fetch(url, { signal: controller.signal });
+
+			if (!res.ok)
+				throw new Error(`Request to ${url} failed with ${res.status}`);
+
+			return await res.json();
+		}
+		catch (err: any)
+		{
+			if (err.name === "AbortError")
+				throw new Error(`Request to ${url} timed out after ${timeoutMs}ms`);
+			throw err;
+		}
+		finally
+		{
+			clearTimeout(timer);
+		}
 	}
 
 	// // NOT MVP, more to backup
