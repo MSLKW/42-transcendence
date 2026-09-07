@@ -78,6 +78,23 @@ function start() {
   });
   evtSource.onerror = () => setConnectionStatus("🔴 disconnected — use Refresh until this reconnects");
 
+
+  // server tells us we were replaced by another tab/device for this upon the same uuid
+  // we will reconfirm that we close it ourselves so the browser does NOT auto-reconnect
+  // default behaviour will auto-reconnect in case of wifi blipped
+  // exactly what caused the infinite kick-loop bug before
+  // The server's existing.end() alone can never produce that understanding — only the client explicitly closing itself can.
+  evtSource.addEventListener("replaced", () => {
+    evtSource.close();  // <- calling .close() yourself is the actual fix, this is what stops auto-reconnect, not the server closing it
+    evtSource = null;
+    clearInterval(pollTimer);
+    pollTimer = null;
+    setConnectionStatus("⚪ connected elsewhere");
+    log("This uuid connected in another tab/device — this tab disconnected to avoid a reconnect loop.");
+  });
+
+
+
   evtSource.addEventListener("friend_request_received", e => {
     const data = JSON.parse(e.data);
     log(`Friend request received from ${data.senderId}`);
