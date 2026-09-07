@@ -44,13 +44,13 @@ psql -v ON_ERROR_STOP=1 <<-"EOSQL"
 	BEFORE UPDATE ON party_manager_schema.player_status
 	FOR EACH ROW EXECUTE FUNCTION set_updated_at();
 
-	-- CREATE OR REPLACE TRIGGER trg_updated_at
-	-- BEFORE UPDATE ON profile_system_schema.user_data
-	-- FOR EACH ROW EXECUTE FUNCTION set_updated_at();
+	CREATE OR REPLACE TRIGGER trg_updated_at
+	BEFORE UPDATE ON profile_system_schema.user_data
+	FOR EACH ROW EXECUTE FUNCTION set_updated_at();
 
-	-- CREATE OR REPLACE TRIGGER trg_updated_at
-	-- BEFORE UPDATE ON profile_system_schema.user_settings
-	-- FOR EACH ROW EXECUTE FUNCTION set_updated_at();
+	CREATE OR REPLACE TRIGGER trg_updated_at
+	BEFORE UPDATE ON profile_system_schema.user_settings
+	FOR EACH ROW EXECUTE FUNCTION set_updated_at();
 
 	-- CREATE OR REPLACE TRIGGER trg_updated_at
 	-- BEFORE UPDATE ON game_schema.player_stats
