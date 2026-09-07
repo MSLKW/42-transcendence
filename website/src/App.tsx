@@ -93,7 +93,7 @@ export default function App() {
 	useEffect(() => {
 		if (currentScene !== "Login")
 			return;
-		
+
 		if (hostUuid)
 			chatSocket.joinRoom(hostUuid);
 		else if (clientUuid)

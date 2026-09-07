@@ -109,6 +109,9 @@ export default function Dev() {
 					<DevButton label={`isAuthenticated: ${isAuthenticated ? "Yes" : "No"}`} call={() => console.log("/validate response: ", validateResponse)}/>
 				</div>
 				<div className="flex place-content-between">
+					<li>hostUuid: {hostUuid ? hostUuid : "n/a"} </li>
+				</div>
+				<div className="flex place-content-between">
 					<li>Profile Manager Socket ID: n/a</li>
 					<DevButton label={`profilesInDb: ${profilesInDb.length}`} call={() => console.log("profilesInDb: ", profilesInDb)} />
 					<DevButton label={`cachedData: ${cachedData.length}`} call={() => console.log("cachedData: ", cachedData)} />
@@ -166,6 +169,10 @@ export default function Dev() {
 					<DevButton
 						label={`chatRoomId: ${chatRoomId ? chatRoomId : "n/a"}`}
 						call={() => useChatStore.setState({ chatRoomId: hostUuid })}
+					/>
+					<DevButton
+						label="joinRoom"
+						call={() => chatSocket.joinRoom(clientUuid!)}
 					/>
 				</div>
 			</ul>

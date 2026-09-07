@@ -15,6 +15,14 @@ export const subscribeToUserLeft = () => {
 			"",
 			`${name} has been removed from party`
 		);
+
+		const clientUuid = useProfileStore.getState().clientUuid;
+		if (!clientUuid) {
+			console.warn("Cannot join room - missing clientUuid");
+			return;
+		}
+		chatSocket.joinRoom(clientUuid);
+
 		console.log(`[subscribeToUserLeft] uuid:${notif.senderUuid} timestamp:${notif.timestamp}`);
 	});
 };

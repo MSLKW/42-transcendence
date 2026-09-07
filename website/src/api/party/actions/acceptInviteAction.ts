@@ -1,13 +1,10 @@
 import { Socket } from "socket.io-client";
 import { useChatStore } from "../../../store/ChatStore";
 import { useNotificationStore, NOTIFICATION_TYPE } from "../../../store/NotificationStore";
-import { useProfileStore } from "../../../store/ProfileStore";
 
 export function acceptInviteAction(socket: Socket | null, hostUuid: string) {
 	const addToCachedChat = useChatStore.getState().addToCachedChat;
 	const showNotification = useNotificationStore.getState().showNotification;
-	const clientUuid = useProfileStore.getState().clientUuid ?? "";
-	const data = useProfileStore.getState().getCachedData(clientUuid);
 
 	if (!socket?.connected) {
 		showNotification(
@@ -32,7 +29,7 @@ export function acceptInviteAction(socket: Socket | null, hostUuid: string) {
 		"server",
 		"",
 		"",
-		`You joined a party!`,
+		"You joined a party!",
 	)
 
 	useChatStore.setState({ chatRoomId: hostUuid });

@@ -122,6 +122,7 @@ class ChatSocketService {
 	}
 
 	public onMessage(callback: (data: ChatMessage ) => void) {
+		console.log("[onMessage]");
 		if (!this.socket)
 			this.connect();
 
@@ -132,6 +133,7 @@ class ChatSocketService {
 	}
 
 	public onUserJoined(callback: (data: ChatNotification) => void) {
+		console.log("[onUserJoined]");
 		if (!this.socket)
 			this.connect();
 
@@ -142,6 +144,7 @@ class ChatSocketService {
 	}
 
 	public onUserLeft(callback: (data: ChatNotification) => void) {
+		console.log("[onUserLeft]");
 		if (!this.socket)
 			this.connect();
 

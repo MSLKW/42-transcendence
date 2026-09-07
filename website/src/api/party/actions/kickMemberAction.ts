@@ -9,7 +9,6 @@ import { useSceneStore } from "../../../store/SceneStore";
 export function kickMemberAction(socket: Socket | null, recipientUuid: string, recipientName?: string) {
 	const { showNotification } = useNotificationStore.getState();
 	const addToCachedChat = useChatStore.getState().addToCachedChat;
-	const clientUuid = useProfileStore.getState().clientUuid ?? "";
 	const data = useProfileStore.getState().getCachedData(recipientUuid);
 	
 	if (!socket?.connected) {
@@ -27,6 +26,7 @@ export function kickMemberAction(socket: Socket | null, recipientUuid: string, r
 	);
 
 	chatSocket.disconnect();
+	// chatSocket.joinRoom(useProfileStore.getState().clientUuid!);
 
 	usePartyStore.getState().kickMember(recipientUuid);
 

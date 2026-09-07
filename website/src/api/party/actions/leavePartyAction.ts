@@ -9,7 +9,6 @@ export function leavePartyAction(socket: Socket | null) {
 	const addToCachedChat = useChatStore.getState().addToCachedChat;
 	const showNotification = useNotificationStore.getState().showNotification;
 	const clientUuid = useProfileStore.getState().clientUuid ?? "";
-	const data = useProfileStore.getState().getCachedData(clientUuid);
 
 	if (!socket?.connected) {
 		showNotification(

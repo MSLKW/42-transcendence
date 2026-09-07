@@ -26,7 +26,6 @@ export class RateLimiter {
 		data.timestamps = data.timestamps.filter(
 			(timestamp) => now - timestamp < this.config.windowMs
 		);
-
 		if (data.timestamps.length >= this.config.maxRequests)
 			return false;
 

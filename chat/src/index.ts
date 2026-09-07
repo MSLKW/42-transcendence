@@ -135,6 +135,7 @@ function finalizeRemoval(uuid: string, reason: string): void {
 			timestamp: new Date().toISOString()
 		});
 	}
+
 	console.log(`User<${uuid}> disconnected - ${reason}`);
 }
 
