@@ -246,7 +246,7 @@
   <div class="panel">
     <div class="field">
       <label for="baseUrl">Base URL</label>
-      <input type="text" id="baseUrl" placeholder="http://localhost:3000/api">
+      <input type="text" id="baseUrl" placeholder="http://localhost/api/profile">
     </div>
     <div class="field">
       <label for="sessionToken">session_token (only needed for PUT requests)</label>
@@ -341,14 +341,14 @@
       pathDisplay: '/profile',
       buildPath: () => '/profile',
       needsParam: false, needsToken: true, needsJson: true, needsFile: false,
-      jsonPlaceholder: '{\n  "username": "newname"\n}',
+      jsonPlaceholder: '{\n  "username": "newname"\n  "avatarPath": "filename"\n  "badge": "choose which unlocked badge to display"\n}',
     },
     settingsPut: {
       method: 'PUT',
       pathDisplay: '/settings',
       buildPath: () => '/settings',
       needsParam: false, needsToken: true, needsJson: true, needsFile: false,
-      jsonPlaceholder: '{\n  "theme": "dark"\n}',
+      jsonPlaceholder: '{\n  "allow3OfAKind": true\n}',
     },
     avatarPut: {
       method: 'PUT',

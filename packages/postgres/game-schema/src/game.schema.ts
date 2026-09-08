@@ -7,17 +7,30 @@ export const gameSchema = pgSchema("game_schema");
 
 
 export const playerStats = gameSchema.table("player_stats", {
-	playerId: uuid("player_id")
+	id: uuid("id")
 		.primaryKey()
-		.unique()
 		.references(() => users.id, { onDelete: "cascade" }),
-	level: integer("level").default(0).notNull(),
-	xp: integer("xp").default(0).notNull(),
-	totalPlayed: integer("total_played").default(0).notNull(),
-	totalWins: integer("total_wins").default(0).notNull(),
-	totalLoss: integer("total_loss").default(0).notNull(),
-	winStreak: integer("win_streak").default(0).notNull(),
-	updatedAt: timestamp("updated_at", { withTimezone: true }).defaultNow().notNull(),
+	level: integer("level")
+		.default(0)
+		.notNull(),
+	xp: integer("xp")
+		.default(0)
+		.notNull(),
+	totalPlayed: integer("total_played")
+		.default(0)
+		.notNull(),
+	totalWins: integer("total_wins")
+		.default(0)
+		.notNull(),
+	totalLoss: integer("total_loss")
+		.default(0)
+		.notNull(),
+	winStreak: integer("win_streak")
+		.default(0)
+		.notNull(),
+	updatedAt: timestamp("updated_at", { withTimezone: true })
+		.defaultNow()
+		.notNull(),
 }
 // for learning purpose , i keep her for now. might be useful for game_schema
 // , (table) => [
