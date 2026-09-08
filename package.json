@@ -7,7 +7,7 @@
     "services/*"
   ],
   "scripts": {
-    "db:generate": "npm run --prefix infra/migrator db:generate",
+    "db:generate": "npm run --prefix infra/migrator db:generate --",
     "db:migrate": "npm run --prefix infra/migrator db:migrate",
     "db:push": "npm run --prefix infra/migrator db:push",
 
