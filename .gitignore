@@ -26,3 +26,7 @@ dist-ssr
 # private credentials
 .env
 secrets/
+
+# build files
+tsconfig.tsbuildinfo
+.tsbuildinfo
