@@ -1,8 +1,9 @@
 import { Request, Response } from "express";
+import { UserStore } from "../store/UserStore";
 import { authenticate } from "../utils/authenticate";
-import { DrizzleUserSettingsStore } from "../store/drizzleUserSettingsStore";
+// import { DrizzleUserSettingsStore } from "../store/drizzleUserSettingsStore";
 
-export function setUserSettings()
+export function setUserSettings(store: UserStore)
 {
 	return (async (req: Request, res: Response) =>
 	{
@@ -12,12 +13,10 @@ export function setUserSettings()
 			const data = await authRes.json();
 			if (!authRes.ok)
 				return (res.status(authRes.status).json(data));
-			const userSettings = req.body.userSettings;
-			
-			//TODO: put settings into Postgres
-			const userSettingsStore = new DrizzleUserSettingsStore();
-			await userSettingsStore.setUserSettings(data.id, userSettings);
-			return (res.status(204).send());
+
+			const uuid = data.userId;
+			await store.updateUserSettings(uuid, req.body);
+			return (res.status(204).end());
 		}
 		catch (err)
 		{

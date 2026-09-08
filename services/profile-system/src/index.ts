@@ -1,9 +1,16 @@
 import "dotenv/config";
 import express from "express";
+import { UserStore } from "./store/UserStore";
+// import { FileUserStore } from "./store/FileUserStore";
+import { DrizzleUserStore } from "./store/DrizzleUserStore";
+
 import { healthCheck } from "./handlers/healthCheck";
 import { userSearch } from "./handlers/userSearch";
-import { getProfile } from "./handlers/getProfile";
-import { setUsername } from "./handlers/setUsername";
+
+import { getUserProfile } from "./handlers/getUserProfile";
+import { getUserSettings } from "./handlers/getUserSettings"
+
+import { setUserProfile } from "./handlers/setUserProfile";
 import { setUserSettings } from "./handlers/setUserSettings";
 import { uploadAvatar } from "./handlers/uploadAvatar";
 
@@ -14,15 +21,28 @@ const ERROR_MESSAGES: Record<string, string> = {
 	EADDRNOTAVAIL: "The specified address is not available."
 };
 
+// const userStore: UserStore = new FileUserStore;
+const userStore: UserStore = new DrizzleUserStore;
+
 const app = express();
+
+app.use((req, res, next) => {
+	console.log(`[DEBUG] ${req.method} ${req.url} | Host: ${req.headers.host}`);
+	next();
+});
+
+
 app.use(express.json());
 app.use(express.static("test"));
 
 app.get("/health", healthCheck());
-app.get("/search", userSearch());
-app.get("/:uuid", getProfile());
-app.put("/username", setUsername());
-app.put("/settings", setUserSettings());
+app.get("/search/:query", userSearch(userStore));
+
+app.get("/profile/:uuid", getUserProfile(userStore));
+app.get("/settings/:uuid", getUserSettings(userStore));
+
+app.put("/profile", setUserProfile(userStore));
+app.put("/settings", setUserSettings(userStore));
 app.put("/avatar", uploadAvatar());
 
 const server = app.listen(PORT, () =>

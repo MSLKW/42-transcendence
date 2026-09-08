@@ -14,9 +14,10 @@ export function getInternalInfosForProfile() {
 		const stats = await postgres
 			.select()
 			.from(playerStats)
-			.where(eq(playerStats.playerId, id));
+			.where(eq(playerStats.id, id));
 		
 		return res.status(200).json(stats);
+		// same return as below:
 		// return res.status(200).json({
 		// 	level: stats.level,
 		// 	xp: stats.xp,

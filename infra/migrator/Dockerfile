@@ -19,12 +19,10 @@ COPY infra/migrator/drizzle.config.ts ./infra/migrator/drizzle.config.ts
 # Copy the script using the correct path from the root
 COPY infra/migrator/scripts/migrator-entrypoint.sh /usr/local/bin/entrypoint.sh
 COPY infra/migrator/scripts/grant-permissions.sh /usr/local/bin/grant-permissions.sh
-COPY infra/migrator/scripts/apply-triggers.sql /usr/local/bin/apply-triggers.sql
-RUN chmod +x /usr/local/bin/entrypoint.sh \
-            /usr/local/bin/grant-permissions.sh \
-            /usr/local/bin/apply-triggers.sql
-# .sql files run by psql - psql reads them as data, not as an executable
-# making .sql files executable - harmless but meaningless
+COPY infra/migrator/scripts/updated-at-trigger.sql /usr/local/bin/updated-at-trigger.sql
+COPY infra/migrator/scripts/user-settings-trigger.sql /usr/local/bin/user-settings-trigger.sql
+RUN chmod +x    /usr/local/bin/entrypoint.sh \
+                /usr/local/bin/grant-permissions.sh
 
 # Use the script as the entrypoint
 WORKDIR /app/infra/migrator

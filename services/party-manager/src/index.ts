@@ -1,4 +1,6 @@
 import "dotenv/config";
+import express from "express"
+import { healthCheck } from "./handlers/healthCheck"
 import { createServer } from "http";
 import { DisconnectReason, Server, Socket } from "socket.io";
 import { Client } from "./client/Client";
@@ -7,7 +9,6 @@ import { registerEventHandlers } from "./client/event_handlers";
 import { PartyState } from "./PartyTransmitTypes";
 import { DrizzlePlayerStatusStore } from "./store/drizzlePlayerStatusStore";
 import { getInternalInfosForProfile } from "./routes/internal";
-import express from "express";
 
 export const playerStatusStore = new DrizzlePlayerStatusStore();
 
@@ -28,11 +29,12 @@ const INTENTIONAL_DISCONNECT_REASONS = new Set([
 
 const pendingRemovals = new Map<string, NodeJS.Timeout>();
 
-// REST API FOR database usage
 const app = express();
-app.get("/internal/profile/:id", getInternalInfosForProfile());// REST API FOR database usage
+app.use(express.json());
+app.get("/health", healthCheck());
+app.get("/internal/profile/:id", getInternalInfosForProfile());// internal REST API FOR database usage
 
-const httpServer = createServer();
+const httpServer = createServer(app);
 
 const io = new Server(httpServer, {
 	cors: {
@@ -100,14 +102,14 @@ io.on("connection", async(socket: Socket) =>
 		clientManager.rebindSocket(oldSocket.id, socket.id);
 		existing.socket = socket;
 		registerEventHandlers(socket, existing);
-		if (existing.party)
-			existing.emit("party_state", existing.party.getState());
+		existing.emitState();
+		oldSocket.emit("disconnect_with_reason", {reason: "you have connected somewhere else"});
 		oldSocket.disconnect(true);
 		console.log(`User<${uuid}> switched sockets: ${oldSocket.id} -> ${socket.id}`);
 	}
 	else
 	{
-		const client = new Client(uuid, "", socket);
+		const client = new Client(uuid, socket);
 		clientManager.add(client);
 		registerEventHandlers(socket, client);
 		console.log(`User<${uuid}> connected on socket ${socket.id}`);

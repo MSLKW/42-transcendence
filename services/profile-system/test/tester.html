@@ -3,7 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Avatar Upload Tester</title>
+<title>API Tester</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/theme/material-darker.min.css">
 <style>
   :root {
     --bg: #1e1f22;
@@ -14,6 +16,8 @@
     --accent: #5b8dee;
     --ok: #4caf50;
     --err: #e5534b;
+    --get: #4caf50;
+    --put: #e5a83e;
     --mono: "SF Mono", Consolas, Menlo, monospace;
   }
   * { box-sizing: border-box; }
@@ -44,6 +48,33 @@
     padding: 20px;
     margin-bottom: 16px;
   }
+  .panel-title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 16px;
+  }
+  .method-badge {
+    font-size: 11px;
+    font-weight: 700;
+    font-family: var(--mono);
+    padding: 3px 7px;
+    border-radius: 4px;
+    color: #101112;
+  }
+  .method-badge.get { background: var(--get); }
+  .method-badge.put { background: var(--put); }
+  .path-label {
+    font-family: var(--mono);
+    font-size: 13px;
+    color: var(--text);
+  }
+  .token-required {
+    margin-left: auto;
+    font-size: 11px;
+    color: var(--muted);
+    font-style: italic;
+  }
   label {
     display: block;
     font-size: 12px;
@@ -55,8 +86,10 @@
   }
   .field { margin-bottom: 16px; }
   .field:last-child { margin-bottom: 0; }
+  .hidden { display: none !important; }
   input[type="text"],
-  input[type="password"] {
+  input[type="password"],
+  select {
     width: 100%;
     padding: 10px 12px;
     background: #1a1b1d;
@@ -66,9 +99,59 @@
     font-size: 14px;
     font-family: var(--mono);
   }
+  select {
+    appearance: none;
+    -webkit-appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%238a8b8f'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 14px center;
+    padding-right: 32px;
+    cursor: pointer;
+  }
   input[type="text"]:focus,
-  input[type="password"]:focus {
+  input[type="password"]:focus,
+  select:focus {
     outline: none;
+    border-color: var(--accent);
+  }
+  .json-field-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 6px;
+  }
+  .json-field-header label { margin-bottom: 0; }
+  .format-btn {
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--muted);
+    font-size: 11px;
+    font-weight: 500;
+    padding: 3px 10px;
+    border-radius: 6px;
+    cursor: pointer;
+  }
+  .format-btn:hover { color: var(--text); border-color: var(--accent); }
+  .json-editor {
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    overflow: hidden;
+  }
+  .json-editor .CodeMirror {
+    height: auto;
+    min-height: 140px;
+    font-family: var(--mono);
+    font-size: 13px;
+  }
+  .json-editor .CodeMirror-scroll {
+    overflow-x: hidden !important;
+    overflow-y: hidden !important;
+  }
+  .json-editor .CodeMirror-focused {
+    outline: none;
+  }
+  .json-field:focus-within .json-editor,
+  .json-editor.focused {
     border-color: var(--accent);
   }
   .file-drop {
@@ -93,7 +176,7 @@
     font-size: 13px;
     color: var(--muted);
   }
-  button {
+  button.action {
     width: 100%;
     padding: 12px;
     background: var(--accent);
@@ -105,20 +188,10 @@
     cursor: pointer;
     transition: opacity 0.15s;
   }
-  button:hover { opacity: 0.9; }
-  button:disabled {
+  button.action:hover { opacity: 0.9; }
+  button.action:disabled {
     opacity: 0.5;
     cursor: not-allowed;
-  }
-  .warning {
-    font-size: 12px;
-    color: var(--muted);
-    background: #33291a;
-    border: 1px solid #4d3d20;
-    border-radius: 6px;
-    padding: 10px 12px;
-    margin-bottom: 16px;
-    line-height: 1.5;
   }
   .log-header {
     display: flex;
@@ -141,6 +214,8 @@
     color: var(--muted);
     font-size: 11px;
     font-weight: 500;
+    border-radius: 6px;
+    cursor: pointer;
   }
   .clear-btn:hover { opacity: 1; border-color: var(--muted); }
   #log {
@@ -165,19 +240,53 @@
 </head>
 <body>
 <div class="wrap">
-  <h1>Avatar Upload Tester</h1>
-  <p class="subtitle">PUT &lt;url&gt;/avatar with a session_token cookie and an image file</p>
+  <h1>API Tester</h1>
+  <p class="subtitle">Pick an endpoint, fill in what it needs, send it</p>
 
   <div class="panel">
     <div class="field">
       <label for="baseUrl">Base URL</label>
-      <input type="text" id="baseUrl" placeholder="http://localhost:3000/api">
+      <input type="text" id="baseUrl" placeholder="http://localhost/api/profile">
     </div>
     <div class="field">
-      <label for="sessionToken">session_token</label>
+      <label for="sessionToken">session_token (only needed for PUT requests)</label>
       <input type="text" id="sessionToken" placeholder="paste session token">
     </div>
+  </div>
+
+  <div class="panel">
     <div class="field">
+      <label for="endpointSelect">Endpoint</label>
+      <select id="endpointSelect">
+        <option value="search">GET /search/:query</option>
+        <option value="profileGet">GET /profile/:uuid</option>
+        <option value="settingsGet">GET /settings/:uuid</option>
+        <option value="profilePut">PUT /profile</option>
+        <option value="settingsPut">PUT /settings</option>
+        <option value="avatarPut">PUT /avatar</option>
+      </select>
+    </div>
+
+    <div class="panel-title" style="margin-top: 20px;">
+      <span class="method-badge" id="methodBadge">GET</span>
+      <span class="path-label" id="pathLabel">/search/:query</span>
+      <span class="token-required hidden" id="tokenHint">requires token</span>
+    </div>
+
+    <div class="field" id="paramField">
+      <label id="paramLabel">query</label>
+      <input type="text" id="paramInput" placeholder="search term">
+    </div>
+
+    <div class="field hidden json-field" id="jsonField">
+      <div class="json-field-header">
+        <label>JSON body</label>
+        <button type="button" class="format-btn" id="formatJsonBtn">Format</button>
+      </div>
+      <div class="json-editor" id="jsonEditor"></div>
+    </div>
+
+    <div class="field hidden" id="fileField">
       <label>Avatar image</label>
       <div class="file-drop" id="dropZone">
         <input type="file" id="fileInput" accept="image/*">
@@ -185,11 +294,11 @@
         <div class="file-name" id="fileName"></div>
       </div>
     </div>
+
+    <button class="action" id="sendBtn">Send</button>
   </div>
 
-  <button id="uploadBtn">Upload</button>
-
-  <div class="panel" style="margin-top:16px;">
+  <div class="panel">
     <div class="log-header">
       <span>Log</span>
       <button class="clear-btn" id="clearBtn">Clear</button>
@@ -198,17 +307,164 @@
   </div>
 </div>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/javascript/javascript.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/edit/matchbrackets.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/edit/closebrackets.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/display/placeholder.min.js"></script>
 <script>
+  // ---- Endpoint definitions: single source of truth for the dropdown ----
+  const ENDPOINTS = {
+    search: {
+      method: 'GET',
+      pathDisplay: '/search/:query',
+      buildPath: (param) => `/search/${encodeURIComponent(param)}`,
+      needsParam: true, paramLabel: 'query', paramPlaceholder: 'search term',
+      needsToken: false, needsJson: false, needsFile: false,
+    },
+    profileGet: {
+      method: 'GET',
+      pathDisplay: '/profile/:uuid',
+      buildPath: (param) => `/profile/${encodeURIComponent(param)}`,
+      needsParam: true, paramLabel: 'uuid', paramPlaceholder: 'user uuid',
+      needsToken: false, needsJson: false, needsFile: false,
+    },
+    settingsGet: {
+      method: 'GET',
+      pathDisplay: '/settings/:uuid',
+      buildPath: (param) => `/settings/${encodeURIComponent(param)}`,
+      needsParam: true, paramLabel: 'uuid', paramPlaceholder: 'user uuid',
+      needsToken: false, needsJson: false, needsFile: false,
+    },
+    profilePut: {
+      method: 'PUT',
+      pathDisplay: '/profile',
+      buildPath: () => '/profile',
+      needsParam: false, needsToken: true, needsJson: true, needsFile: false,
+      jsonPlaceholder: '{\n  "username": "newname"\n  "avatarPath": "filename"\n  "badge": "choose which unlocked badge to display"\n}',
+    },
+    settingsPut: {
+      method: 'PUT',
+      pathDisplay: '/settings',
+      buildPath: () => '/settings',
+      needsParam: false, needsToken: true, needsJson: true, needsFile: false,
+      jsonPlaceholder: '{\n  "allow3OfAKind": true\n}',
+    },
+    avatarPut: {
+      method: 'PUT',
+      pathDisplay: '/avatar',
+      buildPath: () => '/avatar',
+      needsParam: false, needsToken: true, needsJson: false, needsFile: true,
+    },
+  };
+
   const baseUrlInput = document.getElementById('baseUrl');
   const tokenInput = document.getElementById('sessionToken');
+  const endpointSelect = document.getElementById('endpointSelect');
+  const methodBadge = document.getElementById('methodBadge');
+  const pathLabel = document.getElementById('pathLabel');
+  const tokenHint = document.getElementById('tokenHint');
+  const paramField = document.getElementById('paramField');
+  const paramLabel = document.getElementById('paramLabel');
+  const paramInput = document.getElementById('paramInput');
+  const jsonField = document.getElementById('jsonField');
+  const formatJsonBtn = document.getElementById('formatJsonBtn');
+  const fileField = document.getElementById('fileField');
   const fileInput = document.getElementById('fileInput');
   const dropZone = document.getElementById('dropZone');
   const fileNameEl = document.getElementById('fileName');
-  const uploadBtn = document.getElementById('uploadBtn');
+  const sendBtn = document.getElementById('sendBtn');
   const logEl = document.getElementById('log');
   const clearBtn = document.getElementById('clearBtn');
 
   let selectedFile = null;
+
+  // ---- JSON editor (CodeMirror): syntax highlighting, auto-indent, bracket matching ----
+  const jsonEditor = CodeMirror(document.getElementById('jsonEditor'), {
+    mode: 'application/json',
+    theme: 'material-darker',
+    lineNumbers: true,
+    matchBrackets: true,
+    autoCloseBrackets: true,
+    indentUnit: 2,
+    tabSize: 2,
+    indentWithTabs: false,
+    lineWrapping: true,
+    placeholder: '',
+  });
+
+  formatJsonBtn.addEventListener('click', () => {
+    const raw = jsonEditor.getValue().trim();
+    if (!raw) return;
+    try {
+      const parsed = JSON.parse(raw);
+      jsonEditor.setValue(JSON.stringify(parsed, null, 2));
+    } catch (err) {
+      log(`Invalid JSON body: ${escapeHtml(err.message)}`, 'err');
+    }
+  });
+
+  // Per-endpoint field values, so switching the dropdown doesn't wipe what you typed.
+  // File objects can't be reassigned to a real <input type="file">, so we keep the
+  // File separately here and only use fileInput for picking a new one.
+  const state = {};
+  Object.keys(ENDPOINTS).forEach((id) => {
+    state[id] = { param: '', json: '', file: null };
+  });
+
+  let previousEndpointId = endpointSelect.value;
+
+  function saveCurrentState() {
+    const cfg = ENDPOINTS[previousEndpointId];
+    const s = state[previousEndpointId];
+    if (cfg.needsParam) s.param = paramInput.value;
+    if (cfg.needsJson) s.json = jsonEditor.getValue();
+    if (cfg.needsFile) s.file = selectedFile;
+  }
+
+  function renderEndpoint() {
+    const id = endpointSelect.value;
+    const cfg = ENDPOINTS[id];
+    const s = state[id];
+
+    methodBadge.textContent = cfg.method;
+    methodBadge.className = `method-badge ${cfg.method.toLowerCase()}`;
+    pathLabel.textContent = cfg.pathDisplay;
+    tokenHint.classList.toggle('hidden', !cfg.needsToken);
+
+    paramField.classList.toggle('hidden', !cfg.needsParam);
+    if (cfg.needsParam) {
+      paramLabel.textContent = cfg.paramLabel;
+      paramInput.placeholder = cfg.paramPlaceholder;
+      paramInput.value = s.param;
+    }
+
+    jsonField.classList.toggle('hidden', !cfg.needsJson);
+    if (cfg.needsJson) {
+      jsonEditor.setOption('placeholder', cfg.jsonPlaceholder);
+      jsonEditor.setValue(s.json);
+      // CodeMirror mismeasures while its container is display:none, so refresh
+      // once it's visible again.
+      setTimeout(() => jsonEditor.refresh(), 0);
+    }
+
+    fileField.classList.toggle('hidden', !cfg.needsFile);
+    if (cfg.needsFile) {
+      selectedFile = s.file;
+      fileNameEl.textContent = selectedFile
+        ? `${selectedFile.name} (${(selectedFile.size / 1024).toFixed(1)} KB)`
+        : '';
+      fileInput.value = ''; // can't restore the actual file into the input element itself
+    }
+
+    previousEndpointId = id;
+  }
+
+  endpointSelect.addEventListener('change', () => {
+    saveCurrentState();
+    renderEndpoint();
+  });
+  renderEndpoint(); // initial state on load
 
   dropZone.addEventListener('click', () => fileInput.click());
   fileInput.addEventListener('change', () => {
@@ -234,6 +490,12 @@
     return new Date().toLocaleTimeString();
   }
 
+  function escapeHtml(str) {
+    const div = document.createElement('div');
+    div.textContent = str;
+    return div.innerHTML;
+  }
+
   function log(message, type = 'info') {
     const emptyMsg = logEl.querySelector('.empty-log');
     if (emptyMsg) emptyMsg.remove();
@@ -249,29 +511,16 @@
     logEl.innerHTML = '<div class="empty-log">No requests yet.</div>';
   });
 
-  uploadBtn.addEventListener('click', async () => {
+  async function sendRequest({ method, path, headers = {}, body }) {
     const baseUrl = baseUrlInput.value.trim().replace(/\/+$/, '');
-    const token = tokenInput.value.trim();
-
     if (!baseUrl) return log('Missing base URL.', 'err');
-    if (!token) return log('Missing session_token.', 'err');
-    if (!selectedFile) return log('No file selected.', 'err');
 
-    const url = `${baseUrl}/avatar`;
-    const formData = new FormData();
-    formData.append('avatar', selectedFile);
-
-    uploadBtn.disabled = true;
-    log(`PUT ${url} &mdash; uploading "${selectedFile.name}"...`, 'info');
+    const url = `${baseUrl}${path}`;
+    sendBtn.disabled = true;
+    log(`${method} ${url}...`, 'info');
 
     try {
-      const res = await fetch(url, {
-        method: 'PUT',
-        headers: {
-          'Authorization': `Bearer ${token}`,
-        },
-        body: formData,
-      });
+      const res = await fetch(url, { method, headers, body });
 
       const contentType = res.headers.get('content-type') || '';
       let bodyText;
@@ -287,15 +536,54 @@
     } catch (err) {
       log(`Request failed: ${escapeHtml(err.message)}`, 'err');
     } finally {
-      uploadBtn.disabled = false;
+      sendBtn.disabled = false;
     }
-  });
-
-  function escapeHtml(str) {
-    const div = document.createElement('div');
-    div.textContent = str;
-    return div.innerHTML;
   }
+
+  sendBtn.addEventListener('click', () => {
+    const cfg = ENDPOINTS[endpointSelect.value];
+
+    let token = '';
+    if (cfg.needsToken) {
+      token = tokenInput.value.trim();
+      if (!token) return log('Missing session_token.', 'err');
+    }
+
+    let param = '';
+    if (cfg.needsParam) {
+      param = paramInput.value.trim();
+      if (!param) return log(`Missing ${cfg.paramLabel}.`, 'err');
+    }
+
+    const path = cfg.buildPath(param);
+    const headers = {};
+    if (cfg.needsToken) headers['Authorization'] = `Bearer ${token}`;
+
+    if (cfg.needsJson) {
+      const raw = jsonEditor.getValue().trim();
+      let parsed = {};
+      if (raw) {
+        try {
+          parsed = JSON.parse(raw);
+        } catch (err) {
+          return log(`Invalid JSON body: ${escapeHtml(err.message)}`, 'err');
+        }
+      }
+      headers['Content-Type'] = 'application/json';
+      sendRequest({ method: cfg.method, path, headers, body: JSON.stringify(parsed) });
+      return;
+    }
+
+    if (cfg.needsFile) {
+      if (!selectedFile) return log('No file selected.', 'err');
+      const formData = new FormData();
+      formData.append('avatar', selectedFile);
+      sendRequest({ method: cfg.method, path, headers, body: formData });
+      return;
+    }
+
+    sendRequest({ method: cfg.method, path, headers });
+  });
 </script>
 </body>
 </html>

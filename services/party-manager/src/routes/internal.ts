@@ -15,7 +15,7 @@ export function getInternalInfosForProfile() {
 		const status = await postgres
 			.select()
 			.from(playerStatus)
-			.where(eq(playerStatus.playerId, id));
+			.where(eq(playerStatus.id, id));
 
 		return res.status(200).json(status);
 	})

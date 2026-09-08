@@ -10,12 +10,12 @@ export class DrizzlePlayerStatusStore {
 		{
 			await postgres
 				.insert(playerStatus)
-				.values({ playerId: uuid, isOnline: true})
-				.onConflictDoUpdate({ // newly added
-					target: playerStatus.playerId,
+				.values({ id: uuid, isOnline: true})
+				.onConflictDoUpdate({
+					target: playerStatus.id,
 					set: { isOnline: true}
 				})
-				.returning(); // newly added
+				.returning();
 		}
 		catch (postgresErr)
 		{
@@ -30,7 +30,7 @@ export class DrizzlePlayerStatusStore {
 			await postgres
 				.update(playerStatus)
 				.set({ isOnline: false})
-				.where(eq(playerStatus.playerId, uuid));
+				.where(eq(playerStatus.id, uuid));
 		}
 		catch (postgresErr)
 		{
