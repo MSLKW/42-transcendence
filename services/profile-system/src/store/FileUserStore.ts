@@ -16,21 +16,9 @@ export class FileUserStore implements UserStore
 		{
 			const raw = JSON.parse(await fs.promises.readFile(this.getFilePath(uuid), "utf-8")) as UserData;
 			const userData: UserData = {
-				uuid:			raw.uuid,
 				username:		raw.username,
 				avatarPath:		raw.avatarPath,
 				badge:			raw.badge,
-				level:			raw.level,
-				xp:				raw.xp,
-				createdAt:		raw.createdAt,
-				lastLogin:		raw.lastLogin,
-				totalPlayed:	raw.totalPlayed,
-				totalWins:		raw.totalWins,
-				totalLoss:		raw.totalLoss,
-				winStreak:		raw.winStreak,
-				achievements:	raw.achievements,
-				online:			raw.online,
-				inGame:			raw.inGame
 			};
 			return (userData);
 		}
@@ -104,21 +92,9 @@ export class FileUserStore implements UserStore
 	private async createUser(uuid: string)
 	{
 		const userData: UserData = {
-			uuid:			uuid,
 			username:		null,
 			avatarPath:		null,
 			badge:			"Beginner's Luck",
-			level:			0,
-			xp:				0,
-			createdAt:		new Date(),
-			lastLogin:		new Date(),
-			totalPlayed:	0,
-			totalWins:		0,
-			totalLoss:		0,
-			winStreak:		0,
-			achievements:	structuredClone(NULL_ACHIEVEMENTS),
-			online:			false,
-			inGame:			false
 		};
 		
 		const userSettings: UserSettings = {

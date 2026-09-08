@@ -1,19 +1,7 @@
 export type UserData = {
-	uuid:			string,
 	username:		string | null,
 	avatarPath:		string | null,
-	createdAt:		Date,
-	lastLogin:		Date,	
-	level:			number,
-	xp:				number,
-	totalPlayed:	number,
-	totalWins:		number,
-	totalLoss:		number,
-	winStreak:		number,
-	online:			boolean,
-	inGame:			boolean,
 	badge:			BadgeLabel,
-	achievements:	Record<AchievementLabel, Date | null>
 };
 
 export type UserSettings = {
