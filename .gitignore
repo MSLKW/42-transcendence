@@ -30,6 +30,3 @@ secrets/
 # build files
 tsconfig.tsbuildinfo
 .tsbuildinfo
-
-#others
-dumplater/
