@@ -19,3 +19,4 @@
 | "invite_received" | hostUuid: string | <center>-</center> |
 | "kicked" | message: string | <center>-</center> |
 | "game_session_start" | gameId: string | <center>-</center> |
+| "disconnect_with_reason" | reason: string | <center>-</center> |

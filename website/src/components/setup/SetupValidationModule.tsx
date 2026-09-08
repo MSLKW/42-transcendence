@@ -1,5 +1,6 @@
+import { partySocket } from "../../api/party/partySocket";
+import { chatSocket } from "../../api/chat/chatSocket";
 import { handlePutProfile } from "../../api/profile/put_profile/handlePutProfile";
-import { useProfileStore } from "../../store/ProfileStore";
 import { useSceneStore } from "../../store/SceneStore";
 
 interface SetupValidationModuleProps {
@@ -8,7 +9,6 @@ interface SetupValidationModuleProps {
 }
 
 export const SetupValidationModule = ({ name, avatar }: SetupValidationModuleProps) => {
-	const { createClientProfile } = useProfileStore();
 	const { setShowWindow } = useSceneStore();
 
 	const isValid = Boolean(name?.trim()) && Boolean(avatar);
@@ -16,7 +16,8 @@ export const SetupValidationModule = ({ name, avatar }: SetupValidationModulePro
 		if (!isValid)
 			return;
 		await handlePutProfile(name, avatar, "Newcomer");
-		// createClientProfile(name, avatar);
+		partySocket.connect();
+		chatSocket.connect();
 		setShowWindow("setup", false);
 	};
 

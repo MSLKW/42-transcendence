@@ -1,13 +1,16 @@
 import { HostIcon } from "../host/HostIcon";
+import { usePartyStore } from "../../../store/PartyStore";
 
 interface AvatarCornerButtonProps {
 	cornerButton?: string | number;
 }
 
 export const AvatarCornerButton = ({ cornerButton }: AvatarCornerButtonProps) => {
+	const partySize = usePartyStore.getState().members.length;
+	
 	return (
 		<>
-			{ cornerButton === "host" &&
+			{ cornerButton === "host" && partySize > 1 &&
 				<div
 					data-tip="Host"
 					className="

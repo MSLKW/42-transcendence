@@ -13,10 +13,14 @@ export const HomeScene = () => {
 	const { removeBots } = useBotStore();
 	const { initSeats } = useGameStore();
 	const { hostUuid, members } = usePartyStore();
-	const { clientUuid, setCachedData, getCachedData } = useProfileStore();
+	const { clientUuid, setCachedData, getCachedData, getProfileData } = useProfileStore();
 	const data = getCachedData(clientUuid);
 	
 	useEffect(() => {
+		const data = getProfileData(clientUuid!);
+		if (!data?.name)
+			return;
+
 		removeBots();
 		if (members.length <= 0) {
 			setCachedData();
@@ -27,7 +31,7 @@ export const HomeScene = () => {
 		}
 		useGameStore.setState({ totalPlayers: 0 });
 		initSeats();
-	}, [])
+	}, [members]);
 
 	return (
 		<>

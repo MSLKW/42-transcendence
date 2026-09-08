@@ -318,7 +318,6 @@ interface ProfileValues {
 };
 
 interface ProfileState extends ProfileValues {
-	createClientProfile: (name: string, avatar: string) => void,
 	updateClientProfile: (name: string, avatar: string, badge: BADGE_TYPE) => void,
 	getProfileData: (uuid: string | null) => ProfileData | undefined,
 	resetProfilesInDb: () => void,
@@ -335,26 +334,6 @@ export const useProfileStore = create<ProfileState>() (
 			profilesInDb: defaultProfileInDb,
 			cachedData: [],
 
-			createClientProfile: (name, avatar) => {
-				const { clientUuid, profilesInDb, setCachedData } = get();
-				if (!clientUuid)
-					return;
-
-				const profileExists = profilesInDb.some((p) => p.uuid === clientUuid);
-				if (profileExists) {
-					return {
-						profilesInDb: profilesInDb.map((p) =>
-							p.uuid === clientUuid
-								? { ...p, name, avatar }
-								: p
-						)
-					};
-				}
-
-				const newProfile = createDefaultProfile(clientUuid!, name, avatar);
-				set({ profilesInDb: [...profilesInDb, newProfile] });
-				setCachedData();
-			},
 			updateClientProfile: (name, avatar, badge) => {
 				const { clientUuid, profilesInDb, setCachedData } = get();
 				if (!clientUuid)
@@ -403,7 +382,7 @@ export const useProfileStore = create<ProfileState>() (
 					const userData = await handleGetProfile(memberUuid);
 					if (!userData)
 						return null;
-
+					
 					const humanRelation: RELATION_TYPE = 
 						memberUuid === clientUuid ? "Self" :
 						friends.includes(memberUuid) ? "Friend" :

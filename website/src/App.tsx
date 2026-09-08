@@ -60,19 +60,24 @@ export default function App() {
 
 	//socket connections
 	useEffect(() => {
-		// if (currentScene === "Login" || !clientUuid)
-		if (currentScene === "Login")
+		if (currentScene === "Login" || !clientUuid)
 			return;
 
-		if (!partySocket.isConnected())
-			partySocket.connect();
-		if (!chatSocket.isConnected())
-			chatSocket.connect();
+		const data = getProfileData(clientUuid!);
+		if (!data?.name)
+			return;
+
+		partySocket.connect();
+		chatSocket.connect();
 	}, [currentScene, clientUuid]);
 
 	//chat subscriptions
 	useEffect(() => {
 		if (currentScene === "Login" || !clientUuid)
+			return;
+
+		const data = getProfileData(clientUuid!);
+		if (!data?.name)
 			return;
 
 		const unsubscribeFromMessages = subscribeToMessages();

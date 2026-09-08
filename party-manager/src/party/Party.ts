@@ -65,7 +65,7 @@ export class Party
 		if (!user)
 			return ;
 		user.status = "available";
-		user.party = null;
+		user.party = new Party(user);
 		this.members.delete(uuid);
 		this.sendUpdates();			
 	}
@@ -77,8 +77,12 @@ export class Party
 			const user = this.members.get(key)!;
 
 			user.status = "available";
-			user.party = null;
-			user.emit("kicked", {message: reason});
+			user.party = new Party(user);
+			if (user.uuid != this.hostId)
+			{
+				user.emit("kicked", {message: reason});
+				user.emitState();
+			}
 		}
 		this.invites.clear();
 		this.members.clear();
@@ -118,7 +122,7 @@ export class Party
 	sendUpdates()
 	{
 		for (const key of this.members.keys())
-				this.members.get(key)!.emit("party_state", this.getState());
+				this.members.get(key)!.emitState();
 		if (this.gameId)
 			this.updateLobby();
 	}

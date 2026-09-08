@@ -20,7 +20,6 @@ export const handleSignUp = async (email: string, password: string, setIsLoading
 
 		setShowWindow("createAccount", false);
 		setCurrentScene("Home");
-		partySocket.connect();
 		showNotification("Account created successfully!", NOTIFICATION_TYPE.message);
 		console.log("[handleSignUp] Account created successfully!");
 	} catch (err) {

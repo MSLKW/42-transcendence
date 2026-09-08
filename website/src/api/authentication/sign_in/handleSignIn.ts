@@ -17,7 +17,6 @@ export const handleSignIn = async (email: string, password: string, setIsLoading
 		useProfileStore.setState({ clientUuid: response.id });
 		setShowWindow("signIn", false);
 		setCurrentScene("Home");
-		partySocket.connect();
 		console.log("[handleSignIn] Successfully signed in! response.id: ", response.id);
 	} catch (err) {
 		const errorMsg = err instanceof Error ? err.message : "Something went wrong. Please try again";

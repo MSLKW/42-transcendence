@@ -98,14 +98,14 @@ io.on("connection", (socket: Socket) =>
 		clientManager.rebindSocket(oldSocket.id, socket.id);
 		existing.socket = socket;
 		registerEventHandlers(socket, existing);
-		if (existing.party)
-			existing.emit("party_state", existing.party.getState());
+		existing.emitState();
+		oldSocket.emit("disconnect_with_reason", {reason: "you have connected somewhere else"});
 		oldSocket.disconnect(true);
 		console.log(`User<${uuid}> switched sockets: ${oldSocket.id} -> ${socket.id}`);
 	}
 	else
 	{
-		const client = new Client(uuid, "", socket);
+		const client = new Client(uuid, socket);
 		clientManager.add(client);
 		registerEventHandlers(socket, client);
 		console.log(`User<${uuid}> connected on socket ${socket.id}`);
