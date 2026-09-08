@@ -7,15 +7,20 @@ export class Client
 {
 	public readonly uuid: string;
 	public socket: Socket;
-	public username: string;
 	public status: ClientStatus = "available";
-	public party: Party | null = null;
+	public party: Party;
 
-	constructor(uuid: string, username: string, socket: Socket)
+	constructor(uuid: string, socket: Socket)
 	{
 		this.uuid = uuid;
-		this.username = username;
 		this.socket = socket;
+		this.party = new Party(this);
+		this.emitState();
+	}
+
+	emitState()
+	{
+		this.emit("party_state", this.party.getState()); 
 	}
 
 	emit(event: string, payload: unknown) {
