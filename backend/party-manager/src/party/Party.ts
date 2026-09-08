@@ -49,10 +49,7 @@ export class Party
 		user.party = this;
 		this.members.set(userId, user);
 		this.invites.delete(userId);
-		for (const key of this.members.keys())
-				this.members.get(key)!.emit("party_state", this.getState());
-		if (this.gameId)
-			this.updateLobby();
+		this.sendUpdates();
 		return (true);
 	}
 
@@ -68,12 +65,9 @@ export class Party
 		if (!user)
 			return ;
 		user.status = "available";
-		user.party = null;
+		user.party = new Party(user);
 		this.members.delete(uuid);
-		for (const key of this.members.keys())
-			this.members.get(key)!.emit("player_state", this.getState());
-		if (this.gameId)
-			this.updateLobby();
+		this.sendUpdates();			
 	}
 
 	clear(reason: string)
@@ -83,8 +77,12 @@ export class Party
 			const user = this.members.get(key)!;
 
 			user.status = "available";
-			user.party = null;
-			user.emit("kicked", {message: reason});
+			user.party = new Party(user);
+			if (user.uuid != this.hostId)
+			{
+				user.emit("kicked", {message: reason});
+				user.emitState();
+			}
 		}
 		this.invites.clear();
 		this.members.clear();
@@ -119,6 +117,14 @@ export class Party
 		{
 			console.error("call to game lobby failed", err);
 		}
+	}
+
+	sendUpdates()
+	{
+		for (const key of this.members.keys())
+				this.members.get(key)!.emitState();
+		if (this.gameId)
+			this.updateLobby();
 	}
 
 	async updateLobby()
