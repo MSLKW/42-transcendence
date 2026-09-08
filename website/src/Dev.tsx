@@ -15,12 +15,10 @@ import { useResultsStore } from "./store/ResultsStore";
 import { defaultShowWindow, useSceneStore } from "./store/SceneStore";
 import { DevButton } from "./components/dev/DevBtn";
 import { useFrameView } from "./utilities/useFrameView";
-import { useBubbleStore } from "./store/BubbleStore";
-import { useTypingStore } from "./store/TypingStore";
 
 export default function Dev() {
 	const { fillSeatsWithBots, removeBots } = useBotStore();
-	const { chatSocketId, chatRoomId, cachedChat } = useChatStore();
+	const { chatSocketId, chatRoomId } = useChatStore();
 	const { toggleFlag } = useDevStore();
 	const { friends } = useFriendStore();
 	const { seats, totalPlayers, playerUnseats, currentHand } = useGameStore();
@@ -30,6 +28,8 @@ export default function Dev() {
 	const { results } = useResultsStore();
 	const { currentScene, setCurrentScene } = useSceneStore();
 	const [inviteUuid, setInviteUuid] = useState("");
+	const [fetchUrl, setFetchUrl] = useState("");
+	const [fetchBody, setFetchBody] = useState("");
 
 	const handleResetAll = async () => {
 		resetProfilesInDb();
@@ -72,8 +72,35 @@ export default function Dev() {
 		await handleValidate();
 	};
 
+	const fetchGet = async (url: string) => {
+		try {
+			const response = await fetch(`${url}`, {
+				method: "GET",
+				credentials: "include",
+			});
+			const resp_json = await response?.json();
+			console.log("[GET ", url, "] ", response.status, " ", response.statusText, " - ", resp_json);
+		} catch (err) {
+			console.error("fetchGet failed");
+		}
+	}
+
+	const fetchPut = async (url: string, body: string) => {
+		try {
+			const response = await fetch(`${url}`, {
+				method: "PUT",
+				headers: { "Content-Type": "application/json" },
+				body: JSON.stringify(body),
+			});
+			const resp_json = await response?.json();
+			console.log("[PUT ", url, " ", body, "] ", response.status, " ", response.statusText, " - ", resp_json);
+		} catch (err) {
+			console.error("fetchPut failed");
+		}
+	}
+
 	return (
-		<section className="w-full text-r4 py-1rem">
+		<section className="w-full text-b4 py-1rem gap-1rem">
 			<ul className="flex place-content-evenly">
 				<DevButton label="Frame" call={() => toggleFlag("showFrame")} />
 				<DevButton label="Stats" call={() => toggleFlag("showStats")} />
@@ -116,6 +143,20 @@ export default function Dev() {
 					<DevButton label={`profilesInDb: ${profilesInDb.length}`} call={() => console.log("profilesInDb: ", profilesInDb)} />
 					<DevButton label={`cachedData: ${cachedData.length}`} call={() => console.log("cachedData: ", cachedData)} />
 				</div>
+				<div className="flex place-content-between gap-1rem">
+					<input
+						id="inviteUuid"
+						onChange={(e) => setFetchUrl(e.target.value)}
+						className="bg-dark w-[70%]"
+					/>
+					<input
+						id="inviteUuid"
+						onChange={(e) => setFetchBody(e.target.value)}
+						className="bg-dark w-[70%]"
+					/>
+					<DevButton label="GET" call={() => fetchGet(fetchUrl)}/>
+					<DevButton label="PUT" call={() => fetchPut(fetchUrl, fetchBody)}/>
+				</div>
 				<div className="flex place-content-between">
 					<DevButton
 						label={`partySocketId: ${partySocketId ? partySocketId : "n/a"}`}
@@ -127,7 +168,10 @@ export default function Dev() {
 				<div className="flex place-content-between">
 					<li>Party Game ID: {partyGameId ? partyGameId : "n/a"}</li>
 					<DevButton label="Connect" call={() => partySocket.connect()} />
-					<DevButton label="party_state" call={() => console.log("party_state:", usePartyStore.getState().partyStateResponse)} />
+					<DevButton label="party_state" call={() => {
+						partySocket.refresh();
+						// console.log("party_state:", usePartyStore.getState().partyStateResponse);
+					}}/>
 					<DevButton label={`seats: ${seated} / ${totalPlayers}`} call={() => console.log("seats: ", seats)} />
 				</div>
 				<div className="flex place-content-between">

@@ -16,7 +16,7 @@ interface PartyValues {
 }
 
 interface PartyState extends PartyValues {
-	kickMember: (uuid: string) => void;
+	kickPlayer: (uuid: string) => void;
 }
 
 export const usePartyStore = create<PartyState>() (
@@ -28,7 +28,7 @@ export const usePartyStore = create<PartyState>() (
 			hostUuid: null,
 			partyStateResponse: undefined,
 
-			kickMember: (uuid) => {
+			kickPlayer: (uuid) => {
 				const currentMembers = get().members;
 				set({ members: currentMembers.filter((d) => d !== uuid) });
 			}

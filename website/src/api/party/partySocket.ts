@@ -1,11 +1,11 @@
 import { io, Socket } from "socket.io-client";
-import { chatSocket } from "../chat/chatSocket";
 import { acceptInviteAction } from "./actions/acceptInviteAction";
-import { kickMemberAction } from "./actions/kickMemberAction";
+import { kickPlayerAction } from "./actions/kickPlayerAction";
 import { leavePartyAction } from "./actions/leavePartyAction";
 import { rejectInviteAction } from "./actions/rejectInviteAction";
 import { sendInviteAction } from "./actions/sendInviteAction";
 import { startGameSessionAction } from "./actions/startGameSessionAction";
+import { refreshAction } from "./actions/refreshAction";
 import { registerConnectionHandlers } from "./handlers/connectionHandlers";
 import { gameSessionStartHandler } from "./handlers/gameSessionStartHandler";
 import { inviteReceivedHandler } from "./handlers/inviteReceivedHandler";
@@ -38,14 +38,13 @@ class PartySocketService {
 			this.socket.disconnect();
 			this.socket = null;
 		}
-		chatSocket.disconnect();
 	}
 	
 	public sendInvite(recipientUuid: string, recipientName?: string) {
 		sendInviteAction(this.socket, recipientUuid, recipientName);
 	}
-	public kickMember(recipientUuid: string, recipientName?: string) {
-		kickMemberAction(this.socket, recipientUuid, recipientName);
+	public kickPlayer(recipientUuid: string, recipientName?: string) {
+		kickPlayerAction(this.socket, recipientUuid, recipientName);
 	}
 	public startGameSession() {
 		startGameSessionAction(this.socket);
@@ -59,8 +58,10 @@ class PartySocketService {
 	public leaveParty() {
 		leavePartyAction(this.socket);
 	}
+	public refresh() {
+		refreshAction(this.socket);
+	}
 	public isConnected(): boolean {
-		console.log("<isConnected> socket:", this.socket, " id:", this.socket?.id);
 		return this.socket?.connected === true;
 	}
 }

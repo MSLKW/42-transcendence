@@ -12,7 +12,6 @@ export const DevButton = ({ label, call }: DevButtonProps) => {
 				onClick={call}
 				className="
 					hover:scale-105
-					text-r4 hover:text-r5
 					cursor-pointer
 				"
 			>

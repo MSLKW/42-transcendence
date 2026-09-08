@@ -1,12 +1,12 @@
 import { Socket } from "socket.io-client";
-import { chatSocket } from "../../chat/chatSocket";
+// import { chatSocket } from "../../chat/chatSocket";
 import { useChatStore } from "../../../store/ChatStore";
 import { useNotificationStore, NOTIFICATION_TYPE } from "../../../store/NotificationStore";
 import { usePartyStore } from "../../../store/PartyStore";
 import { useProfileStore } from "../../../store/ProfileStore";
 import { useSceneStore } from "../../../store/SceneStore";
 
-export function kickMemberAction(socket: Socket | null, recipientUuid: string, recipientName?: string) {
+export function kickPlayerAction(socket: Socket | null, recipientUuid: string, recipientName?: string) {
 	const { showNotification } = useNotificationStore.getState();
 	const addToCachedChat = useChatStore.getState().addToCachedChat;
 	const data = useProfileStore.getState().getCachedData(recipientUuid);
@@ -21,14 +21,14 @@ export function kickMemberAction(socket: Socket | null, recipientUuid: string, r
 
 	socket?.emit("kick_player", { recipientUuid });
 	showNotification(
-		`${recipientName} removed from your party`,
+		`${recipientName} removed from party`,
 		NOTIFICATION_TYPE.message
 	);
 
-	chatSocket.disconnect();
+	// chatSocket.disconnect();
 	// chatSocket.joinRoom(useProfileStore.getState().clientUuid!);
 
-	usePartyStore.getState().kickMember(recipientUuid);
+	usePartyStore.getState().kickPlayer(recipientUuid);
 
 	useProfileStore.getState().setCachedData();
 
@@ -39,7 +39,7 @@ export function kickMemberAction(socket: Socket | null, recipientUuid: string, r
 		"server",
 		"",
 		"",
-		`${data?.name ?? "A player"} has been kicked from party`
+		`${data?.name ?? "A player"} removed from party`
 	);
 
 	console.log("[partySocket] 'kick_player' recipientUuid:", recipientUuid);

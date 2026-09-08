@@ -13,10 +13,10 @@ export const SetupWindow = () => {
 	return (
 		<>
 			<button
+				// backdrop-blur-xs
 				className="
 					fixed z-1 top-0 left-0
 					h-screen w-screen
-					backdrop-blur-xs
 					pointer-events-none
 				"
 			/>

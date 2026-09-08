@@ -7,7 +7,7 @@ import { MedalsModule } from "../player/medals/MedalsModule";
 import { PlayerDataModule } from "../player/data/PlayerDataModule";
 import { PlayerStatsModule } from "../player/stats/PlayerStatsModule";
 import { FriendToggleButton } from "./friend/FriendToggleButton";
-import { KickMemberButton } from "./kick/KickMemberButton";
+import { KickPlayerButton } from "./kick/KickPlayerButton";
 
 export const StatsWindow: React.FC = () => {
 	const { profileUuid } = useSceneStore();
@@ -39,7 +39,7 @@ export const StatsWindow: React.FC = () => {
 						gap-1rem
 					"
 				>
-					{ members && profileUuid && members.includes(profileUuid) && <KickMemberButton playerUuid={profileUuid}/>}
+					{ members && profileUuid && members.includes(profileUuid) && <KickPlayerButton playerUuid={profileUuid}/>}
 					<FriendToggleButton uuid={profileUuid!}/>
 				</div>
 			</div>

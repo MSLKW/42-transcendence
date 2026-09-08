@@ -60,6 +60,7 @@ export default function App() {
 
 	//socket connections
 	useEffect(() => {
+		// if (currentScene === "Login" || !clientUuid)
 		if (currentScene === "Login")
 			return;
 
@@ -67,11 +68,11 @@ export default function App() {
 			partySocket.connect();
 		if (!chatSocket.isConnected())
 			chatSocket.connect();
-	}, [currentScene]);
+	}, [currentScene, clientUuid]);
 
 	//chat subscriptions
 	useEffect(() => {
-		if (currentScene === "Login")
+		if (currentScene === "Login" || !clientUuid)
 			return;
 
 		const unsubscribeFromMessages = subscribeToMessages();
@@ -87,11 +88,11 @@ export default function App() {
 			unsubscribeFromUserTyping();
 			unsubscribeFromRateLimited();
 		};
-	}, [currentScene]);
+	}, [currentScene, clientUuid]);
 
-	//party/room changes
+	//chat room changes
 	useEffect(() => {
-		if (currentScene !== "Login")
+		if (currentScene !== "Login" || !clientUuid || !hostUuid)
 			return;
 
 		if (hostUuid)

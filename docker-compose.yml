@@ -25,6 +25,13 @@ services:
     image: authentication:test
     restart: unless-stopped
 
+  profile:
+    build: profile-system
+    image: profile:test
+    restart: unless-stopped
+    env_file: 
+      - ./profile-system/.env
+
   party_manager:
     build: party-manager
     image: party:test

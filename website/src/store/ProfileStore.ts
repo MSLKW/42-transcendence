@@ -2,6 +2,7 @@ import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import { usePartyStore } from "./PartyStore";
 import { useFriendStore } from "./FriendStore";
+import { handleGetProfile } from "../api/profile/get_profile/handleGetProfile";
 
 export const BADGE_LABEL = [
 	"Newcomer",
@@ -66,6 +67,7 @@ export interface CachedData {
 	uuid: string | null;
 	name: string | null;
 	avatar: string | null;
+	badge: string | null;
 	relation: RELATION_TYPE;
 }
 
@@ -282,24 +284,28 @@ export const cachedBotData: CachedData[] = [
 		name: "Norminette",
 		avatar: "avatar-bot-0.webp",
 		relation: "Bot",
+		badge: "Newcomer",
 	},
 	{
 		uuid: "bot-1",
 		name: "Moulinette",
 		avatar: "avatar-bot-1.webp",
 		relation: "Bot",
+		badge: "Newcomer",
 	},
 	{
 		uuid: "bot-2",
 		name: "Thila-Bot",
 		avatar: "avatar-bot-2.webp",
 		relation: "Bot",
+		badge: "Newcomer",
 	},
 	{
 		uuid: "bot-3",
 		name: "Segfault",
 		avatar: "avatar-bot-3.webp",
 		relation: "Bot",
+		badge: "Newcomer",
 	},
 ];
 
@@ -382,7 +388,7 @@ export const useProfileStore = create<ProfileState>() (
 					cachedData: [],
 				});
 			},
-			setCachedData: () => {
+			setCachedData: async () => {
 				const clientUuid = get().clientUuid;
 				const members = usePartyStore.getState().members;
 				const friends = useFriendStore.getState().friends;
@@ -390,14 +396,14 @@ export const useProfileStore = create<ProfileState>() (
 				const allUuids = Array.from(
 					new Set([...members, ...(clientUuid ? [clientUuid] : [])])
 				);
-				const cachedMemberData = allUuids.map((memberUuid: string | null) : CachedData | null => {
+				const cachedMemberData = (await Promise.all(allUuids.map(async (memberUuid: string | null): Promise<CachedData | null> => {
 					if (!memberUuid)
 						return null;
 
-					const data = get().getProfileData(memberUuid);
-					if (!data)
+					const userData = await handleGetProfile(memberUuid);
+					if (!userData)
 						return null;
-					
+
 					const humanRelation: RELATION_TYPE = 
 						memberUuid === clientUuid ? "Self" :
 						friends.includes(memberUuid) ? "Friend" :
@@ -405,11 +411,12 @@ export const useProfileStore = create<ProfileState>() (
 
 					return {
 						uuid: memberUuid!,
-						name: data?.name,
-						avatar: data?.avatar,
+						name: userData?.username,
+						avatar: userData?.avatarPath,
+						badge: userData?.badge,
 						relation: humanRelation,
 					}
-				}).filter((profile): profile is CachedData => profile !== null);
+				}))).filter((profile): profile is CachedData => profile !== null);
 
 				set({ cachedData: [...cachedBotData, ...cachedMemberData] });
 			},

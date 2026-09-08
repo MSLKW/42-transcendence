@@ -9,6 +9,7 @@ import { MedalsModule } from "../player/medals/MedalsModule";
 import { PlayerDataModule } from "../player/data/PlayerDataModule";
 import { PlayerStatsModule } from "../player/stats/PlayerStatsModule";
 import { LeavePartyModule } from "./LeavePartyModule";
+import { handlePutProfile } from "../../api/profile/put_profile/handlePutProfile";
 
 export const ProfileWindow = () => {
 	const { setShowWindow } = useSceneStore();
@@ -30,6 +31,7 @@ export const ProfileWindow = () => {
 	const handleProfileUpdate = () => {
 		if (!isValid)
 			return;
+		handlePutProfile(name, avatar, badge);
 		updateClientProfile(name, avatar, badge);
 		setShowWindow("profile", false);
 	}

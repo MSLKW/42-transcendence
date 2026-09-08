@@ -3,22 +3,22 @@ import { usePartyStore } from "../../../store/PartyStore";
 import { useProfileStore } from "../../../store/ProfileStore";
 import { KickIcon } from "./KickIcon";
 
-interface KickMemberButtonProps {
+interface KickPlayerButtonProps {
 	playerUuid: string;
 }
 
-export const KickMemberButton = ({ playerUuid }: KickMemberButtonProps) => {
+export const KickPlayerButton = ({ playerUuid }: KickPlayerButtonProps) => {
 	const { clientUuid } = useProfileStore();
-	const { hostUuid, kickMember } = usePartyStore();
-	const handleKickMember = () => {
-		partySocket.kickMember(playerUuid, "Player");
-		kickMember(playerUuid);
+	const { hostUuid, kickPlayer } = usePartyStore();
+	const handleKickPlayer = () => {
+		partySocket.kickPlayer(playerUuid, "Player");
+		kickPlayer(playerUuid);
 	}
 	
 	return (
 		<button
 			disabled={clientUuid !== hostUuid}
-			onClick={handleKickMember}
+			onClick={handleKickPlayer}
 			className="
 				h-4rem aspect-5/1
 				btn-text bg-light

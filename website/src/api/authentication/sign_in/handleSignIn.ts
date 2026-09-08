@@ -21,7 +21,7 @@ export const handleSignIn = async (email: string, password: string, setIsLoading
 		console.log("[handleSignIn] Successfully signed in! response.id: ", response.id);
 	} catch (err) {
 		const errorMsg = err instanceof Error ? err.message : "Something went wrong. Please try again";
-		console.log("[handleSignIn] ", errorMsg);
+		console.log("[handleSignIn] errorMsg:", errorMsg);
 		showNotification(errorMsg, NOTIFICATION_TYPE.error);
 	} finally {
 		setIsLoading(false);

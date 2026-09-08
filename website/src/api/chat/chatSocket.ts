@@ -176,7 +176,6 @@ class ChatSocketService {
 	}
 
 	public isConnected(): boolean {
-		console.log("[isConnected] id:", this.socket?.id, " currentRoomId:", this.currentRoomId, " socket:", this.socket);
 		return this.socket?.connected === true;
 	}
 }

@@ -12,11 +12,8 @@ export function partyStateHandler(socket: Socket) {
 		if (partyData.hostUuid)
 			usePartyStore.setState({ hostUuid: partyData.hostUuid });
 
-		chatSocket.connect();
-		chatSocket.joinRoom(partyData.hostUuid);
-
 		useProfileStore.getState().setCachedData();
-
+		
 		usePartyStore.setState({
 			partyStateResponse: {
 				hostUuid: partyData.hostUuid,
@@ -24,6 +21,9 @@ export function partyStateHandler(socket: Socket) {
 				gameId: partyData.gameId,
 			},
 		});
+		
+		chatSocket.connect();
+		chatSocket.joinRoom(partyData.hostUuid);
 
 		console.log("[partySocket] 'party_state' partyData:", partyData);
 	});

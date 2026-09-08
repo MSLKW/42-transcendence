@@ -1,3 +1,4 @@
+import { handlePutProfile } from "../../api/profile/put_profile/handlePutProfile";
 import { useProfileStore } from "../../store/ProfileStore";
 import { useSceneStore } from "../../store/SceneStore";
 
@@ -11,10 +12,11 @@ export const SetupValidationModule = ({ name, avatar }: SetupValidationModulePro
 	const { setShowWindow } = useSceneStore();
 
 	const isValid = Boolean(name?.trim()) && Boolean(avatar);
-	const handleSetupComplete = () => {
+	const handleSetupComplete = async () => {
 		if (!isValid)
 			return;
-		createClientProfile(name, avatar);
+		await handlePutProfile(name, avatar, "Newcomer");
+		// createClientProfile(name, avatar);
 		setShowWindow("setup", false);
 	};
 
