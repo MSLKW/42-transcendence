@@ -24,9 +24,12 @@
   <!-- <input id="my-uuid" placeholder="e.g. alice" /> -->
   <input id="my-uuid" placeholder="e.g. alice" onkeydown="if(event.key==='Enter') start()" />
   <button onclick="start()">Connect</button>
-  <button onclick="disconnect()">Disconnect</button> 
+  <button onclick="disconnect()">Disconnect</button>
   <button onclick="openTab()">+ Open another tester tab</button>
-  <div id="fReqStatus" style="margin-top:6px; font-size:13px;">⚪ not connected</div>
+  <!-- renamed from "fReqStatus" — this div is the SSE CONNECTION indicator,
+       nothing to do with a friend request's status. Old name was misleading
+       and is exactly what caused the res.fReqStatus / r.fReqStatus bugs before. -->
+  <div id="connectionIndicator" style="margin-top:6px; font-size:13px;">⚪ not connected</div>
 </div>
 
 <h2>Send a friend request</h2>
@@ -59,8 +62,10 @@ function log(msg) {
   el.innerHTML = `<div>[${new Date().toLocaleTimeString()}] ${msg}</div>` + el.innerHTML;
 }
 
-function setStatus(text) {
-  document.getElementById("fReqStatus").textContent = text;
+// renamed from setStatus() — this only ever touches the SSE CONNECTION
+// indicator, never a friend request's status or an HTTP status code
+function setConnectionIndicator(text) {
+  document.getElementById("connectionIndicator").textContent = text;
 }
 
 function openTab() {
@@ -80,10 +85,26 @@ function start() {
   // evtSource.addEventListener("connected", () => log("SSE connected as " + myUuid));
   evtSource.addEventListener("connected", () => {
     log("SSE connected as " + myUuid);
-    setStatus("🟢 live (SSE connected)");
+    setConnectionIndicator("🟢 live (SSE connected)");
   });
-  evtSource.onerror = () => setStatus("🔴 disconnected — use Refresh until this reconnects");
+  evtSource.onerror = () => setConnectionIndicator("🔴 disconnected — use Refresh until this reconnects");
 
+  // server tells us we were replaced by another tab/device connecting
+  // as this same uuid. We must close it ourselves
+  // by calling .close() 
+  // .close() is exactly what stops the browser's default auto-reconnect behavior (frontend side). 
+  // If we relied on the server's existing.end() alone, 
+  // this tab's EventSource would see "connection died" (not "deliberately replaced") and auto-retry, 
+  // which would then evict the OTHER tab, which would auto-retry, which would evict us again,
+  // the exact infinite kick-loop bug from before.
+  evtSource.addEventListener("replaced", () => {
+    evtSource.close(); // .close() => most important thing to do to permenantly close the older connection of the same uuid
+    evtSource = null;
+    clearInterval(pollTimer);
+    pollTimer = null;
+    setConnectionIndicator("⚪ connected elsewhere");
+    log("This uuid connected in another tab/device — this tab disconnected to avoid a reconnect loop.");
+  });
 
   evtSource.addEventListener("friend_request_received", e => {
     const data = JSON.parse(e.data);
@@ -134,7 +155,7 @@ function disconnect() {
   evtSource = null;
   clearInterval(pollTimer);
   pollTimer = null;
-  setStatus("⚪ not connected");
+  setConnectionIndicator("⚪ not connected");
   log(`SSE disconnected as ${myUuid} — live updates paused until you Connect again.`);
 }
 //
@@ -144,7 +165,7 @@ async function sendRequest() {
   const target = input.value.trim();
   //
   // bug 6 fix: don't even attempt the friend request if the field is empty
-  if (!target) 
+  if (!target)
     return log("enter a friend's uuid before sending a friend request");
   input.value = "";  // ← this clears the box immediately
   //
@@ -196,7 +217,11 @@ async function refreshSent() {
   list.innerHTML = "";
   requests.forEach(r => {
     const li = document.createElement("li");
-    li.textContent = `${r.receiverId} — ${r.fReqStatus}`;
+    // r.status here is the FRIEND REQUEST's own status (Pending/Accepted/
+    // Rejected), as returned by the backend's schema column named "status".
+    // Was wrongly written as r.fReqStatus, which the backend never sends —
+    // that field simply doesn't exist, so this line always showed "undefined".
+    li.textContent = `${r.receiverId} — ${r.status}`;
     list.appendChild(li);
   });
 }
@@ -216,7 +241,11 @@ async function refreshFriends() {
 async function removeFriend(friendUuid) {
   // await fetch(`${API}/friends/${friendUuid}?uuid=${myUuid}`, { method: "DELETE" });
   const res = await fetch(`${API}/friends/${friendUuid}?uuid=${myUuid}`, { method: "DELETE" });
-  if (res.fReqStatus === 404) log(`${friendUuid} was already removed (they removed you first)`);
+  // res.status here is the HTTP STATUS CODE from the fetch Response object, like in webserv
+  // a completely different "status" than a friend request's Pending/Accepted/
+  // Rejected value. Was wrongly written as res.fReqStatus, which doesn't
+  // exist on a Response object, so this check silently never fired.
+  if (res.status === 404) log(`${friendUuid} was already removed (they removed you first)`);
   refreshFriends();
 }
 </script>

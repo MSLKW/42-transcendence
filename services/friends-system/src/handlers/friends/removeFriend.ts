@@ -4,9 +4,18 @@ import { pairKey } from "../../utils/pairKey";
 import { notify } from "../../events/notify";
 import { EVENTS } from "../../events/eventNames";
 
+function getRouteParam(value: string | string[] | undefined): string | null {
+  return typeof value === "string" ? value : null;
+}
+
 export function removeFriend(req: Request, res: Response): void {
   const uuid = req.query.uuid as string;
-  const friendUuid = req.params.friendUuid;
+  const friendUuid = getRouteParam(req.params.friendUuid);
+
+  if (!friendUuid) {
+    res.status(400).json({ error: "invalid friend uuid" });
+    return;
+  }
 
   const before = friendships.length;
   for (let i = friendships.length - 1; i >= 0; i--) {

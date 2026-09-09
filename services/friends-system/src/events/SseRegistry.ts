@@ -1,13 +1,19 @@
 import type { Response } from "express";
+import { EVENTS } from "./eventNames";
 
-// Enforces "exactly one live SSE connection per uuid" — a second connection
-// for the same uuid replaces the first.
+// Enforces "exactly one live SSE connection per uuid"
+// Second/most latest connection for the same uuid replaces the first.
 class SseRegistry {
   private clients: Record<string, Response> = {};
 
   register(uuid: string, res: Response): void {
     const existing = this.clients[uuid];
-    if (existing) existing.end();
+    if (existing) {
+      // tell the OLD connection why it's closing, before closing it —
+      // this is what lets that browser tab choose not to auto-reconnect
+      existing.write(`event: ${EVENTS.REPLACED}\ndata: "connected from elsewhere"\n\n`);
+      existing.end();
+    }
     this.clients[uuid] = res;
   }
 
