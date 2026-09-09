@@ -7,12 +7,13 @@ import { eq } from "drizzle-orm";
 export function getInternalInfosForProfile() {
 	return async ( req: Request, res: Response ) => {
 		
-		const id = req.params.id; // use this over req.body.id coz id is passed through URL in REST API
+		const id = req.params.id as string; // use this over req.body.id coz id is passed through URL in REST API
 		
 		const [user] = await postgres
 			.select({ createdAt: users.createdAt })
 			.from(users)
-			.where(eq(users.id, id as string));
+			.where(eq(users.id, id))
+			.limit(1);
 		if (!user)
 			return ( res.status(404).json({ error: "User not found" }));
 

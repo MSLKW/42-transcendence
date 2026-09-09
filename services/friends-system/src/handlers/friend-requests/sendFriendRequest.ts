@@ -3,6 +3,8 @@ import { drizzleFriendRequestRepository } from "../../repositories/drizzle/Drizz
 import { drizzleFriendshipRepository } from "../../repositories/drizzle/DrizzleFriendshipRepository";
 import { notify } from "../../events/notify";
 import { EVENTS } from "../../events/eventNames";
+import { AUTH_SERVICE_URL } from "../../config/env";
+import { fetchJson } from "../../utils/fetchJson";
 
 export async function sendFriendRequest(req: Request, res: Response): Promise<void> {
   const { senderId, receiverId } = req.body;
@@ -11,12 +13,25 @@ export async function sendFriendRequest(req: Request, res: Response): Promise<vo
     res.status(400).json({ error: "a valid receiver uuid is required" });
     return;
   }
+
+
   if (senderId === receiverId) {
     res.status(400).json({ error: "cannot friend yourself" });
     return;
   }
 
-  // TODO: Check if receiverId exists in Postgres (auth-schema's users table)
+  // Check if receiverId exists in Postgres (auth-schema's users table)
+  try 
+  {
+    await fetchJson(`${AUTH_SERVICE_URL}/internal/friends/${receiverId}`);
+  } 
+  catch (err: any) 
+  {
+    // fetchJson throws on ANY non-ok response (404, 500, timeout, etc.) —
+    // for our purposes here, any failure means "treat as not found"
+    res.status(404).json({ err: "receiverId does not exist" });
+    return;
+  }
 
   if (await drizzleFriendshipRepository.areFriends(senderId, receiverId)) {
     res.status(409).json({ error: "already friends" });
