@@ -216,9 +216,7 @@ async function refreshSent() {
 }
 
 async function refreshFriends() {
-  // NOTE: API already ends in "/friends" — was previously "${API}/friends?..."
-  // which produced .../api/friends/friends and 500'd on any uuid.
-  const res = await fetch(`${API}?uuid=${myUuid}`);
+  const res = await fetch(`${API}/friends?uuid=${myUuid}`);
   const friends = await res.json();
   const list = document.getElementById("friends");
   list.innerHTML = "";
@@ -230,8 +228,7 @@ async function refreshFriends() {
 }
 
 async function removeFriend(friendUuid) {
-  // Same fix here: API already ends in "/friends", don't append it again.
-  const res = await fetch(`${API}/${friendUuid}?uuid=${myUuid}`, { method: "DELETE" });
+  const res = await fetch(`${API}/friends/${friendUuid}?uuid=${myUuid}`, { method: "DELETE" });
   if (res.status === 404) log(`${friendUuid} was already removed (they removed you first)`);
   refreshFriends();
 }
