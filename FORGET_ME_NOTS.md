@@ -154,6 +154,7 @@
 			- Docker uses --from=<stage_name> to know where to copy from, followed by <source_path> and <destination_path>.
 
 15. dbclient namings (currently `postgres` in drizzle query)
+	- **IMPLEMENTED!!**
 	- On your actual goal (a): wanting the code to explicitly say "we talk to Postgres" is a completely reasonable instinct, and doesn't need to disappear
 	- it just needs a small adjustment to stay precise. 
 	- The issue isn't the word "postgres," 
