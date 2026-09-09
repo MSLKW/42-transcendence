@@ -1,6 +1,6 @@
 import { eq } from "drizzle-orm";
 import { sessions } from "@big2/auth-schema";
-import { postgres } from "./postgres";
+import { postgresClient } from "./postgresClient";
 import { Session } from "../models/session";
 import { SessionStore } from "./sessionStore";
 import { randomBytes } from "crypto";
@@ -8,7 +8,7 @@ import { randomBytes } from "crypto";
 export class DrizzleSessionStore implements SessionStore {
 	async createSession(userId: string, expiresAt: Date): Promise<Session> {
 		const token = randomBytes(32).toString("hex");
-		const [session] = await postgres
+		const [session] = await postgresClient
 			.insert(sessions)
 			.values({ token, userId, expiresAt, })
 			.onConflictDoUpdate({
@@ -20,7 +20,7 @@ export class DrizzleSessionStore implements SessionStore {
 	}
 
 	async getSession(token: string): Promise<Session | null> {
-		const [session] = await postgres
+		const [session] = await postgresClient
 			.select()
 			.from(sessions)
 			.where(eq(sessions.token, token));
@@ -28,20 +28,20 @@ export class DrizzleSessionStore implements SessionStore {
 	}
 
 	async updateExpiry(token: string, expiresAt: Date): Promise<void> {
-		await postgres
+		await postgresClient
 			.update(sessions)
 			.set({ expiresAt })
 			.where(eq(sessions.token, token));
 	}
 
 	async deleteSession(token: string): Promise<void> {
-		await postgres
+		await postgresClient
 			.delete(sessions)
 			.where(eq(sessions.token, token));
 	}
 
 	async deleteSessionsByUserId(userId: string): Promise<void> {
-		await postgres
+		await postgresClient
 			.delete(sessions)
 			.where(eq(sessions.userId, userId));
 	}

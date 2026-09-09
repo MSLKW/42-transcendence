@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { users } from "@big2/auth-schema";
-import { postgres } from "../store/postgres"
+import { postgresClient } from "../store/postgresClient"
 import { eq } from "drizzle-orm";
 
 
@@ -9,7 +9,7 @@ export function checkUserExistanceForFriends() {
 		
 		const id = req.params.id as string; // use this over req.body.id coz id is passed through URL in REST API
 		
-		const [userExists] = await postgres
+		const [userExists] = await postgresClient
 			.select()
 			.from(users)
 			.where(eq(users.id, id))

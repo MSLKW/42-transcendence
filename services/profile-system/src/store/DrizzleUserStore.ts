@@ -1,7 +1,7 @@
 import { type UserData, type UserSettings } from "@big2/profile-system-types";
 import { userData, userSettings } from "@big2/profile-system-schema";
 import { eq, ilike, and, isNotNull } from "drizzle-orm";
-import { postgres } from "./postgres";
+import { postgresClient } from "./postgresClient";
 import { UserStore } from "./UserStore";
 
 
@@ -11,7 +11,7 @@ export class DrizzleUserStore implements UserStore
 	{
 		try 
 		{
-			const [user] = await postgres	// [user] optimizes the TypeScript / Application Layer - Drizzle's .select() method always returns an array of objects, regardless of how many rows come back., just extracts item [0] out of the array once Node.js receives the payload
+			const [user] = await postgresClient	// [user] optimizes the TypeScript / Application Layer - Drizzle's .select() method always returns an array of objects, regardless of how many rows come back., just extracts item [0] out of the array once Node.js receives the payload
 				.select()
 				.from(userData)
 				.where(eq(userData.id, uuid))
@@ -37,7 +37,7 @@ export class DrizzleUserStore implements UserStore
 		try
 		{
 			// just to check the user's uuid exists
-			const [user] = await postgres
+			const [user] = await postgresClient
 				.select()
 				.from(userData)
 				.where(eq(userData.id, uuid))
@@ -45,7 +45,7 @@ export class DrizzleUserStore implements UserStore
 			if (!user)
 				return (null);
 
-			const [settings] = await postgres
+			const [settings] = await postgresClient
 				.select()
 				.from(userSettings)
 				.where(eq(userSettings.id, uuid))
@@ -74,7 +74,7 @@ export class DrizzleUserStore implements UserStore
 	{
 		try 
 		{
-			const results = await postgres
+			const results = await postgresClient
 				.select({ uuid: userData.id })
 				.from(userData)
 				.where(
@@ -117,7 +117,7 @@ export class DrizzleUserStore implements UserStore
 			// 		inGame, 
 			// 		...dbPartial } = partial;
 
-			await postgres
+			await postgresClient
 				.insert(userData)
 				.values({ id: uuid, ...partial })
 				.onConflictDoUpdate({
@@ -127,7 +127,7 @@ export class DrizzleUserStore implements UserStore
 		}
 		catch (err: any) 
 		{
-			if (err.code === "23503") // postgres ForeignKey violation
+			if (err.code === "23503") // error code for postgres's ForeignKey violation
 				throw new Error(`updateUserProfile attempting to query for non-existing uuid: ${uuid}`);
 			throw err;
 		}
@@ -139,14 +139,14 @@ export class DrizzleUserStore implements UserStore
 		{
 			// userSettings.id FK -> userData.id
 			// so make sure a userData row exists first (no-op update if it already does)
-			await postgres
+			await postgresClient
 				.insert(userData)
 				.values({ id: uuid})
 				.onConflictDoNothing({
 					target: userData.id
 				});
 
-			await postgres
+			await postgresClient
 				.insert(userSettings)
 				.values({ id: uuid, ...partial })
 				.onConflictDoUpdate({
