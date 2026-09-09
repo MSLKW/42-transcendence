@@ -1,5 +1,5 @@
 import { eq } from "drizzle-orm";
-import { postgres } from "./postgres";
+import { postgresClient } from "./postgresClient";
 import { playerStatus } from "@big2/party-manager-schema";
 
 export class DrizzlePlayerStatusStore {
@@ -8,14 +8,14 @@ export class DrizzlePlayerStatusStore {
 	{
 		try
 		{
-			await postgres
+			await postgresClient
 				.insert(playerStatus)
-				.values({ playerId: uuid, isOnline: true})
-				.onConflictDoUpdate({ // newly added
-					target: playerStatus.playerId,
+				.values({ id: uuid, isOnline: true})
+				.onConflictDoUpdate({
+					target: playerStatus.id,
 					set: { isOnline: true}
 				})
-				.returning(); // newly added
+				.returning();
 		}
 		catch (postgresErr)
 		{
@@ -27,10 +27,10 @@ export class DrizzlePlayerStatusStore {
 	{
 		try
 		{
-			await postgres
+			await postgresClient
 				.update(playerStatus)
 				.set({ isOnline: false})
-				.where(eq(playerStatus.playerId, uuid));
+				.where(eq(playerStatus.id, uuid));
 		}
 		catch (postgresErr)
 		{

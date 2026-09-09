@@ -10,30 +10,30 @@ and focus back to my MVP
 	- ps.acheievements -> jsonb -> leave it. 
 	- push
 
-2. dev/fs:
-	- adapt to changes of types
-	- TS codebase adapt to types update
-	- it runs well using in-memory files
-	- push 
-	- change import from drizzle files instead of in-memory files
-	- push
+2. ~~dev/fs:~~
+	~~- adapt to changes of types~~ no need, just in int
+	~~- TS codebase adapt to types update~~ no need, just in int
+	~~- it runs well using in-memory files~~
+	~~- push ~~
+	~~- change import from drizzle files instead of in-memory files~~
+	~~- push~~
 
-3. int/fs-db
+3. ~~int/fs-db~~
 	- ~~merge dev-fs into int/fs-db~~
 	- ~~schema~~
 	- ~~index/uniqueIndex/check~~
 	- ~~add 2 drizzle files~~
 	- ~~add postgres.ts~~
 	- ~~Drizzle code adapt to types update: pgEnum & enum in schema~~
-	- backend codebase need to be adapted to database integration
-	- it runs well with real database integration 
-	- push
+	- ~~backend codebase need to be adapted to database integration~~
+	- ~~it runs well with real database integration ~~
+	~~- push~~
 
-4. int/ps-db:
-	- types: double confirm the types methodology accuracy for profile-system types in pd-db-int branch too, just like how fs types is implemented
-	- any fixes needed upon schema 
-	- any fixes needed upon types 
-	- push
+4. ~~int/ps-db:~~
+	~~- types: double confirm the types methodology accuracy for profile-system types in pd-db-int branch too, just like how fs types is implemented~~
+	~~- any fixes needed upon schema ~~
+	~~- any fixes needed upon types ~~
+	~~- push~~
 
 5. later when I add new Game-stats service
 	- adjust every users/password/schema namings used permissions etc related to game
@@ -42,10 +42,16 @@ and focus back to my MVP
 		- pull in badges and acheievements from profile-system into game-stats instead
 	- ask azrul what are the updated badges / achievements that he setup already on website
 	- create backend business logic , discuss with the azrul & team
+	- badge management
+	- badge as its own packages
 	- int with database
 	- testings
 	- debugging
 	- successful? done!
+
+6. all services
+	- SINGLE SOURCE OF TRUTH: routes / apis become packages , refrred by both own service and front end
+
 
 ## NON-MVPs
 ### Database
@@ -65,7 +71,17 @@ and focus back to my MVP
 	- tools/webs:
 		- `SchemaSpy` 
 		- `dbdocs.io`
-		- > REJECT MERMAID CHART (FK linking has HIGH INACCURACY of from which column to which column)
+		- > **REJECT MERMAID CHART** (FK linking has HIGH INACCURACY of from which column to which column)
+
+4. Friends-system
+	- friend_requests table => Log both: 
+		- rate limiting:  max 100 requests per day? 
+		- scheduled cleanup: per 90 days?
+5. Profile-system
+	- auto exists row by:
+		- trigger? 
+		- internal REST API from auth to profile?
+
 
 ### Overall polishing
 
@@ -92,3 +108,4 @@ and focus back to my MVP
 	- if you want to mention it at all, note it as a "future consideration" in your README
 
 5. Healthchecks in docker-compose.yml for every services possible / that has it
+

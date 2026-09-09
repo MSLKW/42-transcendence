@@ -4,6 +4,7 @@
 // Missing Node Definitions: process is a global object injected by the Node.js runtime, not standard JavaScript. TypeScript needs the @types/node package to understand it.
 // The Triple-Slash Fix: The /// <reference types="..." /> directive acts as a local emergency override. It explicitly tells the TypeScript compiler: "For this specific file, explicitly pull in the Node.js type definitions right now."
 
+
 import fs from "fs";
 import 'dotenv/config'; // 1. Load .env files
 import { defineConfig } from "drizzle-kit";
@@ -11,15 +12,16 @@ import { defineConfig } from "drizzle-kit";
 
 // 2. Helper to safely read the password
 function requirePassword(): string {
-  try {
+  try 
+  {
     const passwordFile = "/run/secrets/db-admin-password";
     const password = fs.readFileSync(passwordFile, "utf-8").trim();
-    if (!password) {
+    if (!password)
       throw new Error("empty password");
-    }
     return password;
   } 
-  catch {
+  catch (err: any) 
+  {
     throw new Error("CRITICAL: Database password could not be loaded from the secret file itself");
   }
 }
@@ -35,7 +37,7 @@ export default defineConfig({
       "../../packages/postgres/party-manager-schema/src/index.ts", 
       "../../packages/postgres/friends-system-schema/src/index.ts", 
       "../../packages/postgres/game-schema/src/index.ts",
-      // "../../packages/postgres/profile-system-schema/src/index.ts",
+      "../../packages/postgres/profile-system-schema/src/index.ts",
     ], 
     out: "./migrations", // naming is following industry standard / drizzle kit's default behaviour / drizzle's documentation
     dbCredentials: {

@@ -1,7 +1,7 @@
 import { sessions } from "@big2/auth-schema";
 import cron from 'node-cron';
 import { lt } from 'drizzle-orm';
-import { postgres } from "../store/postgres";
+import { postgresClient } from "../store/postgresClient";
 
 
 // The expression is 5 space-separated fields: 
@@ -11,7 +11,7 @@ import { postgres } from "../store/postgres";
 export function startSessionCleanupJob() {
   cron.schedule('*/5 * * * *', async () => {
 	try {
-	  await postgres
+	  await postgresClient
 	  	.delete(sessions)
 		.where(lt(sessions.expiresAt, new Date()));
 	} 

@@ -1,7 +1,7 @@
 import type { FriendRequestStatus } from "@big2/friends-system-types";
 import { friendRequests } from "@big2/friends-system-schema";
 import { eq, and, or } from "drizzle-orm";
-import { postgres } from "../../config/postgres";
+import { postgresClient } from "../../config/postgresClient";
 import { FriendRequest } from "../../models/friendRequest";
 import { FriendRequestRepository } from "../interfaces/FriendRequestRepository";
 
@@ -9,7 +9,7 @@ import { FriendRequestRepository } from "../interfaces/FriendRequestRepository";
 export class DrizzleFriendRequestRepository implements FriendRequestRepository {
 
 	async sendRequest(senderId: string, receiverId: string): Promise<FriendRequest> {
-		const [resultRow] = await postgres
+		const [resultRow] = await postgresClient
 			.insert(friendRequests)
 			.values({ 
 				senderId: senderId, 
@@ -20,7 +20,7 @@ export class DrizzleFriendRequestRepository implements FriendRequestRepository {
 	}
 
 	async findRequestId(id: string): Promise<FriendRequest | null> {
-		const [resultRow] = await postgres
+		const [resultRow] = await postgresClient
 			.select()
 			.from(friendRequests)
 			.where(eq(friendRequests.id, id))
@@ -29,7 +29,7 @@ export class DrizzleFriendRequestRepository implements FriendRequestRepository {
 	}
 
 	async findPendingBothSides(senderId: string, receiverId: string): Promise<FriendRequest | null> {
-		const [resultRow] = await postgres
+		const [resultRow] = await postgresClient
 			.select()
 			.from(friendRequests)
 			.where(and(
@@ -42,7 +42,7 @@ export class DrizzleFriendRequestRepository implements FriendRequestRepository {
 	}
 
 	async findPendingBothSidesReverseCheck(senderId: string, receiverId: string): Promise<FriendRequest | null> {
-		const [resultRow] = await postgres
+		const [resultRow] = await postgresClient
 			.select()
 			.from(friendRequests)
 			.where(and(
@@ -55,7 +55,7 @@ export class DrizzleFriendRequestRepository implements FriendRequestRepository {
 	}
 
 	async listRecievedAndPending(receiverId: string): Promise<FriendRequest[] | null> {
-		const resultRows =  await postgres
+		const resultRows =  await postgresClient
 			.select()
 			.from(friendRequests)
 			.where(and(
@@ -66,7 +66,7 @@ export class DrizzleFriendRequestRepository implements FriendRequestRepository {
 	}
 
 	async listSent(senderId: string): Promise<FriendRequest[] | null> {
-		const resultRows = await postgres
+		const resultRows = await postgresClient
 			.select()
 			.from(friendRequests)
 			.where(eq(friendRequests.senderId, senderId));
@@ -74,14 +74,14 @@ export class DrizzleFriendRequestRepository implements FriendRequestRepository {
 	}
 
 	async updateStatus(requestId: string, status: FriendRequestStatus): Promise<void> {
-		await postgres
+		await postgresClient
 			.update(friendRequests)
 			.set({ status: status })
 			.where(eq(friendRequests.id, requestId));
 	}
 
 	async updatePendingRequest(userA: string, userB: string, status: FriendRequestStatus): Promise<void> {
-		await postgres
+		await postgresClient
 			.update(friendRequests)
 			.set({ status: status })
 			.where(

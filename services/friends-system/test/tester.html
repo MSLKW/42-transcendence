@@ -76,7 +76,44 @@ function start() {
     log("SSE connected as " + myUuid);
     setConnectionStatus("🟢 live (SSE connected)");
   });
-  evtSource.onerror = () => setConnectionStatus("🔴 disconnected — use Refresh until this reconnects");
+
+  // EventSource's error event never exposes an HTTP status code (spec limitation).
+  // The one signal we DO get is readyState:
+  //  - CONNECTING (0): the browser will retry automatically (network blip, server restart, etc)
+  //  - CLOSED (2): the browser gave up for good — this happens when the server responds
+  //    with a non-2xx status (e.g. 404 for an unknown uuid) instead of upgrading to SSE.
+  // So on the backend, /events?uuid=X should respond 404 (not open an SSE stream) when the
+  // uuid doesn't exist in the database — that's what makes this distinction possible at all.
+  evtSource.onerror = () => {
+    if (!evtSource) return; // already handled by "replaced" or disconnect()
+    if (evtSource.readyState === EventSource.CLOSED) {
+      setConnectionStatus("⛔ rejected — this uuid may not exist in the database");
+      log("Server refused the SSE connection and won't retry. Check the uuid, then click Connect again.");
+      evtSource = null;
+      clearInterval(pollTimer);
+      pollTimer = null;
+    } else {
+      setConnectionStatus("🟡 reconnecting… (connection blipped, browser is retrying)");
+      log("Connection blipped — browser is auto-retrying, no action needed.");
+    }
+  };
+
+
+  // server tells us we were replaced by another tab/device for this upon the same uuid
+  // we will reconfirm that we close it ourselves so the browser does NOT auto-reconnect
+  // default behaviour will auto-reconnect in case of wifi blipped
+  // exactly what caused the infinite kick-loop bug before
+  // The server's existing.end() alone can never produce that understanding — only the client explicitly closing itself can.
+  evtSource.addEventListener("replaced", () => {
+    evtSource.close();  // <- calling .close() yourself is the actual fix, this is what stops auto-reconnect, not the server closing it
+    evtSource = null;
+    clearInterval(pollTimer);
+    pollTimer = null;
+    setConnectionStatus("⚪ connected elsewhere");
+    log("This uuid connected in another tab/device — this tab disconnected to avoid a reconnect loop.");
+  });
+
+
 
   evtSource.addEventListener("friend_request_received", e => {
     const data = JSON.parse(e.data);

@@ -1,12 +1,12 @@
 import { eq } from "drizzle-orm";
 import { users } from "@big2/auth-schema";
-import { postgres } from "./postgres";
+import { postgresClient } from "./postgresClient";
 import { User } from "../models/user";
 import { UserStore } from "./userStore";
 
 export class DrizzleUserStore implements UserStore {
 	async createUser(email: string, passwordHash: string): Promise<User> {
-		const [user] = await postgres
+		const [user] = await postgresClient
 			.insert(users)
 			.values({ email, passwordHash })
 			.returning();
@@ -14,7 +14,7 @@ export class DrizzleUserStore implements UserStore {
 	}
 
 	async getUserById(id: string): Promise<User | null> {
-		const [user] = await postgres
+		const [user] = await postgresClient
 			.select()
 			.from(users)
 			.where(eq(users.id, id));
@@ -22,7 +22,7 @@ export class DrizzleUserStore implements UserStore {
 	}
 
 	async getUserByEmail(email: string): Promise<User | null> {
-		const [user] = await postgres
+		const [user] = await postgresClient
 			.select()
 			.from(users)
 			.where(eq(users.email, email));
@@ -30,7 +30,7 @@ export class DrizzleUserStore implements UserStore {
 	}
 
 	async getUserByUsername(username: string): Promise<User | null> {
-		const [user] = await postgres
+		const [user] = await postgresClient
 			.select()
 			.from(users)
 			.where(eq(users.username, username));
@@ -38,7 +38,7 @@ export class DrizzleUserStore implements UserStore {
 	}
 
 	async setUsername(id: string, username: string): Promise<void> {
-		await postgres
+		await postgresClient
 			.update(users)
 			.set({ username })
 			.where(eq(users.id, id));
@@ -49,21 +49,21 @@ export class DrizzleUserStore implements UserStore {
 		const user = await this.getUserById(id);
 		if (!user)
 			throw new Error("USER_NOT_FOUND");
-		await postgres
+		await postgresClient
 			.update(users)
 			.set({failedLoginAttempts: user.failedLoginAttempts + 1})
 			.where(eq(users.id, id));
 	}
 
 	async resetFailedAttempts(id: string): Promise<void> {
-		await postgres
+		await postgresClient
 			.update(users)
 			.set({ failedLoginAttempts: 0 })
 			.where(eq(users.id, id));
 	}
 
 	async lockAccount(id: string, until: Date): Promise<void> {
-		await postgres
+		await postgresClient
 			.update(users)
 			.set({ lockedUntil: until })
 			.where(eq(users.id, id));

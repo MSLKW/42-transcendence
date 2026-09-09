@@ -1,6 +1,6 @@
 import { friendships } from "@big2/friends-system-schema";
 import { eq, and, or } from "drizzle-orm";
-import { postgres } from "../../config/postgres";
+import { postgresClient } from "../../config/postgresClient";
 // import { Friendship } from "../models/friendship";
 import { FriendshipRepository } from "../interfaces/FriendshipRepository";
 
@@ -13,7 +13,7 @@ export class DrizzleFriendshipRepository implements FriendshipRepository {
 
 	async areFriends(userA: string, userB: string): Promise<boolean> {
 		const [smallId, bigId] = this.sortPair(userA, userB);
-		const [resultRow] = await postgres
+		const [resultRow] = await postgresClient
 			.select()
 			.from(friendships)
 			.where(and(
@@ -26,7 +26,7 @@ export class DrizzleFriendshipRepository implements FriendshipRepository {
 
 	async add(userA: string, userB: string): Promise<void> {
 		const [smallId, bigId] = this.sortPair(userA, userB);
-		await postgres
+		await postgresClient
 			.insert(friendships)
 			.values({ 
 				friendSmallId: smallId,
@@ -37,7 +37,7 @@ export class DrizzleFriendshipRepository implements FriendshipRepository {
 
 	async remove(userA: string, userB: string): Promise<boolean> {
 		const [smallId, bigId] = this.sortPair(userA, userB);
-		const [deletedRow] = await postgres
+		const [deletedRow] = await postgresClient
 			.delete(friendships)
 			.where(and(
 				eq(friendships.friendSmallId, smallId),
@@ -48,7 +48,7 @@ export class DrizzleFriendshipRepository implements FriendshipRepository {
 	}
 
 	async fullFriendList(userId: string): Promise<string[]> {
-		const resultRows = await postgres
+		const resultRows = await postgresClient
 			.select()
 			.from(friendships)
 			.where(or(

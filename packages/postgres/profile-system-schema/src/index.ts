@@ -1,1 +1,1 @@
-export * from "./profile-system.schema";
+export * from "./profile-system.schema.js";

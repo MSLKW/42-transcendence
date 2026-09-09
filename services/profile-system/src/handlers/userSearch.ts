@@ -1,20 +1,25 @@
 import { Request, Response } from "express";
-import { DrizzleUserInfoStore } from "../store/drizzleUserInfoStore";
+// import { DrizzleUserDataStore } from "../store/drizzleUserDataStore";
+import { UserStore } from "../store/UserStore";
 
-export function userSearch()
+
+export function userSearch(store: UserStore)
 {
 	return (async (req: Request, res: Response) =>
 	{
 		try
 		{
-			const searchTerm = req.body.searchTerm;
+			// const searchTerm = req.body.searchTerm;
 			// const searchResults: string[] = [];
+			// //TODO: fill in searchResults from Postgres
+			// const userDataStore = new DrizzleUserDataStore();
+			// const searchResults: string[] = await userDataStore.searchUsersByUsername(searchTerm);
+			// return (res.status(200).json({searchResults}));
+			
+			const query = req.params.query as string;
+			const searchResults: string[] = await store.getUuidsByQuery(query);
 
-			//TODO: fill in searchResults from Postgres
-			const userInfoStore = new DrizzleUserInfoStore();
-			const searchResults: string[] = await userInfoStore.searchUsersByUsername(searchTerm);
-
-			return (res.status(200).json({searchResults}));
+			return (res.status(200).json({searchResults: searchResults}));
 		}
 		catch (err)
 		{

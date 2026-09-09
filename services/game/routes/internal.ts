@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { postgres } from "./postgres";
+import { postgresClient } from "./postgresClient";
 import { playerStats } from "@big2/game-schema";
 import { eq } from "drizzle-orm";
 
@@ -11,12 +11,13 @@ export function getInternalInfosForProfile() {
 		if (!id)
 			return res.status(404).json({ error: "User not found" });
 		
-		const stats = await postgres
+		const stats = await postgresClient
 			.select()
 			.from(playerStats)
-			.where(eq(playerStats.playerId, id));
+			.where(eq(playerStats.id, id));
 		
 		return res.status(200).json(stats);
+		// same return as below:
 		// return res.status(200).json({
 		// 	level: stats.level,
 		// 	xp: stats.xp,

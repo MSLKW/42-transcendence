@@ -156,6 +156,7 @@
 		- In older versions of Docker, every single line created a massive overhead. In modern Docker (using the BuildKit engine), multiple COPY instructions are heavily optimized. If the files being copied are small scripts, having 2 or 3 separate COPY lines results in virtually zero difference in speed or final image size compared to combining them.
 
 15. dbclient namings (currently `postgres` in drizzle query)
+	- **IMPLEMENTED!!**
 	- On your actual goal (a): wanting the code to explicitly say "we talk to Postgres" is a completely reasonable instinct, and doesn't need to disappear
 	- it just needs a small adjustment to stay precise. 
 	- The issue isn't the word "postgres," 
