@@ -11,11 +11,11 @@
     "db:migrate": "npm run --prefix infra/migrator db:migrate",
     "db:push": "npm run --prefix infra/migrator db:push",
 
-    "test:signup": "bash services/authentication/scripts/test-signup.sh",
-    "test:signin": "bash services/authentication/scripts/test-signin.sh",
-    "test:logout": "bash services/authentication/scripts/test-logout.sh",
-    "test:validate": "bash services/authentication/scripts/test-validate.sh",
-    "test:guest": "bash services/authentication/scripts/test-guest.sh",
+    "test:signup": "services/authentication/scripts/test-signup.sh",
+    "test:signin": "services/authentication/scripts/test-signin.sh",
+    "test:logout": "services/authentication/scripts/test-logout.sh",
+    "test:validate": "services/authentication/scripts/test-validate.sh",
+    "test:guest": "services/authentication/scripts/test-guest.sh",
 
     "build": "npm run build --workspaces --if-present",
     "dev": "npm run dev --workspaces --if-present",
