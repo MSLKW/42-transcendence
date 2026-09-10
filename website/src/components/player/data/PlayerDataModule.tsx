@@ -10,16 +10,20 @@ interface PlayerDataModule {
 	setBadge?: (type: BADGE_TYPE) => void;
 }
 export const PlayerDataModule = ({ profile, badge, setBadge }: PlayerDataModule) => {
-	if (!profile)
-		return;
+	// if (!profile)
+		// return;
 	const { clientUuid } = useProfileStore();
 	const { showWindow, setShowWindow } = useSceneStore();
 	const [ xpProgress, setXPProgress ] = useState(0);
 
 	useEffect(() => {
+		if (!profile) {
+			setXPProgress(0);
+			return;
+		}
 		const percentage = (profile.xp / (profile.level * 1000)) * 100
 		setXPProgress(percentage);
-	}, [profile, profile.level, profile.xp]);
+	}, [profile]);
 
 	return (
 		<div className="
@@ -34,10 +38,10 @@ export const PlayerDataModule = ({ profile, badge, setBadge }: PlayerDataModule)
 				place-items-center
 				leading-tight
 			">
-				<h2>Level {profile.level}</h2>
+				<h2>Level {profile ? profile.level : "n/a"}</h2>
 				<div className="w-full">
 					<p className="text-center">
-						XP: {profile.xp} / {profile.level * 1000}
+						XP: {profile ? profile.xp : "n/a"} / {profile ? profile.level * 1000 : "n/a"}
 					</p>
 					<div className="
 						h-2
@@ -61,7 +65,7 @@ export const PlayerDataModule = ({ profile, badge, setBadge }: PlayerDataModule)
 				gap-2rem
 			">
 				<div className="relative w-full flex">
-					{ clientUuid === profile.uuid
+					{ clientUuid === profile?.uuid
 						?
 							<button
 								type="button"
@@ -84,7 +88,7 @@ export const PlayerDataModule = ({ profile, badge, setBadge }: PlayerDataModule)
 							</button>
 						:
 							<h2 className="w-full leading-none">
-								<i>{profile.badge}</i>
+								<i>{profile ? profile.badge : "n/a"}</i>
 							</h2>
 					}
 					{ showWindow["badge"] && badge && setBadge &&
@@ -94,12 +98,12 @@ export const PlayerDataModule = ({ profile, badge, setBadge }: PlayerDataModule)
 						/>
 					}
 				</div>
-				<PlayerStatusModule status={profile.availability}/>
+				<PlayerStatusModule status={profile ? profile.availability : "Busy"}/>
 			</div>
 			<div className="text-a5">
-				<p>Last Login: {profile.lastLogin.toString()}</p>
-				<p>Joined: {profile.createdAt.toString()}</p>
-				<p>UUID: {profile.uuid}</p>
+				<p>Last Login: {profile ? profile.lastLogin.toString() : "n/a"}</p>
+				<p>Joined: {profile ? profile.createdAt.toString() : "n/a"}</p>
+				<p>UUID: {profile ? profile?.uuid : "n/a"}</p>
 			</div>
 		</div>
 	);

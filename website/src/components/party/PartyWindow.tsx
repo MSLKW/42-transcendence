@@ -1,22 +1,52 @@
-import { useState } from "react";
-import { useFriendStore } from "../../store/FriendStore";
-import { useProfileStore } from "../../store/ProfileStore";
+import { useState, useRef, useEffect } from "react";
+import { handleGetSearch } from "../../api/profile/get_search/handleGetSearch";
+// import { useFriendStore } from "../../store/FriendStore";
+// import { useProfileStore } from "../../store/ProfileStore";
 import { Window } from "../window/Window";
 import { SearchModule } from "./search/SearchModule";
 import { PartyPlayerModule } from "./player/PartyPlayerModule";
 
 export const PartyWindow = () => {
-	const { friends } = useFriendStore();
-	const { profilesInDb } = useProfileStore();
-	const [searchQuery, setSearchQuery] = useState("");
+	// const { cachedFriends } = useFriendStore();
 
-	const filteredResults = searchQuery.trim() === ""
-		? []
-		: profilesInDb.filter((profile) => {
-			const matchesQuery = profile.name?.toLowerCase().includes(searchQuery.toLowerCase());
-			return matchesQuery;
-		});
+	const [searchQuery, setSearchQuery] = useState<string>("");
+	const [filteredResults, setFilteredResults] = useState<string[]>([]);
+	const [isSearching, setIsSearching] = useState(false);
+	const searchRequestId = useRef(0);
 
+	useEffect(() => {
+		const query = searchQuery.trim();
+
+		if (query === "") {
+			setFilteredResults([]);
+			setIsSearching(false);
+			return;
+		}
+
+		setIsSearching(true);
+
+		const controller = new AbortController();
+		const requestId = ++searchRequestId.current;
+
+		const timeoutId = setTimeout(async () => {
+			try {
+				const results = await handleGetSearch(query, controller.signal);
+
+				if (requestId !== searchRequestId.current)
+					return;
+
+				setFilteredResults(results);
+			} finally {
+				if (requestId === searchRequestId.current)
+					setIsSearching(false);
+			}
+		}, 400);
+
+		return () => {
+			clearTimeout(timeoutId);
+			controller.abort();
+		};
+	}, [searchQuery]);
 
 	return (
 		<Window
@@ -46,16 +76,16 @@ export const PartyWindow = () => {
 					{searchQuery.trim() === "" ? (
 						<>
 							<h2>Friends List</h2>
-							{friends.map((f) => (
+							{/* {cachedFriends.map((f) => (
 								<PartyPlayerModule uuid={f}/>
-							))}
+							))} */}
 						</>
 					) : (
 						<>
-							<h2>Search Results</h2>
+							{isSearching && <h2>Searching...</h2>}
 							{filteredResults.length > 0 ? (
-								filteredResults.map((p) => (
-									<PartyPlayerModule uuid={p.uuid!}/>
+								filteredResults.map((uuid) => (
+									<PartyPlayerModule key={uuid} uuid={uuid} />
 								))
 							) : (
 								<h2>No players found</h2>

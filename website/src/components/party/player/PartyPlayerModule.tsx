@@ -1,32 +1,70 @@
 
+import { useEffect, useState } from "react";
 import { partySocket } from "../../../api/party/partySocket";
-import { useProfileStore } from "../../../store/ProfileStore";
-import { PlayerStatusModule } from "../../player/status/PlayerStatusModule";
+import { handleGetProfile } from "../../../api/profile/get_profile/handleGetProfile";
+import { useFriendStore } from "../../../store/FriendStore";
+import { useProfileStore, type UserData } from "../../../store/ProfileStore";
+// import { PlayerStatusModule } from "../../player/status/PlayerStatusModule";
 import { AvatarModule } from "../../avatar/AvatarModule";
 import { InviteIcon } from "../invite/InviteIcon";
-import { useFriendStore } from "../../../store/FriendStore";
 
 interface PartyPlayerModuleProps {
 	uuid: string;
 }
 
 export const PartyPlayerModule = ({ uuid }: PartyPlayerModuleProps) => {
-	const { friends } = useFriendStore();
-	const { clientUuid, getProfileData } = useProfileStore();
-	const data = getProfileData(uuid);
-	if (!data)
-		return null;
+	const { cachedFriends } = useFriendStore();
+	const { clientUuid } = useProfileStore();
+
+	const [data, setData] = useState<UserData | null>(null);
+	const [isLoading, setIsLoading] = useState(true);
+
+	useEffect(() => {
+		let mounted = true;
+
+		const loadProfile = async () => {
+			setIsLoading(true);
+
+			const profile = await handleGetProfile(uuid);
+
+			if (mounted) {
+				setData(profile);
+				setIsLoading(false);
+			}
+		};
+		loadProfile();
+
+		return () => {
+			mounted = false;
+		};
+	}, [uuid]);
 
 	const relation = 
-		friends.includes(uuid) ? "Friend" :
+		cachedFriends.includes(uuid) ? "Friend" :
 		clientUuid === uuid ? "Self" :
 		"Stranger"
 	;
 
 	const handleInvite = () => {
-		if ((data?.availability === "Online" && relation != "Self") || data?.availability === "Busy")
-			return;
+		// if ((data?.availability === "Online" && relation != "Self") || data?.availability === "Busy")
+			// return;
 		partySocket.sendInvite(uuid, "Player");
+	}
+
+	if (isLoading) {
+		return (
+			<div>
+				<p>Loading player...</p>
+			</div>
+		);
+	}
+
+	if (!data) {
+		return (
+			<div>
+				<p>Unable to load player</p>
+			</div>
+		);
 	}
 
 	return (
@@ -38,41 +76,42 @@ export const PartyPlayerModule = ({ uuid }: PartyPlayerModuleProps) => {
 		>
 			<AvatarModule
 				uuid={uuid}
-				image={data.avatar ?? undefined}
+				image={data.avatarPath ?? undefined}
 				showName={false}
 			/>
 			<button
 				data-tip="Send Invite"
-				disabled={data?.availability === "Offline"}
+				// disabled={data?.availability === "Offline"}
 				onClick={handleInvite}
 				className={`
 					h-full w-full
 					py-0.5rem px-1.5rem
 					${
 						relation === "Self" ? "bg-party-self" :
-						data?.availability === "Online" ? "bg-party-online" :
-						data?.availability === "Offline" ? "bg-party-offline" :
-						data?.availability === "Busy" ? "bg-party-busy" :
-						undefined
+						"bg-party-busy"
+						// data?.availability === "Online" ? "bg-party-online" :
+						// data?.availability === "Offline" ? "bg-party-offline" :
+						// data?.availability === "Busy" ? "bg-party-busy" :
+						// undefined
 					}
 					flex flex-col gap-0.5rem
 				`}
 			>
-				<h3>{data?.name}</h3>
+				<h3>{data.username}</h3>
 				<div
+						// ${
+							// ((data.availability === "Online" || data.availability === "Busy") && relation != "Self")
+								// ? "place-content-between"
+								// : "place-content-center"
+						// }
 					className={`
 						flex
-						${
-							((data.availability === "Online" || data.availability === "Busy") && relation != "Self")
-								? "place-content-between"
-								: "place-content-center"
-						}
 						place-items-center
 						gap-1rem
 					`}
 				>
-					<PlayerStatusModule status={data?.availability!}/>
-					{ (data.availability === "Online" || data.availability === "Busy") && relation != "Self" &&
+					{/* <PlayerStatusModule status={data?.availability!}/> */}
+					{/* { (data.availability === "Online" || data.availability === "Busy") && relation != "Self" && */}
 						<div
 							className="
 								flex place-content-center place-items-center
@@ -83,7 +122,7 @@ export const PartyPlayerModule = ({ uuid }: PartyPlayerModuleProps) => {
 							<InviteIcon />
 							<p>Invite To Party</p>
 						</div>
-					}
+					{/* } */}
 				</div>
 			</button>
 		</div>

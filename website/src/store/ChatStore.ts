@@ -18,6 +18,7 @@ interface ChatValues {
 	chatRoomId: string | null;
 	cachedChat: ChatData[];
 	rateLimitMessage: string | null;
+	chatReconnect: number;
 }
 
 interface ChatState extends ChatValues {
@@ -39,6 +40,7 @@ export const useChatStore = create<ChatState>() (
 			chatRoomId: null,
 			cachedChat: [],
 			rateLimitMessage: null,
+			chatReconnect: 0,
 
 			addToCachedChat: (type, uuid, name, avatar, msg) => {
 				set((state) => ({

@@ -1,6 +1,7 @@
 import { useState } from "react";
+import { partySocket } from "../../api/party/partySocket";
 import { usePartyStore } from "../../store/PartyStore";
-import { useProfileStore } from "../../store/ProfileStore";
+import { useProfileStore, type BADGE_TYPE } from "../../store/ProfileStore";
 import { useSceneStore } from "../../store/SceneStore";
 import { Window } from "../window/Window";
 import { AvatarSetNameModule } from "../avatar/name/AvatarSetNameModule";
@@ -14,26 +15,30 @@ import { handlePutProfile } from "../../api/profile/put_profile/handlePutProfile
 export const ProfileWindow = () => {
 	const { setShowWindow } = useSceneStore();
 
-	const { clientUuid, getProfileData, updateClientProfile } = useProfileStore();
+	const { clientUuid, getProfileData, getCachedData, setCachedData } = useProfileStore();
 	if (!clientUuid)
 		return;
 	
-	const data = getProfileData(clientUuid!);
-	if (!data || !data.name)
-		return;
+	const profileData = getProfileData(clientUuid!);
+	const cachedData = getCachedData(clientUuid!);
+
 	const { members } = usePartyStore();
 
-	const [name, setName] = useState(data.name);
-	const [avatar, setAvatar] = useState(data.avatar!);
-	const [badge, setBadge] = useState(data.badge);
+	const [name, setName] = useState(cachedData?.name ?? "Player");
+	const [avatar, setAvatar] = useState(cachedData?.avatar ?? "avatar-unknown.webp");
+	const [badge, setBadge] = useState<BADGE_TYPE>(cachedData?.badge ?? "Newcomer");
+
 	const isValid = Boolean(name?.trim());
 
 	const handleProfileUpdate = () => {
 		if (!isValid)
 			return;
-		handlePutProfile(name, avatar, badge);
-		updateClientProfile(name, avatar, badge);
-		setShowWindow("profile", false);
+
+		void handlePutProfile(name, avatar, badge).then(() => {
+			setCachedData();
+			setShowWindow("profile", false);
+			partySocket.refresh();
+		});
 	}
 
 	return (
@@ -59,7 +64,7 @@ export const ProfileWindow = () => {
 						uuid={clientUuid}
 					/>
 					<PlayerDataModule
-						profile={data}
+						profile={profileData}
 						badge={badge}
 						setBadge={setBadge}
 					/>
@@ -69,7 +74,7 @@ export const ProfileWindow = () => {
 					setAvatar={setAvatar}
 				/>
 				<MedalsModule uuid={clientUuid}/>
-				<PlayerStatsModule profile={data} />
+				<PlayerStatsModule profile={profileData} />
 				{ members.length > 1 && <LeavePartyModule /> }
 			</div>
 		</Window>

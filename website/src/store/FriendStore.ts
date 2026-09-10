@@ -2,7 +2,7 @@ import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
 interface FriendValues {
-	friends: string[];
+	cachedFriends: string[];
 }
 
 interface FriendState extends FriendValues {
@@ -20,17 +20,17 @@ const defaultFriends = [
 export const useFriendStore = create<FriendState>() (
 	persist(
 		(set, get) => ({
-			friends: [...defaultFriends],
+			cachedFriends: [...defaultFriends],
 
 			toggleFriend: (uuid) => {
-				const friends = get().friends;
-				if (friends.includes(uuid))
-					set({ friends: friends.filter((id) => id !== uuid) });
+				const cachedFriends = get().cachedFriends;
+				if (cachedFriends.includes(uuid))
+					set({ cachedFriends: cachedFriends.filter((id) => id !== uuid) });
 				else
-					set({ friends: [...friends, uuid] });
+					set({ cachedFriends: [...cachedFriends, uuid] });
 			},
 
-			resetFriends: () => { set({ friends: [...defaultFriends] }) }
+			resetFriends: () => { set({ cachedFriends: [...defaultFriends] }) }
 		}),
 		{
 			name: "friend-storage",

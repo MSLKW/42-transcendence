@@ -1,9 +1,9 @@
 import type { Dispatch, SetStateAction } from "react";
 import { signInFetch } from "./fetchSignIn";
-import { partySocket } from "../../party/partySocket";
 import { useNotificationStore, NOTIFICATION_TYPE } from "../../../store/NotificationStore";
 import { useProfileStore } from "../../../store/ProfileStore";
 import { useSceneStore } from "../../../store/SceneStore";
+import { handleGetProfile } from "../../profile/get_profile/handleGetProfile";
 
 export const handleSignIn = async (email: string, password: string, setIsLoading: Dispatch<SetStateAction<boolean>>) => {
 	const { setShowWindow, setCurrentScene } = useSceneStore.getState();
@@ -15,8 +15,12 @@ export const handleSignIn = async (email: string, password: string, setIsLoading
 
 		useProfileStore.setState({ validateResponse: response });
 		useProfileStore.setState({ clientUuid: response.id });
+		// const handleGetProfile(response.id);
+		// initClientData();
+
 		setShowWindow("signIn", false);
 		setCurrentScene("Home");
+
 		console.log("[handleSignIn] Successfully signed in! response.id: ", response.id);
 	} catch (err) {
 		const errorMsg = err instanceof Error ? err.message : "Something went wrong. Please try again";

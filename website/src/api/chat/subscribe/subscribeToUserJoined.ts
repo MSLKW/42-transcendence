@@ -13,8 +13,7 @@ export const subscribeToUserJoined = () => {
 			"server",
 			"",
 			"",
-			`${name} has joined your party!`
+			`${name} has joined your chat`
 		);
-		console.log(`[subscribeToUserJoined] uuid:${notif.senderUuid} timestamp:${notif.timestamp}`);
 	});
 };

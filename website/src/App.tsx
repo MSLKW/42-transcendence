@@ -3,6 +3,7 @@ import { Canvas } from "@react-three/fiber";
 import { Stats, PerspectiveCamera, OrbitControls, AdaptiveDpr } from "@react-three/drei";
 import { chatSocket } from "./api/chat/chatSocket";
 import { partySocket } from "./api/party/partySocket";
+import { useChatStore } from "./store/ChatStore";
 import { useDevStore } from "./store/DevStore";
 import { usePartyStore } from "./store/PartyStore";
 import { useProfileStore } from "./store/ProfileStore";
@@ -38,8 +39,9 @@ import { StatsWindow } from "./components/stats/StatsWindow";
 import Dev from "./Dev";
 
 export default function App() {
+	const { chatReconnect } = useChatStore();
 	const { hostUuid } = usePartyStore();
-	const { clientUuid, getProfileData } = useProfileStore();
+	const { clientUuid, getCachedData } = useProfileStore();
 	const { currentScene, showWindow, setShowWindow } = useSceneStore();
 	const { showDevSection, showStats } = useDevStore();
 
@@ -53,33 +55,26 @@ export default function App() {
 		if (currentScene === "Login")
 			return;
 
-		const data = getProfileData(clientUuid!);
+		const data = getCachedData(clientUuid!);
 		if (!data?.name)
 			setShowWindow("setup", true);
 	}, [currentScene]);
 
-	//socket connections
+	//party socket connection
 	useEffect(() => {
 		if (currentScene === "Login" || !clientUuid)
-			return;
-
-		const data = getProfileData(clientUuid!);
-		if (!data?.name)
 			return;
 
 		partySocket.connect();
-		chatSocket.connect();
 	}, [currentScene, clientUuid]);
 
-	//chat subscriptions
+	//chat socket connection + subscriptions
 	useEffect(() => {
 		if (currentScene === "Login" || !clientUuid)
 			return;
 
-		const data = getProfileData(clientUuid!);
-		if (!data?.name)
-			return;
-
+		chatSocket.connect();
+		
 		const unsubscribeFromMessages = subscribeToMessages();
 		const unsubscribeFromUserJoined = subscribeToUserJoined();
 		const unsubscribeFromUserLeft = subscribeToUserLeft();
@@ -93,7 +88,7 @@ export default function App() {
 			unsubscribeFromUserTyping();
 			unsubscribeFromRateLimited();
 		};
-	}, [currentScene, clientUuid]);
+	}, [currentScene, clientUuid, chatReconnect]);
 
 	//chat room changes
 	useEffect(() => {

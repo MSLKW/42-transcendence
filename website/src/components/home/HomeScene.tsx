@@ -13,11 +13,12 @@ export const HomeScene = () => {
 	const { removeBots } = useBotStore();
 	const { initSeats } = useGameStore();
 	const { hostUuid, members } = usePartyStore();
-	const { clientUuid, setCachedData, getCachedData, getProfileData } = useProfileStore();
+	const { clientUuid, setCachedData, getCachedData } = useProfileStore();
 	const data = getCachedData(clientUuid);
 	
+	//remove bots
 	useEffect(() => {
-		const data = getProfileData(clientUuid!);
+		const data = getCachedData(clientUuid!);
 		if (!data?.name)
 			return;
 

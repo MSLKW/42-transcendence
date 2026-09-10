@@ -5,9 +5,6 @@ interface PlayerStatsModuleProps {
 }
 
 export const PlayerStatsModule = ({ profile }: PlayerStatsModuleProps) => {
-	if (!profile)
-		return;
-
 	return (
 		<div className="
 			flex
@@ -20,21 +17,21 @@ export const PlayerStatsModule = ({ profile }: PlayerStatsModuleProps) => {
 				p-5
 			">
 				<h2>Total Played</h2>
-				<h3>{profile.totalPlayed}</h3>
+				<h3>{profile ? profile.totalPlayed : "n/a"}</h3>
 			</div>
 			<div className="
 				w-full h-full
 				p-5
 			">
 				<h2>Total Wins</h2>
-				<h3>{profile.totalWins}</h3>
+				<h3>{profile ? profile.totalWins : "n/a"}</h3>
 			</div>
 			<div className="
 				w-full h-full
 				p-5
 			">
 				<h2>Win Streak</h2>
-				<h3>{profile.winStreak}</h3>
+				<h3>{profile ? profile.winStreak : "n/a"}</h3>
 			</div>
 		</div>
 	);

@@ -13,7 +13,7 @@ export const subscribeToUserLeft = () => {
 			"server",
 			"",
 			"",
-			`${name} has been removed from party`
+			`${name} has left the chat`
 		);
 
 		const clientUuid = useProfileStore.getState().clientUuid;
@@ -22,7 +22,5 @@ export const subscribeToUserLeft = () => {
 			return;
 		}
 		chatSocket.joinRoom(clientUuid);
-
-		console.log(`[subscribeToUserLeft] uuid:${notif.senderUuid} timestamp:${notif.timestamp}`);
 	});
 };

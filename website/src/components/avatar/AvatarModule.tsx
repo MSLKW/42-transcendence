@@ -7,7 +7,7 @@ import { ChatBubbles } from "../bubble/ChatBubble";
 
 interface AvatarModuleProps {
 	uuid: string;
-	image: string;
+	image: string | undefined;
 	cornerButton?: string | number;
 	isActive?: boolean;
 	showName?: boolean;

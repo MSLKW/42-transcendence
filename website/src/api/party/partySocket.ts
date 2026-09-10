@@ -62,8 +62,15 @@ class PartySocketService {
 		refreshAction(this.socket);
 	}
 	public isConnected(): boolean {
+		console.log("[partySocket] 'isConnected' ", this.socket?.connected, " id:", this.socket?.id, " isConnecting:", this.isConnecting);
 		return this.socket?.connected === true;
 	}
+}
+
+if (import.meta.hot) {
+	import.meta.hot.dispose(() => {
+		partySocket.disconnect();
+	});
 }
 
 export const partySocket = new PartySocketService();

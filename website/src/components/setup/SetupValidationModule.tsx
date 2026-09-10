@@ -15,6 +15,7 @@ export const SetupValidationModule = ({ name, avatar }: SetupValidationModulePro
 	const handleSetupComplete = async () => {
 		if (!isValid)
 			return;
+
 		await handlePutProfile(name, avatar, "Newcomer");
 		partySocket.connect();
 		chatSocket.connect();

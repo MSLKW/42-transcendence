@@ -1,4 +1,6 @@
-export const fetchGetProfile = async (uuid: string) => {
+import type { UserData } from "../../../store/ProfileStore";
+
+export const fetchGetProfile = async (uuid: string): Promise<UserData> => {
 	const response = await fetch(`/api/profile/profile/${uuid}`, {
 		method: "GET",
 		credentials: "include",
@@ -6,6 +8,6 @@ export const fetchGetProfile = async (uuid: string) => {
 
 	console.log("[fetchGetProfile] ", `/api/profile/profile/${uuid} `, response.status, response.statusText);
 	if (!response.ok)
-		return;
+		throw new Error(`Failed to get profile: ${response.status} ${response.statusText}`);
 	return await response.json();
 }

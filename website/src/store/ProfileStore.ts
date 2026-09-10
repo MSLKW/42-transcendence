@@ -67,7 +67,7 @@ export interface CachedData {
 	uuid: string | null;
 	name: string | null;
 	avatar: string | null;
-	badge: string | null;
+	badge: BADGE_TYPE;
 	relation: RELATION_TYPE;
 }
 
@@ -309,6 +309,12 @@ export const cachedBotData: CachedData[] = [
 	},
 ];
 
+export type UserData = {
+	username: string | null,
+	avatarPath: string | null,
+	badge: BADGE_TYPE,
+};
+
 interface ProfileValues {
 	clientUuid: string | null,
 	isAuthenticated: boolean,
@@ -318,7 +324,7 @@ interface ProfileValues {
 };
 
 interface ProfileState extends ProfileValues {
-	updateClientProfile: (name: string, avatar: string, badge: BADGE_TYPE) => void,
+	initClientData: (clientData: UserData) => void,
 	getProfileData: (uuid: string | null) => ProfileData | undefined,
 	resetProfilesInDb: () => void,
 	setCachedData: () => void,
@@ -334,22 +340,25 @@ export const useProfileStore = create<ProfileState>() (
 			profilesInDb: defaultProfileInDb,
 			cachedData: [],
 
-			updateClientProfile: (name, avatar, badge) => {
-				const { clientUuid, profilesInDb, setCachedData } = get();
+			initClientData: (clientData) => {
+				const { clientUuid, cachedData, setCachedData, profilesInDb } = get();
 				if (!clientUuid)
 					return;
 
-				const profileExists = profilesInDb.some((p) => p.uuid === clientUuid);
+				const profileExists = cachedData.some((p) => p.uuid === clientUuid);
 				if (!profileExists) {
-					const newProfile = createDefaultProfile(clientUuid!, name, avatar, badge);
+					const newProfile = createDefaultProfile(clientUuid!, clientData.username ?? "Player", clientData.avatarPath ?? "avatar-unknown.webp", clientData.badge);
 					set({ profilesInDb: [...profilesInDb, newProfile] });
 					return;
 				}
 
 				set({
 					profilesInDb: profilesInDb.map((p) => p.uuid === clientUuid
-						? { ...p, name, avatar, badge }
-						: p
+						? { ...p,
+							name: clientData.username ?? "Player",
+							avatar: clientData.avatarPath ?? "avatar-unknown.webp",
+							badge: clientData.badge
+						} : p
 					),
 				});
 
@@ -370,7 +379,7 @@ export const useProfileStore = create<ProfileState>() (
 			setCachedData: async () => {
 				const clientUuid = get().clientUuid;
 				const members = usePartyStore.getState().members;
-				const friends = useFriendStore.getState().friends;
+				const cachedFriends = useFriendStore.getState().cachedFriends;
 
 				const allUuids = Array.from(
 					new Set([...members, ...(clientUuid ? [clientUuid] : [])])
@@ -385,7 +394,7 @@ export const useProfileStore = create<ProfileState>() (
 					
 					const humanRelation: RELATION_TYPE = 
 						memberUuid === clientUuid ? "Self" :
-						friends.includes(memberUuid) ? "Friend" :
+						cachedFriends.includes(memberUuid) ? "Friend" :
 						"Stranger";
 
 					return {

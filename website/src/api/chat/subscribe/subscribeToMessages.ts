@@ -18,7 +18,5 @@ export const subscribeToMessages = () => {
 		);
 
 		addBubble(chat.senderUuid, chat.type, chat.message);
-
-		console.log(`[subscribeToMessages] uuid:${chat.senderUuid} message:${chat.message} timestamp:${chat.timestamp}`);
 	});
 };
