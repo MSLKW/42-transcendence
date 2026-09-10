@@ -162,8 +162,8 @@ services:
       - transcendence
       - database
       # - backend-internal
-    healthcheck: #! try check internal thru docker exec if they can still communicate thru postgres, with up nginx too
-      test: ["CMD", "curl", "-s", "-o", "/dev/null", "http://localhost:3000/"]
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "-q", "http://localhost:3000/"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -171,12 +171,6 @@ services:
     depends_on:
       migrator:
         condition: service_completed_successfully  # Waits for migrator to finish and exit with code 0
-# Health-check
-# "CMD" — tells Docker this is the command to run for the healthcheck (as opposed to CMD-SHELL, which would run it through a shell).
-# "curl" — the actual program being executed.
-# "-s" — silent mode, suppresses curl's progress bar/output.
-# "-o", "/dev/null" — redirects the response body to /dev/null (i.e., "I don't care about the content, just whether the request succeeds").
-# "http://localhost:3000/" — the URL being hit, on port 3000 of the container itself.
 
 
   #     BACKEND MICORSERVICE

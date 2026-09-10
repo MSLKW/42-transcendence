@@ -25,10 +25,6 @@ COPY --from=auth-schema     package.json    ./packages/postgres/auth-schema/
 COPY --from=postgres-client package.json    ./packages/postgres/postgres-client/
 COPY                        package.json    ./services/authentication/
 
-RUN apk update && \
-    apk add --no-cache curl && \
-    rm -rf /var/cache/apk/*
-
 ENV NODE_ENV=production
 RUN npm ci --omit=dev
 

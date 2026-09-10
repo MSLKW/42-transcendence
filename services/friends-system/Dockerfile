@@ -30,10 +30,6 @@ COPY packages/postgres/friends-system-schema/package.json ./packages/postgres/fr
 COPY packages/postgres/postgres-client/package.json ./packages/postgres/postgres-client/
 COPY services/friends-system/package.json ./services/friends-system/
 
-RUN apk update && \
-    apk add --no-cache curl && \
-    rm -rf /var/cache/apk/*
-
 ENV NODE_ENV=production
 RUN npm ci --omit=dev
 

@@ -27,10 +27,6 @@ COPY --from=party-manager-schema    package.json    ./packages/postgres/party-ma
 COPY --from=postgres-client         package.json    ./packages/postgres/postgres-client/
 COPY                                package.json    ./services/party-manager/
 
-RUN apk update && \
-    apk add --no-cache curl && \
-    rm -rf /var/cache/apk/*
-
 ENV NODE_ENV=production
 RUN npm ci --omit=dev
 
