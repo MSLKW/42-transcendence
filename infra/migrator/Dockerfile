@@ -17,15 +17,6 @@ COPY migrations ./infra/migrator/migrations
 COPY tsconfig.drizzle.json ./infra/migrator/tsconfig.drizzle.json
 COPY drizzle.config.ts ./infra/migrator/drizzle.config.ts
 
-# Copy the script using the correct path from the root
-# COPY scripts/migrator-entrypoint.sh /usr/local/bin/entrypoint.sh
-# COPY scripts/grant-permissions.sh /usr/local/bin/grant-permissions.sh
-# COPY scripts/apply-triggers.sh /usr/local/bin/apply-triggers.sh
-# RUN chmod +x /usr/local/bin/entrypoint.sh /usr/local/bin/grant-permissions.sh /usr/local/bin/apply-triggers.sh
-
-# Copies the scripts AND marks them executable at the exact same moment
-COPY --chmod=755 scripts/ /usr/local/bin/
-
 # Use the script as the entrypoint
 ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
 

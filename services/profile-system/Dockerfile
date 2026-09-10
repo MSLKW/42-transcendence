@@ -46,10 +46,6 @@ COPY --from=builder /app/services/profile-system/test ./services/profile-system/
 
 EXPOSE 3000
 
-# COPY services/profile-system/scripts/profile-system-entrypoint.sh /usr/local/bin/entrypoint.sh
-# RUN chmod +x /usr/local/bin/entrypoint.sh
-COPY --chmod=755 services/profile-system/scripts/ /usr/local/bin/
-
 WORKDIR /app/services/profile-system
 ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
 CMD ["npm", "run", "start"]

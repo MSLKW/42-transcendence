@@ -45,10 +45,6 @@ COPY --from=builder /app/services/friends-system/dist                   ./servic
 
 EXPOSE 3000
 
-# COPY services/friends-system/scripts/friends-system-entrypoint.sh /usr/local/bin/entrypoint.sh
-# RUN chmod +x /usr/local/bin/entrypoint.sh
-COPY --chmod=755 services/friends-system/scripts /usr/local/bin/
-
 WORKDIR /app/services/friends-system
 ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
 CMD ["npm", "run", "start"]

@@ -41,10 +41,6 @@ COPY --from=builder /app/services/party-manager/dist                    ./servic
 
 EXPOSE 3000
 
-# COPY services/party-manager/scripts/party-manager-entrypoint.sh /usr/local/bin/entrypoint.sh
-# RUN chmod +x /usr/local/bin/entrypoint.sh
-COPY --chmod=755 services/party-manager/scripts /usr/local/bin/
-
 WORKDIR /app/services/party-manager
 ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
 CMD ["npm", "run", "start"]
