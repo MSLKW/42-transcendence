@@ -3,12 +3,12 @@ import { SceneContainer } from '../../../components/3d/SceneContainer.ts';
 import { ThreeJsManager } from '../../../components/3d/ThreeJsManager.ts';
 
 export class GameScene extends SceneContainer {
-	private tableGeometry: THREE.CylinderGeometry;
-	private tableMaterial: THREE.MeshLambertMaterial;
-	private tableMesh: THREE.Mesh;
-	private ambientLight: THREE.AmbientLight;
-	private light: THREE.SpotLight;
-	private cameraLight: THREE.PointLight;
+	public tableGeometry: THREE.CylinderGeometry;
+	public tableMaterial: THREE.MeshLambertMaterial;
+	public tableMesh: THREE.Mesh;
+	public ambientLight: THREE.AmbientLight;
+	public light: THREE.SpotLight;
+	public cameraLight: THREE.PointLight;
 
 	constructor() {
 		super();
@@ -45,6 +45,9 @@ export class GameScene extends SceneContainer {
 		this.cameraLight = new THREE.PointLight(0xffffff, 20, 20);
 		this.cameraLight.position.set(0, 5, 7);
 		this.scene.add(this.cameraLight);
+		this.scene.traverse((object) => {
+			console.log(`game scene object: ${object}`);
+		})
 	}
 
 	public animate(ctx: ThreeJsManager): void {
@@ -64,14 +67,8 @@ export class GameScene extends SceneContainer {
 	}
 
 	public dispose() {
-		this.scene.remove(this.tableMesh);
+		this.scene.clear();
 		this.tableGeometry.dispose();
 		this.tableMaterial.dispose();
-
-		this.scene.remove(this.ambientLight);
-		this.scene.remove(this.light);
-		if (this.cameraLight) {
-			this.scene.remove(this.cameraLight);
-		}
 	}
 }

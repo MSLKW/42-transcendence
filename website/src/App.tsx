@@ -33,7 +33,7 @@ import Dev from "./Dev";
 import { useRef } from 'react';
 import { ThreeJsManager } from './components/3d/ThreeJsManager';
 
-export let threejsManager: ThreeJsManager | undefined;
+export let threejsManager: ThreeJsManager;
 
 export default function App() {
 	const { clientUuid, getProfileData } = useProfileStore();
@@ -66,6 +66,9 @@ export default function App() {
 		})
 		if (currentScene === "Login") {
 			threejsManager.changeScene("login");
+		}
+		else if (currentScene === "Game") {
+			threejsManager.changeScene("game");
 		}
 
 		return () => {

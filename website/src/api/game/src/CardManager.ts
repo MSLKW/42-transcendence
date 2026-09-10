@@ -1,8 +1,9 @@
 import * as THREE from 'three';
 import { Card } from './Card.ts';
 import { CardHand } from './CardHand.ts';
-import { outlinePass, scene } from './main.ts';
 import { gsap } from 'gsap';
+import { threejsManager } from '../../../App.tsx';
+import { gameScene } from '../../../components/3d/ThreeJsManager.ts';
 
 export class CardManager {
 	/* Card Manager */
@@ -179,10 +180,10 @@ export class CardManager {
 		for (let i = 0; i < this.hitboxes.length; i++) {
 			const mesh = this.hitboxes[i];
 			mesh.geometry.dispose();
-			scene.remove(mesh);
+			gameScene.scene.remove(mesh);
 		}
 		if (hitboxes.length > 0)
-			scene.add(...hitboxes);
+			gameScene.scene.add(...hitboxes);
 		this.hitboxes = hitboxes;
 	}
 
@@ -284,15 +285,15 @@ export class CardManager {
 
 	// Will mutate position
 	private applyHoverEffect(card: Card, position: THREE.Vector3) {
-		const index = outlinePass.selectedObjects.indexOf(card.object);
+		const index = threejsManager.outlinePass.selectedObjects.indexOf(card.object);
 		if (card.isHover === true) {
 			if (index === -1) {
-				outlinePass.selectedObjects.push(card.object);
+				threejsManager.outlinePass.selectedObjects.push(card.object);
 			}
 			position.add(new THREE.Vector3(0, 0.5, 0.1).applyQuaternion(card.object.quaternion));
 		}
 		else if (card.isHover === false && index !== -1) {
-			outlinePass.selectedObjects.splice(index, 1);
+			threejsManager.outlinePass.selectedObjects.splice(index, 1);
 		}
 	}
 

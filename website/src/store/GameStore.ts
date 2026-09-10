@@ -152,8 +152,9 @@ export const useGameStore = create<GameState>() (
 				gameInstance?.startGame();
 			},
 			nextTurn: () => {
-				const newActiveSeat = (get().activeSeat + 1) % get().totalPlayers;
-				set({ activeSeat: newActiveSeat });
+				// const newActiveSeat = (get().activeSeat + 1) % get().totalPlayers;
+				// set({ activeSeat: newActiveSeat });
+				gameInstance?.playerRef?.skipTurnButtonHandler();
 			},
 
 			endGame: () => {

@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import { CardRank, CardSuit, CardTransmit } from '@big2/game-types';
-import { scene } from './main.ts'
+import { gameScene } from '../../../components/3d/ThreeJsManager.ts';
 import { gsap } from 'gsap';
 
 export class Card {
@@ -47,7 +47,7 @@ export class Card {
 		this.object.add(this.frontMesh);
 		this.object.add(this.backMesh);
 
-		scene.add(this.object);
+		gameScene.scene.add(this.object);
 		// this.object.visible = false;
 	}
 

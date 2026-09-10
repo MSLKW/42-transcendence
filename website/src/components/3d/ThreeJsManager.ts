@@ -1,13 +1,15 @@
 import * as THREE from 'three';
 import { EffectComposer, OutlinePass, RenderPass, OutputPass, OrbitControls } from 'three/examples/jsm/Addons.js';
-import { GameScene } from '../../api/game/src/GameScene.ts';
 import { SceneContainer } from './SceneContainer.ts';
 import { LoginScene } from './LoginBg.ts';
 import { gsap } from 'gsap';
+import { GameScene } from '../../api/game/src/GameScene.ts';
 
 /*
 	Handles Scene Management and Animation etc...
 */
+
+export let gameScene: GameScene;
 
 export class ThreeJsManager {
 	public	renderer: THREE.WebGLRenderer;
@@ -46,7 +48,7 @@ export class ThreeJsManager {
 		this.addScene("login", loginScene);
 		
 		// Adding Game Scene and relevant items
-		const gameScene = new GameScene();
+		gameScene = new GameScene();
 
 		this.effectComposer = new EffectComposer(this.renderer);
 		this.renderPass = new RenderPass(gameScene.scene, this.camera);

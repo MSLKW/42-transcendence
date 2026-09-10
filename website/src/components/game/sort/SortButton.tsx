@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { gameInstance } from "../../../api/game/src/main";
 
 interface SortButtonProps {
 	call?: (e: React.MouseEvent<HTMLButtonElement>) => void;
@@ -31,6 +32,12 @@ export const SortButtons = () => {
 	const handleSort = (e: React.MouseEvent<HTMLButtonElement>, selectedType: string) => {
 		if (e)
 			e.currentTarget.blur();
+		if (selectedType === "Rank") {
+			gameInstance?.playerRef?.sortCardsByRankButtonHandler();
+		}
+		else if (selectedType === "Suit") {
+			gameInstance?.playerRef?.sortCardsBySuitButtonHandler();
+		}
 		setSortType(selectedType);
 	}
 	

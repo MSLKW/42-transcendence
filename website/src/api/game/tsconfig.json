@@ -1,8 +1,8 @@
 {
 	"compilerOptions": {
 		"target": "es2022",
-		"module": "nodenext",
-		"moduleResolution": "nodenext",
+		"module": "esnext",
+		"moduleResolution": "bundler",
 		"declaration": true,
 		"declarationMap": true,
 		"sourceMap": true,
@@ -14,7 +14,9 @@
 		"strict": true,
 		"skipLibCheck": true,
 		"noEmit": true,
-		"allowImportingTsExtensions": true
+		"allowImportingTsExtensions": true,
+
+		"jsx": "react-jsx"
 	},
 	"include": ["src/**/*"]
 }

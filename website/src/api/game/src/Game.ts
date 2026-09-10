@@ -4,13 +4,14 @@ import { CardHandTransmit, CardRank, CardSuit, GameStateTransmit, GameStartReque
 import { CardHeap } from './CardHeap.ts';
 import { Player } from './Player.ts';
 import { Opponent } from './Opponent.ts';
-import { camera, cameraLight, gameStatus, orbitControls } from './main.ts';
 import { Deck } from './Deck.ts';
+import { gameScene } from '../../../components/3d/ThreeJsManager.ts';
 import { gsap } from 'gsap';
 import { Participant } from './Participant.ts';
 import { useGameStore } from "../../../store/GameStore.ts";
 import { usePartyStore } from "../../../store/PartyStore.ts";
 import { useSceneStore } from "../../../store/SceneStore.ts";
+import { threejsManager } from '../../../App.tsx';
 
 export class Game {
 	private socket: Socket;
@@ -18,6 +19,7 @@ export class Game {
 	private cardHeap: CardHeap = new CardHeap(this.centerPosition);
 	private playerId: string;
 	private participants: Array<Participant>;
+	public	playerRef: Player | null;
 
 	// Buttons
 	// private startGameButton = document.getElementById('start-game-button') as HTMLButtonElement;
@@ -42,6 +44,7 @@ export class Game {
 		}
 
 		this.participants = [];
+		this.playerRef = null;
 
 		this.bindSocketEvents();
 		this.bindButtonEvents();
@@ -210,19 +213,20 @@ export class Game {
 			const id = relativeSeatOrder[i];
 			if (id === this.playerId) {
 				const player = new Player(this.socket, this.playerId, this.cardHeap); // 2nd game bug where player is doubled, rly need to make a clean game state for client
+				this.participants.push(player);
+				this.playerRef = player;
 				// const target = new THREE.Object3D();
 				// target.position.copy(camera.position);
 				// target.lookAt(this.cardHeap.originalPosition);
-				camera.position.copy(new THREE.Vector3(0, 4.5, 4.5));
-				camera.lookAt(this.cardHeap.originalPosition);
+				threejsManager.camera.position.copy(new THREE.Vector3(0, 4.5, 4.5));
+				threejsManager.camera.lookAt(this.cardHeap.originalPosition);
 				// this.move(camera, new THREE.Vector3(0, 4.5, 4.5), target.quaternion);
 				// orbitControls.update();
 				// orbitControls.addEventListener("change", () => {
 				const offset = new THREE.Vector3(0, -2, -3);
-				cameraLight.position.copy(camera.position);
-				player.cardManager.updateManager(offset.clone().applyQuaternion(camera.quaternion.clone()).add(camera.position), camera.quaternion.clone());
+				gameScene.cameraLight.position.copy(threejsManager.camera.position);
+				player.cardManager.updateManager(offset.clone().applyQuaternion(threejsManager.camera.quaternion.clone()).add(threejsManager.camera.position), threejsManager.camera.quaternion.clone());
 				// });
-				this.participants.push(player);
 			}
 			else if (id !== this.playerId) {
 				const opponent = new Opponent(this.socket, id, this.cardHeap);

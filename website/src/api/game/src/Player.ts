@@ -5,7 +5,8 @@ import { CardHand } from './CardHand.ts';
 import { Card } from './Card.ts';
 import { CardManager } from './CardManager.ts';
 import { CardHeap } from './CardHeap.ts';
-import { scene, renderer, camera, gameStatus, orbitControls } from './main.ts';
+import { gameStatus } from './main.ts';
+import { threejsManager } from '../../../App.tsx';
 import { Participant } from './Participant.ts';
 
 export class Player extends Participant {
@@ -13,10 +14,10 @@ export class Player extends Participant {
 	private startClick: THREE.Vector2;
 	private isDragging: boolean;
 
-	private sendCardsButton: HTMLButtonElement;
-	private skipTurnButton: HTMLButtonElement;
-	private sortCardsByRankButton: HTMLButtonElement;
-	private sortCardsBySuitButton: HTMLButtonElement;
+	// private sendCardsButton: HTMLButtonElement;
+	// private skipTurnButton: HTMLButtonElement;
+	// private sortCardsByRankButton: HTMLButtonElement;
+	// private sortCardsBySuitButton: HTMLButtonElement;
 
 
 	constructor(socket: Socket, playerId: string, cardHeapRef: CardHeap) {
@@ -25,18 +26,18 @@ export class Player extends Participant {
 		this.startClick = new THREE.Vector2();
 		this.isDragging = false;
 
-		this.sendCardsButton = document.getElementById('send-cards-button') as HTMLButtonElement;
-		this.skipTurnButton = document.getElementById('skip-turn-button') as HTMLButtonElement;
-		this.sortCardsByRankButton = document.getElementById('sort-cards-by-rank-button') as HTMLButtonElement;
-		this.sortCardsBySuitButton = document.getElementById('sort-cards-by-suit-button') as HTMLButtonElement;
+		// this.sendCardsButton = document.getElementById('send-cards-button') as HTMLButtonElement;
+		// this.skipTurnButton = document.getElementById('skip-turn-button') as HTMLButtonElement;
+		// this.sortCardsByRankButton = document.getElementById('sort-cards-by-rank-button') as HTMLButtonElement;
+		// this.sortCardsBySuitButton = document.getElementById('sort-cards-by-suit-button') as HTMLButtonElement;
 
-		if (this.sendCardsButton === undefined || 
-			this.skipTurnButton === undefined || 
-			this.sortCardsByRankButton === undefined ||
-			this.sortCardsBySuitButton === undefined) {
-			console.error("Player could not get HTML buttons");
-			return ;
-		}
+		// if (this.sendCardsButton === undefined || 
+		// 	this.skipTurnButton === undefined || 
+		// 	this.sortCardsByRankButton === undefined ||
+		// 	this.sortCardsBySuitButton === undefined) {
+		// 	console.error("Player could not get HTML buttons");
+		// 	return ;
+		// }
 		this.setupListeners();
 		this.setPlayerTurnUI(false);
 	}
@@ -87,34 +88,34 @@ export class Player extends Participant {
 			console.log(`Player<${skipTurn.playerId}> skipped their turn!`);
 		});
 
-		this.sendCardsButton.addEventListener('click', () => {
-			const cardHandTransmit = this.cardManager.selectedCards.transmit();
-			this.socket.emit("player_play_card_hand_request", cardHandTransmit);
-		});
+		// this.sendCardsButton.addEventListener('click', () => {
+		// 	const cardHandTransmit = this.cardManager.selectedCards.transmit();
+		// 	this.socket.emit("player_play_card_hand_request", cardHandTransmit);
+		// });
 		
-		this.skipTurnButton.addEventListener('click', () => {
-			this.socket.emit("player_skip_turn_request");
-		});
+		// this.skipTurnButtonHandler.addEventListener('click', () => {
+		// 	this.socket.emit("player_skip_turn_request");
+		// });
 
-		this.sortCardsByRankButton.addEventListener('click', () => {
-			this.cardManager.setSort((a, b) => a.rank - b.rank);
-		});
+		// this.sortCardsByRankButton.addEventListener('click', () => {
+		// 	this.cardManager.setSort((a, b) => a.rank - b.rank);
+		// });
 
-		this.sortCardsBySuitButton.addEventListener('click', () => {
-			this.cardManager.setSort((a, b) => {
-				const suitDiff = a.suit - b.suit;
-				return (suitDiff === 0 ? a.rank - b.rank : suitDiff);
-			});
-		});
+		// this.sortCardsBySuitButton.addEventListener('click', () => {
+		// 	this.cardManager.setSort((a, b) => {
+		// 		const suitDiff = a.suit - b.suit;
+		// 		return (suitDiff === 0 ? a.rank - b.rank : suitDiff);
+		// 	});
+		// });
 
-		renderer.domElement.addEventListener('pointerdown', (event) => {
+		threejsManager.renderer.domElement.addEventListener('pointerdown', (event) => {
 			this.startClick.x = event.clientX;
 			this.startClick.y = event.clientY;
 			this.isDragging = false;
 			this.eventDrag(event);
 		})
 
-		renderer.domElement.addEventListener('pointermove', (event) => {
+		threejsManager.renderer.domElement.addEventListener('pointermove', (event) => {
 			const xDelta = Math.abs(event.clientX - this.startClick.x);
 			const yDelta = Math.abs(event.clientY - this.startClick.y);
 
@@ -127,7 +128,7 @@ export class Player extends Participant {
 			this.eventHover(event);
 		})
 
-		renderer.domElement.addEventListener('pointerup', (event) => {
+		threejsManager.renderer.domElement.addEventListener('pointerup', (event) => {
 			if (this.cardManager.draggedCard !== undefined) {
 				if (this.isDragging === true) {
 					this.cardManager.setSort(undefined);
@@ -154,19 +155,39 @@ export class Player extends Participant {
 			}
 			else if (event.code === "Backquote") {
 				console.log("enabling or disabling orbit controls");
-				orbitControls.enabled = !orbitControls.enabled;
-				orbitControls.update();
+				threejsManager.orbitControls.enabled = !threejsManager.orbitControls.enabled;
+				threejsManager.orbitControls.update();
 			}
 		})
 	}
 
+	public sendCardsButtonHandler() {
+		const cardHandTransmit = this.cardManager.selectedCards.transmit();
+		this.socket.emit("player_play_card_hand_request", cardHandTransmit);
+	}
+
+	public skipTurnButtonHandler() {
+		this.socket.emit("player_skip_turn_request");
+	}
+
+	public sortCardsByRankButtonHandler() {
+		this.cardManager.setSort((a, b) => a.rank - b.rank);
+	}
+
+	public sortCardsBySuitButtonHandler() {
+		this.cardManager.setSort((a, b) => {
+			const suitDiff = a.suit - b.suit;
+			return (suitDiff === 0 ? a.rank - b.rank : suitDiff);
+		});
+	}
+
 	private raycast(event: PointerEvent) {
-		const canvas = renderer.domElement.getBoundingClientRect();
+		const canvas = threejsManager.renderer.domElement.getBoundingClientRect();
 		const mouse = new THREE.Vector2(
 			((event.clientX - canvas.left) / canvas.width) * 2 - 1,
 			-((event.clientY - canvas.top) / canvas.height) * 2 + 1
 		);
-		this.raycaster.setFromCamera(mouse, camera);
+		this.raycaster.setFromCamera(mouse, threejsManager.camera);
 	}
 
 	private eventClick(event: PointerEvent) {
@@ -195,14 +216,14 @@ export class Player extends Participant {
 	}
 
 	private setPlayerTurnUI(isTurn: boolean, skippable: boolean = true) {
-		if (isTurn === true) {
-			this.sendCardsButton.disabled = false;
-			this.skipTurnButton.disabled = !skippable;
-		}
-		else {
-			this.sendCardsButton.disabled = true;
-			this.skipTurnButton.disabled = true;
-		}
+		// if (isTurn === true) {
+		// 	this.sendCardsButtonHandler.disabled = false;
+		// 	this.skipTurnButtonHandler.disabled = !skippable;
+		// }
+		// else {
+		// 	this.sendCardsButtonHandler.disabled = true;
+		// 	this.skipTurnButtonHandler.disabled = true;
+		// }
 	}
 
 	private collectCards(cardTransmits: Array<CardTransmit>) {
