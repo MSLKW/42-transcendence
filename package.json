@@ -1,7 +1,8 @@
 {
   "name": "big2",
   "private": true,
-  "workspaces":[
+  "type": "module",
+  "workspaces": [
     "infra/*",
     "packages/*/*",
     "services/*"
@@ -10,21 +11,20 @@
     "db:generate": "npm run --prefix infra/migrator db:generate --",
     "db:migrate": "npm run --prefix infra/migrator db:migrate",
     "db:push": "npm run --prefix infra/migrator db:push",
-
     "test:signup": "services/authentication/scripts/test-signup.sh",
     "test:signin": "services/authentication/scripts/test-signin.sh",
     "test:logout": "services/authentication/scripts/test-logout.sh",
     "test:validate": "services/authentication/scripts/test-validate.sh",
     "test:guest": "services/authentication/scripts/test-guest.sh",
-
     "build": "npm run build --workspaces --if-present",
     "dev": "npm run dev --workspaces --if-present",
     "lint": "eslint .",
     "format": "prettier --write ."
   },
-  "devDependencies":{
+  "devDependencies": {
+    "@typescript-eslint/parser": "^8.70.0",
     "eslint": "^9.0.0",
-    "prettier": "^3.0.0",
+    "eslint-plugin-import-x": "^4.17.1",
     "typescript": "^5.0.0"
   }
 }
