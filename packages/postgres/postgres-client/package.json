@@ -1,7 +1,6 @@
 {
   "name": "@big2/postgres-client",
   "private": true,
-  "type": "module",
   "version": "1.0.0",
   "description": "",
   "keywords": [],

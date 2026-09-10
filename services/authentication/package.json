@@ -1,7 +1,6 @@
 {
 	"name": "login-backend",
   	"private": true,
-	"type": "module",
 	"version": "1.0.0",
 	"description": "",
 	"author": "",
