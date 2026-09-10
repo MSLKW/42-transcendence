@@ -1,9 +1,11 @@
 import { pgSchema, uuid, unique, integer, timestamp, index, check } from "drizzle-orm/pg-core";
 // import { sql } from "drizzle-orm"; => use later on postgres-18-bookworm
 import { users } from "@big2/auth-schema";
+// import {} from "@big2/badge-types";
+// import {} from "@big2/game-stats-types";
 
 
-export const gameSchema = pgSchema("game_schema");
+export const gameSchema = pgSchema("game_stats_schema");
 
 
 export const playerStats = gameSchema.table("player_stats", {

@@ -20,6 +20,8 @@
 	},
 	"include": ["src/**/*.ts"],
 	"references": [
+		{ "path": "../auth-schema" },
 		{ "path": "../../types/badge-types" },
+		{ "path": "../../types/game-stats-types" },
 	]
 }

@@ -1,5 +1,5 @@
 {
-  "name": "@big2/game-schema",
+  "name": "@big2/game-stats-schema",
   "private": true,
   "type": "module",
   "version": "1.0.0",
@@ -20,6 +20,8 @@
   },
   "dependencies": {
     "@big2/auth-schema": "*",
+    "@big2/badge-types": "*",
+    "@big2/game-stats-types": "*",
     "dotenv": "^17.4.2",
     "drizzle-orm": "^0.45.2"
   },

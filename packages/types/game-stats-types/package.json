@@ -1,5 +1,5 @@
 {
-	"name": "@big2/profile-system-types",
+	"name": "@big2/badge-types",
 	"private": true,
 	"type": "module",
 	"main": "./dist/types.js",

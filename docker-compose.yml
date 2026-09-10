@@ -33,8 +33,8 @@ secrets: # auto make all secret files just read only mode
     file: ./secrets/database-passwords/db-profile-system-password.txt
   db-friends-system-password:
     file: ./secrets/database-passwords/db-friends-system-password.txt
-  db-game-password:
-    file: ./secrets/database-passwords/db-game-password.txt
+  db-game-stats-password:
+    file: ./secrets/database-passwords/db-game-stats-password.txt
   dg-masterpass:
     file: ./secrets/drizzle-gateway/dg-masterpass.txt
 
@@ -59,7 +59,7 @@ services:
       - db-party-manager-password
       - db-profile-system-password
       - db-friends-system-password
-      - db-game-password
+      - db-game-stats-password
     env_file:
       - .env
     volumes:
@@ -250,6 +250,31 @@ services:
         condition: service_completed_successfully  # Waits for migrator to finish and exit with code 0
 
 
+ #     BACKEND MICORSERVICE
+  game-stats:
+    build:
+      context: .                                         # Set workdir to the repo's root
+      dockerfile: ./services/game-stats/Dockerfile    # Point to the Dockerfile's relative path
+    pull_policy: never
+    image: stats:test
+    container_name: game-stats
+    restart: unless-stopped
+    environment:
+      PGUSER: ${PGUSER_GAME_STATS_SYSTEM}
+      PGPASSWORD: /run/secrets/db-game-stats-password
+    env_file:
+      - .env                                             # Loads global configs
+    secrets:
+      - db-game-stats-password
+    networks:
+      - transcendence
+      - database
+      # - backend-internal
+    depends_on:
+      migrator:
+        condition: service_completed_successfully  # Waits for migrator to finish and exit with code 0
+
+
 #   #     BACKEND MICORSERVICE
 #   game:
 #     build:
@@ -261,7 +286,6 @@ services:
 #     restart: unless-stopped
 #     networks:
 #       - transcendence
-#       - database
 #       # - backend-internal
 
 
