@@ -1,22 +1,12 @@
 {
+	"extends": "../../../tsconfig.base.json",
   "compilerOptions": {
-    "target": "esnext",
-    "module": "esnext",
-    "moduleResolution": "bundler",
-    "types": ["node"],
-	  "rootDir": "./src", 
-	  "outDir": "./dist", 
-    "esModuleInterop": true,
-    "strict": true,
-    "skipLibCheck": true,
+	  "outDir": "./dist",
+	  "rootDir": "./src",
     "composite": true,
-    "sourceMap": true,
     "declaration": true,
     "declarationMap": true,
-    "verbatimModuleSyntax": true,
-    "isolatedModules": true,
-    "noUncheckedSideEffectImports": true,
-    "moduleDetection": "force"
+    "sourceMap": true,
   },
   "include": ["src/**/*.ts"]
 }
