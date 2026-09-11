@@ -39,7 +39,7 @@ export function getUserProfile(store: UserStore)
 		try
 		{
 			const [authData, partyData, gameStatsData] = await Promise.all ([
-				fetchJson(`${AUTH_SERVICE_URL}/internal/profile/${uuid}`),
+				fetchJson(`${AUTH_SERVICE_URL}/internal/profile/infos/${uuid}`),
 				fetchJson(`${PARTY_MANAGER_SERVICE_URL}/internal/profile/${uuid}`),
 				GAME_STATS_SERVICE_URL 
 					? 
