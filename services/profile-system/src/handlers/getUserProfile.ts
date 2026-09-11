@@ -43,7 +43,7 @@ export function getUserProfile(store: UserStore)
 				fetchJson(`${PARTY_MANAGER_SERVICE_URL}/internal/profile/${uuid}`),
 				GAME_STATS_SERVICE_URL 
 					? 
-					fetchJson(`${GAME_STATS_SERVICE_URL}/internal/profile/${uuid}`)
+					fetchJson(`${GAME_STATS_SERVICE_URL}/internal/profile/${uuid}`).catch(() => DEFAULT_GAME_STATS_DATA)
 					:
 					Promise.resolve(DEFAULT_GAME_STATS_DATA),
 			]);

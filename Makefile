@@ -6,7 +6,7 @@
 #    By: aimokhta <aimokhta@student.42kl.edu.my>    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2026/06/16 09:31:30 by aimokhta          #+#    #+#              #
-#    Updated: 2026/09/07 22:21:34 by aimokhta         ###   ########.fr        #
+#    Updated: 2026/09/11 12:08:22 by aimokhta         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -91,7 +91,7 @@ ls:
 	@docker volume ls
 
 nuclear:
-	@docker system prune -a -v -f
+	@docker system prune -a --volumes -f
 # -a: Removes all unused images, not just dangling ones.
 # --volumes: Removes all unused volumes.
 # -f: Forces removal without prompting.
