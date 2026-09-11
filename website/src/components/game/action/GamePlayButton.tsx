@@ -3,7 +3,7 @@ import { useProfileStore } from "../../../store/ProfileStore";
 import { gameInstance } from "../../../api/game/src/main";
 
 export const GamePlayButton = () => {
-	const { currentHand, cardsLeft, seats, activeSeat, nextTurn } = useGameStore();
+	const { currentHand, cardsLeft, seats, activeSeat, skipTurn: nextTurn } = useGameStore();
 	const { clientUuid } = useProfileStore();
 
 	const clientSeat = seats.indexOf(clientUuid);

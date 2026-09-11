@@ -17,7 +17,7 @@ export const GameScene = () => {
 	const { setResults } = useResultsStore();
 	const { setCurrentScene, setShowWindow } = useSceneStore();
 
-	useAutoPass();
+	// useAutoPass();
 	useEffect(() => {
 		if (cardsLeft.includes(0)) {
 			setResults();

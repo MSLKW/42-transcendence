@@ -8,6 +8,7 @@ import { CardHeap } from './CardHeap.ts';
 import { gameStatus } from './main.ts';
 import { threejsManager } from '../../../App.tsx';
 import { Participant } from './Participant.ts';
+import { useGameStore } from '../../../store/GameStore.ts';
 
 export class Player extends Participant {
 	private raycaster: THREE.Raycaster;
@@ -69,12 +70,11 @@ export class Player extends Participant {
 		});
 		
 		this.socket.on("player_turn", (playerTurn: PlayerTurnTransmit) => {
-			if (this.uuid === playerTurn.playerId) {
-				this.setPlayerTurnUI(true, playerTurn.skippable);
-			}
-			else {
-				this.setPlayerTurnUI(false);
-			}
+			const activeSeat = useGameStore.getState().seats.findIndex((uuid) => uuid === playerTurn.playerId);
+			useGameStore.setState({
+				activeSeat: activeSeat, 
+				isActiveSeatSkippable: playerTurn.skippable
+			});
 			console.log(`It is now Player<${playerTurn.playerId}>'s turn! Timer is set at ${playerTurn.timer} seconds!`);
 		});
 
@@ -131,7 +131,7 @@ export class Player extends Participant {
 		threejsManager.renderer.domElement.addEventListener('pointerup', (event) => {
 			if (this.cardManager.draggedCard !== undefined) {
 				if (this.isDragging === true) {
-					this.cardManager.setSort(undefined);
+					this.setSort("Flex");
 				}
 				this.eventDropDrag(event);
 			}
@@ -170,15 +170,31 @@ export class Player extends Participant {
 		this.socket.emit("player_skip_turn_request");
 	}
 
-	public sortCardsByRankButtonHandler() {
-		this.cardManager.setSort((a, b) => a.rank - b.rank);
-	}
+	// public sortCardsByRankButtonHandler() {
+	// 	this.cardManager.setSort((a, b) => a.rank - b.rank);
+	// }
 
-	public sortCardsBySuitButtonHandler() {
-		this.cardManager.setSort((a, b) => {
-			const suitDiff = a.suit - b.suit;
-			return (suitDiff === 0 ? a.rank - b.rank : suitDiff);
-		});
+	// public sortCardsBySuitButtonHandler() {
+	// 	this.cardManager.setSort((a, b) => {
+	// 		const suitDiff = a.suit - b.suit;
+	// 		return (suitDiff === 0 ? a.rank - b.rank : suitDiff);
+	// 	});
+	// }
+
+	public setSort(sortType: string) {
+		if (sortType === "Rank") {
+			this.cardManager.setSort((a, b) => a.rank - b.rank);
+		}
+		else if (sortType === "Suit") {
+			this.cardManager.setSort((a, b) => {
+				const suitDiff = a.suit - b.suit;
+				return (suitDiff === 0 ? a.rank - b.rank : suitDiff);
+			});
+		}
+		else if (sortType === "Flex") {
+			this.cardManager.setSort(undefined);
+		}
+		useGameStore.setState({ sortType: sortType });
 	}
 
 	private raycast(event: PointerEvent) {

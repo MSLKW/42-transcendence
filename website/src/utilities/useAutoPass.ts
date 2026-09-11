@@ -2,8 +2,10 @@ import { useEffect } from "react";
 import { useGameStore } from "../store/GameStore";
 import { useSettingsStore, autoPassValues } from "../store/SettingsStore";
 
+// DEPRECATED
+
 export const useAutoPass = () => {
-	const { activeSeat, nextTurn, gameStarted } = useGameStore();
+	const { activeSeat, skipTurn: nextTurn, gameStarted } = useGameStore();
 	const { autoPassIndex } = useSettingsStore();
 
 	useEffect(() => {

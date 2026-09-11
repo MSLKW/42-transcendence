@@ -389,7 +389,6 @@ export class CardManager {
 			this.receiveCard(this.draggedCard, this.getInsertIndex(this.draggedCard));
 			this.draggedCard = undefined;
 		}
-		console.log(this.selectedCards.cards);
 	}
 
 	private getInsertIndex(draggedCard: Card): number {

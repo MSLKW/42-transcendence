@@ -37,6 +37,8 @@ interface GameValues {
 	round: number;
 	seatRef: number[];
 	activeSeat: number;
+	isActiveSeatSkippable: boolean;
+	sortType: string;
 }
 
 interface GameState extends GameValues {
@@ -48,7 +50,7 @@ interface GameState extends GameValues {
 	setSeatRef: () => void;
 	dealCards: () => void;
 	startGame: () => void;
-	nextTurn: () => void;
+	skipTurn: () => void;
 
 	endGame: () => void;
 	incTotalWin: (uuid: string) => void;
@@ -67,6 +69,8 @@ export const useGameStore = create<GameState>() (
 			round: 0,
 			seatRef: [],
 			activeSeat: 0,
+			isActiveSeatSkippable: false,
+			sortType: "Flex",
 
 			initSeats: () => {
 				const totalPlayers = get().totalPlayers;
@@ -151,9 +155,7 @@ export const useGameStore = create<GameState>() (
 				// useSceneStore.getState().setCurrentScene("Game");
 				gameInstance?.startGame();
 			},
-			nextTurn: () => {
-				// const newActiveSeat = (get().activeSeat + 1) % get().totalPlayers;
-				// set({ activeSeat: newActiveSeat });
+			skipTurn: () => {
 				gameInstance?.playerRef?.skipTurnButtonHandler();
 			},
 
