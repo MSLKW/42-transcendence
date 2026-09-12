@@ -31,13 +31,12 @@ export class Game {
 
 	constructor(sessionId: string, playerId: string) {
 		this.playerId = playerId;
-		this.socket = io('http://localhost:80', {
+		this.socket = io({
 			path: "/socket/game/",
 			auth: {
 				lobbyId: sessionId,
 				uuid: playerId
 			}
-			
 		})
 		if (this.playerId === usePartyStore.getState().hostUuid) {
 			this.socket.emit("user_seat_change", useGameStore.getState().totalPlayers);

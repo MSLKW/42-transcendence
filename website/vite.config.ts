@@ -13,7 +13,7 @@ export default defineConfig({
 		ws: {
 			host: 'localhost',
 			port: 5173,
-			clientPort: 80,
+			clientPort: process.env.DOMAIN_PORT ? Number(process.env.DOMAIN_PORT) : 80,
 		},
 		allowedHosts: true,
 		// allowedHosts: [

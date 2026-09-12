@@ -6,8 +6,11 @@ services:
     build: nginx
     image: nginx:test
     ports:
-      - "80:80"
+      - "${DOMAIN_PORT}:${DOMAIN_PORT}"
     restart: unless-stopped
+    environment:
+      DOMAIN_PORT: ${DOMAIN_PORT}
+      NGINX_ENVSUBST_FILTER: ^DOMAIN_PORT$
     networks:
       - big2
   
@@ -43,6 +46,8 @@ services:
       - ./website:/app/website
       - /app/node_modules
       - /app/website/node_modules
+    environment:
+      DOMAIN_PORT: ${DOMAIN_PORT} # Right now only for vite config, can remove in production
     networks:
       - big2
   
