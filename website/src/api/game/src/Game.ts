@@ -144,8 +144,10 @@ export class Game {
 	
 		this.socket.on("game_state", (gameState: GameStateTransmit) => {
 			console.log("[game] Received game_state");
-			useSceneStore.getState().setCurrentScene("Game");
 			this.initGame(gameState);
+			useGameStore.setState({ totalPlayers: this.participants.length });
+			useGameStore.getState().setSeatRef(); // gets the avatars to appear, but misordered af
+			useSceneStore.getState().setCurrentScene("Game");
 		});
 	}
 
