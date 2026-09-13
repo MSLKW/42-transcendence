@@ -1,23 +1,29 @@
 import { Request, Response } from "express";
-import { users } from "@big2/auth-schema";
+import { users, sessions } from "@big2/auth-schema";
 import { postgresClient } from "../store/postgresClient"
 import { eq } from "drizzle-orm";
 
 
-export function checkUserExistanceForFriends() {
+export function getInternalInfosForProfile() {
 	return async ( req: Request, res: Response ) => {
 		
-		const id = req.params.id as string; // use this over req.body.id coz id is passed through URL in REST API
+		const uuid = req.params.uuid as string; // use this over req.body.id coz id is passed through URL in REST API
 		
-		const [userExists] = await postgresClient
-			.select()
+		const [user] = await postgresClient
+			.select({ createdAt: users.createdAt })
 			.from(users)
-			.where(eq(users.id, id))
+			.where(eq(users.id, uuid))
 			.limit(1);
-		if (!userExists)
-			return ( res.status(404).json({ error: "User uuid does not exist" }));
+		if (!user)
+			return ( res.status(404).json({ error: "User not found" }));
+
+		const [session] = await postgresClient
+			.select({ createdAt: sessions.createdAt })
+			.from(sessions)
+			.where(eq(sessions.userId, uuid))
+			.limit(1);
 		
-		return res.status(200).json({ exists: true });
+		return res.status(200).json({ createdAt: user.createdAt, lastLogin: session?.createdAt ?? null});
 	};
 }
 

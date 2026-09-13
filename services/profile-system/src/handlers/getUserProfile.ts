@@ -39,11 +39,11 @@ export function getUserProfile(store: UserStore)
 		try
 		{
 			const [authData, partyData, gameStatsData] = await Promise.all ([
-				fetchJson(`${AUTH_SERVICE_URL}/internal/profile/${uuid}`),
+				fetchJson(`${AUTH_SERVICE_URL}/internal/profile/infos/${uuid}`),
 				fetchJson(`${PARTY_MANAGER_SERVICE_URL}/internal/profile/${uuid}`),
 				GAME_STATS_SERVICE_URL 
 					? 
-					fetchJson(`${GAME_STATS_SERVICE_URL}/internal/profile/${uuid}`)
+					fetchJson(`${GAME_STATS_SERVICE_URL}/internal/profile/${uuid}`).catch(() => DEFAULT_GAME_STATS_DATA)
 					:
 					Promise.resolve(DEFAULT_GAME_STATS_DATA),
 			]);
