@@ -45,6 +45,18 @@ export class DrizzleUserStore implements UserStore
 			if (!user)
 				return (null);
 
+			// const DEFAULT_USER_SETTINGS = {
+			// 	allow3OfAKind: false,
+			// 	allow2OfSpadesEnd: false,
+			// 	autoPassIndex: 0,
+			// 	endGameCondition: 0,
+			// 	scoreCalculation: 0,
+			// 	cardStyle: 0,
+			// 	uiColor: 0,
+			// 	fxLevel: 0,
+			// 	mxLevel: 0
+			// };
+
 			const [settings] = await postgresClient
 				.select()
 				.from(userSettings)
@@ -98,25 +110,6 @@ export class DrizzleUserStore implements UserStore
 	{
 		try 
 		{
-			// // partial = what the caller gave as parameter. Untouched.
-			// // dbPartial = a new, smaller object built from partial, keeping only the fields userData table has columns for.
-			// // _drop — not a type, not special syntax. It's destructuring-rename: { uuid: _drop } means "take the uuid key out of partial, but call it _drop locally." 
-			// // 		You have to give it some name — you just can't call it uuid, because your function parameter is already named uuid, and reusing it would silently shadow (hide) that parameter inside this block. 
-			// // 		_drop is a name signaling "grabbed on purpose, never used."
-			// // The whole line is one filter, read left to right: "pull uuid, createdAt, lastLogin, level... out of partial by name (into variables I'll ignore) — whatever's left over, collect into dbPartial."
-			// const { uuid: _drop, 
-			// 		createdAt, 
-			// 		lastLogin, 
-			// 		level, 
-			// 		xp, 
-			// 		totalPlayed, 
-			// 		totalWins, 
-			// 		totalLoss, 
-			// 		winStreak, 
-			// 		online, 
-			// 		inGame, 
-			// 		...dbPartial } = partial;
-
 			await postgresClient
 				.insert(userData)
 				.values({ id: uuid, ...partial })
