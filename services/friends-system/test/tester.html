@@ -98,12 +98,15 @@ function start() {
     }
   };
 
-
-  // server tells us we were replaced by another tab/device for this upon the same uuid
-  // we will reconfirm that we close it ourselves so the browser does NOT auto-reconnect
-  // default behaviour will auto-reconnect in case of wifi blipped
-  // exactly what caused the infinite kick-loop bug before
-  // The server's existing.end() alone can never produce that understanding — only the client explicitly closing itself can.
+  // Server (backend): tells frontend via (existing.end() + event REPLACED) they were replaced by another new latest tab/device connecting upon this same uuid 
+  // Browser (frontend): must close it ourselves via ( .close() ) => exactly what stops the browser's (frontend side) default auto-reconnect behavior
+  // why must the combo actions of both backend+frontend, not just either? 
+  // =>
+  // Server's existing.end() alone can never make browser understand that this connection must be replaced. with server's REPLACED event, it hints the browser to explicitly close.
+  // If we relied on the server's existing.end() alone, 
+  // this tab's EventSource would see "connection died" & back to default behaviour: auto-retry.
+  // default behaviour will auto-reconnect coz always assuming its default situation: wifi blipped, unless deliberately hinted so ("replaced").
+  // otherwise, causes infinite kick-loop bug: evict old connection, old connection will auto-retry & evict the new connection, and vice-versa, infinitely. 
   evtSource.addEventListener("replaced", () => {
     evtSource.close();  // <- calling .close() yourself is the actual fix, this is what stops auto-reconnect, not the server closing it
     evtSource = null;
@@ -159,9 +162,10 @@ function disconnect() {
 async function sendRequest() {
   const input = document.getElementById("target-uuid");
   const target = input.value.trim();
-
-  if (!target) return log("enter a friend's uuid before sending a friend request");
-  input.value = "";
+// bug fixed: don't even attempt the friend request if the field is empty
+  if (!target) 
+    return log("enter a friend's uuid before sending a friend request");
+  input.value = ""; // ← this clears the box immediately
 
   const res = await fetch(`${API}/friend-requests`, {
     method: "POST", headers: { "Content-Type": "application/json" },
@@ -210,6 +214,8 @@ async function refreshSent() {
   list.innerHTML = "";
   requests.forEach(r => {
     const li = document.createElement("li");
+    // r.status here is the FRIEND REQUEST's own status (Pending/Accepted/
+    // Rejected), as returned by the backend's schema column named "status".
     li.textContent = `${r.receiverId} — ${r.status}`;
     list.appendChild(li);
   });
