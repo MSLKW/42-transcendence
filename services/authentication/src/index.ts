@@ -28,6 +28,7 @@ app.delete("/logout", logoutHandler(sessionStore));
 app.get("/validate", validateSessionHandler(sessionStore));
 app.get("/internal/profile/:id", getInternalInfosForProfile()); // REST API FOR database usage (profile)
 app.get("/internal/friends/:id", checkUserExistanceForFriends()); // REST API FOR database usage (friends)
+app.get("/", (req, res) => res.sendStatus(200)); // temporary healthcheck only, to enable docker run 
 
 app.use((err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {
 	if (err.type === "entity.parse.failed") {

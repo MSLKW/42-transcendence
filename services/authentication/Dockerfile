@@ -9,12 +9,15 @@ COPY                        package.json    ./services/authentication/
 
 RUN npm ci
 
-# in docker-compose: context is services/authentication, so we copy everything exists within `context` only
-COPY . .
+COPY --from=root            tsconfig.base.json   ./
+COPY --from=auth-schema     . ./packages/postgres/auth-schema/
+COPY --from=postgres-client . ./packages/postgres/postgres-client/
+COPY                        . ./services/authentication/
 
-RUN npm run build -w @big2/auth-schema
-RUN npm run build -w @big2/postgres-client
-RUN npm run build -w authentication
+RUN npm run build:docker -w authentication
+# RUN npm run build -w @big2/auth-schema
+# RUN npm run build -w @big2/postgres-client
+# RUN npm run build -w authentication
 
 #Runner
 FROM node:20-alpine AS runner
@@ -32,8 +35,10 @@ COPY --from=builder /app/packages/postgres/auth-schema/dist     ./packages/postg
 COPY --from=builder /app/packages/postgres/postgres-client/dist ./packages/postgres/postgres-client/dist
 COPY --from=builder /app/services/authentication/dist           ./services/authentication/dist
 
+COPY scripts/* /usr/local/bin
+
 EXPOSE 3000
 
 WORKDIR /app/services/authentication
-ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
+ENTRYPOINT ["/usr/local/bin/auth-entrypoint.sh"]
 CMD ["npm", "run", "start"]

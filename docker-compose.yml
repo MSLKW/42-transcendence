@@ -125,7 +125,7 @@ services:
   
   #     INFRASTRUCTURE MICROSERVICE
   nginx:
-    build: infra/nginx
+    build: ./infra/nginx
     pull_policy: never
     image: nginx:test
     container_name: nginx
@@ -235,8 +235,13 @@ services:
  #     BACKEND MICORSERVICE
   profile-system:
     build:
-      context: .                                         # Set workdir to the repo's root
-      dockerfile: ./services/profile-system/Dockerfile    # Point to the Dockerfile's relative path
+      context: ./services/profile-system
+      additional_contexts:
+        root: .
+        auth-schema: ./packages/postgres/auth-schema
+        profile-system-types: ./packages/types/profile-system-types
+        profile-system-schema: ./packages/postgres/profile-system-schema
+        postgres-client: ./packages/postgres/postgres-client
     pull_policy: never
     image: profile:test
     container_name: profile-system

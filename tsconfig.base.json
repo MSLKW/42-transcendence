@@ -10,7 +10,7 @@
     "types": ["node"],
     "isolatedModules": true,
     "moduleDetection": "force",
-    "verbatimModuleSyntax": true,
+    // "verbatimModuleSyntax": true,
     "noUncheckedSideEffectImports": true,
   }
 }

@@ -8,14 +8,15 @@ import { playerStatus } from "@big2/party-manager-schema";
 export function getInternalInfosForProfile() {
 	return ( async (req: Request, res: Response) => {
 		
-		const id = req.params.id;
+		const id = req.params.id as string;
 		if (!id)
 			return res.status(404).json({ error: "User not found "});
 
 		const status = await postgresClient
 			.select()
 			.from(playerStatus)
-			.where(eq(playerStatus.id, id));
+			.where(eq(playerStatus.id, id))
+			.limit(1);
 
 		return res.status(200).json(status);
 	})

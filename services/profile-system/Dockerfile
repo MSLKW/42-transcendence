@@ -11,13 +11,19 @@ COPY						        package.json	./services/profile-system/
 
 RUN npm ci
 
-COPY . .
+COPY --from=root                    tsconfig.base.json   ./
+COPY --from=auth-schema             . ./packages/postgres/auth-schema/
+COPY --from=profile-system-types    . ./packages/types/profile-system-types/
+COPY --from=profile-system-schema   . ./packages/postgres/profile-system-schema/
+COPY --from=postgres-client			. ./packages/postgres/postgres-client/
+COPY						        . ./services/profile-system/
 
-RUN npm run build @big2/auth-schema
-RUN npm run build @big2/profile-system-types
-RUN npm run build @big2/profile-system-schema
-RUN npm run build @big2/postgres-client
-RUN npm run build @big2/profile-system
+RUN npm run build:docker -w profile-system
+# RUN npm run build -w @big2/auth-schema
+# RUN npm run build -w @big2/profile-system-types
+# RUN npm run build -w @big2/profile-system-schema
+# RUN npm run build -w @big2/postgres-client
+# RUN npm run build -w profile-system
 
 #Runner
 FROM node:20-alpine AS runner
@@ -40,8 +46,10 @@ COPY --from=builder /app/packages/postgres/postgres-client/dist ./packages/postg
 COPY --from=builder /app/services/profile-system/dist ./services/profile-system/dist
 COPY --from=builder /app/services/profile-system/test ./services/profile-system/test
 
+COPY scripts/* /usr/local/bin
+
 EXPOSE 3000
 
 WORKDIR /app/services/profile-system
-ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
+ENTRYPOINT ["/usr/local/bin/profile-system-entrypoint.sh"]
 CMD ["npm", "run", "start"]

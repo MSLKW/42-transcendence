@@ -1,5 +1,5 @@
 {
-	"name": "login-backend",
+	"name": "authentication",
   	"private": true,
 	"version": "1.0.0",
 	"description": "",

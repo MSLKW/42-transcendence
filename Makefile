@@ -6,7 +6,7 @@
 #    By: aimokhta <aimokhta@student.42kl.edu.my>    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2026/06/16 09:31:30 by aimokhta          #+#    #+#              #
-#    Updated: 2026/09/09 04:46:04 by aimokhta         ###   ########.fr        #
+#    Updated: 2026/09/14 00:16:56 by aimokhta         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -61,6 +61,8 @@ logs:
 	@docker logs migrator
 	@echo "$(PURPLE)\ndocker logs drizzle-gateway$(RESET)"
 	@docker logs drizzle-gateway
+	@echo "$(PURPLE)\ndocker logs nginx$(RESET)"
+	@docker logs nginx
 	@echo "$(PURPLE)\ndocker logs authentication$(RESET)"
 	@docker logs authentication
 	@echo "$(PURPLE)\ndocker logs party-manager$(RESET)"
