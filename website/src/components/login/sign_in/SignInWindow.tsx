@@ -14,6 +14,7 @@ export const SignInWindow = () => {
 	const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
 
+		setIsLoading(true);
 		if (!email || !password) {
 			showNotification("All fields are required", NOTIFICATION_TYPE.error);
 			return;
@@ -24,7 +25,8 @@ export const SignInWindow = () => {
 			return;
 		}
 
-		handleSignIn(email, password, setIsLoading);
+		await handleSignIn(email, password);
+		setIsLoading(false);
 	}
 
 	return (

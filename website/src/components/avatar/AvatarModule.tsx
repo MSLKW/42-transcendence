@@ -67,12 +67,12 @@ export const AvatarModule = ({
 			>
 				<AvatarImage
 					uuid={uuid}
-					image={image ?? "avatar-unknown.webp"}
+					image={image ?? undefined}
 					isActive={isActive}
 				/>
 				<AvatarCornerButton cornerButton={cornerButton} />
 			</button>
-			{ showName && <AvatarName name={data?.name ?? "Player"} /> }
+			{ showName && <AvatarName name={data?.name ?? "-"} /> }
 		</div>
 	);
 }

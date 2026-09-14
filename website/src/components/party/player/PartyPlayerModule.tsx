@@ -3,8 +3,9 @@ import { useEffect, useState } from "react";
 import { partySocket } from "../../../api/party/partySocket";
 import { handleGetProfile } from "../../../api/profile/get_profile/handleGetProfile";
 import { useFriendStore } from "../../../store/FriendStore";
+import { usePartyStore } from "../../../store/PartyStore";
 import { useProfileStore, type UserData } from "../../../store/ProfileStore";
-// import { PlayerStatusModule } from "../../player/status/PlayerStatusModule";
+import { PlayerStatusModule } from "../../player/status/PlayerStatusModule";
 import { AvatarModule } from "../../avatar/AvatarModule";
 import { InviteIcon } from "../invite/InviteIcon";
 
@@ -14,6 +15,7 @@ interface PartyPlayerModuleProps {
 
 export const PartyPlayerModule = ({ uuid }: PartyPlayerModuleProps) => {
 	const { cachedFriends } = useFriendStore();
+	const { members } = usePartyStore();
 	const { clientUuid } = useProfileStore();
 
 	const [data, setData] = useState<UserData | null>(null);
@@ -22,17 +24,17 @@ export const PartyPlayerModule = ({ uuid }: PartyPlayerModuleProps) => {
 	useEffect(() => {
 		let mounted = true;
 
-		const loadProfile = async () => {
-			setIsLoading(true);
+		// const loadProfile = async () => {
+		// 	setIsLoading(true);
 
-			const profile = await handleGetProfile(uuid);
+		// 	const profile = await handleGetProfile(uuid);
 
-			if (mounted) {
-				setData(profile);
-				setIsLoading(false);
-			}
-		};
-		loadProfile();
+		// 	if (mounted) {
+		// 		setData(profile);
+		// 		setIsLoading(false);
+		// 	}
+		// };
+		// loadProfile();
 
 		return () => {
 			mounted = false;
@@ -45,9 +47,11 @@ export const PartyPlayerModule = ({ uuid }: PartyPlayerModuleProps) => {
 		"Stranger"
 	;
 
+	const isDisabled = (relation === "Self" || members.includes(uuid));
+
 	const handleInvite = () => {
-		// if ((data?.availability === "Online" && relation != "Self") || data?.availability === "Busy")
-			// return;
+		if (isDisabled)
+			return;
 		partySocket.sendInvite(uuid, "Player");
 	}
 
@@ -82,6 +86,7 @@ export const PartyPlayerModule = ({ uuid }: PartyPlayerModuleProps) => {
 			<button
 				data-tip="Send Invite"
 				// disabled={data?.availability === "Offline"}
+				disabled={isDisabled}
 				onClick={handleInvite}
 				className={`
 					h-full w-full
@@ -105,12 +110,14 @@ export const PartyPlayerModule = ({ uuid }: PartyPlayerModuleProps) => {
 								// : "place-content-center"
 						// }
 					className={`
+						place-content-center
 						flex
 						place-items-center
 						gap-1rem
 					`}
 				>
 					{/* <PlayerStatusModule status={data?.availability!}/> */}
+					<PlayerStatusModule status="Busy"/>
 					{/* { (data.availability === "Online" || data.availability === "Busy") && relation != "Self" && */}
 						<div
 							className="

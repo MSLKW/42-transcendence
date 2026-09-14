@@ -79,7 +79,7 @@ export const HomeScene = () => {
 						<AvatarModule 
 							key={clientUuid}
 							uuid={clientUuid}
-							image={data?.avatar ?? "avatar-unknown.webp"}
+							image={data?.avatar ?? undefined}
 							cornerButton={hostUuid === clientUuid ? "host" : ""}
 						/>
 					}

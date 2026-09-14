@@ -1,32 +1,30 @@
-import type { Dispatch, SetStateAction } from "react";
 import { signInFetch } from "./fetchSignIn";
 import { useNotificationStore, NOTIFICATION_TYPE } from "../../../store/NotificationStore";
 import { useProfileStore } from "../../../store/ProfileStore";
 import { useSceneStore } from "../../../store/SceneStore";
 import { handleGetProfile } from "../../profile/get_profile/handleGetProfile";
 
-export const handleSignIn = async (email: string, password: string, setIsLoading: Dispatch<SetStateAction<boolean>>) => {
+export const handleSignIn = async (email: string, password: string) => {
 	const { setShowWindow, setCurrentScene } = useSceneStore.getState();
 	const { showNotification } = useNotificationStore.getState();
 
 	try {
-		setIsLoading(true);
 		const response = await signInFetch(email, password);
+		useProfileStore.setState({
+			validateResponse: response,
+			clientUuid: response.id,
+		});
 
-		useProfileStore.setState({ validateResponse: response });
-		useProfileStore.setState({ clientUuid: response.id });
-		// const handleGetProfile(response.id);
-		// initClientData();
+		await handleGetProfile(response.id);
+		await useProfileStore.getState().setCachedData();
 
 		setShowWindow("signIn", false);
 		setCurrentScene("Home");
 
-		console.log("[handleSignIn] Successfully signed in! response.id: ", response.id);
+		console.log("[handleSignIn] response.id: ", response.id);
 	} catch (err) {
 		const errorMsg = err instanceof Error ? err.message : "Something went wrong. Please try again";
 		console.log("[handleSignIn] errorMsg:", errorMsg);
 		showNotification(errorMsg, NOTIFICATION_TYPE.error);
-	} finally {
-		setIsLoading(false);
 	}
 }

@@ -10,7 +10,7 @@ import { useFriendStore } from "./store/FriendStore";
 import { useGameStore, HAND_LABEL, type HAND_TYPE } from "./store/GameStore";
 import { useNotificationStore, NOTIFICATION_TYPE } from "./store/NotificationStore";
 import { usePartyStore } from "./store/PartyStore";
-import { useProfileStore } from "./store/ProfileStore";
+import { useProfileStore, cachedBotData } from "./store/ProfileStore";
 import { useResultsStore } from "./store/ResultsStore";
 import { defaultShowWindow, useSceneStore } from "./store/SceneStore";
 import { DevButton } from "./components/dev/DevBtn";
@@ -27,7 +27,6 @@ export default function Dev() {
 	const { clientUuid, isAuthenticated, validateResponse, profilesInDb, resetProfilesInDb, cachedData, getCachedData } = useProfileStore();
 	const { results } = useResultsStore();
 	const { currentScene, setCurrentScene } = useSceneStore();
-	const [inviteUuid, setInviteUuid] = useState("");
 	const [fetchUrl, setFetchUrl] = useState("");
 	const [fetchBody, setFetchBody] = useState("");
 
@@ -103,116 +102,110 @@ export default function Dev() {
 	}
 
 	return (
-		<section className="w-full text-b4 py-1rem gap-1rem">
-			<ul className="flex place-content-evenly">
-				<DevButton label="Frame" call={() => toggleFlag("showFrame")} />
-				<DevButton label="Stats" call={() => toggleFlag("showStats")} />
-				<DevButton label="Reset All" call={handleResetAll} />
-			</ul>
-			<ul className="flex place-content-evenly px-3rem">
-				<DevButton label="Notify Message" call={() => showNotification("This is a message notification", NOTIFICATION_TYPE.message)} />
-				<DevButton label="Notify Invite" call={() => showNotification("This is an invite notification", NOTIFICATION_TYPE.invite)} />
-				<DevButton label="Notify Error" call={() => showNotification("This is an error notification", NOTIFICATION_TYPE.error)} />
-			</ul>
-			<ul className="flex place-content-evenly">
-				{ currentScene === "Game" && clientUuid === hostUuid &&
-					<>
-						{ seats[0] && <DevButton label={`${getCachedData(seats[0])?.name} Wins`} call={() => playerWins(0)}/> }
-						{ seats[1] && <DevButton label={`${getCachedData(seats[1])?.name} Wins`} call={() => playerWins(1)}/> }
-						{ seats[2] && <DevButton label={`${getCachedData(seats[2])?.name} Wins`} call={() => playerWins(2)}/> }
-						{ seats[3] && <DevButton label={`${getCachedData(seats[3])?.name} Wins`} call={() => playerWins(3)}/> }
-					</>
-				}
-			</ul>
-			<ul className="flex place-content-center place-items-center gap-1rem">
-				<input
-					id="inviteUuid"
-					onChange={(e) => setInviteUuid(e.target.value)}
-					className="bg-dark w-[70%]"
-				/>
-				<DevButton label="Invite" call={() => partySocket.sendInvite(inviteUuid)}/>
-			</ul>
-			<ul className="flex flex-col px-3rem">
-				<div className="flex place-content-between">
+		<section className="w-full text-b4 py-1rem gap-1rem flex flex-col px-3rem">
+			{/* utilities */}
+				<ul className="flex place-content-between">
+					<DevButton label="Frame" call={() => toggleFlag("showFrame")} />
+					<DevButton label="Stats" call={() => toggleFlag("showStats")} />
+					<DevButton label="Reset All" call={handleResetAll} />
+				</ul>
+			{/* notification */}
+				<ul className="flex place-content-between">
+					<DevButton label="Notify Message" call={() => showNotification("This is a message notification", NOTIFICATION_TYPE.message)} />
+					<DevButton label="Notify Invite" call={() => showNotification("This is an invite notification", NOTIFICATION_TYPE.invite)} />
+					<DevButton label="Notify Error" call={() => showNotification("This is an error notification", NOTIFICATION_TYPE.error)} />
+				</ul>
+			{/* authentication */}
+				<ul className="flex place-content-between">
 					<DevButton label={`clientUuid: ${clientUuid ? clientUuid : "n/a"}`} call={() => navigator.clipboard.writeText(clientUuid ?? "")}/>
 					<DevButton label="Validate" call={doValidate}/>
 					<DevButton label={`isAuthenticated: ${isAuthenticated ? "Yes" : "No"}`} call={() => console.log("/validate response: ", validateResponse)}/>
-				</div>
-				{/* fetch */}
-					<div className="flex place-content-between gap-1rem">
-						<input
-							id="inviteUuid"
-							onChange={(e) => setFetchUrl(e.target.value)}
-							className="bg-dark w-[70%]"
-						/>
-						<input
-							id="inviteUuid"
-							onChange={(e) => setFetchBody(e.target.value)}
-							className="bg-dark w-[70%]"
-						/>
-						<DevButton label="GET" call={() => fetchGet(fetchUrl)}/>
-						<DevButton label="PUT" call={() => fetchPut(fetchUrl, fetchBody)}/>
-					</div>
-				{/* profile */}
-					<div className="flex place-content-between">
-						<DevButton label={`profilesInDb: ${profilesInDb.length}`} call={() => console.log("profilesInDb: ", profilesInDb)} />
-						<DevButton label={`cachedData: ${cachedData.length}`} call={() => console.log("cachedData: ", cachedData)} />
-					</div>
-				{/* party */}
-					<div className="flex place-content-between">
-						<DevButton
-							label={`partySocketId: ${partySocketId ? partySocketId : "n/a"}`}
-							call={handlePartyConnection}
-						/>
-						<li>hostUuid: {hostUuid ? hostUuid : "n/a"} </li>
-					</div>
-					<div className="flex place-content-between">
-						<DevButton label={`members: ${members.length}`} call={() => console.log("members: ", members)}/>
-						<DevButton label={`seats: ${seated} / ${totalPlayers}`} call={() => console.log("seats: ", seats)} />
-						<DevButton label="refresh" call={() => partySocket.refresh()}/>
-						<li>partyGameId: {partyGameId ? partyGameId : "n/a"}</li>
-					</div>
-				{/* game */}
-					<div className="flex place-content-between">
-						<li>gameSocketId: n/a</li>
-						<DevButton label={`results: ${ results.length }`} call={() => console.log("results: ", results)}/>
-						<select
-							id="currentHand"
-							value={currentHand}
-							onChange={(e) => useGameStore.setState({ currentHand: e.target.value as HAND_TYPE })}
-						>
-							{HAND_LABEL.map((hand) => (
-								<option
-									key={hand}
-									value={hand}
-								>
-									{hand}
-								</option>
-							))}
-						</select>
-					</div>
-				{/* friends */}
-					<div className="flex place-content-between">
-						<DevButton label={`cachedFriends: ${cachedFriends.length}`} call={() => console.log("cachedFriends: ", cachedFriends)} />
-					</div>
-				{/* bots */}
-					<div className="flex place-content-between">
-						{currentScene === "Lobby" && <DevButton label="Fill Bots" call={() => fillSeatsWithBots()} />}
-						{currentScene === "Lobby" && <DevButton label="Remove Bots" call={() => removeBots()} />}
-						{currentScene === "Lobby" && <DevButton label="Unseat" call={() => playerUnseats(clientUuid!)} />}
-					</div>
-				{/* chat */}
-					<div className="flex place-content-between">
-						<DevButton
-							label={`chatSocketId: ${chatSocketId}`}
-							call={handleChatConnection}
-						/>
-						<DevButton
-							label={`chatRoomId: ${chatRoomId ? chatRoomId : "n/a"}`}
-							call={() => useChatStore.setState({ chatRoomId: hostUuid })}
-						/>
-					</div>
-			</ul>
+				</ul>
+			{/* fetch */}
+				<ul className="flex place-content-between gap-1rem">
+					<input
+						id="inviteUuid"
+						onChange={(e) => setFetchUrl(e.target.value)}
+						className="bg-dark w-[70%]"
+					/>
+					<input
+						id="inviteUuid"
+						onChange={(e) => setFetchBody(e.target.value)}
+						className="bg-dark w-[70%]"
+					/>
+					<DevButton label="GET" call={() => fetchGet(fetchUrl)}/>
+					<DevButton label="PUT" call={() => fetchPut(fetchUrl, fetchBody)}/>
+				</ul>
+			{/* seats */}
+				<ul className="flex place-content-between">
+					{ currentScene === "Game" && clientUuid === hostUuid &&
+						<>
+							{ seats[0] && <DevButton label={`${getCachedData(seats[0])?.name} Wins`} call={() => playerWins(0)}/> }
+							{ seats[1] && <DevButton label={`${getCachedData(seats[1])?.name} Wins`} call={() => playerWins(1)}/> }
+							{ seats[2] && <DevButton label={`${getCachedData(seats[2])?.name} Wins`} call={() => playerWins(2)}/> }
+							{ seats[3] && <DevButton label={`${getCachedData(seats[3])?.name} Wins`} call={() => playerWins(3)}/> }
+						</>
+					}
+				</ul>
+			{/* profile */}
+				<ul className="flex place-content-between">
+					<DevButton label={`profilesInDb: ${profilesInDb.length}`} call={() => console.log("profilesInDb: ", profilesInDb)} />
+					<DevButton label={`cachedData: ${cachedData.length}`} call={() => useProfileStore.setState({ cachedData: cachedBotData })} />
+				</ul>
+			{/* party */}
+				<ul className="flex place-content-between">
+					<DevButton
+						label={`partySocketId: ${partySocketId ? partySocketId : "n/a"}`}
+						call={handlePartyConnection}
+					/>
+					<li>hostUuid: {hostUuid ? hostUuid : "n/a"} </li>
+				</ul>
+				<ul className="flex place-content-between">
+					<DevButton label={`members: ${members.length}`} call={() => console.log("members: ", members)}/>
+					<DevButton label={`seats: ${seated} / ${totalPlayers}`} call={() => console.log("seats: ", seats)} />
+					<DevButton label="refresh" call={() => partySocket.refresh()}/>
+					<li>partyGameId: {partyGameId ? partyGameId : "n/a"}</li>
+				</ul>
+			{/* game */}
+				<ul className="flex place-content-between">
+					<li>gameSocketId: n/a</li>
+					<DevButton label={`results: ${ results.length }`} call={() => console.log("results: ", results)}/>
+					<select
+						id="currentHand"
+						value={currentHand}
+						onChange={(e) => useGameStore.setState({ currentHand: e.target.value as HAND_TYPE })}
+					>
+						{HAND_LABEL.map((hand) => (
+							<option
+								key={hand}
+								value={hand}
+							>
+								{hand}
+							</option>
+						))}
+					</select>
+				</ul>
+			{/* chat */}
+				<ul className="flex place-content-between">
+					<DevButton
+						label={`chatSocketId: ${chatSocketId}`}
+						call={handleChatConnection}
+					/>
+					<DevButton
+						label={`chatRoomId: ${chatRoomId ? chatRoomId : "n/a"}`}
+						call={() => useChatStore.setState({ chatRoomId: hostUuid })}
+					/>
+				</ul>
+			{/* friends */}
+				<ul className="flex place-content-between">
+					<DevButton label={`cachedFriends: ${cachedFriends.length}`} call={() => console.log("cachedFriends: ", cachedFriends)} />
+				</ul>
+			{/* bots */}
+				<ul className="flex place-content-between">
+					{currentScene === "Lobby" && <DevButton label="Fill Bots" call={() => fillSeatsWithBots()} />}
+					{currentScene === "Lobby" && <DevButton label="Remove Bots" call={() => removeBots()} />}
+					{currentScene === "Lobby" && <DevButton label="Unseat" call={() => playerUnseats(clientUuid!)} />}
+				</ul>
 		</section>
 	);
 }
