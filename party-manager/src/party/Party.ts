@@ -37,7 +37,8 @@ export class Party
 
 		if (!user)
 			return (false);
-		user.party?.removeUser(userId);
+		this.emitToAll("player_joined", { uuid: userId });
+		user.party.removeUser(userId);
 		user.party = this;
 		this.members.set(userId, user);
 		this.invites.delete(userId);
@@ -54,6 +55,7 @@ export class Party
 		this.members.delete(uuid);
 		if (uuid == this.hostId)
 			[this.hostId] = this.members.keys();
+		this.emitToAll("player_left", { uuid: uuid });
 		this.sendUpdates();			
 	}
 
@@ -145,5 +147,11 @@ export class Party
 			members: [...this.members.keys()],
 			gameId: this.gameId
 		});
+	}
+
+	emitToAll(event: string, payload: unknown)
+	{
+		for (const key of this.members.keys())
+			this.members.get(key)!.emit(event, payload);
 	}
 }
