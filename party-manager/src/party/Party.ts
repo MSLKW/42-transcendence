@@ -10,7 +10,8 @@ export class Party
 {
 	
 	public readonly id:		string;
-	public readonly hostId:	string;
+	
+	public hostId:	string;
 	
 	private invites = new Map<string, Client>();
 	private members = new Map<string, Client>();
@@ -55,18 +56,14 @@ export class Party
 
 	removeUser(uuid: string)
 	{
-		if (uuid == this.hostId)
-		{
-			this.clear("the host has left");
-			return ;
-		}
-
 		const user = this.members.get(uuid);
 		if (!user)
 			return ;
 		user.status = "available";
 		user.party = new Party(user);
 		this.members.delete(uuid);
+		if (uuid == this.hostId)
+			[this.hostId] = this.members.keys();
 		this.sendUpdates();			
 	}
 
