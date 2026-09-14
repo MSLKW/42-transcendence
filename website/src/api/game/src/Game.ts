@@ -149,17 +149,47 @@ export class Game {
 		this.socket.on("game_state", (gameState: GameStateTransmit) => {
 			console.log("[game] Received game_state");
 			this.initGame(gameState);
-			useGameStore.setState({ totalPlayers: this.participants.length });
-			useGameStore.getState().setCardsLeft(gameState.playerCardsAmount);
-			useGameStore.getState().setSeatRef();
-			useSceneStore.getState().setCurrentScene("Game");
-			// this.moveCamera();
 		});
 	}
 
 	private initGame(gameState: GameStateTransmit) {
 		this.initParticipants(gameState);
-	
+		useGameStore.setState({ totalPlayers: this.participants.length });
+		useGameStore.getState().setCardsLeft(gameState.playerCardsAmount);
+		useGameStore.getState().setSeatRef();
+		useSceneStore.getState().setCurrentScene("Game");
+		this.moveCamera();
+		this.initDeckDealing(gameState);
+	}
+
+	private initParticipants(gameState: GameStateTransmit) {
+		const seatOrder = gameState.playerSeatOrder;
+		const playerSeatIndex = gameState.playerSeatOrder[this.playerId];
+		const totalSeats = Object.keys(seatOrder).length;
+
+		const relativeSeatOrder = Object.entries(seatOrder).sort(([, indexA], [, indexB]) => {
+			const distanceA = (indexA - playerSeatIndex + totalSeats) % totalSeats;
+			const distanceB = (indexB - playerSeatIndex + totalSeats) % totalSeats;
+			return distanceA - distanceB;
+		}).map(([id]) => id);
+		
+		for (let i = 0; i < relativeSeatOrder.length; i++) {
+			const id = relativeSeatOrder[i];
+			if (id === this.playerId) {
+				const player = new Player(this.socket, this.playerId, this.cardHeap); // 2nd game bug where player is doubled, rly need to make a clean game state for client
+				this.participants.push(player);
+				this.playerRef = player;
+			}
+			else if (id !== this.playerId) {
+				const opponent = new Opponent(this.socket, id, this.cardHeap);
+				const [pos, rot] = this.tablePosition(i);
+				opponent.cardManager.updateManager(pos, rot);
+				this.participants.push(opponent);
+			}
+		}
+	}
+
+	private initDeckDealing(gameState: GameStateTransmit) {
 		const deck = new Deck(this.centerPosition);
 		const universalTimeline = gsap.timeline();
 		if (gameState.cardHeap.length === 0) {
@@ -203,35 +233,6 @@ export class Game {
 			}
 			this.cardHeap.cardHandQueue.play();
 		})
-	}
-
-	private initParticipants(gameState: GameStateTransmit) {
-		const seatOrder = gameState.playerSeatOrder;
-		const playerSeatIndex = gameState.playerSeatOrder[this.playerId];
-		const totalSeats = Object.keys(seatOrder).length;
-
-		const relativeSeatOrder = Object.entries(seatOrder).sort(([, indexA], [, indexB]) => {
-			const distanceA = (indexA - playerSeatIndex + totalSeats) % totalSeats;
-			const distanceB = (indexB - playerSeatIndex + totalSeats) % totalSeats;
-			return distanceA - distanceB;
-		}).map(([id]) => id);
-		
-		for (let i = 0; i < relativeSeatOrder.length; i++) {
-			const id = relativeSeatOrder[i];
-			if (id === this.playerId) {
-				const player = new Player(this.socket, this.playerId, this.cardHeap); // 2nd game bug where player is doubled, rly need to make a clean game state for client
-				this.participants.push(player);
-				this.playerRef = player;
-
-				this.moveCamera();
-			}
-			else if (id !== this.playerId) {
-				const opponent = new Opponent(this.socket, id, this.cardHeap);
-				const [pos, rot] = this.tablePosition(i);
-				opponent.cardManager.updateManager(pos, rot);
-				this.participants.push(opponent);
-			}
-		}
 	}
 
 	private moveCamera() {

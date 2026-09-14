@@ -94,7 +94,7 @@ export const useResultsStore = create<ResultsState>() (
 				useGameStore.setState({
 					gameStarted: false,
 					cardsLeft: [],
-					currentHand: "Open",
+					currentHand: "None",
 					round: 0,
 					seatRef: [],
 					activeSeat: 0,

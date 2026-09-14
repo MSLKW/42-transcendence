@@ -14,17 +14,6 @@ import { GamePlayButton } from "./action/GamePlayButton";
 export const GameScene = () => {
 	const { totalPlayers, seats, seatRef, cardsLeft, activeSeat, gameStarted } = useGameStore();
 	const { getCachedData } = useProfileStore();
-	// const { setResults } = useResultsStore();
-	// const { setCurrentScene, setShowWindow } = useSceneStore();
-
-	// useAutoPass();
-	// useEffect(() => {
-	// 	if (cardsLeft.includes(0)) {
-	// 		setResults();
-	// 		setCurrentScene("Lobby");
-	// 		setShowWindow("results", true);
-	// 	}
-	// }, [cardsLeft]);
 
 	return (
 		<>

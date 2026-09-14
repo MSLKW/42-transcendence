@@ -4,6 +4,7 @@ import { CardHand } from './CardHand.ts';
 import { gsap } from 'gsap';
 import { threejsManager } from '../../../App.tsx';
 import { gameScene } from '../../../components/3d/ThreeJsManager.ts';
+import { useGameStore } from '../../../store/GameStore.ts';
 
 export class CardManager {
 	/* Card Manager */
@@ -337,6 +338,7 @@ export class CardManager {
 			card.isHover = false;
 			this.selectedSlots = this.calculateSlots(this.selectedCards.cards, this.selectedBoundSpaceLimit, this.selectedOffset);
 			this.updateCardObjects(this.selectedCards.cards, this.selectedSlots);
+			useGameStore.getState().setCurrentHand(this.selectedCards.handType, this.selectedCards.pentupleType);
 		}
 		return (selected);
 	}
@@ -349,6 +351,7 @@ export class CardManager {
 			card.isHover = false;
 			this.selectedSlots = this.calculateSlots(this.selectedCards.cards, this.selectedBoundSpaceLimit, this.selectedOffset);
 			this.updateCardObjects(this.selectedCards.cards, this.selectedSlots);
+			useGameStore.getState().setCurrentHand(this.selectedCards.handType, this.selectedCards.pentupleType);
 		}
 	}
 
@@ -452,6 +455,7 @@ export class CardManager {
 	public sendSelectedCards(): CardHand {
 		const cardHand = this.selectedCards;
 		this.selectedCards = new CardHand(this.playerId);
+		useGameStore.getState().setCurrentHand(this.selectedCards.handType, this.selectedCards.pentupleType);
 		return (cardHand);
 	}
 }

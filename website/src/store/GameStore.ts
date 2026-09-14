@@ -5,6 +5,7 @@ import { usePartyStore } from "./PartyStore";
 import { useResultsStore } from "./ResultsStore";
 import { useSceneStore } from "./SceneStore";
 import { gameInstance } from '../api/game/src/main';
+import { HandType, PentupleType } from "@big2/game-types";
 
 export const GAMEMODE_LABEL = [
 	"4 Players",
@@ -23,7 +24,7 @@ export const HAND_VALUES = {
 	"Triple": 3,
 	"Double": 2,
 	"High Card": 1,
-	"Open": 0,
+	"None": 0,
 } as const;
 export type HAND_TYPE = keyof typeof HAND_VALUES;
 export const HAND_LABEL = Object.keys(HAND_VALUES) as HAND_TYPE[];
@@ -33,7 +34,7 @@ interface GameValues {
 	seats: (string | null)[];
 	gameStarted: boolean;
 	cardsLeft: number[];
-	currentHand: HAND_TYPE;
+	currentHand: string;
 	round: number;
 	seatRef: number[];
 	activeSeat: number;
@@ -50,6 +51,7 @@ interface GameState extends GameValues {
 	setSeatRef: () => void;
 	setCardsLeft: (playerCardsAmount: Record<string, number>) => void;
 	reduceCardsLeft: (uuid: string, cardsAmount: number) => void;
+	setCurrentHand: (handType: HandType, pentupleType: PentupleType) => void;
 	startGame: () => void;
 	skipTurn: () => void;
 
@@ -66,7 +68,7 @@ export const useGameStore = create<GameState>() (
 			seats: [],
 			gameStarted: false,
 			cardsLeft: [],
-			currentHand: "Open",
+			currentHand: "None",
 			round: 0,
 			seatRef: [],
 			activeSeat: 0,
@@ -146,6 +148,27 @@ export const useGameStore = create<GameState>() (
 				cardsLeft[seatIndex] = cardsLeft[seatIndex] - cardsAmount;
 				set({ cardsLeft: cardsLeft });
 			},
+			setCurrentHand: (handType: HandType, pentupleType: PentupleType) => {
+				let newCurrentHand: HAND_TYPE = "None";
+				if (handType === HandType.Pentuple) {
+					switch (pentupleType) {
+						case PentupleType.Straight: newCurrentHand = "Straight"; break;
+						case PentupleType.Flush: newCurrentHand = "Flush"; break;
+						case PentupleType.FullHouse: newCurrentHand = "Full House"; break;
+						case PentupleType.FourOfAKind: newCurrentHand = "4 of a Kind"; break;
+						case PentupleType.StraightFlush: newCurrentHand = "Straight Flush"; break;
+					}
+				}
+				else {
+					switch (handType) {
+						case HandType.None: newCurrentHand = "None"; break;
+						case HandType.Single: newCurrentHand = "High Card"; break;
+						case HandType.Double: newCurrentHand = "Double"; break;
+						case HandType.Triple: newCurrentHand = "Triple"; break;
+					}
+				}
+				set({ currentHand: newCurrentHand });
+			},
 			startGame: () => {
 				set({ round: get().round + 1 });
 				useSceneStore.getState().setShowWindow("results", false);
@@ -161,7 +184,7 @@ export const useGameStore = create<GameState>() (
 					seats: [],
 					gameStarted: false,
 					cardsLeft: [],
-					currentHand: "Open",
+					currentHand: "None",
 					round: 0,
 					seatRef: [],
 					activeSeat: 0,
