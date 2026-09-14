@@ -153,6 +153,8 @@ export class GameState {
 		for (let i = 0; i < this.players.length; i++) {
 			seatOrder[this.players[i].playerId] = i;
 		}
+		console.log("getSeatOrder");
+		console.log(seatOrder)
 		return (seatOrder);
 	}
 

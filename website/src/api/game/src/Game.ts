@@ -156,6 +156,10 @@ export class Game {
 
 	private initGame(gameState: GameStateTransmit) {
 		this.initParticipants(gameState);
+		const seats: string[] = Object.entries(gameState.playerSeatOrder)
+			.sort((a, b) => a[1] - b[1])
+			.map(([key]) => key);
+		useGameStore.setState({seats: seats});
 		useGameStore.setState({ totalPlayers: this.participants.length });
 		useGameStore.getState().setCardsLeft(gameState.playerCardsAmount);
 		useGameStore.getState().setSeatRef();
