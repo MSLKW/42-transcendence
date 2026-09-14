@@ -1,6 +1,6 @@
 import { create } from "zustand";
 import { useGameStore } from "./GameStore";
-import { cachedBotData } from "./ProfileStore";
+import { cachedBotData, useProfileStore } from "./ProfileStore";
 
 export const INTEL_LABEL = [
 	"Easy",
@@ -33,12 +33,13 @@ export const useBotStore = create<BotState>() (
 			const newSeats = seats.filter(seat => !seat?.includes("bot"));
 			useGameStore.setState({ seats: newSeats });
 
+			useProfileStore.getState().setCachedData();
+
 			get().countSeatedBots();
 		},
 
 		fillSeatsWithBots: () => {
 			const totalPlayers = useGameStore.getState().totalPlayers;
-			const bots = cachedBotData;
 
 			let bot_i = 0;
 			for (let i = 0; i < totalPlayers; i++) {
@@ -46,14 +47,18 @@ export const useBotStore = create<BotState>() (
 				if (seats[i])
 					continue;
 
-				while (bot_i < bots.length && seats.includes(bots[bot_i].uuid)) {
+				while (bot_i < cachedBotData.length && seats.includes(cachedBotData[bot_i].uuid)) {
 					bot_i++;
 				}
-				if (bot_i >= bots.length)
+				if (bot_i >= cachedBotData.length)
 					break;
 
-				const bot = bots[bot_i];
+				const bot = cachedBotData[bot_i];
 				setSeatWithUuid(bot.uuid!, i);
+
+				const cached = useProfileStore.getState().cachedData;
+				useProfileStore.setState({ cachedData: [...cached, cachedBotData[bot_i]]});
+
 				bot_i++;
 			}
 			get().countSeatedBots();

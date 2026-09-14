@@ -1,7 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import { handleGetSearch } from "../../api/profile/get_search/handleGetSearch";
 // import { useFriendStore } from "../../store/FriendStore";
-// import { useProfileStore } from "../../store/ProfileStore";
 import { Window } from "../window/Window";
 import { SearchModule } from "./search/SearchModule";
 import { PartyPlayerModule } from "./player/PartyPlayerModule";

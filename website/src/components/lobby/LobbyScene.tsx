@@ -54,7 +54,7 @@ export const LobbyScene = () => {
 									<AvatarModule
 										key={seats[2]}
 										uuid={seats[2]}
-										image={getCachedData(seats[2])?.avatar ?? "avatar-unknown.webp"}
+										image={getCachedData(seats[2])?.avatar ?? undefined}
 										cornerButton={seats[2] === hostUuid ? "host" : ""}
 									/>
 								: <TakeSeatButton uuid={clientUuid!} seatNumber={2}/>
@@ -67,7 +67,7 @@ export const LobbyScene = () => {
 										<AvatarModule
 											key={seats[1]}
 											uuid={seats[1]}
-											image={getCachedData(seats[1])?.avatar ?? "avatar-unknown.webp"}
+											image={getCachedData(seats[1])?.avatar ?? undefined}
 											cornerButton={seats[1] === hostUuid ? "host" : ""}
 										/>
 									: <TakeSeatButton uuid={clientUuid!} seatNumber={1}/>
@@ -77,7 +77,7 @@ export const LobbyScene = () => {
 										<AvatarModule
 											key={seats[2]}
 											uuid={seats[2]}
-											image={getCachedData(seats[2])?.avatar ?? "avatar-unknown.webp"}
+											image={getCachedData(seats[2])?.avatar ?? undefined}
 											cornerButton={seats[2] === hostUuid ? "host" : ""}
 										/>
 									: <TakeSeatButton uuid={clientUuid!} seatNumber={2}/>
@@ -90,7 +90,7 @@ export const LobbyScene = () => {
 									<AvatarModule
 										key={seats[1]}
 										uuid={seats[1]}
-										image={getCachedData(seats[1])?.avatar ?? "avatar-unknown.webp"}
+										image={getCachedData(seats[1])?.avatar ?? undefined}
 										cornerButton={seats[1] === hostUuid ? "host" : ""}
 									/>
 								: <TakeSeatButton uuid={clientUuid!} seatNumber={1}/>
@@ -110,7 +110,7 @@ export const LobbyScene = () => {
 									<AvatarModule
 										key={seats[1]}
 										uuid={seats[1]}
-										image={getCachedData(seats[1])?.avatar ?? "avatar-unknown.webp"}
+										image={getCachedData(seats[1])?.avatar ?? undefined}
 										cornerButton={seats[1] === hostUuid ? "host" : ""}
 									/>
 								: <TakeSeatButton uuid={clientUuid!} seatNumber={1}/>
@@ -135,7 +135,7 @@ export const LobbyScene = () => {
 									<AvatarModule
 										key={seats[3]}
 										uuid={seats[3]}
-										image={getCachedData(seats[3])?.avatar ?? "avatar-unknown.webp"}
+										image={getCachedData(seats[3])?.avatar ?? undefined}
 										cornerButton={seats[3] === hostUuid ? "host" : ""}
 									/>
 								: <TakeSeatButton uuid={clientUuid!} seatNumber={3}/>
@@ -148,7 +148,7 @@ export const LobbyScene = () => {
 								<AvatarModule
 									key={seats[0]}
 									uuid={seats[0]}
-									image={getCachedData(seats[0])?.avatar ?? "avatar-unknown.webp"}
+									image={getCachedData(seats[0])?.avatar ?? undefined}
 									cornerButton={seats[0] === hostUuid ? "host" : ""}
 								/>
 							: <TakeSeatButton uuid={clientUuid!} seatNumber={0}/>

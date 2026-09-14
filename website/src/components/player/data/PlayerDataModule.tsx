@@ -10,8 +10,6 @@ interface PlayerDataModule {
 	setBadge?: (type: BADGE_TYPE) => void;
 }
 export const PlayerDataModule = ({ profile, badge, setBadge }: PlayerDataModule) => {
-	// if (!profile)
-		// return;
 	const { clientUuid } = useProfileStore();
 	const { showWindow, setShowWindow } = useSceneStore();
 	const [ xpProgress, setXPProgress ] = useState(0);

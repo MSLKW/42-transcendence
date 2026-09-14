@@ -10,7 +10,7 @@ import { useFriendStore } from "./store/FriendStore";
 import { useGameStore, HAND_LABEL, type HAND_TYPE } from "./store/GameStore";
 import { useNotificationStore, NOTIFICATION_TYPE } from "./store/NotificationStore";
 import { usePartyStore } from "./store/PartyStore";
-import { useProfileStore, cachedBotData } from "./store/ProfileStore";
+import { useProfileStore } from "./store/ProfileStore";
 import { useResultsStore } from "./store/ResultsStore";
 import { defaultShowWindow, useSceneStore } from "./store/SceneStore";
 import { DevButton } from "./components/dev/DevBtn";
@@ -150,7 +150,7 @@ export default function Dev() {
 			{/* profile */}
 				<ul className="flex place-content-between">
 					<DevButton label={`profilesInDb: ${profilesInDb.length}`} call={() => console.log("profilesInDb: ", profilesInDb)} />
-					<DevButton label={`cachedData: ${cachedData.length}`} call={() => useProfileStore.setState({ cachedData: cachedBotData })} />
+					<DevButton label={`Reset cachedData: ${cachedData.length}`} call={() => useProfileStore.setState({ cachedData: [] })} />
 				</ul>
 			{/* party */}
 				<ul className="flex place-content-between">

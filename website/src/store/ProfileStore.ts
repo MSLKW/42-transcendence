@@ -348,7 +348,7 @@ export const useProfileStore = create<ProfileState>() (
 			resetProfilesInDb: () => {
 				set({
 					profilesInDb: defaultProfileInDb,
-					cachedData: cachedBotData,
+					cachedData: [],
 				});
 			},
 			setCachedData: async () => {
@@ -385,7 +385,7 @@ export const useProfileStore = create<ProfileState>() (
 					)
 				).filter((profile): profile is CachedData => profile !== null);
 
-				set({ cachedData: [...cachedBotData, ...cachedMemberData] });
+				set({ cachedData: cachedMemberData });
 			},
 			getCachedData: (uuid) => {
 				if (!uuid)

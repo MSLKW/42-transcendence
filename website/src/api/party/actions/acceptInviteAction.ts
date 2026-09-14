@@ -1,8 +1,9 @@
 import { Socket } from "socket.io-client";
 import { useChatStore } from "../../../store/ChatStore";
+import { handleGetProfile } from "../../profile/get_profile/handleGetProfile";
 import { useNotificationStore, NOTIFICATION_TYPE } from "../../../store/NotificationStore";
 
-export function acceptInviteAction(socket: Socket | null, hostUuid: string) {
+export async function acceptInviteAction(socket: Socket | null, hostUuid: string) {
 	const addToCachedChat = useChatStore.getState().addToCachedChat;
 	const showNotification = useNotificationStore.getState().showNotification;
 
@@ -19,8 +20,9 @@ export function acceptInviteAction(socket: Socket | null, hostUuid: string) {
 			console.log("Failed to accept:", response.reason);
 	});
 
+	const hostData = await handleGetProfile(hostUuid);
 	showNotification(
-		"You just joined a party!",
+		`You just joined ${hostData?.username ?? "a player"}'s party!`,
 		NOTIFICATION_TYPE.message
 	);
 
