@@ -58,7 +58,7 @@ export function registerEventHandlers(socket: Socket, client: Client)
 	{
 		if (client.party == null)
 			client.party = new Party(client);
-		else if (client.party.gameId != null)
+		else if (client.party.hostId != client.uuid || client.party.gameId != null)
 			return ;
 		client.party.startGameSession();
 	});

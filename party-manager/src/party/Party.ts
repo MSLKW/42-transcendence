@@ -111,7 +111,7 @@ export class Party
 			const data = await response.json();
 			this.gameId = data.lobbySessionId;
 			for (const key of this.members.keys())
-				this.members.get(key)!.emit("game_session_start", {gameId: this.gameId});
+				this.members.get(key)!.emitState();
 		}
 		catch (err)
 		{
