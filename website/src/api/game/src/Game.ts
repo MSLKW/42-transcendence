@@ -12,6 +12,7 @@ import { useGameStore } from "../../../store/GameStore.ts";
 import { usePartyStore } from "../../../store/PartyStore.ts";
 import { useSceneStore } from "../../../store/SceneStore.ts";
 import { threejsManager } from '../../../App.tsx';
+import { useResultsStore } from '../../../store/ResultsStore.ts';
 
 export class Game {
 	private socket: Socket;
@@ -102,6 +103,9 @@ export class Game {
 	
 		this.socket.on("game_end", () => {
 			this.cardHeap.reset();
+			useResultsStore.getState().setResults();
+			useSceneStore.getState().setCurrentScene("Lobby");
+			useSceneStore.getState().setShowWindow("results", true);
 		});
 	
 		this.socket.on("player_connection_update", (connections: Record<string, boolean>) => {
@@ -146,8 +150,10 @@ export class Game {
 			console.log("[game] Received game_state");
 			this.initGame(gameState);
 			useGameStore.setState({ totalPlayers: this.participants.length });
-			useGameStore.getState().setSeatRef(); // gets the avatars to appear, but misordered af
+			useGameStore.getState().setCardsLeft(gameState.playerCardsAmount);
+			useGameStore.getState().setSeatRef();
 			useSceneStore.getState().setCurrentScene("Game");
+			// this.moveCamera();
 		});
 	}
 
@@ -216,18 +222,8 @@ export class Game {
 				const player = new Player(this.socket, this.playerId, this.cardHeap); // 2nd game bug where player is doubled, rly need to make a clean game state for client
 				this.participants.push(player);
 				this.playerRef = player;
-				// const target = new THREE.Object3D();
-				// target.position.copy(camera.position);
-				// target.lookAt(this.cardHeap.originalPosition);
-				threejsManager.camera.position.copy(new THREE.Vector3(0, 4.5, 4.5));
-				threejsManager.camera.lookAt(this.cardHeap.originalPosition);
-				// this.move(camera, new THREE.Vector3(0, 4.5, 4.5), target.quaternion);
-				// orbitControls.update();
-				// orbitControls.addEventListener("change", () => {
-				const offset = new THREE.Vector3(0, -2, -3);
-				gameScene.cameraLight.position.copy(threejsManager.camera.position);
-				player.cardManager.updateManager(offset.clone().applyQuaternion(threejsManager.camera.quaternion.clone()).add(threejsManager.camera.position), threejsManager.camera.quaternion.clone());
-				// });
+
+				this.moveCamera();
 			}
 			else if (id !== this.playerId) {
 				const opponent = new Opponent(this.socket, id, this.cardHeap);
@@ -236,6 +232,14 @@ export class Game {
 				this.participants.push(opponent);
 			}
 		}
+	}
+
+	private moveCamera() {
+		threejsManager.camera.position.copy(new THREE.Vector3(0, 4.5, 4.5));
+		threejsManager.camera.lookAt(this.cardHeap.originalPosition);
+		const offset = new THREE.Vector3(0, -2, -3);
+		gameScene.cameraLight.position.copy(threejsManager.camera.position);
+		this.playerRef?.cardManager.updateManager(offset.clone().applyQuaternion(threejsManager.camera.quaternion.clone()).add(threejsManager.camera.position), threejsManager.camera.quaternion.clone());
 	}
 
 	public move(object: THREE.Object3D, position: THREE.Vector3, rotation: THREE.Quaternion) {

@@ -48,7 +48,8 @@ interface GameState extends GameValues {
 	autoSetSeats: () => void;
 	
 	setSeatRef: () => void;
-	dealCards: () => void;
+	setCardsLeft: (playerCardsAmount: Record<string, number>) => void;
+	reduceCardsLeft: (uuid: string, cardsAmount: number) => void;
 	startGame: () => void;
 	skipTurn: () => void;
 
@@ -128,31 +129,26 @@ export const useGameStore = create<GameState>() (
 					seatRef: newSeatRef,
 				});
 			},
-			dealCards: () => {
-				const totalPlayers = get().totalPlayers;
-				const round = get().round;
-				const cards = 52 / totalPlayers;
-				const newCardsLeft: number[] = [];
-
-				if (totalPlayers === 3) {
-					for (let i = 0; i < totalPlayers; i++) {
-						if (i === round % totalPlayers)
-							newCardsLeft.push(Math.ceil(cards));
-						else
-							newCardsLeft.push(Math.floor(cards));
+			setCardsLeft: (playerCardsAmount: Record<string, number>) => {
+				const newCardsLeft: number[] = []
+				get().seats.forEach((playerUuid) => {
+					if (playerUuid === null) {
+						newCardsLeft.push(-1);
+						return ;
 					}
-				} else {
-					for (let i = 0; i < totalPlayers; i++)
-						newCardsLeft.push(cards);
-				}
+					newCardsLeft.push(playerCardsAmount[playerUuid] !== undefined ? playerCardsAmount[playerUuid] : -1);
+				})
 				set({ cardsLeft: newCardsLeft });
+			},
+			reduceCardsLeft: (uuid: string, cardsAmount: number) => {
+				const cardsLeft = get().cardsLeft;
+				const seatIndex = get().seats.findIndex((seatUuid) => seatUuid === uuid);
+				cardsLeft[seatIndex] = cardsLeft[seatIndex] - cardsAmount;
+				set({ cardsLeft: cardsLeft });
 			},
 			startGame: () => {
 				set({ round: get().round + 1 });
-				get().setSeatRef();
-				get().dealCards();
 				useSceneStore.getState().setShowWindow("results", false);
-				// useSceneStore.getState().setCurrentScene("Game");
 				gameInstance?.startGame();
 			},
 			skipTurn: () => {

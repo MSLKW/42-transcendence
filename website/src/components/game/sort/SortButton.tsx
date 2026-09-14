@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect } from "react";
 import { gameInstance } from "../../../api/game/src/main";
 import { useGameStore } from "../../../store/GameStore";
 
@@ -35,6 +35,10 @@ export const SortButtons = () => {
 			e.currentTarget.blur();
 		gameInstance?.playerRef?.setSort(selectedType);
 	}
+
+	useEffect(() => {
+		useGameStore.setState({ sortType: "Flex" });
+	}, []);
 	
 	return (
 		<>

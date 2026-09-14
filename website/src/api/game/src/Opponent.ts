@@ -6,6 +6,7 @@ import { Card } from './Card.ts';
 import { CardRank, CardHandTransmit, GameEndStatsTransmit, GameStateTransmit } from '@big2/game-types';
 import { CardHand } from './CardHand.ts';
 import { Participant } from './Participant.ts';
+import { useGameStore } from '../../../store/GameStore.ts';
 
 export class Opponent extends Participant {
 
@@ -16,7 +17,7 @@ export class Opponent extends Participant {
 			if (cardHandTransmit.playerId === this.uuid) {
 				const cardHand = new CardHand(this.uuid);
 				for (let i = 0; i < cardHandTransmit.cards.length; i++) {
-					let [card, animation] = this.cardManager.removeCardByIndex(0);
+					const [card, animation] = this.cardManager.removeCardByIndex(0);
 					if (card)  {
 						card.setCardRankSuit(cardHandTransmit.cards[i].rank, cardHandTransmit.cards[i].suit);
 						cardHand.receiveCard(card);
@@ -26,6 +27,7 @@ export class Opponent extends Participant {
 					} 
 				}
 				this.cardHeapRef.cardHandQueue.add(this.cardHeapRef.receiveCardHand(cardHand));
+				useGameStore.getState().reduceCardsLeft(this.uuid, cardHand.cards.length);
 			}
 		});
 

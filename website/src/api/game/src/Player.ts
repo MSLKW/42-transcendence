@@ -40,7 +40,6 @@ export class Player extends Participant {
 		// 	return ;
 		// }
 		this.setupListeners();
-		this.setPlayerTurnUI(false);
 	}
 
 	public getPlayerId() {
@@ -49,7 +48,6 @@ export class Player extends Participant {
 
 	public override sync(gameState: GameStateTransmit) {
 		this.collectCards(gameState.playerCards);
-		this.setPlayerTurnUI(gameState.isPlayerTurn);
 	}
 
 	private setupListeners() {
@@ -58,12 +56,13 @@ export class Player extends Participant {
 			gameStatus.setGameStats(gameEndStats, this);
 			gameStatus.setLightboxActive(true);
 			console.log(gameEndStats);
-		})
+		});
 		
 		this.socket.on("player_play_card_hand_request", (status: StatusTransmit) => {
 			if (status.success === true) {
 				const cardHand = this.cardManager.sendSelectedCards();
 				this.cardHeapRef.receiveCardHand(cardHand);
+				useGameStore.getState().reduceCardsLeft(this.uuid, cardHand.cards.length);
 			} else {
 				console.log(`player_play_card_hand_request error: ${status.message}`);
 			}
@@ -87,26 +86,6 @@ export class Player extends Participant {
 		this.socket.on("player_skip_turn", (skipTurn: SkipTurnTransmit) => {
 			console.log(`Player<${skipTurn.playerId}> skipped their turn!`);
 		});
-
-		// this.sendCardsButton.addEventListener('click', () => {
-		// 	const cardHandTransmit = this.cardManager.selectedCards.transmit();
-		// 	this.socket.emit("player_play_card_hand_request", cardHandTransmit);
-		// });
-		
-		// this.skipTurnButtonHandler.addEventListener('click', () => {
-		// 	this.socket.emit("player_skip_turn_request");
-		// });
-
-		// this.sortCardsByRankButton.addEventListener('click', () => {
-		// 	this.cardManager.setSort((a, b) => a.rank - b.rank);
-		// });
-
-		// this.sortCardsBySuitButton.addEventListener('click', () => {
-		// 	this.cardManager.setSort((a, b) => {
-		// 		const suitDiff = a.suit - b.suit;
-		// 		return (suitDiff === 0 ? a.rank - b.rank : suitDiff);
-		// 	});
-		// });
 
 		threejsManager.renderer.domElement.addEventListener('pointerdown', (event) => {
 			this.startClick.x = event.clientX;
@@ -229,17 +208,6 @@ export class Player extends Participant {
 	private eventHover(event: PointerEvent) {
 		this.raycast(event);
 		this.cardManager.hoverCard(this.raycaster);
-	}
-
-	private setPlayerTurnUI(isTurn: boolean, skippable: boolean = true) {
-		// if (isTurn === true) {
-		// 	this.sendCardsButtonHandler.disabled = false;
-		// 	this.skipTurnButtonHandler.disabled = !skippable;
-		// }
-		// else {
-		// 	this.sendCardsButtonHandler.disabled = true;
-		// 	this.skipTurnButtonHandler.disabled = true;
-		// }
 	}
 
 	private collectCards(cardTransmits: Array<CardTransmit>) {
