@@ -1,13 +1,10 @@
 import { Socket } from "socket.io";
 import { Party } from "../party/Party"
 
-export type ClientStatus = "available" | "in_party" | "in_game";
-
 export class Client
 {
 	public readonly uuid: string;
 	public socket: Socket;
-	public status: ClientStatus = "available";
 	public party: Party;
 
 	constructor(uuid: string, socket: Socket)

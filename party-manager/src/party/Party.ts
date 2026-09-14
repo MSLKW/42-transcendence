@@ -8,9 +8,6 @@ if (!GAME_SERVICE_URL)
 
 export class Party
 {
-	
-	public readonly id:		string;
-	
 	public hostId:	string;
 	
 	private invites = new Map<string, Client>();
@@ -19,10 +16,6 @@ export class Party
 
 	constructor(host: Client)
 	{
-		this.id = randomUUID();
-		if (host.status != "available")
-			throw new Error("host is unavailable");
-		host.status = "in_party";
 		host.party = this;
 		this.hostId = host.uuid;
 		this.members.set(this.hostId, host);
@@ -45,7 +38,6 @@ export class Party
 
 		if (!user)
 			return (false);
-		user.status = "in_party";
 		user.party?.removeUser(userId);
 		user.party = this;
 		this.members.set(userId, user);
@@ -59,7 +51,6 @@ export class Party
 		const user = this.members.get(uuid);
 		if (!user)
 			return ;
-		user.status = "available";
 		user.party = new Party(user);
 		this.members.delete(uuid);
 		if (uuid == this.hostId)
@@ -73,7 +64,6 @@ export class Party
 		{
 			const user = this.members.get(key)!;
 
-			user.status = "available";
 			user.party = new Party(user);
 			if (user.uuid != this.hostId)
 			{
