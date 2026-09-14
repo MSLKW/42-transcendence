@@ -1,5 +1,4 @@
 import { Client } from "../client/Client";
-import { randomUUID } from "crypto";
 import { PartyState } from "../PartyTransmitTypes";
 
 const GAME_SERVICE_URL = process.env.GAME_SERVICE_URL;
@@ -8,9 +7,7 @@ if (!GAME_SERVICE_URL)
 
 export class Party
 {
-	
-	public readonly id:		string;
-	public readonly hostId:	string;
+	public hostId:	string;
 	
 	private invites = new Map<string, Client>();
 	private members = new Map<string, Client>();
@@ -18,10 +15,6 @@ export class Party
 
 	constructor(host: Client)
 	{
-		this.id = randomUUID();
-		if (host.status != "available")
-			throw new Error("host is unavailable");
-		host.status = "in_party";
 		host.party = this;
 		this.hostId = host.uuid;
 		this.members.set(this.hostId, host);
@@ -44,8 +37,8 @@ export class Party
 
 		if (!user)
 			return (false);
-		user.status = "in_party";
-		user.party?.removeUser(userId);
+		this.emitToAll("player_joined", { uuid: userId });
+		user.party.removeUser(userId);
 		user.party = this;
 		this.members.set(userId, user);
 		this.invites.delete(userId);
@@ -55,37 +48,15 @@ export class Party
 
 	removeUser(uuid: string)
 	{
-		if (uuid == this.hostId)
-		{
-			this.clear("the host has left");
-			return ;
-		}
-
 		const user = this.members.get(uuid);
 		if (!user)
 			return ;
-		user.status = "available";
 		user.party = new Party(user);
 		this.members.delete(uuid);
+		if (uuid == this.hostId)
+			[this.hostId] = this.members.keys();
+		this.emitToAll("player_left", { uuid: uuid });
 		this.sendUpdates();			
-	}
-
-	clear(reason: string)
-	{
-		for (const key of this.members.keys())
-		{
-			const user = this.members.get(key)!;
-
-			user.status = "available";
-			user.party = new Party(user);
-			if (user.uuid != this.hostId)
-			{
-				user.emit("kicked", {message: reason});
-				user.emitState();
-			}
-		}
-		this.invites.clear();
-		this.members.clear();
 	}
 
 	async startGameSession()
@@ -111,7 +82,7 @@ export class Party
 			const data = await response.json();
 			this.gameId = data.lobbySessionId;
 			for (const key of this.members.keys())
-				this.members.get(key)!.emit("game_session_start", {gameId: this.gameId});
+				this.members.get(key)!.emitState();
 		}
 		catch (err)
 		{
@@ -159,5 +130,11 @@ export class Party
 			members: [...this.members.keys()],
 			gameId: this.gameId
 		});
+	}
+
+	emitToAll(event: string, payload: unknown)
+	{
+		for (const key of this.members.keys())
+			this.members.get(key)!.emit(event, payload);
 	}
 }
