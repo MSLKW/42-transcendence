@@ -12,7 +12,7 @@ export function partyStateHandler(socket: Socket) {
 		if (partyData.hostUuid)
 			usePartyStore.setState({ hostUuid: partyData.hostUuid });
 
-		// useProfileStore.getState().setCachedData();
+		useProfileStore.getState().setCachedData();
 		
 		usePartyStore.setState({
 			partyStateResponse: {

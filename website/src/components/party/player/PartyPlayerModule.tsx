@@ -52,7 +52,7 @@ export const PartyPlayerModule = ({ uuid }: PartyPlayerModuleProps) => {
 	const handleInvite = () => {
 		if (isDisabled)
 			return;
-		partySocket.sendInvite(uuid, "Player");
+		partySocket.sendInvite(uuid, data?.username ?? "Player");
 	}
 
 	if (isLoading) {
