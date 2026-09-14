@@ -1,6 +1,5 @@
 import "dotenv/config";
 import express from "express";
-import cookieParser from "cookie-parser";
 import { FileUserStore } from "./store/fileUserStore";
 import { FileSessionStore } from "./store/fileSessionStore";
 import { signupHandler } from "./handlers/signup";
@@ -11,7 +10,6 @@ import { validateSessionHandler } from "./handlers/validateSession";
 
 const app = express();
 app.use(express.json());
-app.use(cookieParser());
 
 //replace with actual db user store class like MongoUserStore()
 const userStore = new FileUserStore();

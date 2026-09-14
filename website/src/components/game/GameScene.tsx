@@ -15,6 +15,10 @@ export const GameScene = () => {
 	const { totalPlayers, seats, seatRef, cardsLeft, activeSeat, gameStarted } = useGameStore();
 	const { getCachedData } = useProfileStore();
 
+	console.log(seats);
+	console.log(seatRef);
+	console.log(totalPlayers);
+
 	return (
 		<>
 			<HeaderModule back="Home" />

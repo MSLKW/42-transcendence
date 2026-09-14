@@ -23,14 +23,13 @@ export function registerEventHandlers(socket: Socket, client: Client)
 
 	socket.on("kick_player", (payload: {recipientUuid: string}) =>
 	{
-		if (!client.party || client.party.hostId != client.uuid)
-			return ;
-
 		const recipient = clientManager.getByUuid(payload.recipientUuid);
-		if (!recipient)
+		
+		if (!recipient || !recipient.party || recipient.party.hostId != client.uuid)
 			return ;
-		client.party.removeUser(payload.recipientUuid);
+		recipient.party.removeUser(payload.recipientUuid);
 		recipient.emit("kicked", {message: "you were kicked by the host"});
+		recipient.emitState();
 	});
 
 	socket.on("accept_invite", (payload: {hostUuid: string}, callback) =>
@@ -52,14 +51,22 @@ export function registerEventHandlers(socket: Socket, client: Client)
 	socket.on("leave_party", () =>
 	{
 		client.party?.removeUser(client.uuid);
+		client.emitState();
 	});
 
 	socket.on("start_game_session", () =>
 	{
 		if (client.party == null)
 			client.party = new Party(client);
-		else if (client.party.gameId != null)
+		else if (client.party.hostId != client.uuid || client.party.gameId != null)
 			return ;
 		client.party.startGameSession();
+	});
+
+	socket.on("refresh", () =>
+	{
+		if (!client.party)
+			return ;
+		client.party.sendUpdates();
 	});
 }

@@ -122,9 +122,11 @@ export class Game {
 	
 		this.socket.on("user_seat_update", (seatData: SeatOrderTransmit) => {
 			const totalPlayers = useGameStore.getState().totalPlayers;
+			console.log(`user_seat_update: totalPlayers: ${totalPlayers}`)
 			if (totalPlayers !== seatData.totalSeats) {
 				useGameStore.setState({totalPlayers: seatData.totalSeats})
 				useGameStore.getState().initSeats();
+				console.log("init seats");
 			}
 			else {
 				const seats: string[] = Object.entries(seatData.seatOrder)

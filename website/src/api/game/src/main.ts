@@ -177,6 +177,7 @@ export function joinGameLobby(gameSessionId: string, playerId: string) {
 		console.log("[Game] Game Session is already ongoing");	
 	}
 	gameInstance = new Game(gameSessionId, playerId);
+	
 
 	useSceneStore.getState().setCurrentScene("Lobby");
 }
