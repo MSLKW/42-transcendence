@@ -59,23 +59,6 @@ export class Party
 		this.sendUpdates();			
 	}
 
-	clear(reason: string)
-	{
-		for (const key of this.members.keys())
-		{
-			const user = this.members.get(key)!;
-
-			user.party = new Party(user);
-			if (user.uuid != this.hostId)
-			{
-				user.emit("kicked", {message: reason});
-				user.emitState();
-			}
-		}
-		this.invites.clear();
-		this.members.clear();
-	}
-
 	async startGameSession()
 	{
 		try
