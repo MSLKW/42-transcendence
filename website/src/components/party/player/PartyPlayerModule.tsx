@@ -24,17 +24,17 @@ export const PartyPlayerModule = ({ uuid }: PartyPlayerModuleProps) => {
 	useEffect(() => {
 		let mounted = true;
 
-		// const loadProfile = async () => {
-		// 	setIsLoading(true);
+		const loadProfile = async () => {
+			setIsLoading(true);
 
-		// 	const profile = await handleGetProfile(uuid);
+			const profile = await handleGetProfile(uuid);
 
-		// 	if (mounted) {
-		// 		setData(profile);
-		// 		setIsLoading(false);
-		// 	}
-		// };
-		// loadProfile();
+			if (mounted) {
+				setData(profile);
+				setIsLoading(false);
+			}
+		};
+		loadProfile();
 
 		return () => {
 			mounted = false;

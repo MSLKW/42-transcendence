@@ -21,6 +21,7 @@ export const handleSignIn = async (email: string, password: string) => {
 		setShowWindow("signIn", false);
 		setCurrentScene("Home");
 
+		showNotification("Signed in successfully", NOTIFICATION_TYPE.message);
 		console.log("[handleSignIn] response.id: ", response.id);
 	} catch (err) {
 		const errorMsg = err instanceof Error ? err.message : "Something went wrong. Please try again";

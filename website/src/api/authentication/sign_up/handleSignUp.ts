@@ -18,7 +18,8 @@ export const handleSignUp = async (email: string, password: string, setIsLoading
 
 		setShowWindow("createAccount", false);
 		setCurrentScene("Home");
-		showNotification("Account created successfully!", NOTIFICATION_TYPE.message);
+
+		showNotification("Account created successfully", NOTIFICATION_TYPE.message);
 		console.log("[handleSignUp] Account created successfully!");
 	} catch (err) {
 		const errorMsg = err instanceof Error ? err.message : "Something went wrong. Please try again";
