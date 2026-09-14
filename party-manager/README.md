@@ -1,5 +1,18 @@
 # Party Manager
 
+## Endpoints
+
+| Method | Path | Purpose |
+|:---:|---|---|
+| GET | [`/online/:uuid`](#get-onlineuuid) | get a user's online status as a boolean |
+
+### GET /online/:uuid
+#### Responses
+- 200: { isOnline: boolean }
+
+
+<br><br><br><br>
+
 ## Frontend To Party Manager Socket Transmits
 
 | <center>Event Name</center> | <center>JSON Payload</center> | <center>Callback</center> |
