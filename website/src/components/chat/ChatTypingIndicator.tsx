@@ -10,18 +10,15 @@ export const ChatTypingIndicator = () => {
 		.map(([uuid]) => uuid);
 
 	return (
-		<>
-			{users.map((uuid) => {
-				const data = getCachedData(uuid);
-				return (
-					<div
-						key={uuid}
-						className="text-n6"
-					>
-						<p>{data?.name ?? "A player"} is typing...</p>
-					</div>
-				);
-			})}
-		</>
+		<div className="text-n6">
+			{
+				users.length === 1 ? users.map((uuid) => {
+					const data = getCachedData(uuid);
+					return (<p>{data?.name ?? "A player"} is typing...</p>);
+				}) :
+				users.length >= 2  ? <p>{users.length} players are typing...</p> :
+				<></>
+			}
+		</div>
 	);
 };
