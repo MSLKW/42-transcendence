@@ -8,7 +8,6 @@ export function partyStateHandler(socket: Socket) {
 	socket.on("party_state", async (partyData: { hostUuid: string; members: string[]; gameId: string | null }) => {
 		const hostUuid = usePartyStore.getState().hostUuid;
 		const clientUuid = useProfileStore.getState().clientUuid;
-		console.log("hostUuid:", hostUuid, " clientUuid:", clientUuid, " partyData.hostUuid:", partyData.hostUuid);
 		if (hostUuid != partyData.hostUuid && clientUuid === partyData.hostUuid && partyData.members.length > 1) {
 			const showNotification = useNotificationStore.getState().showNotification;
 			showNotification("You are the new host of this party", NOTIFICATION_TYPE.message);

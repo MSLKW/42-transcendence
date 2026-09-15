@@ -41,7 +41,10 @@ export function leavePartyAction(socket: Socket | null) {
 		"server",
 		"",
 		"",
-		"You left a party",
+		`You left ${
+			(hostData?.uuid != clientUuid && hostData?.name) ? hostData?.name + "'s" :
+			"the party"
+		} chat`,
 	)
 
 	console.log("[partySocket] 'leave_party'");
