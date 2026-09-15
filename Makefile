@@ -6,7 +6,7 @@
 #    By: aimokhta <aimokhta@student.42kl.edu.my>    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2026/06/16 09:31:30 by aimokhta          #+#    #+#              #
-#    Updated: 2026/09/13 19:56:16 by aimokhta         ###   ########.fr        #
+#    Updated: 2026/09/15 12:59:25 by aimokhta         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -103,10 +103,15 @@ nuclear:
 # # 3. Remove all images
 # # 4. Remove all volumes
 # # 5. Remove all networks
+# 	@echo "$(PURPLE)docker stop $(docker ps -aq)$(RESET)"
 # 	@docker stop $(docker ps -aq)
+# 	@echo "$(PURPLE)docker rm $(docker ps -aq)$(RESET)"
 # 	@docker rm $(docker ps -aq)
+# 	@echo "$(PURPLE)docker rmi $(docker images -q)$(RESET)"
 # 	@docker rmi $(docker images -q)
+# 	@echo "$(PURPLE)docker volume prune -f$(RESET)"
 # 	@docker volume prune -f
+# 	@echo "$(PURPLE)docker network prune -f$(RESET)"
 # 	@docker network prune -f
 
 progress:
