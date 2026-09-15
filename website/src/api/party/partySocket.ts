@@ -7,10 +7,12 @@ import { sendInviteAction } from "./actions/sendInviteAction";
 import { startGameSessionAction } from "./actions/startGameSessionAction";
 import { refreshAction } from "./actions/refreshAction";
 import { registerConnectionHandlers } from "./handlers/connectionHandlers";
-import { gameSessionStartHandler } from "./handlers/gameSessionStartHandler";
+// import { gameSessionStartHandler } from "./handlers/gameSessionStartHandler";
 import { inviteReceivedHandler } from "./handlers/inviteReceivedHandler";
 import { kickedHandler } from "./handlers/kickedHandler";
 import { partyStateHandler } from "./handlers/partyStateHandler";
+import { playerLeftHandler } from "./handlers/playerLeft";
+import { playerJoinedHandler } from "./handlers/playerJoined";
 
 class PartySocketService {
 	private socket: Socket | null = null;
@@ -30,7 +32,9 @@ class PartySocketService {
 		partyStateHandler(this.socket);
 		inviteReceivedHandler(this.socket);
 		kickedHandler(this.socket);
-		gameSessionStartHandler(this.socket);
+		// gameSessionStartHandler(this.socket);
+		playerJoinedHandler(this.socket);
+		playerLeftHandler(this.socket);
 	}
 	public disconnect() {
 		this.isConnecting = false;
@@ -43,8 +47,8 @@ class PartySocketService {
 	public sendInvite(recipientUuid: string, recipientName?: string) {
 		sendInviteAction(this.socket, recipientUuid, recipientName);
 	}
-	public kickPlayer(recipientUuid: string, recipientName?: string) {
-		kickPlayerAction(this.socket, recipientUuid, recipientName);
+	public kickPlayer(recipientUuid: string) {
+		kickPlayerAction(this.socket, recipientUuid);
 	}
 	public startGameSession() {
 		startGameSessionAction(this.socket);

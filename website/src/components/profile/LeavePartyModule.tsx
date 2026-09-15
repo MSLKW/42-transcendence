@@ -26,7 +26,7 @@ export const LeavePartyModule = () => {
 					h-3rem aspect-5/1
 				"
 			>
-				{clientUuid === hostUuid ? "Disband Party" : "Leave Party"}
+				Leave Party
 			</button>
 		</div>
 	);

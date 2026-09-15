@@ -11,7 +11,7 @@ export const KickPlayerButton = ({ playerUuid }: KickPlayerButtonProps) => {
 	const { clientUuid } = useProfileStore();
 	const { hostUuid, kickPlayer } = usePartyStore();
 	const handleKickPlayer = () => {
-		partySocket.kickPlayer(playerUuid, "Player");
+		partySocket.kickPlayer(playerUuid);
 		kickPlayer(playerUuid);
 	}
 	

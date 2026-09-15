@@ -31,7 +31,7 @@ export async function acceptInviteAction(socket: Socket | null, hostUuid: string
 		"server",
 		"",
 		"",
-		"You joined a party!",
+		`You joined ${hostData?.username ? hostData?.username : "a"}'s chat`,
 	)
 
 	useChatStore.setState({ chatRoomId: hostUuid });

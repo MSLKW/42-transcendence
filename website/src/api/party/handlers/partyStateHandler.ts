@@ -5,7 +5,15 @@ import { chatSocket } from "../../chat/chatSocket";
 import { useNotificationStore, NOTIFICATION_TYPE } from "../../../store/NotificationStore";
 
 export function partyStateHandler(socket: Socket) {
-	socket.on("party_state", (partyData: { hostUuid: string; members: string[]; gameId: string | null }) => {
+	socket.on("party_state", async (partyData: { hostUuid: string; members: string[]; gameId: string | null }) => {
+		const hostUuid = usePartyStore.getState().hostUuid;
+		const clientUuid = useProfileStore.getState().clientUuid;
+		console.log("hostUuid:", hostUuid, " clientUuid:", clientUuid, " partyData.hostUuid:", partyData.hostUuid);
+		if (hostUuid != partyData.hostUuid && clientUuid === partyData.hostUuid && partyData.members.length > 1) {
+			const showNotification = useNotificationStore.getState().showNotification;
+			showNotification("You are the new host of this party", NOTIFICATION_TYPE.message);
+		}
+
 		if (partyData.members)
 			usePartyStore.setState({ members: partyData.members });
 		if (partyData.gameId)
@@ -13,31 +21,7 @@ export function partyStateHandler(socket: Socket) {
 		if (partyData.hostUuid)
 			usePartyStore.setState({ hostUuid: partyData.hostUuid });
 
-		const set_party = new Set(partyData.members);
-		const set_cached = new Set(
-			useProfileStore.getState().cachedData
-			.map(item => item.uuid)
-			.filter((uuid): uuid is string => uuid !== null)
-		);
-		if (set_party != set_cached) {
-			for (const item of set_party) {
-				if (!set_cached.has(item)) {
-					useNotificationStore.getState().showNotification(
-						`${item} has joined your party`,
-						NOTIFICATION_TYPE.message
-					)
-				}
-			}
-			for (const item of set_cached) {
-				if (!set_party.has(item)) {
-					useNotificationStore.getState().showNotification(
-						`${item} has left your party`,
-						NOTIFICATION_TYPE.message
-					)
-				}
-			}
-			useProfileStore.getState().setCachedData();
-		}
+		await useProfileStore.getState().setCachedData();
 
 		usePartyStore.setState({
 			partyStateResponse: {

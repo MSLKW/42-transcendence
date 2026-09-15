@@ -18,9 +18,12 @@ export function leavePartyAction(socket: Socket | null) {
 		return;
 	}
 
+	const cachedData = useProfileStore.getState().cachedData;
+	const hostUuid = usePartyStore.getState().hostUuid;
+	const hostData = cachedData.find(d => d.uuid === hostUuid);
 	socket?.emit("leave_party");
 	showNotification(
-		"You left the party",
+		clientUuid === hostUuid ? "You left the party" : `You left ${hostData?.name}'s party`,
 		NOTIFICATION_TYPE.message
 	);
 
