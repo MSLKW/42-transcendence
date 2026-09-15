@@ -101,4 +101,16 @@ export class FileSessionStore implements SessionStore {
 			await fs.unlink(path.join(DATA_DIR, `${session.fileToken}.json`));
 		}
 	}
+
+	async deleteExpired(): Promise<void>
+	{
+		const sessions = await this.readAllSessionFiles();
+		const now = new Date;
+
+		for (const session of sessions)
+		{
+			if (session.expiresAt < now)
+				await fs.unlink(path.join(DATA_DIR, `${session.fileToken}.json`));
+		}
+	}
 }

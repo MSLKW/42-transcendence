@@ -8,6 +8,7 @@ import { signinHandler } from "./handlers/signin";
 import { guestHandler } from "./handlers/guest";
 import { logoutHandler } from "./handlers/logout";
 import { validateSessionHandler } from "./handlers/validateSession";
+import { scheduleSessionCleanup } from "./jobs/ScheduleSessionCleanup";
 
 const app = express();
 app.use(express.json());
@@ -22,6 +23,8 @@ app.post("/signin", signinHandler(userStore, sessionStore));
 app.post("/guest", guestHandler(sessionStore));
 app.delete("/logout", logoutHandler(sessionStore));
 app.get("/validate", validateSessionHandler(sessionStore));
+
+scheduleSessionCleanup(sessionStore);
 
 app.use((err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {
 	if (err.type === "entity.parse.failed") {
