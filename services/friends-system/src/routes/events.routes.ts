@@ -3,12 +3,26 @@ import { sseRegistry } from "../events/SseRegistry";
 import { EVENTS } from "../events/eventNames";
 import { fetchJson } from "../utils/fetchJson";
 import { AUTH_SERVICE_URL } from "../config/env";
+import { isValidUuid } from "../utils/isValidUuid";
 
 export const eventsRouter = Router();
 
 eventsRouter.get("/events", async (req, res) => {
   const uuid = req.query.uuid as string;
-  if (!uuid) {
+
+  // uuid is empty
+  if (!uuid) 
+  {
+    res.status(400).end();
+    return;
+  }
+
+  // The 23503/22P02/23505 codes only exist in sendFriendRequest handler coz it directly writes a row to Postgres
+  // in /events here, none of these can arise coz there are zero interaction between /events & Postgres. 
+  // but we can still helpfully avoid wasted round trips by 
+  // making a precheck on the uuid validity first, only the we run internal REST API fetches
+  if (!isValidUuid(uuid))
+  {
     res.status(400).end();
     return;
   }

@@ -51,11 +51,22 @@ export const friendRequests = friendsSystemSchema.table("friend_requests", {
 	createdAt: timestamp("created_at", { withTimezone: true})
 		.defaultNow()
 		.notNull(),
+	pairSmallId: uuid("pair_small_id")
+		.generatedAlwaysAs(sql`LEAST(sender_id, receiver_id)`),
+	pairBigId: uuid("pair_big_id")
+		.generatedAlwaysAs(sql`GREATEST(sender_id, receiver_id)`),
 	updatedAt: timestamp("updated_at", { withTimezone: true })
 		.defaultNow()
 		.notNull(),
 	},
 	(table) => ({
-		senderReceiverIdx: index("sender_receiver_idx").on(table.senderId, table.receiverId),
+		senderReceiverIdx: index("sender_receiver_idx")
+			.on(table.senderId, table.receiverId),
+		pendingPairUniqueIdx: uniqueIndex("pending_pair_unique_idx")
+			.on(table.pairSmallId, table.pairBigId)
+			.where(sql`${table.status} = 'Pending'`),
 	})
 );
+
+// uniqueIndex here as the safety net for any race conditions 
+// guard in the database layer
