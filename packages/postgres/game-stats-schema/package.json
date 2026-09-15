@@ -1,7 +1,6 @@
 {
   "name": "@big2/game-stats-schema",
   "private": true,
-  "type": "module",
   "version": "1.0.0",
   "description": "",
   "keywords": [],

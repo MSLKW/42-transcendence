@@ -2,37 +2,39 @@
 FROM node:20-alpine AS builder
 WORKDIR /app
 
-COPY package*.json ./
-COPY packages/postgres/auth-schema/package.json ./packages/postgres/auth-schema/
-COPY packages/types/profile-system-types/package.json ./packages/types/profile-system-types/
-COPY packages/postgres/profile-system-schema/package.json ./packages/postgres/profile-system-schema/
-COPY packages/postgres/postgres-client/package.json ./packages/postgres/postgres-client/
-COPY services/profile-system/package.json ./services/profile-system/
+COPY --from=root                    package*.json   ./
+COPY --from=auth-schema             package.json    ./packages/postgres/auth-schema/
+COPY --from=profile-system-types    package.json    ./packages/types/profile-system-types/
+COPY --from=profile-system-schema   package.json    ./packages/postgres/profile-system-schema/
+COPY --from=postgres-client			package.json    ./packages/postgres/postgres-client/
+COPY						        package.json	./services/profile-system/
 
 RUN npm ci
 
-COPY . .
+COPY --from=root                    tsconfig.base.json   ./
+COPY --from=auth-schema             . ./packages/postgres/auth-schema/
+COPY --from=profile-system-types    . ./packages/types/profile-system-types/
+COPY --from=profile-system-schema   . ./packages/postgres/profile-system-schema/
+COPY --from=postgres-client			. ./packages/postgres/postgres-client/
+COPY						        . ./services/profile-system/
 
-RUN npm run --prefix packages/postgres/auth-schema build
-RUN npm run --prefix packages/types/profile-system-types build
-RUN npm run --prefix packages/postgres/profile-system-schema build
-RUN npm run --prefix packages/postgres/postgres-client build
-RUN npm run --prefix services/profile-system build
+RUN npm run build:docker -w profile-system
+# RUN npm run build -w @big2/auth-schema
+# RUN npm run build -w @big2/profile-system-types
+# RUN npm run build -w @big2/profile-system-schema
+# RUN npm run build -w @big2/postgres-client
+# RUN npm run build -w profile-system
 
 #Runner
 FROM node:20-alpine AS runner
 WORKDIR /app
 
-COPY package*.json ./
-COPY packages/postgres/auth-schema/package.json ./packages/postgres/auth-schema/
-COPY packages/types/profile-system-types/package.json ./packages/types/profile-system-types/
-COPY packages/postgres/profile-system-schema/package.json ./packages/postgres/profile-system-schema/
-COPY packages/postgres/postgres-client/package.json ./packages/postgres/postgres-client/
-COPY services/profile-system/package.json ./services/profile-system/
-
-RUN apk update && \
-    apk add --no-cache curl && \
-    rm -rf /var/cache/apk/*
+COPY --from=root                    package*.json   ./
+COPY --from=auth-schema             package.json    ./packages/postgres/auth-schema/
+COPY --from=profile-system-types    package.json    ./packages/types/profile-system-types/
+COPY --from=profile-system-schema   package.json    ./packages/postgres/profile-system-schema/
+COPY --from=postgres-client			package.json    ./packages/postgres/postgres-client/
+COPY						        package.json	./services/profile-system/
 
 ENV NODE_ENV=production
 RUN npm ci --omit=dev
@@ -44,11 +46,10 @@ COPY --from=builder /app/packages/postgres/postgres-client/dist ./packages/postg
 COPY --from=builder /app/services/profile-system/dist ./services/profile-system/dist
 COPY --from=builder /app/services/profile-system/test ./services/profile-system/test
 
+COPY scripts/* /usr/local/bin
+
 EXPOSE 3000
 
-COPY services/profile-system/scripts/profile-system-entrypoint.sh /usr/local/bin/entrypoint.sh
-RUN chmod +x /usr/local/bin/entrypoint.sh
-
 WORKDIR /app/services/profile-system
-ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
+ENTRYPOINT ["/usr/local/bin/profile-system-entrypoint.sh"]
 CMD ["npm", "run", "start"]

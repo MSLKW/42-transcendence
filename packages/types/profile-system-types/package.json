@@ -1,7 +1,6 @@
 {
 	"name": "@big2/profile-system-types",
 	"private": true,
-	"type": "module",
 	"main": "./dist/types.js",
 	"types": "./dist/types.d.ts",
 	"scripts": {

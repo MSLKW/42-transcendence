@@ -1,29 +1,30 @@
 {
   "name": "big2",
   "private": true,
-  "workspaces":[
+  "type": "module",
+  "workspaces": [
     "infra/*",
     "packages/*/*",
     "services/*"
   ],
   "scripts": {
-    "db:generate": "npm run --prefix infra/migrator db:generate --",
-    "db:migrate": "npm run --prefix infra/migrator db:migrate",
-    "db:push": "npm run --prefix infra/migrator db:push",
-
-    "test:signup": "bash services/authentication/scripts/test-signup.sh",
-    "test:signin": "bash services/authentication/scripts/test-signin.sh",
-    "test:logout": "bash services/authentication/scripts/test-logout.sh",
-    "test:validate": "bash services/authentication/scripts/test-validate.sh",
-    "test:guest": "bash services/authentication/scripts/test-guest.sh",
-
-    "build": "npm run build --workspaces --if-present",
-    "dev": "npm run dev --workspaces --if-present",
-    "lint": "eslint .",
-    "format": "prettier --write ."
+    "db:generate":    "npm run db:generate -- -w migrator",
+    "db:migrate":     "npm run db:migrate -w migrator",
+    "db:push":        "npm run db:push -w migrator",
+    "test:signup":    "npm run test:signup -w authentication",
+    "test:signin":    "npm run test:signin -w authentication",
+    "test:logout":    "npm run test:logout -w authentication",
+    "test:validate":  "npm run test:validate -w authentication",
+    "test:guest":     "npm run test:guest -w authentication",
+    "build":          "npm run build -w --if-present",
+    "dev":            "npm run dev -w --if-present",
+    "lint":           "eslint .",
+    "format":         "prettier --write ."
   },
-  "devDependencies":{
+  "devDependencies": {
+    "@typescript-eslint/parser": "^8.70.0",
     "eslint": "^9.0.0",
+    "eslint-plugin-import-x": "^4.17.1",
     "prettier": "^3.0.0",
     "typescript": "^5.0.0"
   }

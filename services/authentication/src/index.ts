@@ -9,8 +9,9 @@ import { guestHandler } from "./handlers/guest";
 import { logoutHandler } from "./handlers/logout";
 import { validateSessionHandler } from "./handlers/validateSession";
 import { startSessionCleanupJob } from "./jobs/cleanupSessions";
-import { getInternalInfosForProfile } from "./routes/internal-profile";
-import { checkUserExistanceForFriends } from "./routes/internal-friends";
+import { getInternalInfosForProfile } from "./routes/getInternalInfosForProfile";
+import { setInternalUsernameFromProfile } from "./routes/setInternalUsernameFromProfile";
+import { checkUserExistanceForFriends } from "./routes/checkUserExistanceForFriends";
 
 
 const app = express();
@@ -26,8 +27,12 @@ app.post("/signin", signinHandler(userStore, sessionStore));
 app.post("/guest", guestHandler(sessionStore));
 app.delete("/logout", logoutHandler(sessionStore));
 app.get("/validate", validateSessionHandler(sessionStore));
-app.get("/internal/profile/:id", getInternalInfosForProfile()); // REST API FOR database usage (profile)
-app.get("/internal/friends/:id", checkUserExistanceForFriends()); // REST API FOR database usage (friends)
+
+// REST API fetch by other services
+app.get("/internal/profile/infos/:uuid", getInternalInfosForProfile());
+app.patch("/internal/profile/username/:uuid", setInternalUsernameFromProfile());
+app.get("/internal/friends/uuidexistance/:uuid", checkUserExistanceForFriends());
+app.get("/", (req, res) => res.sendStatus(200)); // temporary healthcheck only, to enable docker run 
 
 app.use((err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {
 	if (err.type === "entity.parse.failed") {

@@ -6,7 +6,7 @@
 #    By: aimokhta <aimokhta@student.42kl.edu.my>    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2026/06/16 09:31:30 by aimokhta          #+#    #+#              #
-#    Updated: 2026/09/09 04:46:04 by aimokhta         ###   ########.fr        #
+#    Updated: 2026/09/15 13:57:13 by aimokhta         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -61,6 +61,8 @@ logs:
 	@docker logs migrator
 	@echo "$(PURPLE)\ndocker logs drizzle-gateway$(RESET)"
 	@docker logs drizzle-gateway
+	@echo "$(PURPLE)\ndocker logs nginx$(RESET)"
+	@docker logs nginx
 	@echo "$(PURPLE)\ndocker logs authentication$(RESET)"
 	@docker logs authentication
 	@echo "$(PURPLE)\ndocker logs party-manager$(RESET)"
@@ -103,10 +105,15 @@ nuclear:
 # # 3. Remove all images
 # # 4. Remove all volumes
 # # 5. Remove all networks
+# 	@echo "$(PURPLE)docker stop $(docker ps -aq)$(RESET)"
 # 	@docker stop $(docker ps -aq)
+# 	@echo "$(PURPLE)docker rm $(docker ps -aq)$(RESET)"
 # 	@docker rm $(docker ps -aq)
+# 	@echo "$(PURPLE)docker rmi $(docker images -q)$(RESET)"
 # 	@docker rmi $(docker images -q)
+# 	@echo "$(PURPLE)docker volume prune -f$(RESET)"
 # 	@docker volume prune -f
+# 	@echo "$(PURPLE)docker network prune -f$(RESET)"
 # 	@docker network prune -f
 
 progress:
