@@ -6,10 +6,15 @@ if [ "$#" -ne 1 ]; then
 	exit 1
 fi
 
-TOKEN="$1"
-BASE_URL="${BASE_URL:-http://localhost:3000}"
+if [ -f .env ]; then
+	export $(cat .env | grep PORT)
+fi
 
-curl -s -X GET "$BASE_URL/validate" \
+TOKEN="$1"
+BASE_URL="${BASE_URL:-http://localhost}"
+PORT="${PORT:-3000}"
+
+curl -s -X GET "$BASE_URL:$PORT/validate" \
 	-H "Authorization: Bearer $TOKEN" \
 	-v
 echo ""
