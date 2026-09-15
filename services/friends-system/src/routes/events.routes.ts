@@ -16,7 +16,7 @@ eventsRouter.get("/events", async (req, res) => {
   // Check if receiverId exists in Postgres (auth-schema's users table)
   try 
   {
-    await fetchJson(`${AUTH_SERVICE_URL}/internal/friends/${uuid}`);
+    await fetchJson(`${AUTH_SERVICE_URL}/internal/friends/uuidexistance/${uuid}`);
   } 
   catch (err: any) 
   {

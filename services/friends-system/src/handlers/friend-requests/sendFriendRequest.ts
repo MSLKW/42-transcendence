@@ -23,7 +23,7 @@ export async function sendFriendRequest(req: Request, res: Response): Promise<vo
   // Check if receiverId exists in Postgres (auth-schema's users table)
   try 
   {
-    await fetchJson(`${AUTH_SERVICE_URL}/internal/friends/${receiverId}`);
+    await fetchJson(`${AUTH_SERVICE_URL}/internal/friends/uuidexistance/${receiverId}`);
   } 
   catch (err: any) 
   {
