@@ -1,6 +1,4 @@
 import { Socket } from "socket.io-client";
-// import { chatSocket } from "../../chat/chatSocket";
-import { useChatStore } from "../../../store/ChatStore";
 import { useNotificationStore, NOTIFICATION_TYPE } from "../../../store/NotificationStore";
 import { usePartyStore } from "../../../store/PartyStore";
 import { useProfileStore } from "../../../store/ProfileStore";

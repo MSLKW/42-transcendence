@@ -28,7 +28,7 @@ export const ChatMessage = ({ data, isFirstFromClient, isLastFromClient }: ChatP
 								className="
 									max-w-[75%]
 									flex flex-col
-									text-right wrap-break-word
+									text-left wrap-break-word
 									bg-a3 border border-a4 rounded-md
 									px-1rem py-0.5rem
 								"
