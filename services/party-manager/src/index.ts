@@ -1,6 +1,7 @@
 import "dotenv/config";
 import express from "express"
 import { healthCheck } from "./handlers/healthCheck"
+import { checkUuidOnline } from "./handlers/CheckUuidOnline";
 import { createServer } from "http";
 import { DisconnectReason, Server, Socket } from "socket.io";
 import { Client } from "./client/Client";
@@ -32,7 +33,7 @@ const pendingRemovals = new Map<string, NodeJS.Timeout>();
 const app = express();
 app.use(express.json());
 app.get("/health", healthCheck());
-app.get("/internal/profile/:id", getInternalInfosForProfile());// internal REST API FOR database usage
+app.get("/online/:uuid", checkUuidOnline(clientManager));
 
 const httpServer = createServer(app);
 

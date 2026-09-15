@@ -1,7 +1,7 @@
 import { Client } from "./Client";
 import { Party } from "../party/Party";
 
-class ClientManager
+export class ClientManager
 {
 	private byUuid	= new Map<string, Client>();
 	private bySocketId = new Map<string, Client>();
