@@ -1,4 +1,4 @@
-export const signOutFetch = async () => {
+export const fetchSignOut = async () => {
 	const response = await fetch("/api/auth/logout", {
 		method: "DELETE",
 		credentials: "include",

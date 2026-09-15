@@ -1,4 +1,4 @@
-export const signUpFetch = async (email: string, password: string) => {
+export const fetchSignUp = async (email: string, password: string) => {
 	const response = await fetch("/api/auth/signup", {
 		method: "POST",
 		headers: {

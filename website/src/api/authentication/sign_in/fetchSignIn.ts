@@ -1,4 +1,4 @@
-export const signInFetch = async (email: string, password: string) => {
+export const fetchSignIn = async (email: string, password: string) => {
 	const response = await fetch("/api/auth/signin", {
 		method: "POST",
 		headers: { "Content-Type": "application/json" },

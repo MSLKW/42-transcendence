@@ -1,4 +1,4 @@
-import { signInFetch } from "./fetchSignIn";
+import { fetchSignIn } from "./fetchSignIn";
 import { useNotificationStore, NOTIFICATION_TYPE } from "../../../store/NotificationStore";
 import { useProfileStore } from "../../../store/ProfileStore";
 import { useSceneStore } from "../../../store/SceneStore";
@@ -9,7 +9,7 @@ export const handleSignIn = async (email: string, password: string) => {
 	const { showNotification } = useNotificationStore.getState();
 
 	try {
-		const response = await signInFetch(email, password);
+		const response = await fetchSignIn(email, password);
 		useProfileStore.setState({
 			validateResponse: response,
 			clientUuid: response.id,

@@ -2,7 +2,7 @@ import { useGameStore } from "../../../store/GameStore";
 import { usePartyStore } from "../../../store/PartyStore";
 import { useNotificationStore, NOTIFICATION_TYPE } from "../../../store/NotificationStore"; 
 import { useSceneStore, defaultShowWindow } from "../../../store/SceneStore";
-import { signOutFetch } from "./fetchSignOut";
+import { fetchSignOut } from "./fetchSignOut";
 import { partySocket } from "../../party/partySocket";
 import { useProfileStore } from "../../../store/ProfileStore";
 import { chatSocket } from "../../chat/chatSocket";
@@ -11,7 +11,7 @@ import { useBubbleStore } from "../../../store/BubbleStore";
 
 export const handleSignOut = async () => {
 	try {
-		await signOutFetch();
+		await fetchSignOut();
 
 		useGameStore.getState().endGame();
 		

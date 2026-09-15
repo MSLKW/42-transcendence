@@ -1,6 +1,6 @@
 import type { Dispatch, SetStateAction } from "react";
-import { signUpFetch } from "./fetchSignUp";
-import { signInFetch } from "../sign_in/fetchSignIn";
+import { fetchSignUp } from "./fetchSignUp";
+import { fetchSignIn } from "../sign_in/fetchSignIn";
 import { useNotificationStore, NOTIFICATION_TYPE } from "../../../store/NotificationStore";
 import { useProfileStore } from "../../../store/ProfileStore";
 import { useSceneStore } from "../../../store/SceneStore";
@@ -11,8 +11,8 @@ export const handleSignUp = async (email: string, password: string, setIsLoading
 
 	try {
 		setIsLoading(true);
-		await signUpFetch(email, password);
-		const response = await signInFetch(email, password);
+		await fetchSignUp(email, password);
+		const response = await fetchSignIn(email, password);
 
 		useProfileStore.setState({ clientUuid: response.id });
 
