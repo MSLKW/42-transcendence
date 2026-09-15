@@ -3,8 +3,7 @@ import { drizzleFriendRequestRepository } from "../../repositories/drizzle/Drizz
 import { drizzleFriendshipRepository } from "../../repositories/drizzle/DrizzleFriendshipRepository";
 import { notify } from "../../events/notify";
 import { EVENTS } from "../../events/eventNames";
-import { AUTH_SERVICE_URL } from "../../config/env";
-import { fetchJson } from "../../utils/fetchJson";
+
 
 export async function sendFriendRequest(req: Request, res: Response): Promise<void> {
   const { senderId, receiverId } = req.body;
@@ -17,19 +16,6 @@ export async function sendFriendRequest(req: Request, res: Response): Promise<vo
 
   if (senderId === receiverId) {
     res.status(400).json({ error: "cannot friend yourself" });
-    return;
-  }
-
-  // Check if receiverId exists in Postgres (auth-schema's users table)
-  try 
-  {
-    await fetchJson(`${AUTH_SERVICE_URL}/internal/friends/uuidexistance/${receiverId}`);
-  } 
-  catch (err: any) 
-  {
-    // fetchJson throws on ANY non-ok response (404, 500, timeout, etc.) —
-    // for our purposes here, any failure means "treat as not found"
-    res.status(404).json({ err: "receiverId does not exist" });
     return;
   }
 
@@ -53,7 +39,30 @@ export async function sendFriendRequest(req: Request, res: Response): Promise<vo
     return;
   }
 
-  const request = await drizzleFriendRequestRepository.sendRequest(senderId, receiverId);
-  notify(receiverId, EVENTS.FRIEND_REQUEST_RECEIVED, request);
-  res.status(201).json(request);
+  // no need to manuall check if uuid exists for making friendrequests
+  // WHY? coz in database, its already Foreign Key-ed to authentication service
+  // who owns and creates all the uuid existed in the database anyway
+  // FK Speciality, it will THROW FK violation error in such cases the uuid thats FK-ed dosent exists.
+  // so, no more pre-manual check from friends-system to authentication using internal REST APIs needed
+  // before makinge each friend requests
+  // it is already enforced in database level through Foreign Key constraints 
+  try
+  {
+    const request = await drizzleFriendRequestRepository.sendRequest(senderId, receiverId);
+    notify(receiverId, EVENTS.FRIEND_REQUEST_RECEIVED, request);
+    res.status(201).json(request);
+  }
+  catch (err: any) 
+  {
+    // Postgres error code 23503 = foreign_key_violation
+    // this is what was thrown and fired when receiverId doesn't exist in auth_schema.users.
+    if (err.code === "23503") 
+    {
+      res.status(404).json({ error: "receiverId does not exist" });
+      return;
+    }
+
+    // anything else is a real, unexpected error => let it surface
+    throw err; 
+  }
 }
