@@ -3,7 +3,7 @@ interface FetchJsonOptions extends RequestInit
 	timeoutMs?: number;
 }
 
-export async function fetchJson<T = unknown>(
+export async function fetchJson<T = any>(
 	url: string,
 	{ timeoutMs = 5000, ...fetchOptions }: FetchJsonOptions = {}
 ): Promise<T>

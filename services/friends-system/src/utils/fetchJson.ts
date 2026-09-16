@@ -1,5 +1,5 @@
 // timeout, esp when game-stats couldnt return anything yet as it dosent existss yet
-export async function fetchJson<T = unknown>(url: string, timeoutMs = 5000): Promise<T>
+export async function fetchJson<T = any>(url: string, timeoutMs = 5000): Promise<T>
 {
 	const controller = new AbortController();
 	const timer = setTimeout(() => controller.abort(), timeoutMs);
