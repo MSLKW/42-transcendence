@@ -64,7 +64,7 @@ export const friendRequests = friendsSystemSchema.table("friend_requests", {
 			.on(table.senderId, table.receiverId),
 		pendingPairUniqueIdx: uniqueIndex("pending_pair_unique_idx")
 			.on(table.pairSmallId, table.pairBigId)
-			.where(sql`${table.status} = ${FRIEND_REQUEST_STATUS.PENDING}`),
+			.where(sql`${table.status} = ${sql.raw(`'${FRIEND_REQUEST_STATUS.PENDING}'`)}`),
 	})
 );
 

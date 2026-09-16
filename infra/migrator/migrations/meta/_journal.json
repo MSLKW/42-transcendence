@@ -5,15 +5,8 @@
     {
       "idx": 0,
       "version": "7",
-      "when": 1788894116320,
-      "tag": "0000_update_all_schemas",
-      "breakpoints": true
-    },
-    {
-      "idx": 1,
-      "version": "7",
-      "when": 1788425353576,
-      "tag": "0001_friends_system_schema",
+      "when": 1789581976421,
+      "tag": "0000_recreate_all_schemas",
       "breakpoints": true
     }
   ]
