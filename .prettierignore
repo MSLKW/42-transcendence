@@ -6,6 +6,8 @@ Dockerfile
 .dockerignore
 .vscode/*
 .idea
+*.md
+*.txt
 
 # ignored by git, but might have locally
 .env
