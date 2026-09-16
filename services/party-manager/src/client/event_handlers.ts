@@ -25,10 +25,12 @@ export function registerEventHandlers(socket: Socket, client: Client)
 	{
 		const recipient = clientManager.getByUuid(payload.recipientUuid);
 		
-		if (!recipient || !recipient.party || recipient.party.hostId != client.uuid)
+		if (!recipient || recipient.party.hostId != client.uuid)
 			return ;
-		recipient.party.removeUser(payload.recipientUuid);
-		recipient.emit("kicked", {message: "you were kicked by the host"});
+		const party = recipient.party;
+
+		party.removeUser(payload.recipientUuid);
+		recipient.emit("kicked", { message: "you were kicked by the host" });
 		recipient.emitState();
 	});
 
@@ -50,7 +52,9 @@ export function registerEventHandlers(socket: Socket, client: Client)
 
 	socket.on("leave_party", () =>
 	{
-		client.party?.removeUser(client.uuid);
+		const party = client.party;
+		
+		party.removeUser(client.uuid);
 		client.emitState();
 	});
 
@@ -58,7 +62,7 @@ export function registerEventHandlers(socket: Socket, client: Client)
 	{
 		if (client.party == null)
 			client.party = new Party(client);
-		else if (client.party.gameId != null)
+		else if (client.party.hostId != client.uuid || client.party.gameId != null)
 			return ;
 		client.party.startGameSession();
 	});

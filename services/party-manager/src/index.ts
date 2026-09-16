@@ -1,16 +1,14 @@
 import "dotenv/config";
 import express from "express"
 import { healthCheck } from "./handlers/healthCheck"
+import { checkUuidOnline } from "./handlers/CheckUuidOnline";
 import { createServer } from "http";
 import { DisconnectReason, Server, Socket } from "socket.io";
 import { Client } from "./client/Client";
 import { clientManager } from "./client/ClientManager";
 import { registerEventHandlers } from "./client/event_handlers";
 import { PartyState } from "./PartyTransmitTypes";
-import { DrizzlePlayerStatusStore } from "./store/drizzlePlayerStatusStore";
-import { getInternalInfosForProfile } from "./routes/internal";
 
-export const playerStatusStore = new DrizzlePlayerStatusStore();
 
 const PORT = Number(process.env.PORT) || 3000;
 const AUTH_SERVICE_URL = process.env.AUTH_SERVICE_URL;
@@ -32,7 +30,7 @@ const pendingRemovals = new Map<string, NodeJS.Timeout>();
 const app = express();
 app.use(express.json());
 app.get("/health", healthCheck());
-app.get("/internal/profile/:id", getInternalInfosForProfile());// internal REST API FOR database usage
+app.get("/online/:uuid", checkUuidOnline(clientManager));
 
 const httpServer = createServer(app);
 
@@ -83,7 +81,7 @@ io.use(async (socket, next) => {
 	}
 });
 
-io.on("connection", async(socket: Socket) =>
+io.on("connection", (socket: Socket) =>
 {
 	const uuid = socket.data.uuid;
 	
@@ -115,9 +113,6 @@ io.on("connection", async(socket: Socket) =>
 		console.log(`User<${uuid}> connected on socket ${socket.id}`);
 	}
 	
-	// TODO: mark presence as online in Postgres (implementing below)
-	await playerStatusStore.setPlayerOnline(uuid);	
-
 	socket.on("disconnect", (reason: DisconnectReason) =>
 	{
 		const client = clientManager.getBySocketId(socket.id);
@@ -140,13 +135,10 @@ io.on("connection", async(socket: Socket) =>
 	});
 });
 
-async function finalizeRemoval(uuid: string, reason: string)
+function finalizeRemoval(uuid: string, reason: string)
 {
 	clientManager.removeByUuid(uuid);
 	console.log(`User<${uuid}> disconnected - ${reason}`);
-
-	// TODO: mark presence as offline in Postgres (implementing)
-	await playerStatusStore.setPlayerOffline(uuid);
 }
 
 httpServer.listen(PORT, () => {

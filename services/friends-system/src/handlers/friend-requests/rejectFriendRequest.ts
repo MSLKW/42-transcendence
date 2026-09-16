@@ -3,11 +3,21 @@ import { drizzleFriendRequestRepository } from "../../repositories/drizzle/Drizz
 import { notify } from "../../events/notify";
 import { EVENTS } from "../../events/eventNames";
 import { getRouteParam } from "../../utils/getRouteParam";
+import { isValidUuid } from "../../utils/isValidUuid";
+import { FRIEND_REQUEST_STATUS } from "@big2/friends-system-types";
 
-export async function rejectFriendRequest(req: Request, res: Response): Promise<void> {
-  const requestId = getRouteParam(req.params.id);
-  if (!requestId) {
-    res.status(400).json({ error: "invalid request id" });
+export async function rejectFriendRequest(req: Request, res: Response): Promise<void> 
+{
+  const requestId = getRouteParam(req.params.requestId);
+
+  if (!requestId) 
+  {
+    res.status(400).json({ error: "requestId must be 1 string only, not invalid or missing" });
+    return;
+  }
+  if (!isValidUuid(requestId))
+  {
+    res.status(400).json({ error: "requestId must not be a malformed uuid" });
     return;
   }
 
@@ -17,12 +27,12 @@ export async function rejectFriendRequest(req: Request, res: Response): Promise<
     return;
   }
 
-  if (request.status !== "Pending") {
-    res.status(409).json({ error: `this request was already ${request.status} — it can't be changed` });
+  if (request.status !== FRIEND_REQUEST_STATUS.PENDING) {
+    res.status(409).json({ error: `this request was already responded as ${request.status} — it can't be changed` });
     return;
   }
 
-  await drizzleFriendRequestRepository.updateStatus(request.id, "Rejected");
+  await drizzleFriendRequestRepository.updateStatus(request.id, FRIEND_REQUEST_STATUS.REJECTED);
   notify(request.senderId, EVENTS.FRIEND_REQUEST_REJECTED, { by: request.receiverId, requestId: request.id });
-  res.json({ ...request, status: "Rejected" });
+  res.json({ ...request, status: FRIEND_REQUEST_STATUS.REJECTED });
 }

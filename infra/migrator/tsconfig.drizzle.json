@@ -5,7 +5,8 @@
     "moduleResolution": "bundler",
     "types": ["node"],
     "strict": true,
-    "skipLibCheck": true
+    "skipLibCheck": true,
+    "noEmit": true 
   },
   "include": [
     "drizzle.config.ts"

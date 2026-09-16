@@ -4,27 +4,35 @@ import { drizzleFriendshipRepository } from "../../repositories/drizzle/DrizzleF
 import { notify } from "../../events/notify";
 import { EVENTS } from "../../events/eventNames";
 import { isValidUuid } from "../../utils/isValidUuid";
+import { getRouteParam } from "../../utils/getRouteParam";
 
 
 export async function sendFriendRequest(req: Request, res: Response): Promise<void> {
-  const { senderId, receiverId } = req.body;
+  // currently senderId/receiverId are typed any since they come off req.body, before getRouteParam
+  const senderId = getRouteParam(req.body.senderId);
+  const receiverId = getRouteParam(req.body.receiverId);
 
-  // uuids are not empty
-  if (!senderId || !receiverId)
+  // uuids are not empty or array
+  if (!senderId)
   {
-    res.status(400).json({ error: "both senderId and receiverId are required" });
+    res.status(400).json({ error: "senderId must be 1 string only, not invalid or missing" });
+    return;
+  }
+  if (!receiverId)
+  {
+    res.status(400).json({ error: "receiverId must be 1 string only, not invalid or missing" });
     return;
   }
 
   // Malformed UUIDs throws (SQLSTATE 22P02) by Postgres at earlier stage than 23503 FK violation
   if (!isValidUuid(senderId)) 
   {
-    res.status(400).json({ error: "senderId must be a valid uuid" });
+    res.status(400).json({ error: "senderId must not be a malformed uuid" });
     return;
   }
   if (!isValidUuid(receiverId)) 
   {
-    res.status(400).json({ error: "receiverId must be a valid uuid" });
+    res.status(400).json({ error: "receiverId must not be a malformed uuid" });
     return;
   }
 
@@ -40,9 +48,8 @@ export async function sendFriendRequest(req: Request, res: Response): Promise<vo
     return;
   }
 
-  // application layer guard 
-  // avoid >1 dupe pending requests at a time
-  // database layer unique index constraints for safety net in case of race conditions
+  // application layer guard: avoid >1 dupe pending requests at a time
+  // database layer guard: unique index constraints for safety net in case of race conditions
   //
   // with specified error logs that similar request has been sent already, previously 
   const existingSameDirection = await drizzleFriendRequestRepository.findPendingBothSides(senderId, receiverId);
@@ -50,7 +57,7 @@ export async function sendFriendRequest(req: Request, res: Response): Promise<vo
     res.status(409).json({ error: "request already pending" });
     return;
   }
-  // with specified error logs to respond to recieved request instead
+  // with specified error logs to respond to received request instead
   const reverseRequest = await drizzleFriendRequestRepository.findPendingBothSidesReverseCheck(senderId, receiverId);
   if (reverseRequest) {
     res.status(409).json({
@@ -85,15 +92,16 @@ export async function sendFriendRequest(req: Request, res: Response): Promise<vo
     // this is what was thrown and fired when receiverId doesn't exist in auth_schema.users.
     if (err.code === "23503") 
     {
-      res.status(404).json({ error: "receiverId does not exist" });
+      res.status(404).json({ error: "receiver id does not exist" });
       return;
     }
 
-    // 3. Postgres error code 23505 = unique_violation
+    // 3. Postgres error code 23505 = unique_violation 
+    // 409 -> conflict status code
     // this is what was thrown and fired when receiverId doesn't exist in auth_schema.users.
-    if (err.code === "23503") 
+    if (err.code === "23505") 
     {
-      res.status(404).json({ error: "thsi request already exists" });
+      res.status(409).json({ error: "this request already exists" });
       return;
     }
 

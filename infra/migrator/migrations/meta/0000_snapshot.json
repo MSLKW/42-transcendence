@@ -1,5 +1,5 @@
 {
-  "id": "55ee57c6-2881-46da-a12e-eee7c326c318",
+  "id": "41088197-9248-4d74-befd-71a65029bf8e",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -223,6 +223,338 @@
       "checkConstraints": {},
       "isRLSEnabled": false
     },
+    "friends_system_schema.friend_requests": {
+      "name": "friend_requests",
+      "schema": "friends_system_schema",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "sender_id": {
+          "name": "sender_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "receiver_id": {
+          "name": "receiver_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "friend_request_status": {
+          "name": "friend_request_status",
+          "type": "friend_request_status_enum",
+          "typeSchema": "friends_system_schema",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'Pending'"
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "pair_small_id": {
+          "name": "pair_small_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": false,
+          "generated": {
+            "as": "LEAST(sender_id, receiver_id)",
+            "type": "stored"
+          }
+        },
+        "pair_big_id": {
+          "name": "pair_big_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": false,
+          "generated": {
+            "as": "GREATEST(sender_id, receiver_id)",
+            "type": "stored"
+          }
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {
+        "sender_receiver_idx": {
+          "name": "sender_receiver_idx",
+          "columns": [
+            {
+              "expression": "sender_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "receiver_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "pending_pair_unique_idx": {
+          "name": "pending_pair_unique_idx",
+          "columns": [
+            {
+              "expression": "pair_small_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "pair_big_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": true,
+          "where": "\"friends_system_schema\".\"friend_requests\".\"friend_request_status\" = 'Pending'",
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {
+        "friend_requests_sender_id_users_id_fk": {
+          "name": "friend_requests_sender_id_users_id_fk",
+          "tableFrom": "friend_requests",
+          "tableTo": "users",
+          "schemaTo": "auth_schema",
+          "columnsFrom": [
+            "sender_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "friend_requests_receiver_id_users_id_fk": {
+          "name": "friend_requests_receiver_id_users_id_fk",
+          "tableFrom": "friend_requests",
+          "tableTo": "users",
+          "schemaTo": "auth_schema",
+          "columnsFrom": [
+            "receiver_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "friends_system_schema.friendships": {
+      "name": "friendships",
+      "schema": "friends_system_schema",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "friend_small_id": {
+          "name": "friend_small_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "friend_big_id": {
+          "name": "friend_big_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {
+        "friends_pair_unique_idx": {
+          "name": "friends_pair_unique_idx",
+          "columns": [
+            {
+              "expression": "friend_small_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "friend_big_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": true,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {
+        "friendships_friend_small_id_users_id_fk": {
+          "name": "friendships_friend_small_id_users_id_fk",
+          "tableFrom": "friendships",
+          "tableTo": "users",
+          "schemaTo": "auth_schema",
+          "columnsFrom": [
+            "friend_small_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "friendships_friend_big_id_users_id_fk": {
+          "name": "friendships_friend_big_id_users_id_fk",
+          "tableFrom": "friendships",
+          "tableTo": "users",
+          "schemaTo": "auth_schema",
+          "columnsFrom": [
+            "friend_big_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {
+        "ordered_friends_pair_check": {
+          "name": "ordered_friends_pair_check",
+          "value": "\"friends_system_schema\".\"friendships\".\"friend_small_id\" < \"friends_system_schema\".\"friendships\".\"friend_big_id\""
+        }
+      },
+      "isRLSEnabled": false
+    },
+    "game_schema.player_stats": {
+      "name": "player_stats",
+      "schema": "game_schema",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "level": {
+          "name": "level",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "default": 0
+        },
+        "xp": {
+          "name": "xp",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "default": 0
+        },
+        "total_played": {
+          "name": "total_played",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "default": 0
+        },
+        "total_wins": {
+          "name": "total_wins",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "default": 0
+        },
+        "total_loss": {
+          "name": "total_loss",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "default": 0
+        },
+        "win_streak": {
+          "name": "win_streak",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "default": 0
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "player_stats_id_users_id_fk": {
+          "name": "player_stats_id_users_id_fk",
+          "tableFrom": "player_stats",
+          "tableTo": "users",
+          "schemaTo": "auth_schema",
+          "columnsFrom": [
+            "id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
     "profile_system_schema.user_data": {
       "name": "user_data",
       "schema": "profile_system_schema",
@@ -394,97 +726,25 @@
       "policies": {},
       "checkConstraints": {},
       "isRLSEnabled": false
-    },
-    "game_schema.player_stats": {
-      "name": "player_stats",
-      "schema": "game_schema",
-      "columns": {
-        "id": {
-          "name": "id",
-          "type": "uuid",
-          "primaryKey": true,
-          "notNull": true
-        },
-        "level": {
-          "name": "level",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": true,
-          "default": 0
-        },
-        "xp": {
-          "name": "xp",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": true,
-          "default": 0
-        },
-        "total_played": {
-          "name": "total_played",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": true,
-          "default": 0
-        },
-        "total_wins": {
-          "name": "total_wins",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": true,
-          "default": 0
-        },
-        "total_loss": {
-          "name": "total_loss",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": true,
-          "default": 0
-        },
-        "win_streak": {
-          "name": "win_streak",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": true,
-          "default": 0
-        },
-        "updated_at": {
-          "name": "updated_at",
-          "type": "timestamp with time zone",
-          "primaryKey": false,
-          "notNull": true,
-          "default": "now()"
-        }
-      },
-      "indexes": {},
-      "foreignKeys": {
-        "player_stats_id_users_id_fk": {
-          "name": "player_stats_id_users_id_fk",
-          "tableFrom": "player_stats",
-          "tableTo": "users",
-          "schemaTo": "auth_schema",
-          "columnsFrom": [
-            "id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
-          "onDelete": "cascade",
-          "onUpdate": "no action"
-        }
-      },
-      "compositePrimaryKeys": {},
-      "uniqueConstraints": {},
-      "policies": {},
-      "checkConstraints": {},
-      "isRLSEnabled": false
     }
   },
-  "enums": {},
+  "enums": {
+    "friends_system_schema.friend_request_status_enum": {
+      "name": "friend_request_status_enum",
+      "schema": "friends_system_schema",
+      "values": [
+        "Pending",
+        "Accepted",
+        "Rejected"
+      ]
+    }
+  },
   "schemas": {
     "auth_schema": "auth_schema",
     "party_manager_schema": "party_manager_schema",
-    "profile_system_schema": "profile_system_schema",
-    "game_schema": "game_schema"
+    "friends_system_schema": "friends_system_schema",
+    "game_schema": "game_schema",
+    "profile_system_schema": "profile_system_schema"
   },
   "sequences": {},
   "roles": {},
