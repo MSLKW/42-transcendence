@@ -4,7 +4,7 @@
 * [1. Endpoint Overview](#1-endpoint-overview)
 * [2. REST API Detailed Documentation](#2-rest-api-detailed-documentation)
 * [3. SSE Event Contract](#3-sse-event-contract)
-* [4. Local Testing Guide (via test.html)](#4-local-testing-guide-via-testhtml)
+* [4. Local Testing Guide (via tester.html)](#4-local-testing-guide-via-testhtml)
 
 ---
 
@@ -15,14 +15,14 @@
 
 | Method | Path | Purpose |
 |---|---|---|
-| `POST` | `/friend-requests` | Send a friend request |
-| `GET` | `/friend-requests/received/:receiverUuid` | List pending requests received by this user |
-| `GET` | `/friend-requests/sent/:senderUuid` | List all requests sent by this user (any status) |
-| `POST` | `/friend-requests/:requestId/accept` | Accept a pending request |
-| `POST` | `/friend-requests/:requestId/reject` | Reject a pending request |
-| `GET` | `/friendships/:uuid` | List this user's friends (UUIDs) |
-| `DELETE` | `/friendships/:uuid/:friendUuid` | Remove a friend (silent — other side isn't notified) |
-| `GET` | `/events/:uuid` | Open an SSE stream for live notifications |
+| `POST` | [`/friend-requests`](#post-friend-requests) | Send a friend request |
+| `GET` | [`/friend-requests/received/:receiverUuid`](#get-friend-requestsreceivedreceiveruuid) | List pending requests received by this user |
+| `GET` | [`/friend-requests/sent/:senderUuid`](#get-friend-requestssentsenderuuid) | List all requests sent by this user (any status) |
+| `POST` | [`/friend-requests/:requestId/accept`](#post-friend-requestsrequestidaccept) | Accept a pending request |
+| `POST` | [`/friend-requests/:requestId/reject`](#post-friend-requestsrequestidreject) | Reject a pending request |
+| `GET` | [`/friendships/:ownerUuid`](#get-friendshipsowneruuid) | List this user's friends (UUIDs) |
+| `DELETE` | [`/friendships/:ownerUuid/:friendUuid`](#delete-friendshipsowneruuidfrienduuid) | Remove a friend (silent — other side isn't notified) |
+| `GET` | [`/events/:ownerUuid`](#3-sse-event-contract) | Open an SSE stream for live notifications |
 
 **Main objectives:**
 - 🔍 **Read:** full friends list
@@ -115,7 +115,7 @@ Reject a pending request. Same param and error rules as `accept`, but sets statu
 
 ---
 
-### `GET /friendships/:uuid`
+### `GET /friendships/:ownerUuid`
 List a user's friends.
 
 **Success — `200 OK`:**
@@ -128,7 +128,7 @@ Just an array of friend UUIDs — no nested objects.
 
 ---
 
-### `DELETE /friendships/:uuid/:friendUuid`
+### `DELETE /friendships/:ownerUuid/:friendUuid`
 Remove `friendUuid` from `uuid`'s friend list.
 
 **Success — `204 No Content`** (empty body).
@@ -145,7 +145,7 @@ Remove `friendUuid` from `uuid`'s friend list.
 
 ## 3. SSE Event Contract
 
-> Clients connect once via `GET /events/:uuid` and receive every event below pushed down that one connection.
+> Clients connect once via `GET /events/:ownerUuid` and receive every event below pushed down that one connection.
 > ✅ **One live connection per UUID** — connecting again with the same UUID closes the previous connection (see `replaced` below). Multi-tab/multi-device fan-out is not supported by design.
 
 | Event | Fired to | Payload |
@@ -158,19 +158,19 @@ Remove `friendUuid` from `uuid`'s friend list.
 | `friends_list_updated` | varies (see below) | `{ "newFriend"?: "uuid" }` or `{ "removedFriend"?: "uuid" }` or `{}` |
 
 **Notes:**
-- `friends_list_updated`'s `removedFriend` field is only ever sent to the person who *initiated* the removal — the removed side never gets an event (matches the silent-delete behavior of `DELETE /friendships/:uuid/:friendUuid`).
-- Treat every `friends_list_updated` event as a signal to re-fetch `GET /friendships/:uuid` rather than trusting the payload alone — it's a hint, not the source of truth.
-- **`replaced` handling is a frontend responsibility.** On receiving it, the client must call `.close()` on its own `EventSource` — the server ending the connection is not enough by itself, or the browser's default auto-reconnect will fight the server in an infinite evict loop. See `test.html`'s `replaced` listener for the reference implementation.
-- A `404` on connecting to `/events/:uuid` means the UUID doesn't exist in the database — the browser's `EventSource` will **not** auto-retry in this case (only non-2xx responses stop the retry loop; network blips still retry normally).
+- `friends_list_updated`'s `removedFriend` field is only ever sent to the person who *initiated* the removal — the removed side never gets an event (matches the silent-delete behavior of `DELETE /friendships/:ownerUuid/:friendUuid`).
+- Treat every `friends_list_updated` event as a signal to re-fetch `GET /friendships/:ownerUuid` rather than trusting the payload alone — it's a hint, not the source of truth.
+- **`replaced` handling is a frontend responsibility.** On receiving it, the client must call `.close()` on its own `EventSource` — the server ending the connection is not enough by itself, or the browser's default auto-reconnect will fight the server in an infinite evict loop. See `tester.html`'s `replaced` listener for the reference implementation.
+- A `404` on connecting to `/events/:ownerUuid` means the UUID doesn't exist in the database — the browser's `EventSource` will **not** auto-retry in this case (only non-2xx responses stop the retry loop; network blips still retry normally).
 
 ---
 
 ## 4. Local Testing Guide (via tester.html)
 
-Works identically against the in-memory placeholder or real Postgres — `test.html` only ever talks to the REST/SSE contract above, never the storage layer directly.
+Works identically against the in-memory placeholder or real Postgres — `tester.html` only ever talks to the REST/SSE contract above, never the storage layer directly.
 
 ### Basic walkthrough
-1. Open `test.html` in two browser tabs with different UUIDs.
+1. Open `tester.html` in two browser tabs with different UUIDs.
 2. Register a UUID in each tab and click **Connect** — each tab opens its own SSE connection.
 3. Send a friend request from one tab — watch it appear live in the other's inbox.
 4. Accept or reject — on accept, both UUIDs appear in each other's friends list.
