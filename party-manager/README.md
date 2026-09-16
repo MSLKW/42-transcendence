@@ -8,7 +8,7 @@
 
 ### GET /online/:uuid
 #### Responses
-- 200: { isOnline: boolean }
+- 200: { isOnline: boolean, inParty: boolean }
 
 
 <br><br><br><br>
