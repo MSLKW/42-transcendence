@@ -8,6 +8,8 @@ import { signinHandler } from "./handlers/signin";
 import { guestHandler } from "./handlers/guest";
 import { logoutHandler } from "./handlers/logout";
 import { validateSessionHandler } from "./handlers/validateSession";
+import { getCreatedAt } from "./handlers/getCreatedAt";
+
 import { scheduleSessionCleanup } from "./jobs/ScheduleSessionCleanup";
 
 const app = express();
@@ -23,6 +25,8 @@ app.post("/signin", signinHandler(userStore, sessionStore));
 app.post("/guest", guestHandler(sessionStore));
 app.delete("/logout", logoutHandler(sessionStore));
 app.get("/validate", validateSessionHandler(sessionStore));
+
+app.get("/created-at/:uuid", getCreatedAt(userStore));
 
 scheduleSessionCleanup(sessionStore);
 
