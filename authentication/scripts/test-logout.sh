@@ -5,10 +5,15 @@ if [ "$#" -ne 1 ]; then
   exit 1
 fi
 
-TOKEN="$1"
-BASE_URL="${BASE_URL:-http://localhost:3000}"
+if [ -f .env ]; then
+	export $(cat .env | grep PORT)
+fi
 
-curl -s -X DELETE "$BASE_URL/logout" \
+TOKEN="$1"
+BASE_URL="${BASE_URL:-http://localhost}"
+PORT="${PORT:-3000}"
+
+curl -s -X DELETE "$BASE_URL:$PORT/logout" \
   -H "Authorization: Bearer $TOKEN" \
   -v
 echo ""
