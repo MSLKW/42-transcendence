@@ -10,12 +10,17 @@
   "scripts": {
     "db:generate": "drizzle-kit generate",
     "db:migrate": "drizzle-kit migrate",
-    "db:push": "drizzle-kit push"
+    "db:push": "drizzle-kit push",
+    "typecheck": "tsc --noEmit -p tsconfig.drizzle.json"
   },
   "dependencies": {
-    "pg": "^8.22.0",
     "dotenv": "^17.4.2",
+    "drizzle-kit": "^0.31.10",
     "drizzle-orm": "^0.45.2",
-    "drizzle-kit": "^0.31.10"
+    "pg": "^8.22.0"
+  },
+  "devDependencies": {
+    "@types/node": "^26.5.0",
+    "typescript": "^5.9.3"
   }
 }
