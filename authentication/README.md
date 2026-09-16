@@ -77,7 +77,7 @@ Content-Type: application/json
 ### GET /created-at/:uuid
 #### Responses:
 ```
-- 200: { createdAt: string }
+- 200: { createdAt: Date }
 - 404: { error: string }
 ```
 <br><br>
