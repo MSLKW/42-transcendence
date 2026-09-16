@@ -13,7 +13,7 @@ export const PartyWindow = () => {
 	const [isSearching, setIsSearching] = useState(false);
 	const searchRequestId = useRef(0);
 
-	useEffect(() => {
+	const searchFunction = async () => {
 		const query = searchQuery.trim();
 
 		if (query === "") {
@@ -45,6 +45,10 @@ export const PartyWindow = () => {
 			clearTimeout(timeoutId);
 			controller.abort();
 		};
+	}
+
+	useEffect(() => {
+		searchFunction();
 	}, [searchQuery]);
 
 	return (
@@ -95,6 +99,10 @@ export const PartyWindow = () => {
 				<SearchModule 
 					value={searchQuery}
 					onChange={setSearchQuery}
+					search={() => {
+						setFilteredResults([]);
+						searchFunction();
+					}}
 				/>
 			</div>
 		</Window>

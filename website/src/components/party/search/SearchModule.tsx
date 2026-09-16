@@ -1,12 +1,13 @@
 import { useRef, useEffect } from "react";
-import { SearchButton } from "./SearchButton";
+import { SearchIcon } from "./SearchIcon";
 
 interface SearchModuleProps {
 	value: string;
 	onChange: (query: string) => void;
+	search: () => void;
 }
 
-export const SearchModule = ({ value, onChange }: SearchModuleProps) => {
+export const SearchModule = ({ value, onChange, search }: SearchModuleProps) => {
 	const focusRef = useRef<HTMLInputElement | null>(null);
 	useEffect(() => {
 		if (focusRef.current)
@@ -14,10 +15,12 @@ export const SearchModule = ({ value, onChange }: SearchModuleProps) => {
 	}, []);
 
 	return (
-		<div className="
-			w-[90%]
-			flex place-content-center place-items-center
-			gap-1rem
+		<form
+			onSubmit={(e: React.FormEvent<HTMLFormElement>) => e.preventDefault()}
+			className="
+				w-[90%]
+				flex place-content-center place-items-center
+				gap-1rem
 		">
 			<input
 				ref={focusRef}
@@ -28,7 +31,13 @@ export const SearchModule = ({ value, onChange }: SearchModuleProps) => {
 				onChange={(e) => onChange(e.target.value)}
 				className="input-chat"
 			/>
-			<SearchButton />
-		</div>
+			<button
+				data-tip="Search"
+				className="btn-icon bg-accent data-tip-up"
+				onClick={search}
+			>
+				<SearchIcon />
+			</button>
+		</form>
 	);
 }
