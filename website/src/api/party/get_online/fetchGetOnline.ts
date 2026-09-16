@@ -1,4 +1,4 @@
-export const fetchOnline = async (uuid: string) => {
+export const fetchGetOnline = async (uuid: string) => {
 	const response = await fetch(`/api/party/online/${uuid}`, {
 		method: "GET",
 		credentials: "include",

@@ -22,14 +22,6 @@ export function partyStateHandler(socket: Socket) {
 
 		await useProfileStore.getState().setCachedData();
 
-		usePartyStore.setState({
-			partyStateResponse: {
-				hostUuid: partyData.hostUuid,
-				members: partyData.members,
-				gameId: partyData.gameId,
-			},
-		});
-		
 		chatSocket.connect();
 		chatSocket.joinRoom(partyData.hostUuid);
 

@@ -96,7 +96,7 @@ export const PlayerDataModule = ({ profile, badge, setBadge }: PlayerDataModule)
 						/>
 					}
 				</div>
-				<PlayerStatusModule status={profile ? profile.availability : "Busy"}/>
+				<PlayerStatusModule status={profile ? profile.availability : "Online"}/>
 			</div>
 			<div className="text-a5">
 				<p>Last Login: {profile ? profile.lastLogin.toString() : "n/a"}</p>

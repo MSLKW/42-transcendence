@@ -1,18 +1,18 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
-type TEST_TYPE = {
-	hostUuid: string;
-	members: string[];
-	gameId: string | null;
-}
+export const AVAILABILITY_LABEL = [
+	"Offline",
+	"Online",
+	"Busy",
+] as const;
+export type AVAILABILITY_TYPE = typeof AVAILABILITY_LABEL[number];
 
 interface PartyValues {
 	partySocketId: string | null;
 	partyGameId: string | null;
 	members: (string | null)[];
 	hostUuid: string | null;
-	partyStateResponse: TEST_TYPE | undefined;
 }
 
 interface PartyState extends PartyValues {
@@ -26,7 +26,6 @@ export const usePartyStore = create<PartyState>() (
 			partyGameId: null,
 			members: [],
 			hostUuid: null,
-			partyStateResponse: undefined,
 
 			kickPlayer: (uuid) => {
 				const currentMembers = get().members;

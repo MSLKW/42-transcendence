@@ -2,10 +2,10 @@
 import { useEffect, useState } from "react";
 import { partySocket } from "../../../api/party/partySocket";
 import { handleGetProfile } from "../../../api/profile/get_profile/handleGetProfile";
-import { handleOnline } from "../../../api/party/online/handleOnline";
+import { handleGetOnline } from "../../../api/party/get_online/handleGetOnline";
 import { useFriendStore } from "../../../store/FriendStore";
-import { usePartyStore } from "../../../store/PartyStore";
-import { useProfileStore, type UserData, type AVAILABILITY_TYPE } from "../../../store/ProfileStore";
+import { usePartyStore, type AVAILABILITY_TYPE } from "../../../store/PartyStore";
+import { useProfileStore, type UserData } from "../../../store/ProfileStore";
 import { PlayerStatusModule } from "../../player/status/PlayerStatusModule";
 import { AvatarModule } from "../../avatar/AvatarModule";
 import { InviteIcon } from "../invite/InviteIcon";
@@ -29,12 +29,15 @@ export const PartyPlayerModule = ({ uuid }: PartyPlayerModuleProps) => {
 		const getProfile = async () => {
 			setIsLoading(true);
 			const profile = await handleGetProfile(uuid);
-			const online = await handleOnline(uuid); 
+			const online = await handleGetOnline(uuid); 
 			if (mounted) {
 				setPlayerData(profile);
-				if (online.isOnline)
-					setAvailability("Online");
-				else
+				if (online.isOnline) {
+					if (online.inParty)
+						setAvailability("Busy");
+					else
+						setAvailability("Online");
+				} else
 					setAvailability("Offline");
 				setIsLoading(false);
 			}
@@ -98,11 +101,8 @@ export const PartyPlayerModule = ({ uuid }: PartyPlayerModuleProps) => {
 						relation === "Self" ? "bg-party-self" :
 						availability === "Online" ? "bg-party-online" :
 						availability === "Offline" ? "bg-party-offline" :
+						availability === "Busy" ? "bg-party-busy" :
 						undefined
-						// data?.availability === "Online" ? "bg-party-online" :
-						// data?.availability === "Offline" ? "bg-party-offline" :
-						// data?.availability === "Busy" ? "bg-party-busy" :
-						// undefined
 					}
 					flex flex-col gap-0.5rem
 				`}

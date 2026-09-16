@@ -1,6 +1,6 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-import { usePartyStore } from "./PartyStore";
+import { usePartyStore, type AVAILABILITY_TYPE } from "./PartyStore";
 import { useFriendStore } from "./FriendStore";
 import { handleGetProfile } from "../api/profile/get_profile/handleGetProfile";
 
@@ -30,13 +30,6 @@ export const MEDAL_LABEL = [
 	"No Pass",
 ] as const;
 export type MEDAL_TYPE = typeof MEDAL_LABEL[number];
-
-export const AVAILABILITY_LABEL = [
-	"Offline",
-	"Online",
-	"Busy",
-] as const;
-export type AVAILABILITY_TYPE = typeof AVAILABILITY_LABEL[number];
 
 export const RELATION_LABEL = [
 	"Stranger",

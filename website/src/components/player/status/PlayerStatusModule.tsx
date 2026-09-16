@@ -1,4 +1,4 @@
-import type { AVAILABILITY_TYPE } from "../../../store/ProfileStore";
+import type { AVAILABILITY_TYPE } from "../../../store/PartyStore";
 
 interface PlayerStatusModuleProps {
 	status: AVAILABILITY_TYPE;

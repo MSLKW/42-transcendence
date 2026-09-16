@@ -1,8 +1,8 @@
-import { fetchOnline } from "./fetchOnline";
+import { fetchGetOnline } from "./fetchGetOnline";
 
-export const handleOnline = async (uuid: string) => {
+export const handleGetOnline = async (uuid: string) => {
 	try {
-		const response = await fetchOnline(uuid);
+		const response = await fetchGetOnline(uuid);
 		console.log("[handleOnline] response.id:", response.id);
 		return response;
 	} catch (err) {
