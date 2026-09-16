@@ -8,7 +8,8 @@ import { Client } from "./client/Client";
 import { clientManager } from "./client/ClientManager";
 import { registerEventHandlers } from "./client/event_handlers";
 
-import { PartyState } from "./PartyTransmitTypes";
+import { UserStore } from "./store/UserStore";
+import { FileUserStore } from "./store/FileUserStore";
 
 const PORT = Number(process.env.PORT) || 3000;
 const AUTH_SERVICE_URL = process.env.AUTH_SERVICE_URL;
@@ -27,10 +28,12 @@ const INTENTIONAL_DISCONNECT_REASONS = new Set([
 
 const pendingRemovals = new Map<string, NodeJS.Timeout>();
 
+const userStore = new FileUserStore;
+
 const app = express();
 app.use(express.json());
 app.get("/health", healthCheck());
-app.get("/online/:uuid", checkUuidOnline(clientManager));
+app.get("/online/:uuid", checkUuidOnline(userStore, clientManager));
 
 const httpServer = createServer(app);
 
@@ -61,7 +64,7 @@ io.use(async (socket, next) => {
 		});
 
 		if (!response.ok)
-			return next(new Error("UNAUTHORIZED: invalid or expired session"));
+return next(new Error("UNAUTHORIZED: invalid or expired session"));
 
 		const data = await response.json();
 
@@ -140,10 +143,13 @@ io.on("connection", (socket: Socket) =>
 
 function finalizeRemoval(uuid: string, reason: string)
 {
+	userStore.setUser({
+		uuid: uuid,
+		lastOnline: new Date	
+	});
+	
 	clientManager.removeByUuid(uuid);
 	console.log(`User<${uuid}> disconnected - ${reason}`);
-
-	// TODO: mark presence as offline in Postgres
 }
 
 httpServer.listen(PORT, () => {
