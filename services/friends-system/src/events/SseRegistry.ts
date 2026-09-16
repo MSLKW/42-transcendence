@@ -11,9 +11,10 @@ class SseRegistry {
 
   register(uuid: string, res: Response): void {
     const existing = this.clients[uuid];
-    if (existing) {
+    if (existing) 
+    {
       // explaining to OLD connection why they're being closed, before officially closing it
-      // this is what lets browser choose not to auto-reconnect
+      // this is what make browser chooses not to auto-reconnect
       existing.write(`event: ${EVENTS.REPLACED}\ndata: "connected from elsewhere, priotizing latest new created connection"\n\n`)
       existing.end();
     }
@@ -23,11 +24,14 @@ class SseRegistry {
   // only removes if `res` is still the current connection for that uuid
   // guards against a late cleanup from an old connection wiping out a
   // newer one that already took its place
-  unregister(uuid: string, res: Response): void {
-    if (this.clients[uuid] === res) delete this.clients[uuid];
+  unregister(uuid: string, res: Response): void 
+  {
+    if (this.clients[uuid] === res) 
+      delete this.clients[uuid];
   }
 
-  get(uuid: string): Response | undefined {
+  get(uuid: string): Response | undefined 
+  {
     return this.clients[uuid];
   }
 }

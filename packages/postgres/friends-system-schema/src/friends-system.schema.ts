@@ -1,7 +1,7 @@
 import { users } from "@big2/auth-schema";
 import { pgSchema, uuid, timestamp, index, check, uniqueIndex } from "drizzle-orm/pg-core";
 import { sql } from "drizzle-orm";
-import { FRIEND_REQUEST_STATUSES } from "@big2/friends-system-types";
+import { FRIEND_REQUEST_STATUSES, FRIEND_REQUEST_STATUS } from "@big2/friends-system-types";
 
 
 export const friendsSystemSchema = pgSchema("friends_system_schema");
@@ -46,7 +46,7 @@ export const friendRequests = friendsSystemSchema.table("friend_requests", {
 		.notNull()
 		.references(() => users.id, { onDelete: "cascade" }),
 	status: statusEnum("friend_request_status")
-		.default("Pending")
+		.default(FRIEND_REQUEST_STATUS.PENDING)
 		.notNull(),
 	createdAt: timestamp("created_at", { withTimezone: true})
 		.defaultNow()
@@ -64,7 +64,7 @@ export const friendRequests = friendsSystemSchema.table("friend_requests", {
 			.on(table.senderId, table.receiverId),
 		pendingPairUniqueIdx: uniqueIndex("pending_pair_unique_idx")
 			.on(table.pairSmallId, table.pairBigId)
-			.where(sql`${table.status} = 'Pending'`),
+			.where(sql`${table.status} = ${FRIEND_REQUEST_STATUS.PENDING}`),
 	})
 );
 

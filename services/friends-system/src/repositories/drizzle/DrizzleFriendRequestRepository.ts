@@ -1,4 +1,4 @@
-import type { FriendRequestStatus } from "@big2/friends-system-types";
+import { FRIEND_REQUEST_STATUS, type FriendRequestStatus } from "@big2/friends-system-types";
 import { friendRequests } from "@big2/friends-system-schema";
 import { eq, and, or } from "drizzle-orm";
 import { postgresClient } from "../../config/postgresClient";
@@ -35,7 +35,7 @@ export class DrizzleFriendRequestRepository implements FriendRequestRepository {
 			.where(and(
 				eq(friendRequests.senderId, senderId),
 				eq(friendRequests.receiverId, receiverId),
-				eq(friendRequests.status, "Pending" as FriendRequestStatus)
+				eq(friendRequests.status, FRIEND_REQUEST_STATUS.PENDING)
 			))
 			.limit(1);
 		return (resultRow ?? null);
@@ -48,19 +48,19 @@ export class DrizzleFriendRequestRepository implements FriendRequestRepository {
 			.where(and(
 				eq(friendRequests.senderId, receiverId),
 				eq(friendRequests.receiverId, senderId),
-				eq(friendRequests.status, "Pending" as FriendRequestStatus),
+				eq(friendRequests.status, FRIEND_REQUEST_STATUS.PENDING),
 			))
 			.limit(1);
 		return (resultRow ?? null);
 	}
 
-	async listRecievedAndPending(receiverId: string): Promise<FriendRequest[] | null> {
+	async listReceivedAndPending(receiverId: string): Promise<FriendRequest[] | null> {
 		const resultRows =  await postgresClient
 			.select()
 			.from(friendRequests)
 			.where(and(
 				eq(friendRequests.receiverId, receiverId),
-				eq(friendRequests.status, "Pending" as FriendRequestStatus)
+				eq(friendRequests.status, FRIEND_REQUEST_STATUS.PENDING)
 			));
 		return (resultRows ?? null);
 	}
@@ -85,7 +85,7 @@ export class DrizzleFriendRequestRepository implements FriendRequestRepository {
 			.update(friendRequests)
 			.set({ status: status })
 			.where(
-				and(eq(friendRequests.status, "Pending" as FriendRequestStatus),
+				and(eq(friendRequests.status, FRIEND_REQUEST_STATUS.PENDING),
 				or(
 					and(eq(friendRequests.senderId, userA), eq(friendRequests.receiverId, userB)),
 					and(eq(friendRequests.senderId, userB), eq(friendRequests.receiverId, userA))

@@ -9,6 +9,10 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 
+// TODO: restrict to actual frontend origin before production, examples like below:
+// app.use(cors({ origin: ["http://localhost:5173", "https://your-real-domain.com"] }));
+// app.use(cors({ origin: process.env.WEBSITE_URL }));
+
 app.use(eventsRouter);
 app.use(friendRequestsRouter);
 app.use(friendshipsRouter);

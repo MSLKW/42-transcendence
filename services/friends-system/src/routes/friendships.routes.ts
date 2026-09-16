@@ -4,5 +4,5 @@ import { removeFriend } from "../handlers/friendships/removeFriend";
 
 export const friendshipsRouter = Router();
 
-friendshipsRouter.get("/friends", listFriends);
-friendshipsRouter.delete("/friends/:friendUuid", removeFriend);
+friendshipsRouter.get("/friendships/:ownerUuid", listFriends);
+friendshipsRouter.delete("/friendships/:ownerUuid/:friendUuid", removeFriend);

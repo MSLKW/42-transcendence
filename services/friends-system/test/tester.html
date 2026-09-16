@@ -71,7 +71,7 @@ function start() {
   if (!myUuid) return alert("enter a uuid first");
   document.title = "tester: " + myUuid;
 
-  evtSource = new EventSource(`${API}/events?uuid=${myUuid}`);
+  evtSource = new EventSource(`${API}/events/${myUuid}`);
   evtSource.addEventListener("connected", () => {
     log("SSE connected as " + myUuid);
     setConnectionStatus("🟢 live (SSE connected)");
@@ -82,7 +82,7 @@ function start() {
   //  - CONNECTING (0): the browser will retry automatically (network blip, server restart, etc)
   //  - CLOSED (2): the browser gave up for good — this happens when the server responds
   //    with a non-2xx status (e.g. 404 for an unknown uuid) instead of upgrading to SSE.
-  // So on the backend, /events?uuid=X should respond 404 (not open an SSE stream) when the
+  // So on the backend, /events/:ownerUuid should respond 404 (not open an SSE stream) when the
   // uuid doesn't exist in the database — that's what makes this distinction possible at all.
   evtSource.onerror = () => {
     if (!evtSource) return; // already handled by "replaced" or disconnect()
@@ -162,7 +162,7 @@ function disconnect() {
 async function sendRequest() {
   const input = document.getElementById("target-uuid");
   const target = input.value.trim();
-// bug fixed: don't even attempt the friend request if the field is empty
+  // bug fixed: don't even attempt the friend request if the field is empty
   if (!target) 
     return log("enter a friend's uuid before sending a friend request");
   input.value = ""; // ← this clears the box immediately
@@ -183,7 +183,7 @@ async function sendRequest() {
 }
 
 async function refreshInbox() {
-  const res = await fetch(`${API}/friend-requests/received?uuid=${myUuid}`);
+  const res = await fetch(`${API}/friend-requests/received/${myUuid}`);
   const requests = await res.json();
   const list = document.getElementById("inbox");
   list.innerHTML = "";
@@ -208,7 +208,7 @@ async function respond(id, action) {
 }
 
 async function refreshSent() {
-  const res = await fetch(`${API}/friend-requests/sent?uuid=${myUuid}`);
+  const res = await fetch(`${API}/friend-requests/sent/${myUuid}`);
   const requests = await res.json();
   const list = document.getElementById("sent");
   list.innerHTML = "";
@@ -222,7 +222,7 @@ async function refreshSent() {
 }
 
 async function refreshFriends() {
-  const res = await fetch(`${API}/friends?uuid=${myUuid}`);
+  const res = await fetch(`${API}/friendships/${myUuid}`);
   const friends = await res.json();
   const list = document.getElementById("friends");
   list.innerHTML = "";
@@ -234,7 +234,7 @@ async function refreshFriends() {
 }
 
 async function removeFriend(friendUuid) {
-  const res = await fetch(`${API}/friends/${friendUuid}?uuid=${myUuid}`, { method: "DELETE" });
+  const res = await fetch(`${API}/friendships/${myUuid}/${friendUuid}`, { method: "DELETE" });
   if (res.status === 404) log(`${friendUuid} was already removed (they removed you first)`);
   refreshFriends();
 }
