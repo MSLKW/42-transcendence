@@ -3,47 +3,54 @@ import { drizzleFriendRequestRepository } from "../../repositories/drizzle/Drizz
 import { drizzleFriendshipRepository } from "../../repositories/drizzle/DrizzleFriendshipRepository";
 import { notify } from "../../events/notify";
 import { EVENTS } from "../../events/eventNames";
-import { AUTH_SERVICE_URL } from "../../config/env";
-import { fetchJson } from "../../utils/fetchJson";
+import { isValidUuid } from "../../utils/isValidUuid";
+
 
 export async function sendFriendRequest(req: Request, res: Response): Promise<void> {
   const { senderId, receiverId } = req.body;
 
-  if (!senderId || !receiverId || typeof receiverId !== "string" || receiverId.trim() === "") {
-    res.status(400).json({ error: "a valid receiver uuid is required" });
+  // uuids are not empty
+  if (!senderId || !receiverId)
+  {
+    res.status(400).json({ error: "both senderId and receiverId are required" });
     return;
   }
 
+  // Malformed UUIDs throws (SQLSTATE 22P02) by Postgres at earlier stage than 23503 FK violation
+  if (!isValidUuid(senderId)) 
+  {
+    res.status(400).json({ error: "senderId must be a valid uuid" });
+    return;
+  }
+  if (!isValidUuid(receiverId)) 
+  {
+    res.status(400).json({ error: "receiverId must be a valid uuid" });
+    return;
+  }
 
+  // befriending urself is not allowed
   if (senderId === receiverId) {
     res.status(400).json({ error: "cannot friend yourself" });
     return;
   }
 
-  // Check if receiverId exists in Postgres (auth-schema's users table)
-  try 
-  {
-    await fetchJson(`${AUTH_SERVICE_URL}/internal/friends/uuidexistance/${receiverId}`);
-  } 
-  catch (err: any) 
-  {
-    // fetchJson throws on ANY non-ok response (404, 500, timeout, etc.) —
-    // for our purposes here, any failure means "treat as not found"
-    res.status(404).json({ err: "receiverId does not exist" });
-    return;
-  }
-
+  // resend request to existing friends
   if (await drizzleFriendshipRepository.areFriends(senderId, receiverId)) {
     res.status(409).json({ error: "already friends" });
     return;
   }
 
+  // application layer guard 
+  // avoid >1 dupe pending requests at a time
+  // database layer unique index constraints for safety net in case of race conditions
+  //
+  // with specified error logs that similar request has been sent already, previously 
   const existingSameDirection = await drizzleFriendRequestRepository.findPendingBothSides(senderId, receiverId);
   if (existingSameDirection) {
     res.status(409).json({ error: "request already pending" });
     return;
   }
-
+  // with specified error logs to respond to recieved request instead
   const reverseRequest = await drizzleFriendRequestRepository.findPendingBothSidesReverseCheck(senderId, receiverId);
   if (reverseRequest) {
     res.status(409).json({
@@ -53,7 +60,46 @@ export async function sendFriendRequest(req: Request, res: Response): Promise<vo
     return;
   }
 
-  const request = await drizzleFriendRequestRepository.sendRequest(senderId, receiverId);
-  notify(receiverId, EVENTS.FRIEND_REQUEST_RECEIVED, request);
-  res.status(201).json(request);
+  // no need to do manual check if uuid exists via internal REST API to auth service before making friendrequests
+  // WHY? coz in database, its already enforced by Postgres's Foreign Key constraint linked to authentication service
+  // who owns and creates all the uuid existed in the database anyway
+  // in querying, we attempt the write, 
+  // then translate whatever Postgres error code comes back into a specific, useful response.
+  try
+  {
+    const request = await drizzleFriendRequestRepository.sendRequest(senderId, receiverId);
+    notify(receiverId, EVENTS.FRIEND_REQUEST_RECEIVED, request);
+    res.status(201).json(request);
+  }
+  catch (err: any) 
+  {
+    // 1. invalid_text_representation
+    // malformed uuid
+    if (err.code === "22P02")
+    {
+      res.status(400).json({ error: "malformed uuid rejected by the database" });
+      return;
+    }
+
+    // 2. Postgres error code 23503 = foreign_key_violation
+    // this is what was thrown and fired when receiverId doesn't exist in auth_schema.users.
+    if (err.code === "23503") 
+    {
+      res.status(404).json({ error: "receiverId does not exist" });
+      return;
+    }
+
+    // 3. Postgres error code 23505 = unique_violation
+    // this is what was thrown and fired when receiverId doesn't exist in auth_schema.users.
+    if (err.code === "23503") 
+    {
+      res.status(404).json({ error: "thsi request already exists" });
+      return;
+    }
+
+    // 4. anything else: real, unexpected error. let it surface
+    console.error("Unexpected error in sendFriendRequest:", err);
+    res.status(500).json({ error: "something went wrong in sending the friend request" });
+    return; 
+  }
 }
