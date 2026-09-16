@@ -49,7 +49,7 @@ export const PartyWindow = () => {
 
 	return (
 		<Window
-			title="Find Party Members"
+			title="Find Players"
 			dismissKey="party"
 			placement="br"
 			pinState={false}

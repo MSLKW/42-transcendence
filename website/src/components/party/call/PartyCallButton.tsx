@@ -13,7 +13,7 @@ export const PartyCallButton = () => {
 			"
 		>
 			<button 
-				data-tip="Find Party Members"
+				data-tip="Find Players"
 				onClick={(e) => {
 					e.currentTarget.blur();
 					setShowWindow("party", !showWindow.party);

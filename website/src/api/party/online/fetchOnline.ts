@@ -1,5 +1,5 @@
 export const fetchOnline = async (uuid: string) => {
-	const response = await fetch(`/api/party_manager/online/${uuid}`, {
+	const response = await fetch(`/api/party/online/${uuid}`, {
 		method: "GET",
 		credentials: "include",
 	});
@@ -9,6 +9,6 @@ export const fetchOnline = async (uuid: string) => {
 		console.log(errorData.message || "Cannot fetch online status with uuid");
 	}
 
-	console.log("[/api/party_manager/online] 200 OK");
+	console.log("[/api/party/online] 200 OK");
 	return await response.json();
 };
