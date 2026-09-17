@@ -8,7 +8,7 @@ export const fetchValidate = async () => {
 		credentials: "include",
 	});
 	
-	if (!response.ok && useProfileStore.getState().isAuthenticated) {
+	if (!response.ok) {
 		useProfileStore.setState({ isAuthenticated: false });
 		useSceneStore.getState().setCurrentScene("Login");
 		useNotificationStore.getState().showNotification("Invalid or expired session", NOTIFICATION_TYPE.error);

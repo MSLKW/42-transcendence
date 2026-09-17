@@ -67,6 +67,7 @@ export const ProfileWindow = () => {
 					/>
 					<PlayerDataModule
 						profile={profileData}
+						uuid={clientUuid}
 						badge={badge}
 						setBadge={setBadge}
 					/>

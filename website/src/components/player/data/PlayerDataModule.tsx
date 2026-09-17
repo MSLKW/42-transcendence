@@ -4,18 +4,21 @@ import type { ProfileData, BADGE_TYPE } from "../../../store/ProfileStore";
 import { useSceneStore } from "../../../store/SceneStore";
 import { BadgeWindow } from "./badge/BadgeWindow";
 import { PlayerStatusModule } from "../status/PlayerStatusModule";
+import { handleCreatedAt } from "../../../api/authentication/created_at/handleCreatedAt";
 
 interface PlayerDataModule {
-	profile: ProfileData | undefined;
+	profile?: ProfileData | undefined;
+	uuid: string | null;
 	badge?: BADGE_TYPE;
 	setBadge?: (type: BADGE_TYPE) => void;
 }
-export const PlayerDataModule = ({ profile, badge, setBadge }: PlayerDataModule) => {
+export const PlayerDataModule = ({ profile, uuid, badge, setBadge }: PlayerDataModule) => {
 	const clientUuid = useAuthStore((store) => store.clientUuid);
 	const showWindow = useSceneStore((store) => store.showWindow);
 	const setShowWindow = useSceneStore((store) => store.setShowWindow);
 
 	const [ xpProgress, setXPProgress ] = useState(0);
+	const [ createdAt, setCreatedAt ] = useState<string | undefined>(undefined);
 
 	useEffect(() => {
 		if (!profile) {
@@ -24,6 +27,20 @@ export const PlayerDataModule = ({ profile, badge, setBadge }: PlayerDataModule)
 		}
 		const percentage = (profile.xp / (profile.level * 1000)) * 100
 		setXPProgress(percentage);
+
+		let mounted = true;
+		const getCreatedAt = async () => {
+			if (!uuid)
+				return;
+			const response = await handleCreatedAt(uuid);
+			if (mounted)
+				setCreatedAt(response.createdAt);
+		};
+		getCreatedAt();
+
+		return () => {
+			mounted = false;
+		};
 	}, [profile]);
 
 	return (
@@ -102,9 +119,9 @@ export const PlayerDataModule = ({ profile, badge, setBadge }: PlayerDataModule)
 				<PlayerStatusModule status={profile ? profile.availability : "Online"}/>
 			</div>
 			<div className="text-a5">
-				<p>Last Login: {profile ? profile.lastLogin.toString() : "n/a"}</p>
-				<p>Joined: {profile ? profile.createdAt.toString() : "n/a"}</p>
 				<p>UUID: {profile ? profile?.uuid : "n/a"}</p>
+				<p>Joined: {createdAt ? createdAt : "n/a"}</p>
+				<p>Last Login: {profile ? profile.lastLogin.toString() : "n/a"}</p>
 			</div>
 		</div>
 	);
