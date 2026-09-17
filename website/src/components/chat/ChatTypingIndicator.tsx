@@ -2,8 +2,8 @@ import { useProfileStore } from "../../store/ProfileStore";
 import { useTypingStore } from "../../store/TypingStore";
 
 export const ChatTypingIndicator = () => {
-	const typingUsers = useTypingStore((state) => state.typingUsers);
-	const cachedData = useProfileStore((state) => state.cachedData);
+	const typingUsers = useTypingStore((store) => store.typingUsers);
+	const cachedData = useProfileStore((store) => store.cachedData);
 
 	const users = Object.entries(typingUsers)
 		.filter(([_, isTyping]) => isTyping)

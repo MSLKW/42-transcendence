@@ -1,7 +1,7 @@
 import type { AVAILABILITY_TYPE } from "../../../store/PartyStore";
 
 interface PlayerStatusModuleProps {
-	status: AVAILABILITY_TYPE;
+	status: AVAILABILITY_TYPE | null;
 }
 
 export const PlayerStatusModule = ({ status }: PlayerStatusModuleProps) => {
@@ -24,13 +24,7 @@ export const PlayerStatusModule = ({ status }: PlayerStatusModuleProps) => {
 					}
 				`}
 			/>
-			<h3 className="whitespace-nowrap">
-				{
-					status === "Offline" ? "Offline" :
-					status === "Online" ? "Online" :
-					"Busy"
-				}
-			</h3>
+			<h3 className="whitespace-nowrap">{status ?? "n/a"}</h3>
 		</div>
 	);
 }

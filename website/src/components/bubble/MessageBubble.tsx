@@ -7,7 +7,7 @@ interface MessageBubbleProps {
 }
 
 export const MessageBubble = ({ message, uuid, id }: MessageBubbleProps) => {
-	const removeBubble = useBubbleStore((state) => state.removeBubble);
+	const removeBubble = useBubbleStore((store) => store.removeBubble);
 
 	return (
 		<button

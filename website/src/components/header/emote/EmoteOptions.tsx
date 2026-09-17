@@ -7,7 +7,7 @@ interface EmoteOptionsProps {
 }
 
 export const EmoteOptions = ({ emoji, tip }: EmoteOptionsProps) => {
-	const rateLimitMessage = useChatStore((state) => state.rateLimitMessage);
+	const rateLimitMessage = useChatStore((store) => store.rateLimitMessage);
 	
 	const handleSend = (e: React.MouseEvent<HTMLButtonElement>) => {
 		e.currentTarget.blur();

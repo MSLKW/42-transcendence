@@ -1,48 +1,69 @@
 import { useState, useEffect } from "react";
+import { handleCreatedAt } from "../../../api/authentication/created_at/handleCreatedAt";
+import { handleGetOnline } from "../../../api/party/get_online/handleGetOnline";
+import { handleGetProfile } from "../../../api/profile/get_profile/handleGetProfile";
 import { useAuthStore } from "../../../store/AuthStore";
-import type { ProfileData, BADGE_TYPE } from "../../../store/ProfileStore";
+import type { AVAILABILITY_TYPE } from "../../../store/PartyStore";
+import type { BADGE_TYPE } from "../../../store/ProfileStore";
 import { useSceneStore } from "../../../store/SceneStore";
 import { BadgeWindow } from "./badge/BadgeWindow";
 import { PlayerStatusModule } from "../status/PlayerStatusModule";
-import { handleCreatedAt } from "../../../api/authentication/created_at/handleCreatedAt";
 
-interface PlayerDataModule {
+interface PlayerDataModuleProps {
 	uuid: string | null;
-	badge?: BADGE_TYPE;
-	setBadge?: (type: BADGE_TYPE) => void;
 }
 
-export const PlayerDataModule = ({ uuid, badge, setBadge }: PlayerDataModule) => {
+export const PlayerDataModule = ({ uuid }: PlayerDataModuleProps) => {
 	const clientUuid = useAuthStore((store) => store.clientUuid);
 	const showWindow = useSceneStore((store) => store.showWindow);
 	const setShowWindow = useSceneStore((store) => store.setShowWindow);
 
 	const [ xpProgress, setXPProgress ] = useState(0);
 	const [ createdAt, setCreatedAt ] = useState<Date | null>(null);
+	const [ availability, setAvailability ] = useState<AVAILABILITY_TYPE | null>(null);
+	const [ lastOnline, setLastOnline ] = useState<Date | null>(null);
+	const [ badge, setBadge ] = useState<BADGE_TYPE | null>(null);
 
 	useEffect(() => {
-		// if (!profile) {
-		// 	setXPProgress(0);
-		// 	return;
-		// }
-		// const percentage = (profile.xp / (profile.level * 1000)) * 100
-		// setXPProgress(percentage);
-
 		let mounted = true;
-		const getCreatedAt = async () => {
-			if (!uuid)
-				return;
-			const response = await handleCreatedAt(uuid);
-			if (mounted)
-				setCreatedAt(response);
-		};
-		getCreatedAt();
 
+		if (!uuid) {
+			setCreatedAt(null);
+			setAvailability(null);
+			setLastOnline(null);
+			setBadge(null);
+			setXPProgress(0);
+			return;
+		}
+
+		const fetchPlayerData = async () => {
+			try {
+				const [createdAtResp, onlineResp, profileResp] = await Promise.all([
+					handleCreatedAt(uuid),
+					handleGetOnline(uuid),
+					handleGetProfile(uuid),
+				]);
+
+				if (!mounted) return;
+
+				setCreatedAt(createdAtResp);
+				setAvailability(onlineResp?.isOnline ?? null);
+				console.log("!!!", onlineResp?.lastOnline);
+				setLastOnline(onlineResp?.lastOnline ?? null);
+				setBadge(profileResp?.badge ?? null);
+				// 	const percentage = (profile.xp / (profile.level * 1000)) * 100
+				// 	setXPProgress(percentage);
+			} catch (error) {
+				console.error("Failed to fetch player data:", error);
+			}
+		};
+
+		fetchPlayerData();
+		
 		return () => {
 			mounted = false;
 		};
-	// }, [profile]);
-	}, []);
+	}, [uuid]);
 
 	return (
 		<div className="
@@ -51,6 +72,7 @@ export const PlayerDataModule = ({ uuid, badge, setBadge }: PlayerDataModule) =>
 			p-5
 			text-n6
 		">
+			{}
 			<div className="
 				grid grid-cols-[5rem_1fr]
 				gap-2rem
@@ -80,13 +102,14 @@ export const PlayerDataModule = ({ uuid, badge, setBadge }: PlayerDataModule) =>
 					</div>
 				</div>
 			</div>
-			<div className="
-				w-full
-				flex place-content-between place-items-center
-				gap-2rem
+			<div
+				className="
+					w-full
+					flex place-content-between place-items-center
+					gap-2rem
 			">
 				<div className="relative w-full flex">
-					{/* { clientUuid === profile?.uuid
+					{ uuid === clientUuid
 						?
 							<button
 								type="button"
@@ -107,12 +130,11 @@ export const PlayerDataModule = ({ uuid, badge, setBadge }: PlayerDataModule) =>
 									<span className="text-xs">▼</span>
 								</span>
 							</button>
-						: */}
+						:
 							<h2 className="w-full leading-none">
-								{/* <i>{profile ? profile.badge : "n/a"}</i> */}
-								<i>n/a</i>
+								<i>{badge ?? "n/a"}</i>
 							</h2>
-					{/* } */}
+					}
 					{ showWindow["badge"] && badge && setBadge &&
 						<BadgeWindow
 							badge={badge}
@@ -120,14 +142,12 @@ export const PlayerDataModule = ({ uuid, badge, setBadge }: PlayerDataModule) =>
 						/>
 					}
 				</div>
-				{/* <PlayerStatusModule status={profile ? profile.availability : "Online"}/> */}
-				<PlayerStatusModule status="Online"/>
+				<PlayerStatusModule status={availability}/>
 			</div>
 			<div className="text-a5">
 				<p>UUID: {uuid}</p>
-				<p>Joined: {createdAt ? createdAt.toLocaleString() : "n/a"}</p>
-				{/* <p>Last Online: {profile ? profile.lastLogin.toString() : "n/a"}</p> */}
-				<p>Last Online: n/a</p>
+				<p>Joined: {createdAt?.toLocaleString() ?? "n/a"}</p>
+				<p>Last Online: {lastOnline?.toLocaleString() ?? "n/a"}</p>
 			</div>
 		</div>
 	);

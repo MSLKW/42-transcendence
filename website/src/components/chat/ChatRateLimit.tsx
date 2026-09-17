@@ -1,7 +1,7 @@
 import { useChatStore } from "../../store/ChatStore";
 
 export const ChatRateLimit = () => {
-	const rateLimitMessage = useChatStore((state) => state.rateLimitMessage);
+	const rateLimitMessage = useChatStore((store) => store.rateLimitMessage);
 	
 	return (
 		<>

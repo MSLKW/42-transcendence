@@ -9,8 +9,8 @@ import { ChatTypingIndicator } from "./ChatTypingIndicator";
 import { ChatRateLimit } from "./ChatRateLimit";
 
 export const ChatWindow = () => {
-	const cachedChat = useChatStore((state) => state.cachedChat);
-	const rateLimitMessage = useChatStore((state) => state.rateLimitMessage);
+	const cachedChat = useChatStore((store) => store.cachedChat);
+	const rateLimitMessage = useChatStore((store) => store.rateLimitMessage);
 	const [ message, setMessage ] = useState("");
 	const focusRef = useRef<HTMLInputElement | null>(null);
 	const scrollContainerRef = useRef<HTMLDivElement | null>(null);

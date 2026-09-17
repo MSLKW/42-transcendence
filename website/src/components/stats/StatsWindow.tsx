@@ -1,5 +1,7 @@
+import { useState, useEffect } from "react";
+import { handleGetProfile } from "../../api/profile/get_profile/handleGetProfile";
 import { usePartyStore } from "../../store/PartyStore";
-import { useProfileStore } from "../../store/ProfileStore";
+import { useProfileStore, type UserData } from "../../store/ProfileStore";
 import { useSceneStore } from "../../store/SceneStore";
 import { Window } from "../window/Window";
 import { AvatarMemberModule } from "../avatar/AvatarMemberModule";
@@ -14,10 +16,39 @@ export const StatsWindow: React.FC = () => {
 	const members = usePartyStore((store) => store.members);
 
 	const cachedData = useProfileStore((store) => store.cachedData);
+	const [userData, setUserData] = useState<UserData | null>(null);
+
+	useEffect(() => {
+		let mounted = true;
+
+		if (!profileUuid) {
+			setUserData(null);
+			return;
+		}
+
+		const fetchPlayerData = async () => {
+			try {
+				const [profileResp] = await Promise.all([
+					handleGetProfile(profileUuid),
+				]);
+
+				if (!mounted) return;
+
+				setUserData(profileResp);
+			} catch (error) {
+				console.error("Failed to fetch player data:", error);
+			}
+		};
+		fetchPlayerData();
+		
+		return () => {
+			mounted = false;
+		};
+	}, [profileUuid]);
 
 	return (
 		<Window
-			title={`Player Profile: ${cachedData[profileUuid ?? ""]?.name ?? "-"}`}
+			title={`Player Profile: ${userData?.username ?? "-"}`}
 			dismissKey="stats"
 		>
 			<div
@@ -27,7 +58,7 @@ export const StatsWindow: React.FC = () => {
 				"
 			>
 				<div className="flex">
-					<AvatarMemberModule uuid={profileUuid} name={cachedData[profileUuid ?? ""]?.name ?? "-"} image={cachedData[profileUuid ?? ""]?.avatar ?? undefined} />
+					<AvatarMemberModule uuid={profileUuid} name={userData?.username ?? "-"} image={userData?.avatarPath ?? undefined} />
 					<PlayerDataModule uuid={profileUuid}/>
 				</div>
 				<MedalsModule uuid={profileUuid}/>

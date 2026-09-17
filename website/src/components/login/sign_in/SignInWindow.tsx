@@ -19,11 +19,11 @@ export const SignInWindow = () => {
 			showNotification("All fields are required", NOTIFICATION_TYPE.error);
 			return;
 		}
-		const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-		if (!emailRegex.test(email)) {
-			showNotification("Please enter a valid email address", NOTIFICATION_TYPE.error);
-			return;
-		}
+		// const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+		// if (!emailRegex.test(email)) {
+		// 	showNotification("Please enter a valid email address", NOTIFICATION_TYPE.error);
+		// 	return;
+		// }
 
 		await handleSignIn(email, password);
 		setIsLoading(false);

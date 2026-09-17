@@ -8,7 +8,7 @@ interface EmoteBubbleProps {
 }
 
 export const EmoteBubble = ({ message, uuid, id }: EmoteBubbleProps) => {
-	const removeBubble = useBubbleStore((state) => state.removeBubble);
+	const removeBubble = useBubbleStore((store) => store.removeBubble);
 
 	return (
 		<motion.button
