@@ -19,3 +19,24 @@ export function userSearch(store: UserStore)
 		}
 	});
 }
+
+export function userSearchExact(store: UserStore)
+{
+	return (async (req: Request, res: Response) =>
+	{
+		try
+		{
+			const username = req.params.username as string;
+			const searchResult = await store.getUuidByUsername(username);
+
+			if (searchResult)
+				return res.status(200).json({ uuid: searchResult });
+			return res.status(404).json({ error: "no user found" });
+		}
+		catch (err)
+		{
+			console.error(err);
+			return res.status(500).json({ error: "Something went wrong" });
+		}
+	});
+}
