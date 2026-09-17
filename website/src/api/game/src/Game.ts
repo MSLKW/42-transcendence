@@ -59,12 +59,10 @@ export class Game {
 	}
 
 	public takeSeat(seatIndex: number) {
-		console.log(`taking seat: ${seatIndex}`)
 		this.socket.emit("user_seat_take", seatIndex);
 	}
 
 	public leaveSeat() {
-		console.log(`leaving seat`);
 		this.socket.emit("user_seat_leave");
 	}
 
@@ -88,13 +86,14 @@ export class Game {
 
 	private bindSocketEvents() {
 		this.socket.on("connect", () => {
-			console.log(`Socket connected`);
+			console.log(`[gameSocket] 'connect' id: ${this.socket.id}`);
 		});
 		this.socket.on("graceful_disconnect", () => {
 			this.socket.disconnect();
 		});
-		this.socket.on("disconnect", () => {
-			console.log('Socket disconnected')
+		this.socket.on("disconnect", (reason) => {
+			console.log(`[gameSocket] 'disconnect' reason: ${reason}`);
+			useSceneStore.getState().setCurrentScene("Home");
 		});
 
 		this.socket.on("game_start_request", (status: StatusTransmit) => {
@@ -126,7 +125,6 @@ export class Game {
 			if (totalPlayers !== seatData.totalSeats) {
 				useGameStore.setState({totalPlayers: seatData.totalSeats})
 				useGameStore.getState().initSeats();
-				console.log("init seats");
 			}
 			else {
 				const seats: string[] = Object.entries(seatData.seatOrder)

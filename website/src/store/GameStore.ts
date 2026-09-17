@@ -44,8 +44,8 @@ interface GameValues {
 
 interface GameState extends GameValues {
 	initSeats: () => void;
-	setSeatWithUuid: (uuid: string, seatNumber: number) => void;
-	playerUnseats: (uuid: string) => void;
+	takeSeat: (seatNumber: number) => void;
+	leaveSeat: () => void;
 	autoSetSeats: () => void;
 	
 	setSeatRef: () => void;
@@ -80,29 +80,29 @@ export const useGameStore = create<GameState>() (
 				const newSeats = Array(totalPlayers).fill(null);
 				set({ seats: newSeats });
 			},
-			setSeatWithUuid: (uuid, seatNumber) => {
-				const seats = get().seats;
-				if (seats[seatNumber] === uuid)
-					return;
-				const newSeats = [...seats];
-
-				const existingIndex = newSeats.indexOf(uuid);
-				if (existingIndex !== -1)
-					newSeats[existingIndex] = null;
-				newSeats[seatNumber] = uuid;
+			takeSeat: (seatNumber) => {
 				gameInstance?.takeSeat(seatNumber);
+				// const seats = get().seats;
+				// if (seats[seatNumber] === uuid)
+				// 	return;
+				// const newSeats = [...seats];
 
-				set({ seats: newSeats });
+				// const existingIndex = newSeats.indexOf(uuid);
+				// if (existingIndex !== -1)
+				// 	newSeats[existingIndex] = null;
+				// newSeats[seatNumber] = uuid;
+
+				// set({ seats: newSeats });
 			},
-			playerUnseats: (uuid) => {
-				const newSeats = [...get().seats];
-				const index = newSeats.findIndex(seat => seat === uuid);
-				if (index !== -1) {
-					newSeats[index] = null;
-					set({
-						seats: newSeats,
-					});
-				}
+			leaveSeat: () => {
+				// const newSeats = [...get().seats];
+				// const index = newSeats.findIndex(seat => seat === uuid);
+				// if (index !== -1) {
+				// 	newSeats[index] = null;
+				// 	set({
+				// 		seats: newSeats,
+				// 	});
+				// }
 				gameInstance?.leaveSeat();
 			},
 			autoSetSeats: () => {

@@ -69,13 +69,29 @@ export class Lobby {
 	}
 
 	public connectUser(socket: Socket, uuid: string) {
-		const index = this.users.findIndex((user) => user.uuid === uuid);
 		if (this.whitelist.indexOf(uuid) === -1 || 
-			index >= 0 ||
 			this.users.length >= this.totalUsersLimit || 
 			(this.game.uuidInGame(uuid) === false && this.users.length >= this.totalUsersLimit - this.game.getDisconnectedPlayers())) {
 			kickSocket(socket);
-			console.log(`User<${uuid}> is not allowed to connect`);
+			// if (this.whitelist.indexOf(uuid) === -1) {
+			// 	console.log(`${uuid} is not in whitelist`);
+			// }
+			// else if (this.users.length >= this.totalUsersLimit) {
+			// 	console.log(`total users is more than total user limit`);
+			// }
+			// else if (this.game.uuidInGame(uuid) === false && this.users.length >= this.totalUsersLimit - this.game.getDisconnectedPlayers()) {
+			// 	console.log("user is not in game and the user length >= totalUesrslimit - disconnected players");
+			// }
+			console.log(`User<${uuid}> is not allowed to connect`); // Why is the game server rejecting the client
+			return ;
+		}
+		const userInGame = this.users.find((user) => user.uuid === uuid);
+		if (userInGame !== undefined) {
+			// kickSocket(userInGame.socket);
+			// console.log(`User<${uuid}> old socket is kicked: ${userInGame.socket.id}`);
+			// maybe have it reconnect with new socket instead of deleting it
+			kickSocket(socket);
+			console.log("User is already in game");
 			return ;
 		}
 		

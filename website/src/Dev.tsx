@@ -17,7 +17,7 @@ export default function Dev() {
 	const { fillSeatsWithBots, removeBots, botCount } = useBotStore();
 	const { toggleFlag } = useDevStore();
 	const { friends } = useFriendStore();
-	const { seats, totalPlayers, playerUnseats, currentHand, endGame } = useGameStore();
+	const { seats, totalPlayers, leaveSeat, currentHand, endGame } = useGameStore();
 	const { showNotification } = useNotificationStore();
 	const { partySocketId, partyGameId, members, hostUuid } = usePartyStore();
 	const { clientUuid, isAuthenticated, validateResponse, profilesInDb, resetProfilesInDb, cachedData, getCachedData } = useProfileStore();
@@ -128,7 +128,7 @@ export default function Dev() {
 					<li>Bot Manager Socket ID: n/a</li>
 					{currentScene === "Lobby" && <DevButton label="Fill Bots" call={() => fillSeatsWithBots()} />}
 					{currentScene === "Lobby" && <DevButton label="Remove Bots" call={() => removeBots()} />}
-					{currentScene === "Lobby" && <DevButton label="Unseat" call={() => playerUnseats(clientUuid!)} />}
+					{currentScene === "Lobby" && <DevButton label="Unseat" call={() => leaveSeat()} />}
 				</div>
 				<li>Chat Manager Socket ID: n/a</li>
 			</ul>

@@ -34,7 +34,6 @@ export class ThreeJsManager {
 		this.visibility = true;
 
 		this.resolution = new THREE.Vector2(this.container.clientWidth, this.container.clientHeight); // temp window var
-		console.log(this.resolution);
 		this.camera = new THREE.PerspectiveCamera(75, this.resolution.x / this.resolution.y, 0.1, 100);
 		this.pixelRatio = Math.min(window.devicePixelRatio, 2);
 		this.renderer.setPixelRatio(this.pixelRatio);
@@ -119,7 +118,7 @@ export class ThreeJsManager {
 	public changeScene(sceneId: string) {
 		this.currentSceneId = sceneId;
 		const sceneContainer = this.scenes[this.currentSceneId];
-		console.log("changing scene to " + this.currentSceneId);
+		console.log(`[threeJsManager] Changed scene to "${this.currentSceneId}"`);
 		if (sceneContainer === undefined) {
 			this.toggleVisibility(false);
 			return ;

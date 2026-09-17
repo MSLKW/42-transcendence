@@ -45,9 +45,6 @@ export class GameScene extends SceneContainer {
 		this.cameraLight = new THREE.PointLight(0xffffff, 20, 20);
 		this.cameraLight.position.set(0, 5, 7);
 		this.scene.add(this.cameraLight);
-		this.scene.traverse((object) => {
-			console.log(`game scene object: ${object}`);
-		})
 	}
 
 	public animate(ctx: ThreeJsManager): void {

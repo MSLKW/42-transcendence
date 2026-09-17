@@ -42,7 +42,7 @@ export const useBotStore = create<BotState>() (
 
 			let bot_i = 0;
 			for (let i = 0; i < totalPlayers; i++) {
-				const { seats, setSeatWithUuid } = useGameStore.getState();
+				const { seats, takeSeat: takeSeat } = useGameStore.getState();
 				if (seats[i])
 					continue;
 
@@ -53,7 +53,7 @@ export const useBotStore = create<BotState>() (
 					break;
 
 				const bot = bots[bot_i];
-				setSeatWithUuid(bot.uuid!, i);
+				takeSeat(bot.uuid!, i);
 				bot_i++;
 			}
 			get().countSeatedBots();

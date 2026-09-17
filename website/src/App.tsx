@@ -59,11 +59,6 @@ export default function App() {
 			return ;
 		}
 		threejsManager = new ThreeJsManager(containerRef.current);
-		window.addEventListener('keydown', (event) => {
-			if (threejsManager && event.key === 'y') {
-				threejsManager.changeScene("game");
-			}
-		})
 		if (currentScene === "Login") {
 			threejsManager.changeScene("login");
 		}

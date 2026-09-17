@@ -57,7 +57,7 @@ export const LobbyScene = () => {
 										image={getCachedData(seats[2])?.avatar ?? "avatar-unknown.webp"}
 										cornerButton={seats[2] === hostUuid ? "host" : ""}
 									/>
-								: <TakeSeatButton uuid={clientUuid!} seatNumber={2}/>
+								: <TakeSeatButton seatNumber={2}/>
 							)
 						}
 						{ totalPlayers === 3 &&
@@ -70,7 +70,7 @@ export const LobbyScene = () => {
 											image={getCachedData(seats[1])?.avatar ?? "avatar-unknown.webp"}
 											cornerButton={seats[1] === hostUuid ? "host" : ""}
 										/>
-									: <TakeSeatButton uuid={clientUuid!} seatNumber={1}/>
+									: <TakeSeatButton seatNumber={1}/>
 								}
 								{ seats[2]
 									?
@@ -80,7 +80,7 @@ export const LobbyScene = () => {
 											image={getCachedData(seats[2])?.avatar ?? "avatar-unknown.webp"}
 											cornerButton={seats[2] === hostUuid ? "host" : ""}
 										/>
-									: <TakeSeatButton uuid={clientUuid!} seatNumber={2}/>
+									: <TakeSeatButton seatNumber={2}/>
 								}
 							</>
 						}
@@ -93,7 +93,7 @@ export const LobbyScene = () => {
 										image={getCachedData(seats[1])?.avatar ?? "avatar-unknown.webp"}
 										cornerButton={seats[1] === hostUuid ? "host" : ""}
 									/>
-								: <TakeSeatButton uuid={clientUuid!} seatNumber={1}/>
+								: <TakeSeatButton seatNumber={1}/>
 							)
 						}
 					</div>
@@ -113,7 +113,7 @@ export const LobbyScene = () => {
 										image={getCachedData(seats[1])?.avatar ?? "avatar-unknown.webp"}
 										cornerButton={seats[1] === hostUuid ? "host" : ""}
 									/>
-								: <TakeSeatButton uuid={clientUuid!} seatNumber={1}/>
+								: <TakeSeatButton seatNumber={1}/>
 							)
 						}
 						<button
@@ -138,7 +138,7 @@ export const LobbyScene = () => {
 										image={getCachedData(seats[3])?.avatar ?? "avatar-unknown.webp"}
 										cornerButton={seats[3] === hostUuid ? "host" : ""}
 									/>
-								: <TakeSeatButton uuid={clientUuid!} seatNumber={3}/>
+								: <TakeSeatButton seatNumber={3}/>
 								)
 								}
 					</div>
@@ -151,7 +151,7 @@ export const LobbyScene = () => {
 									image={getCachedData(seats[0])?.avatar ?? "avatar-unknown.webp"}
 									cornerButton={seats[0] === hostUuid ? "host" : ""}
 								/>
-							: <TakeSeatButton uuid={clientUuid!} seatNumber={0}/>
+							: <TakeSeatButton seatNumber={0}/>
 						}
 					</div>
 				</div>

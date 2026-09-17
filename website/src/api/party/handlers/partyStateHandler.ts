@@ -13,13 +13,12 @@ export function partyStateHandler(socket: Socket) {
 
 		const clientUuid = useProfileStore.getState().clientUuid;
 		if (clientUuid === null) {
-			console.log("[partySocket] 'game_session_start' clientUuid is missing");
+			console.log("[partySocket] 'party_state' clientUuid is missing");
 			return ;
 		}
 		else if (partyData.gameId === null) {
 			return ;
 		}
-		console.log("[partySocket] 'game_session_start' gameId:", partyData.gameId);
 		joinGameLobby(partyData.gameId, clientUuid);
 	});
 }

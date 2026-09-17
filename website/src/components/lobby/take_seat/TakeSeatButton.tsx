@@ -1,13 +1,11 @@
 import { useGameStore } from "../../../store/GameStore";
 import { AvatarName } from "../../avatar/name/AvatarName";
 import { TakeSeatIcon } from "./TakeSeatIcon";
-
 interface TakeSeatButtonProps {
-	uuid: string;
 	seatNumber: number;
 }
-export const TakeSeatButton = ({ uuid, seatNumber }: TakeSeatButtonProps ) => {
-	const { setSeatWithUuid } = useGameStore();
+export const TakeSeatButton = ({ seatNumber }: TakeSeatButtonProps ) => {
+	const { takeSeat } = useGameStore();
 	return (
 		<div
 			className="
@@ -19,7 +17,7 @@ export const TakeSeatButton = ({ uuid, seatNumber }: TakeSeatButtonProps ) => {
 				data-tip="Choose this seat"
 				onClick={(e) => {
 					e.currentTarget.blur();
-					setSeatWithUuid(uuid, seatNumber);
+					takeSeat(seatNumber);
 				}}
 				className="
 					h-6rem aspect-square

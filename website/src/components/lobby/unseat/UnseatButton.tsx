@@ -9,7 +9,7 @@ interface UnseatButtonProps {
 }
 
 export const UnseatButton = ({ uuid }: UnseatButtonProps) => {
-	const { playerUnseats } = useGameStore();
+	const { leaveSeat: playerUnseats } = useGameStore();
 	const { seats } = useGameStore();
 	const { clientUuid } = useProfileStore();
 
