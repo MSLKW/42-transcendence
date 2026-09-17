@@ -5,7 +5,7 @@ import { AvatarModule } from "../../avatar/AvatarModule";
 
 export const ResultsPodiumModule = () => {
 	const totalPlayers = useGameStore((store) => store.totalPlayers);
-	const getCachedData = useProfileStore((store) => store.getCachedData);
+	const cachedData = useProfileStore((store) => store.cachedData);
 	const results = useResultsStore((store) => store.results);
 
 	return (
@@ -21,7 +21,7 @@ export const ResultsPodiumModule = () => {
 					<AvatarModule
 						key={results[0].uuid}
 						uuid={results[0].uuid}
-						image={getCachedData(results[0].uuid)?.avatar ?? "avatar-unknown.webp"}
+						image={cachedData[results[0].uuid ?? ""]?.avatar ?? undefined}
 						cornerButton="1st"
 					/>
 					<span className={`${results[0].points > 0 ? "text-r4" : "text-c4"}`}>
@@ -34,7 +34,7 @@ export const ResultsPodiumModule = () => {
 					<AvatarModule
 						key={results[1].uuid}
 						uuid={results[1].uuid}
-						image={getCachedData(results[1].uuid)?.avatar ?? "avatar-unknown.webp"}
+						image={cachedData[results[1].uuid ?? ""]?.avatar ?? undefined}
 						cornerButton="2nd"
 					/>
 					<span className={`${results[1].points > 0 ? "text-r4" : "text-c4"}`}>
@@ -47,7 +47,7 @@ export const ResultsPodiumModule = () => {
 					<AvatarModule
 						key={results[2].uuid}
 						uuid={results[2].uuid}
-						image={getCachedData(results[2].uuid)?.avatar ?? "avatar-unknown.webp"}
+						image={cachedData[results[2].uuid ?? ""]?.avatar ?? undefined}
 						cornerButton="3rd"
 					/>
 					<span className={`${results[2].points > 0 ? "text-r4" : "text-c4"}`}>
@@ -60,7 +60,7 @@ export const ResultsPodiumModule = () => {
 					<AvatarModule
 						key={results[3].uuid}
 						uuid={results[3].uuid}
-						image={getCachedData(results[3].uuid)?.avatar ?? "avatar-unknown.webp"}
+						image={cachedData[results[3].uuid ?? ""]?.avatar ?? undefined}
 						cornerButton="4th"
 					/>
 					<span className={`${results[3].points > 0 ? "text-r4" : "text-c4"}`}>

@@ -4,7 +4,7 @@ import { AvatarName } from "./name/AvatarName";
 interface AvatarMemberProps {
 	uuid: string | null;
 	name: string;
-	image: string;
+	image: string | undefined;
 }
 
 export const AvatarMemberModule = ({ uuid, name, image }: AvatarMemberProps) => {
@@ -18,7 +18,7 @@ export const AvatarMemberModule = ({ uuid, name, image }: AvatarMemberProps) => 
 			gap-5
 		">
 			<div className="flex flex-col gap-3 place-content-center place-items-center">
-				{image && <AvatarImage uuid={uuid ?? undefined} image={image} />}
+				<AvatarImage uuid={uuid ?? undefined} image={image} />
 				{name && <AvatarName name={name} />}
 			</div>
 		</div>

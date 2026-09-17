@@ -8,6 +8,7 @@ import { useSceneStore, defaultShowWindow } from "../../../store/SceneStore";
 import { fetchSignOut } from "./fetchSignOut";
 import { partySocket } from "../../party/partySocket";
 import { chatSocket } from "../../chat/chatSocket";
+import { useProfileStore } from "../../../store/ProfileStore";
 
 export const handleSignOut = async () => {
 	try {
@@ -15,13 +16,15 @@ export const handleSignOut = async () => {
 
 		useGameStore.getState().endGame();
 
-		useAuthStore.setState({ clientUuid: "n/a" });
+		useAuthStore.setState({ clientUuid: null });
 
 		usePartyStore.setState({
 			members: [],
 			partyGameId: null,
 		});
 		partySocket.disconnect();
+
+		useProfileStore.getState().clearCachedData();
 
 		useChatStore.setState({ cachedChat: [] });
 		chatSocket.disconnect();

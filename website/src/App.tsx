@@ -44,7 +44,7 @@ export default function App() {
 	const chatReconnect = useChatStore((store) => store.chatReconnect);
 	const showStats = useDevStore((store) => store.showStats);
 	const hostUuid = usePartyStore((store) => store.hostUuid);
-	const getCachedData = useProfileStore((store) => store.getCachedData);
+	const cachedData = useProfileStore((store) => store.cachedData);
 	const currentScene = useSceneStore((store) => store.currentScene);
 	const showWindow = useSceneStore((store) => store.showWindow);
 	const setShowWindow = useSceneStore((store) => store.setShowWindow);
@@ -57,11 +57,10 @@ export default function App() {
 
 	//inital profile setup
 	useEffect(() => {
-		if (currentScene === "Login")
+		if (currentScene === "Login" || !clientUuid)
 			return;
 
-		const data = getCachedData(clientUuid!);
-		if (!data?.name)
+		if (!cachedData[clientUuid] || !cachedData[clientUuid]?.name || !cachedData[clientUuid]?.avatar)
 			setShowWindow("setup", true);
 	}, [currentScene]);
 
@@ -125,9 +124,9 @@ export default function App() {
 							<directionalLight position={[0, 5, 5]} intensity={0.5} />
 							{ currentScene === "Login" &&
 								<Card
-								position={[0,0.25,0]}
-								rotation={[-Math.PI/4,0,0]}
-								color="gold"
+									position={[0,0.25,0]}
+									rotation={[-Math.PI/4,0,0]}
+									color="gold"
 								/>
 							}
 							<SphereBg />

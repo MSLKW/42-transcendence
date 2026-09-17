@@ -24,6 +24,8 @@ services:
     build: authentication
     image: authentication:test
     restart: unless-stopped
+    env_file:
+      - ./authentication/.env
 
   profile:
     build: profile-system

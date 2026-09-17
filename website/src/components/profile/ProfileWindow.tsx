@@ -19,16 +19,14 @@ export const ProfileWindow = () => {
 		return;
 	const setShowWindow = useSceneStore((store) => store.setShowWindow);
 	const getProfileData = useProfileStore((store) => store.getProfileData);
-	const getCachedData = useProfileStore((store) => store.getCachedData);
-	const setCachedData = useProfileStore((store) => store.setCachedData);
+	const cachedData = useProfileStore((store) => store.cachedData);
 	const members = usePartyStore((store) => store.members);
 
 	const profileData = getProfileData(clientUuid!);
-	const cachedData = getCachedData(clientUuid!);
 
-	const [name, setName] = useState(cachedData?.name ?? "Player");
-	const [avatar, setAvatar] = useState(cachedData?.avatar ?? "avatar-unknown.webp");
-	const [badge, setBadge] = useState<BADGE_TYPE>(cachedData?.badge ?? "Newcomer");
+	const [name, setName] = useState(cachedData[clientUuid ?? ""]?.name ?? "n/a");
+	const [avatar, setAvatar] = useState(cachedData[clientUuid ?? ""]?.avatar ?? undefined);
+	const [badge, setBadge] = useState<BADGE_TYPE>(cachedData[clientUuid ?? ""]?.badge ?? "Newcomer");
 
 	const isValid = Boolean(name?.trim());
 
@@ -36,8 +34,7 @@ export const ProfileWindow = () => {
 		if (!isValid)
 			return;
 
-		void handlePutProfile(name, avatar, badge).then(() => {
-			setCachedData();
+		void handlePutProfile(name, avatar ?? "avatar-unknown.webp", badge).then(async () => {
 			setShowWindow("profile", false);
 			partySocket.refresh();
 		});
@@ -62,7 +59,7 @@ export const ProfileWindow = () => {
 					<AvatarSetNameModule
 						name={name}
 						setName={setName}
-						avatar={avatar}
+						avatar={avatar ?? "avatar-unknown.webp"}
 						uuid={clientUuid}
 					/>
 					<PlayerDataModule
@@ -73,7 +70,7 @@ export const ProfileWindow = () => {
 					/>
 				</div>
 				<AvatarSelectModule
-					avatar={avatar}
+					avatar={avatar ?? "avatar-unknown.webp"}
 					setAvatar={setAvatar}
 				/>
 				<MedalsModule uuid={clientUuid}/>

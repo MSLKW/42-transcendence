@@ -7,13 +7,13 @@ export const subscribeToMessages = () => {
 	return chatSocket.onMessage((chat) => {
 		const addBubble = useBubbleStore.getState().addBubble;
 		const addToCachedChat = useChatStore.getState().addToCachedChat;
-		const data = useProfileStore.getState().getCachedData(chat.senderUuid);
+		const cachedData = useProfileStore.getState().cachedData;
 
 		addToCachedChat(
 			chat.type,
 			chat.senderUuid,
-			data?.name ?? "Player",
-			data?.avatar ?? "avatar-unknown.webp",
+			cachedData[chat.senderUuid ?? ""]?.name ?? "Player",
+			cachedData[chat.senderUuid ?? ""]?.avatar ?? "avatar-unknown.webp",
 			chat.message
 		);
 

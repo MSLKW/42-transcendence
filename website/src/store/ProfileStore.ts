@@ -58,7 +58,7 @@ export interface ProfileData {
 }
 
 export interface CachedData {
-	uuid: string | null;
+	// uuid: string | null;
 	name: string | null;
 	avatar: string | null;
 	badge: BADGE_TYPE;
@@ -282,14 +282,15 @@ interface ProfileValues {
 	isAuthenticated: boolean,
 	validateResponse: Response | undefined,
 	profilesInDb: ProfileData[],
-	cachedData: CachedData[],
+	cachedData: Record<string, CachedData>,
 };
 
 interface ProfileState extends ProfileValues {
 	getProfileData: (uuid: string | null) => ProfileData | undefined,
 	resetProfilesInDb: () => void,
 	setCachedData: () => Promise<void>,
-	getCachedData: (uuid: string | null) => CachedData | undefined,
+	removeCachedData: (uuid: string | null) => void;
+	clearCachedData: () => void;
 };
 
 export const useProfileStore = create<ProfileState>() (
@@ -298,7 +299,7 @@ export const useProfileStore = create<ProfileState>() (
 			isAuthenticated: false, 
 			validateResponse: undefined,
 			profilesInDb: defaultProfileInDb,
-			cachedData: [],
+			cachedData: {},
 
 			getProfileData: (uuid) => {
 				if (!uuid)
@@ -306,53 +307,77 @@ export const useProfileStore = create<ProfileState>() (
 				const profilesInDb = get().profilesInDb;
 				return profilesInDb.find(p => p.uuid === uuid);
 			},
+
 			resetProfilesInDb: () => {
 				set({
 					profilesInDb: defaultProfileInDb,
-					cachedData: [],
+					cachedData: {},
 				});
 			},
+
 			setCachedData: async () => {
 				const clientUuid = useAuthStore.getState().clientUuid;
 				const members = usePartyStore.getState().members;
 				const cachedFriends = useFriendStore.getState().cachedFriends;
 
 				const allUuids = Array.from(
-					new Set([...members, ...(clientUuid ? [clientUuid] : [])])
+					new Set([
+						...members,
+						...(clientUuid ? [clientUuid] : [])
+					])
+				).filter(
+					(uuid): uuid is string => uuid !== null
 				);
-				const cachedMemberData = (
-					await Promise.all(
-						allUuids.map(async (memberUuid: string | null): Promise<CachedData | null> => {
-							if (!memberUuid)
-								return null;
+				console.log("allUuids:", allUuids);
+				const profiles = await Promise.all(
+					allUuids.map(async (memberUuid) => {
+						const userData = await handleGetProfile(memberUuid);
+						if (!userData)
+							return null;
 
-							const userData = await handleGetProfile(memberUuid);
-							if (!userData)
-								return null;
+						const humanRelation: RELATION_TYPE = 
+							memberUuid === clientUuid ? "Self" :
+							cachedFriends.includes(memberUuid) ? "Friend" :
+							"Stranger";
 
-							const humanRelation: RELATION_TYPE = 
-								memberUuid === clientUuid ? "Self" :
-								cachedFriends.includes(memberUuid) ? "Friend" :
-								"Stranger";
-
-							return {
-								uuid: memberUuid!,
+						return {
+							uuid: memberUuid,
+							data: {
 								name: userData.username,
 								avatar: userData.avatarPath,
 								badge: userData.badge,
 								relation: humanRelation,
-							}
-						})
-					)
-				).filter((profile): profile is CachedData => profile !== null);
+							},
+						}
+					})
+				);
+				console.log("profiles:", profiles);
 
-				set({ cachedData: cachedMemberData });
+				set((state) => {
+					const cachedData = { ...state.cachedData };
+					for (const profile of profiles) {
+						console.log("profile:", profile);
+						if (!profile)
+							continue;
+						cachedData[profile.uuid] = profile.data;
+					}
+					return { cachedData }
+				});
 			},
-			getCachedData: (uuid) => {
+
+			removeCachedData: (uuid) => {
 				if (!uuid)
 					return;
-				const cachedData = get().cachedData;
-				return cachedData.find(p => p.uuid === uuid);
+
+				set((state) => {
+					const cachedData = { ...state.cachedData }
+					delete cachedData[uuid];
+					return { cachedData };
+				});
+			},
+
+			clearCachedData: () => {
+				set({ cachedData: {} });
 			},
 		}),
 		{

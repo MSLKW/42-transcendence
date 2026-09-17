@@ -1,4 +1,5 @@
 import { NOTIFICATION_TYPE, useNotificationStore } from "../../../store/NotificationStore";
+import { useProfileStore } from "../../../store/ProfileStore";
 import { fetchPutProfile } from "./fetchPutProfile";
 
 export const handlePutProfile = async (username: string, avatarPath: string, badge: string) => {
@@ -6,6 +7,7 @@ export const handlePutProfile = async (username: string, avatarPath: string, bad
 
 	try {
 		const response = await fetchPutProfile(username, avatarPath, badge);
+		await useProfileStore.getState().setCachedData();
 		console.log("[handlePutProfile] response:", response);
 	} catch (err) {
 		const errorMsg = err instanceof Error ? err.message : "Something went wrong. Please try again";

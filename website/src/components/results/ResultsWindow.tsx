@@ -12,13 +12,13 @@ export const ResultsWindow = () => {
 	const round = useGameStore((store) => store.round);
 	const endGame = useGameStore((store) => store.endGame);
 	const startGame = useGameStore((store) => store.startGame);
-	const getCachedData = useProfileStore((store) => store.getCachedData);
+	const cachedData = useProfileStore((store) => store.cachedData);
 	const getLeaderboard = useResultsStore((store) => store.getLeaderboard);
 
 	const leaderboard = getLeaderboard();
 	const topPlayer = leaderboard[0];
-	const playerName = topPlayer ? getCachedData(topPlayer.uuid)?.name : "Winner";
-	const winner = `Congratulations ${playerName ?? "Player"}!`;
+	const playerName = cachedData[topPlayer.uuid ?? ""]?.name;
+	const winner = `Congratulations ${playerName ?? "Winner"}!`;
 
 	return (
 		<Window

@@ -3,7 +3,7 @@ import { useTypingStore } from "../../store/TypingStore";
 
 export const ChatTypingIndicator = () => {
 	const typingUsers = useTypingStore((state) => state.typingUsers);
-	const getCachedData = useProfileStore((state) => state.getCachedData);
+	const cachedData = useProfileStore((state) => state.cachedData);
 
 	const users = Object.entries(typingUsers)
 		.filter(([_, isTyping]) => isTyping)
@@ -13,8 +13,7 @@ export const ChatTypingIndicator = () => {
 		<div className="text-n6">
 			{
 				users.length === 1 ? users.map((uuid) => {
-					const data = getCachedData(uuid);
-					return (<p>{data?.name ?? "A player"} is typing...</p>);
+					return (<p>{cachedData[uuid ?? ""]?.name ?? "A player"} is typing...</p>);
 				}) :
 				users.length >= 2  ? <p>{users.length} players are typing...</p> :
 				<></>

@@ -16,20 +16,12 @@ export const HomeScene = () => {
 	const initSeats = useGameStore((store) => store.initSeats);
 	const hostUuid = usePartyStore((store) => store.hostUuid);
 	const members = usePartyStore((store) => store.members);
-	const setCachedData = useProfileStore((store) => store.setCachedData);
-	const getCachedData = useProfileStore((store) => store.getCachedData);
-
-	const data = getCachedData(clientUuid);
+	const cachedData = useProfileStore((store) => store.cachedData);
 	
 	//remove bots
 	useEffect(() => {
-		const data = getCachedData(clientUuid!);
-		if (!data?.name)
-			return;
-
 		removeBots();
 		if (members.length <= 0) {
-			setCachedData();
 			usePartyStore.setState({
 				members: [ clientUuid ],
 				hostUuid: clientUuid,
@@ -84,7 +76,7 @@ export const HomeScene = () => {
 						<AvatarModule 
 							key={clientUuid}
 							uuid={clientUuid}
-							image={data?.avatar ?? undefined}
+							image={cachedData[clientUuid ?? ""]?.avatar ?? undefined}
 							cornerButton={hostUuid === clientUuid ? "host" : ""}
 						/>
 					}
@@ -93,7 +85,7 @@ export const HomeScene = () => {
 							<AvatarModule
 								key={uuid}
 								uuid={uuid}
-								image={getCachedData(uuid)?.avatar ?? "avatar-unknown.webp"}
+								image={cachedData[uuid ?? ""]?.avatar ?? undefined}
 								cornerButton={hostUuid === uuid ? "host" : ""}
 							/>
 					))}

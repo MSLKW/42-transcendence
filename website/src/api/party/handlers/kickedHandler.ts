@@ -6,7 +6,7 @@ import { usePartyStore } from "../../../store/PartyStore";
 import { useProfileStore } from "../../../store/ProfileStore";
 
 export function kickedHandler(socket: Socket) {
-	socket.on("kicked", (payload: {message: string}) => {
+	socket.on("kicked", async (payload: {message: string}) => {
 		useNotificationStore.getState().showNotification(
 			"You've been kicked from the party",
 			NOTIFICATION_TYPE.message
@@ -21,7 +21,7 @@ export function kickedHandler(socket: Socket) {
 					"You've been kicked from the party chat"
 				);
 
-		useProfileStore.getState().setCachedData();
+		await useProfileStore.getState().setCachedData();
 
 		const clientUuid = useAuthStore.getState().clientUuid;
 		usePartyStore.setState({

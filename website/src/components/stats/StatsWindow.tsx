@@ -11,14 +11,13 @@ import { KickPlayerButton } from "./kick/KickPlayerButton";
 
 export const StatsWindow: React.FC = () => {
 	const profileUuid = useSceneStore((store) => store.profileUuid);
-	const getProfileData = useProfileStore((store) => store.getProfileData);
 	const members = usePartyStore((store) => store.members);
 
-	const data = getProfileData(profileUuid!);
+	const cachedData = useProfileStore((store) => store.cachedData);
 
 	return (
 		<Window
-			title={`Player Profile: ${data?.name ?? "Player"}`}
+			title={`Player Profile: ${cachedData[profileUuid ?? ""]?.name ?? "-"}`}
 			dismissKey="stats"
 		>
 			<div
@@ -28,11 +27,11 @@ export const StatsWindow: React.FC = () => {
 				"
 			>
 				<div className="flex">
-					<AvatarMemberModule uuid={profileUuid} name={data?.name ?? "Player"} image={data?.avatar ?? "avatar-unknown.webp"} />
-					<PlayerDataModule profile={data ?? undefined} />
+					<AvatarMemberModule uuid={profileUuid} name={cachedData[profileUuid ?? ""]?.name ?? "-"} image={cachedData[profileUuid ?? ""]?.avatar ?? undefined} />
+					{/* <PlayerDataModule profile={cachedData[profileUuid ?? ""] ?? undefined} uuid={profileUuid}/> */}
 				</div>
 				<MedalsModule uuid={profileUuid}/>
-				<PlayerStatsModule profile={data ?? undefined} />
+				{/* <PlayerStatsModule profile={cachedData[profileUuid ?? ""] ?? undefined} /> */}
 				<div
 					className="
 						flex place-content-evenly place-items-center

@@ -6,7 +6,7 @@ import { usePartyStore } from "../../../store/PartyStore";
 import { useProfileStore } from "../../../store/ProfileStore";
 import { useSceneStore } from "../../../store/SceneStore";
 
-export function leavePartyAction(socket: Socket | null) {
+export async function leavePartyAction(socket: Socket | null) {
 	const clientUuid = useAuthStore.getState().clientUuid ?? "";
 	const addToCachedChat = useChatStore.getState().addToCachedChat;
 	const showNotification = useNotificationStore.getState().showNotification;
@@ -28,7 +28,7 @@ export function leavePartyAction(socket: Socket | null) {
 		NOTIFICATION_TYPE.message
 	);
 
-	useProfileStore.getState().setCachedData();
+	await useProfileStore.getState().setCachedData();
 	
 	usePartyStore.setState({
 		members: [ clientUuid ],

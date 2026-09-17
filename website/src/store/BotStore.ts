@@ -9,36 +9,32 @@ export const INTEL_LABEL = [
  ] as const;
 export type INTEL_TYPE = typeof INTEL_LABEL[number];
 
-export const cachedBotData: CachedData[] = [
-	{
-		uuid: "bot-0",
+export const cachedBotData: Record<string, CachedData> = {
+	"bot-0": {
 		name: "Norminette",
 		avatar: "avatar-bot-0.webp",
 		relation: "Bot",
 		badge: "Newcomer",
 	},
-	{
-		uuid: "bot-1",
+	"bot-1": {
 		name: "Moulinette",
 		avatar: "avatar-bot-1.webp",
 		relation: "Bot",
 		badge: "Newcomer",
 	},
-	{
-		uuid: "bot-2",
+	"bot-2": {
 		name: "Thila-Bot",
 		avatar: "avatar-bot-2.webp",
 		relation: "Bot",
 		badge: "Newcomer",
 	},
-	{
-		uuid: "bot-3",
+	"bot-3": {
 		name: "Segfault",
 		avatar: "avatar-bot-3.webp",
 		relation: "Bot",
 		badge: "Newcomer",
 	},
-];
+};
 
 interface BotValues {
 	currentIntel: INTEL_TYPE;
@@ -46,7 +42,7 @@ interface BotValues {
 }
 
 interface BotState extends BotValues {
-	removeBots: () => void,
+	removeBots: () => Promise<void>,
 	fillSeatsWithBots: () => void,
 	countSeatedBots: () => void,
 };
@@ -56,7 +52,7 @@ export const useBotStore = create<BotState>() (
 		currentIntel: "Medium",
 		botCount: 0,
 
-		removeBots: () => {
+		removeBots: async () => {
 			if (get().botCount <= 0)
 				return;
 
@@ -64,7 +60,8 @@ export const useBotStore = create<BotState>() (
 			const newSeats = seats.filter(seat => !seat?.includes("bot"));
 			useGameStore.setState({ seats: newSeats });
 
-			useProfileStore.getState().setCachedData();
+			useProfileStore.getState().clearCachedData();
+			await useProfileStore.getState().setCachedData();
 
 			get().countSeatedBots();
 		},
@@ -78,17 +75,26 @@ export const useBotStore = create<BotState>() (
 				if (seats[i])
 					continue;
 
-				while (bot_i < cachedBotData.length && seats.includes(cachedBotData[bot_i].uuid)) {
+				const botKeys = Object.keys(cachedBotData);
+				while (bot_i < Object.keys(cachedBotData).length && seats.includes(botKeys[bot_i])) {
 					bot_i++;
 				}
-				if (bot_i >= cachedBotData.length)
+				if (bot_i >= Object.keys(cachedBotData).length)
 					break;
-
-				const bot = cachedBotData[bot_i];
-				setSeatWithUuid(bot.uuid!, i);
+				setSeatWithUuid(botKeys[bot_i]!, i);
 
 				const cached = useProfileStore.getState().cachedData;
-				useProfileStore.setState({ cachedData: [...cached, cachedBotData[bot_i]]});
+				useProfileStore.setState({
+					cachedData: {
+						...cached,
+						[botKeys[bot_i]!]: {
+							name: cachedBotData[botKeys[bot_i]]?.name,
+							avatar: cachedBotData[botKeys[bot_i]]?.avatar,
+							badge: cachedBotData[botKeys[bot_i]]?.badge,
+							relation: cachedBotData[botKeys[bot_i]]?.relation,
+						},
+					},
+				});
 
 				bot_i++;
 			}

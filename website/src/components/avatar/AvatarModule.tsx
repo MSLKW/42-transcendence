@@ -20,12 +20,11 @@ export const AvatarModule = ({
 	isActive = false,
 	showName = true,
 }: AvatarModuleProps) => {
-	const getCachedData = useProfileStore((store) => store.getCachedData);
+	const cachedData = useProfileStore((store) => store.cachedData);
 	const currentScene = useSceneStore((store) => store.currentScene);
 	const setShowWindow = useSceneStore((store) => store.setShowWindow);
 
-	const data = getCachedData(uuid) ?? null;
-	const relation = data ? data.relation : null;
+	const relation = cachedData[uuid ?? ""]?.relation ?? null;
 
 	return (
 		<div
@@ -73,7 +72,7 @@ export const AvatarModule = ({
 				/>
 				<AvatarCornerButton cornerButton={cornerButton} />
 			</button>
-			{ showName && <AvatarName name={data?.name ?? "-"} /> }
+			{ showName && <AvatarName name={cachedData[uuid?? ""]?.name ?? "-"} /> }
 		</div>
 	);
 }

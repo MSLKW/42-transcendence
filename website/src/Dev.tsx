@@ -39,7 +39,6 @@ export default function Dev() {
 	const profilesInDb = useProfileStore((store) => store.profilesInDb);
 	const resetProfilesInDb = useProfileStore((store) => store.resetProfilesInDb);
 	const cachedData = useProfileStore((store) => store.cachedData);
-	const getCachedData = useProfileStore((store) => store.getCachedData);
 	const results = useResultsStore((store) => store.results);
 	const currentScene = useSceneStore((store) => store.currentScene);
 	const setCurrentScene = useSceneStore((store) => store.setCurrentScene);
@@ -157,17 +156,18 @@ export default function Dev() {
 				<ul className="flex place-content-between">
 					{ currentScene === "Game" && clientUuid === hostUuid &&
 						<>
-							{ seats[0] && <DevButton label={`${getCachedData(seats[0])?.name} Wins`} call={() => playerWins(0)}/> }
-							{ seats[1] && <DevButton label={`${getCachedData(seats[1])?.name} Wins`} call={() => playerWins(1)}/> }
-							{ seats[2] && <DevButton label={`${getCachedData(seats[2])?.name} Wins`} call={() => playerWins(2)}/> }
-							{ seats[3] && <DevButton label={`${getCachedData(seats[3])?.name} Wins`} call={() => playerWins(3)}/> }
+							{ seats[0] && <DevButton label={`${cachedData[seats[0]]?.name ?? "Seat 0 "} Wins`} call={() => playerWins(0)}/> }
+							{ seats[1] && <DevButton label={`${cachedData[seats[1]]?.name ?? "Seat 1 "} Wins`} call={() => playerWins(1)}/> }
+							{ seats[2] && <DevButton label={`${cachedData[seats[2]]?.name ?? "Seat 2 "} Wins`} call={() => playerWins(2)}/> }
+							{ seats[3] && <DevButton label={`${cachedData[seats[3]]?.name ?? "Seat 3 "} Wins`} call={() => playerWins(3)}/> }
 						</>
 					}
 				</ul>
 			{/* profile */}
 				<ul className="flex place-content-between">
 					<DevButton label={`profilesInDb: ${profilesInDb.length}`} call={() => console.log("profilesInDb: ", profilesInDb)} />
-					<DevButton label={`Reset cachedData: ${cachedData.length}`} call={() => useProfileStore.setState({ cachedData: [] })} />
+					<DevButton label={`cachedData: ${Object.keys(cachedData).length}`} call={() => console.log(useProfileStore.getState().cachedData)} />
+					<DevButton label="Clear cachedData" call={() => useProfileStore.getState().clearCachedData()} />
 				</ul>
 			{/* party */}
 				<ul className="flex place-content-between">

@@ -4,7 +4,7 @@ import { usePartyStore } from "../../../store/PartyStore";
 import { useProfileStore } from "../../../store/ProfileStore";
 import { useSceneStore } from "../../../store/SceneStore";
 
-export function kickPlayerAction(socket: Socket | null, recipientUuid: string) {
+export async function kickPlayerAction(socket: Socket | null, recipientUuid: string) {
 	const { showNotification } = useNotificationStore.getState();
 	if (!socket?.connected) {
 		showNotification(
@@ -18,7 +18,7 @@ export function kickPlayerAction(socket: Socket | null, recipientUuid: string) {
 
 	usePartyStore.getState().kickPlayer(recipientUuid);
 
-	useProfileStore.getState().setCachedData();
+	await useProfileStore.getState().setCachedData();
 
 	useSceneStore.getState().setShowWindow("stats", false);
 

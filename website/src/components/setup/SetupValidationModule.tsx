@@ -18,7 +18,6 @@ export const SetupValidationModule = ({ name, avatar }: SetupValidationModulePro
 			return;
 
 		await handlePutProfile(name, avatar, "Newcomer");
-		useProfileStore.getState().setCachedData();
 
 		partySocket.connect();
 		chatSocket.connect();
