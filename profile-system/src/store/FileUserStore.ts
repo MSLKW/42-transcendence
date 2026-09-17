@@ -129,7 +129,14 @@ export class FileUserStore implements UserStore
 
 	private async setData(uuid: string, userData: UserData, userSettings: UserSettings): Promise<void>
 	{
-		const union: UserData | UserSettings = {...userData, ...userSettings};
+		const union: UserData & UserSettings = {...userData, ...userSettings};
+
+		if (union.username)
+		{
+			const existingUsername = await this.getUuidByUsername(union.username);
+			if (existingUsername && existingUsername != uuid)
+				throw new Error("DUPLICATE_USERNAME");
+		}
 
 		await fs.promises.writeFile(
 			this.getFilePath(uuid),
