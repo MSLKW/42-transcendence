@@ -3,8 +3,8 @@ import { useSceneStore } from "../../store/SceneStore";
 import { Window } from "../window/Window";
 
 export const LeaveWindow = () => {
-	const { setShowWindow } = useSceneStore();
-	const { endGame } = useGameStore()
+	const setShowWindow = useSceneStore((store) => store.setShowWindow);
+	const endGame = useGameStore((store) => store.endGame);
 
 	const handleLeaveGame = () => {
 		setShowWindow("leave", false);

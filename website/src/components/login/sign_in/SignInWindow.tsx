@@ -5,7 +5,7 @@ import { FormInputModule } from "../form/FormInputModule";
 import { handleSignIn } from "../../../api/authentication/sign_in/handleSignIn";
 
 export const SignInWindow = () => {
-	const { showNotification } = useNotificationStore();
+	const showNotification = useNotificationStore((store) => store.showNotification);
 
 	const [email, setEmail] = useState("");
 	const [password, setPassword] = useState("");

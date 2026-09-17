@@ -5,7 +5,7 @@ import { Window } from "../../window/Window";
 import { FormInputModule } from "../form/FormInputModule";
 
 export const CreateAccountWindow = () => {
-	const { showNotification } = useNotificationStore();
+	const showNotification = useNotificationStore((store) => store.showNotification);
 
 	const [email, setEmail] = useState("");
 	const [password, setPassword] = useState("");

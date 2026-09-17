@@ -1,5 +1,7 @@
 import { useState } from "react";
 import { partySocket } from "../../api/party/partySocket";
+import { handlePutProfile } from "../../api/profile/put_profile/handlePutProfile";
+import { useAuthStore } from "../../store/AuthStore";
 import { usePartyStore } from "../../store/PartyStore";
 import { useProfileStore, type BADGE_TYPE } from "../../store/ProfileStore";
 import { useSceneStore } from "../../store/SceneStore";
@@ -10,19 +12,19 @@ import { MedalsModule } from "../player/medals/MedalsModule";
 import { PlayerDataModule } from "../player/data/PlayerDataModule";
 import { PlayerStatsModule } from "../player/stats/PlayerStatsModule";
 import { LeavePartyModule } from "./LeavePartyModule";
-import { handlePutProfile } from "../../api/profile/put_profile/handlePutProfile";
 
 export const ProfileWindow = () => {
-	const { setShowWindow } = useSceneStore();
-
-	const { clientUuid, getProfileData, getCachedData, setCachedData } = useProfileStore();
+	const clientUuid = useAuthStore((store) => store.clientUuid);
 	if (!clientUuid)
 		return;
-	
+	const setShowWindow = useSceneStore((store) => store.setShowWindow);
+	const getProfileData = useProfileStore((store) => store.getProfileData);
+	const getCachedData = useProfileStore((store) => store.getCachedData);
+	const setCachedData = useProfileStore((store) => store.setCachedData);
+	const members = usePartyStore((store) => store.members);
+
 	const profileData = getProfileData(clientUuid!);
 	const cachedData = getCachedData(clientUuid!);
-
-	const { members } = usePartyStore();
 
 	const [name, setName] = useState(cachedData?.name ?? "Player");
 	const [avatar, setAvatar] = useState(cachedData?.avatar ?? "avatar-unknown.webp");

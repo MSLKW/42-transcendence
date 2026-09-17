@@ -1,7 +1,8 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-import { usePartyStore, type AVAILABILITY_TYPE } from "./PartyStore";
+import { useAuthStore } from "./AuthStore";
 import { useFriendStore } from "./FriendStore";
+import { usePartyStore, type AVAILABILITY_TYPE } from "./PartyStore";
 import { handleGetProfile } from "../api/profile/get_profile/handleGetProfile";
 
 export const BADGE_LABEL = [
@@ -271,37 +272,6 @@ const defaultProfileInDb: ProfileData[] = [
 	},
 ];
 
-export const cachedBotData: CachedData[] = [
-	{
-		uuid: "bot-0",
-		name: "Norminette",
-		avatar: "avatar-bot-0.webp",
-		relation: "Bot",
-		badge: "Newcomer",
-	},
-	{
-		uuid: "bot-1",
-		name: "Moulinette",
-		avatar: "avatar-bot-1.webp",
-		relation: "Bot",
-		badge: "Newcomer",
-	},
-	{
-		uuid: "bot-2",
-		name: "Thila-Bot",
-		avatar: "avatar-bot-2.webp",
-		relation: "Bot",
-		badge: "Newcomer",
-	},
-	{
-		uuid: "bot-3",
-		name: "Segfault",
-		avatar: "avatar-bot-3.webp",
-		relation: "Bot",
-		badge: "Newcomer",
-	},
-];
-
 export type UserData = {
 	username: string | null,
 	avatarPath: string | null,
@@ -309,7 +279,6 @@ export type UserData = {
 };
 
 interface ProfileValues {
-	clientUuid: string | null,
 	isAuthenticated: boolean,
 	validateResponse: Response | undefined,
 	profilesInDb: ProfileData[],
@@ -326,7 +295,6 @@ interface ProfileState extends ProfileValues {
 export const useProfileStore = create<ProfileState>() (
 	persist(
 		(set, get) => ({
-			clientUuid: null,
 			isAuthenticated: false, 
 			validateResponse: undefined,
 			profilesInDb: defaultProfileInDb,
@@ -345,7 +313,7 @@ export const useProfileStore = create<ProfileState>() (
 				});
 			},
 			setCachedData: async () => {
-				const clientUuid = get().clientUuid;
+				const clientUuid = useAuthStore.getState().clientUuid;
 				const members = usePartyStore.getState().members;
 				const cachedFriends = useFriendStore.getState().cachedFriends;
 

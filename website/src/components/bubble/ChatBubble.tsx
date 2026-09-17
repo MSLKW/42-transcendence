@@ -1,6 +1,6 @@
 import { motion, AnimatePresence } from "motion/react";
+import { useAuthStore } from "../../store/AuthStore";
 import { useBubbleStore, EMPTY_BUBBLES } from "../../store/BubbleStore";
-import { useProfileStore } from "../../store/ProfileStore";
 import { useSceneStore } from "../../store/SceneStore";
 import { EmoteBubble } from "./EmoteBubble";
 import { MessageBubble } from "./MessageBubble";
@@ -10,9 +10,9 @@ interface ChatBubbleProps {
 }
 
 export const ChatBubbles = ({ uuid }: ChatBubbleProps) => {
-	const bubbles = useBubbleStore((state) => state.bubbles[uuid] ?? EMPTY_BUBBLES);
-	const { clientUuid } = useProfileStore();
-	const { currentScene } = useSceneStore();
+	const clientUuid = useAuthStore((store) => store.clientUuid);
+	const bubbles = useBubbleStore((store) => store.bubbles[uuid]) ?? EMPTY_BUBBLES;
+	const currentScene = useSceneStore((store) => store.currentScene);
 
 	return (
 		<div

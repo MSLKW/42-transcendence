@@ -3,8 +3,8 @@ import { useSceneStore } from "../../../store/SceneStore";
 import { RankIcon } from "./RankIcon";
 
 export const RankCallButton = () => {
-	const { setShowWindow } = useSceneStore();
-	const { currentHand } = useGameStore();
+	const setShowWindow = useSceneStore((store) => store.setShowWindow);
+	const currentHand = useGameStore((store) => store.currentHand);
 
 	return (
 		<button

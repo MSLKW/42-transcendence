@@ -1,4 +1,4 @@
-import { useProfileStore } from "../../../store/ProfileStore";
+import { useAuthStore } from "../../../store/AuthStore";
 import { useSettingsStore } from "../../../store/SettingsStore";
 
 interface AvatarProps {
@@ -9,7 +9,7 @@ interface AvatarProps {
 }
 
 export const AvatarImage = ({ uuid, image, isActive, isChat = false }: AvatarProps) => {
-	const clientUuid = useProfileStore.getState().clientUuid;
+	const clientUuid = useAuthStore.getState().clientUuid;
 	const autoPassIndex = useSettingsStore.getState().autoPassIndex;
 	const autoPassOptions = [1, 3, 5, 10, 15, 30, 42, 60, 120, -1];
 	const autoPassDuration = autoPassOptions[autoPassIndex];

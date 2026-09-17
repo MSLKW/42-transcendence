@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
-import { useProfileStore, type ProfileData, type BADGE_TYPE } from "../../../store/ProfileStore";
+import { useAuthStore } from "../../../store/AuthStore";
+import type { ProfileData, BADGE_TYPE } from "../../../store/ProfileStore";
 import { useSceneStore } from "../../../store/SceneStore";
 import { BadgeWindow } from "./badge/BadgeWindow";
 import { PlayerStatusModule } from "../status/PlayerStatusModule";
@@ -10,8 +11,10 @@ interface PlayerDataModule {
 	setBadge?: (type: BADGE_TYPE) => void;
 }
 export const PlayerDataModule = ({ profile, badge, setBadge }: PlayerDataModule) => {
-	const { clientUuid } = useProfileStore();
-	const { showWindow, setShowWindow } = useSceneStore();
+	const clientUuid = useAuthStore((store) => store.clientUuid);
+	const showWindow = useSceneStore((store) => store.showWindow);
+	const setShowWindow = useSceneStore((store) => store.setShowWindow);
+
 	const [ xpProgress, setXPProgress ] = useState(0);
 
 	useEffect(() => {

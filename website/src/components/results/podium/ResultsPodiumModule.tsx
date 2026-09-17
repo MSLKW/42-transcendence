@@ -4,9 +4,9 @@ import { useResultsStore } from "../../../store/ResultsStore";
 import { AvatarModule } from "../../avatar/AvatarModule";
 
 export const ResultsPodiumModule = () => {
-	const { totalPlayers } = useGameStore();
-	const { getCachedData } = useProfileStore();
-	const { results } = useResultsStore();
+	const totalPlayers = useGameStore((store) => store.totalPlayers);
+	const getCachedData = useProfileStore((store) => store.getCachedData);
+	const results = useResultsStore((store) => store.results);
 
 	return (
 		<div

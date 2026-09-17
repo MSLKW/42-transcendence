@@ -1,13 +1,44 @@
 import { create } from "zustand";
 import { useGameStore } from "./GameStore";
-import { cachedBotData, useProfileStore } from "./ProfileStore";
+import { useProfileStore, type CachedData } from "./ProfileStore";
 
 export const INTEL_LABEL = [
 	"Easy",
 	"Medium",
 	"Hard",
  ] as const;
- export type INTEL_TYPE = typeof INTEL_LABEL[number];
+export type INTEL_TYPE = typeof INTEL_LABEL[number];
+
+export const cachedBotData: CachedData[] = [
+	{
+		uuid: "bot-0",
+		name: "Norminette",
+		avatar: "avatar-bot-0.webp",
+		relation: "Bot",
+		badge: "Newcomer",
+	},
+	{
+		uuid: "bot-1",
+		name: "Moulinette",
+		avatar: "avatar-bot-1.webp",
+		relation: "Bot",
+		badge: "Newcomer",
+	},
+	{
+		uuid: "bot-2",
+		name: "Thila-Bot",
+		avatar: "avatar-bot-2.webp",
+		relation: "Bot",
+		badge: "Newcomer",
+	},
+	{
+		uuid: "bot-3",
+		name: "Segfault",
+		avatar: "avatar-bot-3.webp",
+		relation: "Bot",
+		badge: "Newcomer",
+	},
+];
 
 interface BotValues {
 	currentIntel: INTEL_TYPE;

@@ -11,8 +11,9 @@ interface HeaderModuleProps {
 }
 
 export const HeaderModule = ({ back }: HeaderModuleProps) => {
-	const { endGame } = useGameStore();
-	const { currentScene, setShowWindow } = useSceneStore();
+	const endGame = useGameStore((store) => store.endGame);
+	const currentScene = useSceneStore((store) => store.currentScene);
+	const setShowWindow = useSceneStore((store) => store.setShowWindow);
 
 
 	const handleBackClick = () => {

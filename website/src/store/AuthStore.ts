@@ -1,6 +1,7 @@
 import { create } from "zustand";
 
 interface AuthValues {
+	clientUuid: string | null;
 	createdAt: Date;
 	lastLogin: Date;
 }
@@ -8,7 +9,8 @@ interface AuthValues {
 interface AuthState extends AuthValues {};
 
 export const useAuthStore = create<AuthState>() (
-	(set, get) => ({
+	(_set, _get) => ({
+		clientUuid: null,
 		createdAt: new Date(),
 		lastLogin: new Date(),
 	}),

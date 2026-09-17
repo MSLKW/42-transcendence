@@ -1,21 +1,21 @@
+import { useAuthStore } from "../../../store/AuthStore";
+import { useBubbleStore } from "../../../store/BubbleStore";
+import { useChatStore } from "../../../store/ChatStore";
 import { useGameStore } from "../../../store/GameStore";
-import { usePartyStore } from "../../../store/PartyStore";
 import { useNotificationStore, NOTIFICATION_TYPE } from "../../../store/NotificationStore"; 
+import { usePartyStore } from "../../../store/PartyStore";
 import { useSceneStore, defaultShowWindow } from "../../../store/SceneStore";
 import { fetchSignOut } from "./fetchSignOut";
 import { partySocket } from "../../party/partySocket";
-import { useProfileStore } from "../../../store/ProfileStore";
 import { chatSocket } from "../../chat/chatSocket";
-import { useChatStore } from "../../../store/ChatStore";
-import { useBubbleStore } from "../../../store/BubbleStore";
 
 export const handleSignOut = async () => {
 	try {
 		await fetchSignOut();
 
 		useGameStore.getState().endGame();
-		
-		useProfileStore.setState({ clientUuid: "n/a" });
+
+		useAuthStore.setState({ clientUuid: "n/a" });
 
 		usePartyStore.setState({
 			members: [],

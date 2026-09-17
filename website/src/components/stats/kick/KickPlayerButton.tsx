@@ -1,6 +1,6 @@
 import { partySocket } from "../../../api/party/partySocket";
 import { usePartyStore } from "../../../store/PartyStore";
-import { useProfileStore } from "../../../store/ProfileStore";
+import { useAuthStore } from "../../../store/AuthStore";
 import { KickIcon } from "./KickIcon";
 
 interface KickPlayerButtonProps {
@@ -8,8 +8,10 @@ interface KickPlayerButtonProps {
 }
 
 export const KickPlayerButton = ({ playerUuid }: KickPlayerButtonProps) => {
-	const { clientUuid } = useProfileStore();
-	const { hostUuid, kickPlayer } = usePartyStore();
+	const clientUuid = useAuthStore((store) => store.clientUuid);
+	const hostUuid = usePartyStore((store) => store.hostUuid);
+	const kickPlayer = usePartyStore((store) => store.kickPlayer);
+
 	const handleKickPlayer = () => {
 		partySocket.kickPlayer(playerUuid);
 		kickPlayer(playerUuid);

@@ -5,11 +5,17 @@ import { RadioButton } from "./radio/RadioButton";
 import { ToggleButton } from "./toggle/ToggleButton";
 
 export const SettingsWindow = () => {
-	const { gameStarted } = useGameStore();
-	const {
-		allow3OfAKind, allow2OfSpadesEnd, autoPassIndex, endGameCondition, scoreCalculation, cardStyle, uiColor, fxLevel, mxLevel,
-		toggleSettingsValue,
-	} = useSettingsStore();
+	const gameStarted = useGameStore((store) => store.gameStarted);
+	const allow3OfAKind = useSettingsStore((store) => store.allow3OfAKind);
+	const allow2OfSpadesEnd = useSettingsStore((store) => store.allow2OfSpadesEnd);
+	const autoPassIndex = useSettingsStore((store) => store.autoPassIndex);
+	const endGameCondition = useSettingsStore((store) => store.endGameCondition);
+	const scoreCalculation = useSettingsStore((store) => store.scoreCalculation);
+	const cardStyle = useSettingsStore((store) => store.cardStyle);
+	const uiColor = useSettingsStore((store) => store.uiColor);
+	const fxLevel = useSettingsStore((store) => store.fxLevel);
+	const mxLevel = useSettingsStore((store) => store.mxLevel);
+	const toggleSettingsValue = useSettingsStore((store) => store.toggleSettingsValue);
 
 	return (
 		<Window

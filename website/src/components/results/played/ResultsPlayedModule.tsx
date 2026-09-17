@@ -1,12 +1,16 @@
+import { useAuthStore } from "../../../store/AuthStore";
 import { useGameStore } from "../../../store/GameStore";
 import { useProfileStore } from "../../../store/ProfileStore";
 import { useResultsStore } from "../../../store/ResultsStore";
 import { AvatarImage } from "../../avatar/image/AvatarImage";
 
 export const ResultsPlayedModule = () => {
-	const { totalPlayers, round } = useGameStore();
-	const { clientUuid, getCachedData } = useProfileStore();
-	const { getLeaderboard } = useResultsStore();
+	const clientUuid = useAuthStore((store) => store.clientUuid);
+	const round = useGameStore((store) => store.round);
+	const totalPlayers = useGameStore((store) => store.totalPlayers);
+	const getCachedData = useProfileStore((store) => store.getCachedData);
+	const getLeaderboard = useResultsStore((store) => store.getLeaderboard);
+
 	const leaderboard = getLeaderboard();
 
 	return (

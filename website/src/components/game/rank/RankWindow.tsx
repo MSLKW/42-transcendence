@@ -7,7 +7,7 @@ import { GameSuitSpadesIcon } from "./suits/GameSuitSpadesIcon"
 import { GameSuitClubsIcon } from "./suits/GameSuitClubsIcon"
 
 export const RankWindow = () => {
-	const { currentHand } = useGameStore();
+	const currentHand = useGameStore((store) => store.currentHand);
 
 	return (
 		<Window

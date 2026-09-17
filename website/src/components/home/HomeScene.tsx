@@ -1,4 +1,5 @@
 import { useEffect } from "react";
+import { useAuthStore } from "../../store/AuthStore";
 import { useBotStore } from "../../store/BotStore";
 import { useGameStore } from "../../store/GameStore";
 import { usePartyStore } from "../../store/PartyStore";
@@ -10,10 +11,14 @@ import { PartyCallButton } from "../party/call/PartyCallButton";
 import { SmallLogo } from "./logo/SmallLogo";
 
 export const HomeScene = () => {
-	const { removeBots } = useBotStore();
-	const { initSeats } = useGameStore();
-	const { hostUuid, members } = usePartyStore();
-	const { clientUuid, setCachedData, getCachedData } = useProfileStore();
+	const clientUuid = useAuthStore((store) => store.clientUuid);
+	const removeBots = useBotStore((store) => store.removeBots);
+	const initSeats = useGameStore((store) => store.initSeats);
+	const hostUuid = usePartyStore((store) => store.hostUuid);
+	const members = usePartyStore((store) => store.members);
+	const setCachedData = useProfileStore((store) => store.setCachedData);
+	const getCachedData = useProfileStore((store) => store.getCachedData);
+
 	const data = getCachedData(clientUuid);
 	
 	//remove bots

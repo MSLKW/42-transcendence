@@ -6,9 +6,9 @@ interface SingleNotificationProps {
 }
 
 export const SingleNotification = ({ notification }: SingleNotificationProps) => {
+	const removeNotification = useNotificationStore((store) => store.removeNotification);
+
 	const { id, message, isError, isTimed, numOfButtons, onButton1Click, onButton2Click } = notification;
-	const { removeNotification } = useNotificationStore();
-	
 	const [ isExiting, setIsExiting ] = useState(false);
 	const [ animateProgress, setAnimateProgress ] = useState(false);
 

@@ -6,7 +6,7 @@ import { SearchModule } from "./search/SearchModule";
 import { PartyPlayerModule } from "./player/PartyPlayerModule";
 
 export const PartyWindow = () => {
-	// const { cachedFriends } = useFriendStore();
+	// const cachedFriends = useFriendStore((store) => store.cachedFriends);
 
 	const [searchQuery, setSearchQuery] = useState<string>("");
 	const [filteredResults, setFilteredResults] = useState<string[]>([]);

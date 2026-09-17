@@ -10,10 +10,11 @@ import { FriendToggleButton } from "./friend/FriendToggleButton";
 import { KickPlayerButton } from "./kick/KickPlayerButton";
 
 export const StatsWindow: React.FC = () => {
-	const { profileUuid } = useSceneStore();
-	const { getProfileData } = useProfileStore();
+	const profileUuid = useSceneStore((store) => store.profileUuid);
+	const getProfileData = useProfileStore((store) => store.getProfileData);
+	const members = usePartyStore((store) => store.members);
+
 	const data = getProfileData(profileUuid!);
-	const { members } = usePartyStore();
 
 	return (
 		<Window

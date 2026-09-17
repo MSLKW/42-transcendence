@@ -1,4 +1,5 @@
 import { Socket } from "socket.io-client";
+import { useAuthStore } from "../../../store/AuthStore";
 import { useChatStore } from "../../../store/ChatStore";
 import { useNotificationStore, NOTIFICATION_TYPE } from "../../../store/NotificationStore";
 import { usePartyStore } from "../../../store/PartyStore";
@@ -6,9 +7,9 @@ import { useProfileStore } from "../../../store/ProfileStore";
 import { useSceneStore } from "../../../store/SceneStore";
 
 export function leavePartyAction(socket: Socket | null) {
+	const clientUuid = useAuthStore.getState().clientUuid ?? "";
 	const addToCachedChat = useChatStore.getState().addToCachedChat;
 	const showNotification = useNotificationStore.getState().showNotification;
-	const clientUuid = useProfileStore.getState().clientUuid ?? "";
 
 	if (!socket?.connected) {
 		showNotification(

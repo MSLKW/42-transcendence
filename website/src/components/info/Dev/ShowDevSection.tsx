@@ -1,7 +1,8 @@
 import { useDevStore } from "../../../store/DevStore";
 
 export const ShowDevSection = () => {
-	const { showDevSection, toggleFlag } = useDevStore();
+	const showDevSection = useDevStore((store) => store.showDevSection);
+	const toggleFlag = useDevStore((store) => store.toggleFlag);
 
 	return (
 		<div

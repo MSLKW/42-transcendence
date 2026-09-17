@@ -1,14 +1,15 @@
 
+import { useAuthStore } from "../../../store/AuthStore";
 import { useGameStore } from "../../../store/GameStore";
+import { useResultsStore } from "../../../store/ResultsStore";
 import { RedTriangle } from "../triangle/RedTriangle";
 import { GreenTriangle } from "../triangle/GreenTriangle";
-import { useProfileStore } from "../../../store/ProfileStore";
-import { useResultsStore } from "../../../store/ResultsStore";
 
 export const ResultsChangeModule = () => {
-	const { totalPlayers } = useGameStore();
-	const { clientUuid } = useProfileStore();
-	const { getLeaderboard } = useResultsStore();
+	const clientUuid = useAuthStore((store) => store.clientUuid);
+	const totalPlayers = useGameStore((store) => store.totalPlayers);
+	const getLeaderboard = useResultsStore((store) => store.getLeaderboard);
+	
 	const leaderboard = getLeaderboard();
 	
 	return (

@@ -3,6 +3,7 @@ import { Canvas } from "@react-three/fiber";
 import { Stats, PerspectiveCamera, OrbitControls, AdaptiveDpr } from "@react-three/drei";
 import { chatSocket } from "./api/chat/chatSocket";
 import { partySocket } from "./api/party/partySocket";
+import { useAuthStore } from "./store/AuthStore";
 import { useChatStore } from "./store/ChatStore";
 import { useDevStore } from "./store/DevStore";
 import { usePartyStore } from "./store/PartyStore";
@@ -39,11 +40,15 @@ import { StatsWindow } from "./components/stats/StatsWindow";
 import Dev from "./Dev";
 
 export default function App() {
-	const { chatReconnect } = useChatStore();
-	const { hostUuid } = usePartyStore();
-	const { clientUuid, getCachedData } = useProfileStore();
-	const { currentScene, showWindow, setShowWindow } = useSceneStore();
-	const { showDevSection, showStats } = useDevStore();
+	const clientUuid = useAuthStore((store) => store.clientUuid);
+	const chatReconnect = useChatStore((store) => store.chatReconnect);
+	const showStats = useDevStore((store) => store.showStats);
+	const hostUuid = usePartyStore((store) => store.hostUuid);
+	const getCachedData = useProfileStore((store) => store.getCachedData);
+	const currentScene = useSceneStore((store) => store.currentScene);
+	const showWindow = useSceneStore((store) => store.showWindow);
+	const setShowWindow = useSceneStore((store) => store.setShowWindow);
+	const showDevSection = useDevStore((store) => store.showDevSection);
 
 	//scroll to top
 	useEffect(() => {

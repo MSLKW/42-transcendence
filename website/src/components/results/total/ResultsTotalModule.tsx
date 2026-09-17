@@ -1,11 +1,12 @@
 import { useGameStore } from "../../../store/GameStore";
-import { useProfileStore } from "../../../store/ProfileStore";
+import { useAuthStore } from "../../../store/AuthStore";
 import { useResultsStore } from "../../../store/ResultsStore";
 
 export const ResultsTotalModule = () => {
-	const { totalPlayers } = useGameStore();
-	const { clientUuid } = useProfileStore();
-	const { getLeaderboard } = useResultsStore();
+	const totalPlayers = useGameStore((store) => store.totalPlayers);
+	const clientUuid = useAuthStore((store) => store.clientUuid);
+	const getLeaderboard = useResultsStore((store) => store.getLeaderboard);
+
 	const leaderboard = getLeaderboard();
 
 	return (

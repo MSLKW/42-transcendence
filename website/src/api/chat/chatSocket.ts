@@ -1,8 +1,7 @@
 import { io, Socket } from "socket.io-client";
+import { useAuthStore } from "../../store/AuthStore";
 import { useChatStore, type CHAT_TYPE } from "../../store/ChatStore";
 import { usePartyStore } from "../../store/PartyStore";
-import { useProfileStore } from "../../store/ProfileStore";
-import { subscribeToMessages } from "./subscribe/subscribeToMessages";
 
 export type ChatMessage = {
 	type: CHAT_TYPE;
@@ -46,7 +45,7 @@ class ChatSocketService {
 			const socketId = this.socket?.id ?? null;
 			useChatStore.setState({ chatSocketId: socketId });
 
-			const roomId = usePartyStore.getState().hostUuid ?? useProfileStore.getState().clientUuid;
+			const roomId = usePartyStore.getState().hostUuid ?? useAuthStore.getState().clientUuid;
 			if (roomId) {
 				if (usePartyStore.getState().hostUuid)
 					this.joinRoom(roomId);

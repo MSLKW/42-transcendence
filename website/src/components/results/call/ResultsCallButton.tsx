@@ -3,7 +3,7 @@ import { AvatarName } from "../../avatar/name/AvatarName";
 import { ResultsIcon } from "./ResultsIcons";
 
 export const ResultsCallButton = () => {
-	const { setShowWindow } = useSceneStore();
+	const setShowWindow = useSceneStore((store) => store.setShowWindow);
 
 	return (
 		<div

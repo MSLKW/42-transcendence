@@ -1,6 +1,6 @@
 
+import { useAuthStore } from "../../../store/AuthStore";
 import { useGameStore } from "../../../store/GameStore";
-import { useProfileStore } from "../../../store/ProfileStore";
 import { AvatarName } from "../../avatar/name/AvatarName";
 import { UnseatIcon } from "./UnseatIcon";
 
@@ -9,9 +9,9 @@ interface UnseatButtonProps {
 }
 
 export const UnseatButton = ({ uuid }: UnseatButtonProps) => {
-	const { playerUnseats } = useGameStore();
-	const { seats } = useGameStore();
-	const { clientUuid } = useProfileStore();
+	const clientUuid = useAuthStore((store) => store.clientUuid);
+	const playerUnseats = useGameStore((store) => store.playerUnseats);
+	const seats = useGameStore((store) => store.seats);
 
 	return (
 		<div

@@ -7,7 +7,8 @@ interface TakeSeatButtonProps {
 	seatNumber: number;
 }
 export const TakeSeatButton = ({ uuid, seatNumber }: TakeSeatButtonProps ) => {
-	const { setSeatWithUuid } = useGameStore();
+	const setSeatWithUuid = useGameStore((store) => store.setSeatWithUuid);
+	
 	return (
 		<div
 			className="

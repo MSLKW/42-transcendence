@@ -36,9 +36,10 @@ export const Window: React.FC<WindowProps> = ({
 	isDismissable = true,
 	call,
 }) => {
+	const setShowWindow = useSceneStore((store) => store.setShowWindow);
+
 	const [isPinned, setIsPinned] = useState(pinState);
 	const { position, handleMouseDown } = useWindowDrag();
-	const { setShowWindow } = useSceneStore();
 
 	return (
 		<section className="

@@ -20,8 +20,9 @@ export const AvatarModule = ({
 	isActive = false,
 	showName = true,
 }: AvatarModuleProps) => {
-	const { getCachedData } = useProfileStore();
-	const { currentScene, setShowWindow } = useSceneStore();
+	const getCachedData = useProfileStore((store) => store.getCachedData);
+	const currentScene = useSceneStore((store) => store.currentScene);
+	const setShowWindow = useSceneStore((store) => store.setShowWindow);
 
 	const data = getCachedData(uuid) ?? null;
 	const relation = data ? data.relation : null;

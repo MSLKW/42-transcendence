@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import { useDevStore } from "../store/DevStore";
 
 export const useFrameView = () => {
-	const { showFrame } = useDevStore();
+	const showFrame = useDevStore((store) => store.showFrame);
 	
 	useEffect(() => {
 		if (showFrame)

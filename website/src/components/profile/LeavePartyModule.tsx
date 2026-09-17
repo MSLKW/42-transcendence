@@ -1,11 +1,9 @@
 import { chatSocket } from "../../api/chat/chatSocket";
 import { partySocket } from "../../api/party/partySocket";
-import { usePartyStore } from "../../store/PartyStore";
-import { useProfileStore } from "../../store/ProfileStore";
+import { useAuthStore } from "../../store/AuthStore";
 
 export const LeavePartyModule = () => {
-	const { hostUuid } = usePartyStore();
-	const { clientUuid } = useProfileStore();
+	const clientUuid = useAuthStore((store) => store.clientUuid);
 
 	const handleLeaveParty = () => {
 		partySocket.leaveParty();

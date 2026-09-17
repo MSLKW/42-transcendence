@@ -1,4 +1,5 @@
 import { fetchSignIn } from "./fetchSignIn";
+import { useAuthStore } from "../../../store/AuthStore";
 import { useNotificationStore, NOTIFICATION_TYPE } from "../../../store/NotificationStore";
 import { useProfileStore } from "../../../store/ProfileStore";
 import { useSceneStore } from "../../../store/SceneStore";
@@ -10,9 +11,11 @@ export const handleSignIn = async (email: string, password: string) => {
 
 	try {
 		const response = await fetchSignIn(email, password);
+		useAuthStore.setState({
+			clientUuid: response.id,
+		});
 		useProfileStore.setState({
 			validateResponse: response,
-			clientUuid: response.id,
 		});
 
 		await handleGetProfile(response.id);

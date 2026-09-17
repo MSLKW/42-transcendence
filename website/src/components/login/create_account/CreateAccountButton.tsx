@@ -1,7 +1,9 @@
 import { useSceneStore } from "../../../store/SceneStore";
 
 export const CreateAccountButton = () => {
-	const { showWindow, setShowWindow } =  useSceneStore();
+	const showWindow =  useSceneStore((store) => store.showWindow);
+	const setShowWindow =  useSceneStore((store) => store.setShowWindow);
+
 	return (
 		<button
 			onClick={() => setShowWindow("createAccount", !showWindow.createAccount)}

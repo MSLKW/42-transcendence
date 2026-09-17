@@ -2,7 +2,8 @@ import { useSceneStore } from "../../../store/SceneStore";
 import { ChatIcon } from "./ChatIcon";
 
 export const ChatButton = () => {
-	const { showWindow, setShowWindow } = useSceneStore();
+	const showWindow = useSceneStore((store) => store.showWindow);
+	const setShowWindow = useSceneStore((store) => store.setShowWindow);
 
 	return (
 		<button

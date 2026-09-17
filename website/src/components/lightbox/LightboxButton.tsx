@@ -8,7 +8,7 @@ interface LightboxButtonProps {
 }
 
 export const LightboxButton = ({ dismiss, blur, isDismissable = true, call }: LightboxButtonProps) => {
-	const { setShowWindow } = useSceneStore();
+	const setShowWindow = useSceneStore((store) => store.setShowWindow);
 
 	return (
 		<button

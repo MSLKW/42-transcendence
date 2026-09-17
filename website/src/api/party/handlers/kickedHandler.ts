@@ -1,4 +1,5 @@
 import { Socket } from "socket.io-client";
+import { useAuthStore } from "../../../store/AuthStore";
 import { useChatStore } from "../../../store/ChatStore";
 import { useNotificationStore, NOTIFICATION_TYPE } from "../../../store/NotificationStore";
 import { usePartyStore } from "../../../store/PartyStore";
@@ -22,7 +23,7 @@ export function kickedHandler(socket: Socket) {
 
 		useProfileStore.getState().setCachedData();
 
-		const clientUuid = useProfileStore.getState().clientUuid;
+		const clientUuid = useAuthStore.getState().clientUuid;
 		usePartyStore.setState({
 			members: [ clientUuid ],
 			hostUuid: clientUuid,

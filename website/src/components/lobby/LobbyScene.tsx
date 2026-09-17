@@ -1,4 +1,5 @@
 import { useEffect } from "react";
+import { useAuthStore } from "../../store/AuthStore";
 import { useBotStore } from "../../store/BotStore";
 import { useGameStore } from "../../store/GameStore"; 
 import { usePartyStore } from "../../store/PartyStore";
@@ -14,11 +15,17 @@ import { UnseatButton } from "./unseat/UnseatButton";
 import { ResultsCallButton } from "../results/call/ResultsCallButton";
 
 export const LobbyScene = () => {
-	const { fillSeatsWithBots, removeBots } = useBotStore();
-	const { totalPlayers, seats, startGame, round } = useGameStore();
-	const { members, hostUuid } = usePartyStore();
-	const { clientUuid, getCachedData } = useProfileStore();
-	const { resetResults } = useResultsStore();
+	const clientUuid = useAuthStore((store) => store.clientUuid);
+	const fillSeatsWithBots = useBotStore((store) => store.fillSeatsWithBots);
+	const removeBots = useBotStore((store) => store.removeBots);
+	const totalPlayers = useGameStore((store) => store.totalPlayers);
+	const seats = useGameStore((store) => store.seats);
+	const startGame = useGameStore((store) => store.startGame);
+	const round = useGameStore((store) => store.round);
+	const members = usePartyStore((store) => store.members);
+	const hostUuid = usePartyStore((store) => store.hostUuid);
+	const getCachedData = useProfileStore((store) => store.getCachedData);
+	const resetResults = useResultsStore((store) => store.resetResults);
 	
 	useEffect(() => {
 		const humansSeated = seats.filter((seat): seat is string => seat !== null && !seat.includes("bot")).length;

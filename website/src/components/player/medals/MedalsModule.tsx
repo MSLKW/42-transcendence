@@ -17,7 +17,8 @@ interface MedalsModuleProps {
 	uuid: string | null;
 }
 export const MedalsModule = ({ uuid }: MedalsModuleProps) => {
-	const { getProfileData } = useProfileStore();
+	const getProfileData = useProfileStore((store) => store.getProfileData);
+
 	const medals = getProfileData(uuid)?.medals;
 
 	return (

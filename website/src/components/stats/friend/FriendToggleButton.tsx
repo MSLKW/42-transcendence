@@ -7,7 +7,8 @@ interface FriendToggleButtonProps {
 }
 
 export const FriendToggleButton = ({ uuid }: FriendToggleButtonProps) => {	
-	const { toggleFriend, cachedFriends } = useFriendStore();
+	const toggleFriend = useFriendStore((store) => store.toggleFriend);
+	const cachedFriends = useFriendStore((store) => store.cachedFriends);
 
 	return (
 		<button

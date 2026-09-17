@@ -1,5 +1,6 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
+import { useAuthStore } from "./AuthStore";
 import { useProfileStore, type MEDAL_TYPE } from "./ProfileStore";
 import { usePartyStore } from "./PartyStore";
 import { useResultsStore } from "./ResultsStore";
@@ -103,7 +104,7 @@ export const useGameStore = create<GameState>() (
 
 			setSeatRef: () => {
 				const seats = get().seats;
-				const clientUuid = useProfileStore.getState().clientUuid;
+				const clientUuid = useAuthStore.getState().clientUuid;
 				const totalPlayers = get().totalPlayers;
 				const clientIndex = seats.indexOf(clientUuid);
 				if (clientIndex === -1) {

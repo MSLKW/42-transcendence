@@ -3,7 +3,8 @@ import { PartyIcon } from "./PartyCallIcon";
 import { AvatarName } from "../../avatar/name/AvatarName";
 
 export const PartyCallButton = () => {
-	const { showWindow, setShowWindow } = useSceneStore();
+	const showWindow = useSceneStore((store) => store.showWindow);
+	const setShowWindow = useSceneStore((store) => store.setShowWindow);
 
 	return (
 		<div

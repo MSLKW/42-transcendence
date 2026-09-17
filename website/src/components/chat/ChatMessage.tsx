@@ -1,5 +1,5 @@
 import type { ChatData } from "../../store/ChatStore";
-import { useProfileStore } from "../../store/ProfileStore";
+import { useAuthStore } from "../../store/AuthStore";
 import { AvatarImage } from "../avatar/image/AvatarImage";
 
 interface ChatProps {
@@ -9,7 +9,7 @@ interface ChatProps {
 }
 
 export const ChatMessage = ({ data, isFirstFromClient, isLastFromClient }: ChatProps) => {
-	const { clientUuid } = useProfileStore();
+	const clientUuid = useAuthStore((store) => store.clientUuid);
 
 	return (
 		<>

@@ -12,10 +12,16 @@ import { GamePassButton } from "./action/GamePassButton";
 import { GamePlayButton } from "./action/GamePlayButton";
 
 export const GameScene = () => {
-	const { totalPlayers, seats, seatRef, cardsLeft, activeSeat, gameStarted } = useGameStore();
-	const { getCachedData } = useProfileStore();
-	const { setResults } = useResultsStore();
-	const { setCurrentScene, setShowWindow } = useSceneStore();
+	const totalPlayers = useGameStore((store) => store.totalPlayers);
+	const seats = useGameStore((store) => store.seats);
+	const seatRef = useGameStore((store) => store.seatRef);
+	const cardsLeft = useGameStore((store) => store.cardsLeft);
+	const activeSeat = useGameStore((store) => store.activeSeat);
+	const gameStarted = useGameStore((store) => store.gameStarted);
+	const getCachedData = useProfileStore((store) => store.getCachedData);
+	const setResults = useResultsStore((store) => store.setResults);
+	const setCurrentScene = useSceneStore((store) => store.setCurrentScene);
+	const setShowWindow = useSceneStore((store) => store.setShowWindow);
 
 	useAutoPass();
 	useEffect(() => {

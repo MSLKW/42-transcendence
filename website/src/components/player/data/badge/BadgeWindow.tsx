@@ -1,3 +1,4 @@
+import { useAuthStore } from "../../../../store/AuthStore";
 import { useProfileStore, BADGE_LABEL, type BADGE_TYPE } from "../../../../store/ProfileStore";
 import { useSceneStore } from "../../../../store/SceneStore";
 import { LightboxButton } from "../../../lightbox/LightboxButton";
@@ -8,11 +9,14 @@ interface BadgeWindowProps {
 }
 
 export const BadgeWindow = ({ badge, setBadge }: BadgeWindowProps) => {
-	const { clientUuid, getProfileData } = useProfileStore();
+	const clientUuid = useAuthStore((store) => store.clientUuid);
+	const getProfileData = useProfileStore((store) => store.getProfileData);
+	const showWindow = useSceneStore((store) => store.showWindow);
+	const setShowWindow = useSceneStore((store) => store.setShowWindow);
+
 	const data = getProfileData(clientUuid!);
 	if (!data)
 		return;
-	const { showWindow, setShowWindow } = useSceneStore();
 
 	return (
 		<>

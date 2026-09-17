@@ -2,7 +2,7 @@ import { partySocket } from "../../../api/party/partySocket";
 import { handleValidate } from "../../../api/authentication/validate/handleValidate";
 import { useGameStore, type GAMEMODE_TYPE } from "../../../store/GameStore";
 import { usePartyStore } from "../../../store/PartyStore";
-import { useProfileStore } from "../../../store/ProfileStore";
+import { useAuthStore } from "../../../store/AuthStore";
 import { useSceneStore } from "../../../store/SceneStore";
 import { PersonIcon } from "./person/PersonIcon";
 import { TutorialIcon } from "./tutorial/TutorialIcon";
@@ -13,10 +13,12 @@ interface HomeProps {
 }
 
 export const HomeCardButton = ({ gameMode, playerCount }: HomeProps) => {
-	const { autoSetSeats, initSeats } = useGameStore()
-	const { setCurrentScene } = useSceneStore();
-	const { clientUuid } = useProfileStore();
-	const { hostUuid, members } = usePartyStore();
+	const clientUuid = useAuthStore((store) => store.clientUuid);
+	const autoSetSeats = useGameStore((store) => store.autoSetSeats);
+	const initSeats = useGameStore((store) => store.initSeats);
+	const setCurrentScene = useSceneStore((store) => store.setCurrentScene);
+	const hostUuid = usePartyStore((store) => store.hostUuid);
+	const members = usePartyStore((store) => store.members);
 
 	const handleCardClick = () => {
 		handleValidate();

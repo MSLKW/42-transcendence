@@ -1,7 +1,8 @@
 import { useSceneStore } from "../../../store/SceneStore";
 
 export const SmallLogo = () => {
-	const { setShowWindow } = useSceneStore();
+	const setShowWindow = useSceneStore((store) => store.setShowWindow);
+
 	return (
 		<button
 			data-tip="About This Project"

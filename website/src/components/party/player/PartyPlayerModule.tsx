@@ -3,9 +3,10 @@ import { useEffect, useState } from "react";
 import { partySocket } from "../../../api/party/partySocket";
 import { handleGetProfile } from "../../../api/profile/get_profile/handleGetProfile";
 import { handleGetOnline } from "../../../api/party/get_online/handleGetOnline";
+import { useAuthStore } from "../../../store/AuthStore";
 import { useFriendStore } from "../../../store/FriendStore";
 import { usePartyStore, type AVAILABILITY_TYPE } from "../../../store/PartyStore";
-import { useProfileStore, type UserData } from "../../../store/ProfileStore";
+import type { UserData } from "../../../store/ProfileStore";
 import { PlayerStatusModule } from "../../player/status/PlayerStatusModule";
 import { AvatarModule } from "../../avatar/AvatarModule";
 import { InviteIcon } from "../invite/InviteIcon";
@@ -15,9 +16,9 @@ interface PartyPlayerModuleProps {
 }
 
 export const PartyPlayerModule = ({ uuid }: PartyPlayerModuleProps) => {
-	const { cachedFriends } = useFriendStore();
-	const { members } = usePartyStore();
-	const { clientUuid } = useProfileStore();
+	const clientUuid = useAuthStore((store) => store.clientUuid);
+	const cachedFriends = useFriendStore((store) => store.cachedFriends);
+	const members = usePartyStore((store) => store.members);
 
 	//get profile
 	const [isLoading, setIsLoading] = useState<boolean>(true);

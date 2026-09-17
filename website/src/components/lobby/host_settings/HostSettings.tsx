@@ -1,15 +1,20 @@
+import { useAuthStore } from "../../../store/AuthStore";
 import { useBotStore } from "../../../store/BotStore";
 import { usePartyStore } from "../../../store/PartyStore";
-import { useProfileStore } from "../../../store/ProfileStore";
 import { useSceneStore } from "../../../store/SceneStore";
 import { autoPassKeys, useSettingsStore } from "../../../store/SettingsStore";
 
 export const HostSettings = () => {
-	const { allow3OfAKind, allow2OfSpadesEnd, autoPassIndex, endGameCondition, scoreCalculation } = useSettingsStore();
-	const { currentIntel, botCount } = useBotStore();
-	const { hostUuid } = usePartyStore();
-	const { clientUuid } = useProfileStore();
-	const { setShowWindow } = useSceneStore();
+	const clientUuid = useAuthStore(store => store.clientUuid);
+	const currentIntel = useBotStore((store) => store.currentIntel);
+	const botCount = useBotStore((store) => store.botCount);
+	const hostUuid = usePartyStore((store) => store.hostUuid);
+	const setShowWindow = useSceneStore((store) => store.setShowWindow);
+	const allow3OfAKind = useSettingsStore((store) => store.allow3OfAKind);
+	const allow2OfSpadesEnd = useSettingsStore((store) => store.allow2OfSpadesEnd);
+	const autoPassIndex = useSettingsStore((store) => store.autoPassIndex);
+	const endGameCondition = useSettingsStore((store) => store.endGameCondition);
+	const scoreCalculation = useSettingsStore((store) => store.scoreCalculation);
 
 	return (
 		<button

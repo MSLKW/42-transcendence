@@ -10,7 +10,7 @@ interface SetupValidationModuleProps {
 }
 
 export const SetupValidationModule = ({ name, avatar }: SetupValidationModuleProps) => {
-	const { setShowWindow } = useSceneStore();
+	const setShowWindow = useSceneStore((store) => store.setShowWindow);
 
 	const isValid = Boolean(name?.trim()) && Boolean(avatar);
 	const handleSetupComplete = async () => {

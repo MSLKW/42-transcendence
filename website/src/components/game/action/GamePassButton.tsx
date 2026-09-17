@@ -1,9 +1,11 @@
 import { useGameStore } from "../../../store/GameStore";
-import { useProfileStore } from "../../../store/ProfileStore";
+import { useAuthStore } from "../../../store/AuthStore";
 
 export const GamePassButton = () => {
-	const { seats, activeSeat, nextTurn } = useGameStore();
-	const { clientUuid } = useProfileStore();
+	const clientUuid = useAuthStore((store) => store.clientUuid);
+	const seats = useGameStore((store) => store.seats);
+	const activeSeat = useGameStore((store) => store.activeSeat);
+	const nextTurn = useGameStore((store) => store.nextTurn);
 	
 	const clientSeat = seats.indexOf(clientUuid);
 

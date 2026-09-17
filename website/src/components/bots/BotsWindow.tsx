@@ -3,7 +3,8 @@ import { Window } from "../window/Window";
 import { BotSetButton } from "./call/BotCallButton";
 
 export const BotsWindow = () => {
-	const { currentScene, setShowWindow } = useSceneStore();
+	const currentScene = useSceneStore((store) => store.currentScene);
+	const setShowWindow = useSceneStore((store) => store.setShowWindow);
 
 	return (
 		<>

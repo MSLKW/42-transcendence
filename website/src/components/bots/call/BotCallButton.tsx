@@ -7,8 +7,8 @@ interface BotSetButtonProps {
 }
 
 export const BotSetButton = ({ intel }: BotSetButtonProps) => {
-	const { currentIntel } = useBotStore();
-	const { currentScene } = useSceneStore();
+	const currentIntel = useBotStore((store) => store.currentIntel);
+	const currentScene = useSceneStore((store) => store.currentScene);
 	
 	return (
 		<div

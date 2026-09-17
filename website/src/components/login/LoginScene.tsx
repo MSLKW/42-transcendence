@@ -4,7 +4,7 @@ import { CreateAccountButton } from "./create_account/CreateAccountButton";
 import { SignInButton } from "./sign_in/SignInButton";
 
 export const LoginScene = () => {
-	const { setCurrentScene } = useSceneStore();
+	const setCurrentScene = useSceneStore((store) => store.setCurrentScene);
 
 	return (
 		<>

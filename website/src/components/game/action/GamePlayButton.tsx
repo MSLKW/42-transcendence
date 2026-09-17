@@ -1,9 +1,13 @@
 import { useGameStore, HAND_VALUES } from "../../../store/GameStore";
-import { useProfileStore } from "../../../store/ProfileStore";
+import { useAuthStore } from "../../../store/AuthStore";
 
 export const GamePlayButton = () => {
-	const { currentHand, cardsLeft, seats, activeSeat, nextTurn } = useGameStore();
-	const { clientUuid } = useProfileStore();
+	const currentHand = useGameStore((store) => store.currentHand);
+	const cardsLeft = useGameStore((store) => store.cardsLeft);
+	const seats = useGameStore((store) => store.seats);
+	const activeSeat = useGameStore((store) => store.activeSeat);
+	const nextTurn = useGameStore((store) => store.nextTurn);
+	const clientUuid = useAuthStore((store) => store.clientUuid);
 
 	const clientSeat = seats.indexOf(clientUuid);
 

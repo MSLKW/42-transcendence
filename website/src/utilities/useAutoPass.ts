@@ -3,8 +3,10 @@ import { useGameStore } from "../store/GameStore";
 import { useSettingsStore, autoPassValues } from "../store/SettingsStore";
 
 export const useAutoPass = () => {
-	const { activeSeat, nextTurn, gameStarted } = useGameStore();
-	const { autoPassIndex } = useSettingsStore();
+	const activeSeat = useGameStore((store) => store.activeSeat);
+	const nextTurn = useGameStore((store) => store.nextTurn);
+	const gameStarted = useGameStore((store) => store.gameStarted);
+	const autoPassIndex = useSettingsStore((store) => store.autoPassIndex);
 
 	useEffect(() => {
 		if (!gameStarted)

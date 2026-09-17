@@ -9,10 +9,11 @@ import { useResultsStore } from "../../store/ResultsStore";
 import { useProfileStore } from "../../store/ProfileStore";
 
 export const ResultsWindow = () => {
-	const { round } = useGameStore();
-	const { endGame, startGame } = useGameStore();
-	const { getCachedData } = useProfileStore();
-	const { getLeaderboard } = useResultsStore();
+	const round = useGameStore((store) => store.round);
+	const endGame = useGameStore((store) => store.endGame);
+	const startGame = useGameStore((store) => store.startGame);
+	const getCachedData = useProfileStore((store) => store.getCachedData);
+	const getLeaderboard = useResultsStore((store) => store.getLeaderboard);
 
 	const leaderboard = getLeaderboard();
 	const topPlayer = leaderboard[0];

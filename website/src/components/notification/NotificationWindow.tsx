@@ -5,7 +5,8 @@ import { useScrollToTop } from "../../utilities/useScrollToTop";
 import { SingleNotification } from "./SingleNotification";
 
 export const NotificationWindow = () => {
-	const { notifications } = useNotificationStore();
+	const notifications = useNotificationStore((store) => store.notifications);
+
 	if (notifications.length === 0)
 		return null;
 	useScrollToTop();

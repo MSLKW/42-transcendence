@@ -1,7 +1,8 @@
 import { useSceneStore } from "../../../store/SceneStore";
 
 export const BigLogo = () => {
-	const { showWindow, setShowWindow } = useSceneStore();
+	const showWindow = useSceneStore((store) => store.showWindow);
+	const setShowWindow = useSceneStore((store) => store.setShowWindow);
 
 	return (
 		<div className="
