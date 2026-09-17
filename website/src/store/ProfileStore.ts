@@ -58,12 +58,17 @@ export interface ProfileData {
 }
 
 export interface CachedData {
-	// uuid: string | null;
 	name: string | null;
 	avatar: string | null;
 	badge: BADGE_TYPE;
 	relation: RELATION_TYPE;
 }
+
+export type UserData = {
+	username: string | null,
+	avatarPath: string | null,
+	badge: BADGE_TYPE,
+};
 
 export const createDefaultProfile = (uuid: string, name: string, avatar: string, badge: BADGE_TYPE = "Newcomer"): ProfileData => ({
 	uuid,
@@ -271,12 +276,6 @@ const defaultProfileInDb: ProfileData[] = [
 		availability: "Busy",
 	},
 ];
-
-export type UserData = {
-	username: string | null,
-	avatarPath: string | null,
-	badge: BADGE_TYPE,
-};
 
 interface ProfileValues {
 	isAuthenticated: boolean,

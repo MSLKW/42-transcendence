@@ -28,10 +28,10 @@ export const StatsWindow: React.FC = () => {
 			>
 				<div className="flex">
 					<AvatarMemberModule uuid={profileUuid} name={cachedData[profileUuid ?? ""]?.name ?? "-"} image={cachedData[profileUuid ?? ""]?.avatar ?? undefined} />
-					{/* <PlayerDataModule profile={cachedData[profileUuid ?? ""] ?? undefined} uuid={profileUuid}/> */}
+					<PlayerDataModule uuid={profileUuid}/>
 				</div>
 				<MedalsModule uuid={profileUuid}/>
-				{/* <PlayerStatsModule profile={cachedData[profileUuid ?? ""] ?? undefined} /> */}
+				<PlayerStatsModule uuid={profileUuid} />
 				<div
 					className="
 						flex place-content-evenly place-items-center
