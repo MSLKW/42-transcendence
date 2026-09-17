@@ -1,5 +1,5 @@
 export interface Session {
-	token: string;
+	tokenHash: string;
 	userId: string;
 	createdAt: Date;
 	expiresAt: Date;
