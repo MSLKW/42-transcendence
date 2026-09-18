@@ -1,68 +1,114 @@
-import { Request, Response } from "express";
+import { Request, response, Response } from "express";
+import { User } from "../models/user";
 import { UserStore } from "../store/userStore";
+import { Session } from "../models/session";
 import { SessionStore } from "../store/sessionStore";
-import { verifyPassword } from "../auth/hash";
+import { verifyPassword, hashToken } from "../auth/hash";
 import { validateEmail } from "../auth/validation";
 import { SESSION_DURATION_MS } from "../config/sessionConfig";
+import { randomBytes } from "crypto";
 
 const MAX_FAILED_ATTEMPTS = 5;
 const LOCKOUT_DURATION_MS = 15 * 60 * 1000; // 15 minutes
+const PROFILE_SYSTEM_URL = process.env.PROFILE_SYSTEM_URL;
 
-export function signinHandler(userStore: UserStore, sessionStore: SessionStore) {
-	return async (req: Request, res: Response) => {
+if (!PROFILE_SYSTEM_URL)
+	console.warn("[Warning] PROFILE_SYSTEM_URL not set. Logins with username will not work");
+
+export function signinHandler(userStore: UserStore, sessionStore: SessionStore)
+{
+	return async (req: Request, res: Response) =>
+	{
 		if (req.headers["content-type"] != "application/json")
 			return res.status(415).json(
 				{ error: "Content-Type must be application/json" }
 			);
 		
 		const { identifier, password } = req.body ?? {};
-		if (typeof identifier !== "string" || typeof password !== "string") {
+		if (typeof identifier !== "string" || typeof password !== "string")
 			return res.status(400).json({ error: "Identifier and password are required." });
-		}
 
-		try {
-			const user = validateEmail(identifier)
+		try
+		{
+			let user = validateEmail(identifier)
 				? await userStore.getUserByEmail(identifier)
 				: await userStore.getUserByUsername(identifier);
 
-			if (user === null) {
-				return res.status(401).json({ error: "Invalid identifier or password." });
-			}
-
-			if (user.lockedUntil !== null && user.lockedUntil > new Date()) {
-				return res.status(401).json({ error: "Invalid identifier or password." });
-			}
-
-			const passwordValid = await verifyPassword(password, user.passwordHash);
-
-			if (!passwordValid) {
-				await userStore.incrementFailedAttempts(user.id);
-
-				if (user.failedLoginAttempts + 1 >= MAX_FAILED_ATTEMPTS) {
-					const until = new Date(Date.now() + LOCKOUT_DURATION_MS);
-					await userStore.lockAccount(user.id, until);
+			if (user == null && PROFILE_SYSTEM_URL && !validateEmail(identifier))
+			{
+				try
+				{
+					const profileRes = await fetch(`${PROFILE_SYSTEM_URL}/search-exact/${identifier}`);
+					if (!profileRes.ok)
+						user = null;
+					else
+					{
+						const data = await profileRes.json();
+						user = await userStore.getUserById(data.uuid);
+					}
 				}
-
-				return res.status(401).json({ error: "Invalid identifier or password." });
+				catch (err)
+				{
+					return res.status(500).json({ error: "Try signing in with email instead" })					
+				}
 			}
-
-			await userStore.resetFailedAttempts(user.id);
-			await sessionStore.deleteSessionsByUserId(user.id);
-
-			const expiresAt = new Date(Date.now() + SESSION_DURATION_MS);
-			const session = await sessionStore.createSession(user.id, expiresAt);
-
-			res.cookie("session_token", session.token, {
-				httpOnly: true,
-				secure: true,
-				sameSite: "strict",
-				expires: expiresAt,
-			});
-
-			return res.status(200).json({ id: user.id });
-		} catch (err) {
+				
+			if (await attemptLogin(user, password, userStore))
+				return loginSuccess(user!, userStore, sessionStore, res);
+			else
+				return res.status(401).json({ error: "Invalid identifier or password." });
+		}
+		catch (err)
+		{
 			console.error("Signin error:", err);
 			return res.status(500).json({ error: "Something went wrong." });
 		}
 	};
+}
+
+async function attemptLogin(user: User | null, password: string, userStore: UserStore)
+{
+	if (user === null)
+		return false;
+
+	if (user.lockedUntil !== null && user.lockedUntil > new Date())
+		return false;
+
+	const passwordValid = await verifyPassword(password, user.passwordHash);
+
+	if (!passwordValid)
+	{
+		await userStore.incrementFailedAttempts(user.id);
+
+		if (user.failedLoginAttempts + 1 >= MAX_FAILED_ATTEMPTS)
+		{
+			const until = new Date(Date.now() + LOCKOUT_DURATION_MS);
+			await userStore.lockAccount(user.id, until);
+		}
+		return false;
+	}
+	return true;
+}
+
+async function loginSuccess(user: User, userStore: UserStore, sessionStore: SessionStore, res: Response)
+{
+	await userStore.resetFailedAttempts(user.id);
+	await sessionStore.deleteSessionsByUserId(user.id);
+
+	const sessionToken = randomBytes(32).toString("hex");
+	const session: Session = {
+		tokenHash:	hashToken(sessionToken),
+		userId:		user.id,
+		createdAt:	new Date(),
+		expiresAt:	new Date(Date.now() + SESSION_DURATION_MS)
+	}
+	await sessionStore.createSession(session);
+
+	res.cookie("session_token", sessionToken, {
+		httpOnly: true,
+		secure: true,
+		sameSite: "strict",
+		expires: session.expiresAt,
+	});
+	return res.status(200).json({ id: user.id });
 }
