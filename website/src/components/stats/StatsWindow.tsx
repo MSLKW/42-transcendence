@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { handleGetProfile } from "../../api/profile/get_profile/handleGetProfile";
 import { usePartyStore } from "../../store/PartyStore";
-import { useProfileStore, type UserData } from "../../store/ProfileStore";
+import type { UserData } from "../../store/ProfileStore";
 import { useSceneStore } from "../../store/SceneStore";
 import { Window } from "../window/Window";
 import { AvatarMemberModule } from "../avatar/AvatarMemberModule";
@@ -39,7 +39,7 @@ export const StatsWindow: React.FC = () => {
 			}
 		};
 		fetchPlayerData();
-		
+
 		return () => {
 			mounted = false;
 		};

@@ -47,9 +47,15 @@ export const PlayerDataModule = ({ uuid }: PlayerDataModuleProps) => {
 				if (!mounted) return;
 
 				setCreatedAt(createdAtResp);
-				setAvailability(onlineResp?.isOnline ?? null);
-				console.log("!!!", onlineResp?.lastOnline);
-				setLastOnline(onlineResp?.lastOnline ?? null);
+				if (onlineResp?.isOnline) {
+					if (onlineResp?.inParty)
+						setAvailability("Busy");
+					else
+						setAvailability("Online");
+				} else
+					setAvailability("Offline");
+				console.log("isOnline:", onlineResp?.isOnline);
+				setLastOnline(new Date(onlineResp?.lastOnline) ?? null);
 				setBadge(profileResp?.badge ?? null);
 				// 	const percentage = (profile.xp / (profile.level * 1000)) * 100
 				// 	setXPProgress(percentage);
@@ -72,7 +78,6 @@ export const PlayerDataModule = ({ uuid }: PlayerDataModuleProps) => {
 			p-5
 			text-n6
 		">
-			{}
 			<div className="
 				grid grid-cols-[5rem_1fr]
 				gap-2rem
@@ -142,12 +147,11 @@ export const PlayerDataModule = ({ uuid }: PlayerDataModuleProps) => {
 						/>
 					}
 				</div>
-				<PlayerStatusModule status={availability}/>
+				<PlayerStatusModule status={availability} lastOnline={lastOnline}/>
 			</div>
 			<div className="text-a5">
 				<p>UUID: {uuid}</p>
-				<p>Joined: {createdAt?.toLocaleString() ?? "n/a"}</p>
-				<p>Last Online: {lastOnline?.toLocaleString() ?? "n/a"}</p>
+				<p>Joined: {createdAt?.toString() ?? "n/a"}</p>
 			</div>
 		</div>
 	);

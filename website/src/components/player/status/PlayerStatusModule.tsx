@@ -2,15 +2,18 @@ import type { AVAILABILITY_TYPE } from "../../../store/PartyStore";
 
 interface PlayerStatusModuleProps {
 	status: AVAILABILITY_TYPE | null;
+	lastOnline: Date | null;
 }
 
-export const PlayerStatusModule = ({ status }: PlayerStatusModuleProps) => {
+export const PlayerStatusModule = ({ status, lastOnline }: PlayerStatusModuleProps) => {
 	return (
 		<div
+			data-tip={`Last Online: ${lastOnline?.toLocaleString()}`}
 			className="
 				h-full
 				flex place-content-center place-items-center
 				gap-0.5rem
+				data-tip-up
 			"
 		>
 			<div
