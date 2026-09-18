@@ -14,7 +14,7 @@ export function setUserProfile(store: UserStore)
 			const authRes = await authenticate(req); 
 			const data = await authRes.json();
 			if (!authRes.ok)
-				return (res.status(authRes.status).json(data));
+				return res.status(authRes.status).json(data);
 			
 			const uuid = data.userId;
 
@@ -37,12 +37,15 @@ export function setUserProfile(store: UserStore)
 			}
 
 			await store.updateUserProfile(uuid, partial);
-			return (res.status(204).end());
+			return res.status(200).json({ message: "profile successfully updated" });
 		}
-		catch (err)
+		catch (err: any)
 		{
-			console.error(err)
-			return (res.status(500).json({error: "Something went wrong"}));
+			if (err.message === "DUPLICATE_USERNAME")
+				return res.status(409).json({ error: "username is taken" });
+
+			console.error("serUserProfile error: ", err);
+			return res.status(500).json({ error: "Something went wrong" });
 		}
 	});
 }

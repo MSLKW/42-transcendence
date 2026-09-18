@@ -5,7 +5,7 @@ import { UserStore } from "./store/UserStore";
 import { DrizzleUserStore } from "./store/DrizzleUserStore";
 
 import { healthCheck } from "./handlers/healthCheck";
-import { userSearch } from "./handlers/userSearch";
+import { userSearch, userSearchExact } from "./handlers/userSearch";
 
 import { getUserProfile } from "./handlers/getUserProfile";
 import { getUserSettings } from "./handlers/getUserSettings"
@@ -37,6 +37,7 @@ app.use(express.static("test"));
 
 app.get("/health", healthCheck());
 app.get("/search/:query", userSearch(userStore));
+app.get("/search-exact/:username", userSearchExact(userStore))
 
 app.get("/profile/:uuid", getUserProfile(userStore));
 app.get("/settings/:uuid", getUserSettings(userStore));
