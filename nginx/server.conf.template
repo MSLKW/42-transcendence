@@ -1,6 +1,6 @@
 
 server {
-	listen ${DOMAIN_PORT};
+	listen ${DOMAIN_PORT} default_server;
 
 	location / {
 		proxy_pass http://website:5173;
