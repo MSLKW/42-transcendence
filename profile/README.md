@@ -61,7 +61,7 @@ Example usage:
 ```ts
 const formData = new FormData();
 formData.append("avatar", file);
-const res = await fetch(`${PROFILE_SYSTEM_URL}/avatar`, {
+const res = await fetch(`${PROFILE_SERVICE_URL}/avatar`, {
 	method: "PUT",
 	body: formData
 });

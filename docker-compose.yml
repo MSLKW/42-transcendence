@@ -43,13 +43,13 @@ services:
       PORT: ${AUTH_SERVICE_PORT}
       SESSION_DURATION_MS: ${AUTH_SERVICE_SESSION_DURATION_MS}
       SESSION_CLEANUP_CRON_SCHEDULE_STRING: ${AUTH_SERVICE_SESSION_CLEANUP_CRON_SCHEDULE_STRING}
-      PROFILE_SYSTEM_URL: ${PROFILE_SERVICE_URL}
+      PROFILE_SERVICE_URL: ${PROFILE_SERVICE_URL}
     networks:
       - big2
 
   profile:
     container_name: profile
-    build: profile-system
+    build: profile
     image: profile:test
     restart: unless-stopped
     environment:
@@ -59,10 +59,10 @@ services:
     networks:
       - big2
 
-  party_manager:
-    container_name: party_manager
+  party:
+    container_name: party
     build:
-      context: ./party-manager
+      context: ./party
     image: party:test
     restart: unless-stopped
     environment:
@@ -72,15 +72,15 @@ services:
     networks:
       - big2
 
-  game_server:
-    container_name: game_server
+  game-server:
+    container_name: game-server
     build: 
-      context: ./game_server
+      context: ./game-server
       dockerfile: Dockerfile
       additional_contexts:
         root: .
         game-types: ./packages/game-types
-    image: game_server:test
+    image: game-server:test
     restart: unless-stopped
     environment:
       AUTH_SERVICE_URL: ${AUTH_SERVICE_URL}
