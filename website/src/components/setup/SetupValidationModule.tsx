@@ -1,7 +1,6 @@
 import { partySocket } from "../../api/party/partySocket";
 import { chatSocket } from "../../api/chat/chatSocket";
 import { handlePutProfile } from "../../api/profile/put_profile/handlePutProfile";
-import { useProfileStore } from "../../store/ProfileStore";
 import { useSceneStore } from "../../store/SceneStore";
 
 interface SetupValidationModuleProps {
@@ -12,7 +11,13 @@ interface SetupValidationModuleProps {
 export const SetupValidationModule = ({ name, avatar }: SetupValidationModuleProps) => {
 	const setShowWindow = useSceneStore((store) => store.setShowWindow);
 
-	const isValid = Boolean(name?.trim()) && Boolean(avatar);
+	// const isValid = Boolean(name?.trim()) && Boolean(avatar);
+	
+	const usernameRegex = /^[a-zA-Z0-9_-]{3,20}$/;
+	const isNameValid = usernameRegex.test(name?.trim());
+	const isAvatarValid = Boolean(avatar);
+	const isValid = isNameValid && isAvatarValid;
+
 	const handleSetupComplete = async () => {
 		if (!isValid)
 			return;
@@ -33,8 +38,14 @@ export const SetupValidationModule = ({ name, avatar }: SetupValidationModulePro
 				py-2rem
 			"
 		>
-			<h3>
-				{isValid ? `Welcome ${name}! You're all set up!` : "Enter your name and choose your avatar"}
+			<h3 className="text-center">
+				{
+					isValid ? `Welcome ${name}! You're all set up!` :
+					isNameValid && !isAvatarValid ? "Waiting for valid avatar..." :
+					!isValid && name.length > 0 ? "Name must be 3–20 characters and contain only letters, numbers, hyphens, or underscores" :
+					!isNameValid && isAvatarValid ? "Waiting for valid name..." :
+					"Enter your name and choose your avatar"
+				}
 			</h3>
 			<button
 				disabled={!isValid}
@@ -45,7 +56,10 @@ export const SetupValidationModule = ({ name, avatar }: SetupValidationModulePro
 					text-n0
 				"
 			>
-				{isValid ? "Let's Play!" : "Waiting for valid name and avatar..."}
+				{
+					isValid ? "Let's Play!" :
+					"Waiting for valid name and avatar..."
+				}
 			</button>
 		</div>
 	);

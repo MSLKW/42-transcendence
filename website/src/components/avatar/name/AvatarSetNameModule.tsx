@@ -49,6 +49,8 @@ export const AvatarSetNameModule = ({ name, setName, avatar, uuid }: AvatarSetNa
 						} else if (e.key === "Escape")
 							e.currentTarget.blur();
 					}}
+					minLength={3}
+					maxLength={20}
 					className="
 						bg-n6 h-2.5 w-42.5
 						border border-n5 rounded-full
