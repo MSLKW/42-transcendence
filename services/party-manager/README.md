@@ -4,11 +4,17 @@
 
 | Method | Path | Purpose |
 |:---:|---|---|
-| GET | [`/online/:uuid`](#get-onlineuuid) | get a user's online status as a boolean |
+| GET | [`/online/:uuid`](#get-onlineuuid) | get a user's online status |
 
 ### GET /online/:uuid
 #### Responses
-- 200: { isOnline: boolean }
+```
+- 200: {
+	isOnline:	boolean,
+	inParty:	boolean
+	lastOnline:	Date | null 
+}
+```
 
 
 <br><br><br><br>
