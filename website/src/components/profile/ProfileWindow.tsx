@@ -18,11 +18,8 @@ export const ProfileWindow = () => {
 	if (!clientUuid)
 		return;
 	const setShowWindow = useSceneStore((store) => store.setShowWindow);
-	const getProfileData = useProfileStore((store) => store.getProfileData);
 	const cachedData = useProfileStore((store) => store.cachedData);
 	const members = usePartyStore((store) => store.members);
-
-	const profileData = getProfileData(clientUuid!);
 
 	const [name, setName] = useState(cachedData[clientUuid ?? ""]?.name ?? "n/a");
 	const [avatar, setAvatar] = useState(cachedData[clientUuid ?? ""]?.avatar ?? undefined);
@@ -63,7 +60,6 @@ export const ProfileWindow = () => {
 						uuid={clientUuid}
 					/>
 					<PlayerDataModule
-						profile={profileData}
 						uuid={clientUuid}
 						badge={badge}
 						setBadge={setBadge}
@@ -74,7 +70,7 @@ export const ProfileWindow = () => {
 					setAvatar={setAvatar}
 				/>
 				<MedalsModule uuid={clientUuid}/>
-				<PlayerStatsModule profile={profileData} />
+				<PlayerStatsModule uuid={clientUuid} />
 				{ members.length > 1 && <LeavePartyModule /> }
 			</div>
 		</Window>

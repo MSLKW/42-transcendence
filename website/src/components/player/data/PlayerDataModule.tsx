@@ -11,9 +11,11 @@ import { PlayerStatusModule } from "../status/PlayerStatusModule";
 
 interface PlayerDataModuleProps {
 	uuid: string | null;
+	badge: BADGE_TYPE | null;
+	setBadge: (badge: BADGE_TYPE) => void;
 }
 
-export const PlayerDataModule = ({ uuid }: PlayerDataModuleProps) => {
+export const PlayerDataModule = ({ uuid, badge, setBadge }: PlayerDataModuleProps) => {
 	const clientUuid = useAuthStore((store) => store.clientUuid);
 	const showWindow = useSceneStore((store) => store.showWindow);
 	const setShowWindow = useSceneStore((store) => store.setShowWindow);
@@ -22,7 +24,6 @@ export const PlayerDataModule = ({ uuid }: PlayerDataModuleProps) => {
 	const [ createdAt, setCreatedAt ] = useState<Date | null>(null);
 	const [ availability, setAvailability ] = useState<AVAILABILITY_TYPE | null>(null);
 	const [ lastOnline, setLastOnline ] = useState<Date | null>(null);
-	const [ badge, setBadge ] = useState<BADGE_TYPE | null>(null);
 
 	useEffect(() => {
 		let mounted = true;
@@ -31,7 +32,7 @@ export const PlayerDataModule = ({ uuid }: PlayerDataModuleProps) => {
 			setCreatedAt(null);
 			setAvailability(null);
 			setLastOnline(null);
-			setBadge(null);
+			setBadge("Newcomer");
 			setXPProgress(0);
 			return;
 		}
@@ -56,7 +57,8 @@ export const PlayerDataModule = ({ uuid }: PlayerDataModuleProps) => {
 					setAvailability("Offline");
 				console.log("isOnline:", onlineResp?.isOnline);
 				setLastOnline(new Date(onlineResp?.lastOnline) ?? null);
-				setBadge(profileResp?.badge ?? null);
+				if (profileResp?.badge)
+					setBadge(profileResp.badge);
 				// 	const percentage = (profile.xp / (profile.level * 1000)) * 100
 				// 	setXPProgress(percentage);
 			} catch (error) {
@@ -125,6 +127,7 @@ export const PlayerDataModule = ({ uuid }: PlayerDataModuleProps) => {
 									border border-n5 rounded-full
 									text-sm
 									self-center
+									cursor-pointer
 							">
 								<span className="
 									text-n0
@@ -140,9 +143,9 @@ export const PlayerDataModule = ({ uuid }: PlayerDataModuleProps) => {
 								<i>{badge ?? "n/a"}</i>
 							</h2>
 					}
-					{ showWindow["badge"] && badge && setBadge &&
+					{ showWindow["badge"] &&
 						<BadgeWindow
-							badge={badge}
+							badge={badge ?? "Newcomer"}
 							setBadge={setBadge}
 						/>
 					}
