@@ -14,25 +14,25 @@ interface HomeProps {
 
 export const HomeCardButton = ({ gameMode, playerCount }: HomeProps) => {
 	const clientUuid = useAuthStore((store) => store.clientUuid);
-	const autoSetSeats = useGameStore((store) => store.autoSetSeats);
-	const initSeats = useGameStore((store) => store.initSeats);
+	// const autoSetSeats = useGameStore((store) => store.autoSetSeats);
+	// const initSeats = useGameStore((store) => store.initSeats);
 	const setCurrentScene = useSceneStore((store) => store.setCurrentScene);
 	const hostUuid = usePartyStore((store) => store.hostUuid);
-	const members = usePartyStore((store) => store.members);
+	// const members = usePartyStore((store) => store.members);
 
 	const handleCardClick = () => {
 		handleValidate();
 
 		useGameStore.setState({ totalPlayers: playerCount });
-		if (members.length <= 1)
-			autoSetSeats();
-		else
-			initSeats();
+		// if (members.length <= 1)
+		// 	autoSetSeats();
+		// else
+		// 	initSeats();
 
 		if (gameMode === "Tutorial")
 			setCurrentScene("Test");
-		else
-			setCurrentScene("Lobby");
+		// else
+			// setCurrentScene("Lobby");
 		partySocket.startGameSession();
 	};
 

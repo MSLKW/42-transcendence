@@ -43,7 +43,7 @@ export const GameScene = () => {
 								<AvatarModule
 									key={seats[seatRef[1]] ?? ""}
 									uuid={seats[seatRef[1]] ?? ""}
-									image={cachedData[seatRef[1] ?? ""]?.avatar ?? undefined}
+									image={cachedData[seats[seatRef[1]] ?? ""]?.avatar ?? undefined}
 									cornerButton={cardsLeft[seatRef[1]] ?? -1}
 									isActive={gameStarted && activeSeat === seatRef[1]}
 								/>
@@ -54,7 +54,7 @@ export const GameScene = () => {
 								<AvatarModule
 									key={seats[seatRef[2]] ?? ""}
 									uuid={seats[seatRef[2]] ?? ""}
-									image={cachedData[seatRef[2] ?? ""]?.avatar ?? undefined}
+									image={cachedData[seats[seatRef[2]] ?? ""]?.avatar ?? undefined}
 									cornerButton={cardsLeft[seatRef[2]] ?? -1}
 									isActive={gameStarted && activeSeat === seatRef[2]}
 								/>
@@ -65,7 +65,7 @@ export const GameScene = () => {
 								<AvatarModule
 									key={seats[seatRef[3]] ?? ""}
 									uuid={seats[seatRef[3]] ?? ""}
-									image={cachedData[seatRef[3] ?? ""]?.avatar ?? undefined}
+									image={cachedData[seats[seatRef[3]] ?? ""]?.avatar ?? undefined}
 									cornerButton={cardsLeft[seatRef[3]] ?? -1}
 									isActive={gameStarted && activeSeat === seatRef[3]}
 								/>
@@ -80,7 +80,7 @@ export const GameScene = () => {
 								<AvatarModule
 									key={seats[seatRef[1]] ?? ""}
 									uuid={seats[seatRef[1]] ?? ""}
-									image={cachedData[seatRef[1] ?? ""]?.avatar ?? undefined}
+									image={cachedData[seats[seatRef[1]] ?? ""]?.avatar ?? undefined}
 									cornerButton={cardsLeft[seatRef[1]] ?? -1}
 									isActive={gameStarted && activeSeat === seatRef[1]}
 								/>
@@ -91,7 +91,7 @@ export const GameScene = () => {
 								<AvatarModule
 									key={seats[seatRef[2]] ?? ""}
 									uuid={seats[seatRef[2]] ?? ""}
-									image={cachedData[seatRef[2] ?? ""]?.avatar ?? undefined}
+									image={cachedData[seats[seatRef[2]] ?? ""]?.avatar ?? undefined}
 									cornerButton={cardsLeft[seatRef[2]] ?? -1}
 									isActive={gameStarted && activeSeat === seatRef[2]}
 								/>
@@ -105,7 +105,7 @@ export const GameScene = () => {
 							<AvatarModule
 								key={seats[seatRef[1]] ?? ""}
 								uuid={seats[seatRef[1]] ?? ""}
-								image={cachedData[seatRef[1] ?? ""]?.avatar ?? undefined}
+								image={cachedData[seats[seatRef[1]] ?? ""]?.avatar ?? undefined}
 								cornerButton={cardsLeft[seatRef[1]] ?? -1}
 								isActive={gameStarted && activeSeat === seatRef[1]}
 							/>
@@ -130,7 +130,7 @@ export const GameScene = () => {
 					<AvatarModule
 						key={seats[seatRef[0]]}
 						uuid={seats[seatRef[0]] ?? ""}
-						image={cachedData[seatRef[0] ?? ""]?.avatar ?? undefined}
+						image={cachedData[seats[seatRef[0]] ?? ""]?.avatar ?? undefined}
 						cornerButton={cardsLeft[seatRef[0]]}
 						isActive={gameStarted && activeSeat === seatRef[0]}
 					/>

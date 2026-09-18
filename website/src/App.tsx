@@ -1,6 +1,8 @@
-import { useEffect } from "react";
-import { Canvas } from "@react-three/fiber";
-import { Stats, PerspectiveCamera, OrbitControls, AdaptiveDpr } from "@react-three/drei";
+import { useRef, useEffect } from "react";
+// import { Canvas } from "@react-three/fiber";
+// import { Stats, PerspectiveCamera, OrbitControls, AdaptiveDpr } from "@react-three/drei";
+import { Stats } from "@react-three/drei";
+
 import { chatSocket } from "./api/chat/chatSocket";
 import { partySocket } from "./api/party/partySocket";
 import { useAuthStore } from "./store/AuthStore";
@@ -9,15 +11,18 @@ import { useDevStore } from "./store/DevStore";
 import { usePartyStore } from "./store/PartyStore";
 import { useProfileStore } from "./store/ProfileStore";
 import { useSceneStore } from "./store/SceneStore";
+
 import { subscribeToMessages } from "./api/chat/subscribe/subscribeToMessages";
 import { subscribeToUserJoined } from "./api/chat/subscribe/subscribeToUserJoined";
 import { subscribeToUserLeft } from "./api/chat/subscribe/subscribeToUserLeft";
 import { subscribeToUserTyping } from "./api/chat/subscribe/subscribeToUserTyping";
 import { subscribeToRateLimited } from "./api/chat/subscribe/subscribeToRateLimited";
+
 import { useScrollToTop } from "./utilities/useScrollToTop";
+
 import { StripeBg } from "./components/bg/Stripe";
-import { SphereBg } from "./components/3d/Sphere";
-import { Card } from "./components/3d/PCard";
+// import { SphereBg } from "./components/3d/Sphere";
+// import { Card } from "./components/3d/PCard";
 import { LoginScene } from "./components/login/LoginScene";
 import { HomeScene } from "./components/home/HomeScene";
 import { LobbyScene } from "./components/lobby/LobbyScene";
@@ -37,7 +42,10 @@ import { SignInWindow } from "./components/login/sign_in/SignInWindow";
 import { SettingsWindow } from "./components/settings/SettingsWindow";
 import { SetupWindow } from "./components/setup/SetupWindow";
 import { StatsWindow } from "./components/stats/StatsWindow";
+import { ThreeJsManager } from './components/3d/ThreeJsManager';
 import Dev from "./Dev";
+
+export let threejsManager: ThreeJsManager;
 
 export default function App() {
 	const clientUuid = useAuthStore((store) => store.clientUuid);
@@ -94,6 +102,27 @@ export default function App() {
 		};
 	}, [currentScene, clientUuid, chatReconnect]);
 
+	//three js
+	const containerRef = useRef<HTMLDivElement>(null);
+	useEffect(() => {
+		if (!containerRef.current) {
+			return ;
+		}
+		threejsManager = new ThreeJsManager(containerRef.current);
+		if (currentScene === "Login") {
+			threejsManager.changeScene("login");
+		}
+		else if (currentScene === "Game") {
+			threejsManager.changeScene("game");
+		}
+
+		return () => {
+			if (threejsManager) {
+				threejsManager.dispose()
+			}
+		}
+	}, []);
+
 	//chat room changes
 	useEffect(() => {
 		if (currentScene !== "Login" || !clientUuid || !hostUuid)
@@ -116,25 +145,27 @@ export default function App() {
 					w-full min-w-80 max-w-360
 				"
 			>
-				<Canvas>
-					{ currentScene === "Login" && 
-						<>
-							<AdaptiveDpr />
-							<ambientLight intensity={0.5} />
-							<directionalLight position={[0, 5, 5]} intensity={0.5} />
-							{ currentScene === "Login" &&
-								<Card
-									position={[0,0.25,0]}
-									rotation={[-Math.PI/4,0,0]}
-									color="gold"
-								/>
-							}
-							<SphereBg />
-							<PerspectiveCamera makeDefault position={[0, 0, 2.25]} />
-							<OrbitControls enableZoom={false} />
-						</>
-					}
-				</Canvas>
+				{ <div className="w-full h-full" ref={containerRef}/> }
+				{/* { (currentScene === "Login" || currentScene === "Game") && <div className="w-full h-full" ref={containerRef} /> } */}
+					{/* <Canvas>
+						<AdaptiveDpr />
+						<ambientLight intensity={0.5} />
+						<directionalLight position={[0, 5, 5]} intensity={0.5} />
+						{ currentScene === "Login" &&
+							<Card
+								position={[0,0.25,0]}
+								rotation={[-Math.PI/4,0,0]}
+								color="gold"
+							/>
+						}
+						<SphereBg />
+						<PerspectiveCamera makeDefault position={[0, 0, 2.25]} />
+						<OrbitControls enableZoom={false} />
+					</Canvas>
+				}
+				{
+					currentScene === "Game" && <div ref={containerRef}></div>
+				} */}
 			</section>
 			<section
 				className="

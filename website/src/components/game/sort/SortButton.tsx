@@ -1,4 +1,6 @@
-import { useState } from "react";
+import { useEffect } from "react";
+import { gameInstance } from "../../../api/game/src/main";
+import { useGameStore } from "../../../store/GameStore";
 
 interface SortButtonProps {
 	call?: (e: React.MouseEvent<HTMLButtonElement>) => void;
@@ -27,12 +29,16 @@ export const SortButton = ({ call, sortType, type, tip }: SortButtonProps) => {
 }
 
 export const SortButtons = () => {
-	const [sortType, setSortType] = useState("Flex");
+	const { sortType } = useGameStore();
 	const handleSort = (e: React.MouseEvent<HTMLButtonElement>, selectedType: string) => {
 		if (e)
 			e.currentTarget.blur();
-		setSortType(selectedType);
+		gameInstance?.playerRef?.setSort(selectedType);
 	}
+
+	useEffect(() => {
+		useGameStore.setState({ sortType: "Flex" });
+	}, []);
 	
 	return (
 		<>

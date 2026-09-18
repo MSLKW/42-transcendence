@@ -2,6 +2,7 @@ import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import { useGameStore } from "./GameStore";
 import type { BADGE_TYPE } from "./ProfileStore";
+import { threejsManager } from "../App";
 
 export type SCENES = "Badge" | "Login" | "Home" | "Lobby" | "Test" | "Game";
 
@@ -43,6 +44,9 @@ export const useSceneStore = create<SceneState>() (
 
 			setCurrentScene: (scene) => {
 				set({ currentScene: scene });
+				if (threejsManager) {
+					threejsManager.changeScene(scene.toLowerCase());
+				}
 				useGameStore.setState({ gameStarted: scene === "Game" });
 			},
 			setShowWindow: (window, show, uuid) => {

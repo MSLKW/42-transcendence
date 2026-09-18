@@ -37,7 +37,7 @@ export const Card = ({ position = [0,0,0], rotation = [0,0,0], color = "gold" }:
 		// 	<boxGeometry />
 		// 	<meshBasicMaterial visible={false} />
 		// </mesh>
-
+		
 		<mesh
 			geometry={borderGeometry}
 			position={position}
@@ -57,8 +57,8 @@ export const Card = ({ position = [0,0,0], rotation = [0,0,0], color = "gold" }:
 	// const velocity = useRef({ x: 0, y: 0 });
 	// const prevMouse = useRef({ x: 0, y: 0 });
 
-	// const colors = useThemeStore((store) => store.colors);
-	// const fetchTailwindColors = useThemeStore((store) => store.fetchTailwindColors);
+	// const colors = useThemeStore((state) => state.colors);
+	// const fetchTailwindColors = useThemeStore((state) => state.fetchTailwindColors);
 
 	// useEffect(() => {
 	// 	fetchTailwindColors()

@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BigTwo</title>
+	<link rel="stylesheet" href="style.css">
+</head>
+<body>
+	<div class="canvas-container">
+		<div id="threejs-canvas"></div>
+			<div class="ui-misc">
+				<button id="start-game-button">Start Game</button>
+				<button id="take-seat-button">Take Seat</button>
+				<input type="number" id="take-seat-input">
+				<button id="leave-seat-button">Leave Seat</button>
+				<button id="seat-change-button">Change Total Seats</button>
+			</div>
+			<div class="ui-action">
+				<button id="send-cards-button">Send Cards</button>
+				<button id="skip-turn-button">Skip Turn</button>
+				<button id="sort-cards-by-rank-button">Sort Rank</button>
+				<button id="sort-cards-by-suit-button">Sort Suit</button>
+			</div>
+		</div>
+	</div>
+    <script type="module" src="./src/main.ts"></script>
+</body>
+</html>

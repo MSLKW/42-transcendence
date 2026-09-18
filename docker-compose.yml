@@ -2,50 +2,84 @@ name: big2
 
 services:
   nginx:
+    container_name: nginx
     build: nginx
     image: nginx:test
     ports:
-      - "80:80"
+      - "${DOMAIN_PORT}:${DOMAIN_PORT}"
     restart: unless-stopped
-
+    environment:
+      DOMAIN_PORT: ${DOMAIN_PORT}
+      NGINX_ENVSUBST_FILTER: ^DOMAIN_PORT$
+    networks:
+      - big2
+  
   website:
+    container_name: website
     build:
       context: ./website
       dockerfile: Dockerfile
-    ports:
-      - "5173:5173"
+      additional_contexts:
+        root: .
+        game-types: ./packages/game-types
     image: website:test
     restart: unless-stopped
-    volumes:
-      - ./website:/app
+    volumes: # temporary for vite hmr
+      - ./website:/app/website
       - /app/node_modules
-
+      - /app/website/node_modules
+    environment:
+      DOMAIN_PORT: ${DOMAIN_PORT} # Right now only for vite config, can remove in production
+    networks:
+      - big2
+  
   authentication:
-    build: authentication
+    container_name: authentication
+    build:
+      context: ./authentication
     image: authentication:test
     restart: unless-stopped
     env_file:
       - ./authentication/.env
+    networks:
+      - big2
 
   profile:
+    container_name: profile
     build: profile-system
     image: profile:test
     restart: unless-stopped
     env_file: 
       - ./profile-system/.env
+    networks:
+      - big2
 
   party_manager:
-    build: party-manager
+    container_name: party_manager
+    build:
+      context: ./party-manager
     image: party:test
     restart: unless-stopped
     environment:
       AUTH_SERVICE_URL: http://authentication:3000
-      GAME_SERVICE_URL: http://game:3000
+      GAME_SERVICE_URL: http://game_server:3000
+    networks:
+      - big2
 
-  game:
-    build: game
-    image: game:test
+  game_server:
+    container_name: game_server
+    build: 
+      context: ./game_server
+      dockerfile: Dockerfile
+      additional_contexts:
+        root: .
+        game-types: ./packages/game-types
+    image: game_server:test
     restart: unless-stopped
+    environment:
+      AUTH_SERVICE_URL: http://authentication:3000
+    networks:
+      - big2
 
   chat:
     build: chat
@@ -56,3 +90,8 @@ services:
     environment:
       PORT: 3000
       AUTH_SERVICE_URL: http://authentication:3000
+    networks:
+      - big2
+
+networks:
+  big2:

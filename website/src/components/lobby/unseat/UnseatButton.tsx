@@ -4,14 +4,10 @@ import { useGameStore } from "../../../store/GameStore";
 import { AvatarName } from "../../avatar/name/AvatarName";
 import { UnseatIcon } from "./UnseatIcon";
 
-interface UnseatButtonProps {
-	uuid: string;
-}
-
-export const UnseatButton = ({ uuid }: UnseatButtonProps) => {
+export const UnseatButton = () => {
 	const clientUuid = useAuthStore((store) => store.clientUuid);
-	const playerUnseats = useGameStore((store) => store.playerUnseats);
 	const seats = useGameStore((store) => store.seats);
+	const leaveSeat = useGameStore((store) => store.leaveSeat);
 
 	return (
 		<div
@@ -25,7 +21,7 @@ export const UnseatButton = ({ uuid }: UnseatButtonProps) => {
 				disabled={!seats.includes(clientUuid)}
 				onClick={(e) => {
 					e.currentTarget.blur();
-					playerUnseats(uuid);
+					leaveSeat();
 				}}
 				className="
 					h-6rem aspect-square

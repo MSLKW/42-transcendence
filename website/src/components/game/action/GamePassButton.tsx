@@ -5,14 +5,15 @@ export const GamePassButton = () => {
 	const clientUuid = useAuthStore((store) => store.clientUuid);
 	const seats = useGameStore((store) => store.seats);
 	const activeSeat = useGameStore((store) => store.activeSeat);
-	const nextTurn = useGameStore((store) => store.nextTurn);
+	const isActiveSeatSkippable = useGameStore((store) => store.isActiveSeatSkippable);
+	const skipTurn = useGameStore((store) => store.skipTurn);
 	
 	const clientSeat = seats.indexOf(clientUuid);
 
 	return (
 		<button
-			onClick={nextTurn}
-			disabled={activeSeat !== clientSeat}
+			onClick={skipTurn}
+			disabled={activeSeat !== clientSeat || (activeSeat === clientSeat && isActiveSeatSkippable === false)}
 			className="
 				btn-text bg-light
 				h-3rem aspect-5/1

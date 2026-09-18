@@ -5,6 +5,8 @@ import { useProfileStore, type MEDAL_TYPE } from "./ProfileStore";
 import { usePartyStore } from "./PartyStore";
 import { useResultsStore } from "./ResultsStore";
 import { useSceneStore } from "./SceneStore";
+import { gameInstance } from '../api/game/src/main';
+import { HandType, PentupleType } from "@big2/game-types";
 
 export const GAMEMODE_LABEL = [
 	"4 Players",
@@ -23,7 +25,7 @@ export const HAND_VALUES = {
 	"Triple": 3,
 	"Double": 2,
 	"High Card": 1,
-	"Open": 0,
+	"None": 0,
 } as const;
 export type HAND_TYPE = keyof typeof HAND_VALUES;
 export const HAND_LABEL = Object.keys(HAND_VALUES) as HAND_TYPE[];
@@ -33,22 +35,26 @@ interface GameValues {
 	seats: (string | null)[];
 	gameStarted: boolean;
 	cardsLeft: number[];
-	currentHand: HAND_TYPE;
+	currentHand: string;
 	round: number;
 	seatRef: number[];
 	activeSeat: number;
+	isActiveSeatSkippable: boolean;
+	sortType: string;
 }
 
 interface GameState extends GameValues {
 	initSeats: () => void;
-	setSeatWithUuid: (uuid: string, seatNumber: number) => void;
-	playerUnseats: (uuid: string) => void;
+	takeSeat: (seatNumber: number) => void;
+	leaveSeat: () => void;
 	autoSetSeats: () => void;
 	
 	setSeatRef: () => void;
-	dealCards: () => void;
+	setCardsLeft: (playerCardsAmount: Record<string, number>) => void;
+	reduceCardsLeft: (uuid: string, cardsAmount: number) => void;
+	setCurrentHand: (handType: HandType, pentupleType: PentupleType) => void;
 	startGame: () => void;
-	nextTurn: () => void;
+	skipTurn: () => void;
 
 	endGame: () => void;
 	incTotalWin: (uuid: string) => void;
@@ -63,38 +69,42 @@ export const useGameStore = create<GameState>() (
 			seats: [],
 			gameStarted: false,
 			cardsLeft: [],
-			currentHand: "Open",
+			currentHand: "None",
 			round: 0,
 			seatRef: [],
 			activeSeat: 0,
+			isActiveSeatSkippable: false,
+			sortType: "Flex",
 
 			initSeats: () => {
 				const totalPlayers = get().totalPlayers;
 				const newSeats = Array(totalPlayers).fill(null);
 				set({ seats: newSeats });
 			},
-			setSeatWithUuid: (uuid, seatNumber) => {
-				const seats = get().seats;
-				if (seats[seatNumber] === uuid)
-					return;
-				const newSeats = [...seats];
+			takeSeat: (seatNumber) => {
+				gameInstance?.takeSeat(seatNumber);
+				// const seats = get().seats;
+				// if (seats[seatNumber] === uuid)
+				// 	return;
+				// const newSeats = [...seats];
 
-				const existingIndex = newSeats.indexOf(uuid);
-				if (existingIndex !== -1)
-					newSeats[existingIndex] = null;
-				newSeats[seatNumber] = uuid;
+				// const existingIndex = newSeats.indexOf(uuid);
+				// if (existingIndex !== -1)
+				// 	newSeats[existingIndex] = null;
+				// newSeats[seatNumber] = uuid;
 
-				set({ seats: newSeats });
+				// set({ seats: newSeats });
 			},
-			playerUnseats: (uuid) => {
-				const newSeats = [...get().seats];
-				const index = newSeats.findIndex(seat => seat === uuid);
-				if (index !== -1) {
-					newSeats[index] = null;
-					set({
-						seats: newSeats,
-					});
-				}
+			leaveSeat: () => {
+				// const newSeats = [...get().seats];
+				// const index = newSeats.findIndex(seat => seat === uuid);
+				// if (index !== -1) {
+				// 	newSeats[index] = null;
+				// 	set({
+				// 		seats: newSeats,
+				// 	});
+				// }
+				gameInstance?.leaveSeat();
 			},
 			autoSetSeats: () => {
 				const members = usePartyStore.getState().members;
@@ -122,35 +132,51 @@ export const useGameStore = create<GameState>() (
 					seatRef: newSeatRef,
 				});
 			},
-			dealCards: () => {
-				const totalPlayers = get().totalPlayers;
-				const round = get().round;
-				const cards = 52 / totalPlayers;
-				const newCardsLeft: number[] = [];
-
-				if (totalPlayers === 3) {
-					for (let i = 0; i < totalPlayers; i++) {
-						if (i === round % totalPlayers)
-							newCardsLeft.push(Math.ceil(cards));
-						else
-							newCardsLeft.push(Math.floor(cards));
+			setCardsLeft: (playerCardsAmount: Record<string, number>) => {
+				const newCardsLeft: number[] = []
+				get().seats.forEach((playerUuid) => {
+					if (playerUuid === null) {
+						newCardsLeft.push(-1);
+						return ;
 					}
-				} else {
-					for (let i = 0; i < totalPlayers; i++)
-						newCardsLeft.push(cards);
-				}
+					newCardsLeft.push(playerCardsAmount[playerUuid] !== undefined ? playerCardsAmount[playerUuid] : -1);
+				})
 				set({ cardsLeft: newCardsLeft });
+			},
+			reduceCardsLeft: (uuid: string, cardsAmount: number) => {
+				const cardsLeft = get().cardsLeft;
+				const seatIndex = get().seats.findIndex((seatUuid) => seatUuid === uuid);
+				cardsLeft[seatIndex] = cardsLeft[seatIndex] - cardsAmount;
+				set({ cardsLeft: cardsLeft });
+			},
+			setCurrentHand: (handType: HandType, pentupleType: PentupleType) => {
+				let newCurrentHand: HAND_TYPE = "None";
+				if (handType === HandType.Pentuple) {
+					switch (pentupleType) {
+						case PentupleType.Straight: newCurrentHand = "Straight"; break;
+						case PentupleType.Flush: newCurrentHand = "Flush"; break;
+						case PentupleType.FullHouse: newCurrentHand = "Full House"; break;
+						case PentupleType.FourOfAKind: newCurrentHand = "4 of a Kind"; break;
+						case PentupleType.StraightFlush: newCurrentHand = "Straight Flush"; break;
+					}
+				}
+				else {
+					switch (handType) {
+						case HandType.None: newCurrentHand = "None"; break;
+						case HandType.Single: newCurrentHand = "High Card"; break;
+						case HandType.Double: newCurrentHand = "Double"; break;
+						case HandType.Triple: newCurrentHand = "Triple"; break;
+					}
+				}
+				set({ currentHand: newCurrentHand });
 			},
 			startGame: () => {
 				set({ round: get().round + 1 });
-				get().setSeatRef();
-				get().dealCards();
 				useSceneStore.getState().setShowWindow("results", false);
-				useSceneStore.getState().setCurrentScene("Game");
+				gameInstance?.startGame();
 			},
-			nextTurn: () => {
-				const newActiveSeat = (get().activeSeat + 1) % get().totalPlayers;
-				set({ activeSeat: newActiveSeat });
+			skipTurn: () => {
+				gameInstance?.playerRef?.skipTurnButtonHandler();
 			},
 
 			endGame: () => {
@@ -159,7 +185,7 @@ export const useGameStore = create<GameState>() (
 					seats: [],
 					gameStarted: false,
 					cardsLeft: [],
-					currentHand: "Open",
+					currentHand: "None",
 					round: 0,
 					seatRef: [],
 					activeSeat: 0,
