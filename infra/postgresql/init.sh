@@ -1,3 +1,4 @@
+#!/bin/bash
 # What should stay in init.sh:
 #	Keep it for things Drizzle genuinely can't or shouldn't manage
 #	Database roles/users, if you manage those at the Postgres level
@@ -9,7 +10,6 @@
 #	a Postgres role can exist with CONNECT permission and literally nothing to use it on yet — no tables, no schema, no app code. That's completely normal and won't error or crash your init script. 
 #	Permissions just sit unused until there's something to grant against.
 
-#!/bin/bash
 set -e
 
 unset PGHOST PGPORT

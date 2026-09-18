@@ -35,8 +35,6 @@ secrets: # auto make all secret files just read only mode
     file: ./secrets/database-passwords/db-friends-system-password.txt
   db-game-password:
     file: ./secrets/database-passwords/db-game-password.txt
-  dg-masterpass:
-    file: ./secrets/drizzle-gateway/dg-masterpass.txt
 
 
 services:
@@ -45,7 +43,9 @@ services:
   #     INFRASTRUCTURE MICROSERVICE
   postgresql:
     container_name: postgresql
-    image: postgres:17-bookworm
+    image: postgres:infra
+    build: ./infra/postgresql
+    pull_policy: missing # to stick to the current version used, previously by default used missing too anyway.
     restart: unless-stopped
     expose:
       - "${PGPORT}"
@@ -64,7 +64,7 @@ services:
       - .env
     volumes:
       - pg-data:/var/lib/postgresql/data
-      - ./infra/postgresql/init.sh:/docker-entrypoint-initdb.d/init.sh:ro # to run complex/specific sql scripts directly to Postgres directly instead of to Drizzle
+      - ./infra/postgresql/init.sh:/docker-entrypoint-initdb.d/init.sh:ro
     networks:
       - database
     healthcheck:
@@ -78,7 +78,9 @@ services:
   #     INFRASTRUCTURE MICROSERVICE
   drizzle-gateway:
     container_name: drizzle-gateway
-    image: ghcr.io/drizzle-team/gateway:latest
+    image: drizzle-gateway:infra
+    build: ./infra/drizzle-gateway
+    pull_policy: missing # Docker saves version into local machine's cache after the first latest's download, pull_policy: missing (the default) => Docker will keep using that old cached version forever
     restart: unless-stopped
     ports:
       - "${DRIZZLE_GATEWAY_PORT}:${DRIZZLE_GATEWAY_PORT}"
@@ -86,13 +88,11 @@ services:
       - .env
     environment: # DB_* / PG_* - not recognized as per DG documentation, better use PG* 
       PORT: ${DRIZZLE_GATEWAY_PORT}
-      STORE_PATH: /app # Required by Drizzle Gateway
-    command:
-      - 'export MASTERPASS="$(cat /run/secrets/dg-masterpass)" && exec /gateway'
+      STORE_PATH: /app
     volumes:
       - dg-data:/app # Required persistent volume mounting to /app
     networks:
-      - transcendence # must need, to open GUI at browser huhu
+      - transcendence # must need this, to enable opening this GUI dev tool at browser
       - database
     depends_on:
       postgresql:
@@ -102,14 +102,14 @@ services:
   #     MIGRATOR (Node.js + Drizzle), One-shot container (or other technical terms, ephemeral containers / job containers)
   #     ONE-SHOT MICORSERVICE => "run once per deploy" job container
   migrator:
+    container_name: migrator
+    image: migrator:infra
     build:
       context: ./infra/migrator
       additional_contexts:
         root: .
     pull_policy: never
-    image: migrator:aisyah
-    container_name: migrator
-    restart: no # It runs migrations only, then it exits successfully, the end of this container's life. 
+    restart: no # one-shot container = It runs psql + migrations only, then, the end (exit 0)! that's the sole purpose of this container's existance. 
     environment:
       PGPASSWORD: /run/secrets/db-admin-password
     secrets:
@@ -125,10 +125,10 @@ services:
   
   #     INFRASTRUCTURE MICROSERVICE
   nginx:
-    build: ./infra/nginx
-    pull_policy: never
-    image: nginx:test
     container_name: nginx
+    image: nginx:infra
+    build: ./infra/nginx
+    pull_policy: missing
     restart: unless-stopped
     ports:
       - "80:80"
@@ -141,6 +141,8 @@ services:
 
   #     BACKEND MICORSERVICE
   authentication:
+    container_name: authentication
+    image: auth:services
     build:
       context: ./services/authentication                                        # Set workdir to the repo's root
       additional_contexts:
@@ -148,8 +150,6 @@ services:
         auth-schema: ./packages/postgres/auth-schema
         postgres-client: packages/postgres/postgres-client
     pull_policy: never
-    image: authentication:test
-    container_name: authentication
     restart: unless-stopped
     environment:
       PGUSER: ${PGUSER_AUTH}
@@ -175,6 +175,8 @@ services:
 
   #     BACKEND MICORSERVICE
   party-manager:
+    container_name: party-manager
+    image: party:services
     build:
       context: ./services/party-manager
       additional_contexts:
@@ -183,8 +185,6 @@ services:
         party-manager-schema: ./packages/postgres/party-manager-schema
         postgres-client: ./packages/postgres/postgres-client
     pull_policy: never
-    image: party:test
-    container_name: party-manager
     restart: unless-stopped
     environment:
       PGUSER: ${PGUSER_PARTY_MANAGER}
@@ -205,6 +205,8 @@ services:
 
   #     BACKEND MICORSERVICE
   friends-system:
+    container_name: friends-system
+    image: friends:services
     build:
       context: ./services/friends-system
       additional_contexts:
@@ -214,8 +216,6 @@ services:
         friends-system-schema: ./packages/postgres/friends-system-schema
         postgres-client: ./packages/postgres/postgres-client
     pull_policy: never
-    image: friends:aisyah
-    container_name: friends-system
     restart: unless-stopped
     environment:
       PGUSER: ${PGUSER_FRIENDS_SYSTEM}
@@ -234,6 +234,8 @@ services:
 
  #     BACKEND MICORSERVICE
   profile-system:
+    container_name: profile-system
+    image: profile:services
     build:
       context: ./services/profile-system
       additional_contexts:
@@ -243,8 +245,6 @@ services:
         profile-system-schema: ./packages/postgres/profile-system-schema
         postgres-client: ./packages/postgres/postgres-client
     pull_policy: never
-    image: profile:test
-    container_name: profile-system
     restart: unless-stopped
     environment:
       PGUSER: ${PGUSER_PROFILE_SYSTEM}
@@ -270,7 +270,7 @@ services:
 #       root: .
 #       game-types: ./packages/types/game-types
 #     pull_policy: never
-#     image: game:test
+#     image: game:services
 #     container_name: game
 #     restart: unless-stopped
 #     networks:
@@ -280,13 +280,13 @@ services:
 
 
 #   #     FRONTEND MICORSERVICE
-# website:
-#   build:
-#     context: ./services/website
-#     additional_contexts:
-#       root: .
-#   pull_policy: never
-#     image: website:test
+#   website:
+#     build:
+#       context: ./services/website
+#       additional_contexts:
+#         root: .
+#     pull_policy: never
+#     image: website:services
 #     container_name: website
 #     restart: unless-stopped
 #     networks:
