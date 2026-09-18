@@ -155,7 +155,8 @@ services:
       PGUSER: ${PGUSER_AUTH}
       PGPASSWORD: /run/secrets/db-auth-password
     env_file:
-      - .env                                              # Loads global configs
+      - .env
+      - ./services/authentication/.env
     secrets:
       - db-auth-password
     networks:
@@ -190,7 +191,8 @@ services:
       PGUSER: ${PGUSER_PARTY_MANAGER}
       PGPASSWORD: /run/secrets/db-party-manager-password
     env_file:
-      - .env                                             # Loads global configs
+      - .env
+      - ./services/party-manager/.env
     secrets:
       - db-party-manager-password
     networks:
@@ -221,7 +223,7 @@ services:
       PGUSER: ${PGUSER_FRIENDS_SYSTEM}
       PGPASSWORD: /run/secrets/db-friends-system-password
     env_file:
-      - .env                                             # Loads global configs
+      - .env
     secrets:
       - db-friends-system-password
     networks:
@@ -250,7 +252,8 @@ services:
       PGUSER: ${PGUSER_PROFILE_SYSTEM}
       PGPASSWORD: /run/secrets/db-profile-system-password
     env_file:
-      - .env                                             # Loads global configs
+      - .env
+      - ./services/profile-system/.env
     secrets:
       - db-profile-system-password
     networks:
