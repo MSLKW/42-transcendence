@@ -47,7 +47,7 @@ export class GameState {
 	public emitPlayerList() {
 		const playerConnections: Record<string, boolean> = {};
 		for (let i = 0; i < this.players.length; i++) {
-			playerConnections[this.players[i].playerId] = this.players[i].isDisconnected;
+			playerConnections[this.players[i].uuid] = this.players[i].isDisconnected;
 		}
 		this.emit("player_connection_update", playerConnections);
 	}
@@ -125,9 +125,9 @@ export class GameState {
 	}
 
 	public endGame(winner: PlayerState) {
-		console.log(`Game Ended | Winner is Player<${winner.playerId}>`);
+		console.log(`Game Ended | Winner is Player<${winner.uuid}>`);
 		const gameEndStats: GameEndStatsTransmit = {
-			winnerPlayerId: winner.playerId,
+			winnerPlayerUuid: winner.uuid,
 			playerFinalCardAmounts: this.getPlayerCardsAmount(),
 			playerPenaltyPoints: this.getPlayerPenaltyPoints()
 		}
@@ -151,15 +151,13 @@ export class GameState {
 	private getSeatOrder() {
 		const seatOrder: Record<string, number> = {};
 		for (let i = 0; i < this.players.length; i++) {
-			seatOrder[this.players[i].playerId] = i;
+			seatOrder[this.players[i].uuid] = i;
 		}
-		console.log("getSeatOrder");
-		console.log(seatOrder)
 		return (seatOrder);
 	}
 
 	public uuidInGame(uuid: string): boolean {
-		const player = this.players.find((player) => player.playerId === uuid);
+		const player = this.players.find((player) => player.uuid === uuid);
 		if (player === undefined) {
 			return (false);
 		}
@@ -167,7 +165,7 @@ export class GameState {
 	}
 
 	public playerReconnect(user: UserState) {
-		const player = this.players.find((player) => player.playerId === user.uuid);
+		const player = this.players.find((player) => player.uuid === user.uuid);
 		if (player === undefined) {
 			return ;
 		}
@@ -176,7 +174,7 @@ export class GameState {
 	}
 
 	public playerDisconnect(user: UserState) {
-		const player = this.players.find((player) => player.playerId === user.uuid);
+		const player = this.players.find((player) => player.uuid === user.uuid);
 		if (player === undefined) {
 			return ;
 		}
@@ -191,8 +189,8 @@ export class GameState {
 			return ;
 		}
 		const playerTurnTransmit: PlayerTurnTransmit = {
-			playerId: player.playerId,
-			skippable: !this.cardHeap.isPlayerLeading(player.playerId),
+			playerId: player.uuid,
+			skippable: !this.cardHeap.isPlayerLeading(player.uuid),
 			timer: this.settings.autoPassInMilliseconds
 		}
 		if (this.settings.autoPassInMilliseconds > 0) {
@@ -202,7 +200,7 @@ export class GameState {
 	}
 
 	private playerTimeout(player: PlayerState) {
-		console.log(`Timing out player<${player.playerId}>`)
+		console.log(`Timing out player<${player.uuid}>`)
 		const status: StatusTransmit = {
 			success: true,
 			message: "Timer ran out"
@@ -234,7 +232,7 @@ export class GameState {
 	private getPlayerCardsAmount() {
 		const playerCardsAmount: Record<string, number> = {};
 		for (let i = 0; i < this.players.length; i++) {
-			playerCardsAmount[this.players[i].playerId] = this.players[i].cards.length;
+			playerCardsAmount[this.players[i].uuid] = this.players[i].cards.length;
 		}
 		return (playerCardsAmount);
 	}
@@ -242,7 +240,7 @@ export class GameState {
 	private getPlayerPenaltyPoints() {
 		const playerPenaltyPoints: Record<string, number> = {};
 		for (let i = 0; i < this.players.length; i++) {
-			playerPenaltyPoints[this.players[i].playerId] = this.players[i].calculatePenaltyPoints();
+			playerPenaltyPoints[this.players[i].uuid] = this.players[i].calculatePenaltyPoints();
 		}
 		return (playerPenaltyPoints);
 	}

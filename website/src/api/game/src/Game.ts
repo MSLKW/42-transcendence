@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import { io, Socket } from 'socket.io-client';
-import { CardHandTransmit, CardRank, CardSuit, GameStateTransmit, GameStartRequest, StatusTransmit, SeatOrderTransmit, GameSettingsTransmit } from '@big2/game-types';
+import { CardHandTransmit, CardRank, CardSuit, GameStateTransmit, GameStartRequest, StatusTransmit, SeatOrderTransmit, GameSettingsTransmit, GameEndStatsTransmit } from '@big2/game-types';
 import { CardHeap } from './CardHeap.ts';
 import { Player } from './Player.ts';
 import { Opponent } from './Opponent.ts';
@@ -100,9 +100,9 @@ export class Game {
 			console.log(`Start Game: ${status.success} | ${status.message}`);
 		});
 	
-		this.socket.on("game_end", () => {
+		this.socket.on("game_end", (gameEndStats: GameEndStatsTransmit) => {
 			this.cardHeap.reset();
-			useResultsStore.getState().setResults();
+			useResultsStore.getState().setResults(gameEndStats);
 			useSceneStore.getState().setCurrentScene("Lobby");
 			useSceneStore.getState().setShowWindow("results", true);
 		});
@@ -153,6 +153,7 @@ export class Game {
 	}
 
 	private initGame(gameState: GameStateTransmit) {
+		useGameStore.setState({ round: useGameStore.getState().round + 1 });
 		this.initParticipants(gameState);
 		const seats: string[] = Object.entries(gameState.playerSeatOrder)
 			.sort((a, b) => a[1] - b[1])

@@ -43,7 +43,7 @@ export class GameStatus {
 	}
 
 	public setGameStats(stats: GameEndStatsTransmit, player: Player) {
-		if (player.getPlayerId() === stats.winnerPlayerId) {
+		if (player.getPlayerId() === stats.winnerPlayerUuid) {
 			this.status.textContent = "Victory"
 		}
 		else {

@@ -1,6 +1,7 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import { useGameStore } from "./GameStore";
+import type { GameEndStatsTransmit } from "@big2/game-types";
 
 interface ResultsItem {
 	uuid: string;
@@ -16,7 +17,7 @@ interface ResultsValues {
 }
 
 interface ResultsState extends ResultsValues {
-	setResults: () => void;
+	setResults: (gameEndStats: GameEndStatsTransmit) => void;
 	resetResults: () => void;
 	getLeaderboard: () => ResultsItem[];
 }
@@ -26,23 +27,24 @@ export const useResultsStore = create<ResultsState>() (
 		(set, get) => ({
 			results: [],
 
-			setResults: () => {
-				const { seats, cardsLeft } = useGameStore.getState();
+			setResults: (gameEndStats: GameEndStatsTransmit) => {
+				const { seats } = useGameStore.getState();
 				const currentResults = get().results;
 
 				const isFirstRound = currentResults.length === 0 || currentResults.some(r => r.rank === undefined);
 
-				const combined = seats.map((uuid, index) => {
+				const combined = seats.map((uuid) => {
 					const playerUuid = uuid ?? "";
-					const cards = cardsLeft[index] ?? 0;
+					const cards = gameEndStats.playerFinalCardAmounts[playerUuid] ?? 0;
 
 					const existingPlayer = currentResults.find(r => r.uuid === playerUuid);
 					let wins = existingPlayer ? existingPlayer.totalWins : 0;
 
-					if (cards === 0 && playerUuid !== "")
+					if (gameEndStats.winnerPlayerUuid === gameEndStats.winnerPlayerUuid) {
 						wins += 1;
+					}
 
-					const roundPoints = cards;
+					const roundPoints = gameEndStats.playerPenaltyPoints[playerUuid];
 					const previousTotalPoints = existingPlayer ? existingPlayer.totalPoints : 0;
 					const totalPoints = previousTotalPoints + roundPoints;
 					

@@ -83,27 +83,8 @@ export const useGameStore = create<GameState>() (
 			},
 			takeSeat: (seatNumber) => {
 				gameInstance?.takeSeat(seatNumber);
-				// const seats = get().seats;
-				// if (seats[seatNumber] === uuid)
-				// 	return;
-				// const newSeats = [...seats];
-
-				// const existingIndex = newSeats.indexOf(uuid);
-				// if (existingIndex !== -1)
-				// 	newSeats[existingIndex] = null;
-				// newSeats[seatNumber] = uuid;
-
-				// set({ seats: newSeats });
 			},
 			leaveSeat: () => {
-				// const newSeats = [...get().seats];
-				// const index = newSeats.findIndex(seat => seat === uuid);
-				// if (index !== -1) {
-				// 	newSeats[index] = null;
-				// 	set({
-				// 		seats: newSeats,
-				// 	});
-				// }
 				gameInstance?.leaveSeat();
 			},
 			autoSetSeats: () => {
@@ -171,7 +152,6 @@ export const useGameStore = create<GameState>() (
 				set({ currentHand: newCurrentHand });
 			},
 			startGame: () => {
-				set({ round: get().round + 1 });
 				useSceneStore.getState().setShowWindow("results", false);
 				gameInstance?.startGame();
 			},

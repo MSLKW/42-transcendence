@@ -74,7 +74,7 @@ export type GameSettingsTransmit = {
 }
 
 export type GameEndStatsTransmit = {
-	winnerPlayerId: string,
+	winnerPlayerUuid: string,
 	playerFinalCardAmounts: Record<string, number>
 	playerPenaltyPoints: Record<string, number>
 }

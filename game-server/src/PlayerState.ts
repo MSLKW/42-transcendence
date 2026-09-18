@@ -8,14 +8,14 @@ import { UserState } from './UserState.js';
 
 export class PlayerState {
 	public	socket: Socket;
-	public	playerId: string;
+	public	uuid: string;
 	public	cards: Array<CardTransmit>;
 	private gameStateRef: GameState;
 	private cardHeapRef: CardHeapState;
 	public	isDisconnected: boolean;
 
-	constructor(playerId: string, socket: Socket, gameState: GameState) {
-		this.playerId = playerId;
+	constructor(uuid: string, socket: Socket, gameState: GameState) {
+		this.uuid = uuid;
 		this.cards = [];
 		this.socket = socket;
 		this.gameStateRef = gameState;
@@ -49,7 +49,7 @@ export class PlayerState {
 		this.isDisconnected = true;
 		if (this.gameStateRef.settings.autoPassInMilliseconds === 0)
 			this.skipTurn();
-		console.log(`Player<${this.playerId}> has disconnected`)
+		console.log(`Player<${this.uuid}> has disconnected`)
 	}
 
 	public reconnect(user: UserState) {
@@ -96,7 +96,7 @@ export class PlayerState {
 		if (this.gameStateRef.isPlayerTurn(this) === false) {
 			return (status);
 		}
-		if (this.cardHeapRef.isPlayerLeading(this.playerId)) {
+		if (this.cardHeapRef.isPlayerLeading(this.uuid)) {
 			status.message = "Player is already leading"
 			return (status);
 		}
@@ -108,11 +108,11 @@ export class PlayerState {
 
 	public skipTurn() {
 		if (this.gameStateRef.isPlayerTurn(this) === true) {
-			if (this.cardHeapRef.isPlayerLeading(this.playerId))
+			if (this.cardHeapRef.isPlayerLeading(this.uuid))
 				this.cardHeapRef.resetPlayerLeading();
 			this.cardHeapRef.requiresThreeDiamonds = false;
 			const playerSkipTurn: SkipTurnTransmit = {
-				playerId: this.playerId
+				playerId: this.uuid
 			}
 			this.gameStateRef.emit("player_skip_turn", playerSkipTurn);
 			this.gameStateRef.nextPlayerTurn();
