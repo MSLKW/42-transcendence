@@ -19,11 +19,6 @@ export const SignInWindow = () => {
 			showNotification("All fields are required", NOTIFICATION_TYPE.error);
 			return;
 		}
-		// const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-		// if (!emailRegex.test(email)) {
-		// 	showNotification("Please enter a valid email address", NOTIFICATION_TYPE.error);
-		// 	return;
-		// }
 
 		await handleSignIn(email, password);
 		setIsLoading(false);
@@ -44,9 +39,9 @@ export const SignInWindow = () => {
 			>
 				<div className="flex flex-col gap-1rem">
 					<FormInputModule
-						label="Email"
+						label="Email / Username"
 						value={email}
-						placeholder="Enter your email"
+						placeholder="Enter your email / username"
 						inputFor="email"
 						hasFocusRef={true}
 						call={setEmail}

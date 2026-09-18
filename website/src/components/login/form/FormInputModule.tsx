@@ -37,7 +37,7 @@ export const FormInputModule = ({
 				relative
 			"
 		>
-			<h2 className="text-right w-[25%]">{label}</h2>
+			<h2 className="text-right w-[30%] whitespace-nowrap">{label}</h2>
 			<input
 				ref={hasFocusRef ? focusRef : undefined}
 				id={inputFor}
@@ -46,7 +46,7 @@ export const FormInputModule = ({
 				placeholder={placeholder}
 				onChange={(e) => call(e.target.value)}
 				className="
-					w-[70%]
+					w-[65%]
 					bg-n6
 					border border-n5 rounded-full
 					py-0.5rem px-1.5rem
