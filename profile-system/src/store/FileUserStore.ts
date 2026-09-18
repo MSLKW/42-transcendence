@@ -71,6 +71,21 @@ export class FileUserStore implements UserStore
 		return (matches.filter((uuid): uuid is string => uuid !== null));
 	}
 
+	async getUuidByUsername(username: string): Promise<string | null>
+	{
+		const files = await fs.promises.readdir(DATA_DIR);
+		const jsonFiles = files.filter(f => f.endsWith(".json"));
+		
+		for (const file of jsonFiles)
+		{
+			const uuid = path.basename(file, ".json");
+			const data = await this.getUserData(uuid);
+			if (data?.username === username)
+				return (uuid);
+		}
+		return null;
+	}
+
 	async updateUserProfile(uuid: string, partial: Partial<UserData>): Promise<void>
 	{
 		let existing = await this.getUserData(uuid);
@@ -114,7 +129,14 @@ export class FileUserStore implements UserStore
 
 	private async setData(uuid: string, userData: UserData, userSettings: UserSettings): Promise<void>
 	{
-		const union: UserData | UserSettings = {...userData, ...userSettings};
+		const union: UserData & UserSettings = {...userData, ...userSettings};
+
+		if (union.username)
+		{
+			const existingUsername = await this.getUuidByUsername(union.username);
+			if (existingUsername && existingUsername != uuid)
+				throw new Error("DUPLICATE_USERNAME");
+		}
 
 		await fs.promises.writeFile(
 			this.getFilePath(uuid),
