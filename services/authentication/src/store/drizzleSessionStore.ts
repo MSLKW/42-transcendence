@@ -1,43 +1,51 @@
-import { eq } from "drizzle-orm";
+import { eq, lte } from "drizzle-orm";
 import { sessions } from "@big2/auth-schema";
 import { postgresClient } from "./postgresClient";
 import { Session } from "../models/session";
 import { SessionStore } from "./sessionStore";
-import { randomBytes } from "crypto";
 
 export class DrizzleSessionStore implements SessionStore {
-	async createSession(userId: string, expiresAt: Date): Promise<Session> {
-		const token = randomBytes(32).toString("hex");
-		const [session] = await postgresClient
+
+	// sessions = authschema table's name
+	// Session = model's name
+	// session = parameter name
+	async createSession(session: Session): Promise<void> {
+		await postgresClient
 			.insert(sessions)
-			.values({ token, userId, expiresAt, })
+			.values({ 
+				tokenHash: session.tokenHash, 
+				userId: session.userId, 
+				createdAt: session.createdAt, 
+				expiresAt: session.expiresAt, 
+			})
 			.onConflictDoUpdate({
 				target: sessions.userId,
-				set: { token, expiresAt, createdAt: new Date() },
-			})
-			.returning();
-		return session;
+				set: { 
+					tokenHash: session.tokenHash, 
+					expiresAt: session.expiresAt, 
+				},
+			});
 	}
 
-	async getSession(token: string): Promise<Session | null> {
+	async getSession(tokenHash: string): Promise<Session | null> {
 		const [session] = await postgresClient
 			.select()
 			.from(sessions)
-			.where(eq(sessions.token, token));
+			.where(eq(sessions.tokenHash, tokenHash));
 		return session ?? null;
 	}
 
-	async updateExpiry(token: string, expiresAt: Date): Promise<void> {
+	async updateExpiry(tokenHash: string, expiresAt: Date): Promise<void> {
 		await postgresClient
 			.update(sessions)
 			.set({ expiresAt })
-			.where(eq(sessions.token, token));
+			.where(eq(sessions.tokenHash, tokenHash));
 	}
 
-	async deleteSession(token: string): Promise<void> {
+	async deleteSession(tokenHash: string): Promise<void> {
 		await postgresClient
 			.delete(sessions)
-			.where(eq(sessions.token, token));
+			.where(eq(sessions.tokenHash, tokenHash));
 	}
 
 	async deleteSessionsByUserId(userId: string): Promise<void> {
@@ -45,4 +53,15 @@ export class DrizzleSessionStore implements SessionStore {
 			.delete(sessions)
 			.where(eq(sessions.userId, userId));
 	}
+
+	// Date() = now since epoch in miliseconds
+	// have to give Date object(new Date()) 
+	// which Drizze serializes properly to compare against to timestamp, 
+	// instead a string (Date()) that inst usable
+	async deleteExpired(): Promise<void> {
+		await postgresClient
+			.delete(sessions)
+			.where(lte(sessions.expiresAt, new Date())); 
+	}
+
 }

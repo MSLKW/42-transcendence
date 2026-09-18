@@ -8,13 +8,9 @@ import { signinHandler } from "./handlers/signin";
 import { guestHandler } from "./handlers/guest";
 import { logoutHandler } from "./handlers/logout";
 import { validateSessionHandler } from "./handlers/validateSession";
-// by jeremy
 import { getCreatedAt } from "./handlers/getCreatedAt";
 import { scheduleSessionCleanup } from "./jobs/ScheduleSessionCleanup";
 // by aisyah
-import { startSessionCleanupJob } from "./jobs/cleanupSessions";
-import { getInternalInfosForProfile } from "./routes/getInternalInfosForProfile";
-import { setInternalUsernameFromProfile } from "./routes/setInternalUsernameFromProfile";
 import { checkUserExistanceForFriends } from "./routes/checkUserExistanceForFriends";
 
 
@@ -31,15 +27,12 @@ app.post("/signin", signinHandler(userStore, sessionStore));
 app.post("/guest", guestHandler(sessionStore));
 app.delete("/logout", logoutHandler(sessionStore));
 app.get("/validate", validateSessionHandler(sessionStore));
-// by jeremy
 app.get("/created-at/:uuid", getCreatedAt(userStore));
 scheduleSessionCleanup(sessionStore);
+
 // by aisyah
-app.get("/internal/profile/infos/:uuid", getInternalInfosForProfile());
-app.patch("/internal/profile/username/:uuid", setInternalUsernameFromProfile());
 app.get("/internal/friends/uuidexistance/:uuid", checkUserExistanceForFriends());
 app.get("/", (req, res) => res.sendStatus(200)); // temporary healthcheck only, to enable docker run 
-startSessionCleanupJob(); // after your db connection / app setup is ready
 
 app.use((err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {
 	if (err.type === "entity.parse.failed") {

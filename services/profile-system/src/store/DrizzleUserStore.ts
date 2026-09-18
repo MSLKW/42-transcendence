@@ -106,6 +106,25 @@ export class DrizzleUserStore implements UserStore
 		}
 	}
 
+	async getUuidByUsername(username: string):	Promise<string | null>
+	{
+		try 
+		{
+			const [rowObject] = await postgresClient
+				.select({ uuid: userData.id })
+				.from(userData)
+				.where(eq(userData.username, username))
+				.limit(1);
+			return (rowObject ? rowObject.uuid : null);
+		}
+		catch (error: any)
+		{
+			console.error("Database query failed in getUuidByUsername", error);
+			throw (error);
+		}
+	}
+
+
 	async updateUserProfile(uuid: string, partial: Partial<UserData>): Promise<void> // need understand
 	{
 		try 
