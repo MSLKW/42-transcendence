@@ -96,8 +96,8 @@ export default function Dev() {
 				method: "GET",
 				credentials: "include",
 			});
-			const resp_json = await response?.json();
-			console.log("[GET ", url, "] ", response.status, " ", response.statusText, " - ", resp_json);
+			const resp_json = await response.json();
+			console.log("[GET ", url, "] status:", response.status, " statusText:", response.statusText, " response:", response, " response.json:", resp_json);
 		} catch (err) {
 			console.error("fetchGet failed");
 		}

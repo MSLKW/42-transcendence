@@ -15,7 +15,6 @@ export const StatsWindow: React.FC = () => {
 	const profileUuid = useSceneStore((store) => store.profileUuid);
 	const members = usePartyStore((store) => store.members);
 
-	const cachedData = useProfileStore((store) => store.cachedData);
 	const [userData, setUserData] = useState<UserData | null>(null);
 
 	useEffect(() => {
