@@ -11,8 +11,8 @@ import { PlayerStatusModule } from "../status/PlayerStatusModule";
 
 interface PlayerDataModuleProps {
 	uuid: string | null;
-	badge: BADGE_TYPE | null;
-	setBadge: (badge: BADGE_TYPE) => void;
+	badge?: BADGE_TYPE | null;
+	setBadge?: (badge: BADGE_TYPE) => void;
 }
 
 export const PlayerDataModule = ({ uuid, badge, setBadge }: PlayerDataModuleProps) => {
@@ -32,7 +32,7 @@ export const PlayerDataModule = ({ uuid, badge, setBadge }: PlayerDataModuleProp
 			setCreatedAt(null);
 			setAvailability(null);
 			setLastOnline(null);
-			setBadge("Newcomer");
+			setBadge?.("Newcomer");
 			setXPProgress(0);
 			return;
 		}
@@ -58,7 +58,7 @@ export const PlayerDataModule = ({ uuid, badge, setBadge }: PlayerDataModuleProp
 				console.log("isOnline:", onlineResp?.isOnline);
 				setLastOnline(new Date(onlineResp?.lastOnline) ?? null);
 				if (profileResp?.badge)
-					setBadge(profileResp.badge);
+					setBadge?.(profileResp.badge);
 				// 	const percentage = (profile.xp / (profile.level * 1000)) * 100
 				// 	setXPProgress(percentage);
 			} catch (error) {
@@ -146,7 +146,7 @@ export const PlayerDataModule = ({ uuid, badge, setBadge }: PlayerDataModuleProp
 					{ showWindow["badge"] &&
 						<BadgeWindow
 							badge={badge ?? "Newcomer"}
-							setBadge={setBadge}
+							setBadge={setBadge ?? (() => {})}
 						/>
 					}
 				</div>

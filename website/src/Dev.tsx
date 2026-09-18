@@ -27,7 +27,7 @@ export default function Dev() {
 	const cachedFriends = useFriendStore((store) => store.cachedFriends);
 	const seats = useGameStore((store) => store.seats);
 	const totalPlayers = useGameStore((store) => store.totalPlayers);
-	const playerUnseats = useGameStore((store) => store.playerUnseats);
+	const leaveSeat = useGameStore((store) => store.leaveSeat);
 	const currentHand = useGameStore((store) => store.currentHand);
 	const showNotification = useNotificationStore((store) => store.showNotification);
 	const partySocketId = usePartyStore((store) => store.partySocketId);
@@ -142,12 +142,12 @@ export default function Dev() {
 					<input
 						id="inviteUuid"
 						onChange={(e) => setFetchUrl(e.target.value)}
-						className="bg-dark w-[70%]"
+						className="bg-dark-semi w-[70%]"
 					/>
 					<input
 						id="inviteUuid"
 						onChange={(e) => setFetchBody(e.target.value)}
-						className="bg-dark w-[70%]"
+						className="bg-dark-semi w-[70%]"
 					/>
 					<DevButton label="GET" call={() => fetchGet(fetchUrl)}/>
 					<DevButton label="PUT" call={() => fetchPut(fetchUrl, fetchBody)}/>
@@ -221,7 +221,7 @@ export default function Dev() {
 				<ul className="flex place-content-between">
 					{currentScene === "Lobby" && <DevButton label="Fill Bots" call={() => fillSeatsWithBots()} />}
 					{currentScene === "Lobby" && <DevButton label="Remove Bots" call={() => removeBots()} />}
-					{currentScene === "Lobby" && <DevButton label="Unseat" call={() => playerUnseats(clientUuid!)} />}
+					{currentScene === "Lobby" && <DevButton label="Unseat" call={() => leaveSeat()} />}
 				</ul>
 		</section>
 	);

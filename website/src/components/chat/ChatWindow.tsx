@@ -84,7 +84,7 @@ export const ChatWindow = () => {
 					tabIndex={-1}
 					className="
 						w-full h-full
-						bg-dark rounded-xl
+						bg-dark-semi rounded-xl
 						py-1rem px-1rem
 						overflow-y-auto
 						flex flex-col place-content-center place-items-center

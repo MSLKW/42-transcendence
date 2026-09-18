@@ -19,7 +19,7 @@ export const MedalImage = ({ icon, title, date }: MedalImageProp) => {
 			aria-label={`${title}, ${subtitle}`}
 			className={`
 				h-12.5 aspect-square
-				btn-icon ${date ? "bg-b4 border border-b5" : "bg-dark"} rounded-full
+				btn-icon ${date ? "bg-b4 border border-b5" : "bg-dark-semi"} rounded-full
 				data-tip-medal cursor-default
 			`}
 		>

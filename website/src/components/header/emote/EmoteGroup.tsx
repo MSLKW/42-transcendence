@@ -7,7 +7,7 @@ export const EmoteGroup = () => {
 			<EmoteHover />
 			<div
 				className="
-					bg-dark rounded-full
+					bg-dark-semi rounded-full
 					h-max w-max
 					p-8 pointer-events-auto
 					absolute top-full left-1/2 -translate-x-1/2

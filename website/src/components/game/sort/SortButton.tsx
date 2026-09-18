@@ -15,7 +15,7 @@ export const SortButton = ({ call, sortType, type, tip }: SortButtonProps) => {
 			data-tip={tip}
 			onClick={call}
 			className={`
-				btn-text bg-dark
+				btn-text bg-dark-semi
 				h-2.5rem
 				text-n6 text-1.25rem
 				focus:outline-double

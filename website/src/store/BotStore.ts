@@ -71,7 +71,8 @@ export const useBotStore = create<BotState>() (
 
 			let bot_i = 0;
 			for (let i = 0; i < totalPlayers; i++) {
-				const { seats, setSeatWithUuid } = useGameStore.getState();
+				const seats = useGameStore.getState().seats;
+				const takeSeat = useGameStore.getState().takeSeat;
 				if (seats[i])
 					continue;
 
@@ -81,7 +82,7 @@ export const useBotStore = create<BotState>() (
 				}
 				if (bot_i >= Object.keys(cachedBotData).length)
 					break;
-				setSeatWithUuid(botKeys[bot_i]!, i);
+				takeSeat(i);
 
 				const cached = useProfileStore.getState().cachedData;
 				useProfileStore.setState({

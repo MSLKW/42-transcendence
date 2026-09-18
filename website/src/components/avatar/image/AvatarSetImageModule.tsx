@@ -28,7 +28,7 @@ export const AvatarSelectModule = ({ avatar, setAvatar }: AvatarSelectModuleProp
 				grid grid-flow-col auto-cols-max grid-rows-3
 				gap-1rem py-2rem px-2rem
 				overflow-x-auto
-				bg-dark rounded-xl
+				bg-dark-semi rounded-xl
 			"
 		>
 			{
