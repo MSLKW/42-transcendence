@@ -1,0 +1,118 @@
+@utility data-tip-after {
+	content: attr(data-tip);
+	@apply
+		w-max h-max
+		absolute
+		bg-n1 btn-text
+		border border-n2
+		text-n6 text-1.25rem leading-relaxed
+		py-0.5rem px-1rem
+		pointer-events-none
+		scale-0 opacity-0
+		;
+}
+
+@utility data-tip-up {
+	@apply relative;
+	&::after {
+		@apply
+			data-tip-after
+			origin-bottom
+			bottom-[calc(100%+clamp(0.25rem,0.769vmin+0.019rem,0.5rem))]
+			left-1/2 -translate-x-1/2
+			;
+	}
+	&:focus-visible,
+    &:hover {
+        @apply z-50;
+    }
+	&:focus-visible::after,
+	&:hover::after {
+		@apply scale-100 opacity-100;
+	}
+}
+
+@utility data-tip-down {
+	@apply relative;
+	&::after {
+		@apply
+			data-tip-after
+			origin-top
+			top-[calc(100%+clamp(0.25rem,0.769vmin+0.019rem,0.5rem))]
+			left-1/2 -translate-x-1/2
+			;
+	}
+	&:focus-visible,
+    &:hover {
+        @apply z-50;
+    }
+	&:focus-visible::after,
+	&:hover::after {
+		@apply scale-100 opacity-100;
+	}
+}
+
+@utility data-tip-left {
+	@apply relative;
+	&::after {
+		@apply
+			data-tip-after
+			origin-right
+			right-[calc(100%+clamp(0.75rem,2.308vmin+0.058rem,1.5rem))]
+			top-1/2 -translate-y-1/2
+			;
+	}
+	&:focus-visible,
+    &:hover {
+        @apply z-50;
+    }
+	&:focus-visible::after,
+	&:hover::after {
+		@apply scale-100 opacity-100;
+	}
+}
+
+@utility data-tip-dual {
+	@apply
+		w-max h-max
+		absolute
+		bg-dark btn-text
+		text-n6 text-1rem leading-normal
+		py-0.5rem px-1.5rem whitespace-pre-line
+		pointer-events-none
+		scale-0 opacity-0
+		;
+}
+
+@utility data-tip-medal {
+	@apply relative;
+	
+	&::before {
+		content: attr(data-tip-title);
+		@apply
+			data-tip-dual origin-bottom
+			bottom-[120%] left-1/2 -translate-x-1/2
+			;
+	}
+
+	&::after {
+		content: attr(data-tip-subtitle);
+		@apply
+			data-tip-dual origin-top
+			top-[120%] left-1/2 -translate-x-1/2
+			italic text-1rem
+			;
+	}
+
+	&:focus-visible,
+    &:hover {
+        @apply z-50;
+    }
+
+	&:focus-visible::before,
+	&:hover::before,
+	&:focus-visible::after,
+	&:hover::after {
+		@apply scale-100 opacity-100;
+	}
+}

@@ -3,6 +3,30 @@ import react from '@vitejs/plugin-react'
 import tailwindcss from '@tailwindcss/vite'
 
 export default defineConfig({
+	server: {
+		host: true,
+		port: 5173,
+		strictPort: true,
+		watch: {
+			usePolling: true,
+		},
+		ws: {
+			host: 'localhost',
+			port: 5173,
+			clientPort: process.env.DOMAIN_PORT ? Number(process.env.DOMAIN_PORT) : 80,
+		},
+		allowedHosts: true,
+		// allowedHosts: [
+		// 	"website"
+		// ],
+		// proxy: {
+		// 	"/api": {
+		// 		target: "http://localhost:3000",
+		// 		changeOrigin: true,
+		// 		rewrite: (path) => path.replace(/^\/api/, ""),
+		// 	}
+		// }
+	},
 	plugins: [
 		react(),
 		tailwindcss(),

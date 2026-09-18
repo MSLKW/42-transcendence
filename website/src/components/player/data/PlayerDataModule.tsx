@@ -1,0 +1,154 @@
+import { useState, useEffect } from "react";
+import { handleCreatedAt } from "../../../api/authentication/created_at/handleCreatedAt";
+import { handleGetOnline } from "../../../api/party/get_online/handleGetOnline";
+import { handleGetProfile } from "../../../api/profile/get_profile/handleGetProfile";
+import { useAuthStore } from "../../../store/AuthStore";
+import type { AVAILABILITY_TYPE } from "../../../store/PartyStore";
+import type { BADGE_TYPE } from "../../../store/ProfileStore";
+import { useSceneStore } from "../../../store/SceneStore";
+import { BadgeWindow } from "./badge/BadgeWindow";
+import { PlayerStatusModule } from "../status/PlayerStatusModule";
+
+interface PlayerDataModuleProps {
+	uuid: string | null;
+}
+
+export const PlayerDataModule = ({ uuid }: PlayerDataModuleProps) => {
+	const clientUuid = useAuthStore((store) => store.clientUuid);
+	const showWindow = useSceneStore((store) => store.showWindow);
+	const setShowWindow = useSceneStore((store) => store.setShowWindow);
+
+	const [ xpProgress, setXPProgress ] = useState(0);
+	const [ createdAt, setCreatedAt ] = useState<Date | null>(null);
+	const [ availability, setAvailability ] = useState<AVAILABILITY_TYPE | null>(null);
+	const [ lastOnline, setLastOnline ] = useState<Date | null>(null);
+	const [ badge, setBadge ] = useState<BADGE_TYPE | null>(null);
+
+	useEffect(() => {
+		let mounted = true;
+
+		if (!uuid) {
+			setCreatedAt(null);
+			setAvailability(null);
+			setLastOnline(null);
+			setBadge(null);
+			setXPProgress(0);
+			return;
+		}
+
+		const fetchPlayerData = async () => {
+			try {
+				const [createdAtResp, onlineResp, profileResp] = await Promise.all([
+					handleCreatedAt(uuid),
+					handleGetOnline(uuid),
+					handleGetProfile(uuid),
+				]);
+
+				if (!mounted) return;
+
+				setCreatedAt(createdAtResp);
+				setAvailability(onlineResp?.isOnline ?? null);
+				console.log("!!!", onlineResp?.lastOnline);
+				setLastOnline(onlineResp?.lastOnline ?? null);
+				setBadge(profileResp?.badge ?? null);
+				// 	const percentage = (profile.xp / (profile.level * 1000)) * 100
+				// 	setXPProgress(percentage);
+			} catch (error) {
+				console.error("Failed to fetch player data:", error);
+			}
+		};
+
+		fetchPlayerData();
+		
+		return () => {
+			mounted = false;
+		};
+	}, [uuid]);
+
+	return (
+		<div className="
+			w-full
+			space-y-4
+			p-5
+			text-n6
+		">
+			{}
+			<div className="
+				grid grid-cols-[5rem_1fr]
+				gap-2rem
+				place-items-center
+				leading-tight
+			">
+				{/* <h2>Level {profile ? profile.level : "n/a"}</h2> */}
+				<h2>Level n/a</h2>
+				<div className="w-full">
+					<p className="text-center">
+						{/* XP: {profile ? profile.xp : "n/a"} / {profile ? profile.level * 1000 : "n/a"} */}
+						XP: n/a / n/a
+					</p>
+					<div className="
+						h-2
+						rounded-full
+						bg-a0
+						border border-b5 self-center
+						mt-1
+					">
+						<div 
+							style={{ width: `${xpProgress}%` }}
+							className="
+								bg-b5 
+								h-full rounded-full
+						"/>
+					</div>
+				</div>
+			</div>
+			<div
+				className="
+					w-full
+					flex place-content-between place-items-center
+					gap-2rem
+			">
+				<div className="relative w-full flex">
+					{ uuid === clientUuid
+						?
+							<button
+								type="button"
+								onClick={() => setShowWindow("badge", true)}
+								className="
+									w-full
+									bg-n6
+									border border-n5 rounded-full
+									text-sm
+									self-center
+							">
+								<span className="
+									text-n0
+									pl-1 pr-3 py-1
+									flex justify-between items-center
+								">
+									<p className="px-3">{badge}</p>
+									<span className="text-xs">▼</span>
+								</span>
+							</button>
+						:
+							<h2 className="w-full leading-none">
+								<i>{badge ?? "n/a"}</i>
+							</h2>
+					}
+					{ showWindow["badge"] && badge && setBadge &&
+						<BadgeWindow
+							badge={badge}
+							setBadge={setBadge}
+						/>
+					}
+				</div>
+				<PlayerStatusModule status={availability}/>
+			</div>
+			<div className="text-a5">
+				<p>UUID: {uuid}</p>
+				<p>Joined: {createdAt?.toLocaleString() ?? "n/a"}</p>
+				<p>Last Online: {lastOnline?.toLocaleString() ?? "n/a"}</p>
+			</div>
+		</div>
+	);
+}
