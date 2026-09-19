@@ -34,10 +34,10 @@ export default defineConfig({
     dialect: "postgresql",  // cannot use env vars and has nothing to do with .env
     schema: [ // points to the "Source of Truth."
       "../../packages/postgres/auth-schema/src/index.ts", 
-      "../../packages/postgres/party-manager-schema/src/index.ts", 
-      "../../packages/postgres/friends-system-schema/src/index.ts", 
-      "../../packages/postgres/game-schema/src/index.ts",
-      "../../packages/postgres/profile-system-schema/src/index.ts",
+      "../../packages/postgres/party-schema/src/index.ts", 
+      "../../packages/postgres/friends-schema/src/index.ts", 
+      "../../packages/postgres/game-stats-schema/src/index.ts",
+      "../../packages/postgres/profile-schema/src/index.ts",
     ], 
     out: "./migrations", // naming is following industry standard / drizzle kit's default behaviour / drizzle's documentation
     dbCredentials: {

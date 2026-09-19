@@ -6,7 +6,7 @@
 #    By: aimokhta <aimokhta@student.42kl.edu.my>    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2026/06/16 09:31:30 by aimokhta          #+#    #+#              #
-#    Updated: 2026/09/15 13:57:13 by aimokhta         ###   ########.fr        #
+#    Updated: 2026/09/19 23:02:11 by aimokhta         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -65,12 +65,12 @@ logs:
 	@docker logs nginx
 	@echo "$(PURPLE)\ndocker logs authentication$(RESET)"
 	@docker logs authentication
-	@echo "$(PURPLE)\ndocker logs party-manager$(RESET)"
-	@docker logs party-manager
-	@echo "$(PURPLE)\ndocker logs profile-system$(RESET)"
-	@docker logs profile-system
-	@echo "$(PURPLE)\ndocker logs friends-system$(RESET)"
-	@docker logs friends-system
+	@echo "$(PURPLE)\ndocker logs party$(RESET)"
+	@docker logs party
+	@echo "$(PURPLE)\ndocker logs profile$(RESET)"
+	@docker logs profile
+	@echo "$(PURPLE)\ndocker logs friends$(RESET)"
+	@docker logs friends
 # 	@echo "$(PURPLE)\ndocker logs game-stats$(RESET)"
 # 	@docker logs game-stats
 # 	@echo "$(PURPLE)\ndocker logs website$(RESET)"

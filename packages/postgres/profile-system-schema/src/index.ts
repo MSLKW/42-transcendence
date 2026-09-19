@@ -1,1 +1,0 @@
-export * from "./profile-system.schema.js";

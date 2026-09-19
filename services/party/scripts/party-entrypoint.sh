@@ -1,0 +1,10 @@
+#!/bin/sh
+
+# 1. Read the mounted secret file into a variable
+export DB_PASSWORD=$(cat "${PGPASSWORD}")
+# Construct the URL using the variable
+export DATABASE_URL="postgresql://${PGUSER}:${DB_PASSWORD}@${PGHOST}:${PGPORT}/${PGDATABASE}?schema=party_schema"
+
+# 2. Start party to the foreground
+echo "Starting party service to the foreground..."
+exec "$@"
