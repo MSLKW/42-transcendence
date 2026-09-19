@@ -18,7 +18,7 @@ export class UserState {
 		this.seat = -1;
 		this.socket.join(this.lobbyRef.lobbyRoomId);
 		// this.inactivityTimeout = setTimeout(() => {
-		// 	kickSocket(this.socket);
+		// 	kickSocket(this.socket, "Timed out due to inactivity");
 		// 	console.log(`Inactivity timed out User<${this.uuid}>`);
 		// }, 10 * 60 * 1000);
 

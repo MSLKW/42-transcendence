@@ -44,9 +44,7 @@ export const useSceneStore = create<SceneState>() (
 
 			setCurrentScene: (scene) => {
 				set({ currentScene: scene });
-				if (threejsManager) {
-					threejsManager.changeScene(scene.toLowerCase());
-				}
+				threejsManager?.changeScene(scene.toLowerCase());
 				useGameStore.setState({ gameStarted: scene === "Game" });
 			},
 			setShowWindow: (window, show, uuid) => {

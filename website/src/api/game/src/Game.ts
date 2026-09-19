@@ -22,14 +22,6 @@ export class Game {
 	private participants: Array<Participant>;
 	public	playerRef: Player | null;
 
-	// Buttons
-	// private startGameButton = document.getElementById('start-game-button') as HTMLButtonElement;
-	// private takeSeatButton = document.getElementById('take-seat-button') as HTMLButtonElement;
-	// private leaveSeatButton = document.getElementById('leave-seat-button') as HTMLButtonElement;
-	// private takeSeatInput = document.getElementById('take-seat-input') as HTMLInputElement;
-	// private seatChangeButton = document.getElementById('seat-change-button') as HTMLButtonElement;
-
-
 	constructor(sessionId: string, playerId: string) {
 		this.playerId = playerId;
 		this.socket = io({
@@ -47,7 +39,6 @@ export class Game {
 		this.playerRef = null;
 
 		this.bindSocketEvents();
-		this.bindButtonEvents();
 	}
 
 	public startGame() {
@@ -66,29 +57,12 @@ export class Game {
 		this.socket.emit("user_seat_leave");
 	}
 
-	private bindButtonEvents() {
-		// this.startGameButton.addEventListener('click', () => {
-		// 	this.startGame();
-		// });
-
-		// this.takeSeatButton.addEventListener('click', () => {
-		// 	this.socket.emit("user_seat_take", Number(this.takeSeatInput.value));
-		// });
-
-		// this.leaveSeatButton.addEventListener('click', () => {
-		// 	this.socket.emit("user_seat_leave");
-		// });
-
-		// this.seatChangeButton.addEventListener('click', () => {
-		// 	this.socket.emit("user_seat_change", Number(this.takeSeatInput.value));
-		// })
-	}
-
 	private bindSocketEvents() {
 		this.socket.on("connect", () => {
 			console.log(`[gameSocket] 'connect' id: ${this.socket.id}`);
 		});
-		this.socket.on("graceful_disconnect", () => {
+		this.socket.on("graceful_disconnect", (reason: string) => {
+			console.log(`[gameSocket 'graceful_disconnect' reason: ${reason}]`);
 			this.socket.disconnect();
 		});
 		this.socket.on("disconnect", (reason) => {
@@ -101,10 +75,8 @@ export class Game {
 		});
 	
 		this.socket.on("game_end", (gameEndStats: GameEndStatsTransmit) => {
-			this.cardHeap.reset();
 			useResultsStore.getState().setResults(gameEndStats);
-			useSceneStore.getState().setCurrentScene("Lobby");
-			useSceneStore.getState().setShowWindow("results", true);
+			this.resetGame();
 		});
 	
 		this.socket.on("player_connection_update", (connections: Record<string, boolean>) => {
@@ -158,13 +130,21 @@ export class Game {
 		const seats: string[] = Object.entries(gameState.playerSeatOrder)
 			.sort((a, b) => a[1] - b[1])
 			.map(([key]) => key);
-		useGameStore.setState({seats: seats});
+		useGameStore.setState({ seats: seats });
 		useGameStore.setState({ totalPlayers: this.participants.length });
 		useGameStore.getState().setCardsLeft(gameState.playerCardsAmount);
 		useGameStore.getState().setSeatRef();
 		useSceneStore.getState().setCurrentScene("Game");
 		this.moveCamera();
 		this.initDeckDealing(gameState);
+	}
+
+	private resetGame() {
+		this.cardHeap.reset();
+		this.playerRef = null;
+		this.participants.length = 0;
+		useSceneStore.getState().setCurrentScene("Lobby");
+		useSceneStore.getState().setShowWindow("results", true);
 	}
 
 	private initParticipants(gameState: GameStateTransmit) {

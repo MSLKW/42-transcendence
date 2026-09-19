@@ -119,8 +119,8 @@ app.put('/lobby/:lobbySessionId', (req, res) => {
 });
 
 
-export function kickSocket(socket: Socket) {
-	socket.emit("graceful_disconnect");
+export function kickSocket(socket: Socket, reason: string) {
+	socket.emit("graceful_disconnect", reason);
 	setTimeout(() => {
 		socket.disconnect(true);
 	}, 1000);

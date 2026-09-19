@@ -95,6 +95,10 @@ export class ThreeJsManager {
 		this.camera.updateProjectionMatrix();
 	}
 
+	public	getSceneId() {
+		return (this.currentSceneId);
+	}
+
 	public addScene(id: string, scene: SceneContainer): void {
 		if (id.length === 0)
 			return ;

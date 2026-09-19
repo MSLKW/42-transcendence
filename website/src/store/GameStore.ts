@@ -6,6 +6,8 @@ import { usePartyStore } from "./PartyStore";
 import { useResultsStore } from "./ResultsStore";
 import { useSceneStore } from "./SceneStore";
 import { gameInstance } from '../api/game/src/main';
+import { chatSocket } from "../api/chat/chatSocket";
+import { partySocket } from "../api/party/partySocket";
 import { HandType, PentupleType } from "@big2/game-types";
 
 export const GAMEMODE_LABEL = [
@@ -173,6 +175,7 @@ export const useGameStore = create<GameState>() (
 				useResultsStore.getState().resetResults();
 				useSceneStore.getState().setShowWindow("results", false);
 				useSceneStore.getState().setCurrentScene("Home");
+				partySocket.leaveParty();
 			},
 			incTotalWin: (uuid) => {
 				const profileStore = useProfileStore.getState();

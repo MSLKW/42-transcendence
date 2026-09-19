@@ -7,11 +7,12 @@ import { ResultsPlayedModule } from "./played/ResultsPlayedModule";
 import { ResultsTotalModule } from "./total/ResultsTotalModule";
 import { useResultsStore } from "../../store/ResultsStore";
 import { useProfileStore } from "../../store/ProfileStore";
+import { useSceneStore } from "../../store/SceneStore";
 
 export const ResultsWindow = () => {
 	const round = useGameStore((store) => store.round);
 	const endGame = useGameStore((store) => store.endGame);
-	const startGame = useGameStore((store) => store.startGame);
+	const setShowWindow = useSceneStore((store) => store.setShowWindow);
 	const cachedData = useProfileStore((store) => store.cachedData);
 	const getLeaderboard = useResultsStore((store) => store.getLeaderboard);
 
@@ -55,10 +56,10 @@ export const ResultsWindow = () => {
 									btn-text bg-light
 								"
 							>
-								End Game
+								Leave Game
 							</button>
 							<button
-								onClick={startGame}
+								onClick={() => {setShowWindow("results", false)}}
 								className="
 									h-3rem aspect-6/1
 									btn-text bg-light

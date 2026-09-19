@@ -15,16 +15,14 @@ export class LobbyManager {
 		io.on("connection", (socket) => {
 			const lobbyId = socket.handshake.auth.lobbyId;
 			const uuid = socket.data.uuid;
-			// const uuid = socket.handshake.auth.uuid;
 			const lobby = this.lobbies[lobbyId];
+			// switch to connect_error
 			if (uuid === undefined || uuid === null) {
-				console.log(`Authentication failed and could not give uuid`)
-				kickSocket(socket);
+				kickSocket(socket, `Authentication failed and could not give uuid`);
 				return ;
 			}
 			if (lobby === undefined) {
-				console.log(`Lobby<${lobbyId}> not found`);
-				kickSocket(socket);
+				kickSocket(socket, `Lobby<${lobbyId}> not found`);
 				return ;
 			}
 			lobby.connectUser(socket, uuid);
