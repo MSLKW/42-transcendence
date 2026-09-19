@@ -1,7 +1,8 @@
 import { AvatarSetImageButton } from "./AvatarSetImageButton";
+import { AvatarUploadButton } from "./AvatarUploadButton";
 
 interface AvatarSelectModuleProps {
-	avatar: string;
+	avatar: string | undefined;
 	setAvatar: (avatar: string) => void;
 }
 export const AvatarSelectModule = ({ avatar, setAvatar }: AvatarSelectModuleProps) => {
@@ -23,26 +24,43 @@ export const AvatarSelectModule = ({ avatar, setAvatar }: AvatarSelectModuleProp
 	] as const;
 	
 	return (
-		<div
-			className="
-				grid grid-flow-col auto-cols-max grid-rows-3
-				gap-1rem py-2rem px-2rem
-				overflow-x-auto
-				bg-dark-semi rounded-xl
-			"
-		>
-			{
-				AVATAR_IMGS.map((img) => {
-					return (
-						<AvatarSetImageButton
-							key={img}
-							id={img}
-							avatar={avatar}
-							setAvatar={setAvatar}
-						/>
-					);
-				})
-			}
+		<div className="flex gap-1rem">
+			<div
+				className="
+					grid grid-flow-col auto-cols-max grid-rows-3
+					gap-1rem py-2rem px-2rem
+					overflow-x-auto
+					bg-dark-semi rounded-xl
+				"
+			>
+				{
+					AVATAR_IMGS.map((img) => {
+						return (
+							<AvatarSetImageButton
+								key={img}
+								id={img}
+								avatar={avatar}
+								setAvatar={setAvatar}
+							/>
+						);
+					})
+				}
+			</div>
+			<div
+				className="
+					flex flex-col
+					place-content-center place-items-center
+					h-auto px-1rem gap-1rem
+					bg-dark-semi rounded-xl
+			">
+				<AvatarUploadButton />
+				<AvatarSetImageButton
+					key={null}
+					id={null}
+					avatar={avatar}
+					setAvatar={setAvatar}
+				/>
+			</div>
 		</div>
 	);
 }

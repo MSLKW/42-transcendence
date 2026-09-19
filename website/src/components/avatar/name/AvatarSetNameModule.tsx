@@ -4,7 +4,7 @@ import { AvatarImage } from "../image/AvatarImage";
 interface AvatarSetNameModuleProps {
 	name: string;
 	setName: (name: string) => void;
-	avatar: string;
+	avatar: string | undefined;
 	uuid: string | undefined;
 }
 export const AvatarSetNameModule = ({ name, setName, avatar, uuid }: AvatarSetNameModuleProps) => {

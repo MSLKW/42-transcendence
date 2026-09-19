@@ -1,6 +1,6 @@
 interface AvatarSetImageButtonProps {
-	id: string;
-	avatar: string;
+	id: string | null;
+	avatar: string | undefined;
 	setAvatar: (img: string) => void;
 }
 
@@ -17,11 +17,14 @@ export const AvatarSetImageButton = ({ id, avatar, setAvatar }: AvatarSetImageBu
 				cursor-pointer
 			`}
 		>
-			<img
-				src={id}
-				alt={id}
-				loading="lazy"
-			/>
+			{
+				id &&
+					<img
+						src={id}
+						alt={id}
+						loading="lazy"
+					/>
+			}
 		</button>
 	)
 }

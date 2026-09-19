@@ -56,7 +56,7 @@ export const ProfileWindow = () => {
 					<AvatarSetNameModule
 						name={name}
 						setName={setName}
-						avatar={avatar ?? "avatar-unknown.webp"}
+						avatar={avatar ?? undefined}
 						uuid={clientUuid}
 					/>
 					<PlayerDataModule
@@ -66,7 +66,7 @@ export const ProfileWindow = () => {
 					/>
 				</div>
 				<AvatarSelectModule
-					avatar={avatar ?? "avatar-unknown.webp"}
+					avatar={avatar ?? undefined}
 					setAvatar={setAvatar}
 				/>
 				<MedalsModule uuid={clientUuid}/>
