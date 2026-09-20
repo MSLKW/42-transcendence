@@ -125,7 +125,7 @@ export const LobbyScene = () => {
 						}
 						<button
 							data-tip={seatsFilled ? "Let's Play!" : "Waiting for seats to be filled"}
-							disabled={!seatsFilled}
+							disabled={!(seatsFilled && clientUuid === hostUuid)}
 							onClick={startGame}
 							className="
 								btn-text bg-light
@@ -191,7 +191,7 @@ export const LobbyScene = () => {
 					))}
 				</div>
 				<div className="flex gap-2rem pt-2rem">
-					{ members.length > 1 && <UnseatButton uuid={clientUuid!} /> }
+					{ members.length > 1 && <UnseatButton /> }
 					{ members.length > 1 && <BotManagerButton /> }
 					{ round >= 1 && <ResultsCallButton /> }
 				</div>

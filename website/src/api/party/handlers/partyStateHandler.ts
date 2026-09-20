@@ -19,10 +19,10 @@ export function partyStateHandler(socket: Socket) {
 			usePartyStore.setState({ members: partyData.members });
 		if (partyData.gameId)
 			usePartyStore.setState({ partyGameId: partyData.gameId });
-		if (partyData.gameId && clientUuid)
-			joinGameLobby(partyData.gameId, clientUuid);
 		if (partyData.hostUuid)
 			usePartyStore.setState({ hostUuid: partyData.hostUuid });
+		if (partyData.gameId && clientUuid)
+			joinGameLobby(partyData.gameId, clientUuid);
 
 		await useProfileStore.getState().setCachedData();
 
