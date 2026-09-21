@@ -83,13 +83,13 @@ export class Game {
 			console.log(connections);
 		});
 	
-		this.socket.on("user_seat_take", (status: StatusTransmit) => {
-			console.log(`Take seat: ${status.success} | ${status.message}`);
-		});
+		// this.socket.on("user_seat_take", (status: StatusTransmit) => {
+		// 	console.log(`Take seat: ${status.success} | ${status.message}`);
+		// });
 	
-		this.socket.on("user_seat_leave", (status: StatusTransmit) => {
-			console.log(`Left Seat: ${status.success} | ${status.message}`);
-		});
+		// this.socket.on("user_seat_leave", (status: StatusTransmit) => {
+		// 	console.log(`Left Seat: ${status.success} | ${status.message}`);
+		// });
 	
 		this.socket.on("user_seat_update", (seatData: SeatOrderTransmit) => {
 			const totalPlayers = useGameStore.getState().totalPlayers;
@@ -116,13 +116,14 @@ export class Game {
 		});
 	
 		this.socket.on("game_state", (gameState: GameStateTransmit) => {
-			console.log("[game] Received game_state");
+			console.log("[gameSocket] Received game_state");
 			this.initGame(gameState);
 		});
 	}
 
 	private initGame(gameState: GameStateTransmit) {
 		useGameStore.setState({ round: useGameStore.getState().round + 1 });
+		useSceneStore.getState().setShowWindow("results", false);
 		this.initParticipants(gameState);
 		const seats: string[] = Object.entries(gameState.playerSeatOrder)
 			.sort((a, b) => a[1] - b[1])
@@ -138,6 +139,9 @@ export class Game {
 
 	private resetGame() {
 		this.cardHeap.reset();
+		for (let i = 0; i < this.participants.length; i++) {
+			this.participants[i].cardManager.reset();
+		}
 		this.playerRef = null;
 		this.participants.length = 0;
 		useSceneStore.getState().setCurrentScene("Lobby");

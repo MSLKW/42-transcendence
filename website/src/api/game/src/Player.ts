@@ -32,10 +32,6 @@ export class Player extends Participant {
 	}
 
 	private setupListeners() {
-		this.socket.on("game_end", () => {
-			this.cardManager.reset();
-		});
-		
 		this.socket.on("player_play_card_hand_request", (status: StatusTransmit) => {
 			if (status.success === true) {
 				const cardHand = this.cardManager.sendSelectedCards();

@@ -30,10 +30,6 @@ export class Opponent extends Participant {
 				useGameStore.getState().reduceCardsLeft(this.uuid, cardHand.cards.length);
 			}
 		});
-
-		this.socket.on("game_end", (gameEndStats: GameEndStatsTransmit) => {
-			this.cardManager.reset();
-		})
 	}
 
 	public override sync(gameState: GameStateTransmit) {

@@ -197,8 +197,8 @@ export class Lobby {
 				kickSocket(user.socket, "Lobby is updated and kicked non-whitelisted members");
 			}
 		}
-		// this.hostUuid = data.hostUuid;
-		console.log(`lobby${this.sessionId} is updated`)
+		this.hostUuid = data.hostUuid;
+		console.log(`Lobby<${this.sessionId}> is updated with ${data}`);
 		return (true);
 	}
 

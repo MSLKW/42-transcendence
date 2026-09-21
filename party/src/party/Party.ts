@@ -70,7 +70,7 @@ export class Party
 				},
 				body: JSON.stringify({
 					hostUuid: this.hostId,
-					playersLimit: 4,
+					// playersLimit: 4,
 					playerUuids: [...this.members.keys()]
 				})
 			});
@@ -110,7 +110,7 @@ export class Party
 				},
 				body: JSON.stringify({
 					hostUuid: this.hostId,
-					playersLimit: 4,
+					// playersLimit: 4,
 					playerUuids: [...this.members.keys()]
 				})
 			});

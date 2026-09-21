@@ -55,6 +55,7 @@ interface GameState extends GameValues {
 	setCardsLeft: (playerCardsAmount: Record<string, number>) => void;
 	reduceCardsLeft: (uuid: string, cardsAmount: number) => void;
 	setCurrentHand: (handType: HandType, pentupleType: PentupleType) => void;
+	resetGame: () => void;
 	startGame: () => void;
 	skipTurn: () => void;
 
@@ -154,14 +155,13 @@ export const useGameStore = create<GameState>() (
 				set({ currentHand: newCurrentHand });
 			},
 			startGame: () => {
-				useSceneStore.getState().setShowWindow("results", false);
 				gameInstance?.startGame();
 			},
 			skipTurn: () => {
 				gameInstance?.playerRef?.skipTurnButtonHandler();
 			},
 
-			endGame: () => {
+			resetGame: () => {
 				set({
 					totalPlayers: 0,
 					seats: [],
@@ -174,6 +174,10 @@ export const useGameStore = create<GameState>() (
 				});
 				useResultsStore.getState().resetResults();
 				useSceneStore.getState().setShowWindow("results", false);
+			},
+
+			endGame: () => {
+				get().resetGame();
 				useSceneStore.getState().setCurrentScene("Home");
 				partySocket.leaveParty();
 			},
