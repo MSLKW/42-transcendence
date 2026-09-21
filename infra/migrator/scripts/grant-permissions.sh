@@ -37,7 +37,7 @@
 #!/bin/sh
 set -e
 
-export PGPASSWORD="$(cat /run/secrets/db-admin-password)"
+export PGPASSWORD="$(cat "${PGPASSWORD_FILE}")"
 
 psql -v ON_ERROR_STOP=1 <<-EOSQL
 

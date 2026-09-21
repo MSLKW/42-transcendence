@@ -1,25 +1,24 @@
-networks:
-  transcendence: # main goal: need access out to the browser / internet
-    name: ${MAIN_NETWORK_NAME}
-    driver: bridge 
-  database: # main goal: to talk to Postgres ultimately - any container who need to communicate into PostgreSQL must be incuded in this network
-    name: ${DB_NETWORK_NAME}
-    driver: bridge # anyone outside cannot enter this network
-    internal: true # anyone inside cannot go outside this network (talking to external containers or internet/browsers)
-  # backend-internal: # specifically for internal API
-  #   name: ${INTERNAL_BACKEND_NETWORK_NAME}
-  #   driver: bridge
-  #   internal: true
-  # lobby: # specifically among partys / lobbys
-  #   name: ${LOBBY_NETWORK_NAME}
-  #   driver: bridge
-  #   internal: true
+name: ${PROJECT_NAME}
 
+
+networks:
+  transcendence: # internet-facing
+    name: ${MAIN_NETWORK}
+    driver: bridge # no ingress (Incoming traffic or data is completely blocked from entering this network)
+  database: # securing of anything database related from being expose to those not talking to database
+    name: ${DB_NETWORK}
+    driver: bridge # no ingress (Incoming traffic or data is completely blocked from entering this network)
+    internal: true # no egress (Outgoing traffic or data is completely blocked from leaving this network)
 
 volumes: # industry standard => name volumes => more secure oppose to anyone ever can adjust volumes (data's disk) on host if volumes are bind mounted
   pg-data:
+    name: ${PG_VOLUME}
   dg-data:
+    name: ${DG_VOLUME}
   website-data:
+    name: ${WEBSITE_VOLUME}
+  profile-avatars-data:
+    name: ${PROFILE_AVATARS_VOLUME}
 
 
 secrets: # auto make all secret files just read only mode
@@ -27,14 +26,14 @@ secrets: # auto make all secret files just read only mode
     file: ./secrets/database-passwords/db-admin-password.txt
   db-auth-password:
     file: ./secrets/database-passwords/db-auth-password.txt
-  db-party-manager-password:
-    file: ./secrets/database-passwords/db-party-manager-password.txt
-  db-profile-system-password:
-    file: ./secrets/database-passwords/db-profile-system-password.txt
-  db-friends-system-password:
-    file: ./secrets/database-passwords/db-friends-system-password.txt
-  db-game-password:
-    file: ./secrets/database-passwords/db-game-password.txt
+  db-party-password:
+    file: ./secrets/database-passwords/db-party-password.txt
+  db-profile-password:
+    file: ./secrets/database-passwords/db-profile-password.txt
+  db-friends-password:
+    file: ./secrets/database-passwords/db-friends-password.txt
+  db-game-stats-password:
+    file: ./secrets/database-passwords/db-game-stats-password.txt
 
 
 services:
@@ -53,25 +52,23 @@ services:
       POSTGRES_DB: ${PGDATABASE}
       POSTGRES_USER: ${PGUSER}
       POSTGRES_PASSWORD_FILE: /run/secrets/db-admin-password
+      PGUSER_AUTH: ${PGUSER_AUTH}
+      PGUSER_PARTY: ${PGUSER_PARTY}
+      PGUSER_PROFILE: ${PGUSER_PROFILE}
+      PGUSER_GAME_STATS: ${PGUSER_GAME_STATS}
+      PGUSER_FRIENDS: ${PGUSER_FRIENDS}
     secrets:
       - db-admin-password
       - db-auth-password
-      - db-party-manager-password
-      - db-profile-system-password
-      - db-friends-system-password
-      - db-game-password
-    env_file:
-      - .env
+      - db-party-password
+      - db-profile-password
+      - db-friends-password
+      - db-game-stats-password
     volumes:
       - pg-data:/var/lib/postgresql/data
       - ./infra/postgresql/init.sh:/docker-entrypoint-initdb.d/init.sh:ro
     networks:
       - database
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${PGUSER} -d ${PGDATABASE}"]
-      interval: 5s
-      timeout: 5s
-      retries: 5
 
 
   #     DRIZZLE-GATEWAY, Database's GUI Dev Tool 
@@ -80,15 +77,17 @@ services:
     container_name: drizzle-gateway
     image: drizzle-gateway:infra
     build: ./infra/drizzle-gateway
-    pull_policy: missing # Docker saves version into local machine's cache after the first latest's download, pull_policy: missing (the default) => Docker will keep using that old cached version forever
+    pull_policy: missing # to stick to the current version used, previously by default used missing too anyway.
     restart: unless-stopped
     ports:
-      - "${DRIZZLE_GATEWAY_PORT}:${DRIZZLE_GATEWAY_PORT}"
-    env_file:
-      - .env
+      - "${LOCALHOST}:${DRIZZLE_GATEWAY_PORT}:${DRIZZLE_GATEWAY_PORT}"
     environment: # DB_* / PG_* - not recognized as per DG documentation, better use PG* 
       PORT: ${DRIZZLE_GATEWAY_PORT}
       STORE_PATH: /app
+      PGPORT: ${PGPORT}
+      PGHOST: ${PGHOST}
+      PGDATABASE: ${PGDATABASE}
+      PGUSER: ${PGUSER}
     volumes:
       - dg-data:/app # Required persistent volume mounting to /app
     networks:
@@ -100,7 +99,7 @@ services:
   
 
   #     MIGRATOR (Node.js + Drizzle), One-shot container (or other technical terms, ephemeral containers / job containers)
-  #     ONE-SHOT MICORSERVICE => "run once per deploy" job container
+  #     ONE-SHOT INFRASTRUCTURE MICORSERVICE => "run once per deploy" job container
   migrator:
     container_name: migrator
     image: migrator:infra
@@ -109,13 +108,21 @@ services:
       additional_contexts:
         root: .
     pull_policy: never
-    restart: no # one-shot container = It runs psql + migrations only, then, the end (exit 0)! that's the sole purpose of this container's existance. 
+    restart: "no" # one-shot container = It runs psql + migrations only, then, the end (exit 0)! that's the sole purpose of this container's existance. 
     environment:
-      PGPASSWORD: /run/secrets/db-admin-password
+      PGPASSWORD_FILE: /run/secrets/db-admin-password
+      PGPORT: ${PGPORT}
+      PGHOST: ${PGHOST}
+      PGDATABASE: ${PGDATABASE}
+      PGUSER: ${PGUSER}
+      PGUSER_AUTH: ${PGUSER_AUTH}
+      PGUSER_PARTY: ${PGUSER_PARTY}
+      PGUSER_PROFILE: ${PGUSER_PROFILE}
+      PGUSER_GAME_STATS: ${PGUSER_GAME_STATS}
+      PGUSER_FRIENDS: ${PGUSER_FRIENDS}
+      PG_MAX_CONNECTIONS: ${PG_MAX_CONNECTIONS}
     secrets:
       - db-admin-password
-    env_file:
-      - .env
     networks:
       - database
     depends_on:
@@ -128,104 +135,103 @@ services:
     container_name: nginx
     image: nginx:infra
     build: ./infra/nginx
-    pull_policy: missing
+    pull_policy: missing    # default
     restart: unless-stopped
     ports:
-      - "80:80"
+      - "${DOMAIN_PORT}:${DOMAIN_PORT}"
+    environment:
+      DOMAIN_PORT: ${DOMAIN_PORT}
+      NGINX_ENVSUBST_FILTER: ^(DOMAIN_PORT|.*_SERVICE_URL)$
+      WEBSITE_SERVICE_URL: ${WEBSITE_SERVICE_URL}
+      AUTH_SERVICE_URL: ${AUTH_SERVICE_URL}
+      PARTY_SERVICE_URL: ${PARTY_SERVICE_URL}
+      PROFILE_SERVICE_URL: ${PROFILE_SERVICE_URL}
+      FRIENDS_SERVICE_URL: ${FRIENDS_SERVICE_URL}
+      CHAT_SERVICE_URL: ${CHAT_SERVICE_URL}
+      GAME_STATS_SERVICE_URL: ${GAME_STATS_SERVICE_URL}
+      GAME_SERVER_SERVICE_URL: ${GAME_SERVER_SERVICE_URL}
+      GAME_BOT_SERVICE_URL: ${GAME_BOT_SERVICE_URL}
     networks:
       - transcendence
-    depends_on:
-      authentication:
-        condition: service_healthy
+
+
+  # #     FRONTEND MICORSERVICE
+  # website:
+  #   container_name: website
+  #   image: website:services
+  #   build:
+  #     context: ./services/website
+  #     additional_contexts:
+  #       root: .
+  #       game-types: ./packages/types/game-types
+  #   pull_policy: never
+  #   restart: unless-stopped
+  #   volumes: # temporary for vite hmr
+  #     - ./services/website:/app/website
+  #     - /app/node_modules # does it actually mean ./node_mosules:/app/node_modules
+  #     - /app/website/node_modules # does it actually mean ./services/website/node_modules:/app/services/website/node_modules
+  #   environment:
+  #     DOMAIN_PORT: ${DOMAIN_PORT} # Right now only for vite config, can remove in production
+  #   networks:
+  #     - transcendence
 
 
   #     BACKEND MICORSERVICE
   authentication:
     container_name: authentication
-    image: auth:services
+    image: authentication:services
     build:
-      context: ./services/authentication                                        # Set workdir to the repo's root
+      context: ./services/authentication
       additional_contexts:
         root: .
         auth-schema: ./packages/postgres/auth-schema
-        postgres-client: packages/postgres/postgres-client
+        postgres-client: ./packages/postgres/postgres-client
     pull_policy: never
     restart: unless-stopped
     environment:
       PGUSER: ${PGUSER_AUTH}
-      PGPASSWORD: /run/secrets/db-auth-password
-    env_file:
-      - .env
-      - ./services/authentication/.env
+      PGPASSWORD_FILE: /run/secrets/db-auth-password
+      PGPORT: ${PGPORT}
+      PGHOST: ${PGHOST}
+      PGDATABASE: ${PGDATABASE}
+      PORT: ${AUTH_SERVICE_PORT}
+      SESSION_DURATION_MS: ${AUTH_SERVICE_SESSION_DURATION_MS}
+      SESSION_CLEANUP_CRON_SCHEDULE_STRING: ${AUTH_SERVICE_SESSION_CLEANUP_CRON_SCHEDULE_STRING}
+      PROFILE_SERVICE_URL: ${PROFILE_SERVICE_URL}
     secrets:
       - db-auth-password
     networks:
       - transcendence
       - database
-      # - backend-internal
-    healthcheck:
-      test: ["CMD", "wget", "--spider", "-q", "http://localhost:3000/"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
-      start_period: 5s
     depends_on:
       migrator:
         condition: service_completed_successfully  # Waits for migrator to finish and exit with code 0
 
 
   #     BACKEND MICORSERVICE
-  party-manager:
-    container_name: party-manager
+  party:
+    container_name: party
     image: party:services
     build:
-      context: ./services/party-manager
+      context: ./services/party
       additional_contexts:
         root: .
         auth-schema: ./packages/postgres/auth-schema
-        party-manager-schema: ./packages/postgres/party-manager-schema
+        party-schema: ./packages/postgres/party-schema
         postgres-client: ./packages/postgres/postgres-client
     pull_policy: never
     restart: unless-stopped
     environment:
-      PGUSER: ${PGUSER_PARTY_MANAGER}
-      PGPASSWORD: /run/secrets/db-party-manager-password
-    env_file:
-      - .env
-      - ./services/party-manager/.env
+      PGUSER: ${PGUSER_PARTY}
+      PGPASSWORD_FILE: /run/secrets/db-party-password
+      PGPORT: ${PGPORT}
+      PGHOST: ${PGHOST}
+      PGDATABASE: ${PGDATABASE}
+      PORT: ${PARTY_SERVICE_PORT}
+      AUTH_SERVICE_URL: ${AUTH_SERVICE_URL}
+      GAME_SERVICE_URL: ${GAME_SERVICE_URL}
     secrets:
-      - db-party-manager-password
-    networks:
-      - transcendence
-      - database
-      # - backend-internal
-      # - lobby
-    depends_on:
-      migrator:
-        condition: service_completed_successfully  # Waits for migrator to finish and exit with code 0
-
-
-  #     BACKEND MICORSERVICE
-  friends-system:
-    container_name: friends-system
-    image: friends:services
-    build:
-      context: ./services/friends-system
-      additional_contexts:
-        root: .
-        auth-schema: ./packages/postgres/auth-schema
-        friends-system-types: ./packages/types/friends-system-types
-        friends-system-schema: ./packages/postgres/friends-system-schema
-        postgres-client: ./packages/postgres/postgres-client
-    pull_policy: never
-    restart: unless-stopped
-    environment:
-      PGUSER: ${PGUSER_FRIENDS_SYSTEM}
-      PGPASSWORD: /run/secrets/db-friends-system-password
-    env_file:
-      - .env
-    secrets:
-      - db-friends-system-password
+      - db-party-password
     networks:
       - transcendence
       - database
@@ -235,65 +241,133 @@ services:
 
 
  #     BACKEND MICORSERVICE
-  profile-system:
-    container_name: profile-system
+  profile:
+    container_name: profile
     image: profile:services
     build:
-      context: ./services/profile-system
+      context: ./services/profile
       additional_contexts:
         root: .
         auth-schema: ./packages/postgres/auth-schema
-        profile-system-types: ./packages/types/profile-system-types
-        profile-system-schema: ./packages/postgres/profile-system-schema
+        profile-types: ./packages/types/profile-types
+        profile-schema: ./packages/postgres/profile-schema
         postgres-client: ./packages/postgres/postgres-client
     pull_policy: never
     restart: unless-stopped
     environment:
-      PGUSER: ${PGUSER_PROFILE_SYSTEM}
-      PGPASSWORD: /run/secrets/db-profile-system-password
-    env_file:
-      - .env
-      - ./services/profile-system/.env
+      PGUSER: ${PGUSER_PROFILE}
+      PGPASSWORD_FILE: /run/secrets/db-profile-password
+      PGPORT: ${PGPORT}
+      PGHOST: ${PGHOST}
+      PGDATABASE: ${PGDATABASE}
+      PORT: ${PROFILE_SERVICE_PORT}
+      AUTH_SERVICE_URL: ${AUTH_SERVICE_URL}
+      AVATAR_DIR: ${PROFILE_SERVICE_AVATAR_DIR}
+    # volumes:
+    #   - profile-avatars-data: /app/profile_data #will be adjusted. use env var PROFILE_SERVICE_AVATAR_DIR instead appended onto /app?
     secrets:
-      - db-profile-system-password
+      - db-profile-password
     networks:
       - transcendence
       - database
-      # - backend-internal
     depends_on:
       migrator:
         condition: service_completed_successfully  # Waits for migrator to finish and exit with code 0
 
 
-#   #     BACKEND MICORSERVICE
-#   game:
-#     build:
-#       context: ./services/game
-#     additional_contexts:
-#       root: .
-#       game-types: ./packages/types/game-types
-#     pull_policy: never
-#     image: game:services
-#     container_name: game
-#     restart: unless-stopped
-#     networks:
-#       - transcendence
-#       - database
-#       # - backend-internal
+  #     BACKEND MICORSERVICE
+  friends:
+    container_name: friends
+    image: friends:services
+    build:
+      context: ./services/friends
+      additional_contexts:
+        root: .
+        auth-schema: ./packages/postgres/auth-schema
+        friends-types: ./packages/types/friends-types 
+        friends-schema: ./packages/postgres/friends-schema
+        postgres-client: ./packages/postgres/postgres-client
+    pull_policy: never
+    restart: unless-stopped
+    environment:
+      PGUSER: ${PGUSER_FRIENDS}
+      PGPASSWORD_FILE: /run/secrets/db-friends-password
+      PGPORT: ${PGPORT}
+      PGHOST: ${PGHOST}
+      PGDATABASE: ${PGDATABASE}
+      AUTH_SERVICE_URL: ${AUTH_SERVICE_URL}
+    secrets:
+      - db-friends-password
+    networks:
+      - transcendence
+      - database
+    depends_on:
+      migrator:
+        condition: service_completed_successfully  # Waits for migrator to finish and exit with code 0
 
 
-#   #     FRONTEND MICORSERVICE
-#   website:
-#     build:
-#       context: ./services/website
-#       additional_contexts:
-#         root: .
-#     pull_policy: never
-#     image: website:services
-#     container_name: website
-#     restart: unless-stopped
-#     networks:
-#       - transcendence
+  # #     BACKEND MICORSERVICE
+  # chat:
+  #   container_name: chat
+  #   image: chat:services
+  #   build: 
+  #     context: ./services/chat
+  #     additional_contexts:
+  #       root: .
+  #   pull_policy: never
+  #   restart: unless-stopped
+  #   ports:
+  #     - "3001:${CHAT_SERVICE_PORT}"
+  #   environment:
+  #     PORT: ${CHAT_SERVICE_PORT}
+  #     AUTH_SERVICE_URL: ${AUTH_SERVICE_URL}
+  #   networks:
+  #     - transcendence
 
-#  # CHAT - BACKEND SERVICE - NETWORK = backend-internal & transcendence
-#  # BOT - BACKEND SERVICE - NETWORK = backend-internal & transcendence
+
+  # #     BACKEND MICORSERVICE
+  # game-server:
+  #   container_name: game-server
+  #   build: 
+  #     context: ./services/game-server
+  #     additional_contexts:
+  #       root: .
+  #       game-types: ./packages/types/game-types
+  #   image: game-server:services
+  #   pull_policy: never
+  #   restart: unless-stopped
+  #   environment:
+  #     AUTH_SERVICE_URL: ${AUTH_SERVICE_URL}
+  #   networks:
+  #     - transcendence
+
+
+  # #     BACKEND MICORSERVICE
+  # game-bot:
+  #   container_name: game-bot
+  #   build: 
+  #     context: ./services/game-bot
+  #     additional_contexts:
+  #       root: .
+  #   image: game-bot:services
+  #   pull_policy: never
+  #   restart: unless-stopped
+  #   networks:
+  #     - transcendence
+
+
+  # # #     BACKEND MICORSERVICE
+  # game-stats:
+  #   container_name: game-stats
+  #   image: game-stats:services
+  #   environment:
+  #     PGUSER: ${PGUSER_GAME_STATS}
+  #     PGPASSWORD_FILE: /run/secrets/db-game-stats-password
+  #     PGPORT: ${PGPORT}
+  #     PGHOST: ${PGHOST}
+  #     PGDATABASE: ${PGDATABASE}
+  #   secrets:
+  #     - db-game-stats-password
+  #   depends_on:
+  #     migrator:
+  #       condition: service_completed_successfully  # Waits for migrator to finish and exit with code 0

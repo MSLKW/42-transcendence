@@ -11,19 +11,9 @@ import { defineConfig } from "drizzle-kit";
 
 
 // 2. Helper to safely read the password
-function requirePassword(): string {
-  try 
-  {
-    const passwordFile = "/run/secrets/db-admin-password";
-    const password = fs.readFileSync(passwordFile, "utf-8").trim();
-    if (!password)
-      throw new Error("empty password");
-    return password;
-  } 
-  catch (err: any) 
-  {
-    throw new Error("CRITICAL: Database password could not be loaded from the secret file itself");
-  }
+const password = fs.readFileSync(process.env.PGPASSWORD_FILE!, 'utf-8').trim();
+if (!password) {
+  throw new Error("CRITICAL: Database password could not be loaded from the secret file itself.");
 }
 
 
@@ -42,7 +32,7 @@ export default defineConfig({
     out: "./migrations", // naming is following industry standard / drizzle kit's default behaviour / drizzle's documentation
     dbCredentials: {
         // Construct the URL using the helper
-        url: `postgresql://${process.env.PGUSER}:${requirePassword()}@${process.env.PGHOST}:${process.env.PGPORT}/${process.env.PGDATABASE}`,
+        url: `postgresql://${process.env.PGUSER}:${password}@${process.env.PGHOST}:${process.env.PGPORT}/${process.env.PGDATABASE}`,
     },
     // Optional: Add verbose logging for debugging migrations
     verbose: true, // Makes the terminal output talkative. It will show you the exact SQL strings it's running. This is vital when you are learning or debugging why a migration might be failing.
