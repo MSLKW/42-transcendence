@@ -144,7 +144,6 @@ export class PlayerState {
 				return (status);
 			}
 		}
-		// need to fix it so that if a three diamonds player disconnect, then the next player can play anything instead of soft locked
 		if (this.cardHeapRef.requiresThreeDiamonds === true && PlayerState.hasCard(cardHand.cards, CardRank.Three, CardSuit.Diamond) === false) {
 			status.message = "first cardhand played must contain three of diamonds";
 			return (status);

@@ -99,10 +99,7 @@ export class Game {
 				useGameStore.getState().initSeats();
 			}
 			else {
-				const seats: string[] = Object.entries(seatData.seatOrder)
-					.sort((a, b) => a[1] - b[1])
-					.map(([key]) => key);
-				useGameStore.setState({seats: seats});
+				useGameStore.setState({seats: seatData.seatOrder});
 			}
 		});
 

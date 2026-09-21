@@ -20,6 +20,7 @@ export const LobbyScene = () => {
 	const removeBots = useBotStore((store) => store.removeBots);
 	const totalPlayers = useGameStore((store) => store.totalPlayers);
 	const seats = useGameStore((store) => store.seats);
+	const seatRef = useGameStore((store => store.seatRef));
 	const startGame = useGameStore((store) => store.startGame);
 	const round = useGameStore((store) => store.round);
 	const members = usePartyStore((store) => store.members);

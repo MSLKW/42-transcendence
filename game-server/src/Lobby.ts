@@ -37,12 +37,15 @@ export class Lobby {
 		io.to(this.lobbyRoomId).emit(event, payload);
 	}
 
-	public getSeatOrder() {
-		const seatOrder: Record<string, number> = {};
-		for (let i = 0; i < this.users.length; i++) {
-			const seat = this.users[i].seat;
-			if (seat >= 0) {
-				seatOrder[this.users[i].uuid] = seat;
+	public getSeatOrder(): (string | null)[] {
+		const seatOrder: (string | null)[] = [];
+		for (let i = 0; i < this.totalSeats; i++) {
+			const seatedUser = this.users.find((user) => user.seat === i);
+			if (seatedUser !== undefined) {
+				seatOrder.push(seatedUser.uuid);
+			}
+			else {
+				seatOrder.push(null);
 			}
 		}
 		return (seatOrder);
