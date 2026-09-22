@@ -10,6 +10,7 @@ networks:
     driver: bridge # no ingress (Incoming traffic or data is completely blocked from entering this network)
     internal: true # no egress (Outgoing traffic or data is completely blocked from leaving this network)
 
+
 volumes: # industry standard => name volumes => more secure oppose to anyone ever can adjust volumes (data's disk) on host if volumes are bind mounted
   pg-data:
     name: ${PG_VOLUME}
