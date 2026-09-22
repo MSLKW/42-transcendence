@@ -18,11 +18,6 @@ COPY                                . ./services/party/
 
 RUN npm run build:docker -w party
 
-# RUN npm run build -w @big2/auth-schema
-# RUN npm run build -w @big2/party-schema
-# RUN npm run build -w @big2/postgres-client
-# RUN npm run build -w party
-
 #Runner
 FROM node:20-alpine AS runner
 WORKDIR /app
@@ -43,8 +38,15 @@ COPY --from=builder /app/services/party/dist                    ./services/party
 
 COPY scripts/* /usr/local/bin
 
-EXPOSE 3000
+ENV PORT=3000
+# ^ default fallback only, in case someone runs this image standalone without Compose.
+# Compose's `environment: PORT=${PARTY_SERVICE_PORT}` overrides this ENV at runtime.
 
+EXPOSE ${PORT}
+
+HEALTHCHECK --interval=5s --timeout=3s --retries=3 --start-period=5s \
+	CMD wget -q --spider http://localhost:${PORT}/health || exit 1
+	
 WORKDIR /app/services/party
 ENTRYPOINT ["/usr/local/bin/party-entrypoint.sh"]
 CMD ["npm", "run", "start"]

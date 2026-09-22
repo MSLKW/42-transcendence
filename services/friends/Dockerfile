@@ -19,11 +19,6 @@ COPY --from=postgres-client         . ./packages/postgres/postgres-client/
 COPY                                . ./services/friends/
 
 RUN npm run build:docker -w friends
-# RUN npm run build -w @big2/auth-schema
-# RUN npm run build -w @big2/friends-types
-# RUN npm run build -w @big2/friends-schema
-# RUN npm run build -w @big2/postgres-client
-# RUN npm run build -w friends
 
 #Runner
 FROM node:20-alpine AS runner
@@ -47,7 +42,14 @@ COPY --from=builder /app/services/friends/dist                   ./services/frie
 
 COPY scripts/* /usr/local/bin
 
-EXPOSE 3000
+ENV PORT=3000
+# ^ default fallback only, in case someone runs this image standalone without Compose.
+# Compose's `environment: PORT=${FRIENDS_SERVICE_PORT}` overrides this ENV at runtime.
+
+EXPOSE ${PORT}
+
+# HEALTHCHECK --interval=5s --timeout=3s --retries=3 --start-period=5s \
+# 	CMD wget -q --spider http://localhost:${PORT}/health || exit 1
 
 WORKDIR /app/services/friends
 ENTRYPOINT ["/usr/local/bin/friends-entrypoint.sh"]

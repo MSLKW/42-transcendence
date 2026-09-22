@@ -15,7 +15,7 @@ server {
 	#proxy_set_header Host 		$host;					# if needed and harmless to every services only. only placing here as an possible option to consider in future, discuss first. 
 
 	# Used by the docker healthcheck via dockerfile. Answered by nginx itself, no backend involved.
-    location = /healthz {							# '=' means exact match
+    location = /health {							# '=' means exact match
         default_type text/plain;
         return 200 "ok\n";
     }
