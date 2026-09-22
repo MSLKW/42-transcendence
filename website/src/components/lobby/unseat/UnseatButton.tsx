@@ -6,7 +6,7 @@ import { UnseatIcon } from "./UnseatIcon";
 
 export const UnseatButton = () => {
 	const clientUuid = useAuthStore((store) => store.clientUuid);
-	const seats = useGameStore((store) => store.seats);
+	const seats = useGameStore((store) => store.userSeats);
 	const leaveSeat = useGameStore((store) => store.leaveSeat);
 
 	return (

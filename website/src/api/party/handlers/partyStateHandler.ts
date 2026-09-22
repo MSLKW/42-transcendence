@@ -22,8 +22,14 @@ export function partyStateHandler(socket: Socket) {
 			usePartyStore.setState({ partyGameId: partyData.gameId });
 		if (partyData.hostUuid)
 			usePartyStore.setState({ hostUuid: partyData.hostUuid });
-		if (partyData.gameId && partyData.gameId !== partyGameId && clientUuid)
+		if (partyData.gameId && partyData.gameId !== partyGameId && clientUuid) {
 			joinGameLobby(partyData.gameId, clientUuid);
+		}
+		else {
+			console.log("Blocked from joining game lobby:")
+			console.log(`partyData.gameId: ${partyData.gameId}`);
+			console.log(`partyGameId: ${partyGameId}`);
+		}
 
 		await useProfileStore.getState().setCachedData();
 

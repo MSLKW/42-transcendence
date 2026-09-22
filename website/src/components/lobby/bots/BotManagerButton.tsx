@@ -8,7 +8,7 @@ export const BotManagerButton = () => {
 	const fillSeatsWithBots = useBotStore((store) => store.fillSeatsWithBots);
 	const removeBots = useBotStore((store) => store.removeBots);
 	const botCount = useBotStore((store) => store.botCount);
-	const seats = useGameStore((store) => store.seats);
+	const seats = useGameStore((store) => store.userSeats);
 
 	const handleBotCount = (e?: React.MouseEvent<HTMLButtonElement>) => {
 		if (e)

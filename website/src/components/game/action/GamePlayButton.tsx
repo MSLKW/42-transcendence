@@ -6,12 +6,12 @@ import { gameInstance } from "../../../api/game/src/main";
 export const GamePlayButton = () => {
 	// const currentHand = useGameStore((store) => store.currentHand);
 	// const cardsLeft = useGameStore((store) => store.cardsLeft);
-	const seats = useGameStore((store) => store.seats);
+	const gameSeats = useGameStore((store) => store.gameSeats);
 	const activeSeat = useGameStore((store) => store.activeSeat);
 	// const skipTurn = useGameStore((store) => store.skipTurn);
 	const clientUuid = useAuthStore((store) => store.clientUuid);
 
-	const clientSeat = seats.indexOf(clientUuid);
+	const clientSeat = gameSeats.indexOf(clientUuid);
 
 	const handlePlay = () => {
 		// const newCardsLeft = [...cardsLeft];

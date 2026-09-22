@@ -19,7 +19,7 @@ export const LobbyScene = () => {
 	// const fillSeatsWithBots = useBotStore((store) => store.fillSeatsWithBots);
 	const removeBots = useBotStore((store) => store.removeBots);
 	const totalPlayers = useGameStore((store) => store.totalPlayers);
-	const seats = useGameStore((store) => store.seats);
+	const userSeats = useGameStore((store) => store.userSeats);
 	const seatRef = useGameStore((store => store.seatRef));
 	const startGame = useGameStore((store) => store.startGame);
 	const round = useGameStore((store) => store.round);
@@ -29,19 +29,19 @@ export const LobbyScene = () => {
 	const resetResults = useResultsStore((store) => store.resetResults);
 	
 	useEffect(() => {
-		const humansSeated = seats.filter((seat): seat is string => seat !== null && !seat.includes("bot")).length;
+		const humansSeated = userSeats.filter((seat): seat is string => seat !== null && !seat.includes("bot")).length;
 		if (humansSeated === members.length) {
 			// fillSeatsWithBots();
 			return;
 		}
 		
-		if (seats.includes(null)) {
+		if (userSeats.includes(null)) {
 			resetResults();
 			removeBots();
 		}
-	}, [members, seats]);
+	}, [members, userSeats]);
 
-	const seatsFilled = totalPlayers === seats.filter((seat): seat is string => seat !== null).length;
+	const seatsFilled = totalPlayers === userSeats.filter((seat): seat is string => seat !== null).length;
 
 	return (
 		<>
@@ -57,49 +57,49 @@ export const LobbyScene = () => {
 						place-content-evenly place-items-center
 					`}>
 						{ totalPlayers === 4 &&
-							( seats[2]
+							( userSeats[2]
 								?
 									<AvatarModule
-										key={seats[2]}
-										uuid={seats[2]}
-										image={cachedData[seats[2]]?.avatar ?? undefined}
-										cornerButton={seats[2] === hostUuid ? "host" : ""}
+										key={userSeats[2]}
+										uuid={userSeats[2]}
+										image={cachedData[userSeats[2]]?.avatar ?? undefined}
+										cornerButton={userSeats[2] === hostUuid ? "host" : ""}
 									/>
 								: <TakeSeatButton seatNumber={2}/>
 							)
 						}
 						{ totalPlayers === 3 &&
 							<>
-								{ seats[1]
+								{ userSeats[1]
 									? 
 										<AvatarModule
-											key={seats[1]}
-											uuid={seats[1]}
-											image={cachedData[seats[1]]?.avatar ?? undefined}
-											cornerButton={seats[1] === hostUuid ? "host" : ""}
+											key={userSeats[1]}
+											uuid={userSeats[1]}
+											image={cachedData[userSeats[1]]?.avatar ?? undefined}
+											cornerButton={userSeats[1] === hostUuid ? "host" : ""}
 										/>
 									: <TakeSeatButton seatNumber={1}/>
 								}
-								{ seats[2]
+								{ userSeats[2]
 									?
 										<AvatarModule
-											key={seats[2]}
-											uuid={seats[2]}
-											image={cachedData[seats[2]]?.avatar ?? undefined}
-											cornerButton={seats[2] === hostUuid ? "host" : ""}
+											key={userSeats[2]}
+											uuid={userSeats[2]}
+											image={cachedData[userSeats[2]]?.avatar ?? undefined}
+											cornerButton={userSeats[2] === hostUuid ? "host" : ""}
 										/>
 									: <TakeSeatButton seatNumber={2}/>
 								}
 							</>
 						}
 						{ totalPlayers === 2 &&
-							( seats[1]
+							( userSeats[1]
 								?
 									<AvatarModule
-										key={seats[1]}
-										uuid={seats[1]}
-										image={cachedData[seats[1]]?.avatar ?? undefined}
-										cornerButton={seats[1] === hostUuid ? "host" : ""}
+										key={userSeats[1]}
+										uuid={userSeats[1]}
+										image={cachedData[userSeats[1]]?.avatar ?? undefined}
+										cornerButton={userSeats[1] === hostUuid ? "host" : ""}
 									/>
 								: <TakeSeatButton seatNumber={1}/>
 							)
@@ -113,13 +113,13 @@ export const LobbyScene = () => {
 						`}
 					>
 						{ totalPlayers === 4 &&
-							( seats[1]
+							( userSeats[1]
 								?
 									<AvatarModule
-										key={seats[1]}
-										uuid={seats[1]}
-										image={cachedData[seats[1]]?.avatar ?? undefined}
-										cornerButton={seats[1] === hostUuid ? "host" : ""}
+										key={userSeats[1]}
+										uuid={userSeats[1]}
+										image={cachedData[userSeats[1]]?.avatar ?? undefined}
+										cornerButton={userSeats[1] === hostUuid ? "host" : ""}
 									/>
 								: <TakeSeatButton seatNumber={1}/>
 							)
@@ -138,26 +138,26 @@ export const LobbyScene = () => {
 							START
 						</button>
 						{ totalPlayers === 4 &&
-							( seats[3]
+							( userSeats[3]
 								?
 									<AvatarModule
-										key={seats[3]}
-										uuid={seats[3]}
-										image={cachedData[seats[3]]?.avatar ?? undefined}
-										cornerButton={seats[3] === hostUuid ? "host" : ""}
+										key={userSeats[3]}
+										uuid={userSeats[3]}
+										image={cachedData[userSeats[3]]?.avatar ?? undefined}
+										cornerButton={userSeats[3] === hostUuid ? "host" : ""}
 									/>
 								: <TakeSeatButton seatNumber={3}/>
 								)
 								}
 					</div>
 					<div className="w-full h-full grid place-items-center place-content-center">
-						{ seats[0]
+						{ userSeats[0]
 							?
 								<AvatarModule
-									key={seats[0]}
-									uuid={seats[0]}
-									image={cachedData[seats[0]]?.avatar ?? undefined}
-									cornerButton={seats[0] === hostUuid ? "host" : ""}
+									key={userSeats[0]}
+									uuid={userSeats[0]}
+									image={cachedData[userSeats[0]]?.avatar ?? undefined}
+									cornerButton={userSeats[0] === hostUuid ? "host" : ""}
 								/>
 							: <TakeSeatButton seatNumber={0}/>
 						}
@@ -182,7 +182,7 @@ export const LobbyScene = () => {
 				>
 					<PartyCallButton />
 					{ members.map((uuid) => (
-						uuid && !seats.includes(uuid) &&
+						uuid && !userSeats.includes(uuid) &&
 							<AvatarModule
 								key={uuid}
 								uuid={uuid}

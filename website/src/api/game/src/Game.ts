@@ -93,13 +93,13 @@ export class Game {
 	
 		this.socket.on("user_seat_update", (seatData: SeatOrderTransmit) => {
 			const totalPlayers = useGameStore.getState().totalPlayers;
-			console.log(`user_seat_update: totalPlayers: ${totalPlayers}`)
+			console.log(`[gameSocket] 'user_seat_update' | totalSeats: ${seatData.totalSeats} | seatOrder: ${seatData.seatOrder}`);
 			if (totalPlayers !== seatData.totalSeats) {
 				useGameStore.setState({totalPlayers: seatData.totalSeats})
 				useGameStore.getState().initSeats();
 			}
 			else {
-				useGameStore.setState({seats: seatData.seatOrder});
+				useGameStore.setState({userSeats: seatData.seatOrder});
 			}
 		});
 
@@ -107,8 +107,15 @@ export class Game {
 			console.log(status);
 		});
 	
-		this.socket.on("user_list_update", (list: Array<string>) => {
-			console.log(list);
+		this.socket.on("user_list_update", (userList: Array<string>) => {
+			const newUserSeats = [...useGameStore.getState().userSeats];
+			for (let i = 0; i < newUserSeats.length; i++) {
+				const userInList = userList.find((uuid) => uuid === newUserSeats[i]);
+				if (userInList === undefined) {
+					newUserSeats[i] = null;
+				}
+			}
+			useGameStore.setState({ userSeats: newUserSeats });
 		})
 
 		this.socket.on("game_settings_update", (gameSettings: GameSettingsTransmit) => {
@@ -128,7 +135,7 @@ export class Game {
 		const seats: string[] = Object.entries(gameState.playerSeatOrder)
 			.sort((a, b) => a[1] - b[1])
 			.map(([key]) => key);
-		useGameStore.setState({ seats: seats });
+		useGameStore.setState({ gameSeats: seats });
 		useGameStore.setState({ totalPlayers: this.participants.length });
 		useGameStore.getState().setCardsLeft(gameState.playerCardsAmount);
 		useGameStore.getState().setSeatRef();

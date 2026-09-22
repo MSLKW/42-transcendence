@@ -7,7 +7,7 @@ interface ResultsItem {
 	uuid: string;
 	points: number;
 	totalPoints: number;
-	totalWins: number;
+	totalWins: number; // investigate this
 	rank: number;
 	rankChanged: number;
 }
@@ -28,19 +28,19 @@ export const useResultsStore = create<ResultsState>() (
 			results: [],
 
 			setResults: (gameEndStats: GameEndStatsTransmit) => {
-				const { seats } = useGameStore.getState();
+				const { gameSeats } = useGameStore.getState();
 				const currentResults = get().results;
 
 				const isFirstRound = currentResults.length === 0 || currentResults.some(r => r.rank === undefined);
 
-				const combined = seats.map((uuid) => {
+				const combined = gameSeats.map((uuid) => {
 					const playerUuid = uuid ?? "";
 					const cards = gameEndStats.playerFinalCardAmounts[playerUuid] ?? 0;
 
 					const existingPlayer = currentResults.find(r => r.uuid === playerUuid);
 					let wins = existingPlayer ? existingPlayer.totalWins : 0;
 
-					if (gameEndStats.winnerPlayerUuid === gameEndStats.winnerPlayerUuid) {
+					if (playerUuid === gameEndStats.winnerPlayerUuid) {
 						wins += 1;
 					}
 

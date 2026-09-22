@@ -43,7 +43,7 @@ export class Player extends Participant {
 		});
 		
 		this.socket.on("player_turn", (playerTurn: PlayerTurnTransmit) => {
-			const activeSeat = useGameStore.getState().seats.findIndex((uuid) => uuid === playerTurn.playerId);
+			const activeSeat = useGameStore.getState().gameSeats.findIndex((uuid) => uuid === playerTurn.playerId);
 			useGameStore.setState({
 				activeSeat: activeSeat, 
 				isActiveSeatSkippable: playerTurn.skippable

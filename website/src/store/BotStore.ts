@@ -56,9 +56,9 @@ export const useBotStore = create<BotState>() (
 			if (get().botCount <= 0)
 				return;
 
-			const seats = useGameStore.getState().seats;
+			const seats = useGameStore.getState().userSeats;
 			const newSeats = seats.filter(seat => !seat?.includes("bot"));
-			useGameStore.setState({ seats: newSeats });
+			useGameStore.setState({ userSeats: newSeats });
 
 			useProfileStore.getState().clearCachedData();
 			await useProfileStore.getState().setCachedData();
@@ -71,7 +71,7 @@ export const useBotStore = create<BotState>() (
 
 			let bot_i = 0;
 			for (let i = 0; i < totalPlayers; i++) {
-				const { seats, setSeatWithUuid } = useGameStore.getState();
+				const { userSeats: seats, setSeatWithUuid } = useGameStore.getState();
 				if (seats[i])
 					continue;
 
@@ -102,7 +102,7 @@ export const useBotStore = create<BotState>() (
 		},
 
 		countSeatedBots: () => {
-			const seats = useGameStore.getState().seats;
+			const seats = useGameStore.getState().userSeats;
 			const count = seats.filter((s) => s?.includes("bot")).length;
 			set({ botCount: count });
 		},
