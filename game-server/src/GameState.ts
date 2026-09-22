@@ -34,7 +34,7 @@ export class GameState {
 		this.settings = {
 			allow3OfAKind: true,
 			allow2OfSpadesEnd: false,
-			autoPassInMilliseconds: 0,
+			autoPassInMilliseconds: 10000,
 			endGameCondition: 0,
 			scoreCalculation: 0,
 		}

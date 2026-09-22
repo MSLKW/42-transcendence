@@ -36,12 +36,14 @@ interface GameValues {
 	totalPlayers: number;
 	gameSeats: (string | null)[];
 	userSeats: (string | null)[];
+	playerDisconnection: Record<string, boolean>;
 	gameStarted: boolean;
 	cardsLeft: number[];
 	currentHand: string;
 	round: number;
 	seatRef: number[];
 	activeSeat: number;
+	playerTimer: number;
 	isActiveSeatSkippable: boolean;
 	sortType: string;
 }
@@ -52,7 +54,7 @@ interface GameState extends GameValues {
 	leaveSeat: () => void;
 	autoSetSeats: () => void;
 	
-	setSeatRef: () => void;
+	setSeatRef: (seats: (string | null)[]) => void;
 	setCardsLeft: (playerCardsAmount: Record<string, number>) => void;
 	reduceCardsLeft: (uuid: string, cardsAmount: number) => void;
 	setCurrentHand: (handType: HandType, pentupleType: PentupleType) => void;
@@ -72,12 +74,14 @@ export const useGameStore = create<GameState>() (
 			totalPlayers: 1,
 			userSeats: [],
 			gameSeats: [],
+			playerDisconnection: {},
 			gameStarted: false,
 			cardsLeft: [],
 			currentHand: "None",
 			round: 0,
 			seatRef: [],
 			activeSeat: 0,
+			playerTimer: 0,
 			isActiveSeatSkippable: false,
 			sortType: "Flex",
 
@@ -98,8 +102,7 @@ export const useGameStore = create<GameState>() (
 				set({ userSeats: newSeats });
 			},
 
-			setSeatRef: () => {
-				const seats = get().userSeats;
+			setSeatRef: (seats: (string | null)[]) => {
 				const clientUuid = useAuthStore.getState().clientUuid;
 				const totalPlayers = get().totalPlayers;
 				const clientIndex = seats.indexOf(clientUuid);

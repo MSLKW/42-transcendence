@@ -79,8 +79,9 @@ export class Game {
 			this.resetGame();
 		});
 	
-		this.socket.on("player_connection_update", (connections: Record<string, boolean>) => {
-			console.log(connections);
+		this.socket.on("player_connection_update", (disconnections: Record<string, boolean>) => {
+			useGameStore.setState({ playerDisconnection: disconnections });
+			console.log("[gameSocket] Received 'player_connection_update': " + disconnections);
 		});
 	
 		// this.socket.on("user_seat_take", (status: StatusTransmit) => {
@@ -130,13 +131,15 @@ export class Game {
 		useGameStore.setState({ round: useGameStore.getState().round + 1 });
 		useSceneStore.getState().setShowWindow("results", false);
 		this.initParticipants(gameState);
+		console.log(gameState.playerSeatOrder);
 		const seats: string[] = Object.entries(gameState.playerSeatOrder)
 			.sort((a, b) => a[1] - b[1])
 			.map(([key]) => key);
+		console.log(seats);
 		useGameStore.setState({ gameSeats: seats });
 		useGameStore.setState({ totalPlayers: this.participants.length });
 		useGameStore.getState().setCardsLeft(gameState.playerCardsAmount);
-		useGameStore.getState().setSeatRef();
+		useGameStore.getState().setSeatRef(useGameStore.getState().gameSeats);
 		useSceneStore.getState().setCurrentScene("Game");
 		this.moveCamera();
 		this.initDeckDealing(gameState);

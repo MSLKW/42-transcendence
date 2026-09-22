@@ -46,9 +46,10 @@ export class Player extends Participant {
 			const activeSeat = useGameStore.getState().gameSeats.findIndex((uuid) => uuid === playerTurn.playerId);
 			useGameStore.setState({
 				activeSeat: activeSeat, 
-				isActiveSeatSkippable: playerTurn.skippable
+				isActiveSeatSkippable: playerTurn.skippable,
+				playerTimer: playerTurn.timer
 			});
-			console.log(`It is now Player<${playerTurn.playerId}>'s turn! Timer is set at ${playerTurn.timer} seconds!`);
+			console.log(`It is now Player<${playerTurn.playerId}>'s turn! Timer is set at ${playerTurn.timer} milliseconds!`);
 		});
 
 		this.socket.on("player_skip_turn_request", (status: StatusTransmit) => {

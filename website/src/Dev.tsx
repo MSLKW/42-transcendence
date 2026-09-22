@@ -26,6 +26,7 @@ export default function Dev() {
 	const toggleFlag = useDevStore((store) => store.toggleFlag);
 	const cachedFriends = useFriendStore((store) => store.cachedFriends);
 	const userSeats = useGameStore((store) => store.userSeats);
+	const gameSeats = useGameStore((store) => store.gameSeats);
 	const totalPlayers = useGameStore((store) => store.totalPlayers);
 	const leaveSeat = useGameStore((store) => store.leaveSeat);
 	const currentHand = useGameStore((store) => store.currentHand);
@@ -75,7 +76,8 @@ export default function Dev() {
 		useChatStore.setState({ chatReconnect: useChatStore.getState().chatReconnect + 1 });
 	}
 
-	const seated = userSeats.filter((seat): seat is string => typeof seat === "string").length;
+	const userSeated = userSeats.filter((seat): seat is string => typeof seat === "string").length;
+	const gameSeated = gameSeats.filter((seat): seat is string => typeof seat === "string").length;
 
 	useFrameView();
 
@@ -179,7 +181,8 @@ export default function Dev() {
 				</ul>
 				<ul className="flex place-content-between">
 					<DevButton label={`members: ${members.length}`} call={() => console.log("members: ", members)}/>
-					<DevButton label={`seats: ${seated} / ${totalPlayers}`} call={() => console.log("seats: ", userSeats)} />
+					<DevButton label={`userSeats: ${userSeated} / ${totalPlayers}`} call={() => console.log("userSeats: ", userSeats)} />
+					<DevButton label={`gameSeats: ${gameSeated} / ${totalPlayers}`} call={() => console.log("gameSeats: ", gameSeats)} />
 					<DevButton label="refresh" call={() => partySocket.refresh()}/>
 					<li>partyGameId: {partyGameId ? partyGameId : "n/a"}</li>
 				</ul>

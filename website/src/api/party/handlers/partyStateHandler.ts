@@ -5,6 +5,7 @@ import { useNotificationStore, NOTIFICATION_TYPE } from "../../../store/Notifica
 import { usePartyStore } from "../../../store/PartyStore";
 import { useProfileStore } from "../../../store/ProfileStore";
 import { joinGameLobby } from "../../game/src/main";
+import { useSceneStore } from "../../../store/SceneStore";
 
 export function partyStateHandler(socket: Socket) {
 	socket.on("party_state", async (partyData: { hostUuid: string; members: string[]; gameId: string | null }) => {
@@ -26,12 +27,12 @@ export function partyStateHandler(socket: Socket) {
 		if (partyData.gameId && partyData.gameId !== partyGameId && clientUuid) {
 			joinGameLobby(partyData.gameId, clientUuid);
 		}
-		else {
-			console.log("Blocked from joining game lobby:")
-			console.log(`partyData.gameId: ${partyData.gameId}`);
-			console.log(`partyGameId: ${partyGameId}`);
-			console.log(`clientUuid: ${clientUuid}`);
+		else if (partyData.gameId === null) {
+			useSceneStore.getState().setCurrentScene("Home");
 		}
+		console.log(`partyData.gameId: ${partyData.gameId}`);
+		console.log(`partyGameId: ${partyGameId}`);
+		console.log(`clientUuid: ${clientUuid}`);
 
 		await useProfileStore.getState().setCachedData();
 
