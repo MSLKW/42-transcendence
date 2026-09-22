@@ -20,7 +20,7 @@ PROFILE_PW="$( cat /run/secrets/db-profile-password)"
 FRIENDS_PW="$( cat /run/secrets/db-friends-password)"
 # GAME_STATS_PW="$( cat /run/secrets/db-game-stats-password)"
 
-psql -v ON_ERROR_STOP=1 --username "${PGUSER}" --dbname "${PGDATABASE}" <<-EOSQL
+psql -v ON_ERROR_STOP=1 --username "${POSTGRES_USER}" --dbname "${POSTGRES_DB}" <<-EOSQL
 
 	-- 1. create any extensions that only directly on Postgres can do, not Drizzle
 	-- any extensions in the future will be placed here
@@ -34,13 +34,13 @@ psql -v ON_ERROR_STOP=1 --username "${PGUSER}" --dbname "${PGDATABASE}" <<-EOSQL
 
 	-- 3. Revoke default public schema's access from everyone
 	REVOKE ALL ON SCHEMA public FROM PUBLIC;
-	REVOKE ALL ON DATABASE "${PGDATABASE}" FROM PUBLIC;
+	REVOKE ALL ON DATABASE "${POSTGRES_DB}" FROM PUBLIC;
 
 	-- 4. Re-grant CONNECT ON DATABASE to each role
-	GRANT CONNECT ON DATABASE "${PGDATABASE}" TO "${PGUSER_AUTH}";
-	GRANT CONNECT ON DATABASE "${PGDATABASE}" TO "${PGUSER_PARTY}";
-	GRANT CONNECT ON DATABASE "${PGDATABASE}" TO "${PGUSER_PROFILE}";
-	GRANT CONNECT ON DATABASE "${PGDATABASE}" TO "${PGUSER_FRIENDS}";
-	-- GRANT CONNECT ON DATABASE "${PGDATABASE}" TO "${PGUSER_GAME_STATS}";
+	GRANT CONNECT ON DATABASE "${POSTGRES_DB}" TO "${PGUSER_AUTH}";
+	GRANT CONNECT ON DATABASE "${POSTGRES_DB}" TO "${PGUSER_PARTY}";
+	GRANT CONNECT ON DATABASE "${POSTGRES_DB}" TO "${PGUSER_PROFILE}";
+	GRANT CONNECT ON DATABASE "${POSTGRES_DB}" TO "${PGUSER_FRIENDS}";
+	-- GRANT CONNECT ON DATABASE "${POSTGRES_DB}" TO "${PGUSER_GAME_STATS}";
 
 EOSQL
