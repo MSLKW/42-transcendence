@@ -28,10 +28,10 @@ export const ProfileWindow = () => {
 	const isValid = Boolean(name?.trim());
 
 	const handleProfileUpdate = () => {
-		if (!isValid)
+		if (!isValid || !name || !avatar || !badge)
 			return;
 
-		void handlePutProfile(name, avatar ?? "avatar-unknown.webp", badge).then(async () => {
+		void handlePutProfile(name, avatar, badge).then(async () => {
 			setShowWindow("profile", false);
 			partySocket.refresh();
 		});

@@ -26,7 +26,7 @@ interface ChatState extends ChatValues {
 		type: CHAT_TYPE,
 		uuid: string,
 		name: string,
-		avatar: string,
+		avatar: string | undefined,
 		msg: string
 	) => void;
 

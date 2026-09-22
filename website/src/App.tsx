@@ -44,6 +44,7 @@ import { SetupWindow } from "./components/setup/SetupWindow";
 import { StatsWindow } from "./components/stats/StatsWindow";
 import { ThreeJsManager } from './components/3d/ThreeJsManager';
 import Dev from "./Dev";
+import { handleValidate } from "./api/authentication/validate/handleValidate";
 
 export let threejsManager: ThreeJsManager;
 
@@ -62,6 +63,13 @@ export default function App() {
 	useEffect(() => {
 		useScrollToTop();
 	}, [currentScene]);
+
+	//validate
+	useEffect(() => {
+		if (currentScene === "Login")
+			return;
+		handleValidate();
+	}, [])
 
 	//inital profile setup
 	useEffect(() => {

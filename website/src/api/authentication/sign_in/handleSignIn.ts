@@ -4,6 +4,8 @@ import { useNotificationStore, NOTIFICATION_TYPE } from "../../../store/Notifica
 import { useProfileStore } from "../../../store/ProfileStore";
 import { useSceneStore } from "../../../store/SceneStore";
 import { handleGetProfile } from "../../profile/get_profile/handleGetProfile";
+import { handleGetSettings } from "../../profile/get_settings/handleGetSettings";
+import { useSettingsStore } from "../../../store/SettingsStore";
 
 export const handleSignIn = async (email: string, password: string) => {
 	const { setShowWindow, setCurrentScene } = useSceneStore.getState();
@@ -11,15 +13,16 @@ export const handleSignIn = async (email: string, password: string) => {
 
 	try {
 		const response = await fetchSignIn(email, password);
-		useAuthStore.setState({
-			clientUuid: response.id,
-		});
-		useProfileStore.setState({
-			validateResponse: response,
-		});
+		useAuthStore.setState({ clientUuid: response.id });
+		useProfileStore.setState({ validateResponse: response });
 
 		await handleGetProfile(response.id);
 		await useProfileStore.getState().setCachedData();
+		const settings = await handleGetSettings(response.id);
+		console.log("settings:", settings);
+		useSettingsStore.setState({
+			
+		});
 
 		setShowWindow("signIn", false);
 		setCurrentScene("Home");

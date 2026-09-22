@@ -1,3 +1,4 @@
+import { useAuthStore } from "../../../store/AuthStore";
 import { AvatarSetImageButton } from "./AvatarSetImageButton";
 import { AvatarUploadButton } from "./AvatarUploadButton";
 
@@ -6,6 +7,8 @@ interface AvatarSelectModuleProps {
 	setAvatar: (avatar: string) => void;
 }
 export const AvatarSelectModule = ({ avatar, setAvatar }: AvatarSelectModuleProps) => {
+	const clientUuid = useAuthStore((store) => store.clientUuid);
+	
 	const AVATAR_IMGS = [
 		"avatar-male-0.webp", "avatar-female-0.webp", "avatar-animal-0.webp",
 		"avatar-male-1.webp", "avatar-female-1.webp", "avatar-animal-1.webp",
@@ -55,8 +58,8 @@ export const AvatarSelectModule = ({ avatar, setAvatar }: AvatarSelectModuleProp
 			">
 				<AvatarUploadButton />
 				<AvatarSetImageButton
-					key={null}
-					id={null}
+					key={`/avatars/${clientUuid}.png`}
+					id={`/avatars/${clientUuid}.png`}
 					avatar={avatar}
 					setAvatar={setAvatar}
 				/>

@@ -78,15 +78,12 @@ export const Window: React.FC<WindowProps> = ({
 							flex place-content-between place-items-center
 							${ !isPinned && "cursor-grab active:cursor-grabbing" }
 							select-none
-						`}
-					>
-						<h2
-							className="
-								text-n6
-								ml-5
-								pointer-events-none
-							"
-						>
+					`}>
+						<h2 className="
+							text-n6
+							ml-5
+							pointer-events-none
+						">
 							{title}
 						</h2>
 						<div className="flex">

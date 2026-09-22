@@ -11,6 +11,8 @@ services:
     environment:
       DOMAIN_PORT: ${DOMAIN_PORT}
       NGINX_ENVSUBST_FILTER: ^DOMAIN_PORT$
+    volumes:
+      - avatars:/app/data/avatars:ro
     networks:
       - big2
   
@@ -51,6 +53,8 @@ services:
     restart: unless-stopped
     env_file: 
       - ./profile-system/.env
+    volumes:
+      - avatars:/app/data/avatars
     networks:
       - big2
 
@@ -92,6 +96,9 @@ services:
       AUTH_SERVICE_URL: http://authentication:3000
     networks:
       - big2
+
+volumes:
+  avatars:
 
 networks:
   big2:

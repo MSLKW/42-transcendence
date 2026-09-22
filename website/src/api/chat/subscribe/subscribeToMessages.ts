@@ -12,8 +12,8 @@ export const subscribeToMessages = () => {
 		addToCachedChat(
 			chat.type,
 			chat.senderUuid,
-			cachedData[chat.senderUuid ?? ""]?.name ?? "Player",
-			cachedData[chat.senderUuid ?? ""]?.avatar ?? "avatar-unknown.webp",
+			cachedData[chat.senderUuid ?? ""]?.name ?? "-",
+			cachedData[chat.senderUuid ?? ""]?.avatar ?? undefined,
 			chat.message
 		);
 

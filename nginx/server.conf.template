@@ -68,4 +68,8 @@ server {
 		proxy_set_header Upgrade $http_upgrade;
 		proxy_set_header Connection "upgrade";
 	}
+
+	location /avatars/ {
+		alias /app/data/avatars/;
+	}
 }

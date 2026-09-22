@@ -327,7 +327,6 @@ export const useProfileStore = create<ProfileState>() (
 				).filter(
 					(uuid): uuid is string => uuid !== null
 				);
-				console.log("allUuids:", allUuids);
 				const profiles = await Promise.all(
 					allUuids.map(async (memberUuid) => {
 						const userData = await handleGetProfile(memberUuid);

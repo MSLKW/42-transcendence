@@ -1,4 +1,6 @@
+import { handlePutSettings } from "../../api/profile/put_settings/handlePutSettings";
 import { useGameStore } from "../../store/GameStore";
+import { useSceneStore } from "../../store/SceneStore";
 import { useSettingsStore, autoPassKeys } from "../../store/SettingsStore";
 import { Window } from "../window/Window";
 import { RadioButton } from "./radio/RadioButton";
@@ -17,10 +19,27 @@ export const SettingsWindow = () => {
 	const mxLevel = useSettingsStore((store) => store.mxLevel);
 	const toggleSettingsValue = useSettingsStore((store) => store.toggleSettingsValue);
 
+	const handleClose = () => {
+		handlePutSettings({
+			allow3OfAKind,
+			allow2OfSpadesEnd,
+			autoPassIndex,
+			endGameCondition,
+			scoreCalculation,
+			cardStyle,
+			uiColor,
+			fxLevel,
+			mxLevel,
+		});
+		console.log("close");
+		useSceneStore.getState().setShowWindow("settings", false);
+	}
+
 	return (
 		<Window
 			title="Settings"
 			dismissKey="settings"
+			call={handleClose}
 		>
 			<div className="
 				text-n6

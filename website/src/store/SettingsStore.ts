@@ -16,7 +16,7 @@ export const AUTO_PASS_RECORD = {
 export const autoPassKeys = Object.keys(AUTO_PASS_RECORD);
 export const autoPassValues = Object.values(AUTO_PASS_RECORD);
 
-interface SettingsValues {
+export interface SettingsValues {
 	allow3OfAKind: boolean;
 	allow2OfSpadesEnd: boolean;
 	autoPassIndex: number;
