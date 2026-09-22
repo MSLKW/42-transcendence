@@ -8,6 +8,7 @@ import { joinGameLobby } from "../../game/src/main";
 
 export function partyStateHandler(socket: Socket) {
 	socket.on("party_state", async (partyData: { hostUuid: string; members: string[]; gameId: string | null }) => {
+		console.log("[partySocket] 'party_state' partyData:", partyData);
 		const hostUuid = usePartyStore.getState().hostUuid;
 		const clientUuid = useAuthStore.getState().clientUuid;
 		const partyGameId = usePartyStore.getState().partyGameId;
@@ -29,13 +30,12 @@ export function partyStateHandler(socket: Socket) {
 			console.log("Blocked from joining game lobby:")
 			console.log(`partyData.gameId: ${partyData.gameId}`);
 			console.log(`partyGameId: ${partyGameId}`);
+			console.log(`clientUuid: ${clientUuid}`);
 		}
 
 		await useProfileStore.getState().setCachedData();
 
 		chatSocket.connect();
 		chatSocket.joinRoom(partyData.hostUuid);
-
-		console.log("[partySocket] 'party_state' partyData:", partyData);
 	});
 }

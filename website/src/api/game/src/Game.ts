@@ -98,9 +98,7 @@ export class Game {
 				useGameStore.setState({totalPlayers: seatData.totalSeats})
 				useGameStore.getState().initSeats();
 			}
-			else {
-				useGameStore.setState({userSeats: seatData.seatOrder});
-			}
+			useGameStore.setState({userSeats: seatData.seatOrder});
 		});
 
 		this.socket.on("user_seat_change", (status: StatusTransmit) => {

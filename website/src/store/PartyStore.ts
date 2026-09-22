@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import { persist } from "zustand/middleware";
+// import { persist } from "zustand/middleware";
 
 export const AVAILABILITY_LABEL = [
 	"Offline",
@@ -20,7 +20,7 @@ interface PartyState extends PartyValues {
 }
 
 export const usePartyStore = create<PartyState>() (
-	persist(
+	// persist(
 		(set, get) => ({
 			partySocketId: null,
 			partyGameId: null,
@@ -32,8 +32,8 @@ export const usePartyStore = create<PartyState>() (
 				set({ members: currentMembers.filter((d) => d !== uuid) });
 			}
 		}),
-		{
-			name: 'party-storage',
-		}
-	)
+	// 	{
+	// 		name: 'party-storage',
+	// 	}
+	// )
 );
