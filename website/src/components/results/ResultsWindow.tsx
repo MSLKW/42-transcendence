@@ -18,7 +18,7 @@ export const ResultsWindow = () => {
 
 	const leaderboard = getLeaderboard();
 	const topPlayer = leaderboard[0];
-	const playerName = cachedData[topPlayer.uuid ?? ""]?.name;
+	const playerName = topPlayer ? cachedData[topPlayer.uuid ?? ""]?.name : "N/A";
 	const winner = `Congratulations ${playerName ?? "Winner"}!`;
 
 	return (

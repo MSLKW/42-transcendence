@@ -118,14 +118,14 @@ export class GameState {
 		}
 		this.playerTurnEvent();
 		this.isGameStarted = true;
-		console.log("Game Started");
+		console.log(`Game<${this.gameRoomId}> has started`);
 		status.success = true;
 		status.message = "Game has successfully started";
 		return (status);
 	}
 
 	public endGame(winner: PlayerState) {
-		console.log(`Game Ended | Winner is Player<${winner.uuid}>`);
+		console.log(`Game<${this.gameRoomId}> has ended | Winner is Player<${winner.uuid}>`);
 		const gameEndStats: GameEndStatsTransmit = {
 			winnerPlayerUuid: winner.uuid,
 			playerFinalCardAmounts: this.getPlayerCardsAmount(),
@@ -200,7 +200,6 @@ export class GameState {
 	}
 
 	private playerTimeout(player: PlayerState) {
-		console.log(`Timing out player<${player.uuid}>`)
 		const status: StatusTransmit = {
 			success: true,
 			message: "Timer ran out"

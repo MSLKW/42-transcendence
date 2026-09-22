@@ -7,7 +7,7 @@ interface ResultsItem {
 	uuid: string;
 	points: number;
 	totalPoints: number;
-	totalWins: number; // investigate this
+	totalWins: number;
 	rank: number;
 	rankChanged: number;
 }
@@ -28,7 +28,7 @@ export const useResultsStore = create<ResultsState>() (
 			results: [],
 
 			setResults: (gameEndStats: GameEndStatsTransmit) => {
-				const { gameSeats } = useGameStore.getState();
+				const gameSeats = useGameStore.getState().gameSeats;
 				const currentResults = get().results;
 
 				const isFirstRound = currentResults.length === 0 || currentResults.some(r => r.rank === undefined);

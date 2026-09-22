@@ -20,18 +20,6 @@ export const GameScene = () => {
 	const gameStarted = useGameStore((store) => store.gameStarted);
 	const playerDisconnection = useGameStore((store) => store.playerDisconnection);
 	const cachedData = useProfileStore((store) => store.cachedData);
-	const setResults = useResultsStore((store) => store.setResults);
-	const setCurrentScene = useSceneStore((store) => store.setCurrentScene);
-	const setShowWindow = useSceneStore((store) => store.setShowWindow);
-
-	// useAutoPass();
-	// useEffect(() => {
-	// 	if (cardsLeft.includes(0)) {
-	// 		setResults();
-	// 		setCurrentScene("Lobby");
-	// 		setShowWindow("results", true);
-	// 	}
-	// }, [cardsLeft]);
 
 	return (
 		<>

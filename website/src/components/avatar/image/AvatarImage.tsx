@@ -16,7 +16,6 @@ export const AvatarImage = ({ uuid, image, isActive, isDisconnected, isChat = fa
 	// const autoPassOptions = [1, 3, 5, 10, 15, 30, 42, 60, 120, -1];
 	// const autoPassDuration = autoPassOptions[autoPassIndex];
 	const autoPassDuration = useGameStore.getState().playerTimer;
-	console.log(autoPassDuration);
 
 	return (
 		<div
