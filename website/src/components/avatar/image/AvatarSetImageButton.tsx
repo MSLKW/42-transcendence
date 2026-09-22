@@ -23,6 +23,7 @@ export const AvatarSetImageButton = ({ id, avatar, setAvatar }: AvatarSetImageBu
 						src={id}
 						alt={id}
 						loading="lazy"
+						className="h-full w-full"
 					/>
 			}
 		</button>

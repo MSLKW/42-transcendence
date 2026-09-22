@@ -28,6 +28,7 @@ export const AvatarImage = ({ uuid, image, isActive, isChat = false }: AvatarPro
 					src={image}
 					alt="alt text"
 					loading="lazy"
+					className="h-full w-full"
 				/>
 			}
 			{ isActive && autoPassDuration != -1 &&

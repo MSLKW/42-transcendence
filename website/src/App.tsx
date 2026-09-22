@@ -64,13 +64,6 @@ export default function App() {
 		useScrollToTop();
 	}, [currentScene]);
 
-	//validate
-	useEffect(() => {
-		if (currentScene === "Login")
-			return;
-		handleValidate();
-	}, [])
-
 	//inital profile setup
 	useEffect(() => {
 		if (currentScene === "Login" || !clientUuid)

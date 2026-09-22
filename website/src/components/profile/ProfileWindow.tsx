@@ -50,8 +50,7 @@ export const ProfileWindow = () => {
 					max-h-[85vh] w-[80vw] max-w-215
 					py-1rem px-3rem
 					overflow-y-scroll
-				"
-			>
+			">
 				<div className="flex">
 					<AvatarSetNameModule
 						name={name}
