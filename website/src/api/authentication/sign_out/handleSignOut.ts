@@ -14,7 +14,7 @@ export const handleSignOut = async () => {
 	try {
 		await fetchSignOut();
 
-		useGameStore.getState().endGame();
+		useGameStore.getState().resetGame();
 
 		useAuthStore.setState({ clientUuid: null });
 

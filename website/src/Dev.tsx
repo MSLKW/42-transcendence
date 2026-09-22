@@ -25,7 +25,7 @@ export default function Dev() {
 	const chatRoomId = useChatStore((store) => store.chatRoomId);
 	const toggleFlag = useDevStore((store) => store.toggleFlag);
 	const cachedFriends = useFriendStore((store) => store.cachedFriends);
-	const seats = useGameStore((store) => store.seats);
+	const userSeats = useGameStore((store) => store.userSeats);
 	const totalPlayers = useGameStore((store) => store.totalPlayers);
 	const leaveSeat = useGameStore((store) => store.leaveSeat);
 	const currentHand = useGameStore((store) => store.currentHand);
@@ -75,7 +75,7 @@ export default function Dev() {
 		useChatStore.setState({ chatReconnect: useChatStore.getState().chatReconnect + 1 });
 	}
 
-	const seated = seats.filter((seat): seat is string => typeof seat === "string").length;
+	const seated = userSeats.filter((seat): seat is string => typeof seat === "string").length;
 
 	useFrameView();
 
@@ -156,10 +156,10 @@ export default function Dev() {
 				<ul className="flex place-content-between">
 					{ currentScene === "Game" && clientUuid === hostUuid &&
 						<>
-							{ seats[0] && <DevButton label={`${cachedData[seats[0]]?.name ?? "Seat 0 "} Wins`} call={() => playerWins(0)}/> }
-							{ seats[1] && <DevButton label={`${cachedData[seats[1]]?.name ?? "Seat 1 "} Wins`} call={() => playerWins(1)}/> }
-							{ seats[2] && <DevButton label={`${cachedData[seats[2]]?.name ?? "Seat 2 "} Wins`} call={() => playerWins(2)}/> }
-							{ seats[3] && <DevButton label={`${cachedData[seats[3]]?.name ?? "Seat 3 "} Wins`} call={() => playerWins(3)}/> }
+							{ userSeats[0] && <DevButton label={`${cachedData[userSeats[0]]?.name ?? "Seat 0 "} Wins`} call={() => playerWins(0)}/> }
+							{ userSeats[1] && <DevButton label={`${cachedData[userSeats[1]]?.name ?? "Seat 1 "} Wins`} call={() => playerWins(1)}/> }
+							{ userSeats[2] && <DevButton label={`${cachedData[userSeats[2]]?.name ?? "Seat 2 "} Wins`} call={() => playerWins(2)}/> }
+							{ userSeats[3] && <DevButton label={`${cachedData[userSeats[3]]?.name ?? "Seat 3 "} Wins`} call={() => playerWins(3)}/> }
 						</>
 					}
 				</ul>
@@ -179,7 +179,7 @@ export default function Dev() {
 				</ul>
 				<ul className="flex place-content-between">
 					<DevButton label={`members: ${members.length}`} call={() => console.log("members: ", members)}/>
-					<DevButton label={`seats: ${seated} / ${totalPlayers}`} call={() => console.log("seats: ", seats)} />
+					<DevButton label={`seats: ${seated} / ${totalPlayers}`} call={() => console.log("seats: ", userSeats)} />
 					<DevButton label="refresh" call={() => partySocket.refresh()}/>
 					<li>partyGameId: {partyGameId ? partyGameId : "n/a"}</li>
 				</ul>

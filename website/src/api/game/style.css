@@ -39,9 +39,9 @@ body {
 	gap: 10px;
 }
 
-button:hover {
+/* button:hover {
 	background-color: #ffffff;
-}
+} */
 
 #lightbox {
 	position: fixed;

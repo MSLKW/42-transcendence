@@ -6,6 +6,7 @@ import { usePartyStore } from "./PartyStore";
 import { useResultsStore } from "./ResultsStore";
 import { useSceneStore } from "./SceneStore";
 import { gameInstance } from '../api/game/src/main';
+import { partySocket } from "../api/party/partySocket";
 import { HandType, PentupleType } from "@big2/game-types";
 
 export const GAMEMODE_LABEL = [
@@ -32,7 +33,8 @@ export const HAND_LABEL = Object.keys(HAND_VALUES) as HAND_TYPE[];
 
 interface GameValues {
 	totalPlayers: number;
-	seats: (string | null)[];
+	gameSeats: (string | null)[];
+	userSeats: (string | null)[];
 	gameStarted: boolean;
 	cardsLeft: number[];
 	currentHand: string;
@@ -48,11 +50,12 @@ interface GameState extends GameValues {
 	takeSeat: (seatNumber: number) => void;
 	leaveSeat: () => void;
 	autoSetSeats: () => void;
-	
+
 	setSeatRef: () => void;
 	setCardsLeft: (playerCardsAmount: Record<string, number>) => void;
 	reduceCardsLeft: (uuid: string, cardsAmount: number) => void;
 	setCurrentHand: (handType: HandType, pentupleType: PentupleType) => void;
+	resetGame: () => void;
 	startGame: () => void;
 	skipTurn: () => void;
 
@@ -66,7 +69,8 @@ export const useGameStore = create<GameState>() (
 	persist(
 		(set, get) => ({
 			totalPlayers: 1,
-			seats: [],
+			userSeats: [],
+			gameSeats: [],
 			gameStarted: false,
 			cardsLeft: [],
 			currentHand: "None",
@@ -79,41 +83,22 @@ export const useGameStore = create<GameState>() (
 			initSeats: () => {
 				const totalPlayers = get().totalPlayers;
 				const newSeats = Array(totalPlayers).fill(null);
-				set({ seats: newSeats });
+				set({ userSeats: newSeats });
 			},
 			takeSeat: (seatNumber) => {
 				gameInstance?.takeSeat(seatNumber);
-				// const seats = get().seats;
-				// if (seats[seatNumber] === uuid)
-				// 	return;
-				// const newSeats = [...seats];
-
-				// const existingIndex = newSeats.indexOf(uuid);
-				// if (existingIndex !== -1)
-				// 	newSeats[existingIndex] = null;
-				// newSeats[seatNumber] = uuid;
-
-				// set({ seats: newSeats });
 			},
 			leaveSeat: () => {
-				// const newSeats = [...get().seats];
-				// const index = newSeats.findIndex(seat => seat === uuid);
-				// if (index !== -1) {
-				// 	newSeats[index] = null;
-				// 	set({
-				// 		seats: newSeats,
-				// 	});
-				// }
 				gameInstance?.leaveSeat();
 			},
 			autoSetSeats: () => {
 				const members = usePartyStore.getState().members;
 				const newSeats = members.map((member) => member).filter((uuid): uuid is string => uuid !== null);
-				set({ seats: newSeats });
+				set({ userSeats: newSeats });
 			},
 
 			setSeatRef: () => {
-				const seats = get().seats;
+				const seats = get().userSeats;
 				const clientUuid = useAuthStore.getState().clientUuid;
 				const totalPlayers = get().totalPlayers;
 				const clientIndex = seats.indexOf(clientUuid);
@@ -134,7 +119,7 @@ export const useGameStore = create<GameState>() (
 			},
 			setCardsLeft: (playerCardsAmount: Record<string, number>) => {
 				const newCardsLeft: number[] = []
-				get().seats.forEach((playerUuid) => {
+				get().gameSeats.forEach((playerUuid) => {
 					if (playerUuid === null) {
 						newCardsLeft.push(-1);
 						return ;
@@ -145,7 +130,7 @@ export const useGameStore = create<GameState>() (
 			},
 			reduceCardsLeft: (uuid: string, cardsAmount: number) => {
 				const cardsLeft = get().cardsLeft;
-				const seatIndex = get().seats.findIndex((seatUuid) => seatUuid === uuid);
+				const seatIndex = get().gameSeats.findIndex((seatUuid) => seatUuid === uuid);
 				cardsLeft[seatIndex] = cardsLeft[seatIndex] - cardsAmount;
 				set({ cardsLeft: cardsLeft });
 			},
@@ -171,18 +156,17 @@ export const useGameStore = create<GameState>() (
 				set({ currentHand: newCurrentHand });
 			},
 			startGame: () => {
-				set({ round: get().round + 1 });
-				useSceneStore.getState().setShowWindow("results", false);
 				gameInstance?.startGame();
 			},
 			skipTurn: () => {
 				gameInstance?.playerRef?.skipTurnButtonHandler();
 			},
 
-			endGame: () => {
+			resetGame: () => {
 				set({
 					totalPlayers: 0,
-					seats: [],
+					userSeats: [],
+					gameSeats: [],
 					gameStarted: false,
 					cardsLeft: [],
 					currentHand: "None",
@@ -192,7 +176,12 @@ export const useGameStore = create<GameState>() (
 				});
 				useResultsStore.getState().resetResults();
 				useSceneStore.getState().setShowWindow("results", false);
+			},
+
+			endGame: () => {
+				get().resetGame();
 				useSceneStore.getState().setCurrentScene("Home");
+				partySocket.leaveParty();
 			},
 			incTotalWin: (uuid) => {
 				const profileStore = useProfileStore.getState();

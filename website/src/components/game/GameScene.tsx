@@ -13,7 +13,7 @@ import { GamePlayButton } from "./action/GamePlayButton";
 
 export const GameScene = () => {
 	const totalPlayers = useGameStore((store) => store.totalPlayers);
-	const seats = useGameStore((store) => store.seats);
+	const gameSeats = useGameStore((store) => store.gameSeats);
 	const seatRef = useGameStore((store) => store.seatRef);
 	const cardsLeft = useGameStore((store) => store.cardsLeft);
 	const activeSeat = useGameStore((store) => store.activeSeat);
@@ -23,49 +23,49 @@ export const GameScene = () => {
 	const setCurrentScene = useSceneStore((store) => store.setCurrentScene);
 	const setShowWindow = useSceneStore((store) => store.setShowWindow);
 
-	useAutoPass();
-	useEffect(() => {
-		if (cardsLeft.includes(0)) {
-			setResults();
-			setCurrentScene("Lobby");
-			setShowWindow("results", true);
-		}
-	}, [cardsLeft]);
+	// useAutoPass();
+	// useEffect(() => {
+	// 	if (cardsLeft.includes(0)) {
+	// 		setResults();
+	// 		setCurrentScene("Lobby");
+	// 		setShowWindow("results", true);
+	// 	}
+	// }, [cardsLeft]);
 
 	return (
 		<>
 			<HeaderModule back="Home" />
 			<main>
-				{ totalPlayers === 4 && seats.length >= 4 &&
+				{ totalPlayers === 4 && gameSeats.length >= 4 &&
 					<>
 						<div className="absolute left-[4%] top-[20%]">
-							{ seats[seatRef[1]] &&
+							{ gameSeats[seatRef[1]] &&
 								<AvatarModule
-									key={seats[seatRef[1]] ?? ""}
-									uuid={seats[seatRef[1]] ?? ""}
-									image={cachedData[seats[seatRef[1]] ?? ""]?.avatar ?? undefined}
+									key={gameSeats[seatRef[1]] ?? ""}
+									uuid={gameSeats[seatRef[1]] ?? ""}
+									image={cachedData[gameSeats[seatRef[1]] ?? ""]?.avatar ?? undefined}
 									cornerButton={cardsLeft[seatRef[1]] ?? -1}
 									isActive={gameStarted && activeSeat === seatRef[1]}
 								/>
 							}
 						</div>
 						<div className="absolute left-[20%] top-[4%]">
-							{ seats[seatRef[2]] &&
+							{ gameSeats[seatRef[2]] &&
 								<AvatarModule
-									key={seats[seatRef[2]] ?? ""}
-									uuid={seats[seatRef[2]] ?? ""}
-									image={cachedData[seats[seatRef[2]] ?? ""]?.avatar ?? undefined}
+									key={gameSeats[seatRef[2]] ?? ""}
+									uuid={gameSeats[seatRef[2]] ?? ""}
+									image={cachedData[gameSeats[seatRef[2]] ?? ""]?.avatar ?? undefined}
 									cornerButton={cardsLeft[seatRef[2]] ?? -1}
 									isActive={gameStarted && activeSeat === seatRef[2]}
 								/>
 							}
 						</div>
 						<div className="absolute right-[4%] top-[20%]">
-							{ seats[seatRef[3]] &&
+							{ gameSeats[seatRef[3]] &&
 								<AvatarModule
-									key={seats[seatRef[3]] ?? ""}
-									uuid={seats[seatRef[3]] ?? ""}
-									image={cachedData[seats[seatRef[3]] ?? ""]?.avatar ?? undefined}
+									key={gameSeats[seatRef[3]] ?? ""}
+									uuid={gameSeats[seatRef[3]] ?? ""}
+									image={cachedData[gameSeats[seatRef[3]] ?? ""]?.avatar ?? undefined}
 									cornerButton={cardsLeft[seatRef[3]] ?? -1}
 									isActive={gameStarted && activeSeat === seatRef[3]}
 								/>
@@ -73,25 +73,25 @@ export const GameScene = () => {
 						</div>
 					</>
 				}
-				{ totalPlayers === 3 && seats.length >= 3 &&
+				{ totalPlayers === 3 && gameSeats.length >= 3 &&
 					<>
 						<div className="absolute left-[4%] top-[20%]">
-							{ seats[seatRef[1]] &&
+							{ gameSeats[seatRef[1]] &&
 								<AvatarModule
-									key={seats[seatRef[1]] ?? ""}
-									uuid={seats[seatRef[1]] ?? ""}
-									image={cachedData[seats[seatRef[1]] ?? ""]?.avatar ?? undefined}
+									key={gameSeats[seatRef[1]] ?? ""}
+									uuid={gameSeats[seatRef[1]] ?? ""}
+									image={cachedData[gameSeats[seatRef[1]] ?? ""]?.avatar ?? undefined}
 									cornerButton={cardsLeft[seatRef[1]] ?? -1}
 									isActive={gameStarted && activeSeat === seatRef[1]}
 								/>
 							}
 						</div>
 						<div className="absolute right-[4%] top-[20%]">
-							{ seats[seatRef[2]] &&
+							{ gameSeats[seatRef[2]] &&
 								<AvatarModule
-									key={seats[seatRef[2]] ?? ""}
-									uuid={seats[seatRef[2]] ?? ""}
-									image={cachedData[seats[seatRef[2]] ?? ""]?.avatar ?? undefined}
+									key={gameSeats[seatRef[2]] ?? ""}
+									uuid={gameSeats[seatRef[2]] ?? ""}
+									image={cachedData[gameSeats[seatRef[2]] ?? ""]?.avatar ?? undefined}
 									cornerButton={cardsLeft[seatRef[2]] ?? -1}
 									isActive={gameStarted && activeSeat === seatRef[2]}
 								/>
@@ -99,13 +99,13 @@ export const GameScene = () => {
 						</div>
 					</>
 				}
-				{ totalPlayers === 2 && seats.length >= 2 &&
+				{ totalPlayers === 2 && gameSeats.length >= 2 &&
 					<div className="absolute left-[20%] top-[4%]">
-						{ seats[seatRef[1]] &&
+						{ gameSeats[seatRef[1]] &&
 							<AvatarModule
-								key={seats[seatRef[1]] ?? ""}
-								uuid={seats[seatRef[1]] ?? ""}
-								image={cachedData[seats[seatRef[1]] ?? ""]?.avatar ?? undefined}
+								key={gameSeats[seatRef[1]] ?? ""}
+								uuid={gameSeats[seatRef[1]] ?? ""}
+								image={cachedData[gameSeats[seatRef[1]] ?? ""]?.avatar ?? undefined}
 								cornerButton={cardsLeft[seatRef[1]] ?? -1}
 								isActive={gameStarted && activeSeat === seatRef[1]}
 							/>
@@ -126,11 +126,11 @@ export const GameScene = () => {
 				</div>
 			</main>
 			<footer className="flex place-content-between place-items-center">
-				{ seats[seatRef[0]] &&
+				{ gameSeats[seatRef[0]] &&
 					<AvatarModule
-						key={seats[seatRef[0]]}
-						uuid={seats[seatRef[0]] ?? ""}
-						image={cachedData[seats[seatRef[0]] ?? ""]?.avatar ?? undefined}
+						key={gameSeats[seatRef[0]]}
+						uuid={gameSeats[seatRef[0]] ?? ""}
+						image={cachedData[gameSeats[seatRef[0]] ?? ""]?.avatar ?? undefined}
 						cornerButton={cardsLeft[seatRef[0]]}
 						isActive={gameStarted && activeSeat === seatRef[0]}
 					/>

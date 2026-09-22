@@ -74,14 +74,14 @@ export type GameSettingsTransmit = {
 }
 
 export type GameEndStatsTransmit = {
-	winnerPlayerId: string,
+	winnerPlayerUuid: string,
 	playerFinalCardAmounts: Record<string, number>
 	playerPenaltyPoints: Record<string, number>
 }
 
 export type SeatOrderTransmit = {
 	totalSeats: number,
-	seatOrder: Record<string, number>
+	seatOrder: (string | null)[]
 }
 
 export type StatusTransmit = {

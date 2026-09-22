@@ -64,6 +64,13 @@ export default function App() {
 		useScrollToTop();
 	}, [currentScene]);
 
+	//validate on first website load
+	useEffect(() => {
+		if (currentScene !== "Login")
+			handleValidate();
+	}, []);
+
+
 	//inital profile setup
 	useEffect(() => {
 		if (currentScene === "Login" || !clientUuid)
@@ -110,12 +117,6 @@ export default function App() {
 			return ;
 		}
 		threejsManager = new ThreeJsManager(containerRef.current);
-		if (currentScene === "Login") {
-			threejsManager.changeScene("login");
-		}
-		else if (currentScene === "Game") {
-			threejsManager.changeScene("game");
-		}
 
 		return () => {
 			if (threejsManager) {
@@ -123,6 +124,13 @@ export default function App() {
 			}
 		}
 	}, []);
+
+	useEffect(() => {
+		const currentSceneLowered = currentScene.toLowerCase();
+		if (threejsManager.getSceneId() !== currentSceneLowered) {
+			threejsManager.changeScene(currentSceneLowered);
+		}
+	}, [currentScene]);
 
 	//chat room changes
 	useEffect(() => {
@@ -147,26 +155,6 @@ export default function App() {
 				"
 			>
 				{ <div className="w-full h-full" ref={containerRef}/> }
-				{/* { (currentScene === "Login" || currentScene === "Game") && <div className="w-full h-full" ref={containerRef} /> } */}
-					{/* <Canvas>
-						<AdaptiveDpr />
-						<ambientLight intensity={0.5} />
-						<directionalLight position={[0, 5, 5]} intensity={0.5} />
-						{ currentScene === "Login" &&
-							<Card
-								position={[0,0.25,0]}
-								rotation={[-Math.PI/4,0,0]}
-								color="gold"
-							/>
-						}
-						<SphereBg />
-						<PerspectiveCamera makeDefault position={[0, 0, 2.25]} />
-						<OrbitControls enableZoom={false} />
-					</Canvas>
-				}
-				{
-					currentScene === "Game" && <div ref={containerRef}></div>
-				} */}
 			</section>
 			<section
 				className="

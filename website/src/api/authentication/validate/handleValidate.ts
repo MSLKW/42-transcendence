@@ -10,8 +10,7 @@ export const handleValidate = async () => {
 		useProfileStore.setState({ validateResponse: response });
 
 		const resp_json = await response?.json();
-		console.log("resp_json:", resp_json);
-		useAuthStore.setState({ clientUuid: resp_json.userId });
+		useAuthStore.setState({ clientUuid: resp_json.userId })
 	} catch(err) {
 		useSceneStore.getState().setCurrentScene("Login");
 		useNotificationStore.getState().showNotification(err instanceof Error ? err.message : String(err), NOTIFICATION_TYPE.error);

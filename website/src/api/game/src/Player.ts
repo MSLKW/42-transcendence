@@ -5,7 +5,6 @@ import { CardHand } from './CardHand.ts';
 import { Card } from './Card.ts';
 import { CardManager } from './CardManager.ts';
 import { CardHeap } from './CardHeap.ts';
-import { gameStatus } from './main.ts';
 import { threejsManager } from '../../../App.tsx';
 import { Participant } from './Participant.ts';
 import { useGameStore } from '../../../store/GameStore.ts';
@@ -15,30 +14,12 @@ export class Player extends Participant {
 	private startClick: THREE.Vector2;
 	private isDragging: boolean;
 
-	// private sendCardsButton: HTMLButtonElement;
-	// private skipTurnButton: HTMLButtonElement;
-	// private sortCardsByRankButton: HTMLButtonElement;
-	// private sortCardsBySuitButton: HTMLButtonElement;
-
-
 	constructor(socket: Socket, playerId: string, cardHeapRef: CardHeap) {
 		super(socket, playerId, cardHeapRef);
 		this.raycaster = new THREE.Raycaster();
 		this.startClick = new THREE.Vector2();
 		this.isDragging = false;
 
-		// this.sendCardsButton = document.getElementById('send-cards-button') as HTMLButtonElement;
-		// this.skipTurnButton = document.getElementById('skip-turn-button') as HTMLButtonElement;
-		// this.sortCardsByRankButton = document.getElementById('sort-cards-by-rank-button') as HTMLButtonElement;
-		// this.sortCardsBySuitButton = document.getElementById('sort-cards-by-suit-button') as HTMLButtonElement;
-
-		// if (this.sendCardsButton === undefined || 
-		// 	this.skipTurnButton === undefined || 
-		// 	this.sortCardsByRankButton === undefined ||
-		// 	this.sortCardsBySuitButton === undefined) {
-		// 	console.error("Player could not get HTML buttons");
-		// 	return ;
-		// }
 		this.setupListeners();
 	}
 
@@ -51,13 +32,6 @@ export class Player extends Participant {
 	}
 
 	private setupListeners() {
-		this.socket.on("game_end", (gameEndStats: GameEndStatsTransmit) => {
-			this.cardManager.reset();
-			gameStatus.setGameStats(gameEndStats, this);
-			gameStatus.setLightboxActive(true);
-			console.log(gameEndStats);
-		});
-		
 		this.socket.on("player_play_card_hand_request", (status: StatusTransmit) => {
 			if (status.success === true) {
 				const cardHand = this.cardManager.sendSelectedCards();
@@ -69,7 +43,7 @@ export class Player extends Participant {
 		});
 		
 		this.socket.on("player_turn", (playerTurn: PlayerTurnTransmit) => {
-			const activeSeat = useGameStore.getState().seats.findIndex((uuid) => uuid === playerTurn.playerId);
+			const activeSeat = useGameStore.getState().gameSeats.findIndex((uuid) => uuid === playerTurn.playerId);
 			useGameStore.setState({
 				activeSeat: activeSeat, 
 				isActiveSeatSkippable: playerTurn.skippable
