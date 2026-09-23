@@ -46,7 +46,16 @@ export function signinHandler(userStore: UserStore, sessionStore: SessionStore)
 						const data = await profileRes.json();
 						user = await userStore.getUserById(data.uuid);
 						if (user)
-							await userStore.setUsername(user.id, identifier)
+						{
+							try
+							{
+								await userStore.setUsername(user.id, identifier)
+							}
+							catch (err)
+							{
+								return res.status(500).json({ error: "Something went wrong." });
+							}
+						}
 					}
 				}
 				catch (err)
