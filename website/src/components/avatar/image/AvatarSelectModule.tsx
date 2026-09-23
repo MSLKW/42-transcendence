@@ -1,5 +1,6 @@
 import { useAuthStore } from "../../../store/AuthStore";
-import { AvatarSetImageButton } from "./AvatarSetImageButton";
+import { AvatarSetCustomButton } from "./AvatarSetCustomButton";
+import { AvatarSelectButton } from "./AvatarSelectButton";
 import { AvatarUploadButton } from "./AvatarUploadButton";
 
 interface AvatarSelectModuleProps {
@@ -8,7 +9,7 @@ interface AvatarSelectModuleProps {
 }
 export const AvatarSelectModule = ({ avatar, setAvatar }: AvatarSelectModuleProps) => {
 	const clientUuid = useAuthStore((store) => store.clientUuid);
-	
+
 	const AVATAR_IMGS = [
 		"avatar-male-0.webp", "avatar-female-0.webp", "avatar-animal-0.webp",
 		"avatar-male-1.webp", "avatar-female-1.webp", "avatar-animal-1.webp",
@@ -25,21 +26,19 @@ export const AvatarSelectModule = ({ avatar, setAvatar }: AvatarSelectModuleProp
 		"avatar-robot-0.webp", "avatar-robot-2.webp", "avatar-robot-4.webp",
 		"avatar-robot-1.webp", "avatar-robot-3.webp", "avatar-robot-5.webp",
 	] as const;
-	
+
 	return (
 		<div className="flex gap-1rem">
-			<div
-				className="
-					grid grid-flow-col auto-cols-max grid-rows-3
-					gap-1rem py-2rem px-2rem
-					overflow-x-auto
-					bg-dark-semi rounded-xl
-				"
-			>
+			<div className="
+				grid grid-flow-col auto-cols-max grid-rows-3
+				gap-1rem py-2rem px-2rem
+				overflow-x-auto
+				bg-dark-semi rounded-xl
+			">
 				{
 					AVATAR_IMGS.map((img) => {
 						return (
-							<AvatarSetImageButton
+							<AvatarSelectButton
 								key={img}
 								id={img}
 								avatar={avatar}
@@ -49,17 +48,15 @@ export const AvatarSelectModule = ({ avatar, setAvatar }: AvatarSelectModuleProp
 					})
 				}
 			</div>
-			<div
-				className="
-					flex flex-col
-					place-content-center place-items-center
-					h-auto px-1rem gap-1rem
-					bg-dark-semi rounded-xl
+			<div className="
+				flex flex-col
+				place-content-center place-items-center
+				h-auto px-1rem gap-1rem
+				bg-dark-semi rounded-xl
 			">
 				<AvatarUploadButton />
-				<AvatarSetImageButton
-					key={`/avatars/${clientUuid}.png`}
-					id={`/avatars/${clientUuid}.png`}
+				<AvatarSetCustomButton
+					id={clientUuid}
 					avatar={avatar}
 					setAvatar={setAvatar}
 				/>

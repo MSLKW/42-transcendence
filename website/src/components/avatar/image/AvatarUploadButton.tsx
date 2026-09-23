@@ -1,16 +1,20 @@
 import { useRef } from "react";
 import { handlePutAvatar } from "../../../api/profile/put_avatar/handlePutAvatar"
+import { useAuthStore } from "../../../store/AuthStore";
+import { useProfileStore } from "../../../store/ProfileStore";
 
 export const AvatarUploadButton = () => {
 	const fileInputRef = useRef<HTMLInputElement>(null);
+	const clientUuid = useAuthStore((store) => store.clientUuid);
+	const markAvatarUpdated = useProfileStore((store) => store.markAvatarUpdated);
 
 	const handleClick = () => {
 		fileInputRef.current?.click();
 	};
 
-	const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+	const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
 		const file = event.target.files?.[0];
-		if (!file)
+		if (!file || !clientUuid)
 			return;
 
 		const allowedTypes = [
@@ -21,8 +25,12 @@ export const AvatarUploadButton = () => {
 		if (!allowedTypes.includes(file.type))
 			return;
 
-		handlePutAvatar(file);
-		event.target.value = "";
+		try {
+			await handlePutAvatar(file);
+			markAvatarUpdated(clientUuid);
+		} finally {
+			event.target.value = "";
+		}
 	}
 
 	return (

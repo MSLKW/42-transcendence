@@ -20,20 +20,16 @@ export const AvatarSetNameModule = ({ name, setName, avatar, uuid }: AvatarSetNa
 	}, []);
 
 	return (
-		<div
-			className="
-				flex place-content-evenly place-items-center
-				py-2rem px-1rem
+		<div className="
+			flex place-content-evenly place-items-center
+			py-2rem px-1rem
+			gap-1rem
+		">
+			<div className="
+				flex flex-col
+				place-content-center place-items-center
 				gap-1rem
-			"
-		>
-			<div
-				className="
-					flex flex-col
-					place-content-center place-items-center
-					gap-1rem
-				"
-			>
+			">
 				<AvatarImage uuid={uuid} image={avatar} />
 				<input
 					ref={inputRef}

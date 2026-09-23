@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useAuthStore } from "../../store/AuthStore";
 import { Window } from "../window/Window";
 import { AvatarSetNameModule } from "../avatar/name/AvatarSetNameModule";
-import { AvatarSelectModule } from "../avatar/image/AvatarSetImageModule";
+import { AvatarSelectModule } from "../avatar/image/AvatarSelectModule";
 import { SetupValidationModule } from "./SetupValidationModule";
 
 export const SetupWindow = () => {

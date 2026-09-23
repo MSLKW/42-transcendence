@@ -278,10 +278,11 @@ const defaultProfileInDb: ProfileData[] = [
 ];
 
 interface ProfileValues {
-	isAuthenticated: boolean,
-	validateResponse: Response | undefined,
-	profilesInDb: ProfileData[],
-	cachedData: Record<string, CachedData>,
+	isAuthenticated: boolean;
+	validateResponse: Response | undefined;
+	profilesInDb: ProfileData[];
+	cachedData: Record<string, CachedData>;
+	avatarVersions: Record<string, number>;
 };
 
 interface ProfileState extends ProfileValues {
@@ -290,6 +291,7 @@ interface ProfileState extends ProfileValues {
 	setCachedData: () => Promise<void>,
 	removeCachedData: (uuid: string | null) => void;
 	clearCachedData: () => void;
+	markAvatarUpdated: (uuid: string) => void;
 };
 
 export const useProfileStore = create<ProfileState>() (
@@ -299,6 +301,7 @@ export const useProfileStore = create<ProfileState>() (
 			validateResponse: undefined,
 			profilesInDb: defaultProfileInDb,
 			cachedData: {},
+			avatarVersions: {},
 
 			getProfileData: (uuid) => {
 				if (!uuid)
@@ -376,6 +379,15 @@ export const useProfileStore = create<ProfileState>() (
 
 			clearCachedData: () => {
 				set({ cachedData: {} });
+			},
+
+			markAvatarUpdated: (uuid) => {
+				set((state) => ({
+					avatarVersions: {
+						...state.avatarVersions,
+						[uuid]: (state.avatarVersions[uuid] ?? 0) + 1,
+					},
+				}))
 			},
 		}),
 		{

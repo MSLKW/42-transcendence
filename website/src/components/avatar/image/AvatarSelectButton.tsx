@@ -1,10 +1,10 @@
-interface AvatarSetImageButtonProps {
+interface AvatarSelectButtonProps {
 	id: string | null;
 	avatar: string | undefined;
 	setAvatar: (img: string) => void;
 }
 
-export const AvatarSetImageButton = ({ id, avatar, setAvatar }: AvatarSetImageButtonProps) => {
+export const AvatarSelectButton = ({ id, avatar, setAvatar }: AvatarSelectButtonProps) => {
 	return (
 		<button 
 			onClick={() => setAvatar(id ?? "")}
@@ -15,16 +15,14 @@ export const AvatarSetImageButton = ({ id, avatar, setAvatar }: AvatarSetImageBu
 				h-6rem aspect-square
 				border rounded-sm
 				cursor-pointer
-			`}
-		>
-			{
-				id &&
-					<img
-						src={id}
-						alt={id}
-						loading="lazy"
-						className="h-full w-full"
-					/>
+		`}>
+			{id &&
+				<img
+					src={id}
+					alt={id}
+					loading="lazy"
+					className="h-full w-full"
+				/>
 			}
 		</button>
 	)
