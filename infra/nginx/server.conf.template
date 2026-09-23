@@ -1,0 +1,107 @@
+resolver 127.0.0.11 valid=10s ipv6=off;
+
+map $http_upgrade $connection_upgrade {
+	default	upgrade;
+	''		'';
+}
+
+server {
+	listen ${DOMAIN_PORT} default_server;
+
+	# hoisting what every location has in common
+	proxy_http_version			1.1;
+	proxy_set_header Upgrade	$http_upgrade;
+	proxy_set_header Connection	$connection_upgrade;
+	#proxy_set_header Host 		$host;					# if needed and harmless to every services only. only placing here as an possible option to consider in future, discuss first. 
+
+	# Used by the docker healthcheck via dockerfile. Answered by nginx itself, no backend involved.
+    location = /health {							# '=' means exact match
+        default_type text/plain;
+        return 200 "ok\n";
+    }
+
+	location / {
+		set $upstream ${WEBSITE_SERVICE_URL};
+		proxy_pass $upstream;						# no rewrite: original URI is passed as-is
+	}
+
+	location /api/auth/ {
+		set $upstream ${AUTH_SERVICE_URL};
+        rewrite ^/api/auth/(.*)$ /$1 break;          # /api/auth/signup -> /signup
+		proxy_pass $upstream;
+	}
+
+	location /api/profile/ {
+		set $upstream ${PROFILE_SERVICE_URL};
+        rewrite ^/api/profile/(.*)$ /$1 break;
+		proxy_pass $upstream;
+	}
+
+	location /api/party/ {
+		set $upstream ${PARTY_SERVICE_URL};
+        rewrite ^/api/party/(.*)$ /$1 break;
+		proxy_pass $upstream;
+	}
+
+	# SSE, Server-Sent Events: do not buffer, keep the stream open
+	location /api/friends/ {
+		set $upstream ${FRIENDS_SERVICE_URL};
+        rewrite ^/api/friends/(.*)$ /$1 break;
+		proxy_pass $upstream;
+
+		proxy_set_header	Connection '';
+		proxy_buffering		off;
+		proxy_cache			off;
+		proxy_read_timeout	48h;
+	}
+
+# proxy_set_header is inherited from the level above only when the current level defines none. 
+# Chat block adds Host, so it stops inheriting Upgrade and Connection, 
+# and the WebSocket handshake would fail.
+# Friends loses them too, but SSE doesn't need Upgrade
+	location /socket/chat/ {
+		set $upstream ${CHAT_SERVICE_URL};
+    #    rewrite ^/socket/chat/(.*)$ /socket.io/$1 break;
+        rewrite ^/socket/chat/(.*)$ /$1 break;				# USE THIS FIRST, AS THIS IS WHAT IS IN THE ORIGINAL MERGED ONE, and they make it working already using this
+		proxy_pass $upstream;
+
+		proxy_set_header Host		$host;
+		proxy_set_header Upgrade	$http_upgrade;
+		proxy_set_header Connection	$connection_upgrade;
+		proxy_cache_bypass			$http_upgrade;
+	}
+
+	location /socket/party/ {
+		set $upstream ${PARTY_SERVICE_URL};
+        rewrite ^/socket/party/(.*)$ /socket.io/$1 break;
+		proxy_pass $upstream;
+	}
+
+	# Temporary for direct website calling party
+	# will be used for real soon too to send stats data to game-stats
+	location /api/game-server/ {
+		set $upstream ${GAME_SERVER_SERVICE_URL};
+        rewrite ^/api/game-server/(.*)$ /$1 break;
+		proxy_pass $upstream;
+	}
+
+	location /socket/game-server/ {
+		set $upstream ${GAME_SERVER_SERVICE_URL};
+        rewrite ^/socket/game-server/(.*)$ /socket.io/$1 break;
+		proxy_pass $upstream;
+	}
+
+	#TO BE MERGED LATER, not completed yet
+	location /api/game-stats/ {
+		set $upstream ${GAME_STATS_SERVICE_URL};
+        rewrite ^/api/game-stats/(.*)$ /$1 break;
+		proxy_pass $upstream;
+	}
+
+	#TO BE MERGED LATER, not completed yet
+	location /socket/game-bot/ {
+		set $upstream ${GAME_BOT_SERVICE_URL};
+        rewrite ^/socket/game-bot/(.*)$ /socket.io/$1 break;
+		proxy_pass $upstream;
+	}
+}

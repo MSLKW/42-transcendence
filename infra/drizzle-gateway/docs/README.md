@@ -7,7 +7,7 @@ This guide focuses entirely on how to set up your environment, run containers, c
 * [2. Running Docker](#2-running-docker)
 * [3. Opening & Configuring Drizzle Gateway (Database GUI Dev Tool)](#3-opening--configuring-drizzle-gateway-database-gui-dev-tool)
 * [4. Live Database Testing: Auth Service](#4-live-database-testing-auth-service)
-* [5. Live Database Testing: Party-Manager Service](#5-live-database-testing-party-manager-service)
+* [5. Live Database Testing: Party Service](#5-live-database-testing-party-service)
 
 ## 1. Prerequisites & Required Files
 
@@ -39,14 +39,14 @@ Look for these specific terminal logs to confirm the database and its migrator h
 * **Auth Service:**
   ![Auth Service Running](./pictures/docker/d-auth.png)
 
-* **Party-Manager Service:**
-  ![Party-Manager Running](./pictures/docker/d-pm.png)
+* **Party Service:**
+  ![Party Running](./pictures/docker/d-pm.png)
 
-<!-- * **Profile-System Service:**
-  ![Profile-System Running](./pictures/docker/d-ps.png)
+<!-- * **Profile Service:**
+  ![Profile Running](./pictures/docker/d-ps.png)
 
-* **Friends-System Service:**
-  ![Friends-System Running](./pictures/docker/d-fs.png)
+* **Friends Service:**
+  ![Friends Running](./pictures/docker/d-fs.png)
 
 * **Chat Service:**
   ![Chat Running](./pictures/docker/d-c.png) -->
@@ -183,7 +183,7 @@ Look for these specific terminal logs to confirm the database and its migrator h
 	![Sign Up Successful!](./pictures/auth/a-logout.png)
 <br><br>
 
-## 5. Live Database Testing: Party-Manager Service
+## 5. Live Database Testing: Party Service
 
 `**Prerequisite:** Perform this test only after successfully verifying authentication via test:signin`
 
@@ -193,7 +193,7 @@ Look for these specific terminal logs to confirm the database and its migrator h
 
 <div style="background-color: #071422; border-left: 4px solid #0066cc; padding: 12px; border-radius: 4px;">
   <strong>1. Setup Test Client 🛠️</strong><br>
-   1. Locate the test file at services/party-manager/test/test.html.<br>
+   1. Locate the test file at services/party/test/test.html.<br>
    2. Right click on the file, go to `Reveal in File Explorer` <br>
    3. Open it in your web browser by double-click the `test.html` in your File Explorer
 </div>
@@ -212,7 +212,7 @@ Look for these specific terminal logs to confirm the database and its migrator h
    
    ##### 🟢 Step A: Test Online State
    1. Click **Connect** on the browser test page.
-   2. Open **Drizzle-Gateway** and navigate to: `schema:party-manager-schema -> table:player_status`
+   2. Open **Drizzle-Gateway** and navigate to: `schema:party-schema -> table:player_status`
    3. Locate the visual table record matching your `session_token`.
    4. **Expected Result:** The said session_token within `is_online` column is set to `TRUE` 🟢.
 
@@ -222,10 +222,10 @@ Look for these specific terminal logs to confirm the database and its migrator h
    3. **Expected Result:**  The said session_token within `is_online` column is set to `FALSE` 🔴
 </div>
 
-## 6. Live Database Testing: Profile-System Service
+## 6. Live Database Testing: Profile Service
 updates soon!
 
-## 7. Live Database Testing: Friends-System Service
+## 7. Live Database Testing: Friends Service
 updates soon!
 
 ## 8. Live Database Testing: Achievements Service

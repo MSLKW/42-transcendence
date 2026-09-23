@@ -40,25 +40,25 @@ BEFORE UPDATE ON auth_schema.sessions
 FOR EACH ROW EXECUTE FUNCTION set_updated_at();
 
 CREATE OR REPLACE TRIGGER trg_updated_at
-BEFORE UPDATE ON party_manager_schema.player_status
+BEFORE UPDATE ON party_schema.player_status
 FOR EACH ROW EXECUTE FUNCTION set_updated_at();
 
 CREATE OR REPLACE TRIGGER trg_updated_at
-BEFORE UPDATE ON profile_system_schema.user_data
+BEFORE UPDATE ON profile_schema.user_data
 FOR EACH ROW EXECUTE FUNCTION set_updated_at();
 
 CREATE OR REPLACE TRIGGER trg_updated_at
-BEFORE UPDATE ON profile_system_schema.user_settings
+BEFORE UPDATE ON profile_schema.user_settings
 FOR EACH ROW EXECUTE FUNCTION set_updated_at();
 
 CREATE OR REPLACE TRIGGER trg_updated_at
-BEFORE UPDATE ON friends_system_schema.friendships
+BEFORE UPDATE ON friends_schema.friendships
 FOR EACH ROW EXECUTE FUNCTION set_updated_at();
 
 CREATE OR REPLACE TRIGGER trg_updated_at
-BEFORE UPDATE ON friends_system_schema.friend_requests
+BEFORE UPDATE ON friends_schema.friend_requests
 FOR EACH ROW EXECUTE FUNCTION set_updated_at();
 
 -- CREATE OR REPLACE TRIGGER trg_updated_at
--- BEFORE UPDATE ON game_schema.player_stats
+-- BEFORE UPDATE ON game_stats_schema.player_stats
 -- FOR EACH ROW EXECUTE FUNCTION set_updated_at();

@@ -10,11 +10,12 @@ if [ -f .env ]; then
 fi
 
 TOKEN="$1"
-# BASE_URL="${BASE_URL:-http://localhost/api/auth}"
-BASE_URL="${BASE_URL:-http://localhost}"
-PORT="${PORT:-3000}"
+BASE_URL="${BASE_URL:-http://localhost/api/auth}"
+# BASE_URL="${BASE_URL:-http://localhost}"
+# PORT="${PORT:-3000}"
 
-curl -s -X DELETE "$BASE_URL:$PORT/logout" \
+# curl -s -X DELETE "$BASE_URL:$PORT/logout" \
+curl -s -X DELETE "$BASE_URL/logout" \
   -H "Authorization: Bearer $TOKEN" \
   -v
 echo ""

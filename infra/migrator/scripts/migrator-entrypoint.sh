@@ -3,10 +3,10 @@
 
 # 1. Read the secret file mounted by Docker and export it for psql and drizzle-kit
 echo "[1/7]  Extracting postgres user password..."
-if [ -f "/run/secrets/db-admin-password" ]; then
-  export PGPASSWORD="$(cat /run/secrets/db-admin-password)"
+if [ -f "${PGPASSWORD_FILE}" ]; then
+  export PGPASSWORD="$(cat "${PGPASSWORD_FILE}")"
 else
-  echo "[1/7] Error! Secret file /run/secrets/db-admin-password not found!"
+  echo "[1/7] Error! Secret file db-admin-password not found!"
   echo "[1/7] Failure! Exit failure migrator container with failure now..."
   exit 1
 fi

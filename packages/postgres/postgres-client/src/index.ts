@@ -5,9 +5,9 @@ import { Pool } from "pg";
 
 
 // 2. Helper to safely read the password
-const password = fs.readFileSync(process.env.PGPASSWORD!, 'utf-8').trim();
+const password = fs.readFileSync(process.env.PGPASSWORD_FILE!, 'utf-8').trim();
 if (!password) {
-  throw new Error("CRITICAL: Database password could not be loaded.");
+  throw new Error("CRITICAL: Database password could not be loaded from the secret file itself.");
 }
 
 

@@ -1,20 +1,20 @@
 import importX from "eslint-plugin-import-x";
 import tsParser from "@typescript-eslint/parser";
 
-const workspaces = [ // TODO: include contacts ones too 
+const workspaces = [ // TODO: may include contacts ones too 
   "packages/postgres/auth-schema",
-  "packages/postgres/friends-system-schema",
-  "packages/postgres/game-schema", // TODO: change to game-stats-schema later
-  "packages/postgres/party-manager-schema",
+  "packages/postgres/friends-schema",
+  "packages/postgres/game-stats-schema",
+  "packages/postgres/party-schema",
   "packages/postgres/postgres-client",
-  "packages/postgres/profile-system-schema",
-  "packages/types/friends-system-types",
-  "packages/types/profile-system-types",
+  "packages/postgres/profile-schema",
+  "packages/types/friends-types",
+  "packages/types/profile-types",
   "services/authentication",
-  "services/friends-system",
+  "services/friends",
   "services/game",
-  "services/party-manager",
-  "services/profile-system",
+  "services/party",
+  "services/profile",
   "services/website",
 ];
 
