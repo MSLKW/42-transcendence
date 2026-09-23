@@ -45,11 +45,16 @@ export function signinHandler(userStore: UserStore, sessionStore: SessionStore)
 					{
 						const data = await profileRes.json();
 						user = await userStore.getUserById(data.uuid);
+						if (user)
+							await userStore.setUsername(user.id, identifier)
 					}
 				}
 				catch (err)
 				{
-					return res.status(500).json({ error: "Try signing in with email instead" })					
+					user = await userStore.getUserByUsername(identifier);
+
+					if (!user)
+						return res.status(500).json({ error: "Username not found. Try signing in with email instead" })					
 				}
 			}
 				
