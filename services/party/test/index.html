@@ -228,10 +228,13 @@
       <div class="panel">
         <h2>Connection</h2>
         <div class="status"><span data-field="statusDot" class="dot"></span><span data-field="statusText">Disconnected</span></div>
-        <label>Server URL (origin only — protocol + host + port)</label>
-        <input data-field="serverUrl" value="http://localhost:5000" />
+        <!-- <label>Server URL (origin only — protocol + host + port)</label> -->
+        <!-- <input data-field="serverUrl" value="http://localhost:5000" /> -->
+        <label>Server URL (origin only — protocol + host)</label>
+        <input data-field="serverUrl" placeholder="http://localhost" value="http://localhost" />
         <label>Socket.IO path (must match your nginx location block)</label>
-        <input data-field="socketPath" value="/socket.io" placeholder="/socket/party/socket.io" />
+        <!-- <input data-field="socketPath" value="/socket.io" placeholder="/socket/party/socket.io" /> -->
+        <input data-field="socketPath" value="/socket/party/socket.io" placeholder="/socket/party/socket.io" />
         <label>Session token (sent as auth.token)</label>
         <input data-field="token" placeholder="paste a valid session token" />
         <button data-action="connect">Connect</button>
