@@ -10,10 +10,10 @@ import { randomBytes } from "crypto";
 
 const MAX_FAILED_ATTEMPTS = 5;
 const LOCKOUT_DURATION_MS = 15 * 60 * 1000; // 15 minutes
-const PROFILE_SYSTEM_URL = process.env.PROFILE_SYSTEM_URL;
+const PROFILE_SERVICE_URL = process.env.PROFILE_SERVICE_URL;
 
-if (!PROFILE_SYSTEM_URL)
-	console.warn("[Warning] PROFILE_SYSTEM_URL not set. Logins with username will not work");
+if (!PROFILE_SERVICE_URL)
+	console.warn("[Warning] PROFILE_SERVICE_URL not set. Logins with username will not work");
 
 export function signinHandler(userStore: UserStore, sessionStore: SessionStore)
 {
@@ -32,13 +32,13 @@ export function signinHandler(userStore: UserStore, sessionStore: SessionStore)
 		{
 			let user = validateEmail(identifier)
 				? await userStore.getUserByEmail(identifier)
-				: await userStore.getUserByUsername(identifier);
+				: null;
 
-			if (user == null && PROFILE_SYSTEM_URL && !validateEmail(identifier))
+			if (user == null && PROFILE_SERVICE_URL && !validateEmail(identifier))
 			{
 				try
 				{
-					const profileRes = await fetch(`${PROFILE_SYSTEM_URL}/search-exact/${identifier}`);
+					const profileRes = await fetch(`${PROFILE_SERVICE_URL}/search-exact/${identifier}`);
 					if (!profileRes.ok)
 						user = null;
 					else
@@ -51,6 +51,8 @@ export function signinHandler(userStore: UserStore, sessionStore: SessionStore)
 				}
 				catch (err)
 				{
+					console.warn("[Warning] profile system could not be reached:", err);
+					console.warn("[Warning] trying internally stored username");
 					user = await userStore.getUserByUsername(identifier);
 
 					if (!user)
