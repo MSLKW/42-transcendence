@@ -54,7 +54,7 @@ export const AvatarSelectModule = ({ avatar, setAvatar }: AvatarSelectModuleProp
 				h-auto px-1rem gap-1rem
 				bg-dark-semi rounded-xl
 			">
-				<AvatarUploadButton />
+				<AvatarUploadButton setAvatar={setAvatar}/>
 				<AvatarSetCustomButton
 					id={clientUuid}
 					avatar={avatar}

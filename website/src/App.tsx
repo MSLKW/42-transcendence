@@ -21,8 +21,6 @@ import { subscribeToRateLimited } from "./api/chat/subscribe/subscribeToRateLimi
 import { useScrollToTop } from "./utilities/useScrollToTop";
 
 import { StripeBg } from "./components/bg/Stripe";
-// import { SphereBg } from "./components/3d/Sphere";
-// import { Card } from "./components/3d/PCard";
 import { LoginScene } from "./components/login/LoginScene";
 import { HomeScene } from "./components/home/HomeScene";
 import { LobbyScene } from "./components/lobby/LobbyScene";

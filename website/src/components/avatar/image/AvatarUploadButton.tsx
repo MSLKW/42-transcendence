@@ -3,7 +3,11 @@ import { handlePutAvatar } from "../../../api/profile/put_avatar/handlePutAvatar
 import { useAuthStore } from "../../../store/AuthStore";
 import { useProfileStore } from "../../../store/ProfileStore";
 
-export const AvatarUploadButton = () => {
+interface AvatarUploadButtonProps {
+	setAvatar: (img: string) => void;
+}
+
+export const AvatarUploadButton = ({ setAvatar }: AvatarUploadButtonProps) => {
 	const fileInputRef = useRef<HTMLInputElement>(null);
 	const clientUuid = useAuthStore((store) => store.clientUuid);
 	const markAvatarUpdated = useProfileStore((store) => store.markAvatarUpdated);
@@ -28,6 +32,7 @@ export const AvatarUploadButton = () => {
 		try {
 			await handlePutAvatar(file);
 			markAvatarUpdated(clientUuid);
+			setAvatar(`avatars/${clientUuid}.png`);
 		} finally {
 			event.target.value = "";
 		}

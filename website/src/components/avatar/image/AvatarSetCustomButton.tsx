@@ -19,8 +19,8 @@ export const AvatarSetCustomButton = ({ id, avatar, setAvatar }: AvatarSetCustom
 	if (!id || hasError)
 		return null;
 
-	const imagePath = `/avatars/${id}.png`;
-	const imageSrc = `/avatars/${id}.png?v=${avatarVersion}`;
+	const imagePath = `avatars/${id}.png`;
+	const imageSrc = `avatars/${id}.png?v=${avatarVersion}`;
 
 	return (
 		<>
