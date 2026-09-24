@@ -68,16 +68,16 @@ class ChatSocketService {
 		});
 	}
 
-	public setInitialRoom(roomId: string) {
+	public setInitialRoom = (roomId: string) => {
 		useChatStore.setState({ chatRoomId: roomId });
 	}
-	public joinRoom(roomId: string) {
+	public joinRoom = (roomId: string) => {
 		joinRoomAction(this.socket, roomId);
 	}
-	public sendChat(chatType: string, message: string) {
+	public sendChat = (chatType: string, message: string) => {
 		sendChatAction(this.socket, chatType, message);
 	}
-	public sendTyping(isTyping: boolean) {
+	public sendTyping = (isTyping: boolean) => {
 		sendTypingAction(this.socket, isTyping);
 	}
 	public onMessage(callback: (data: ChatMessage ) => void): () => void {

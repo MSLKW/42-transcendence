@@ -17,6 +17,7 @@ interface PartyPlayerModuleProps {
 
 export const PartyPlayerModule = ({ uuid }: PartyPlayerModuleProps) => {
 	const clientUuid = useAuthStore((store) => store.clientUuid);
+	const hostUuid = usePartyStore((store) => store.hostUuid);
 	const cachedFriends = useFriendStore((store) => store.cachedFriends);
 	// const members = usePartyStore((store) => store.members);
 	const availabilityOverride = usePartyStore((store) => store.availabilityOverrides[uuid]);
@@ -62,14 +63,6 @@ export const PartyPlayerModule = ({ uuid }: PartyPlayerModuleProps) => {
 		clientUuid === uuid ? "Self" :
 		"Stranger";
 
-	// const isDisabled = (relation === "Self" || members.includes(uuid) || effectiveAvailability === "Offline");
-
-	const handleInvite = () => {
-		// if (isDisabled)
-			// return;
-		partySocket.sendInvite(uuid, playerData?.username ?? "Player");
-	}
-
 	if (isLoading)
 		return (<p>Loading player...</p>);
 
@@ -87,9 +80,9 @@ export const PartyPlayerModule = ({ uuid }: PartyPlayerModuleProps) => {
 				showName={false}
 			/>
 			<button
-				data-tip="Send Invite"
-				// disabled={isDisabled}
-				onClick={handleInvite}
+				data-tip={hostUuid === clientUuid ? "Send invite" : "Only host can invite"}
+				disabled={hostUuid !== clientUuid}
+				onClick={() => partySocket.sendInvite(uuid, playerData?.username ?? "Player")}
 				className={`
 					h-full w-full
 					py-0.5rem px-1.5rem

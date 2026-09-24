@@ -24,7 +24,8 @@ export const PlayerStatusModule = ({ uuid }: PlayerStatusModuleProps) => {
 			try {
 				const response = await handleGetOnline(uuid);
 
-				if (!mounted) return;
+				if (!mounted)
+					return;
 
 				if (response?.isOnline) {
 					if (response?.inParty)
