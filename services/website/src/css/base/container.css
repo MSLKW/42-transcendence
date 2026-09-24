@@ -1,3 +1,19 @@
+<<<<<<< HEAD
+=======
+@utility cont-body {
+	@apply
+		z-1
+		w-full min-w-80 max-w-360
+		h-full min-h-120 max-h-360
+		mx-auto
+		p-[clamp(0.125rem,5vw+0.125rem,3.125rem)]
+		flex flex-col
+		relative
+		pointer-events-none
+		;
+}
+
+>>>>>>> origin/int/KAN-36-website-db
 header {
 	@apply w-full h-fit z-1;
 }

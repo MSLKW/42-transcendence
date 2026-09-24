@@ -1,7 +1,8 @@
 import "dotenv/config";
 import express from "express";
 import { UserStore } from "./store/UserStore";
-import { FileUserStore } from "./store/FileUserStore";
+// import { FileUserStore } from "./store/FileUserStore";
+import { DrizzleUserStore } from "./store/DrizzleUserStore";
 
 import { healthCheck } from "./handlers/healthCheck";
 import { userSearch, userSearchExact } from "./handlers/userSearch";
@@ -20,9 +21,17 @@ const ERROR_MESSAGES: Record<string, string> = {
 	EADDRNOTAVAIL: "The specified address is not available."
 };
 
-const userStore: UserStore = new FileUserStore;
+// const userStore: UserStore = new FileUserStore;
+const userStore: UserStore = new DrizzleUserStore;
 
 const app = express();
+
+app.use((req, res, next) => {
+	console.log(`[DEBUG] ${req.method} ${req.url} | Host: ${req.headers.host}`);
+	next();
+});
+
+
 app.use(express.json());
 app.use(express.static("test"));
 

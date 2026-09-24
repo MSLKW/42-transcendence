@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>friends tester</title>
+<style>
+  body { font-family: sans-serif; max-width: 480px; margin: 20px auto; background: #1e1e1e; color: #ddd; }
+  h2 { margin-top: 24px; color: #fff; }
+  input, button { padding: 6px; margin: 2px 0; background: #2d2d2d; color: #ddd; border: 1px solid #555; border-radius: 4px; }
+  button { cursor: pointer; }
+  button:hover { background: #3a3a3a; }
+  #uuid-box { padding: 10px; background: #2a2a40; border-radius: 6px; }
+  ul { padding-left: 0; list-style: none; }
+  li { padding: 6px; border: 1px solid #444; border-radius: 4px; margin: 4px 0; display: flex; justify-content: space-between; align-items: center; background: #262626; }
+  .log { background: #151515; height: 160px; overflow-y: auto; font-size: 12px; padding: 8px; border: 1px solid #444; color: #9c9; }
+  button.accept { background: #1f4d1f; color: #cfc; }
+  button.reject, button.remove { background: #4d1f1f; color: #fcc; }
+</style>
+</head>
+<body>
+
+<div id="uuid-box">
+  <b>My UUID:</b>
+  <input id="my-uuid" placeholder="<uuid as in database>" onkeydown="if(event.key==='Enter') start()" />
+  <button onclick="start()">Connect</button>
+  <button onclick="disconnect()">Disconnect</button>
+  <button onclick="openTab()">+ Open another tester tab</button>
+  <div id="connectionStatus" style="margin-top:6px; font-size:13px;">⚪ not connected</div>
+</div>
+
+<h2>Send a friend request</h2>
+<input id="target-uuid" placeholder="friend's uuid" onkeydown="if(event.key==='Enter') sendRequest()" />
+<button onclick="sendRequest()">Send friend request</button>
+
+<h2>Inbox (received, pending)</h2>
+<ul id="inbox"></ul>
+
+<h2>Sent requests</h2>
+<ul id="sent"></ul>
+
+<h2>Friends list <button onclick="refreshFriends()" style="font-size:12px;">Refresh</button></h2>
+<ul id="friends"></ul>
+
+<h2>Notification log</h2>
+<div class="log" id="log"></div>
+
+<script>
+// const API = "http://localhost:3000";
+const API = "http://localhost/api/friends";
+let myUuid = null;
+let evtSource = null;
+let pollTimer = null;
+
+function log(msg) {
+  const el = document.getElementById("log");
+  el.innerHTML = `<div>[${new Date().toLocaleTimeString()}] ${msg}</div>` + el.innerHTML;
+}
+
+function setConnectionStatus(text) {
+  document.getElementById("connectionStatus").textContent = text;
+}
+
+function openTab() {
+  window.open(window.location.pathname, "_blank");
+}
+
+function start() {
+  if (evtSource) return log("already connected — click Disconnect first to reconnect");
+
+  myUuid = document.getElementById("my-uuid").value.trim();
+  if (!myUuid) return alert("enter a uuid first");
+  document.title = "tester: " + myUuid;
+
+  evtSource = new EventSource(`${API}/events/${myUuid}`);
+  evtSource.addEventListener("connected", () => {
+    log("SSE connected as " + myUuid);
+    setConnectionStatus("🟢 live (SSE connected)");
+  });
+
+  // EventSource's error event never exposes an HTTP status code (spec limitation).
+  // The one signal we DO get is readyState:
+  //  - CONNECTING (0): the browser will retry automatically (network blip, server restart, etc)
+  //  - CLOSED (2): the browser gave up for good — this happens when the server responds
+  //    with a non-2xx status (e.g. 404 for an unknown uuid) instead of upgrading to SSE.
+  // So on the backend, /events/:ownerUuid should respond 404 (not open an SSE stream) when the
+  // uuid doesn't exist in the database — that's what makes this distinction possible at all.
+  evtSource.onerror = () => {
+    if (!evtSource) return; // already handled by "replaced" or disconnect()
+    if (evtSource.readyState === EventSource.CLOSED) {
+      setConnectionStatus("⛔ rejected — this uuid may not exist in the database");
+      log("Server refused the SSE connection and won't retry. Check the uuid, then click Connect again.");
+      evtSource = null;
+      clearInterval(pollTimer);
+      pollTimer = null;
+    } else {
+      setConnectionStatus("🟡 reconnecting… (connection blipped, browser is retrying)");
+      log("Connection blipped — browser is auto-retrying, no action needed.");
+    }
+  };
+
+  // Server (backend): tells frontend via (existing.end() + event REPLACED) they were replaced by another new latest tab/device connecting upon this same uuid 
+  // Browser (frontend): must close it ourselves via ( .close() ) => exactly what stops the browser's (frontend side) default auto-reconnect behavior
+  // why must the combo actions of both backend+frontend, not just either? 
+  // =>
+  // Server's existing.end() alone can never make browser understand that this connection must be replaced. with server's REPLACED event, it hints the browser to explicitly close.
+  // If we relied on the server's existing.end() alone, 
+  // this tab's EventSource would see "connection died" & back to default behaviour: auto-retry.
+  // default behaviour will auto-reconnect coz always assuming its default situation: wifi blipped, unless deliberately hinted so ("replaced").
+  // otherwise, causes infinite kick-loop bug: evict old connection, old connection will auto-retry & evict the new connection, and vice-versa, infinitely. 
+  evtSource.addEventListener("replaced", () => {
+    evtSource.close();  // <- calling .close() yourself is the actual fix, this is what stops auto-reconnect, not the server closing it
+    evtSource = null;
+    clearInterval(pollTimer);
+    pollTimer = null;
+    setConnectionStatus("⚪ connected elsewhere");
+    log("This uuid connected in another tab/device — this tab disconnected to avoid a reconnect loop.");
+  });
+
+
+
+  evtSource.addEventListener("friend_request_received", e => {
+    const data = JSON.parse(e.data);
+    log(`Friend request received from ${data.senderId}`);
+    refreshInbox();
+  });
+
+  evtSource.addEventListener("friend_request_accepted", e => {
+    const data = JSON.parse(e.data);
+    log(`${data.by} accepted your friend request`);
+    refreshSent();
+  });
+
+  evtSource.addEventListener("friend_request_rejected", e => {
+    const data = JSON.parse(e.data);
+    log(`${data.by} rejected your friend request`);
+    refreshSent();
+  });
+
+  evtSource.addEventListener("friends_list_updated", e => {
+    const data = JSON.parse(e.data);
+    if (data.newFriend) log(`${data.newFriend} is now your friend`);
+    if (data.removedFriend) log(`Removed ${data.removedFriend} from your friends`);
+    refreshFriends();
+  });
+
+  refreshInbox(); refreshSent(); refreshFriends();
+
+  pollTimer = setInterval(refreshFriends, 5000);
+  window.addEventListener("focus", refreshFriends);
+}
+
+function disconnect() {
+  if (!evtSource) return log("already disconnected");
+  evtSource.close();
+  evtSource = null;
+  clearInterval(pollTimer);
+  pollTimer = null;
+  setConnectionStatus("⚪ not connected");
+  log(`SSE disconnected as ${myUuid} — live updates paused until you Connect again.`);
+}
+
+async function sendRequest() {
+  const input = document.getElementById("target-uuid");
+  const target = input.value.trim();
+  // bug fixed: don't even attempt the friend request if the field is empty
+  if (!target) 
+    return log("enter a friend's uuid before sending a friend request");
+  input.value = ""; // ← this clears the box immediately
+
+  const res = await fetch(`${API}/friend-requests`, {
+    method: "POST", headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ senderId: myUuid, receiverId: target })
+  });
+  const data = await res.json();
+  if (res.ok) {
+    log(`Sent friend request to ${target}`);
+  } else if (data.requestId) {
+    log(`${target} already sent you a friend request — check your inbox below to respond`);
+  } else {
+    log(`Error: ${data.error}`);
+  }
+  refreshSent();
+}
+
+async function refreshInbox() {
+  const res = await fetch(`${API}/friend-requests/received/${myUuid}`);
+  const requests = await res.json();
+  const list = document.getElementById("inbox");
+  list.innerHTML = "";
+  requests.forEach(r => {
+    const li = document.createElement("li");
+    li.innerHTML = `${r.senderId}
+      <span>
+        <button class="accept" onclick="respond('${r.id}','accept')">accept</button>
+        <button class="reject" onclick="respond('${r.id}','reject')">reject</button>
+      </span>`;
+    list.appendChild(li);
+  });
+}
+
+async function respond(id, action) {
+  const res = await fetch(`${API}/friend-requests/${id}/${action}`, { method: "POST" });
+  if (!res.ok) {
+    const data = await res.json();
+    log(`Error: ${data.error}`);
+  }
+  refreshInbox(); refreshFriends();
+}
+
+async function refreshSent() {
+  const res = await fetch(`${API}/friend-requests/sent/${myUuid}`);
+  const requests = await res.json();
+  const list = document.getElementById("sent");
+  list.innerHTML = "";
+  requests.forEach(r => {
+    const li = document.createElement("li");
+    // r.status here is the FRIEND REQUEST's own status (Pending/Accepted/
+    // Rejected), as returned by the backend's schema column named "status".
+    li.textContent = `${r.receiverId} — ${r.status}`;
+    list.appendChild(li);
+  });
+}
+
+async function refreshFriends() {
+  const res = await fetch(`${API}/friendships/${myUuid}`);
+  const friends = await res.json();
+  const list = document.getElementById("friends");
+  list.innerHTML = "";
+  friends.forEach(f => {
+    const li = document.createElement("li");
+    li.innerHTML = `${f} <button class="remove" onclick="removeFriend('${f}')">remove</button>`;
+    list.appendChild(li);
+  });
+}
+
+async function removeFriend(friendUuid) {
+  const res = await fetch(`${API}/friendships/${myUuid}/${friendUuid}`, { method: "DELETE" });
+  if (res.status === 404) log(`${friendUuid} was already removed (they removed you first)`);
+  refreshFriends();
+}
+</script>
+</body>
+</html>

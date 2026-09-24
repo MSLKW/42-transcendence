@@ -1,6 +1,6 @@
 import { Request, Response } from "express"
 import { UserStore } from "../store/UserStore";
-import { UserData } from "../types";
+import { type UserData } from "@big2/profile-types";
 import { authenticate } from "../utils/authenticate";
 
 export function setUserProfile(store: UserStore)
@@ -32,7 +32,7 @@ export function setUserProfile(store: UserStore)
 			if (err.message === "DUPLICATE_USERNAME")
 				return res.status(409).json({ error: "username is taken" });
 
-			console.error("serUserProfile error: ", err);
+			console.error("setUserProfile error: ", err);
 			return res.status(500).json({ error: "Something went wrong" });
 		}
 	});

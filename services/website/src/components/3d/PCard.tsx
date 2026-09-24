@@ -26,9 +26,15 @@ const faceGeometry = new THREE.ExtrudeGeometry(createCardShape(0.92, 1.32, 0.04)
 });
 
 interface CardProps {
+<<<<<<< HEAD
 	position?: [number, number, number];
 	rotation?: [number, number, number];
 	color?: string;
+=======
+	position?: [number, number, number],
+	rotation?: [number, number, number],
+	color?: string,
+>>>>>>> origin/int/KAN-36-website-db
 }
 
 export const Card = ({ position = [0,0,0], rotation = [0,0,0], color = "gold" }: CardProps) => {

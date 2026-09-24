@@ -11,10 +11,12 @@ if [ -f .env ]; then
 fi
 
 TOKEN="$1"
-BASE_URL="${BASE_URL:-http://localhost}"
-PORT="${PORT:-3000}"
+BASE_URL="${BASE_URL:-http://localhost/api/auth}"
+# BASE_URL="${BASE_URL:-http://localhost}"
+# PORT="${PORT:-3000}"
 
-curl -s -X GET "$BASE_URL:$PORT/validate" \
+# curl -s -X GET "$BASE_URL:$PORT/validate" \
+curl -s -X GET "$BASE_URL/validate" \
 	-H "Authorization: Bearer $TOKEN" \
 	-v
 echo ""

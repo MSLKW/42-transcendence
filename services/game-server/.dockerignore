@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 Dockerfile
 .dockerignore
 
@@ -7,3 +8,13 @@ dist
 server_build
 .tsbuildinfo
 .gitignore
+=======
+dist/
+node_modules/
+.dockerignore
+.gitignore
+.tsbuildinfo
+Dockerfile
+package-lock.json
+README.md
+>>>>>>> origin/int/KAN-36-website-db

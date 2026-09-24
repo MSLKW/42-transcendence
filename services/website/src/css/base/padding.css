@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 @utility py-5rem {
 	@apply
 		py-[clamp(2.5rem,7.692vmin+0.192rem,5rem)]
@@ -12,6 +13,8 @@
 		;
 }
 
+=======
+>>>>>>> origin/int/KAN-36-website-db
 @utility py-3rem {
 	@apply
 		py-[clamp(1.5rem,4.615vmin+0.115rem,3rem)]
@@ -54,6 +57,7 @@
 		;
 }
 
+<<<<<<< HEAD
 @utility px-5rem {
 	@apply
 		px-[clamp(2.5rem,3.571vmin+1.786rem,5rem)]
@@ -68,6 +72,8 @@
 		;
 }
 
+=======
+>>>>>>> origin/int/KAN-36-website-db
 @utility px-3rem {
 	@apply
 		px-[clamp(1.5rem,2.143vmin+1.071rem,3rem)]
@@ -108,6 +114,7 @@
 		px-[clamp(0.25rem,0.357vmin+0.179rem,0.5rem)]
 		box-border
 		;
+<<<<<<< HEAD
 }
 
 
@@ -236,3 +243,6 @@
 		box-border
 		;
 }
+=======
+}
+>>>>>>> origin/int/KAN-36-website-db

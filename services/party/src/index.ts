@@ -116,9 +116,6 @@ io.on("connection", (socket: Socket) =>
 		console.log(`User<${uuid}> connected on socket ${socket.id}`);
 	}
 	
-
-	// TODO: mark presence as online in Postgres
-
 	socket.on("disconnect", (reason: DisconnectReason) =>
 	{
 		const client = clientManager.getBySocketId(socket.id);

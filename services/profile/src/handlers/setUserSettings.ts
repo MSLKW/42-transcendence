@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import { UserStore } from "../store/UserStore";
 import { authenticate } from "../utils/authenticate";
+// import { DrizzleUserSettingsStore } from "../store/drizzleUserSettingsStore";
 
 export function setUserSettings(store: UserStore)
 {

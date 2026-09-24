@@ -32,7 +32,7 @@ export function signinHandler(userStore: UserStore, sessionStore: SessionStore)
 		{
 			let user = validateEmail(identifier)
 				? await userStore.getUserByEmail(identifier)
-				: await userStore.getUserByUsername(identifier);
+				: null;
 
 			if (user == null && PROFILE_SERVICE_URL && !validateEmail(identifier))
 			{
@@ -45,11 +45,27 @@ export function signinHandler(userStore: UserStore, sessionStore: SessionStore)
 					{
 						const data = await profileRes.json();
 						user = await userStore.getUserById(data.uuid);
+						if (user)
+						{
+							try
+							{
+								await userStore.setUsername(user.id, identifier)
+							}
+							catch (err)
+							{
+								return res.status(500).json({ error: "Something went wrong." });
+							}
+						}
 					}
 				}
 				catch (err)
-				{
-					return res.status(500).json({ error: "Try signing in with email instead" })					
+				{	
+					console.warn("[Warning] profile system could not be reached:", err);
+					console.warn("[Warning] trying internally stored username");
+					user = await userStore.getUserByUsername(identifier);
+
+					if (!user)
+						return res.status(500).json({ error: "Username not found. Try signing in with email instead" })					
 				}
 			}
 				
@@ -80,7 +96,7 @@ async function attemptLogin(user: User | null, password: string, userStore: User
 	{
 		await userStore.incrementFailedAttempts(user.id);
 
-		if (user.failedLoginAttempts + 1 >= MAX_FAILED_ATTEMPTS)
+		if (user.failedLoginAttempts + 1 >= MAX_FAILED_ATTEMPTS) //  cant it take from the updated count what sql did? 
 		{
 			const until = new Date(Date.now() + LOCKOUT_DURATION_MS);
 			await userStore.lockAccount(user.id, until);

@@ -1,2 +1,9 @@
+<<<<<<< HEAD
 server_build
 dist
+=======
+node_modules
+dist
+server_build
+src_game_ai
+>>>>>>> origin/int/KAN-36-website-db

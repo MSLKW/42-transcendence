@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import { useEffect, useRef } from 'react';
 import { initGame } from '../../../game/src_client/main';
 import "../../../game/style.css"
@@ -31,3 +32,18 @@ export const Gameplay = () => {
 		</div>
 	);
 };
+=======
+export const TestScene = () => {
+	return (
+		<section className="h-full">
+			<span className="
+				text-[clamp(8rem,11.429vmin+5.714rem,16rem)]
+				font-extrabold
+				text-n6
+			">
+				Test
+			</span>
+		</section>
+	);
+}
+>>>>>>> origin/int/KAN-36-website-db

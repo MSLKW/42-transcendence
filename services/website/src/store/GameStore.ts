@@ -1,5 +1,6 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
+<<<<<<< HEAD
 import { useAuthStore } from "./AuthStore";
 import { useProfileStore, type MEDAL_TYPE } from "./ProfileStore";
 import { usePartyStore } from "./PartyStore";
@@ -66,10 +67,31 @@ interface GameState extends GameValues {
 	incTotalWin: (uuid: string) => void;
 	incTotalLoss: (uuid: string) => void;
 	unlockMedal: (uuid: string, type: MEDAL_TYPE) => void;
+=======
+
+interface GameValues {
+	totalPlayers: number;
+	playerNames: (string | null)[];
+	isReadyToPlay: boolean[];
+	gameStarted: boolean;
+	activePlayer: number;
+	cardsLeft: number[];
+	round: number;
+}
+
+interface GameState extends GameValues {
+	setGameValue: <K extends keyof GameValues>(key: K, value: GameValues[K]) => void;
+	setPlayerNames: () => void;
+	setActivePlayer: () => void;
+	dealCards: () => void;
+	setCardsLeft: (player: number, cardsPlayed: number) => void;
+	incRound: () => void;
+>>>>>>> origin/int/KAN-36-website-db
 }
 
 export const useGameStore = create<GameState>() (
 	persist(
+<<<<<<< HEAD
 		(set, get) => ({
 			totalPlayers: 1,
 			userSeats: [],
@@ -260,6 +282,51 @@ export const useGameStore = create<GameState>() (
 					)
 				});
 			},
+=======
+		(set) => ({
+			totalPlayers: 1,
+			playerNames: [null],
+			isReadyToPlay: [false],
+			gameStarted: false,
+			activePlayer: 0,
+			cardsLeft: [],
+			round: 0,
+
+			setGameValue: (key, value) => set(() => ({ [key]: value })),
+			setPlayerNames: () => set(() => ({})),
+			setActivePlayer: () => set((gameStore) => ({
+				activePlayer: (gameStore.activePlayer + 1) % gameStore.totalPlayers
+			})),
+			dealCards: () => set((gameStore) => {
+				const total = gameStore.totalPlayers;
+				const round = gameStore.round;
+				let cardsDealt = [];
+				if (total === 3) {
+					const cards = 52 / total;
+					for (let i = 0; i < total; i++) {
+						if (i === round % total)
+							cardsDealt.push(Math.ceil(cards));
+						else
+							cardsDealt.push(Math.floor(cards));
+					}
+				} else {
+					const cards = 52 / total;
+					for (let i = 0; i < total; i++)
+						cardsDealt.push(cards);
+				}
+				return {
+					cardsLeft: cardsDealt
+				}
+			}),
+			setCardsLeft: (player, cardsPlayed) => set((gameStore) => {
+				const updatedCardsLeft = [...gameStore.cardsLeft];
+				updatedCardsLeft[player] -= cardsPlayed;
+				return {
+					cardsLeft: updatedCardsLeft
+				};
+			}),
+			incRound: () => set((gameStore) => ({ round: gameStore.round + 1 })),
+>>>>>>> origin/int/KAN-36-website-db
 		}),
 		{
 			name: 'game-storage',
