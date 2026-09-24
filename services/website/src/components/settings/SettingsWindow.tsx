@@ -1,4 +1,3 @@
-<<<<<<<< HEAD:services/website/src/components/settings/SettingsWindow.tsx
 import { useGameStore } from "../../store/GameStore";
 import { useSettingsStore, autoPassKeys } from "../../store/SettingsStore";
 import { Window } from "../window/Window";
@@ -17,21 +16,6 @@ export const SettingsWindow = () => {
 	const fxLevel = useSettingsStore((store) => store.fxLevel);
 	const mxLevel = useSettingsStore((store) => store.mxLevel);
 	const toggleSettingsValue = useSettingsStore((store) => store.toggleSettingsValue);
-========
-import { useGameStore } from "../store/GameStore";
-import { useSettingsStore, AUTO_PASS_RECORD } from "../store/SettingsStore";
-import { Window } from "./Window";
-import { RadioButton } from "../components/button/Radio";
-import { ToggleButton } from "../components/button/Toggle";
-
-export const SettingsWindow = () => {
-	const { gameStarted } = useGameStore();
-	const {
-		allow3OfAKind, allow2OfSpadesEnd, autoPassIndex, endGameCondition, scoreCalculation, cardStyle, uiColor, fxLevel, mxLevel,
-		setSettingsValue, toggleSettingsValue,
-	} = useSettingsStore();
-	const autoPassKeys = Object.keys(AUTO_PASS_RECORD);
->>>>>>>> origin/int/KAN-36-website-db:services/website/src/window/Settings.tsx
 
 	return (
 		<Window
@@ -93,11 +77,7 @@ export const SettingsWindow = () => {
 						disabled={gameStarted}
 						onChange={ (e) => {
 							const index = parseInt(e.target.value, 10);
-<<<<<<<< HEAD:services/website/src/components/settings/SettingsWindow.tsx
 							useSettingsStore.setState({ autoPassIndex: index });
-========
-							setSettingsValue("autoPassIndex", index);
->>>>>>>> origin/int/KAN-36-website-db:services/website/src/window/Settings.tsx
 						}}
 						className="accent-b5 cursor-pointer"
 					/>
@@ -115,11 +95,7 @@ export const SettingsWindow = () => {
 						<RadioButton
 							name="game-ends"
 							value="first-player"
-<<<<<<<< HEAD:services/website/src/components/settings/SettingsWindow.tsx
 							onChange={() => useSettingsStore.setState({ endGameCondition: 0 })}
-========
-							onChange={() => setSettingsValue("endGameCondition", 0)}
->>>>>>>> origin/int/KAN-36-website-db:services/website/src/window/Settings.tsx
 							checked={endGameCondition === 0}
 							disabled={gameStarted}
 						/>
@@ -133,11 +109,7 @@ export const SettingsWindow = () => {
 						<RadioButton
 							name="game-ends"
 							value="last-hand"
-<<<<<<<< HEAD:services/website/src/components/settings/SettingsWindow.tsx
 							onChange={() => useSettingsStore.setState({ autoPassIndex: 1 })}
-========
-							onChange={() => setSettingsValue("endGameCondition", 1)}
->>>>>>>> origin/int/KAN-36-website-db:services/website/src/window/Settings.tsx
 							checked={endGameCondition === 1}
 							disabled={gameStarted}
 						/>
@@ -157,11 +129,7 @@ export const SettingsWindow = () => {
 						<RadioButton
 							name="calculate-score"
 							value="number"
-<<<<<<<< HEAD:services/website/src/components/settings/SettingsWindow.tsx
 							onChange={() => useSettingsStore.setState({ scoreCalculation: 0 })}
-========
-							onChange={() => setSettingsValue("scoreCalculation", 0)}
->>>>>>>> origin/int/KAN-36-website-db:services/website/src/window/Settings.tsx
 							checked={scoreCalculation === 0}
 							disabled={gameStarted}
 						/>
@@ -175,11 +143,7 @@ export const SettingsWindow = () => {
 						<RadioButton
 							name="calculate-score"
 							value="value"
-<<<<<<<< HEAD:services/website/src/components/settings/SettingsWindow.tsx
 							onChange={() => useSettingsStore.setState({ scoreCalculation: 1 })}
-========
-							onChange={() => setSettingsValue("scoreCalculation", 1)}
->>>>>>>> origin/int/KAN-36-website-db:services/website/src/window/Settings.tsx
 							checked={scoreCalculation === 1}
 							disabled={gameStarted}
 						/>
@@ -196,11 +160,7 @@ export const SettingsWindow = () => {
 						<RadioButton
 							name="pCardLook"
 							value="modern"
-<<<<<<<< HEAD:services/website/src/components/settings/SettingsWindow.tsx
 							onChange={() => useSettingsStore.setState({ cardStyle: 0 })}
-========
-							onChange={() => setSettingsValue("cardStyle", 0)}
->>>>>>>> origin/int/KAN-36-website-db:services/website/src/window/Settings.tsx
 							checked={cardStyle === 0}
 						/>
 						<h3>Modern</h3>
@@ -209,11 +169,7 @@ export const SettingsWindow = () => {
 						<RadioButton
 							name="pCardLook"
 							value="classic"
-<<<<<<<< HEAD:services/website/src/components/settings/SettingsWindow.tsx
 							onChange={() => useSettingsStore.setState({ cardStyle: 1 })}
-========
-							onChange={() => setSettingsValue("cardStyle", 1)}
->>>>>>>> origin/int/KAN-36-website-db:services/website/src/window/Settings.tsx
 							checked={cardStyle === 1}
 						/>
 						<h3>Classic</h3>
@@ -228,11 +184,7 @@ export const SettingsWindow = () => {
 						<RadioButton
 							name="UIColors"
 							value="main"
-<<<<<<<< HEAD:services/website/src/components/settings/SettingsWindow.tsx
 							onChange={() => useSettingsStore.setState({ uiColor: 0 })}
-========
-							onChange={() => setSettingsValue("uiColor", 0)}
->>>>>>>> origin/int/KAN-36-website-db:services/website/src/window/Settings.tsx
 							checked={uiColor === 0}
 						/>
 						<div className="h-2rem aspect-1/2 flex border border-n6 overflow-clip">
@@ -244,11 +196,7 @@ export const SettingsWindow = () => {
 						<RadioButton
 							name="UIColors"
 							value="alt"
-<<<<<<<< HEAD:services/website/src/components/settings/SettingsWindow.tsx
 							onChange={() => useSettingsStore.setState({ uiColor: 1 })}
-========
-							onChange={() => setSettingsValue("uiColor", 1)}
->>>>>>>> origin/int/KAN-36-website-db:services/website/src/window/Settings.tsx
 							checked={uiColor === 1}
 						/>
 						<div className="h-2rem aspect-1/2 flex border border-n6 overflow-clip">
@@ -272,11 +220,7 @@ export const SettingsWindow = () => {
 						max={100}
 						step={1}
 						value={fxLevel}
-<<<<<<<< HEAD:services/website/src/components/settings/SettingsWindow.tsx
 						onChange={(e) => useSettingsStore.setState({ fxLevel: parseFloat(e.target.value) })}
-========
-						onChange={(e) => setSettingsValue("fxLevel", parseFloat(e.target.value))}
->>>>>>>> origin/int/KAN-36-website-db:services/website/src/window/Settings.tsx
 						className="accent-b5 cursor-pointer"
 					/>
 				</div>
@@ -294,11 +238,7 @@ export const SettingsWindow = () => {
 						max={100}
 						step={1}
 						value={mxLevel}
-<<<<<<<< HEAD:services/website/src/components/settings/SettingsWindow.tsx
 						onChange={(e) => useSettingsStore.setState({ mxLevel: parseFloat(e.target.value) })}
-========
-						onChange={(e) => setSettingsValue("mxLevel", parseFloat(e.target.value))}
->>>>>>>> origin/int/KAN-36-website-db:services/website/src/window/Settings.tsx
 						className="accent-b5 cursor-pointer"
 					/>
 				</div>

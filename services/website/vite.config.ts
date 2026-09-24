@@ -4,7 +4,6 @@ import tailwindcss from '@tailwindcss/vite'
 
 export default defineConfig({
 	server: {
-<<<<<<< HEAD
 		host: true,
 		port: 5173,
 		strictPort: true,
@@ -27,18 +26,6 @@ export default defineConfig({
 		// 		rewrite: (path) => path.replace(/^\/api/, ""),
 		// 	}
 		// }
-=======
-		allowedHosts: [
-		"website"
-		],
-		proxy: {
-			"/api": {
-				target: "http://localhost:3000",
-				changeOrigin: true,
-				rewrite: (path) => path.replace(/^\/api/, ""),
-			}
-		}
->>>>>>> origin/int/KAN-36-website-db
 	},
 	plugins: [
 		react(),

@@ -3,22 +3,12 @@
 	@apply
 		w-max h-max
 		absolute
-<<<<<<< HEAD
 		bg-n1 btn-text
 		border border-n2
 		text-n6 text-1.25rem leading-relaxed
 		py-0.5rem px-1rem
 		pointer-events-none
 		scale-0 opacity-0
-=======
-		bg-a2
-		border border-n2 rounded-full
-		text-n6 text-1.25rem leading-tight
-		py-0.5rem px-1rem
-		pointer-events-none
-		scale-0 opacity-0
-		transition-all ease-in-out duration-100
->>>>>>> origin/int/KAN-36-website-db
 		;
 }
 
@@ -32,29 +22,10 @@
 			left-1/2 -translate-x-1/2
 			;
 	}
-<<<<<<< HEAD
 	&:focus-visible,
     &:hover {
         @apply z-50;
     }
-=======
-	&:focus-visible::after,
-	&:hover::after {
-		@apply scale-100 opacity-100;
-	}
-}
-
-@utility data-tip-up2 {
-	@apply relative;
-	&::after {
-		@apply
-			data-tip-after
-			origin-bottom
-			bottom-[calc(100%+clamp(1rem,3.077vmin+0.077rem,2rem))]
-			left-1/2 -translate-x-1/2
-			;
-	}
->>>>>>> origin/int/KAN-36-website-db
 	&:focus-visible::after,
 	&:hover::after {
 		@apply scale-100 opacity-100;
@@ -71,13 +42,10 @@
 			left-1/2 -translate-x-1/2
 			;
 	}
-<<<<<<< HEAD
 	&:focus-visible,
     &:hover {
         @apply z-50;
     }
-=======
->>>>>>> origin/int/KAN-36-website-db
 	&:focus-visible::after,
 	&:hover::after {
 		@apply scale-100 opacity-100;
@@ -94,7 +62,6 @@
 			top-1/2 -translate-y-1/2
 			;
 	}
-<<<<<<< HEAD
 	&:focus-visible,
     &:hover {
         @apply z-50;
@@ -144,8 +111,6 @@
 
 	&:focus-visible::before,
 	&:hover::before,
-=======
->>>>>>> origin/int/KAN-36-website-db
 	&:focus-visible::after,
 	&:hover::after {
 		@apply scale-100 opacity-100;

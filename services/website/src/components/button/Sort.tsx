@@ -12,16 +12,7 @@ export const SortButton = ({ call, sortType, type, tip }: SortButtonProps) => {
 		<button
 			data-tip={tip}
 			onClick={call}
-<<<<<<<< HEAD:services/website/src/components/SortButtons.tsx
 			className={`btn-sort btn-tip-left
-========
-			className={`
-				btn-text bg-dark
-				h-2.5rem
-				text-n6 text-1.25rem
-				focus:outline-double
-				data-tip-left
->>>>>>>> origin/int/KAN-36-website-db:services/website/src/components/button/Sort.tsx
 				${sortType === type ? "outline-2" : "outline-none"}
 				`}
 		>
