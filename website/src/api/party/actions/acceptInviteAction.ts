@@ -3,6 +3,17 @@ import { ensureConnected } from "../../../utilities/websockets/ensureConnected";
 import { useChatStore } from "../../../store/ChatStore";
 import { handleGetProfile } from "../../profile/get_profile/handleGetProfile";
 import { useNotificationStore, NOTIFICATION_TYPE } from "../../../store/NotificationStore";
+import type { AcceptInviteResponse } from "../partySocket";
+
+function emitAcceptInvite(socket: Socket, hostUuid: string): Promise<AcceptInviteResponse> {
+	return new Promise((resolve) => {
+		socket.emit(
+			"accept_invite",
+			{ hostUuid },
+			(response: AcceptInviteResponse) => { resolve(response) }
+		);
+	});
+}
 
 export async function acceptInviteAction(socket: Socket | null, hostUuid: string) {
 	const addToCachedChat = useChatStore.getState().addToCachedChat;
@@ -14,10 +25,12 @@ export async function acceptInviteAction(socket: Socket | null, hostUuid: string
 	try {
 		await ensureConnected(socket);
 
-		socket?.emit("accept_invite", { hostUuid }, (response: any) => {
-			if (!response.success)
-				console.log("Failed to accept:", response.reason);
-		});
+		const response = await emitAcceptInvite(socket, hostUuid);
+		if (!response.success) {
+			showNotification(response.reason ?? "Unable to join party", NOTIFICATION_TYPE.error);
+			console.log("Failed to accept:", response.reason);
+			return;
+		}
 
 		const hostData = await handleGetProfile(hostUuid);
 		showNotification(
@@ -37,7 +50,7 @@ export async function acceptInviteAction(socket: Socket | null, hostUuid: string
 		console.log("[partySocket] 'accept_invite' hostUuid:", hostUuid);
 	} catch (error) {
 		showNotification(
-			"Unable to connect to party server",
+			"Unable to connect to party socket",
 			NOTIFICATION_TYPE.error
 		);
 		console.error("Unable to connect to party socket:", error);

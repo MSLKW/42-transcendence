@@ -92,7 +92,7 @@ export default function App() {
 			return;
 
 		chatSocket.connect();
-		
+
 		const unsubscribeFromMessages = subscribeToMessages();
 		const unsubscribeFromUserJoined = subscribeToUserJoined();
 		const unsubscribeFromUserLeft = subscribeToUserLeft();

@@ -15,7 +15,7 @@ export async function startGameSessionAction(socket: Socket | null) {
 		console.log("[partySocket] 'start_game_session'");
 	} catch (error) {
 		showNotification(
-			"Unable to connect to party server",
+			"Unable to connect to party socket",
 			NOTIFICATION_TYPE.error
 		);
 		console.error("Unable to connect to party socket:", error);

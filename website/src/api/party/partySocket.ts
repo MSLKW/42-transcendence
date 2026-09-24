@@ -7,43 +7,54 @@ import { sendInviteAction } from "./actions/sendInviteAction";
 import { startGameSessionAction } from "./actions/startGameSessionAction";
 import { refreshAction } from "./actions/refreshAction";
 import { registerConnectionHandlers } from "./handlers/connectionHandlers";
-// import { gameSessionStartHandler } from "./handlers/gameSessionStartHandler";
 import { inviteReceivedHandler } from "./handlers/inviteReceivedHandler";
 import { kickedHandler } from "./handlers/kickedHandler";
 import { partyStateHandler } from "./handlers/partyStateHandler";
-import { playerLeftHandler } from "./handlers/playerLeft";
-import { playerJoinedHandler } from "./handlers/playerJoined";
+import { playerLeftHandler } from "./handlers/playerLeftHandler";
+import { playerJoinedHandler } from "./handlers/playerJoinedHandler";
+
+export type SendInviteResponse = {
+	success: boolean;
+	reason?: string;
+}
+
+export type AcceptInviteResponse = {
+	success: boolean;
+	reason?: string;
+}
 
 class PartySocketService {
 	private socket: Socket | null = null;
-	private isConnecting: boolean = false;
 
 	public connect() {
-		if (this.socket?.connected || this.isConnecting)
+		if (this.socket)
 			return;
-		this.isConnecting = true;
 
 		this.socket = io({
 			path: "/socket/party",
 			transports: ["websocket", "polling"],
+			reconnection: true,
+			reconnectionAttempts: Infinity,
+			reconnectionDelay: 1000,
+			reconnectionDelayMax: 5000,
 		});
-		
-		registerConnectionHandlers(this.socket, (value) => { this.isConnecting = value });
+
+		registerConnectionHandlers(this.socket);
 		partyStateHandler(this.socket);
 		inviteReceivedHandler(this.socket);
 		kickedHandler(this.socket);
-		// gameSessionStartHandler(this.socket);
 		playerJoinedHandler(this.socket);
 		playerLeftHandler(this.socket);
 	}
+
 	public disconnect() {
-		this.isConnecting = false;
-		if (this.socket) {
-			this.socket.disconnect();
-			this.socket = null;
-		}
+		if (!this.socket)
+			return;
+
+		this.socket.disconnect();
+		this.socket = null;
 	}
-	
+
 	public sendInvite(recipientUuid: string, recipientName?: string) {
 		sendInviteAction(this.socket, recipientUuid, recipientName);
 	}
@@ -66,7 +77,7 @@ class PartySocketService {
 		refreshAction(this.socket);
 	}
 	public isConnected(): boolean {
-		console.log("[partySocket] 'isConnected' ", this.socket?.connected, " id:", this.socket?.id, " isConnecting:", this.isConnecting);
+		console.log("[partySocket] 'isConnected' ", this.socket?.connected, " id:", this.socket?.id);
 		return this.socket?.connected === true;
 	}
 }

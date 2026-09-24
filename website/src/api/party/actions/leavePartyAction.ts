@@ -28,10 +28,10 @@ export async function leavePartyAction(socket: Socket | null) {
 
 		await useProfileStore.getState().setCachedData();
 
-		usePartyStore.setState({
-			members: [ clientUuid ],
-			hostUuid: clientUuid,
-		});
+		// usePartyStore.setState({
+		// 	members: [ clientUuid ],
+		// 	hostUuid: clientUuid,
+		// });
 
 		useSceneStore.getState().setShowWindow("profile", false);
 
@@ -49,7 +49,7 @@ export async function leavePartyAction(socket: Socket | null) {
 		console.log("[partySocket] 'leave_party'");
 	} catch (error) {
 		showNotification(
-			"Unable to connect to party server",
+			"Unable to connect to party socket",
 			NOTIFICATION_TYPE.error
 		);
 		console.error("Unable to connect to party socket:", error);

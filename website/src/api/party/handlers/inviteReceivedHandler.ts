@@ -5,15 +5,19 @@ import { handleGetProfile } from "../../profile/get_profile/handleGetProfile";
 
 export function inviteReceivedHandler(socket: Socket) {
 	socket.on("invite_received", async (payload: { hostUuid: string }) => {
-		const hostData = await handleGetProfile(payload.hostUuid);
+		try {
+			const hostData = await handleGetProfile(payload.hostUuid);
 
-		const { showNotification } = useNotificationStore.getState();
-		showNotification(
-			`${hostData?.username ?? "A player"} invited you to their party!`,
-			NOTIFICATION_TYPE.invite,
-			() => partySocket.acceptInvite(payload.hostUuid),
-			() => partySocket.rejectInvite(payload.hostUuid)
-		)
-		console.log("[partySocket] `invite_received` hostUuid:", payload.hostUuid);
+			const { showNotification } = useNotificationStore.getState();
+			showNotification(
+				`${hostData?.username ?? "A player"} invited you to their party!`,
+				NOTIFICATION_TYPE.invite,
+				() => partySocket.acceptInvite(payload.hostUuid),
+				() => partySocket.rejectInvite(payload.hostUuid)
+			)
+			console.log("[partySocket] `invite_received` hostUuid:", payload.hostUuid);
+		} catch (error) {
+			console.error("Failed to load inviter profile:", error);
+		}
 	});
 }

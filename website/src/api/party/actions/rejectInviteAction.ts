@@ -4,7 +4,7 @@ import { useNotificationStore, NOTIFICATION_TYPE } from "../../../store/Notifica
 
 export async function rejectInviteAction(socket: Socket | null, hostUuid: string) {
 	const { showNotification } = useNotificationStore.getState();
-	
+
 	if (!socket)
 		return;
 
@@ -19,7 +19,7 @@ export async function rejectInviteAction(socket: Socket | null, hostUuid: string
 		console.log("[partySocket] 'reject_invite' hostUuid:", hostUuid);
 	} catch (error) {
 		showNotification(
-			"Unable to connect to party server",
+			"Unable to connect to party socket",
 			NOTIFICATION_TYPE.error
 		);
 		console.error("Unable to connect to party socket:", error);

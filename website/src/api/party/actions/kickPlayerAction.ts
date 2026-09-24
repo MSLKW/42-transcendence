@@ -1,7 +1,7 @@
 import { Socket } from "socket.io-client";
 import { ensureConnected } from "../../../utilities/websockets/ensureConnected";
 import { useNotificationStore, NOTIFICATION_TYPE } from "../../../store/NotificationStore";
-import { usePartyStore } from "../../../store/PartyStore";
+// import { usePartyStore } from "../../../store/PartyStore";
 import { useProfileStore } from "../../../store/ProfileStore";
 import { useSceneStore } from "../../../store/SceneStore";
 
@@ -16,7 +16,7 @@ export async function kickPlayerAction(socket: Socket | null, recipientUuid: str
 
 		socket?.emit("kick_player", { recipientUuid });
 
-		usePartyStore.getState().kickPlayer(recipientUuid);
+		// usePartyStore.getState().kickPlayer(recipientUuid);
 
 		await useProfileStore.getState().setCachedData();
 
@@ -25,7 +25,7 @@ export async function kickPlayerAction(socket: Socket | null, recipientUuid: str
 		console.log("[partySocket] 'kick_player' recipientUuid:", recipientUuid);
 	} catch (error) {
 		showNotification(
-			"Unable to connect to party server",
+			"Unable to connect to party socket",
 			NOTIFICATION_TYPE.error
 		);
 		console.error("Unable to connect to party socket:", error);
