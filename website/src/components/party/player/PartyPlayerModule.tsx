@@ -18,30 +18,35 @@ interface PartyPlayerModuleProps {
 export const PartyPlayerModule = ({ uuid }: PartyPlayerModuleProps) => {
 	const clientUuid = useAuthStore((store) => store.clientUuid);
 	const cachedFriends = useFriendStore((store) => store.cachedFriends);
-	const members = usePartyStore((store) => store.members);
+	// const members = usePartyStore((store) => store.members);
+	const availabilityOverride = usePartyStore((store) => store.availabilityOverrides[uuid]);
 
 	//get profile
 	const [isLoading, setIsLoading] = useState<boolean>(true);
 	const [availability, setAvailability] = useState<AVAILABILITY_TYPE | undefined>(undefined);
 	const [playerData, setPlayerData] = useState<UserData | null>(null);
+
 	useEffect(() => {
 		let mounted = true;
 
 		const getProfile = async () => {
 			setIsLoading(true);
+
 			const profile = await handleGetProfile(uuid);
-			const online = await handleGetOnline(uuid); 
-			if (mounted) {
-				setPlayerData(profile);
-				if (online.isOnline) {
-					if (online.inParty)
-						setAvailability("Busy");
-					else
-						setAvailability("Online");
-				} else
-					setAvailability("Offline");
-				setIsLoading(false);
-			}
+			const online = await handleGetOnline(uuid);
+
+			if (!mounted) return;
+
+			setPlayerData(profile);
+			if (online.isOnline) {
+				if (online.inParty)
+					setAvailability("Busy");
+				else
+					setAvailability("Online");
+			} else
+				setAvailability("Offline");
+
+			setIsLoading(false);
 		};
 		getProfile();
 
@@ -50,42 +55,32 @@ export const PartyPlayerModule = ({ uuid }: PartyPlayerModuleProps) => {
 		};
 	}, [uuid]);
 
+	const effectiveAvailability = availabilityOverride ?? availability;
+
 	const relation = 
 		cachedFriends.includes(uuid) ? "Friend" :
 		clientUuid === uuid ? "Self" :
 		"Stranger";
 
-	const isDisabled = (relation === "Self" || members.includes(uuid) || availability === "Offline");
+	// const isDisabled = (relation === "Self" || members.includes(uuid) || effectiveAvailability === "Offline");
 
 	const handleInvite = () => {
-		if (isDisabled)
-			return;
+		// if (isDisabled)
+			// return;
 		partySocket.sendInvite(uuid, playerData?.username ?? "Player");
 	}
 
-	if (isLoading) {
-		return (
-			<div>
-				<p>Loading player...</p>
-			</div>
-		);
-	}
+	if (isLoading)
+		return (<p>Loading player...</p>);
 
-	if (!playerData) {
-		return (
-			<div>
-				<p>Unable to load player</p>
-			</div>
-		);
-	}
+	if (!playerData)
+		return (<p>Unable to load player</p>);
 
 	return (
-		<div
-			className="
-				flex place-content-center place-items-center
-				gap-1rem
-			"
-		>
+		<div className="
+			flex place-content-center place-items-center
+			gap-1rem
+		">
 			<AvatarModule
 				uuid={uuid}
 				image={playerData.avatarPath ?? undefined}
@@ -93,44 +88,39 @@ export const PartyPlayerModule = ({ uuid }: PartyPlayerModuleProps) => {
 			/>
 			<button
 				data-tip="Send Invite"
-				disabled={isDisabled}
+				// disabled={isDisabled}
 				onClick={handleInvite}
 				className={`
 					h-full w-full
 					py-0.5rem px-1.5rem
 					${
 						relation === "Self" ? "bg-party-self" :
-						availability === "Online" ? "bg-party-online" :
-						availability === "Offline" ? "bg-party-offline" :
-						availability === "Busy" ? "bg-party-busy" :
+						effectiveAvailability === "Online" ? "bg-party-online" :
+						effectiveAvailability === "Offline" ? "bg-party-offline" :
+						effectiveAvailability === "Busy" ? "bg-party-busy" :
 						undefined
 					}
 					flex flex-col gap-0.5rem
-				`}
-			>
+			`}>
 				<h3>{playerData.username}</h3>
-				<div
-					className={`
-						${
-							((availability === "Online" || availability === "Busy") && relation != "Self")
-								? "place-content-between"
-								: "place-content-center"
-						}
-						place-content-center
-						flex
-						place-items-center
-						gap-1rem
-					`}
-				>
-					<PlayerStatusModule status={availability!}/>
-					{(availability === "Online" || availability === "Busy") && relation != "Self" &&
-						<div
-							className="
-								flex place-content-center place-items-center
-								text-a4
-								gap-0.5rem
-							"
-						>
+				<div className={`
+					${
+						((availability === "Online" || availability === "Busy") && relation != "Self")
+							? "place-content-between"
+							: "place-content-center"
+					}
+					place-content-center
+					flex
+					place-items-center
+					gap-1rem
+				`}>
+					<PlayerStatusModule uuid={uuid}/>
+					{(effectiveAvailability === "Online" || effectiveAvailability === "Busy") && relation != "Self" &&
+						<div className="
+							flex place-content-center place-items-center
+							text-a4
+							gap-0.5rem
+						">
 							<InviteIcon />
 							<p>Invite To Party</p>
 						</div>

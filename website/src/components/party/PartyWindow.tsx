@@ -4,6 +4,7 @@ import { handleGetSearch } from "../../api/profile/get_search/handleGetSearch";
 import { Window } from "../window/Window";
 import { SearchModule } from "./search/SearchModule";
 import { PartyPlayerModule } from "./player/PartyPlayerModule";
+import { usePartyStore } from "../../store/PartyStore";
 
 export const PartyWindow = () => {
 	// const cachedFriends = useFriendStore((store) => store.cachedFriends);
@@ -23,6 +24,8 @@ export const PartyWindow = () => {
 		}
 
 		setIsSearching(true);
+
+		usePartyStore.setState({ availabilityOverrides: {} });
 
 		const controller = new AbortController();
 		const requestId = ++searchRequestId.current;

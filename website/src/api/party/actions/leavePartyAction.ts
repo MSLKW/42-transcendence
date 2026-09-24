@@ -1,4 +1,5 @@
 import { Socket } from "socket.io-client";
+import { ensureConnected } from "../../../utilities/websockets/ensureConnected";
 import { useAuthStore } from "../../../store/AuthStore";
 import { useChatStore } from "../../../store/ChatStore";
 import { useNotificationStore, NOTIFICATION_TYPE } from "../../../store/NotificationStore";
@@ -10,42 +11,47 @@ export async function leavePartyAction(socket: Socket | null) {
 	const clientUuid = useAuthStore.getState().clientUuid ?? "";
 	const addToCachedChat = useChatStore.getState().addToCachedChat;
 	const showNotification = useNotificationStore.getState().showNotification;
-
-	if (!socket?.connected) {
-		showNotification(
-			"Cannot leave party: Socket not connected",
-			NOTIFICATION_TYPE.error
-		);
-		return;
-	}
-
 	const cachedData = useProfileStore.getState().cachedData;
 	const hostUuid = usePartyStore.getState().hostUuid;
-	socket?.emit("leave_party");
-	showNotification(
-		clientUuid === hostUuid ? "You left the party" : `You left ${cachedData[hostUuid ?? ""]?.name}'s party`,
-		NOTIFICATION_TYPE.message
-	);
 
-	await useProfileStore.getState().setCachedData();
-	
-	usePartyStore.setState({
-		members: [ clientUuid ],
-		hostUuid: clientUuid,
-	});
+	if (!socket)
+		return;
 
-	useSceneStore.getState().setShowWindow("profile", false);
+	try {
+		await ensureConnected(socket);
 
-	addToCachedChat(
-		"REPORT",
-		"server",
-		"",
-		"",
-		`You left ${
-			(hostUuid != clientUuid && cachedData[hostUuid ?? ""]?.name) ? cachedData[hostUuid ?? ""]?.name + "'s" :
-			"the party"
-		} chat`,
-	)
+		socket?.emit("leave_party");
+		showNotification(
+			clientUuid === hostUuid ? "You left the party" : `You left ${cachedData[hostUuid ?? ""]?.name}'s party`,
+			NOTIFICATION_TYPE.message
+		);
 
-	console.log("[partySocket] 'leave_party'");
+		await useProfileStore.getState().setCachedData();
+
+		usePartyStore.setState({
+			members: [ clientUuid ],
+			hostUuid: clientUuid,
+		});
+
+		useSceneStore.getState().setShowWindow("profile", false);
+
+		addToCachedChat(
+			"REPORT",
+			"server",
+			"",
+			"",
+			`You left ${
+				(hostUuid != clientUuid && cachedData[hostUuid ?? ""]?.name) ? cachedData[hostUuid ?? ""]?.name + "'s" :
+				"the party"
+			} chat`,
+		)
+
+		console.log("[partySocket] 'leave_party'");
+	} catch (error) {
+		showNotification(
+			"Unable to connect to party server",
+			NOTIFICATION_TYPE.error
+		);
+		console.error("Unable to connect to party socket:", error);
+	}
 }

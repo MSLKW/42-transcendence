@@ -3,7 +3,7 @@ import { useGameStore } from "../../store/GameStore";
 import { useProfileStore } from "../../store/ProfileStore";
 // import { useResultsStore } from "../../store/ResultsStore";
 // import { useSceneStore } from "../../store/SceneStore";
-// import { useAutoPass } from "../../utilities/useAutoPass";
+// import { useAutoPass } from "../../utilities/react/useAutoPass";
 import { HeaderModule } from "../header/HeaderModule";
 import { AvatarModule } from "../avatar/AvatarModule";
 import { RankCallButton } from "./rank/RankCallButton";
@@ -115,12 +115,10 @@ export const GameScene = () => {
 				<div className="absolute left-1/2 top-[24%] -translate-x-1/2">
 					<RankCallButton />
 				</div>
-				<div
-					className="
-						absolute left-1/2 top-[64%] -translate-x-1/2
-						flex gap-2rem
-					"
-				>
+				<div className="
+					absolute left-1/2 top-[64%] -translate-x-1/2
+					flex gap-2rem
+				">
 					<GamePassButton />
 					<GamePlayButton />
 				</div>
@@ -135,13 +133,11 @@ export const GameScene = () => {
 						isActive={gameStarted && activeSeat === seatRef[0]}
 					/>
 				}
-				<div
-					className="
-						w-[clamp(1rem,10vw+0.5rem,5rem)] h-full
-						flex flex-col place-content-between
-						gap-0.5rem
-					"
-				>
+				<div className="
+					w-[clamp(1rem,10vw+0.5rem,5rem)] h-full
+					flex flex-col place-content-between
+					gap-0.5rem
+				">
 					<SortButtons />
 				</div>
 			</footer>

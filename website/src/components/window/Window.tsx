@@ -1,7 +1,7 @@
 import { useState, type ReactNode } from "react";
 import { useChatStore } from "../../store/ChatStore";
 import { useSceneStore } from "../../store/SceneStore";
-import { useWindowDrag } from "../../utilities/useWindowDrag";
+import { useWindowDrag } from "../../utilities/react/useWindowDrag";
 import { LightboxButton } from "../lightbox/LightboxButton";
 import { ClearIcon } from "./clear/ClearIcon";
 import { PinActiveIcon } from "./pin/PinActiveIcon";

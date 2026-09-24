@@ -18,7 +18,7 @@ import { subscribeToUserLeft } from "./api/chat/subscribe/subscribeToUserLeft";
 import { subscribeToUserTyping } from "./api/chat/subscribe/subscribeToUserTyping";
 import { subscribeToRateLimited } from "./api/chat/subscribe/subscribeToRateLimited";
 
-import { useScrollToTop } from "./utilities/useScrollToTop";
+import { useScrollToTop } from "./utilities/react/useScrollToTop";
 
 import { StripeBg } from "./components/bg/Stripe";
 import { LoginScene } from "./components/login/LoginScene";
@@ -145,25 +145,21 @@ export default function App() {
 		<>
 			{ (currentScene === "Login" || currentScene === "Home") && <StripeBg /> }
 			{ showStats && <Stats /> }
-			<section
-				className="
-					z-0 absolute top-0 left-1/2 -translate-x-1/2
-					h-full min-h-120 max-h-360
-					w-full min-w-80 max-w-360
-				"
-			>
+			<section className="
+				z-0 absolute top-0 left-1/2 -translate-x-1/2
+				h-full min-h-120 max-h-360
+				w-full min-w-80 max-w-360
+			">
 				{ <div className="w-full h-full" ref={containerRef}/> }
 			</section>
-			<section
-				className="
-					h-full min-h-120 max-h-360
-					w-full min-w-80 max-w-360
-					mx-auto p-[clamp(0.125rem,5vw+0.125rem,3.125rem)]
-					flex flex-col
-					z-1 relative
-					pointer-events-none
-				"
-			>
+			<section className="
+				h-full min-h-120 max-h-360
+				w-full min-w-80 max-w-360
+				mx-auto p-[clamp(0.125rem,5vw+0.125rem,3.125rem)]
+				flex flex-col
+				z-1 relative
+				pointer-events-none
+			">
 				{ currentScene === "Login" && <LoginScene /> }
 				{ currentScene === "Home" && <HomeScene /> }
 				{ currentScene === "Lobby" && <LobbyScene /> }

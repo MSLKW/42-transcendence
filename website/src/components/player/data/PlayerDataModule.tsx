@@ -1,9 +1,7 @@
 import { useState, useEffect } from "react";
 import { handleCreatedAt } from "../../../api/authentication/created_at/handleCreatedAt";
-import { handleGetOnline } from "../../../api/party/get_online/handleGetOnline";
 import { handleGetProfile } from "../../../api/profile/get_profile/handleGetProfile";
 import { useAuthStore } from "../../../store/AuthStore";
-import type { AVAILABILITY_TYPE } from "../../../store/PartyStore";
 import type { BADGE_TYPE } from "../../../store/ProfileStore";
 import { useSceneStore } from "../../../store/SceneStore";
 import { BadgeWindow } from "./badge/BadgeWindow";
@@ -22,16 +20,12 @@ export const PlayerDataModule = ({ uuid, badge, setBadge }: PlayerDataModuleProp
 
 	const [ xpProgress, setXPProgress ] = useState(0);
 	const [ createdAt, setCreatedAt ] = useState<Date | null>(null);
-	const [ availability, setAvailability ] = useState<AVAILABILITY_TYPE | null>(null);
-	const [ lastOnline, setLastOnline ] = useState<Date | null>(null);
 
 	useEffect(() => {
 		let mounted = true;
 
 		if (!uuid) {
 			setCreatedAt(null);
-			setAvailability(null);
-			setLastOnline(null);
 			setBadge?.("Newcomer");
 			setXPProgress(0);
 			return;
@@ -39,35 +33,26 @@ export const PlayerDataModule = ({ uuid, badge, setBadge }: PlayerDataModuleProp
 
 		const fetchPlayerData = async () => {
 			try {
-				const [createdAtResp, onlineResp, profileResp] = await Promise.all([
+				const [createdAtResp, profileResp] = await Promise.all([
 					handleCreatedAt(uuid),
-					handleGetOnline(uuid),
 					handleGetProfile(uuid),
 				]);
 
-				if (!mounted) return;
+				if (!mounted)
+					return;
 
 				setCreatedAt(createdAtResp);
-				if (onlineResp?.isOnline) {
-					if (onlineResp?.inParty)
-						setAvailability("Busy");
-					else
-						setAvailability("Online");
-				} else
-					setAvailability("Offline");
-				console.log("isOnline:", onlineResp?.isOnline);
-				setLastOnline(new Date(onlineResp?.lastOnline) ?? null);
 				if (profileResp?.badge)
 					setBadge?.(profileResp.badge);
+
 				// 	const percentage = (profile.xp / (profile.level * 1000)) * 100
 				// 	setXPProgress(percentage);
 			} catch (error) {
 				console.error("Failed to fetch player data:", error);
 			}
 		};
-
 		fetchPlayerData();
-		
+
 		return () => {
 			mounted = false;
 		};
@@ -109,11 +94,10 @@ export const PlayerDataModule = ({ uuid, badge, setBadge }: PlayerDataModuleProp
 					</div>
 				</div>
 			</div>
-			<div
-				className="
-					w-full
-					flex place-content-between place-items-center
-					gap-2rem
+			<div className="
+				w-full
+				flex place-content-between place-items-center
+				gap-2rem
 			">
 				<div className="relative w-full flex">
 					{ uuid === clientUuid
@@ -150,7 +134,7 @@ export const PlayerDataModule = ({ uuid, badge, setBadge }: PlayerDataModuleProp
 						/>
 					}
 				</div>
-				<PlayerStatusModule status={availability} lastOnline={lastOnline}/>
+				<PlayerStatusModule uuid={uuid ?? ""}/>
 			</div>
 			<div className="text-a5">
 				<p>UUID: {uuid}</p>

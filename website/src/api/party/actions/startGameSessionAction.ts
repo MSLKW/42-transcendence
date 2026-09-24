@@ -1,15 +1,23 @@
 import { Socket } from "socket.io-client";
+import { ensureConnected } from "../../../utilities/websockets/ensureConnected";
 import { useNotificationStore, NOTIFICATION_TYPE } from "../../../store/NotificationStore";
 
-export function startGameSessionAction(socket: Socket | null) {
+export async function startGameSessionAction(socket: Socket | null) {
 	const { showNotification } = useNotificationStore.getState();
-	if (!socket?.connected) {
+
+	if (!socket)
+		return;
+
+	try {
+		await ensureConnected(socket);
+
+		socket?.emit("start_game_session");
+		console.log("[partySocket] 'start_game_session'");
+	} catch (error) {
 		showNotification(
-			"Cannot start game session: Socket not connected",
+			"Unable to connect to party server",
 			NOTIFICATION_TYPE.error
 		);
-		return;
+		console.error("Unable to connect to party socket:", error);
 	}
-	socket?.emit("start_game_session");
-	console.log("[partySocket] 'start_game_session'");
 }

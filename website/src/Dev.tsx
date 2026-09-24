@@ -15,7 +15,7 @@ import { useProfileStore } from "./store/ProfileStore";
 import { useResultsStore } from "./store/ResultsStore";
 import { defaultShowWindow, useSceneStore } from "./store/SceneStore";
 import { DevButton } from "./components/dev/DevBtn";
-import { useFrameView } from "./utilities/useFrameView";
+import { useFrameView } from "./utilities/react/useFrameView";
 
 export default function Dev() {
 	const clientUuid = useAuthStore((store) => store.clientUuid);

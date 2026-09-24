@@ -13,14 +13,12 @@ export const SetupWindow = () => {
 
 	return (
 		<>
-			<button
-				className="
-					fixed z-1 top-0 left-0
-					h-screen w-screen
-					backdrop-blur-xs
-					pointer-events-none
-				"
-			/>
+			<button className="
+				fixed z-1 top-0 left-0
+				h-screen w-screen
+				backdrop-blur-xs
+				pointer-events-none
+			"/>
 			<Window
 				title="Setup"
 				dismissKey="setup"
@@ -30,7 +28,6 @@ export const SetupWindow = () => {
 					max-h-[85vh] w-[80vw] max-w-215
 					bg-linear-to-b from-n0 to-n1
 					border border-n1 rounded-xl
-					divide-y divide-n2/40
 					py-1rem px-3rem
 				">
 					<AvatarSetNameModule

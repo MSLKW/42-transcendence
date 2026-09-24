@@ -127,7 +127,7 @@ class ChatSocketService {
 		console.log("[onMessage] socket:", this.socket);
 		if (!this.socket)
 			this.connect();
-		
+
 		this.socket?.on("chat_message", callback);
 		console.log("[onMessage] callback:", callback);
 		return () => {
@@ -138,7 +138,7 @@ class ChatSocketService {
 	public onUserJoined(callback: (data: ChatNotification) => void) {
 		if (!this.socket)
 			this.connect();
-		
+
 		this.socket?.on("chat_user_joined", callback);
 		console.log("[onUserJoined] callback:", callback);
 		return () => {
@@ -149,7 +149,7 @@ class ChatSocketService {
 	public onUserLeft(callback: (data: ChatNotification) => void) {
 		if (!this.socket)
 			this.connect();
-		
+
 		this.socket?.on("chat_user_left", callback);
 		console.log("[onUserLeft] callback:", callback);
 		return () => {
@@ -160,7 +160,7 @@ class ChatSocketService {
 	public onUserTyping(callback: (data: ChatTyping) => void) {
 		if (!this.socket)
 			this.connect();
-		
+
 		this.socket?.on("chat_user_typing", callback);
 		console.log("[onUserTyping] callback:", callback);
 		return () => {
@@ -171,7 +171,7 @@ class ChatSocketService {
 	public onRateLimited(callback: (data: ChatRateLimited) => void) {
 		if (!this.socket)
 			this.connect();
-		
+
 		this.socket?.on("chat_rate_limited", callback);
 		console.log("[onRateLimited] callback:", callback);
 		return () => {

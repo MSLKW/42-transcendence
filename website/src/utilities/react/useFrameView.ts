@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { useDevStore } from "../store/DevStore";
+import { useDevStore } from "../../store/DevStore";
 
 export const useFrameView = () => {
 	const showFrame = useDevStore((store) => store.showFrame);
