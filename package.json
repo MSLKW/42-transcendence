@@ -2,8 +2,8 @@
 	"name": "big2",
 	"private": true,
 	"workspaces": [
-		"packages/*",
-		"game-server",
-		"website"
+		"infra/*",
+		"packages/*/*",
+		"services/*"
 	]
 }
