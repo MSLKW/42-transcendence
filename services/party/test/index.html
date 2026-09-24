@@ -481,7 +481,7 @@ class Client {
         const event = btn.getAttribute('data-emit');
         switch (event) {
           case 'send_invite':
-            this.emitNoAck('send_invite', { recipientUuid: this.field('inviteRecipient').value.trim() });
+            this.emitWithAck('send_invite', { recipientUuid: this.field('inviteRecipient').value.trim() });
             break;
           case 'kick_player':
             this.emitNoAck('kick_player', { recipientUuid: this.field('kickRecipient').value.trim() });
