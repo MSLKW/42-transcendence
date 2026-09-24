@@ -27,13 +27,11 @@ export const AvatarModule = ({
 	const relation = cachedData[uuid ?? ""]?.relation ?? null;
 
 	return (
-		<div
-			className="
-				flex flex-col place-content-center place-items-center
-				gap-0.75rem
-				relative
-			"
-		>
+		<div className="
+			flex flex-col place-content-center place-items-center
+			gap-0.75rem
+			relative
+		">
 			<ChatBubbles uuid={uuid} />
 			<button
 				data-tip={

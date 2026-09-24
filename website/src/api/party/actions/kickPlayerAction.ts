@@ -1,7 +1,6 @@
 import { Socket } from "socket.io-client";
 import { ensureConnected } from "../../../utilities/websockets/ensureConnected";
 import { useNotificationStore, NOTIFICATION_TYPE } from "../../../store/NotificationStore";
-// import { usePartyStore } from "../../../store/PartyStore";
 import { useProfileStore } from "../../../store/ProfileStore";
 import { useSceneStore } from "../../../store/SceneStore";
 
@@ -15,8 +14,6 @@ export async function kickPlayerAction(socket: Socket | null, recipientUuid: str
 		await ensureConnected(socket);
 
 		socket?.emit("kick_player", { recipientUuid });
-
-		// usePartyStore.getState().kickPlayer(recipientUuid);
 
 		await useProfileStore.getState().setCachedData();
 

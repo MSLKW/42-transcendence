@@ -28,11 +28,6 @@ export async function leavePartyAction(socket: Socket | null) {
 
 		await useProfileStore.getState().setCachedData();
 
-		// usePartyStore.setState({
-		// 	members: [ clientUuid ],
-		// 	hostUuid: clientUuid,
-		// });
-
 		useSceneStore.getState().setShowWindow("profile", false);
 
 		addToCachedChat(
