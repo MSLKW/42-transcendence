@@ -8,7 +8,7 @@ import fs from "fs";
 if (!fs.existsSync(AVATAR_DIR))
 	fs.mkdirSync(AVATAR_DIR, {recursive: true});
 
-const ALLOWED_MIME_TYPES = ["image/png"];
+const ALLOWED_MIME_TYPES = ["image/png", "image/jpeg", "image/jpg"];
 const MAX_FILE_SIZE = 5 * 1024 * 1024;
 
 const fileFilter = (_req: Request, file: Express.Multer.File, callback: multer.FileFilterCallback) =>
@@ -16,7 +16,7 @@ const fileFilter = (_req: Request, file: Express.Multer.File, callback: multer.F
 	if (ALLOWED_MIME_TYPES.includes(file.mimetype)) 
 		callback(null, true);
 	else
-		callback(new Error('Only PNG images are allowed'));
+		callback(new Error(`Only [${ALLOWED_MIME_TYPES}] allowed`));
 };
 
 const multerUpload = multer({
@@ -55,14 +55,14 @@ export function uploadAvatar()
 				}
 				catch (writeErr)
 				{
-					console.error(writeErr);
+					console.error(["[Error] uploadAvatar:", writeErr);
 					return (res.status(500).json({error: "Failed to save file"}));
 				}
 			});
 		}
 		catch (err)
 		{
-			console.error("")
+			console.error("[Error] uploadAvatar error")
 			return (res.status(500).json({error: "Something went wrong"}));
 		}
 	});
