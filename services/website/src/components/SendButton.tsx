@@ -9,7 +9,7 @@ export const SendButton = () => {
     return (
         <button
             data-tip="Send"
-            className="btn-icon bg-accent data-tip-up"
+            className="btn-icon h-9 bg-b5 btn-icon-border btn-tip-up"
             onClick={(e) => {handleSend(e)}}
         >
             <SendIcon />

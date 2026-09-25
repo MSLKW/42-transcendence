@@ -9,7 +9,7 @@ export const BackButton = ({ scene }: BackButtonProps) => {
 		<button
 			data-tip="Back"
 			onClick={scene}
-			className="btn-icon data-tip-down"
+			className="btn-icon btn-tip-down"
 		>
 			<BackIcon />
 		</button>
