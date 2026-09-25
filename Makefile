@@ -1,15 +1,3 @@
-# **************************************************************************** #
-#                                                                              #
-#                                                         :::      ::::::::    #
-#    Makefile                                           :+:      :+:    :+:    #
-#                                                     +:+ +:+         +:+      #
-#    By: aimokhta <aimokhta@student.42kl.edu.my>    +#+  +:+       +#+         #
-#                                                 +#+#+#+#+#+   +#+            #
-#    Created: 2026/06/16 09:31:30 by aimokhta          #+#    #+#              #
-#    Updated: 2026/09/23 01:05:12 by aimokhta         ###   ########.fr        #
-#                                                                              #
-# **************************************************************************** #
-
 # --- Colours  --------------------------------------------------------------
 GREEN = \033[0;32m
 BLUE = \033[0;34m
@@ -26,33 +14,34 @@ export
 
 # --- Compose ---------------------------------------------------------------
 # Single compose file for now (no dev override yet).
-COMPOSE		= docker compose -f ./docker-compose.yml
-SERVICES	:= website authentication party profile friends chat game-server game-bot game-stats \
-               postgresql drizzle-gateway migrator nginx redis
+COMPOSE				=	docker compose -f ./docker-compose.yml
+SHELLABLE_SERVICES	:=	website authentication party profile friends chat game-server game-bot game-stats \
+               			postgresql nginx 
+# drizzle-gateway migrator redis
 
 
 # --- Makefile Commands -----------------------------------------------------
-## Build and launch all services
+## Build (cached) and start all services; recreates only whats changed
 all: 
 	@echo "$(PURPLE)\n🛠️  Building and launching full Docker environment from scratch... \n$(RESET)"
 	@$(COMPOSE) up --build 
 #-d
  
 
-## Stop and remove containers and networks (keeps images & volumes)
+## Stop and remove containers + network (keeps images & volumes)
 down: 
 	@echo "$(PURPLE) Removing all containers & networks on Docker (except images and volumes)...\n$(RESET)" 
 	@$(COMPOSE) down
  
 
-## Start existing containers without rebuilding (ignoring changes)
+## Start existing containers, no rebuild (ignoring changes)
 up: 
 	@echo "$(PURPLE) Starting/Resuming services after down/stop, ignoring changes on Docker...\n$(RESET)"
 	@$(COMPOSE) up 
 #-d
  
 
-## Force-recreate containers to apply changes (keeps volumes)
+## Down + Up with network/volumes untouched
 recreate: 
 	@echo "$(PURPLE) Starting/Resuming services, picking up changes on docker by replacing containers (except touching volumes)...\n$(RESET)"
 	@$(COMPOSE) up --force-recreate
@@ -66,19 +55,18 @@ clean:
 	@echo "$(PURPLE)\n🗑️  Done cleaning all containers, networks and images! \n$(RESET)"
 
 
-## Wipe everything including persistent volumes
+## Clean + wipe volumes
 fclean: clean 
 	@echo "$(PURPLE)\n🗑️🚨 Removing this project's Docker volumes...\n$(RESET)"
 	@$(COMPOSE) down --volumes
 	@echo "$(PURPLE)\n🗑️💥 Done, Absolutely everything are removed now!\n$(RESET)"
 
 
-## Fully rebuild the environment from scratch
+## Full rebuild from scratch
 re: fclean all 
  
 
-## Stream colored logs for all running services
-## Show logs from all containers (labeled & colored per service by compose)
+## Stream logs from all running services
 logs:
 	@if [ $$($(COMPOSE) ls | wc -l) -eq 1 ]; then \
 		echo "No services running"; \
@@ -92,12 +80,11 @@ shell-:
 	@printf 'Usage: make shell-<%s>\n' "$(shell echo $(SERVICES) | tr ' ' '|')"
 define SHELL_TEMPLATE
 shell-$(1):
-	@$(COMPOSE) exec $(1) sh || echo "$(PURPLE)No shell available in '$(1)'$(RESET)"
+	@$(COMPOSE) exec $(1) sh
 endef
-$(foreach service,$(SERVICES),$(eval $(call SHELL_TEMPLATE,$(service))))
- 
+$(foreach service,$(SHELLABLE_SERVICES),$(eval $(call SHELL_TEMPLATE,$(service)))) 
 
-## Display all containers, networks, images, and volumes
+## List containers, networks, images, volumes
 ls:
 # 	@echo "$(PURPLE)Project Containers: $(COMPOSE) ps -a$(RESET)"
 # 	@$(COMPOSE) ps -a
@@ -111,7 +98,7 @@ ls:
 	@docker volume ls
 
 
-## Destructive, total system wipe across the entire machine.
+## Destructive! Total system wipe out across entire machine.
 nuclear:
 	@echo "$(PURPLE)docker system prune -a --volumes -f$(RESET)"
 	@docker system prune -a --volumes -f
