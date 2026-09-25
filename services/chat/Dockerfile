@@ -27,8 +27,7 @@ COPY				package.json	./services/chat
 
 RUN npm ci
 
-COPY --from=root	tsconfig.base.json	./
-COPY				.					./services/chat
+COPY . ./services/chat
 
 RUN npm run build:docker -w chat
 

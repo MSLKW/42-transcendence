@@ -28,9 +28,8 @@ COPY 					package.json	./services/website
 
 RUN npm ci
 
-COPY --from=root        tsconfig.base.json	./
-COPY --from=game-types	.					./packages/types/game-types
-COPY 					.					./services/website
+COPY --from=game-types	. ./packages/types/game-types
+COPY 					. ./services/website
 
 RUN npm run build -w website
 

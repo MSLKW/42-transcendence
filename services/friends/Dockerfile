@@ -11,12 +11,11 @@ COPY						package.json    ./services/friends/
 
 RUN npm ci
 
-COPY --from=root			tsconfig.base.json	./
-COPY --from=auth-schema		.					./packages/postgres/auth-schema/
-COPY --from=friends-types	.					./packages/types/friends-types/
-COPY --from=friends-schema	.					./packages/postgres/friends-schema/
-COPY --from=postgres-client	.					./packages/postgres/postgres-client/
-COPY						.					./services/friends/
+COPY --from=auth-schema		. ./packages/postgres/auth-schema/
+COPY --from=friends-types	. ./packages/types/friends-types/
+COPY --from=friends-schema	. ./packages/postgres/friends-schema/
+COPY --from=postgres-client	. ./packages/postgres/postgres-client/
+COPY						. ./services/friends/
 
 RUN npm run build:docker -w friends
 

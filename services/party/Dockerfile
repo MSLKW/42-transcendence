@@ -10,11 +10,10 @@ COPY						package.json    ./services/party/
 
 RUN npm ci
 
-COPY --from=root			tsconfig.base.json	./
-COPY --from=postgres-client	. 					./packages/postgres/postgres-client/
-COPY --from=auth-schema		. 					./packages/postgres/auth-schema/
-COPY --from=party-schema	. 					./packages/postgres/party-schema/
-COPY						. 					./services/party/
+COPY --from=postgres-client	. ./packages/postgres/postgres-client/
+COPY --from=auth-schema		. ./packages/postgres/auth-schema/
+COPY --from=party-schema	. ./packages/postgres/party-schema/
+COPY						. ./services/party/
 
 RUN npm run build:docker -w party
 

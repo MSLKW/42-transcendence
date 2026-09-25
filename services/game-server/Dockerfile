@@ -46,11 +46,11 @@ COPY 					package.json	./services/game-server
 
 RUN npm ci
 
-COPY --from=root		tsconfig.base.json	./
-COPY --from=game-types	.					./packages/types/game-types
-COPY					.					./services/game-server
+COPY --from=game-types	. ./packages/types/game-types
+COPY					. ./services/game-server
 
-RUN npm run build:docker -w game-server
+# RUN npm run build:docker -w game-server
+RUN npm run build -w game-server
 
 FROM node:20-alpine AS runner
 WORKDIR /app

@@ -9,7 +9,6 @@ COPY                        package.json    ./services/authentication/
 
 RUN npm ci
 
-COPY --from=root            tsconfig.base.json   ./
 COPY --from=auth-schema     . ./packages/postgres/auth-schema/
 COPY --from=postgres-client . ./packages/postgres/postgres-client/
 COPY                        . ./services/authentication/

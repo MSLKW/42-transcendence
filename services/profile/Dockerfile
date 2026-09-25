@@ -11,12 +11,11 @@ COPY						package.json	./services/profile/
 
 RUN npm ci
 
-COPY --from=root			tsconfig.base.json	./
-COPY --from=auth-schema		.					./packages/postgres/auth-schema/
-COPY --from=profile-types	.					./packages/types/profile-types/
-COPY --from=profile-schema	.					./packages/postgres/profile-schema/
-COPY --from=postgres-client	.					./packages/postgres/postgres-client/
-COPY						.					./services/profile/
+COPY --from=auth-schema		. ./packages/postgres/auth-schema/
+COPY --from=profile-types	. ./packages/types/profile-types/
+COPY --from=profile-schema	. ./packages/postgres/profile-schema/
+COPY --from=postgres-client	. ./packages/postgres/postgres-client/
+COPY						. ./services/profile/
 
 RUN npm run build:docker -w profile
 
