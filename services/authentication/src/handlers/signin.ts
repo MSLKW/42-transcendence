@@ -59,7 +59,7 @@ export function signinHandler(userStore: UserStore, sessionStore: SessionStore)
 					}
 				}
 				catch (err)
-				{	
+				{
 					console.warn("[Warning] profile system could not be reached:", err);
 					console.warn("[Warning] trying internally stored username");
 					user = await userStore.getUserByUsername(identifier);
