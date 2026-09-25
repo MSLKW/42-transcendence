@@ -2,6 +2,11 @@ import importX from "eslint-plugin-import-x";
 import tsParser from "@typescript-eslint/parser";
 
 const workspaces = [ // TODO: include new ones too dont forget
+  "infra/drizzle-gateway",
+  "infra/migrator",
+  "infra/nginx",
+  "infra/postgresql",
+  "infra/redis",
   "packages/postgres/auth-schema",
   "packages/postgres/friends-schema",
   "packages/postgres/game-stats-schema",
