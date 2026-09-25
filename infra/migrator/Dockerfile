@@ -13,9 +13,9 @@ COPY                package.json    ./infra/migrator/
 RUN npm ci
 
 # these 3 folders&files are a must for Migrator one-shot container only (sql files for migrating, other 2 used by drizzle-kit for migrating)
-COPY migrations                     ./infra/migrator/migrations
-COPY tsconfig.drizzle.json          ./infra/migrator/tsconfig.drizzle.json
-COPY drizzle.config.ts              ./infra/migrator/drizzle.config.ts
+COPY migrations             ./infra/migrator/migrations
+COPY tsconfig.drizzle.json  ./infra/migrator/tsconfig.drizzle.json
+COPY drizzle.config.ts      ./infra/migrator/drizzle.config.ts
 
 COPY scripts/*                      /usr/local/bin
 
