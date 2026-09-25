@@ -41,23 +41,24 @@ FROM node:20-alpine AS builder
 WORKDIR /app
 
 COPY --from=root		package*.json	./
-COPY --from=game-types	package.json	./packages/types/game-types
-COPY 					package.json	./services/game-server
+COPY --from=game-types	package.json	./packages/types/game-types/
+COPY 					package.json	./services/game-server/
 
 RUN npm ci
 
-COPY --from=game-types	. ./packages/types/game-types
-COPY					. ./services/game-server
+COPY --from=game-types	. ./packages/types/game-types/git grep -nE 'COPY\s+\S+\s+\./[a-zA-Z0-9_./-]+[^/]$' -- '**/Dockerfile*'
+COPY					. ./services/game-server/
 
 # RUN npm run build:docker -w game-server
+RUN npm run build -w @big2/game-types
 RUN npm run build -w game-server
 
 FROM node:20-alpine AS runner
 WORKDIR /app
 
 COPY --from=root		package*.json	./
-COPY --from=game-types	package.json	./packages/types/game-types
-COPY 					package.json	./services/game-server
+COPY --from=game-types	package.json	./packages/types/game-types/
+COPY 					package.json	./services/game-server/
 
 RUN npm ci --omit=dev
 

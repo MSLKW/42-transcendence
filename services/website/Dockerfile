@@ -23,13 +23,13 @@ FROM node:24 AS builder
 WORKDIR /app
 
 COPY --from=root		package*.json	./
-COPY --from=game-types	package.json	./packages/types/game-types
-COPY 					package.json	./services/website
+COPY --from=game-types	package.json	./packages/types/game-types/
+COPY 					package.json	./services/website/
 
 RUN npm ci
 
-COPY --from=game-types	. ./packages/types/game-types
-COPY 					. ./services/website
+COPY --from=game-types	. ./packages/types/game-types/
+COPY 					. ./services/website/
 
 RUN npm run build -w website
 
@@ -37,8 +37,8 @@ FROM node:20 AS runner
 WORKDIR /app
 
 COPY --from=root		package*.json	./
-COPY --from=game-types	package.json	./packages/types/game-types
-COPY 					package.json	./services/website
+COPY --from=game-types	package.json	./packages/types/game-types/
+COPY 					package.json	./services/website/
 
 ENV NODE_ENV=production
 RUN npm ci --omit=dev

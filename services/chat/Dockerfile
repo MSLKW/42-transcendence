@@ -23,11 +23,11 @@ FROM node:20-alpine AS builder
 WORKDIR /app
 
 COPY --from=root	package*.json	./
-COPY				package.json	./services/chat
+COPY				package.json	./services/chat/
 
 RUN npm ci
 
-COPY . ./services/chat
+COPY . ./services/chat/
 
 RUN npm run build:docker -w chat
 
@@ -36,7 +36,7 @@ FROM node:20-alpine AS runner
 WORKDIR /app
 
 COPY --from=root	package*.json	./
-COPY				package.json	./services/chat
+COPY				package.json	./services/chat/
 
 ENV NODE_ENV=production
 RUN npm ci --omit=dev
