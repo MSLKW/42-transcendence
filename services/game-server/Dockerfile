@@ -46,7 +46,7 @@ COPY 					package.json	./services/game-server/
 
 RUN npm ci
 
-COPY --from=game-types	. ./packages/types/game-types/git grep -nE 'COPY\s+\S+\s+\./[a-zA-Z0-9_./-]+[^/]$' -- '**/Dockerfile*'
+COPY --from=game-types	. ./packages/types/game-types/
 COPY					. ./services/game-server/
 
 # RUN npm run build:docker -w game-server
