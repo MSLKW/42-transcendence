@@ -2,13 +2,14 @@ import { Request, Response } from "express";
 import { AVATAR_DIR } from "../config";
 import { authenticate } from "../utils/authenticate";
 import multer from "multer";
+import sharp from "sharp";
 import path from "path";
 import fs from "fs";
 
 if (!fs.existsSync(AVATAR_DIR))
 	fs.mkdirSync(AVATAR_DIR, {recursive: true});
 
-const ALLOWED_MIME_TYPES = ["image/png", "image/jpeg", "image/jpg"];
+const ALLOWED_MIME_TYPES = ["image/png", "image/jpeg", "image/jpg", "image/webp"];
 const MAX_FILE_SIZE = 5 * 1024 * 1024;
 
 const fileFilter = (_req: Request, file: Express.Multer.File, callback: multer.FileFilterCallback) =>
@@ -45,24 +46,25 @@ export function uploadAvatar()
 				if (!req.file)
 					return (res.status(400).json({error: "No file uploaded"}));
 
-				const ext = path.extname(req.file.originalname).toLowerCase();
-				const filePath = path.join(AVATAR_DIR, `${data.userId}${ext}`);
 
 				try
 				{
-					await fs.promises.writeFile(filePath, req.file.buffer);
-					return (res.status(204).send());
+					const filename = `${data.userId}.webp`;
+					const filePath = path.join(AVATAR_DIR, filename);
+
+					await sharp(req.file.buffer).webp().toFile(filePath);
+					return res.status(200).json({ message: "File saved", filename: filename });
 				}
-				catch (writeErr)
+				catch (err)
 				{
-					console.error(["[Error] uploadAvatar:", writeErr);
-					return (res.status(500).json({error: "Failed to save file"}));
+					console.error("[Error] uploadAvatar:", err);
+					return (res.status(400).json({ error: "Invalid or unsupported image" }));
 				}
 			});
 		}
 		catch (err)
 		{
-			console.error("[Error] uploadAvatar error")
+			console.error("[Error] uploadAvatar:", err);
 			return (res.status(500).json({error: "Something went wrong"}));
 		}
 	});
