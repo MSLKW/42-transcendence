@@ -159,25 +159,25 @@ services:
       - transcendence
 
 
-  # #     FRONTEND MICORSERVICE
-  # website:
-  #   container_name: website
-  #   image: website:services
-  #   build:
-  #     context: ./services/website
-  #     additional_contexts:
-  #       root: .
-  #       game-types: ./packages/types/game-types
-  #   pull_policy: never
-  #   restart: unless-stopped
-  #   volumes: # temporary for vite hmr
-  #     - ./services/website:/app/website
-  #     - /app/node_modules # does it actually mean ./node_modules:/app/node_modules
-  #     - /app/website/node_modules # does it actually mean ./services/website/node_modules:/app/services/website/node_modules
-  #   environment:
-  #     DOMAIN_PORT: ${DOMAIN_PORT} # Right now only for vite config, can remove in production
-  #   networks:
-  #     - transcendence
+  #     FRONTEND MICORSERVICE
+  website:
+    container_name: website
+    image: website:services
+    build:
+      context: ./services/website
+      additional_contexts:
+        root: .
+        game-types: ./packages/types/game-types
+    pull_policy: never
+    restart: unless-stopped
+    volumes: # temporary for vite hmr
+      - ./services/website:/app/website
+      - /app/node_modules # does it actually mean ./node_modules:/app/node_modules
+      - /app/website/node_modules # does it actually mean ./services/website/node_modules:/app/services/website/node_modules
+    environment:
+      DOMAIN_PORT: ${DOMAIN_PORT} # Right now only for vite config, can remove in production
+    networks:
+      - transcendence
 
 
   #     BACKEND MICORSERVICE
@@ -310,40 +310,40 @@ services:
         condition: service_completed_successfully  # Waits for migrator to finish and exit with code 0
 
 
-  # #     BACKEND MICORSERVICE
-  # chat:
-  #   container_name: chat
-  #   image: chat:services
-  #   build: 
-  #     context: ./services/chat
-  #     additional_contexts:
-  #       root: .
-  #   pull_policy: never
-  #   restart: unless-stopped
-  #   ports:
-  #     - "3001:${CHAT_SERVICE_PORT}"
-  #   environment:
-  #     PORT: ${CHAT_SERVICE_PORT}
-  #     AUTH_SERVICE_URL: ${AUTH_SERVICE_URL}
-  #   networks:
-  #     - transcendence
+  #     BACKEND MICORSERVICE
+  chat:
+    container_name: chat
+    image: chat:services
+    build: 
+      context: ./services/chat
+      additional_contexts:
+        root: .
+    pull_policy: never
+    restart: unless-stopped
+    ports:
+      - "3001:${CHAT_SERVICE_PORT}"
+    environment:
+      PORT: ${CHAT_SERVICE_PORT}
+      AUTH_SERVICE_URL: ${AUTH_SERVICE_URL}
+    networks:
+      - transcendence
 
 
-  # #     BACKEND MICORSERVICE
-  # game-server:
-  #   container_name: game-server
-  #   build: 
-  #     context: ./services/game-server
-  #     additional_contexts:
-  #       root: .
-  #       game-types: ./packages/types/game-types
-  #   image: game-server:services
-  #   pull_policy: never
-  #   restart: unless-stopped
-  #   environment:
-  #     AUTH_SERVICE_URL: ${AUTH_SERVICE_URL}
-  #   networks:
-  #     - transcendence
+  #     BACKEND MICORSERVICE
+  game-server:
+    container_name: game-server
+    build: 
+      context: ./services/game-server
+      additional_contexts:
+        root: .
+        game-types: ./packages/types/game-types
+    image: game-server:services
+    pull_policy: never
+    restart: unless-stopped
+    environment:
+      AUTH_SERVICE_URL: ${AUTH_SERVICE_URL}
+    networks:
+      - transcendence
 
 
   # #     BACKEND MICORSERVICE
