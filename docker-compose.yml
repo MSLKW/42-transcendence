@@ -1,8 +1,8 @@
 name: ${PROJECT_NAME}
 
-
+# Docker bridge networks are IPv4-only by default.
 networks:
-  transcendence: # internet-facing
+  transcendence: # internet-facing , 
     name: ${MAIN_NETWORK}
     driver: bridge # no ingress (Incoming traffic or data is completely blocked from entering this network)
   database: # securing of anything database related from being expose to those not talking to database
