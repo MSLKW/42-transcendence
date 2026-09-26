@@ -104,4 +104,8 @@ server {
         rewrite ^/socket/game-bot/(.*)$ /socket.io/$1 break;
 		proxy_pass $upstream;
 	}
+
+	location /avatars/ {
+		alias ${PROFILE_SERVICE_AVATAR_DIR};
+	}
 }

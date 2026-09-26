@@ -18,7 +18,7 @@ volumes: # industry standard => name volumes => more secure oppose to anyone eve
     name: ${DG_VOLUME}
   website-data:
     name: ${WEBSITE_VOLUME}
-  profile-avatars-data:
+  avatars-data:
     name: ${PROFILE_AVATARS_VOLUME}
 
 
@@ -155,8 +155,11 @@ services:
       GAME_STATS_SERVICE_URL: ${GAME_STATS_SERVICE_URL}
       GAME_SERVER_SERVICE_URL: ${GAME_SERVER_SERVICE_URL}
       GAME_BOT_SERVICE_URL: ${GAME_BOT_SERVICE_URL}
+      PROFILE_SERVICE_AVATAR_DIR: ${PROFILE_SERVICE_AVATAR_DIR}
     networks:
       - transcendence
+    volumes:
+      - avatars_data: ${PROFILE_SERVICE_AVATAR_DIR}:ro
 
 
   #     FRONTEND MICORSERVICE
@@ -266,9 +269,9 @@ services:
       PGDATABASE: ${PGDATABASE}
       PORT: ${PROFILE_SERVICE_PORT}
       AUTH_SERVICE_URL: ${AUTH_SERVICE_URL}
-      AVATAR_DIR: ${PROFILE_SERVICE_AVATAR_DIR}
-    # volumes:
-    #   - profile-avatars-data: /app/profile_data #will be adjusted. use env var PROFILE_SERVICE_AVATAR_DIR instead appended onto /app?
+      AVATAR_DIR: "${PROFILE_SERVICE_AVATAR_DIR}"
+    volumes:
+      - avatars-data: ${PROFILE_SERVICE_AVATAR_DIR}
     secrets:
       - db-profile-password
     networks:
