@@ -76,6 +76,7 @@ export class Game {
 	
 		this.socket.on("game_end", (gameEndStats: GameEndStatsTransmit) => {
 			useResultsStore.getState().setResults(gameEndStats);
+			useGameStore.setState({ round: gameEndStats.temporaryRoundsPlayed });
 			this.resetGame();
 			useSceneStore.getState().setCurrentScene("Lobby");
 			useSceneStore.getState().setShowWindow("results", true);
@@ -131,7 +132,6 @@ export class Game {
 	}
 
 	private initGame(gameState: GameStateTransmit) {
-		useGameStore.setState({ round: useGameStore.getState().round + 1 });
 		useSceneStore.getState().setShowWindow("results", false);
 		this.initParticipants(gameState);
 		console.log(gameState.playerSeatOrder);
