@@ -162,6 +162,18 @@ services:
       - avatars_data: ${PROFILE_SERVICE_AVATAR_DIR}:ro
 
 
+  # #     INFRASTRUCTURE MICROSERVICE
+  # redis:
+  #   container_name: redis
+  #   image: redis:infra
+  #   build: ./infra/redis
+  #   pull_policy: missing    # default
+  #   restart: unless-stopped
+  #   networks:
+  #     - transcendence
+  #     - database # this need? dosent contact directly with postgres tho, but helps with data haha
+
+
   #     FRONTEND MICORSERVICE
   website:
     container_name: website
