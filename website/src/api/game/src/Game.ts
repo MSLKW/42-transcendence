@@ -77,6 +77,8 @@ export class Game {
 		this.socket.on("game_end", (gameEndStats: GameEndStatsTransmit) => {
 			useResultsStore.getState().setResults(gameEndStats);
 			this.resetGame();
+			useSceneStore.getState().setCurrentScene("Lobby");
+			useSceneStore.getState().setShowWindow("results", true);
 		});
 	
 		this.socket.on("player_connection_update", (disconnections: Record<string, boolean>) => {
@@ -123,6 +125,7 @@ export class Game {
 	
 		this.socket.on("game_state", (gameState: GameStateTransmit) => {
 			console.log("[gameSocket] Received game_state");
+			this.resetGame();
 			this.initGame(gameState);
 		});
 	}
@@ -145,15 +148,13 @@ export class Game {
 		this.initDeckDealing(gameState);
 	}
 
-	private resetGame() {
+	public resetGame() {
 		this.cardHeap.reset();
 		for (let i = 0; i < this.participants.length; i++) {
 			this.participants[i].cardManager.reset();
 		}
 		this.playerRef = null;
 		this.participants.length = 0;
-		useSceneStore.getState().setCurrentScene("Lobby");
-		useSceneStore.getState().setShowWindow("results", true);
 	}
 
 	private initParticipants(gameState: GameStateTransmit) {
