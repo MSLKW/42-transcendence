@@ -145,7 +145,7 @@ services:
       - "${DOMAIN_PORT}:${DOMAIN_PORT}"
     environment:
       DOMAIN_PORT: ${DOMAIN_PORT}
-      NGINX_ENVSUBST_FILTER: ^(DOMAIN_PORT|.*_SERVICE_URL)$
+      NGINX_ENVSUBST_FILTER: ^(DOMAIN_PORT|.*_SERVICE_URL|PROFILE_SERVICE_AVATAR_DIR)$
       WEBSITE_SERVICE_URL: ${WEBSITE_SERVICE_URL}
       AUTH_SERVICE_URL: ${AUTH_SERVICE_URL}
       PARTY_SERVICE_URL: ${PARTY_SERVICE_URL}
@@ -159,7 +159,7 @@ services:
     networks:
       - transcendence
     volumes:
-      - avatars_data: ${PROFILE_SERVICE_AVATAR_DIR}:ro
+      - avatars-data:${PROFILE_SERVICE_AVATAR_DIR}:ro
 
 
   # #     INFRASTRUCTURE MICROSERVICE
@@ -283,7 +283,7 @@ services:
       AUTH_SERVICE_URL: ${AUTH_SERVICE_URL}
       AVATAR_DIR: "${PROFILE_SERVICE_AVATAR_DIR}"
     volumes:
-      - avatars-data: ${PROFILE_SERVICE_AVATAR_DIR}
+      - avatars-data:${PROFILE_SERVICE_AVATAR_DIR}
     secrets:
       - db-profile-password
     networks:
