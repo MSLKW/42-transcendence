@@ -3,17 +3,22 @@
 		"target": "ES2022",
 		"module": "NodeNext",
 		"moduleResolution": "NodeNext",
+		"outDir": "./dist",
+		"rootDir": "./src",
 		"strict": true,
 		"esModuleInterop": true,
 		"skipLibCheck": true,
 		"forceConsistentCasingInFileNames": true,
 		"types": ["node"],
-		"isolatedModules": true,
-		"moduleDetection": "force",
-		// "verbatimModuleSyntax": true,
-		"noUncheckedSideEffectImports": true,
-		"outDir": "./dist",
-		"rootDir": "./src",
+		// //
+		// // previously added by aisyah, will cleanup later
+		// "isolatedModules": true,
+		// "moduleDetection": "force",
+		// // "verbatimModuleSyntax": true,
+		// "noUncheckedSideEffectImports": true,
+		// "outDir": "./dist",
+		// "rootDir": "./src",
+		// //
 		"incremental": true,
 		"tsBuildInfoFile": "./.tsbuildinfo"
 	},
