@@ -15,8 +15,8 @@
     "@big2/game-types": "*"
   },
   "scripts": {
-    "build": "tsc --project tsconfig.backend.json",
+    "docker:build": "tsc",
     "server": "node server_build/src/server.js",
-    "all": "npm run build && npm run server"
+    "all": "npm run docker:build && npm run server"
   }
 }

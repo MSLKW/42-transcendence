@@ -38,11 +38,13 @@ export const useResultsStore = create<ResultsState>() (
 					const cards = gameEndStats.playerFinalCardAmounts[playerUuid] ?? 0;
 
 					const existingPlayer = currentResults.find(r => r.uuid === playerUuid);
-					let wins = existingPlayer ? existingPlayer.totalWins : 0;
-
-					if (playerUuid === gameEndStats.winnerPlayerUuid) {
-						wins += 1;
-					}
+					// temporarily let total wins be temporaryWinstreak
+					// let wins = existingPlayer ? existingPlayer.totalWins : 0;
+					
+					// if (playerUuid === gameEndStats.winnerPlayerUuid) {
+					// 	wins += 1;
+					// }
+					const wins = playerUuid === gameEndStats.winnerPlayerUuid ? gameEndStats.temporaryWinStreakAmount : 0;
 
 					const roundPoints = gameEndStats.playerPenaltyPoints[playerUuid];
 					const previousTotalPoints = existingPlayer ? existingPlayer.totalPoints : 0;

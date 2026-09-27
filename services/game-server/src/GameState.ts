@@ -16,6 +16,12 @@ export class GameState {
 	private playerTurnTimeoutId: NodeJS.Timeout | undefined;
 	public	gameRoomId: string;
 
+	private	previousSeatOrder: string[];
+	private	temporaryWinStreakWinnerUuid: string;
+	private	temporaryWinStreakAmount: number;
+	private	temporaryRoundsPlayed: number;
+
+
 	// Game Settings
 	public	settings: GameSettingsTransmit;
 	// Play until last player or when the first player finishes
@@ -34,10 +40,14 @@ export class GameState {
 		this.settings = {
 			allow3OfAKind: true,
 			allow2OfSpadesEnd: false,
-			autoPassInMilliseconds: 10000,
+			autoPassInMilliseconds: 60000,
 			endGameCondition: 0,
 			scoreCalculation: 0,
-		}
+		};
+		this.previousSeatOrder = [];
+		this.temporaryWinStreakWinnerUuid = "";
+		this.temporaryWinStreakAmount = 0;
+		this.temporaryRoundsPlayed = 0;
 	}
 
 	public emit(event: string, payload: any) {
@@ -126,10 +136,13 @@ export class GameState {
 
 	public endGame(winner: PlayerState) {
 		console.log(`Game<${this.gameRoomId}> has ended | Winner is Player<${winner.uuid}>`);
+		this.trackTemporaryStats(winner);
 		const gameEndStats: GameEndStatsTransmit = {
 			winnerPlayerUuid: winner.uuid,
 			playerFinalCardAmounts: this.getPlayerCardsAmount(),
-			playerPenaltyPoints: this.getPlayerPenaltyPoints()
+			playerPenaltyPoints: this.getPlayerPenaltyPoints(),
+			temporaryWinStreakAmount: this.temporaryWinStreakAmount,
+			temporaryRoundsPlayed: this.temporaryRoundsPlayed,
 		}
 		this.resetGame();
 		this.isGameStarted = false;
@@ -154,6 +167,34 @@ export class GameState {
 			seatOrder[this.players[i].uuid] = i;
 		}
 		return (seatOrder);
+	}
+	
+	private trackTemporaryStats(winner: PlayerState) {
+		let resetPreviousSeatOrder: boolean = false;
+		if (this.previousSeatOrder.length === 0) {
+			resetPreviousSeatOrder = true;
+		}
+		for (let i = 0; i < this.previousSeatOrder.length; i++) {
+			if (this.previousSeatOrder[i] !== this.players[i].uuid) {
+				resetPreviousSeatOrder = true;
+				break ;
+			}
+		}
+		if (resetPreviousSeatOrder === true) {
+			this.temporaryWinStreakWinnerUuid = "";
+			this.temporaryWinStreakAmount = 0;
+			this.temporaryRoundsPlayed = 0;
+			for (let i = 0; i < this.players.length; i++) {
+				this.previousSeatOrder[i] = this.players[i].uuid;
+			}
+		}
+		
+		if (this.temporaryWinStreakWinnerUuid !== winner.uuid) {
+			this.temporaryWinStreakWinnerUuid = winner.uuid;
+			this.temporaryWinStreakAmount = 0;
+		}
+		this.temporaryWinStreakAmount++;
+		this.temporaryRoundsPlayed++;
 	}
 
 	public uuidInGame(uuid: string): boolean {

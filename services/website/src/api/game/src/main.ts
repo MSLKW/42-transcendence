@@ -5,8 +5,8 @@ export let gameInstance: Game | null = null;
 
 export function joinGameLobby(gameSessionId: string, playerId: string) {
 	if (gameInstance !== null) {
-		console.log("[Game] Game Session is already ongoing");
-		// return ;
+		gameInstance.resetGame();
+		gameInstance = null;
 	}
 	gameInstance = new Game(gameSessionId, playerId);
 	useSceneStore.getState().setCurrentScene("Lobby");

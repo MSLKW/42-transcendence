@@ -8,6 +8,6 @@
 	"main": "./dist/Types.js",
 	"types": "./dist/types/Types.d.ts",
 	"scripts": {
-		"build": "tsc"
+		"docker:build": "tsc"
 	}
 }
