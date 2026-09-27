@@ -96,7 +96,7 @@ async function attemptLogin(user: User | null, password: string, userStore: User
 	{
 		await userStore.incrementFailedAttempts(user.id);
 
-		if (user.failedLoginAttempts + 1 >= MAX_FAILED_ATTEMPTS) //  cant it take from the updated count what sql did? 
+		if (user.failedLoginAttempts + 1 >= MAX_FAILED_ATTEMPTS) // later will need to do control race condition for this line via both app & data layer
 		{
 			const until = new Date(Date.now() + LOCKOUT_DURATION_MS);
 			await userStore.lockAccount(user.id, until);
