@@ -1,3 +1,4 @@
+// import { UserData, UserSettings } from "../types";
 import { type UserData, type UserSettings } from "@big2/profile-types";
 
 export interface UserStore

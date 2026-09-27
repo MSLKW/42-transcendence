@@ -25,13 +25,6 @@ const ERROR_MESSAGES: Record<string, string> = {
 const userStore: UserStore = new DrizzleUserStore;
 
 const app = express();
-
-// app.use((req, res, next) => {
-// 	console.log(`[DEBUG] ${req.method} ${req.url} | Host: ${req.headers.host}`);
-// 	next();
-// });
-
-
 app.use(express.json());
 app.use(express.static("test"));
 

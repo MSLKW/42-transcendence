@@ -41,7 +41,7 @@ type AutoPassKeys =
 	| "2 mins"
 	| "No Limit";
 
-export type BadgeLabel =
+type BadgeLabel =
 	"Newcomer"
 	| "Beginner's Luck"
 	| "Challenger"
@@ -50,7 +50,7 @@ export type BadgeLabel =
 	| "The Strategist"
 	| "Big 2 Champion";
 
-export type AchievementLabel = 
+type AchievementLabel = 
 	"FIRST_LOGIN"
 	| "LOGIN_1_WEEK"
 	| "PLAYED_1_GAME"
