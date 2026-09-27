@@ -1,8 +1,10 @@
 import "dotenv/config";
 import express from "express";
+import cookieParser from "cookie-parser";
+// import { FileUserStore } from "./store/fileUserStore";
+// import { FileSessionStore } from "./store/fileSessionStore";
 import { DrizzleUserStore } from "./store/drizzleUserStore";
 import { DrizzleSessionStore } from "./store/drizzleSessionStore";
-import cookieParser from "cookie-parser";
 import { signupHandler } from "./handlers/signup";
 import { signinHandler } from "./handlers/signin";
 import { guestHandler } from "./handlers/guest";
@@ -10,9 +12,6 @@ import { logoutHandler } from "./handlers/logout";
 import { validateSessionHandler } from "./handlers/validateSession";
 import { getCreatedAt } from "./handlers/getCreatedAt";
 import { scheduleSessionCleanup } from "./jobs/ScheduleSessionCleanup";
-// by aisyah
-import { checkUserExistanceForFriends } from "./routes/checkUserExistanceForFriends";
-
 
 const app = express();
 app.use(express.json());
@@ -30,9 +29,6 @@ app.get("/validate", validateSessionHandler(sessionStore));
 app.get("/created-at/:uuid", getCreatedAt(userStore));
 scheduleSessionCleanup(sessionStore);
 
-// by aisyah
-app.get("/internal/friends/uuidexistance/:uuid", checkUserExistanceForFriends());
-app.get("/", (req, res) => res.sendStatus(200)); // temporary healthcheck only, to enable docker run 
 
 app.use((err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {
 	if (err.type === "entity.parse.failed") {
