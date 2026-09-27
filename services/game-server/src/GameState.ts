@@ -144,7 +144,7 @@ export class GameState {
 			temporaryWinStreakAmount: this.temporaryWinStreakAmount,
 			temporaryRoundsPlayed: this.temporaryRoundsPlayed,
 		}
-		this.resetGame();
+		this.resetGame();`	`
 		this.isGameStarted = false;
 		this.emit("game_end", gameEndStats);
 	}

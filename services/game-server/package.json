@@ -16,6 +16,7 @@
   },
   "scripts": {
     "docker:build": "tsc",
+    "build:docker": "tsc -b",
     "server": "node server_build/src/server.js",
     "all": "npm run docker:build && npm run server"
   }

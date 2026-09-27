@@ -1,30 +1,67 @@
-#### --- originally from int/KAN-1
+# #### --- original implementation of int/KAN-1
+# FROM node:20-alpine AS builder
+# WORKDIR /app
 
+# COPY . ./game-server/.
+# COPY --from=game-types . ./packages/game-types/.
+# COPY --from=root package*.json ./
+
+# RUN npm install --workspace=@big2/game-types
+# RUN cd ./packages/game-types && npm run docker:build
+
+# RUN npm install
+
+# RUN cd ./game-server && npm run docker:build
+
+# # -----
+
+# FROM node:20-alpine AS runner
+# WORKDIR /app
+
+# COPY package*.json ./game-server/.
+# COPY --from=game-types . ./packages/game-types/.
+# COPY --from=root package*.json .
+
+# RUN npm install --workspace=@big2/game-types
+# RUN cd ./packages/game-types && npm run docker:build
+
+# RUN npm ci --omit=dev
+
+# COPY --from=builder /app/game-server/server_build ./game-server/server_build
+
+# EXPOSE 3000
+
+# WORKDIR /app/game-server
+
+# CMD ["node", "server_build/src/server.js"]
+
+
+#### --- fix original implementation of int/KAN-1 to adapt with current directories layout
 FROM node:20-alpine AS builder
 WORKDIR /app
 
-COPY . ./services/game-server/.
-COPY --from=game-types . ./packages/types/game-types/.
-COPY --from=root package*.json ./
+COPY 					. 				./services/game-server/.
+COPY --from=game-types	. 				./packages/types/game-types/.
+COPY --from=root		package*.json	./
 
-RUN npm install --workspace=@big2/game-types
-RUN cd ./packages/types/game-types && npm run docker:build
+RUN npm install -w @big2/game-types
+RUN npm run docker:build -w @big2/game-types
 
 RUN npm install
 
-RUN cd ./services/game-server && npm run docker:build
+RUN npm run docker:build -w game-server
 
 # -----
 
 FROM node:20-alpine AS runner
 WORKDIR /app
 
-COPY package.json ./services/game-server/.
-COPY --from=game-types . ./packages/types/game-types/.
-COPY --from=root package*.json .
+COPY 					package.json	./services/game-server/.
+COPY --from=game-types	.				./packages/types/game-types/.
+COPY --from=root 		package*.json 	.
 
-RUN npm install --workspace=@big2/game-types
-RUN cd ./packages/types/game-types && npm run docker:build
+RUN npm install -w @big2/game-types
+RUN npm run docker:build -w @big2/game-types
 
 RUN npm ci --omit=dev
 
@@ -33,13 +70,10 @@ COPY --from=builder /app/packages/types/game-types/dist ./packages/types/game-ty
 
 EXPOSE 3000
 
-WORKDIR /app/services/game-server
-
-CMD ["node", "server_build/src/server.js"]
+CMD ["node", "server_build/src/server.js", "-w", "game-server"]
 
 
 # #### --- optimized docker to be applied before production
-#
 # FROM node:20-alpine AS builder
 # WORKDIR /app
 

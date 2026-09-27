@@ -1,30 +1,53 @@
-#### --- originally from int/KAN-1
+#### --- original implementation of int/KAN-1
+# #Builder
+# FROM node:20-alpine AS builder
+# WORKDIR /app
+# COPY package*.json ./
+# RUN npm ci
+# COPY . .
+# RUN npm run build
 
+# #Runner
+# FROM node:20-alpine AS runner
+# WORKDIR /app
+# ENV NODE_ENV=production
+# COPY package*.json ./
+# RUN npm ci --omit=dev
+# COPY --from=builder /app/dist ./dist
+# EXPOSE 3000
+# CMD ["npm", "run", "start"]
+
+#### --- fix original implementation of int/KAN-1 to adapt with current directories layout
 #Builder
 FROM node:20-alpine AS builder
 WORKDIR /app
-COPY --from=root package*.json ./
-COPY package.json ./services/chat/
+COPY --from=root	package*.json	./
+COPY 				package.json	./services/chat/
 
 RUN npm ci
+
 COPY . ./services/chat/
+
 RUN npm run build -w chat
 
 #Runner
 FROM node:20-alpine AS runner
 WORKDIR /app
 ENV NODE_ENV=production
-COPY --from=root package*.json ./
-COPY package.json ./services/chat/
+
+COPY --from=root	package*.json	./
+COPY 				package.json	./services/chat/
+
 RUN npm ci --omit=dev
+
 COPY --from=builder /app/services/chat/dist ./services/chat/dist
-COPY --from=builder /app/dist ./dist
+# COPY --from=builder /app/dist ./dist
+
 EXPOSE 3000
-CMD ["npm", "run", "start"]
+CMD ["npm", "run", "start", "-w", "chat"]
 
 
 # #### --- optimized docker to be applied before production
-#
 # #Builder
 # FROM node:20-alpine AS builder
 # WORKDIR /app
