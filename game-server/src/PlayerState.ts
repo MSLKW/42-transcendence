@@ -28,9 +28,8 @@ export class PlayerState {
 	public setupSocketListeners() {
 		this.socket.join(this.gameStateRef.gameRoomId);
 
-		this.socket.on("player_play_card_hand_request", (cardHandTransmit: CardHandTransmit) => {
+		this.socket.on("player_play_card_hand_request", (cardHandTransmit: CardHandTransmit, statusCallback) => {
 			const status: StatusTransmit = this.playCardHand(cardHandTransmit);
-			this.socket.emit("player_play_card_hand_request", status);
 			if (status.success === true) {
 				if (this.cards.length === 0) {
 					this.gameStateRef.endGame(this)
@@ -38,10 +37,11 @@ export class PlayerState {
 				}
 				this.gameStateRef.nextPlayerTurn();
 			}
+			statusCallback(status);
 		});
 
-		this.socket.on("player_skip_turn_request", () => {
-			this.socket.emit("player_skip_turn_request", this.skipTurnRequest());
+		this.socket.on("player_skip_turn_request", (statusCallback) => {
+			statusCallback(this.skipTurnRequest());
 		})
 	}
 
