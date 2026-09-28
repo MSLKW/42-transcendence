@@ -342,6 +342,9 @@ services:
       AUTH_SERVICE_URL: ${AUTH_SERVICE_URL}
     networks:
       - transcendence
+    depends_on:
+      authentication:
+        condition: service_started
 
 
   #     BACKEND MICORSERVICE

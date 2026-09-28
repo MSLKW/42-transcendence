@@ -5,21 +5,20 @@ import { clientManager } from "./ClientManager";
 
 export function registerEventHandlers(socket: Socket, client: Client)
 {
-	socket.on("send_invite", (payload: {recipientUuid: string}, callback) =>
+	socket.on("send_invite", (payload: {recipientUuid: string}) =>
 	{
 		if (client.party != null && client.party.hostId != client.uuid)
-			return callback({ success: false, reason: "you are not the host" });
+			return ;
 		if (client.uuid == payload.recipientUuid)
-			return callback({ success: false, reason: "cannot invite yourself" });
+			return ;
 		
 		const recipient = clientManager.getByUuid(payload.recipientUuid);
 		if (!recipient)
-			return callback({ success: false, reason: "user is offline" });
+			return ;
 		if (client.party == null)
 			client.party = new Party(client);
 		client.party.addInvite(recipient);
 		recipient.emit("invite_received", {hostUuid: client.uuid});
-		return callback({ success: true });
 	});
 
 	socket.on("kick_player", (payload: {recipientUuid: string}) =>

@@ -62,7 +62,7 @@ server {
 	location /socket/chat/ {
 		set $upstream ${CHAT_SERVICE_URL};
     #    rewrite ^/socket/chat/(.*)$ /socket.io/$1 break;
-        rewrite ^/socket/chat/(.*)$ /$1 break;				# USE THIS FIRST, AS THIS IS WHAT IS IN THE ORIGINAL MERGED ONE, and they make it working already using this
+    #    rewrite ^/socket/chat/(.*)$ /$1 break;				# USE THIS FIRST, AS THIS IS WHAT IS IN THE ORIGINAL MERGED ONE, and they make it working already using this
 		proxy_pass $upstream;
 
 		proxy_set_header Host		$host;
@@ -79,15 +79,15 @@ server {
 
 	# Temporary for direct website calling party
 	# will be used for real soon too to send stats data to game-stats
-	location /api/game-server/ {
+	location /api/game/ {
 		set $upstream ${GAME_SERVER_SERVICE_URL};
-        rewrite ^/api/game-server/(.*)$ /$1 break;
+        rewrite ^/api/game/(.*)$ /$1 break;
 		proxy_pass $upstream;
 	}
 
-	location /socket/game-server/ {
+	location /socket/game/ {
 		set $upstream ${GAME_SERVER_SERVICE_URL};
-        rewrite ^/socket/game-server/(.*)$ /socket.io/$1 break;
+        rewrite ^/socket/game/(.*)$ /socket.io/$1 break;
 		proxy_pass $upstream;
 	}
 

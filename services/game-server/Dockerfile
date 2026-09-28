@@ -69,8 +69,8 @@ COPY --from=builder /app/services/game-server/server_build ./services/game-serve
 COPY --from=builder /app/packages/types/game-types/dist ./packages/types/game-types/dist
 
 EXPOSE 3000
-
-CMD ["node", "server_build/src/server.js", "-w", "game-server"]
+WORKDIR /app/services/game-server
+CMD ["node", "server_build/src/server.js"]
 
 
 # #### --- optimized docker to be applied before production
