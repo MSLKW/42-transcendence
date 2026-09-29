@@ -59,6 +59,7 @@ export class Game {
 
 	private bindSocketEvents() {
 		this.socket.on("connect", () => {
+			useGameStore.setState({ gameSocketId: this.socket.id });
 			console.log(`[gameSocket] 'connect' id: ${this.socket.id}`);
 		});
 		this.socket.on("graceful_disconnect", (reason: string) => {
@@ -67,6 +68,7 @@ export class Game {
 		});
 		this.socket.on("disconnect", (reason) => {
 			console.log(`[gameSocket] 'disconnect' reason: ${reason}`);
+			useGameStore.setState({ gameSocketId: null });
 			useSceneStore.getState().setCurrentScene("Home");
 		});
 

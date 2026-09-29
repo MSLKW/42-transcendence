@@ -6,9 +6,7 @@ export function connectionHandlers(socket: Socket) {
 		if (usePartyStore.getState().partyVerboseMode)
 			console.log("[party > 'on' connect] id:", socket?.id);
 
-		usePartyStore.setState({
-			partySocketId: socket?.id
-		});
+		usePartyStore.setState({ partySocketId: socket?.id });
 	});
 
 	socket.on("disconnect", (reason) => {

@@ -25,7 +25,7 @@ export const LoginScene = () => {
 		useBubbleStore.getState().clearAllBubbles();
 		useChatStore.getState().resetValues();
 		useFriendStore.getState().resetValues();
-		useGameStore.getState().resetGame();
+		useGameStore.getState().resetValues();
 		usePartyStore.getState().resetValues();
 		useProfileStore.getState().resetValues();
 		useResultsStore.getState().resetValues();

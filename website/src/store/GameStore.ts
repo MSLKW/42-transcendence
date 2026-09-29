@@ -1,7 +1,7 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import { useAuthStore } from "./AuthStore";
-import { useProfileStore, type MEDAL_TYPE } from "./ProfileStore";
+import { type MEDAL_TYPE } from "./ProfileStore";
 import { usePartyStore } from "./PartyStore";
 import { useResultsStore } from "./ResultsStore";
 import { useSceneStore } from "./SceneStore";
@@ -65,6 +65,8 @@ interface GameState extends GameValues {
 	incTotalWin: (uuid: string) => void;
 	incTotalLoss: (uuid: string) => void;
 	unlockMedal: (uuid: string, type: MEDAL_TYPE) => void;
+
+	resetValues: () => void;
 }
 
 export const useGameStore = create<GameState>() (
@@ -72,7 +74,7 @@ export const useGameStore = create<GameState>() (
 		(set, get) => ({
 			gameVerboseMode: false,
 			gameSocketId: null,
-			totalPlayers: 1,
+			totalPlayers: 0,
 			userSeats: [],
 			gameSeats: [],
 			gameStarted: false,
@@ -259,6 +261,23 @@ export const useGameStore = create<GameState>() (
 				// 			: p
 				// 	)
 				// });
+			},
+
+			resetValues: () => {
+				set({
+					gameSocketId: null,
+					totalPlayers: 0,
+					userSeats: [],
+					gameSeats: [],
+					gameStarted: false,
+					cardsLeft: [],
+					currentHand: "None",
+					round: 0,
+					seatRef: [],
+					activeSeat: 0,
+					isActiveSeatSkippable: false,
+					sortType: "Flex",
+				});
 			},
 		}),
 		{
