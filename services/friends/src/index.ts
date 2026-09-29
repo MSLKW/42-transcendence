@@ -7,11 +7,22 @@ import { eventsRouter } from "./routes/events.routes";
 
 const app = express();
 app.use(express.json());
-app.use(cors());
 
+app.use(cors());
 // TODO: restrict to actual frontend origin before production, examples like below:
-// app.use(cors({ origin: ["http://localhost:5173", "https://your-real-domain.com"] }));
-// app.use(cors({ origin: process.env.WEBSITE_URL }));
+// app.use(cors({ 
+// 	origin: ["http://localhost:5173", "https://your-real-domain.com"], 
+// 	credentials: true 
+// }));
+//
+// app.use(cors({ 
+// 	origin: process.env.WEBSITE_URL, 
+// 	credentials: true 
+// }));
+// 
+// notes:
+// credentials: true => tells browser & server to allow sensitive auth data (cookies, HTTP authorization headers, TLS client cert) sent across different origins.
+// Must specify exact origin to use credentials: true, wildcards (*) are strictly forbidden.
 
 app.use(eventsRouter);
 app.use(friendRequestsRouter);
