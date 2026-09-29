@@ -104,3 +104,40 @@ Example:
 | 400 | zod: ZodError.issues | The request fails zod validation |
 | 404 | N/A | The server is unable to find the lobby requested |
 | 500 | error: string | The server is unable to update the lobby |
+
+# Socket.io Endpoints
+
+## Client → Server
+
+| Event | Arguments | Description |
+| --- | --- | --- |
+| user_seat_take | seatIndex: number, statusCallback: (status) ⇒ {} | A request to take a seat |
+| user_seat_leave | statusCallback: (status) ⇒ {} | A request to leave a seat |
+| user_seat_change | totalSeats: number, statusCallback: (status) ⇒ {} | A request to change the number of seats by the host |
+| player_play_card_hand_request | cardHandTransmit, statusCallback: (status) ⇒ {} | A request to play a card hand |
+| player_skip_turn_request | statusCallback: (status) ⇒ {} | A request to skip the player’s turn |
+| game_start_request | statusCallback: (status) ⇒ {} | A request to start the game |
+| game_settings_set | GameSettingsTransmit, statusCallback: (status) ⇒ {} | A request to change the lobby settings by the host |
+
+## Server → Client
+
+Updates sent to all relevant users
+
+| Event | Arguments | Description |
+| --- | --- | --- |
+| user_list_update | uuids: Array<string> | Update connection/disconnection changes |
+| user_seat_update | SeatOrderTransmit | Update seat changes |
+| player_connection_update | Record<uuid: string, isDisconnected: boolean> | Notify players of player connections, boolean is isDisconnected |
+| player_turn | PlayerTurnTransmit | Notify of a player’s turn |
+| player_play_card_hand | CardHandTransmit | Notify that a player played a card hand |
+| player_skip_turn | SkipTurnTransmit | Notify that a player skipped their turn, usually followed up by player_turn |
+| game_settings_update | GameSettingsTransmit | Notify that there is an update to the lobby game settings |
+| game_end | GameEndStatsTransmit | Notify that the game has ended |
+| game_state | GameStateTransmit | For initializing the game state on the client |
+
+Events sent to the relevant user when the server encountered an issue
+
+| Event | Arguments | Description |
+| --- | --- | --- |
+| connect_error |  | Will be used in the future for authentication token socket validation error |
+| graceful_disconnect | reason: string | Sent when the server is kicking the socket and would like the user to disconnect first to avoid error console message |

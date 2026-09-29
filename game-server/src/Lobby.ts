@@ -122,12 +122,13 @@ export class Lobby {
 			statusCallback(this.initSeats(totalSeats, user.uuid));
 		});
 
-		user.socket.on("game_settings_set", (gameSettings: GameSettingsTransmit) => {
+		user.socket.on("game_settings_set", (gameSettings: GameSettingsTransmit, statusCallback) => {
 			const status = this.GameSetSettings(user, gameSettings);
 			user.socket.emit("game_settings_set", status);
 			if (status.success === true) {
 				this.emit("game_settings_update", this.game.settings);
 			}
+			statusCallback(status);
 		});
 	}
 
