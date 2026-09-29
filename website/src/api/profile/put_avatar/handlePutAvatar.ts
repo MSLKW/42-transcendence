@@ -8,6 +8,8 @@ export const handlePutAvatar = async (avatar: File) => {
 
 		if (useProfileStore.getState().profileVerboseMode)
 			console.log("[profile > 'PUT' avatar] response:", response);
+
+		return response;
 	} catch (err) {
 		const error = err instanceof Error ? err.message : "Something went wrong. Please try again";
 

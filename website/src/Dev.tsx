@@ -42,6 +42,8 @@ export default function Dev() {
 	const resetProfilesInDb = useProfileStore((store) => store.resetProfilesInDb);
 	const cachedData = useProfileStore((store) => store.cachedData);
 	const results = useResultsStore((store) => store.results);
+	const sceneVerboseMode = useSceneStore((store) => store.sceneVerboseMode);
+	const showWindow = useSceneStore((store) => store.showWindow);
 	const currentScene = useSceneStore((store) => store.currentScene);
 	const setCurrentScene = useSceneStore((store) => store.setCurrentScene);
 
@@ -128,6 +130,11 @@ export default function Dev() {
 					<DevButton label="Notify Invite" call={() => showNotification("This is an invite notification", NOTIFICATION_TYPE.invite)} />
 					<DevButton label="Notify Error" call={() => showNotification("This is an error notification", NOTIFICATION_TYPE.error)} />
 					<DevButton label={`notifications:${notifications.length}`} call={() => console.log("notifications:", notifications)} />
+				</ul>
+			{/* scene */}
+				<ul className="flex place-content-between">
+					<DevButton label={`showWindow: ${Object.values(showWindow).filter(Boolean).length}`} call={() => console.log("showWindow:", showWindow)}/>
+					<DevButton label={`sceneVerboseMode: ${sceneVerboseMode}`} call={() => useSceneStore.setState({ sceneVerboseMode: !sceneVerboseMode })}/>
 				</ul>
 			{/* fetch */}
 				<ul className="flex place-content-between gap-1rem">

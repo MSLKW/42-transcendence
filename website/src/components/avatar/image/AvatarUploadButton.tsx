@@ -30,9 +30,11 @@ export const AvatarUploadButton = ({ setAvatar }: AvatarUploadButtonProps) => {
 			return;
 
 		try {
-			await handlePutAvatar(file);
+			const response = await handlePutAvatar(file);
+			if (!response?.ok)
+				return;
 			markAvatarUpdated(clientUuid);
-			setAvatar(`avatars/${clientUuid}.png`);
+			setAvatar(`avatars/${clientUuid}.webp`);
 		} finally {
 			event.target.value = "";
 		}

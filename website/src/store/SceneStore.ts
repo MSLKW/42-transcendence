@@ -7,6 +7,7 @@ import { threejsManager } from "../App";
 export type SCENES = "Badge" | "Login" | "Home" | "Lobby" | "Test" | "Game";
 
 interface SceneValues {
+	sceneVerboseMode: boolean;
 	currentScene: SCENES;
 	showWindow: Record<string, boolean>;
 	statsUuid: string | null;
@@ -40,6 +41,7 @@ export const defaultShowWindow = {
 export const useSceneStore = create<SceneState>() (
 	persist( 
 		(set, get) => ({
+			sceneVerboseMode: false,
 			currentScene: "Login",
 			showWindow: defaultShowWindow,
 			statsUuid: null,

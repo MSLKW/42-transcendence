@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useProfileStore } from '../../../store/ProfileStore';
 
 interface AvatarSetCustomButtonProps {
@@ -11,17 +11,21 @@ interface AvatarSetCustomButtonProps {
 export const AvatarSetCustomButton = ({ id, avatar, setAvatar, setHasChange }: AvatarSetCustomButtonProps) => {
 	const avatarVersion = useProfileStore((store) => store.avatarVersions[id ?? ""]);
 
-	const [ imageExists, setImageExists ] = useState<boolean>(false);
+	const [ imageExists, setImageExists ] = useState<boolean>(true);
 
-	const imagePath = `avatars/${id}.png`;
-	const imageSrc = `avatars/${id}.png?v=${avatarVersion}`;
+	useEffect(() => {
+		setImageExists(true);
+	}, [id, avatarVersion]);
 
-	if (!id || imageExists === false)
+	const imagePath = `avatars/${id}.webp`;
+	const imageSrc = `${imagePath}?v=${avatarVersion ?? 0}`;
+
+	if (!id || !imageExists)
 		return null;
 
 	return (
 		<>
-			<button 
+			<button
 				onClick={() => {
 					setAvatar(imagePath);
 					setHasChange(true);
@@ -30,13 +34,13 @@ export const AvatarSetCustomButton = ({ id, avatar, setAvatar, setHasChange }: A
 					hover:not-disabled:scale-105 active:hover:not-disabled:scale-100
 					focus-visible:outline-double hover:not-disabled:outline-double outline-b5 outline-offset-5
 					${imagePath === avatar ? "outline-2 border-b4 bg-b5/40" : "border-n2 bg-n3/20"}
-					h-6rem aspect-square
+					h-6rem aspect-square overflow-hidden
 					border rounded-sm
 					cursor-pointer
 			`}>
 				<img
 					src={imageSrc}
-					alt={`${id}.png`}
+					alt={`${id}.webp`}
 					onError={() => setImageExists(false)}
 					className="h-full w-full"
 				/>
