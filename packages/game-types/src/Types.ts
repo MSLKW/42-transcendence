@@ -61,10 +61,6 @@ export type GameStateTransmit = {
 	isPlayerTurn: boolean
 }
 
-export type GameStartRequest = {
-	playerId: string
-}
-
 export type GameSettingsTransmit = {
 	allow3OfAKind: boolean,
 	allow2OfSpadesEnd: boolean,
