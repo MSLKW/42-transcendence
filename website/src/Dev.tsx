@@ -7,7 +7,7 @@ import { useAuthStore } from "./store/AuthStore";
 import { useBotStore } from "./store/BotStore";
 import { useDevStore } from "./store/DevStore";
 import { useFriendStore } from "./store/FriendStore";
-import { useGameStore, HAND_LABEL, type HAND_TYPE } from "./store/GameStore";
+import { useGameStore } from "./store/GameStore";
 import { useNotificationStore, NOTIFICATION_TYPE } from "./store/NotificationStore";
 import { usePartyStore } from "./store/PartyStore";
 import { useProfileStore } from "./store/ProfileStore";
@@ -31,6 +31,7 @@ export default function Dev() {
 	const userSeats = useGameStore((store) => store.userSeats);
 	const totalPlayers = useGameStore((store) => store.totalPlayers);
 	const leaveSeat = useGameStore((store) => store.leaveSeat);
+	const notifications = useNotificationStore((store) => store.notifications);
 	const showNotification = useNotificationStore((store) => store.showNotification);
 	const partyVerboseMode = usePartyStore((store) => store.partyVerboseMode);
 	const partySocketId = usePartyStore((store) => store.partySocketId);
@@ -126,6 +127,7 @@ export default function Dev() {
 					<DevButton label="Notify Message" call={() => showNotification("This is a message notification", NOTIFICATION_TYPE.message)} />
 					<DevButton label="Notify Invite" call={() => showNotification("This is an invite notification", NOTIFICATION_TYPE.invite)} />
 					<DevButton label="Notify Error" call={() => showNotification("This is an error notification", NOTIFICATION_TYPE.error)} />
+					<DevButton label={`notifications:${notifications.length}`} call={() => console.log("notifications:", notifications)} />
 				</ul>
 			{/* fetch */}
 				<ul className="flex place-content-between gap-1rem">

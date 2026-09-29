@@ -129,25 +129,7 @@ export default function App() {
 
 	//close window on scene change
 	useEffect(() => {
-		useSceneStore.setState({
-			showWindow: {
-				badge: false,
-				bots: false,
-				// chat: false,
-				createAccount: false,
-				info: false,
-				leave: false,
-				// notification: false,
-				party: false,
-				profile: false,
-				rank: false,
-				results: false,
-				signIn: false,
-				settings: false,
-				setup: false,
-				stats: false,
-			}
-		})
+		useSceneStore.getState().resetWindows();
 	}, [currentScene]);
 
 	return (

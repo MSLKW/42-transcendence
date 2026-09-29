@@ -62,31 +62,20 @@ export const useSceneStore = create<SceneState>() (
 			},
 
 			resetWindows: () => {
+				const showWindow = get().showWindow;
 				set({
-					showWindow: defaultShowWindow,
+					showWindow: {
+						...defaultShowWindow,
+						notification: showWindow.notification,
+						chat: showWindow.chat,
+					}
 				});
 			},
 
 			resetValues: () => {
+				get().resetWindows();
 				set({
 					currentScene: "Login",
-					showWindow: {
-						badge: false,
-						bots: false,
-						chat: false,
-						createAccount: false,
-						info: false,
-						leave: false,
-						// notification: false,
-						party: false,
-						profile: false,
-						rank: false,
-						results: false,
-						signIn: false,
-						settings: false,
-						setup: false,
-						stats: false,
-					},
 					statsUuid: null,
 				});
 			},
