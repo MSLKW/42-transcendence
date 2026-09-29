@@ -1,5 +1,7 @@
+const profileUrl = import.meta.env.VITE_PROFILE_API_URL;
+
 export const fetchGetSettings = async (uuid: string) => {
-	const response = await fetch(`/api/profile/settings/${uuid}`, {
+	const response = await fetch(`${profileUrl}/settings/${uuid}`, {
 		method: "GET",
 		credentials: "include",
 	});

@@ -1,5 +1,7 @@
+const profileUrl = import.meta.env.VITE_PROFILE_API_URL;
+
 export const fetchPutProfile = async (username: string, avatarPath: string, badge: string) => {
-	const response = await fetch(`/api/profile/profile`, {
+	const response = await fetch(`${profileUrl}/profile`, {
 		method: "PUT",
 		headers: { "Content-Type": "application/json" },
 		body: JSON.stringify({

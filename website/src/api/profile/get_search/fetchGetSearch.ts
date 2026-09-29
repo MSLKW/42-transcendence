@@ -1,10 +1,12 @@
+const profileUrl = import.meta.env.VITE_PROFILE_API_URL;
+
 type SearchResponse = {
 	searchResults: string[];
 };
 
 export const fetchGetSearch = async (query: string, signal?: AbortSignal): Promise<SearchResponse> => {
 	const encodedQuery = encodeURIComponent(query);
-	const response = await fetch(`/api/profile/search/${encodedQuery}`, {
+	const response = await fetch(`${profileUrl}/search/${encodedQuery}`, {
 		method: "GET",
 		credentials: "include",
 		signal,

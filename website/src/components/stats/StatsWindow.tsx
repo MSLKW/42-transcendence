@@ -44,7 +44,7 @@ export const StatsWindow: React.FC = () => {
 
 				setCreatedAt(createdAt ?? null);
 
-				if (online.isOnline)
+				if (online?.isOnline)
 					setAvailability(online.inParty ? "Busy" : "Online");
 				else {
 					setAvailability("Offline");

@@ -10,6 +10,8 @@ import { onUserTypingAction } from "./actions/onUserTypingAction";
 import { sendChatAction } from "./actions/sendChatAction";
 import { sendTypingAction } from "./actions/sendTypingAction";
 
+const chatSocketUrl = import.meta.env.VITE_PARTY_SOCKET_URL;
+
 export type ChatMessage = {
 	type: CHAT_TYPE;
 	senderUuid: string;
@@ -42,7 +44,7 @@ class ChatSocketService {
 			return;
 		}
 
-		this.socket = io({
+		this.socket = io(chatSocketUrl, {
 			path: "/socket/chat",
 			transports: ["websocket", "polling"],
 			autoConnect: false,

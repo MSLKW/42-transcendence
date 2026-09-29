@@ -1,8 +1,10 @@
+const profileUrl = import.meta.env.VITE_PROFILE_API_URL;
+
 export const fetchPutAvatar = async (avatar: File) => {
 	const formData = new FormData();
 	formData.append("avatar", avatar);
 
-	const response = await fetch("/api/profile/avatar", {
+	const response = await fetch(`${profileUrl}/avatar`, {
 		method: "PUT",
 		body: formData,
 	});

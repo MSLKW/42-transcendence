@@ -1,5 +1,7 @@
+const partyUrl = import.meta.env.VITE_PARTY_API_URL;
+
 export const fetchGetOnline = async (uuid: string) => {
-	const response = await fetch(`/api/party/online/${uuid}`, {
+	const response = await fetch(`${partyUrl}/online/${uuid}`, {
 		method: "GET",
 		credentials: "include",
 	});

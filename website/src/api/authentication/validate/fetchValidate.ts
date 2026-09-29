@@ -1,5 +1,7 @@
+const authUrl = import.meta.env.VITE_AUTH_API_URL;
+
 export const fetchValidate = async () => {
-	const response = await fetch("/api/auth/validate", {
+	const response = await fetch(`${authUrl}/validate`, {
 		method: "GET",
 		credentials: "include",
 	});

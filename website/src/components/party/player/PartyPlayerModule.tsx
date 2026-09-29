@@ -44,7 +44,7 @@ export const PartyPlayerModule = ({ uuid }: PartyPlayerModuleProps) => {
 				])
 
 				setPlayerData(profile);
-				if (online.isOnline)
+				if (online?.isOnline)
 					setAvailability(online.inParty ? "Busy" : "Online");
 				else {
 					setAvailability("Offline");
