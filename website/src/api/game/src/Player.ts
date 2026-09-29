@@ -48,17 +48,20 @@ export class Player extends Participant {
 				activeSeat: activeSeat, 
 				isActiveSeatSkippable: playerTurn.skippable
 			});
-			console.log(`It is now Player<${playerTurn.playerId}>'s turn! Timer is set at ${playerTurn.timer} seconds!`);
+			if (useGameStore.getState().gameVerboseMode)
+				console.log(`It is now Player<${playerTurn.playerId}>'s turn! Timer is set at ${playerTurn.timer} seconds!`);
 		});
 
 		this.socket.on("player_skip_turn_request", (status: StatusTransmit) => {
 			if (status.success === false) {
-				console.log(`player_skip_turn_request message: ${status.message}`);
+				if (useGameStore.getState().gameVerboseMode)
+					console.log(`player_skip_turn_request message: ${status.message}`);
 			}
 		})
 
 		this.socket.on("player_skip_turn", (skipTurn: SkipTurnTransmit) => {
-			console.log(`Player<${skipTurn.playerId}> skipped their turn!`);
+			if (useGameStore.getState().gameVerboseMode)
+				console.log(`Player<${skipTurn.playerId}> skipped their turn!`);
 		});
 
 		threejsManager.renderer.domElement.addEventListener('pointerdown', (event) => {
@@ -107,7 +110,8 @@ export class Player extends Participant {
 				this.cardManager.receiveCard(new Card(0, 0));
 			}
 			else if (event.code === "Backquote") {
-				console.log("enabling or disabling orbit controls");
+				if (useGameStore.getState().gameVerboseMode)
+					console.log("enabling or disabling orbit controls");
 				threejsManager.orbitControls.enabled = !threejsManager.orbitControls.enabled;
 				threejsManager.orbitControls.update();
 			}

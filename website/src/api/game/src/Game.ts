@@ -45,7 +45,8 @@ export class Game {
 		const gameStartRequest: GameStartRequest = {
 			playerId: this.playerId
 		}
-		console.log("[game] Sending game_start_request");
+		if (useGameStore.getState().gameVerboseMode)
+			console.log("[game] Sending game_start_request");
 		this.socket.emit("game_start_request", gameStartRequest);
 	}
 
@@ -60,20 +61,24 @@ export class Game {
 	private bindSocketEvents() {
 		this.socket.on("connect", () => {
 			useGameStore.setState({ gameSocketId: this.socket.id });
-			console.log(`[gameSocket] 'connect' id: ${this.socket.id}`);
+			if (useGameStore.getState().gameVerboseMode)
+				console.log(`[gameSocket] 'connect' id: ${this.socket.id}`);
 		});
 		this.socket.on("graceful_disconnect", (reason: string) => {
-			console.log(`[gameSocket 'graceful_disconnect' reason: ${reason}]`);
+			if (useGameStore.getState().gameVerboseMode)
+				console.log(`[gameSocket 'graceful_disconnect' reason: ${reason}]`);
 			this.socket.disconnect();
 		});
 		this.socket.on("disconnect", (reason) => {
-			console.log(`[gameSocket] 'disconnect' reason: ${reason}`);
+			if (useGameStore.getState().gameVerboseMode)
+				console.log(`[gameSocket] 'disconnect' reason: ${reason}`);
 			useGameStore.setState({ gameSocketId: null });
 			useSceneStore.getState().setCurrentScene("Home");
 		});
 
 		this.socket.on("game_start_request", (status: StatusTransmit) => {
-			console.log(`Start Game: ${status.success} | ${status.message}`);
+			if (useGameStore.getState().gameVerboseMode)
+				console.log(`Start Game: ${status.success} | ${status.message}`);
 		});
 	
 		this.socket.on("game_end", (gameEndStats: GameEndStatsTransmit) => {
@@ -82,20 +87,24 @@ export class Game {
 		});
 	
 		this.socket.on("player_connection_update", (connections: Record<string, boolean>) => {
-			console.log(connections);
+			if (useGameStore.getState().gameVerboseMode)
+				console.log(connections);
 		});
 	
 		// this.socket.on("user_seat_take", (status: StatusTransmit) => {
-		// 	console.log(`Take seat: ${status.success} | ${status.message}`);
+			// if (useGameStore.getState().gameVerboseMode)
+			// 	console.log(`Take seat: ${status.success} | ${status.message}`);
 		// });
 	
 		// this.socket.on("user_seat_leave", (status: StatusTransmit) => {
-		// 	console.log(`Left Seat: ${status.success} | ${status.message}`);
+		// 	if (useGameStore.getState().gameVerboseMode)
+		// 		console.log(`Left Seat: ${status.success} | ${status.message}`);
 		// });
 	
 		this.socket.on("user_seat_update", (seatData: SeatOrderTransmit) => {
 			const totalPlayers = useGameStore.getState().totalPlayers;
-			console.log(`[gameSocket] 'user_seat_update' | totalSeats: ${seatData.totalSeats} | seatOrder: ${seatData.seatOrder}`);
+			if (useGameStore.getState().gameVerboseMode)
+				console.log(`[gameSocket] 'user_seat_update' | totalSeats: ${seatData.totalSeats} | seatOrder: ${seatData.seatOrder}`);
 			if (totalPlayers !== seatData.totalSeats) {
 				useGameStore.setState({totalPlayers: seatData.totalSeats})
 				useGameStore.getState().initSeats();
@@ -104,7 +113,8 @@ export class Game {
 		});
 
 		this.socket.on("user_seat_change", (status: StatusTransmit) => {
-			console.log(status);
+			if (useGameStore.getState().gameVerboseMode)
+				console.log(status);
 		});
 	
 		this.socket.on("user_list_update", (userList: Array<string>) => {
@@ -119,11 +129,13 @@ export class Game {
 		})
 
 		this.socket.on("game_settings_update", (gameSettings: GameSettingsTransmit) => {
-			console.log(gameSettings);
+			if (useGameStore.getState().gameVerboseMode)
+				console.log(gameSettings);
 		});
 	
 		this.socket.on("game_state", (gameState: GameStateTransmit) => {
-			console.log("[gameSocket] Received game_state");
+			if (useGameStore.getState().gameVerboseMode)
+				console.log("[gameSocket] Received game_state");
 			this.initGame(gameState);
 		});
 	}
