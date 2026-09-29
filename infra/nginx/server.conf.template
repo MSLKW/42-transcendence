@@ -52,7 +52,7 @@ server {
 		proxy_set_header	Connection '';
 		proxy_buffering		off;
 		proxy_cache			off;
-		proxy_read_timeout	48h;
+		proxy_read_timeout	2h; # how long nginx will wait for friends to send anything.
 	}
 
 # proxy_set_header is inherited from the level above only when the current level defines none. 

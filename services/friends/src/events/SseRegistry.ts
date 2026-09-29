@@ -11,10 +11,13 @@ class SseRegistry {
 
   register(uuid: string, res: Response): void {
     const existing = this.clients[uuid];
-    if (existing) 
+    if (existing && !existing.destroyed && !existing.writableEnded) 
     {
+      // defensive check to cover timing situation: 
+        // !existing.destroyed: the connection has not been torn down.
+        // !existing.writableEnded: nobody has already called .end()
       // explaining to OLD connection why they're being closed, before officially closing it
-      // this is what make browser chooses not to auto-reconnect
+        // this is what make browser chooses not to auto-reconnect
       existing.write(`event: ${EVENTS.REPLACED}\ndata: "connected from elsewhere, priotizing latest new created connection"\n\n`)
       existing.end();
     }
