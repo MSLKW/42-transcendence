@@ -1,7 +1,7 @@
 import type { Request, Response } from "express";
 import { drizzleFriendshipRepository } from "../../repositories/drizzle/DrizzleFriendshipRepository";
 import { notify } from "../../events/notify";
-import { EVENTS } from "../../events/eventNames";
+import { EVENTS } from "@big2/friends-types";
 import { getRouteParam } from "../../utils/getRouteParam";
 import { isValidUuid } from "../../utils/isValidUuid";
 

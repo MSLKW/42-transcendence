@@ -1,5 +1,5 @@
 import { sseRegistry } from "../../events/SseRegistry";
-import { EVENTS } from "../../events/eventNames";
+import { EVENTS } from "@big2/friends-types";
 import { AUTH_SERVICE_URL } from "../../config/env";
 import { Request, Response } from "express";
 

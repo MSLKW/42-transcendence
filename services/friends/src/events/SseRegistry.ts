@@ -1,5 +1,5 @@
 import type { Response } from "express";
-import { EVENTS } from "./eventNames";
+import { EVENTS } from "@big2/friends-types";
 
 // Enforces "exactly one live SSE connection per uuid" 
 // not supporting multi-tabs nor multi-devices
