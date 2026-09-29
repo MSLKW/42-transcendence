@@ -48,42 +48,45 @@ export default function App() {
 
 	//validate
 	useEffect(() => {
-		if (currentScene === "Login" || useAuthStore.getState().authenticated)
+		if (currentScene === "Login" || clientUuid)
 			return;
+
 		handleValidate();
-	}, [currentScene]);
+	}, [currentScene, clientUuid]);
 
 	//party socket connection
 	useEffect(() => {
-		if (currentScene === "Login" || partySocket.isConnected())
+		if (!clientUuid)
 			return;
+
 		partySocket.connect();
-	}, [currentScene]);
 
-	//chat socket connection
+		return () => {
+			partySocket.disconnect();
+		};
+	}, [clientUuid]);
+
+	//chat socket connection + subscriptions
 	useEffect(() => {
-		if (currentScene === "Login" || chatSocket.isConnected())
+		if (!clientUuid)
 			return;
+
 		chatSocket.connect();
-	}, [currentScene]);
-
-	//chat socket subscriptions
-	useEffect(() => {
-		if (!chatSocket.isConnected())
-			return;
 		const unsubscribeFromMessages = subscribeToMessages();
 		const unsubscribeFromUserJoined = subscribeToUserJoined();
 		const unsubscribeFromUserLeft = subscribeToUserLeft();
 		const unsubscribeFromUserTyping = subscribeToUserTyping();
 		const unsubscribeFromRateLimited = subscribeToRateLimited();
+
 		return () => {
 			unsubscribeFromMessages();
 			unsubscribeFromUserJoined();
 			unsubscribeFromUserLeft();
 			unsubscribeFromUserTyping();
 			unsubscribeFromRateLimited();
+			chatSocket.disconnect();
 		};
-	}, [chatSocket.isConnected()]);
+	}, [clientUuid]);
 
 	//three js manager
 	const containerRef = useRef<HTMLDivElement>(null);

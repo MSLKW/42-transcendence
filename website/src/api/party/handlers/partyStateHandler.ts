@@ -4,9 +4,14 @@ import { useNotificationStore, NOTIFICATION_TYPE } from "../../../store/Notifica
 import { usePartyStore } from "../../../store/PartyStore";
 import { useProfileStore } from "../../../store/ProfileStore";
 import { joinGameLobby } from "../../game/src/main";
+import { chatSocket } from "../../chat/chatSocket";
+import { useChatStore } from "../../../store/ChatStore";
 
 export function partyStateHandler(socket: Socket) {
 	socket.on("party_state", async (partyData: { hostUuid: string; members: string[]; gameId: string | null }) => {
+		if (usePartyStore.getState().partyVerboseMode)
+			console.log("[party > 'on' party_state] partyData:", partyData);
+
 		const clientUuid = useAuthStore.getState().clientUuid;
 		const previousGameId = usePartyStore.getState().partyGameId;
 		const isClientNewHost = usePartyStore.getState().hostUuid !== partyData.hostUuid && clientUuid === partyData.hostUuid && partyData.members.length > 1;
@@ -18,19 +23,15 @@ export function partyStateHandler(socket: Socket) {
 		});
 		if (partyData.gameId && partyData.gameId !== previousGameId && clientUuid)
 			joinGameLobby(partyData.gameId, clientUuid);
-		// else {
-		// 	console.log("Blocked from joining game lobby:")
-		// 	console.log(`partyData.gameId: ${partyData.gameId}`);
-		// 	console.log(`partyGameId: ${partyGameId}`);
-		// 	console.log(`clientUuid: ${clientUuid}`);
-		// }
+		else if (usePartyStore.getState().partyVerboseMode)
+			console.log("[party > 'on' party_state] Blocked from joining game lobby w/ gameId:", partyData.gameId);
+
+		chatSocket.joinRoom(partyData.hostUuid);
+		useChatStore.setState({ chatRoomId: partyData.hostUuid });
 
 		await useProfileStore.getState().setCachedData();
 
 		if (isClientNewHost)
 			useNotificationStore.getState().showNotification("You are the new host of this party", NOTIFICATION_TYPE.message);
-
-		if (usePartyStore.getState().partyVerboseMode)
-			console.log("[party > 'on' party_state] partyData:", partyData);
 	});
 }

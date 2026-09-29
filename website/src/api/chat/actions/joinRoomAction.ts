@@ -10,8 +10,22 @@ export async function joinRoomAction(socket: Socket | null, roomId: string) {
 	try {
 		await ensureConnected(socket);
 
-		socket.emit("chat_join_room", { roomId: roomId });
-		useChatStore.setState({ chatRoomId: roomId });
+		const response = await new Promise<{
+			success: boolean;
+			roomId?: string;
+			reason?: string;
+		}>((resolve) => {
+			socket.emit("chat_join_room", { roomId: roomId }, resolve);
+		})
+		if (!response.success) {
+			useNotificationStore.getState().showNotification(
+				response.reason ?? "Unable to join chat room",
+				NOTIFICATION_TYPE.error
+			);
+			return;
+		}
+
+		useChatStore.setState({ chatRoomId: response.roomId ?? roomId });
 
 		if (useChatStore.getState().chatVerboseMode)
 			console.log(`[chat > 'emit' chat_join_room] roomId: ${roomId}`);

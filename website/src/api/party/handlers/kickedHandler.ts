@@ -8,7 +8,7 @@ import { useProfileStore } from "../../../store/ProfileStore";
 export function kickedHandler(socket: Socket) {
 	socket.on("kicked", async (payload: {message: string}) => {
 		await useProfileStore.getState().setCachedData();
-		const clientUuid = useAuthStore.getState().clientUuid;
+		const clientUuid = useAuthStore.getState().clientUuid!;
 		usePartyStore.setState({
 			members: [ clientUuid ],
 			hostUuid: clientUuid,

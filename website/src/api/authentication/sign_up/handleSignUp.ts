@@ -17,7 +17,6 @@ export const handleSignUp = async (email: string, password: string, setIsLoading
 
 		const response = await fetchSignIn(email, password);
 		useAuthStore.setState({ clientUuid: response.id });
-
 		useSceneStore.getState().setShowWindow("createAccount", false);
 		useSceneStore.getState().setCurrentScene("Home");
 

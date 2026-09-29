@@ -8,8 +8,6 @@ export const handlePutProfile = async (username: string, avatarPath: string, bad
 
 		if (useProfileStore.getState().profileVerboseMode)
 			console.log("[profile > 'PUT' profile] response:", response);
-
-		await useProfileStore.getState().setCachedData();
 	} catch (err) {
 		const error = err instanceof Error ? err.message : "Something went wrong. Please try again";
 

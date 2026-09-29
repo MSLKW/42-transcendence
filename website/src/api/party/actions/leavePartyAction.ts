@@ -23,7 +23,9 @@ export async function leavePartyAction(socket: Socket | null) {
 		socket?.emit("leave_party");
 
 		await useProfileStore.getState().setCachedData();
+
 		useSceneStore.getState().setShowWindow("profile", false);
+
 		addToCachedChat(
 			"REPORT",
 			"server",

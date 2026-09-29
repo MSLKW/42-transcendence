@@ -1,6 +1,5 @@
-import { partySocket } from "../../api/party/partySocket";
-import { chatSocket } from "../../api/chat/chatSocket";
 import { handlePutProfile } from "../../api/profile/put_profile/handlePutProfile";
+import { useProfileStore } from "../../store/ProfileStore";
 import { useSceneStore } from "../../store/SceneStore";
 import { checkNameValidity } from "../../utilities/react/checkNameValidity";
 
@@ -16,15 +15,15 @@ export const SetupValidationModule = ({ name, avatar }: SetupValidationModulePro
 	const isAvatarValid = Boolean(avatar);
 	const isValid = isNameValid && isAvatarValid;
 
-	const handleSetupComplete = async () => {
+	const handleSetupComplete = () => {
 		if (!isValid)
 			return;
 
-		await handlePutProfile(name, avatar, "Newcomer");
-
-		partySocket.connect();
-		chatSocket.connect();
-		setShowWindow("setup", false);
+		void handlePutProfile(name, avatar, "Newcomer").then(() => {
+			useProfileStore.getState().setCachedData();
+		}).finally(() => {
+			setShowWindow("setup", false);
+		});
 	};
 
 	return (

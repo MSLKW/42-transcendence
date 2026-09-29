@@ -45,6 +45,7 @@ class ChatSocketService {
 		this.socket = io({
 			path: "/socket/chat",
 			transports: ["websocket", "polling"],
+			autoConnect: false,
 			reconnection: true,
 			reconnectionAttempts: Infinity,
 			reconnectionDelay: 1000,
@@ -52,16 +53,15 @@ class ChatSocketService {
 		});
 
 		connectionHandlers(
-			this.socket,
-			this.joinRoom,
-			this.setInitialRoom,
+			this.socket
 		);
+
+		this.socket.connect();
 	}
 	public disconnect() {
 		if (!this.socket)
 			return;
 
-		this.socket.removeAllListeners();
 		this.socket.disconnect();
 		this.socket = null;
 
@@ -123,9 +123,3 @@ class ChatSocketService {
 }
 
 export const chatSocket = new ChatSocketService();
-
-// if (import.meta.hot) {
-// 	import.meta.hot.dispose(() => {
-// 		chatSocket.disconnect();
-// 	})
-// }

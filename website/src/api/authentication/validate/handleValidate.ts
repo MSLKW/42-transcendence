@@ -12,10 +12,7 @@ export const handleValidate = async () => {
 		if (useAuthStore.getState().authVerboseMode)
 			console.log("[authentication > 'GET' validate] response:", response);
 
-		useAuthStore.setState({
-			authenticated: true,
-			clientUuid: response.userId,
-		});
+		useAuthStore.setState({ clientUuid: response.userId });
 	} catch(error) {
 		useSceneStore.getState().setCurrentScene("Login");
 

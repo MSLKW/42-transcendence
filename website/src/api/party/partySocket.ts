@@ -37,6 +37,7 @@ class PartySocketService {
 		this.socket = io({
 			path: "/socket/party",
 			transports: ["websocket", "polling"],
+			autoConnect: false,
 			reconnection: true,
 			reconnectionAttempts: Infinity,
 			reconnectionDelay: 1000,
@@ -49,12 +50,13 @@ class PartySocketService {
 		kickedHandler(this.socket);
 		playerJoinedHandler(this.socket);
 		playerLeftHandler(this.socket);
+
+		this.socket.connect();
 	}
 	public disconnect() {
 		if (!this.socket)
 			return;
 
-		this.socket.removeAllListeners();
 		this.socket.disconnect();
 		this.socket = null;
 
@@ -109,9 +111,3 @@ class PartySocketService {
 }
 
 export const partySocket = new PartySocketService();
-
-// if (import.meta.hot) {
-// 	import.meta.hot.dispose(() => {
-// 		partySocket.disconnect();
-// 	})
-// }

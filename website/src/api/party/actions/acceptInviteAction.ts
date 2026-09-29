@@ -1,10 +1,10 @@
 import { Socket } from "socket.io-client";
-import { ensureConnected } from "../../../utilities/websockets/ensureConnected";
-import { useChatStore } from "../../../store/ChatStore";
-import { handleGetProfile } from "../../profile/get_profile/handleGetProfile";
-import { useNotificationStore, NOTIFICATION_TYPE } from "../../../store/NotificationStore";
 import type { AcceptInviteResponse } from "../partySocket";
+import { handleGetProfile } from "../../profile/get_profile/handleGetProfile";
+import { useChatStore } from "../../../store/ChatStore";
+import { useNotificationStore, NOTIFICATION_TYPE } from "../../../store/NotificationStore";
 import { usePartyStore } from "../../../store/PartyStore";
+import { ensureConnected } from "../../../utilities/websockets/ensureConnected";
 
 function emitAcceptInvite(socket: Socket, hostUuid: string): Promise<AcceptInviteResponse> {
 	return new Promise((resolve) => {
@@ -34,6 +34,7 @@ export async function acceptInviteAction(socket: Socket | null, hostUuid: string
 		}
 
 		const hostData = await handleGetProfile(hostUuid);
+
 		showNotification(
 			`You just joined ${hostData?.username ?? "a player"}'s party!`,
 			NOTIFICATION_TYPE.message
@@ -46,8 +47,6 @@ export async function acceptInviteAction(socket: Socket | null, hostUuid: string
 			"",
 			`You joined ${hostData?.username ? hostData?.username : "a"}'s chat`,
 		)
-
-		useChatStore.setState({ chatRoomId: hostUuid });
 
 		if (usePartyStore.getState().partyVerboseMode)
 			console.log("[party > 'emit' accept_invite] hostUuid:", hostUuid);

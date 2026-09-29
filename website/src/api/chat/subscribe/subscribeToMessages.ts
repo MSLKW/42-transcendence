@@ -5,6 +5,9 @@ import { useProfileStore } from "../../../store/ProfileStore";
 
 export const subscribeToMessages = () => {
 	return chatSocket.onMessage((chat) => {
+		if (useChatStore.getState().chatVerboseMode)
+			console.log("[chat > 'subscribe' onMessage] chat:", chat);
+
 		const addBubble = useBubbleStore.getState().addBubble;
 		const addToCachedChat = useChatStore.getState().addToCachedChat;
 		const cachedData = useProfileStore.getState().cachedData;
@@ -18,7 +21,5 @@ export const subscribeToMessages = () => {
 		);
 
 		addBubble(chat.senderUuid, chat.type, chat.message);
-
-		console.log("[chat > 'subscribe' onMessage] chat:", chat);
 	});
 };

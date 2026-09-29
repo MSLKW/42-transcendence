@@ -1,4 +1,5 @@
 import { chatSocket } from "../chatSocket";
+import { useChatStore } from "../../../store/ChatStore";
 import { usePartyStore } from "../../../store/PartyStore";
 
 export const subscribeToUserLeft = () => {
@@ -9,8 +10,7 @@ export const subscribeToUserLeft = () => {
 			return;
 		}
 
-		chatSocket.joinRoom(hostUuid);
-
-		console.log("[chat > 'subscribe' onUserLeft] notif:", notif);
+		if (useChatStore.getState().chatVerboseMode)
+			console.log("[chat > 'subscribe' onUserLeft] notif:", notif);
 	});
 };

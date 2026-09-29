@@ -17,6 +17,7 @@ export async function kickPlayerAction(socket: Socket | null, recipientUuid: str
 		socket?.emit("kick_player", { recipientUuid });
 
 		await useProfileStore.getState().setCachedData();
+
 		useSceneStore.getState().setShowWindow("stats", false);
 
 		if (usePartyStore.getState().partyVerboseMode)
