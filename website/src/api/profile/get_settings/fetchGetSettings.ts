@@ -4,9 +4,12 @@ export const fetchGetSettings = async (uuid: string) => {
 		credentials: "include",
 	});
 
-	if (!response.ok)
-		throw new Error(`Failed to get settings: ${response.status} ${response.statusText}`);
+	if (!response.ok) {
+		if (response.status === 404)
+			throw new Error("Settings not found");
+		else
+			throw new Error(`Failed to get settings (${response.status} ${response.statusText})`);
+	}
 
-	console.log("[fetchGetSettings] ", `/api/profile/settings/${uuid} `, response.status, response.statusText);
 	return await response.json();
 }

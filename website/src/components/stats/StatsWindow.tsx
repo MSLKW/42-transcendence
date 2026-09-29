@@ -1,7 +1,9 @@
-import { useState, useEffect } from "react";
+import { useState, useRef, useEffect } from "react";
+import { handleCreatedAt } from "../../api/authentication/created_at/handleCreatedAt";
+import { handleGetOnline } from "../../api/party/get_online/handleGetOnline";
 import { handleGetProfile } from "../../api/profile/get_profile/handleGetProfile";
-import { usePartyStore } from "../../store/PartyStore";
-import type { UserData } from "../../store/ProfileStore";
+import { usePartyStore, type AVAILABILITY_TYPE } from "../../store/PartyStore";
+import type { BADGE_TYPE } from "../../store/ProfileStore";
 import { useSceneStore } from "../../store/SceneStore";
 import { Window } from "../window/Window";
 import { AvatarMemberModule } from "../avatar/AvatarMemberModule";
@@ -12,65 +14,77 @@ import { FriendToggleButton } from "./friend/FriendToggleButton";
 import { KickPlayerButton } from "./kick/KickPlayerButton";
 
 export const StatsWindow: React.FC = () => {
-	const profileUuid = useSceneStore((store) => store.profileUuid);
+	const statsUuid = useSceneStore((store) => store.statsUuid!);
 	const members = usePartyStore((store) => store.members);
 
-	const [userData, setUserData] = useState<UserData | null>(null);
+	const [name, setName] = useState<string | null>(null);
+	const [avatar, setAvatar] = useState<string | undefined>(undefined);
+	const [badge, setBadge] = useState<BADGE_TYPE | null>(null);
+	const [createdAt, setCreatedAt] = useState<Date | null>(null);
+	const [availability, setAvailability] = useState<AVAILABILITY_TYPE | null>(null);
+	const [lastOnline, setLastOnline] = useState<Date | null>(null);
 
+	const statsFetched = useRef<string | null>(null);
 	useEffect(() => {
-		let mounted = true;
-
-		if (!profileUuid) {
-			setUserData(null);
+		if (statsFetched.current)
 			return;
-		}
+		statsFetched.current = statsUuid;
 
 		const fetchPlayerData = async () => {
 			try {
-				const [profileResp] = await Promise.all([
-					handleGetProfile(profileUuid),
+				const [profile, createdAt, online] = await Promise.all([
+					handleGetProfile(statsUuid),
+					handleCreatedAt(statsUuid),
+					handleGetOnline(statsUuid),
 				]);
 
-				if (!mounted) return;
+				setName(profile?.username ?? null);
+				setAvatar(profile?.avatarPath ?? undefined);
+				setBadge(profile?.badge ?? null);
 
-				setUserData(profileResp);
+				setCreatedAt(createdAt ?? null);
+
+				if (online.isOnline)
+					setAvailability(online.inParty ? "Busy" : "Online");
+				else {
+					setAvailability("Offline");
+					setLastOnline(online?.lastOnline ? new Date(online.lastOnline) : null);
+				}
 			} catch (error) {
 				console.error("Failed to fetch player data:", error);
 			}
 		};
 		fetchPlayerData();
-
-		return () => {
-			mounted = false;
-		};
-	}, [profileUuid]);
+	}, [statsUuid]);
 
 	return (
 		<Window
-			title={`Player Profile: ${userData?.username ?? "-"}`}
+			title={`Player Profile: ${name ?? "-"}`}
 			dismissKey="stats"
 		>
-			<div
-				className="
-					px-3rem
-					divide-y divide-n2/40
-				"
-			>
+			<div className="
+				px-3rem
+				divide-y divide-n2/40
+			">
 				<div className="flex">
-					<AvatarMemberModule uuid={profileUuid} name={userData?.username ?? "-"} image={userData?.avatarPath ?? undefined} />
-					<PlayerDataModule uuid={profileUuid}/>
+					<AvatarMemberModule uuid={statsUuid} name={name ?? "-"} image={avatar} />
+					<PlayerDataModule
+						uuid={statsUuid}
+						badge={badge}
+						availability={availability}
+						lastOnline={lastOnline}
+						createdAt={createdAt}
+					/>
 				</div>
-				<MedalsModule uuid={profileUuid}/>
-				<PlayerStatsModule uuid={profileUuid} />
-				<div
-					className="
-						flex place-content-evenly place-items-center
-						py-2rem px-2rem
-						gap-1rem
-					"
-				>
-					{ members && profileUuid && members.includes(profileUuid) && <KickPlayerButton playerUuid={profileUuid}/>}
-					<FriendToggleButton uuid={profileUuid!}/>
+				<MedalsModule uuid={statsUuid}/>
+				<PlayerStatsModule uuid={statsUuid} />
+				<div className="
+					flex place-content-evenly place-items-center
+					py-2rem px-2rem
+					gap-1rem
+				">
+					{ members && statsUuid && members.includes(statsUuid) && <KickPlayerButton playerUuid={statsUuid}/>}
+					<FriendToggleButton uuid={statsUuid!}/>
 				</div>
 			</div>
 		</Window>

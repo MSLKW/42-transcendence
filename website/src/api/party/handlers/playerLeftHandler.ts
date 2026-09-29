@@ -2,6 +2,7 @@ import { Socket } from "socket.io-client";
 import { handleGetProfile } from "../../profile/get_profile/handleGetProfile";
 import { useChatStore } from "../../../store/ChatStore";
 import { useNotificationStore, NOTIFICATION_TYPE } from "../../../store/NotificationStore";
+import { usePartyStore } from "../../../store/PartyStore";
 
 export function playerLeftHandler(socket: Socket) {
 	socket.on("player_left", async (payload: {uuid: string}) => {
@@ -21,9 +22,10 @@ export function playerLeftHandler(socket: Socket) {
 				`${playerData?.username ? playerData?.username : "A player"} left the chat`
 			);
 
-			console.log("[partyStore] 'playerLeft' uuid:", payload.uuid);
+			if (usePartyStore.getState().partyVerboseMode)
+				console.log("[party > 'on' player_left] uuid:", payload.uuid);
 		} catch (error) {
-			console.error("Failed to update player profile:", error);
+			console.warn("[party > 'on' player_left] error:", error);
 		}
 	});
 }

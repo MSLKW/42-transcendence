@@ -9,12 +9,14 @@ export type SCENES = "Badge" | "Login" | "Home" | "Lobby" | "Test" | "Game";
 interface SceneValues {
 	currentScene: SCENES;
 	showWindow: Record<string, boolean>;
-	profileUuid: string | null;
+	statsUuid: string | null;
 }
 
 interface SceneState extends SceneValues {
 	setCurrentScene: (scene: SCENES) => void;
 	setShowWindow: (window: string, show: boolean, uuid?: string | BADGE_TYPE) => void;
+	resetWindows: () => void;
+	resetValues: () =>void
 }
 
 export const defaultShowWindow = {
@@ -40,21 +42,52 @@ export const useSceneStore = create<SceneState>() (
 		(set, get) => ({
 			currentScene: "Login",
 			showWindow: defaultShowWindow,
-			profileUuid: null,
+			statsUuid: null,
 
 			setCurrentScene: (scene) => {
 				set({ currentScene: scene });
 				threejsManager?.changeScene(scene.toLowerCase());
 				useGameStore.setState({ gameStarted: scene === "Game" });
 			},
+
 			setShowWindow: (window, show, uuid) => {
 				const showWindow = get().showWindow;
 				set({
-					profileUuid: uuid,
+					statsUuid: uuid,
 					showWindow: {
 						...showWindow,
 						[window]: show,
 					},
+				});
+			},
+
+			resetWindows: () => {
+				set({
+					showWindow: defaultShowWindow,
+				});
+			},
+
+			resetValues: () => {
+				set({
+					currentScene: "Login",
+					showWindow: {
+						badge: false,
+						bots: false,
+						chat: false,
+						createAccount: false,
+						info: false,
+						leave: false,
+						// notification: false,
+						party: false,
+						profile: false,
+						rank: false,
+						results: false,
+						signIn: false,
+						settings: false,
+						setup: false,
+						stats: false,
+					},
+					statsUuid: null,
 				});
 			},
 		}),

@@ -32,6 +32,8 @@ export type HAND_TYPE = keyof typeof HAND_VALUES;
 export const HAND_LABEL = Object.keys(HAND_VALUES) as HAND_TYPE[];
 
 interface GameValues {
+	gameVerboseMode: boolean,
+	gameSocketId: string | null,
 	totalPlayers: number;
 	gameSeats: (string | null)[];
 	userSeats: (string | null)[];
@@ -68,6 +70,8 @@ interface GameState extends GameValues {
 export const useGameStore = create<GameState>() (
 	persist(
 		(set, get) => ({
+			gameVerboseMode: false,
+			gameSocketId: null,
 			totalPlayers: 1,
 			userSeats: [],
 			gameSeats: [],
@@ -184,77 +188,77 @@ export const useGameStore = create<GameState>() (
 				partySocket.leaveParty();
 			},
 			incTotalWin: (uuid) => {
-				const profileStore = useProfileStore.getState();
-				const data = profileStore.getProfileData(uuid);
-				if (!data)
-					return;
+				// const profileStore = useProfileStore.getState();
+				// const data = profileStore.getProfileData(uuid);
+				// if (!data)
+				// 	return;
 
-				const newXp = data.xp + 420;
-				const newTotalWins = data.totalWins + 1;
-				const newTotalPlayed = data.totalPlayed + 1;
-				const newWinStreak = data.winStreak + 1;
-				const newLevel = Math.floor(newXp / 1000) + 1;
+				// const newXp = data.xp + 420;
+				// const newTotalWins = data.totalWins + 1;
+				// const newTotalPlayed = data.totalPlayed + 1;
+				// const newWinStreak = data.winStreak + 1;
+				// const newLevel = Math.floor(newXp / 1000) + 1;
 
-				useProfileStore.setState({
-					profilesInDb: profileStore.profilesInDb.map((p) => p.uuid === uuid
-						? {
-							...p,
-							xp: newXp,
-							totalWins: newTotalWins,
-							totalPlayed: newTotalPlayed,
-							winStreak: newWinStreak,
-							level: newLevel,
-						}
-						: p
-					),
-				});
+				// useProfileStore.setState({
+				// 	profilesInDb: profileStore.profilesInDb.map((p) => p.uuid === uuid
+				// 		? {
+				// 			...p,
+				// 			xp: newXp,
+				// 			totalWins: newTotalWins,
+				// 			totalPlayed: newTotalPlayed,
+				// 			winStreak: newWinStreak,
+				// 			level: newLevel,
+				// 		}
+				// 		: p
+				// 	),
+				// });
 			},
 			incTotalLoss: (uuid) => {
-				const profileStore = useProfileStore.getState();
-				const data = profileStore.getProfileData(uuid);
-				if (!data)
-					return;
+				// const profileStore = useProfileStore.getState();
+				// const data = profileStore.getProfileData(uuid);
+				// if (!data)
+				// 	return;
 
-				const newXp = data.xp + 67;
-				const newTotalPlayed = data.totalPlayed + 1;
-				const newTotalLoss = data.totalLoss + 1;
-				const newWinStreak = 0;
-				const newLevel = Math.floor(newXp / 1000) + 1;
+				// const newXp = data.xp + 67;
+				// const newTotalPlayed = data.totalPlayed + 1;
+				// const newTotalLoss = data.totalLoss + 1;
+				// const newWinStreak = 0;
+				// const newLevel = Math.floor(newXp / 1000) + 1;
 
-				useProfileStore.setState({
-					profilesInDb: profileStore.profilesInDb.map((p) =>
-						p.uuid === uuid
-							? {
-								...p,
-								xp: newXp,
-								totalLoss: newTotalLoss,
-								totalPlayed: newTotalPlayed,
-								winStreak: newWinStreak,
-								level: newLevel,
-							}
-							: p
-					),
-				});
+				// useProfileStore.setState({
+				// 	profilesInDb: profileStore.profilesInDb.map((p) =>
+				// 		p.uuid === uuid
+				// 			? {
+				// 				...p,
+				// 				xp: newXp,
+				// 				totalLoss: newTotalLoss,
+				// 				totalPlayed: newTotalPlayed,
+				// 				winStreak: newWinStreak,
+				// 				level: newLevel,
+				// 			}
+				// 			: p
+				// 	),
+				// });
 			},
 			unlockMedal: (uuid, type) => {
-				const profileStore = useProfileStore.getState();
-				const data = profileStore.getProfileData(uuid);
-				if (!data || data.medals[type] !== null)
-					return;
+				// const profileStore = useProfileStore.getState();
+				// const data = profileStore.getProfileData(uuid);
+				// if (!data || data.medals[type] !== null)
+				// 	return;
 
-				useProfileStore.setState({
-					profilesInDb: profileStore.profilesInDb.map((p) => 
-						p.uuid === uuid
-							? {
-								...p,
-								medals: {
-									...p.medals,
-									[type]: new Date,
-								},
-							}
-							: p
-					)
-				});
+				// useProfileStore.setState({
+				// 	profilesInDb: profileStore.profilesInDb.map((p) => 
+				// 		p.uuid === uuid
+				// 			? {
+				// 				...p,
+				// 				medals: {
+				// 					...p.medals,
+				// 					[type]: new Date,
+				// 				},
+				// 			}
+				// 			: p
+				// 	)
+				// });
 			},
 		}),
 		{

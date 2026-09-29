@@ -4,8 +4,6 @@ import { useChatStore } from "../../../store/ChatStore";
 import { useNotificationStore, NOTIFICATION_TYPE } from "../../../store/NotificationStore";
 
 export async function joinRoomAction(socket: Socket | null, roomId: string) {
-	const showNotification = useNotificationStore.getState().showNotification;
-
 	if (!socket)
 		return;
 
@@ -14,12 +12,15 @@ export async function joinRoomAction(socket: Socket | null, roomId: string) {
 
 		socket.emit("chat_join_room", { roomId: roomId });
 		useChatStore.setState({ chatRoomId: roomId });
-		console.log(`[chatSocket] Emitted join for party room: ${roomId}`);
+
+		if (useChatStore.getState().chatVerboseMode)
+			console.log(`[chat > 'emit' chat_join_room] roomId: ${roomId}`);
 	} catch (error) {
-		showNotification(
+		useNotificationStore.getState().showNotification(
 			"Unable to connect to chat socket",
 			NOTIFICATION_TYPE.error
 		);
-		console.error("Unable to connect to chat socket:", error);
+
+		console.warn("[chat > 'emit' chat_join_room] error:", error);
 	}
 }

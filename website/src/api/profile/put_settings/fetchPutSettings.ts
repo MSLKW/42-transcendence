@@ -7,11 +7,8 @@ export const fetchPutSettings = async (settings: SettingsValues) => {
 		body: JSON.stringify(settings),
 	});
 
-	if (!response.ok) {
-		console.log("[fetchPutSettings] failed");
-		return;
-	}
-	
-	console.log("[fetchPutSettings] 200 OK");
+	if (!response.ok)
+		throw new Error(`Failed to update settings (${response.status} ${response.statusText})`);
+
 	return response;
 }

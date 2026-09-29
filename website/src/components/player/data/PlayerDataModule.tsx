@@ -1,62 +1,37 @@
-import { useState, useEffect } from "react";
-import { handleCreatedAt } from "../../../api/authentication/created_at/handleCreatedAt";
-import { handleGetProfile } from "../../../api/profile/get_profile/handleGetProfile";
+import { useState, useRef, useEffect } from "react";
+// import { handleCreatedAt } from "../../../api/authentication/created_at/handleCreatedAt";
+// import { handleGetOnline } from "../../../api/party/get_online/handleGetOnline";
 import { useAuthStore } from "../../../store/AuthStore";
+import type { AVAILABILITY_TYPE } from "../../../store/PartyStore";
 import type { BADGE_TYPE } from "../../../store/ProfileStore";
 import { useSceneStore } from "../../../store/SceneStore";
 import { BadgeWindow } from "./badge/BadgeWindow";
 import { PlayerStatusModule } from "../status/PlayerStatusModule";
 
 interface PlayerDataModuleProps {
-	uuid: string | null;
-	badge?: BADGE_TYPE | null;
+	uuid: string;
+	badge: BADGE_TYPE | null;
+	availability: AVAILABILITY_TYPE | null;
+	lastOnline: Date | null;
+	createdAt: Date | null;
 	setBadge?: (badge: BADGE_TYPE) => void;
+	setHasChange?: (change: boolean) => void;
 }
 
-export const PlayerDataModule = ({ uuid, badge, setBadge }: PlayerDataModuleProps) => {
+export const PlayerDataModule = ({
+	uuid,
+	badge,
+	availability,
+	lastOnline,
+	createdAt,
+	setBadge,
+	setHasChange,
+}: PlayerDataModuleProps) => {
 	const clientUuid = useAuthStore((store) => store.clientUuid);
 	const showWindow = useSceneStore((store) => store.showWindow);
 	const setShowWindow = useSceneStore((store) => store.setShowWindow);
 
-	const [ xpProgress, setXPProgress ] = useState(0);
-	const [ createdAt, setCreatedAt ] = useState<Date | null>(null);
-
-	useEffect(() => {
-		let mounted = true;
-
-		if (!uuid) {
-			setCreatedAt(null);
-			setBadge?.("Newcomer");
-			setXPProgress(0);
-			return;
-		}
-
-		const fetchPlayerData = async () => {
-			try {
-				const [createdAtResp, profileResp] = await Promise.all([
-					handleCreatedAt(uuid),
-					handleGetProfile(uuid),
-				]);
-
-				if (!mounted)
-					return;
-
-				setCreatedAt(createdAtResp);
-				if (profileResp?.badge)
-					setBadge?.(profileResp.badge);
-
-				// 	const percentage = (profile.xp / (profile.level * 1000)) * 100
-				// 	setXPProgress(percentage);
-			} catch (error) {
-				console.error("Failed to fetch player data:", error);
-			}
-		};
-		fetchPlayerData();
-
-		return () => {
-			mounted = false;
-		};
-	}, [uuid]);
+	const [xpProgress, setXPProgress] = useState(0);
 
 	return (
 		<div className="
@@ -131,10 +106,15 @@ export const PlayerDataModule = ({ uuid, badge, setBadge }: PlayerDataModuleProp
 						<BadgeWindow
 							badge={badge ?? "Newcomer"}
 							setBadge={setBadge ?? (() => {})}
+							setHasChange={setHasChange ?? (() => {})}
 						/>
 					}
 				</div>
-				<PlayerStatusModule uuid={uuid ?? ""}/>
+				<PlayerStatusModule
+					uuid={uuid}
+					availability={availability}
+					lastOnline={lastOnline}
+				/>
 			</div>
 			<div className="text-a5">
 				<p>UUID: {uuid}</p>

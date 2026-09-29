@@ -30,6 +30,7 @@ export interface SettingsValues {
 
 interface SettingsState extends SettingsValues {
 	toggleSettingsValue: (key: 'allow3OfAKind' | 'allow2OfSpadesEnd') => void;
+	resetValues: () => void;
 }
 
 export const useSettingsStore = create<SettingsState>()(
@@ -46,6 +47,20 @@ export const useSettingsStore = create<SettingsState>()(
 			mxLevel: 50,
 
 			toggleSettingsValue: (key) => { set((state) => ({ [key]: !state[key] })) },
+
+			resetValues: () => {
+				set({
+					allow3OfAKind: true,
+					allow2OfSpadesEnd: true,
+					autoPassIndex: 6,
+					endGameCondition: 0,
+					scoreCalculation: 1,
+					cardStyle: 0,
+					uiColor: 0,
+					fxLevel: 75,
+					mxLevel: 50,
+				});
+			}
 		}),
 		{ name: 'settings-storage' }
 	)

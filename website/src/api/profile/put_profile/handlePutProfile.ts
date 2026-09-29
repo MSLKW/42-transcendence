@@ -3,15 +3,18 @@ import { useProfileStore } from "../../../store/ProfileStore";
 import { fetchPutProfile } from "./fetchPutProfile";
 
 export const handlePutProfile = async (username: string, avatarPath: string, badge: string) => {
-	const { showNotification } = useNotificationStore.getState();
-
 	try {
 		const response = await fetchPutProfile(username, avatarPath, badge);
+
+		if (useProfileStore.getState().profileVerboseMode)
+			console.log("[profile > 'PUT' profile] response:", response);
+
 		await useProfileStore.getState().setCachedData();
-		console.log("[handlePutProfile] response:", response);
 	} catch (err) {
-		const errorMsg = err instanceof Error ? err.message : "Something went wrong. Please try again";
-		console.log("[handlePutProfile] errorMsg:", errorMsg);
-		showNotification(errorMsg, NOTIFICATION_TYPE.error);
+		const error = err instanceof Error ? err.message : "Something went wrong. Please try again";
+
+		useNotificationStore.getState().showNotification(error, NOTIFICATION_TYPE.error);
+
+		console.warn("[profile > 'PUT' profile] error:", error);
 	}
 }

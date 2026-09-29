@@ -13,8 +13,7 @@ export const EmoteHover = () => {
 			className="
 				btn-icon
 				data-tip-left
-			"
-		>
+		">
 			<EmojiIcon />
 		</button>
 	);

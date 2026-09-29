@@ -5,10 +5,11 @@ export const fetchCreatedAt = async (uuid: string) => {
 	});
 
 	if (!response.ok) {
-		console.log(`[/api/auth/created-at/${uuid}] error: Invalid or expired session`);
-		return;
+		if (response.status === 404)
+			throw new Error("Data not found");
+		else
+			throw new Error(`Failed to get data (${response.status} ${response.statusText})`);
 	}
 
-	console.log(`[/api/auth/created-at/${uuid}] 200 OK`);
 	return await response.json();
 }

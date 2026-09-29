@@ -6,11 +6,12 @@ interface AvatarSetNameModuleProps {
 	setName: (name: string) => void;
 	avatar: string | undefined;
 	uuid: string | undefined;
+	setHasChange: (change: boolean) => void;
 }
-export const AvatarSetNameModule = ({ name, setName, avatar, uuid }: AvatarSetNameModuleProps) => {
+export const AvatarSetNameModule = ({ name, setName, avatar, uuid, setHasChange }: AvatarSetNameModuleProps) => {
 	const handleInput = (e: React.ChangeEvent<HTMLInputElement>) => {
-		const value = e.target.value;
-		setName(value);
+		setName(e.target.value);
+		setHasChange(true);
 	}
 
 	const inputRef = useRef<HTMLInputElement | null>(null);
@@ -39,10 +40,9 @@ export const AvatarSetNameModule = ({ name, setName, avatar, uuid }: AvatarSetNa
 					placeholder="Name"
 					onChange={handleInput}
 					onKeyDown={(e) => {
-						if (e.key === "Enter") {
+						if (e.key === "Enter")
 							e.preventDefault();
-							e.currentTarget.blur();
-						} else if (e.key === "Escape")
+						if (e.key === "Enter"|| e.key === "Escape")
 							e.currentTarget.blur();
 					}}
 					minLength={3}

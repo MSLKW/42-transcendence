@@ -7,5 +7,7 @@ export const subscribeToUserTyping = () => {
 			notif.senderUuid,
 			notif.isTyping,
 		);
+
+		console.log("[chat > 'subscribe' onUserTyping] notif:", notif);
 	});
 };

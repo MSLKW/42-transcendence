@@ -26,8 +26,7 @@ export const EmoteOptions = ({ emoji, tip }: EmoteOptionsProps) => {
 				flex place-content-center place-items-center
 				hover:outline outline-b5
 				data-tip-down
-			"
-		>
+		">
 			{emoji}
 		</button>
 	);

@@ -20,7 +20,7 @@ export const AvatarImage = ({ uuid, image, isActive, isChat = false }: AvatarPro
 		<div className={`
 			${isChat ? "h-full w-full" : "h-6rem aspect-square"}
 			flex place-content-center place-items-center
-			relative rounded-sm
+			relative rounded-sm border border-n2
 		`}>
 			{ imageSrc &&
 				<img

@@ -8,14 +8,10 @@ export const fetchSignUp = async (email: string, password: string) => {
 	});
 
 	if (!response.ok) {
-		const errorData = await response.json().catch(() => ({}));
 		if (response.status === 400)
 			throw new Error("Invalid email / password");
 		else if (response.status === 409)
-			throw new Error("An account with this email already exists");
-		else
-			throw new Error(errorData.message || "Failed to create account");
+			throw new Error("Email already registered");
+		throw new Error(`Failed to create account (${response.status} ${response.statusText})`);
 	}
-
-	await response.json();
 }

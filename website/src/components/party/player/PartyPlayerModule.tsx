@@ -1,5 +1,5 @@
 
-import { useEffect, useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { partySocket } from "../../../api/party/partySocket";
 import { handleGetProfile } from "../../../api/profile/get_profile/handleGetProfile";
 import { handleGetOnline } from "../../../api/party/get_online/handleGetOnline";
@@ -24,36 +24,39 @@ export const PartyPlayerModule = ({ uuid }: PartyPlayerModuleProps) => {
 
 	//get profile
 	const [isLoading, setIsLoading] = useState<boolean>(true);
-	const [availability, setAvailability] = useState<AVAILABILITY_TYPE | undefined>(undefined);
+	const [availability, setAvailability] = useState<AVAILABILITY_TYPE | null>(null);
+	const [lastOnline, setLastOnline] = useState<Date | null>(null);
 	const [playerData, setPlayerData] = useState<UserData | null>(null);
 
+	const profileLoaded = useRef<string | null>(null);
 	useEffect(() => {
-		let mounted = true;
+		if (profileLoaded.current === uuid)
+			return;
+		profileLoaded.current = uuid;
 
 		const getProfile = async () => {
 			setIsLoading(true);
 
-			const profile = await handleGetProfile(uuid);
-			const online = await handleGetOnline(uuid);
+			try {
+				const [profile, online] = await Promise.all([
+					handleGetProfile(uuid),
+					handleGetOnline(uuid),
+				])
 
-			if (!mounted) return;
-
-			setPlayerData(profile);
-			if (online.isOnline) {
-				if (online.inParty)
-					setAvailability("Busy");
-				else
-					setAvailability("Online");
-			} else
-				setAvailability("Offline");
-
-			setIsLoading(false);
+				setPlayerData(profile);
+				if (online.isOnline)
+					setAvailability(online.inParty ? "Busy" : "Online");
+				else {
+					setAvailability("Offline");
+					setLastOnline(online?.lastOnline ? new Date(online.lastOnline) : null);
+				}
+			} catch (error) {
+				console.error("Failed to fetch player profile:", error);
+			} finally {
+				setIsLoading(false);
+			}
 		};
 		getProfile();
-
-		return () => {
-			mounted = false;
-		};
 	}, [uuid]);
 
 	const effectiveAvailability = availabilityOverride ?? availability;
@@ -71,7 +74,7 @@ export const PartyPlayerModule = ({ uuid }: PartyPlayerModuleProps) => {
 
 	return (
 		<div className="
-			flex place-content-center place-items-center
+			flex place-content-center place-items-stretch
 			gap-1rem
 		">
 			<AvatarModule
@@ -84,7 +87,7 @@ export const PartyPlayerModule = ({ uuid }: PartyPlayerModuleProps) => {
 				disabled={hostUuid !== clientUuid}
 				onClick={() => partySocket.sendInvite(uuid, playerData?.username ?? "Player")}
 				className={`
-					h-full w-full
+					h-auto w-auto
 					py-0.5rem px-1.5rem
 					${
 						relation === "Self" ? "bg-party-self" :
@@ -93,7 +96,7 @@ export const PartyPlayerModule = ({ uuid }: PartyPlayerModuleProps) => {
 						effectiveAvailability === "Busy" ? "bg-party-busy" :
 						undefined
 					}
-					flex flex-col gap-0.5rem
+					flex flex-col gap-0.5rem flex-1
 			`}>
 				<h3>{playerData.username}</h3>
 				<div className={`
@@ -107,7 +110,11 @@ export const PartyPlayerModule = ({ uuid }: PartyPlayerModuleProps) => {
 					place-items-center
 					gap-1rem
 				`}>
-					<PlayerStatusModule uuid={uuid}/>
+					<PlayerStatusModule
+						uuid={uuid}
+						availability={availability}
+						lastOnline={lastOnline}
+					/>
 					{(effectiveAvailability === "Online" || effectiveAvailability === "Busy") && relation != "Self" &&
 						<div className="
 							flex place-content-center place-items-center

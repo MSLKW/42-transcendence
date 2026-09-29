@@ -4,6 +4,7 @@ import { useChatStore } from "../../../store/ChatStore";
 import { handleGetProfile } from "../../profile/get_profile/handleGetProfile";
 import { useNotificationStore, NOTIFICATION_TYPE } from "../../../store/NotificationStore";
 import type { AcceptInviteResponse } from "../partySocket";
+import { usePartyStore } from "../../../store/PartyStore";
 
 function emitAcceptInvite(socket: Socket, hostUuid: string): Promise<AcceptInviteResponse> {
 	return new Promise((resolve) => {
@@ -27,8 +28,8 @@ export async function acceptInviteAction(socket: Socket | null, hostUuid: string
 
 		const response = await emitAcceptInvite(socket, hostUuid);
 		if (!response.success) {
-			showNotification(response.reason ?? "Unable to join party", NOTIFICATION_TYPE.error);
-			console.log("Failed to accept:", response.reason);
+			showNotification(response.reason ?? "Failed to join party", NOTIFICATION_TYPE.error);
+			console.warn("[party > 'emit' accept_invite] reason:Failed to join party");
 			return;
 		}
 
@@ -47,12 +48,15 @@ export async function acceptInviteAction(socket: Socket | null, hostUuid: string
 		)
 
 		useChatStore.setState({ chatRoomId: hostUuid });
-		console.log("[partySocket] 'accept_invite' hostUuid:", hostUuid);
+
+		if (usePartyStore.getState().partyVerboseMode)
+			console.log("[party > 'emit' accept_invite] hostUuid:", hostUuid);
 	} catch (error) {
 		showNotification(
 			"Unable to connect to party socket",
 			NOTIFICATION_TYPE.error
 		);
-		console.error("Unable to connect to party socket:", error);
+
+		console.warn("[party > 'emit' accept_invite] error:", error);
 	}
 }

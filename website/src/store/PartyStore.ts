@@ -1,9 +1,10 @@
 import { create } from "zustand";
-// import { persist } from "zustand/middleware";
+import { persist } from "zustand/middleware";
 
 export type AVAILABILITY_TYPE = "Offline" | "Online" | "Busy";
 
 interface PartyValues {
+	partyVerboseMode: boolean; 
 	partySocketId: string | null;
 	partyGameId: string | null;
 	members: (string | null)[];
@@ -15,11 +16,13 @@ interface PartyState extends PartyValues {
 	kickPlayer: (uuid: string) => void;
 	setAvailability: (uuid: string, availability: AVAILABILITY_TYPE) => void;
 	clearAvailability: (uuid: string) => void;
+	resetValues: () => void;
 }
 
 export const usePartyStore = create<PartyState>() (
-	// persist(
+	persist(
 		(set, get) => ({
+			partyVerboseMode: false,
 			partySocketId: null,
 			partyGameId: null,
 			members: [],
@@ -47,9 +50,19 @@ export const usePartyStore = create<PartyState>() (
 					return { availabilityOverrides: overrides };
 				});
 			},
+
+			resetValues: () => {
+				set({
+					partySocketId: null,
+					partyGameId: null,
+					members: [],
+					hostUuid: null,
+					availabilityOverrides: {},
+				});
+			}
 		}),
-	// 	{
-	// 		name: 'party-storage',
-	// 	}
-	// )
+		{
+			name: 'party-storage',
+		}
+	)
 );

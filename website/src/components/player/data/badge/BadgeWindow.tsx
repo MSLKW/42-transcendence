@@ -6,9 +6,10 @@ import { LightboxButton } from "../../../lightbox/LightboxButton";
 interface BadgeWindowProps {
 	badge: BADGE_TYPE;
 	setBadge: (type: BADGE_TYPE) => void;
+	setHasChange: (change: boolean) => void;
 }
 
-export const BadgeWindow = ({ badge, setBadge }: BadgeWindowProps) => {
+export const BadgeWindow = ({ badge, setBadge, setHasChange }: BadgeWindowProps) => {
 	const clientUuid = useAuthStore((store) => store.clientUuid);
 	const getProfileData = useProfileStore((store) => store.getProfileData);
 	const showWindow = useSceneStore((store) => store.showWindow);
@@ -44,6 +45,7 @@ export const BadgeWindow = ({ badge, setBadge }: BadgeWindowProps) => {
 									console.log("[Badge Window] badge_label:", badge_label);
 									setBadge(badge_label);
 									setShowWindow("badge", false);
+									setHasChange(true);
 								}}
 								className={`
 									w-full

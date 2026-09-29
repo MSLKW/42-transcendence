@@ -2,6 +2,7 @@ import { partySocket } from "../../api/party/partySocket";
 import { chatSocket } from "../../api/chat/chatSocket";
 import { handlePutProfile } from "../../api/profile/put_profile/handlePutProfile";
 import { useSceneStore } from "../../store/SceneStore";
+import { checkNameValidity } from "../../utilities/react/checkNameValidity";
 
 interface SetupValidationModuleProps {
 	name: string;
@@ -11,10 +12,7 @@ interface SetupValidationModuleProps {
 export const SetupValidationModule = ({ name, avatar }: SetupValidationModuleProps) => {
 	const setShowWindow = useSceneStore((store) => store.setShowWindow);
 
-	// const isValid = Boolean(name?.trim()) && Boolean(avatar);
-	
-	const usernameRegex = /^[a-zA-Z0-9_-]{3,20}$/;
-	const isNameValid = usernameRegex.test(name?.trim());
+	const isNameValid = checkNameValidity(name);
 	const isAvatarValid = Boolean(avatar);
 	const isValid = isNameValid && isAvatarValid;
 
@@ -30,14 +28,12 @@ export const SetupValidationModule = ({ name, avatar }: SetupValidationModulePro
 	};
 
 	return (
-		<div
-			className="
-				flex flex-col place-content-center place-items-center
-				gap-1rem
-				text-n6
-				py-2rem
-			"
-		>
+		<div className="
+			flex flex-col place-content-center place-items-center
+			gap-1rem
+			text-n6
+			py-2rem
+		">
 			<h3 className="text-center">
 				{
 					isValid ? `Welcome ${name}! You're all set up!` :
@@ -54,8 +50,7 @@ export const SetupValidationModule = ({ name, avatar }: SetupValidationModulePro
 					h-3rem aspect-10/1
 					btn-text bg-white
 					text-n0
-				"
-			>
+			">
 				{
 					isValid ? "Let's Play!" :
 					"Waiting for valid name and avatar..."

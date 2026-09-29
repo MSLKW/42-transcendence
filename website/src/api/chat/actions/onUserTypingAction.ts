@@ -1,11 +1,17 @@
 import { Socket } from "socket.io-client";
 import type { ChatTyping } from "../chatSocket";
+import { useChatStore } from "../../../store/ChatStore";
 
 export function onUserTypingAction(socket: Socket, callback: (data: ChatTyping) => void): () => void {
 	socket.on("chat_user_typing", callback);
-	console.log("[onUserTyping] callback:", callback);
+
+	if (useChatStore.getState().chatVerboseMode)
+		console.log("[chat > 'on' chat_user_typing] callback:", callback);
 
 	return () => {
 		socket.off("chat_user_typing", callback);
+
+		if (useChatStore.getState().chatVerboseMode)
+			console.log("[chat > 'off' chat_user_typing] callback:", callback);
 	};
 }

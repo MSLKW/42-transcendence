@@ -7,7 +7,7 @@ interface FriendValues {
 
 interface FriendState extends FriendValues {
 	toggleFriend: (uuid: string) => void;
-	resetFriends: () => void;
+	resetValues: () => void;
 }
 
 const defaultFriends = [
@@ -30,7 +30,11 @@ export const useFriendStore = create<FriendState>() (
 					set({ cachedFriends: [...cachedFriends, uuid] });
 			},
 
-			resetFriends: () => { set({ cachedFriends: [...defaultFriends] }) }
+			resetValues: () => {
+				set({
+					cachedFriends: [...defaultFriends]
+				});
+			}
 		}),
 		{
 			name: "friend-storage",

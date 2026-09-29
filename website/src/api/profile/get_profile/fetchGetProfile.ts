@@ -6,9 +6,12 @@ export const fetchGetProfile = async (uuid: string): Promise<UserData> => {
 		credentials: "include",
 	});
 
-	if (!response.ok)
-		throw new Error(`Failed to get profile: ${response.status} ${response.statusText}`);
+	if (!response.ok) {
+		if (response.status === 404)
+			throw new Error("Profile not found");
+		else
+			throw new Error(`Failed to get profile (${response.status} ${response.statusText})`);
+	}
 
-	console.log("[fetchGetProfile] ", `/api/profile/profile/${uuid} `, response.status, response.statusText);
 	return await response.json();
 }

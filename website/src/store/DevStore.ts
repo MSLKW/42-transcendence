@@ -22,20 +22,7 @@ export const useDevStore = create<DevState>()(
 
 			toggleFlag: (key) => set((devStore) => ({ [key]: !devStore[key] })),
 			resetGame: () => {
-				useSceneStore.setState({
-					showWindow: {
-						badge: false,
-						createAccount: false,
-						signIn: false,
-						settings: false,
-						info: false,
-						profile: false,
-						stats: false,
-						party: false,
-						chat: false,
-						rank: false,
-					},
-				});
+				useSceneStore.getState().resetWindows();
 				useSceneStore.getState().setCurrentScene("Login");
 			},
 		}),

@@ -2,12 +2,16 @@ interface AvatarSelectButtonProps {
 	id: string | null;
 	avatar: string | undefined;
 	setAvatar: (img: string) => void;
+	setHasChange: (change: boolean) => void;
 }
 
-export const AvatarSelectButton = ({ id, avatar, setAvatar }: AvatarSelectButtonProps) => {
+export const AvatarSelectButton = ({ id, avatar, setAvatar, setHasChange }: AvatarSelectButtonProps) => {
 	return (
 		<button 
-			onClick={() => setAvatar(id ?? "")}
+			onClick={() => {
+				setAvatar(id ?? "");
+				setHasChange(true);
+			}}
 			className={`
 				hover:not-disabled:scale-105 active:hover:not-disabled:scale-100
 				focus-visible:outline-double hover:not-disabled:outline-double outline-b5 outline-offset-5

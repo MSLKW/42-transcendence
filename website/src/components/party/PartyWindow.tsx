@@ -12,6 +12,7 @@ export const PartyWindow = () => {
 	const [searchQuery, setSearchQuery] = useState<string>("");
 	const [filteredResults, setFilteredResults] = useState<string[]>([]);
 	const [isSearching, setIsSearching] = useState(false);
+	
 	const searchRequestId = useRef(0);
 
 	const searchFunction = async () => {
@@ -61,24 +62,21 @@ export const PartyWindow = () => {
 			placement="br"
 			pinState={false}
 		>
-			<div
-				className={`
-					min-w-90
-					flex flex-col place-content-center place-items-center
-					text-n6
-					py-1.5rem px-0.5rem gap-1rem
-					pointer-events-auto
-				`}
-			>
+			<div className={`
+				min-w-90
+				flex flex-col place-content-center place-items-center
+				text-n6
+				py-1.5rem px-0.5rem gap-1rem
+				pointer-events-auto
+			`}>
 				<div
 					tabIndex={-1}
 					className="
 						max-h-[50vh] w-full
 						py-0.5rem px-1.5rem
-						overflow-scroll
-						flex flex-col gap-0.75rem
-					"
-				>
+						overflow-y-scroll
+						flex flex-col gap-0.75rem relative
+				">
 					{searchQuery.trim() === "" ? (
 						<>
 							<h2>Friends List</h2>

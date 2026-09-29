@@ -45,6 +45,7 @@ interface BotState extends BotValues {
 	removeBots: () => Promise<void>,
 	fillSeatsWithBots: () => void,
 	countSeatedBots: () => void,
+	resetValues: () => void,
 };
 
 export const useBotStore = create<BotState>() (
@@ -106,6 +107,13 @@ export const useBotStore = create<BotState>() (
 			const seats = useGameStore.getState().userSeats;
 			const count = seats.filter((s) => s?.includes("bot")).length;
 			set({ botCount: count });
+		},
+
+		resetValues: () => {
+			set({
+				currentIntel: "Medium",
+				botCount: 0,
+			});
 		},
 	}),
 );

@@ -1,10 +1,13 @@
-import { useState, useEffect } from "react";
+import { useState, useRef, useEffect } from "react";
 import { partySocket } from "../../api/party/partySocket";
+import { handleCreatedAt } from "../../api/authentication/created_at/handleCreatedAt";
 import { handlePutProfile } from "../../api/profile/put_profile/handlePutProfile";
 import { useAuthStore } from "../../store/AuthStore";
+import { useNotificationStore, NOTIFICATION_TYPE } from "../../store/NotificationStore";
 import { usePartyStore } from "../../store/PartyStore";
 import { useProfileStore, type BADGE_TYPE } from "../../store/ProfileStore";
 import { useSceneStore } from "../../store/SceneStore";
+import { checkNameValidity } from "../../utilities/react/checkNameValidity";
 import { Window } from "../window/Window";
 import { AvatarSetNameModule } from "../avatar/name/AvatarSetNameModule";
 import { AvatarSelectModule } from "../avatar/image/AvatarSelectModule";
@@ -20,41 +23,53 @@ export const ProfileWindow = () => {
 	const members = usePartyStore((store) => store.members);
 
 	const profile = clientUuid ? cachedData[clientUuid] : undefined;
-
 	const [name, setName] = useState(profile?.name ?? "n/a");
 	const [avatar, setAvatar] = useState(profile?.avatar ?? undefined);
 	const [badge, setBadge] = useState<BADGE_TYPE>(profile?.badge ?? "Newcomer");
+	const [hasChange, setHasChange] = useState(false);
+	const [createdAt, setCreatedAt] = useState<Date | null>(null);
 
+	const createdAtFetched = useRef<string | null>(null);
 	useEffect(() => {
-		if (!clientUuid)
+		if (!clientUuid || createdAtFetched.current)
 			return;
+		createdAtFetched.current = clientUuid;
 
-		const profile = cachedData[clientUuid];
-		setName(profile?.name ?? "n/a");
-		setAvatar(profile?.avatar ?? undefined);
-		setBadge(profile?.badge ?? "Newcomer");
-	}, [clientUuid, cachedData]);
+		const fetchCreatedAt = async () => {
+			try {
+				const createdAt = await handleCreatedAt(clientUuid);
+				setCreatedAt(createdAt ?? null);
+			} catch (error) {
+				console.error("Failed to fetch player data:", error);
+			}
+		};
+		fetchCreatedAt();
+	}, [clientUuid]);
 
-	if (!clientUuid)
-		return null;
-
-	const isValid = Boolean(name?.trim());
-
+	const isNameValid = checkNameValidity(name?.trim());
+	const isAvatarValid = Boolean(avatar);
+	const isBadgeValid = Boolean(badge);
+	const isValid = isNameValid && isAvatarValid && isBadgeValid;
 	const handleProfileUpdate = () => {
-		if (!isValid || !name || !avatar || !badge)
+		if (!isValid)
 			return;
 
-		void handlePutProfile(name, avatar, badge).then(async () => {
+		if (hasChange) {
+			void handlePutProfile(name, avatar!, badge)
+				.then(() => { partySocket.refresh() })
+				.finally(() => {
+					useNotificationStore.getState().showNotification("Profile updated", NOTIFICATION_TYPE.message);
+					setShowWindow("profile", false);
+				});
+		} else
 			setShowWindow("profile", false);
-			partySocket.refresh();
-		});
 	}
 
 	return (
 		<Window
 			title={`Profile`}
 			dismissKey="profile"
-			isDismissable={isValid}
+			isDismissable={isNameValid}
 			hasPinButton={false}
 			call={handleProfileUpdate}
 		>
@@ -68,17 +83,26 @@ export const ProfileWindow = () => {
 						name={name}
 						setName={setName}
 						avatar={avatar ?? undefined}
-						uuid={clientUuid}
+						uuid={clientUuid ?? undefined}
+						setHasChange={setHasChange}
 					/>
 					<PlayerDataModule
-						uuid={clientUuid}
+						uuid={clientUuid ?? ""}
 						badge={badge}
+						availability="Online"
+						lastOnline={null}
+						createdAt={createdAt}
 						setBadge={setBadge}
+						setHasChange={setHasChange}
 					/>
 				</div>
+				{!isNameValid &&
+					<h3 className="text-n6 text-center mb-5">Name must be 3–20 characters and contain only letters, numbers, hyphens, or underscores</h3>
+				}
 				<AvatarSelectModule
 					avatar={avatar ?? undefined}
 					setAvatar={setAvatar}
+					setHasChange={setHasChange}
 				/>
 				<MedalsModule uuid={clientUuid}/>
 				<PlayerStatsModule uuid={clientUuid} />

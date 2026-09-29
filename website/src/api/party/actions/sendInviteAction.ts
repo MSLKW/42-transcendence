@@ -14,7 +14,7 @@ function emitSendInvite(socket: Socket, recipientUuid: string): Promise<SendInvi
 	});
 }
 
-export async function sendInviteAction(socket: Socket | null, recipientUuid: string, recipientName?: string) {
+export async function sendInviteAction(socket: Socket | null, recipientUuid: string, recipientName: string) {
 	const showNotification = useNotificationStore.getState().showNotification;
 	const setAvailability = usePartyStore.getState().setAvailability;
 	const availabilityOverrides = usePartyStore.getState().availabilityOverrides;
@@ -26,14 +26,15 @@ export async function sendInviteAction(socket: Socket | null, recipientUuid: str
 		await ensureConnected(socket);
 
 		const response = await emitSendInvite(socket, recipientUuid);
-
 		if (!response.success) {
-			console.log("Failed to send invite:", response.reason);
 			showNotification(
 				"Cannot invite player: Player is offline",
 				NOTIFICATION_TYPE.error
 			);
+
 			setAvailability(recipientUuid, "Offline");
+
+			console.warn("[party > 'emit' send_invite] reason:Failed to invite player");
 			return;
 		}
 
@@ -44,11 +45,15 @@ export async function sendInviteAction(socket: Socket | null, recipientUuid: str
 			`Invitation sent to ${recipientName}`,
 			NOTIFICATION_TYPE.message
 		);
+
+		if (usePartyStore.getState().partyVerboseMode)
+			console.log("[party > 'emit' send_invite] recipientUuid:", recipientUuid, " recipientName:", recipientName);
 	} catch (error) {
 		showNotification(
 			"Unable to connect to party socket",
 			NOTIFICATION_TYPE.error
 		);
-		console.error("Unable to connect to party socket:", error);
+
+		console.warn("[party > 'emit' send_invite] error:", error);
 	}
 }

@@ -5,6 +5,7 @@ import { Stats } from "@react-three/drei";
 
 import { chatSocket } from "./api/chat/chatSocket";
 import { partySocket } from "./api/party/partySocket";
+
 import { useAuthStore } from "./store/AuthStore";
 import { useChatStore } from "./store/ChatStore";
 import { useDevStore } from "./store/DevStore";
@@ -48,57 +49,44 @@ export let threejsManager: ThreeJsManager;
 
 export default function App() {
 	const clientUuid = useAuthStore((store) => store.clientUuid);
-	const chatReconnect = useChatStore((store) => store.chatReconnect);
-	const showStats = useDevStore((store) => store.showStats);
 	const hostUuid = usePartyStore((store) => store.hostUuid);
 	const cachedData = useProfileStore((store) => store.cachedData);
+	const isProfileLoaded = useProfileStore((store) => store.isProfileLoaded);
 	const currentScene = useSceneStore((store) => store.currentScene);
 	const showWindow = useSceneStore((store) => store.showWindow);
 	const setShowWindow = useSceneStore((store) => store.setShowWindow);
 	const showDevSection = useDevStore((store) => store.showDevSection);
 
-	//scroll to top
+	//validate
 	useEffect(() => {
-		useScrollToTop();
-	}, [currentScene]);
-
-	//validate on first website load
-	useEffect(() => {
-		if (currentScene !== "Login")
-			handleValidate();
-	}, []);
-
-
-	//inital profile setup
-	useEffect(() => {
-		if (currentScene === "Login" || !clientUuid)
+		if (currentScene === "Login" || useAuthStore.getState().authenticated)
 			return;
-
-		if (!cachedData[clientUuid] || !cachedData[clientUuid]?.name || !cachedData[clientUuid]?.avatar)
-			setShowWindow("setup", true);
+		handleValidate();
 	}, [currentScene]);
 
 	//party socket connection
 	useEffect(() => {
-		if (currentScene === "Login" || !clientUuid)
+		if (currentScene === "Login" || partySocket.isConnected())
 			return;
-
 		partySocket.connect();
-	}, [currentScene, clientUuid]);
+	}, [currentScene]);
 
-	//chat socket connection + subscriptions
+	//chat socket connection
 	useEffect(() => {
-		if (currentScene === "Login" || !clientUuid)
+		if (currentScene === "Login" || chatSocket.isConnected())
 			return;
-
 		chatSocket.connect();
+	}, [currentScene]);
 
+	//chat socket subscriptions
+	useEffect(() => {
+		if (!chatSocket.isConnected())
+			return;
 		const unsubscribeFromMessages = subscribeToMessages();
 		const unsubscribeFromUserJoined = subscribeToUserJoined();
 		const unsubscribeFromUserLeft = subscribeToUserLeft();
 		const unsubscribeFromUserTyping = subscribeToUserTyping();
 		const unsubscribeFromRateLimited = subscribeToRateLimited();
-
 		return () => {
 			unsubscribeFromMessages();
 			unsubscribeFromUserJoined();
@@ -106,9 +94,17 @@ export default function App() {
 			unsubscribeFromUserTyping();
 			unsubscribeFromRateLimited();
 		};
-	}, [currentScene, clientUuid, chatReconnect]);
+	}, [chatSocket.isConnected()]);
 
-	//three js
+	//chat room changes
+	useEffect(() => {
+		if (!chatSocket.isConnected())
+			return;
+		const roomId = hostUuid ?? clientUuid!;
+		chatSocket.joinRoom(roomId);
+	}, [hostUuid, chatSocket.isConnected()]);
+
+	//three js manager
 	const containerRef = useRef<HTMLDivElement>(null);
 	useEffect(() => {
 		if (!containerRef.current) {
@@ -123,6 +119,7 @@ export default function App() {
 		}
 	}, []);
 
+	//three js scene handler
 	useEffect(() => {
 		const currentSceneLowered = currentScene.toLowerCase();
 		if (threejsManager.getSceneId() !== currentSceneLowered) {
@@ -130,21 +127,48 @@ export default function App() {
 		}
 	}, [currentScene]);
 
-	//chat room changes
+	//scroll to top
 	useEffect(() => {
-		if (currentScene !== "Login" || !clientUuid || !hostUuid)
+		useScrollToTop();
+	}, [currentScene]);
+
+	//inital profile setup
+	useEffect(() => {
+		if (currentScene === "Login" || !clientUuid || !isProfileLoaded)
 			return;
 
-		if (hostUuid)
-			chatSocket.joinRoom(hostUuid);
-		else if (clientUuid)
-			chatSocket.joinRoom(clientUuid);
-	}, [hostUuid, clientUuid]);
+		if (!cachedData[clientUuid]?.name || !cachedData[clientUuid]?.avatar)
+			setShowWindow("setup", true);
+		else
+			setShowWindow("setup", false);
+	}, [currentScene, clientUuid, cachedData, isProfileLoaded]);
+
+	//close window on scene change
+	useEffect(() => {
+		useSceneStore.setState({
+			showWindow: {
+				badge: false,
+				bots: false,
+				// chat: false,
+				createAccount: false,
+				info: false,
+				leave: false,
+				// notification: false,
+				party: false,
+				profile: false,
+				rank: false,
+				results: false,
+				signIn: false,
+				settings: false,
+				setup: false,
+				stats: false,
+			}
+		})
+	}, [currentScene]);
 
 	return (
 		<>
 			{ (currentScene === "Login" || currentScene === "Home") && <StripeBg /> }
-			{ showStats && <Stats /> }
 			<section className="
 				z-0 absolute top-0 left-1/2 -translate-x-1/2
 				h-full min-h-120 max-h-360

@@ -18,5 +18,7 @@ export const subscribeToMessages = () => {
 		);
 
 		addBubble(chat.senderUuid, chat.type, chat.message);
+
+		console.log("[chat > 'subscribe' onMessage] chat:", chat);
 	});
 };

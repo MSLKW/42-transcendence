@@ -278,9 +278,8 @@ const defaultProfileInDb: ProfileData[] = [
 ];
 
 interface ProfileValues {
-	isAuthenticated: boolean;
-	validateResponse: Response | undefined;
-	profilesInDb: ProfileData[];
+	profileVerboseMode: boolean;
+	isProfileLoaded: boolean;
 	cachedData: Record<string, CachedData>;
 	avatarVersions: Record<string, number>;
 };
@@ -292,27 +291,27 @@ interface ProfileState extends ProfileValues {
 	removeCachedData: (uuid: string | null) => void;
 	clearCachedData: () => void;
 	markAvatarUpdated: (uuid: string) => void;
+	resetValues: () => void;
 };
 
 export const useProfileStore = create<ProfileState>() (
 	persist(
 		(set, get) => ({
-			isAuthenticated: false, 
-			validateResponse: undefined,
-			profilesInDb: defaultProfileInDb,
+			profileVerboseMode: false,
+			isProfileLoaded: false,
 			cachedData: {},
 			avatarVersions: {},
 
 			getProfileData: (uuid) => {
-				if (!uuid)
-					return undefined;
-				const profilesInDb = get().profilesInDb;
-				return profilesInDb.find(p => p.uuid === uuid);
+				// if (!uuid)
+				// 	return undefined;
+				// const profilesInDb = get().profilesInDb;
+				// return profilesInDb.find(p => p.uuid === uuid);
+				return undefined;
 			},
 
 			resetProfilesInDb: () => {
 				set({
-					profilesInDb: defaultProfileInDb,
 					cachedData: {},
 				});
 			},
@@ -330,6 +329,7 @@ export const useProfileStore = create<ProfileState>() (
 				).filter(
 					(uuid): uuid is string => uuid !== null
 				);
+
 				const profiles = await Promise.all(
 					allUuids.map(async (memberUuid) => {
 						const userData = await handleGetProfile(memberUuid);
@@ -352,17 +352,18 @@ export const useProfileStore = create<ProfileState>() (
 						}
 					})
 				);
-				console.log("profiles:", profiles);
 
 				set((state) => {
 					const cachedData = { ...state.cachedData };
 					for (const profile of profiles) {
-						console.log("profile:", profile);
 						if (!profile)
 							continue;
 						cachedData[profile.uuid] = profile.data;
 					}
-					return { cachedData }
+					return {
+						cachedData,
+						isProfileLoaded: true,
+					}
 				});
 			},
 
@@ -388,6 +389,14 @@ export const useProfileStore = create<ProfileState>() (
 						[uuid]: (state.avatarVersions[uuid] ?? 0) + 1,
 					},
 				}))
+			},
+
+			resetValues: () => {
+				set({
+					isProfileLoaded: false,
+					cachedData: {},
+					avatarVersions: {},
+				});
 			},
 		}),
 		{

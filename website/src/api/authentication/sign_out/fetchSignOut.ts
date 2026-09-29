@@ -5,7 +5,8 @@ export const fetchSignOut = async () => {
 	});
 
 	if (!response.ok) {
-		const errorData = await response.json().catch(() => ({}));
-		throw new Error(errorData.message || "Could not log out. Please try again");
+		if (response.status === 401)
+			throw new Error("Missing or malformed authorization / invalid session");
+		throw new Error(`Failed to log out (${response.status} ${response.statusText})`);
 	}
 };

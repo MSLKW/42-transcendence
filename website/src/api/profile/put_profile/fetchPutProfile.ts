@@ -9,11 +9,8 @@ export const fetchPutProfile = async (username: string, avatarPath: string, badg
 		}),
 	});
 
-	if (!response.ok) {
-		console.log("[fetchPutProfile] failed");
-		return;
-	}
-	
-	console.log("[fetchPutProfile] 200 OK");
+	if (!response.ok)
+		throw new Error(`Failed to update profile (${response.status} ${response.statusText})`);
+
 	return response;
 }

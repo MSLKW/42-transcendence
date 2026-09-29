@@ -20,6 +20,7 @@ interface ResultsState extends ResultsValues {
 	setResults: (gameEndStats: GameEndStatsTransmit) => void;
 	resetResults: () => void;
 	getLeaderboard: () => ResultsItem[];
+	resetValues: () => void;
 }
 
 export const useResultsStore = create<ResultsState>() (
@@ -92,7 +93,7 @@ export const useResultsStore = create<ResultsState>() (
 			},
 
 			resetResults: () => {
-				set({ results: [] });
+				get().resetValues();
 				useGameStore.setState({
 					gameStarted: false,
 					cardsLeft: [],
@@ -105,7 +106,13 @@ export const useResultsStore = create<ResultsState>() (
 
 			getLeaderboard: () => {
 				return [...get().results].sort((a, b) => a.totalPoints - b.totalPoints);
-			}
+			},
+
+			resetValues: () => {
+				set({
+					results: [],
+				});
+			},
 		}),
 		{
 			name: 'results-storage',

@@ -3,7 +3,7 @@ import { useAuthStore } from "../../../store/AuthStore";
 import { useChatStore } from "../../../store/ChatStore";
 import { usePartyStore } from "../../../store/PartyStore";
 
-export function registerConnectionHandlers(
+export function connectionHandlers(
 	socket: Socket,
 	joinRoom: (roomId: string) => void,
 	setInitialRoom: (roomId: string) => void,
@@ -19,7 +19,8 @@ export function registerConnectionHandlers(
 		else if (clientUuid)
 			setInitialRoom(clientUuid);
 
-		console.log("[chatSocket] Connected to chat service with id:", socketId);
+		if (useChatStore.getState().chatVerboseMode)
+			console.log("[chat > 'on' connect] id:", socketId);
 	});
 
 	socket.on("disconnect", (reason) => {
@@ -28,10 +29,12 @@ export function registerConnectionHandlers(
 			chatRoomId: null,
 		});
 
-		console.log("[chatSocket] Disconnected:", reason);
+		if (useChatStore.getState().chatVerboseMode)
+			console.log("[chat > 'on' disconnect] reason:", reason);
 	});
 
-	socket.on("connect_error", (err) => {
-		console.error("[chatSocket] Connection error:", err.message);
+	socket.on("connect_error", (error) => {
+		if (useChatStore.getState().chatVerboseMode)
+			console.warn("[chat > 'on' connect_error] error:", error.message);
 	});
 }

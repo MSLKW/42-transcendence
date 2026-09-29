@@ -21,15 +21,9 @@ export async function leavePartyAction(socket: Socket | null) {
 		await ensureConnected(socket);
 
 		socket?.emit("leave_party");
-		showNotification(
-			clientUuid === hostUuid ? "You left the party" : `You left ${cachedData[hostUuid ?? ""]?.name}'s party`,
-			NOTIFICATION_TYPE.message
-		);
 
 		await useProfileStore.getState().setCachedData();
-
 		useSceneStore.getState().setShowWindow("profile", false);
-
 		addToCachedChat(
 			"REPORT",
 			"server",
@@ -41,12 +35,19 @@ export async function leavePartyAction(socket: Socket | null) {
 			} chat`,
 		)
 
-		console.log("[partySocket] 'leave_party'");
+		showNotification(
+			clientUuid === hostUuid ? "You left the party" : `You left ${cachedData[hostUuid ?? ""]?.name}'s party`,
+			NOTIFICATION_TYPE.message
+		);
+
+		if (usePartyStore.getState().partyVerboseMode)
+			console.log("[party > 'emit' leave_party]");
 	} catch (error) {
 		showNotification(
 			"Unable to connect to party socket",
 			NOTIFICATION_TYPE.error
 		);
-		console.error("Unable to connect to party socket:", error);
+
+		console.warn("[party > 'emit' leave_party] error:", error);
 	}
 }

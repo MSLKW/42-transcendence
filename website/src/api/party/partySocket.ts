@@ -6,12 +6,13 @@ import { rejectInviteAction } from "./actions/rejectInviteAction";
 import { sendInviteAction } from "./actions/sendInviteAction";
 import { startGameSessionAction } from "./actions/startGameSessionAction";
 import { refreshAction } from "./actions/refreshAction";
-import { registerConnectionHandlers } from "./handlers/connectionHandlers";
+import { connectionHandlers } from "./handlers/connectionHandlers";
 import { inviteReceivedHandler } from "./handlers/inviteReceivedHandler";
 import { kickedHandler } from "./handlers/kickedHandler";
 import { partyStateHandler } from "./handlers/partyStateHandler";
 import { playerLeftHandler } from "./handlers/playerLeftHandler";
 import { playerJoinedHandler } from "./handlers/playerJoinedHandler";
+import { usePartyStore } from "../../store/PartyStore";
 
 export type SendInviteResponse = {
 	success: boolean;
@@ -27,8 +28,11 @@ class PartySocketService {
 	private socket: Socket | null = null;
 
 	public connect() {
-		if (this.socket)
+		if (this.socket) {
+			if (!this.socket.connected)
+				this.socket.connect();
 			return;
+		}
 
 		this.socket = io({
 			path: "/socket/party",
@@ -39,23 +43,46 @@ class PartySocketService {
 			reconnectionDelayMax: 5000,
 		});
 
-		registerConnectionHandlers(this.socket);
+		connectionHandlers(this.socket);
 		partyStateHandler(this.socket);
 		inviteReceivedHandler(this.socket);
 		kickedHandler(this.socket);
 		playerJoinedHandler(this.socket);
 		playerLeftHandler(this.socket);
 	}
-
 	public disconnect() {
 		if (!this.socket)
 			return;
 
+		this.socket.removeAllListeners();
 		this.socket.disconnect();
 		this.socket = null;
+
+		usePartyStore.setState({
+			partySocketId: null,
+			hostUuid: null,
+		});
+
+		if (usePartyStore.getState().partyVerboseMode)
+			console.log("[party > 'public' disconnect]");
+	}
+	public reconnect() {
+		if (!this.socket) {
+			this.connect()
+			return;
+		}
+
+		if (!this.socket.connected)
+			this.socket.connect();
+
+		if (usePartyStore.getState().partyVerboseMode)
+			console.log("[party > 'public' reconnect]");
+	}
+	public getSocket() {
+		return this.socket;
 	}
 
-	public sendInvite(recipientUuid: string, recipientName?: string) {
+	public sendInvite(recipientUuid: string, recipientName: string) {
 		sendInviteAction(this.socket, recipientUuid, recipientName);
 	}
 	public kickPlayer(recipientUuid: string) {
@@ -77,15 +104,14 @@ class PartySocketService {
 		refreshAction(this.socket);
 	}
 	public isConnected(): boolean {
-		console.log("[partySocket] 'isConnected' ", this.socket?.connected, " id:", this.socket?.id);
 		return this.socket?.connected === true;
 	}
 }
 
-if (import.meta.hot) {
-	import.meta.hot.dispose(() => {
-		partySocket.disconnect();
-	});
-}
-
 export const partySocket = new PartySocketService();
+
+// if (import.meta.hot) {
+// 	import.meta.hot.dispose(() => {
+// 		partySocket.disconnect();
+// 	})
+// }

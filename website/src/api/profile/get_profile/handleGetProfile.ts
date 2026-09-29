@@ -1,14 +1,19 @@
-import type { UserData } from "../../../store/ProfileStore";
+import { useProfileStore, type UserData } from "../../../store/ProfileStore";
 import { fetchGetProfile } from "./fetchGetProfile";
 
 export const handleGetProfile = async (uuid: string): Promise<UserData | null> => {
 	try {
 		const response = await fetchGetProfile(uuid);
-		console.log("[handleGetProfile] response:", response);
+
+		if (useProfileStore.getState().profileVerboseMode)
+			console.log(`[profile > 'GET' profile/${uuid}] response:`, response);
+
 		return response;
 	} catch (err) {
-		const errorMsg = err instanceof Error ? err.message : "Something went wrong. Please try again";
-		console.log("[handleGetProfile] errorMsg:", errorMsg);
+		const error = err instanceof Error ? err.message : "Something went wrong. Please try again";
+
+		console.warn(`[profile > 'GET' profile/${uuid}] error:${error}`);
+
 		return null;
 	}
 }

@@ -1,6 +1,6 @@
 import { io, Socket } from "socket.io-client";
 import { useChatStore, type CHAT_TYPE } from "../../store/ChatStore";
-import { registerConnectionHandlers } from "./handlers/connectionHandlers";
+import { connectionHandlers } from "./handlers/connectionHandlers";
 import { joinRoomAction } from "./actions/joinRoomAction";
 import { onMessageAction } from "./actions/onMessageAction";
 import { onRateLimitedAction } from "./actions/onRateLimitedAction";
@@ -36,11 +36,14 @@ class ChatSocketService {
 	private socket: Socket | null = null;
 
 	public connect() {
-		if (this.socket)
+		if (this.socket) {
+			if (!this.socket.connected)
+				this.socket.connect();
 			return;
+		}
 
 		this.socket = io({
-			path: "/socket/chat/",
+			path: "/socket/chat",
 			transports: ["websocket", "polling"],
 			reconnection: true,
 			reconnectionAttempts: Infinity,
@@ -48,17 +51,17 @@ class ChatSocketService {
 			reconnectionDelayMax: 5000,
 		});
 
-		registerConnectionHandlers(
+		connectionHandlers(
 			this.socket,
 			this.joinRoom,
 			this.setInitialRoom,
 		);
 	}
-
 	public disconnect() {
 		if (!this.socket)
 			return;
 
+		this.socket.removeAllListeners();
 		this.socket.disconnect();
 		this.socket = null;
 
@@ -66,6 +69,15 @@ class ChatSocketService {
 			chatSocketId: null,
 			chatRoomId: null,
 		});
+	}
+	public reconnect() {
+		if (!this.socket) {
+			this.connect();
+			return;
+		}
+
+		if (!this.socket.connected)
+			this.socket.connect();
 	}
 
 	public setInitialRoom = (roomId: string) => {
@@ -106,15 +118,14 @@ class ChatSocketService {
 		return onRateLimitedAction(this.socket, callback);
 	}
 	public isConnected(): boolean {
-		console.log("[chatSocket] 'isConnected' connected:", this.socket?.connected, " id:", this.socket?.id);
 		return this.socket?.connected === true;
 	}
 }
 
-if (import.meta.hot) {
-	import.meta.hot.dispose(() => {
-		chatSocket.disconnect();
-	});
-}
-
 export const chatSocket = new ChatSocketService();
+
+// if (import.meta.hot) {
+// 	import.meta.hot.dispose(() => {
+// 		chatSocket.disconnect();
+// 	})
+// }

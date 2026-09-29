@@ -8,18 +8,11 @@ export const fetchPutAvatar = async (avatar: File) => {
 	});
 
 	if (!response.ok) {
-		let errorMessage = "Failed to upload avatar";
-
-		try {
-			const data = await response.json()
-			if (typeof data.error === "string")
-				errorMessage = data.error;
-		} catch {}
-
-		throw new Error(errorMessage);
-		return;
+		if (response.status === 400)
+			throw new Error("Invalid syntax or malformed request");
+		else
+			throw new Error(`Failed to upload avatar (${response.status} ${response.statusText})`);
 	}
-	
-	console.log("[fetchPutAvatar] 204 No Content");
+
 	return response;
 }

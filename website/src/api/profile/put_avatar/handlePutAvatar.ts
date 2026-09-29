@@ -1,15 +1,18 @@
 import { NOTIFICATION_TYPE, useNotificationStore } from "../../../store/NotificationStore";
+import { useProfileStore } from "../../../store/ProfileStore";
 import { fetchPutAvatar } from "./fetchPutAvatar";
 
 export const handlePutAvatar = async (avatar: File) => {
-	const showNotification = useNotificationStore.getState().showNotification;
-
 	try {
 		const response = await fetchPutAvatar(avatar);
-		console.log("[handlePutAvatar] response:", response);
+
+		if (useProfileStore.getState().profileVerboseMode)
+			console.log("[profile > 'PUT' avatar] response:", response);
 	} catch (err) {
-		const errorMsg = err instanceof Error ? err.message : "Something went wrong. Please try again";
-		console.log("[handlePutAvatar] errorMsg:", errorMsg);
-		showNotification(errorMsg, NOTIFICATION_TYPE.error);
+		const error = err instanceof Error ? err.message : "Something went wrong. Please try again";
+
+		useNotificationStore.getState().showNotification(error, NOTIFICATION_TYPE.error);
+
+		console.warn("[profile > 'PUT' avatar] error:", error);
 	}
 }

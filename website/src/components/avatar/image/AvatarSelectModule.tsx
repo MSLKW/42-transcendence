@@ -6,8 +6,9 @@ import { AvatarUploadButton } from "./AvatarUploadButton";
 interface AvatarSelectModuleProps {
 	avatar: string | undefined;
 	setAvatar: (avatar: string) => void;
+	setHasChange: (change: boolean) => void;
 }
-export const AvatarSelectModule = ({ avatar, setAvatar }: AvatarSelectModuleProps) => {
+export const AvatarSelectModule = ({ avatar, setAvatar, setHasChange }: AvatarSelectModuleProps) => {
 	const clientUuid = useAuthStore((store) => store.clientUuid);
 
 	const AVATAR_IMGS = [
@@ -43,6 +44,7 @@ export const AvatarSelectModule = ({ avatar, setAvatar }: AvatarSelectModuleProp
 								id={img}
 								avatar={avatar}
 								setAvatar={setAvatar}
+								setHasChange={setHasChange}
 							/>
 						);
 					})
@@ -59,6 +61,7 @@ export const AvatarSelectModule = ({ avatar, setAvatar }: AvatarSelectModuleProp
 					id={clientUuid}
 					avatar={avatar}
 					setAvatar={setAvatar}
+					setHasChange={setHasChange}
 				/>
 			</div>
 		</div>

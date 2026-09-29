@@ -60,7 +60,7 @@ export const AvatarModule = ({
 					}
 					border ${(uuid === clientUuid && image) ? "border-b4 bg-b5/40" : "border-n2 bg-n3/20"}
 					outline-b5
-					relative
+					relative h-min
 			`}>
 				<AvatarImage
 					uuid={uuid}
