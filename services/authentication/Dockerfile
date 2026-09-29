@@ -2,15 +2,15 @@
 FROM node:20-alpine AS builder
 WORKDIR /app
 
-COPY --from=root            package*.json   ./
-COPY --from=auth-schema     package.json    ./packages/postgres/auth-schema/
 COPY --from=postgres-client package.json    ./packages/postgres/postgres-client/
+COPY --from=auth-schema     package.json    ./packages/postgres/auth-schema/
 COPY                        package.json    ./services/authentication/
+COPY --from=root            package*.json   ./
 
 RUN npm ci
 
-COPY --from=auth-schema     . ./packages/postgres/auth-schema/
 COPY --from=postgres-client . ./packages/postgres/postgres-client/
+COPY --from=auth-schema     . ./packages/postgres/auth-schema/
 COPY                        . ./services/authentication/
 
 RUN npm run build:docker -w authentication
@@ -19,16 +19,16 @@ RUN npm run build:docker -w authentication
 FROM node:20-alpine AS runner
 WORKDIR /app
 
-COPY --from=root            package*.json   ./
-COPY --from=auth-schema     package.json    ./packages/postgres/auth-schema/
 COPY --from=postgres-client package.json    ./packages/postgres/postgres-client/
+COPY --from=auth-schema     package.json    ./packages/postgres/auth-schema/
 COPY                        package.json    ./services/authentication/
+COPY --from=root            package*.json   ./
 
 ENV NODE_ENV=production
 RUN npm ci --omit=dev
 
-COPY --from=builder /app/packages/postgres/auth-schema/dist     ./packages/postgres/auth-schema/dist
 COPY --from=builder /app/packages/postgres/postgres-client/dist ./packages/postgres/postgres-client/dist
+COPY --from=builder /app/packages/postgres/auth-schema/dist     ./packages/postgres/auth-schema/dist
 COPY --from=builder /app/services/authentication/dist           ./services/authentication/dist
 
 COPY scripts/* /usr/local/bin

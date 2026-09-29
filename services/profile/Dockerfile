@@ -2,19 +2,19 @@
 FROM node:20-alpine AS builder
 WORKDIR /app
 
-COPY --from=root			package*.json	./
-COPY --from=auth-schema		package.json	./packages/postgres/auth-schema/
-COPY --from=profile-types	package.json	./packages/types/profile-types/
-COPY --from=profile-schema	package.json	./packages/postgres/profile-schema/
 COPY --from=postgres-client	package.json	./packages/postgres/postgres-client/
+COPY --from=profile-types	package.json	./packages/types/profile-types/
+COPY --from=auth-schema		package.json	./packages/postgres/auth-schema/
+COPY --from=profile-schema	package.json	./packages/postgres/profile-schema/
 COPY						package.json	./services/profile/
+COPY --from=root			package*.json	./
 
 RUN npm ci
 
-COPY --from=auth-schema		. ./packages/postgres/auth-schema/
-COPY --from=profile-types	. ./packages/types/profile-types/
-COPY --from=profile-schema	. ./packages/postgres/profile-schema/
 COPY --from=postgres-client	. ./packages/postgres/postgres-client/
+COPY --from=profile-types	. ./packages/types/profile-types/
+COPY --from=auth-schema		. ./packages/postgres/auth-schema/
+COPY --from=profile-schema	. ./packages/postgres/profile-schema/
 COPY						. ./services/profile/
 
 RUN npm run build:docker -w profile
@@ -23,22 +23,22 @@ RUN npm run build:docker -w profile
 FROM node:20-alpine AS runner
 WORKDIR /app
 
-COPY --from=root			package*.json	./
-COPY --from=auth-schema		package.json    ./packages/postgres/auth-schema/
-COPY --from=profile-types	package.json    ./packages/types/profile-types/
-COPY --from=profile-schema	package.json    ./packages/postgres/profile-schema/
 COPY --from=postgres-client	package.json    ./packages/postgres/postgres-client/
+COPY --from=profile-types	package.json    ./packages/types/profile-types/
+COPY --from=auth-schema		package.json    ./packages/postgres/auth-schema/
+COPY --from=profile-schema	package.json    ./packages/postgres/profile-schema/
 COPY						package.json	./services/profile/
+COPY --from=root			package*.json	./
 
 ENV NODE_ENV=production
 RUN npm ci --omit=dev
 
-COPY --from=builder /app/packages/postgres/auth-schema/dist		./packages/postgres/auth-schema/dist
-COPY --from=builder /app/packages/types/profile-types/dist		./packages/types/profile-types/dist
-COPY --from=builder /app/packages/postgres/profile-schema/dist	./packages/postgres/profile-schema/dist
 COPY --from=builder /app/packages/postgres/postgres-client/dist	./packages/postgres/postgres-client/dist
-COPY --from=builder /app/services/profile/dist					./services/profile/dist
+COPY --from=builder /app/packages/types/profile-types/dist		./packages/types/profile-types/dist
+COPY --from=builder /app/packages/postgres/auth-schema/dist		./packages/postgres/auth-schema/dist
+COPY --from=builder /app/packages/postgres/profile-schema/dist	./packages/postgres/profile-schema/dist
 COPY --from=builder /app/services/profile/test					./services/profile/test
+COPY --from=builder /app/services/profile/dist					./services/profile/dist
 
 COPY scripts/* /usr/local/bin
 

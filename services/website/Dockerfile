@@ -35,29 +35,37 @@
 FROM node:24
 WORKDIR /app
 
-COPY 					./package*.json	./services/website/.
-COPY --from=game-types	.				./packages/types/game-types/.
+COPY --from=game-types	package.json	./packages/types/game-types/
+COPY 					package.json	./services/website/
 COPY --from=root 		package*.json	./
 
-RUN npm install -w @big2/game-types
-RUN npm run docker:build -w @big2/game-types
+RUN npm i
 
-RUN npm install
+COPY --from=game-types	. ./packages/types/game-types/
+COPY 					. ./services/website/
 
-COPY . ./services/website/.
+RUN npm run docker:build	-w @big2/game-types
+# # after they have put in types in imports, recieve error below:
+# # error TS2307: Cannot find module '@big2/game-types' or its corresponding type declarations.
+# RUN npm run build -w website
 
-EXPOSE 5173
+ENV PORT=5173
+# ^ default fallback only, in case someone runs this image standalone without Compose.
+# Compose's `environment: PORT=${WEBSITE_SERVICE_PORT}` overrides this ENV at runtime.
 
-CMD ["npm", "run", "dev", "-w", "website"]
+EXPOSE ${PORT}
+
+WORKDIR /app/services/website
+CMD ["npm", "run", "dev"]
 
 # #### --- optimized docker to be applied before production
 #
 # FROM node:24 AS builder
 # WORKDIR /app
 
-# COPY --from=root			package*.json	./
 # COPY --from=game-types	package.json	./packages/types/game-types/
 # COPY 						package.json	./services/website/
+# COPY --from=root			package*.json	./
 
 # RUN npm ci
 
@@ -69,9 +77,9 @@ CMD ["npm", "run", "dev", "-w", "website"]
 # FROM node:20 AS runner
 # WORKDIR /app
 
-# COPY --from=root			package*.json	./
 # COPY --from=game-types	package.json	./packages/types/game-types/
 # COPY 						package.json	./services/website/
+# COPY --from=root			package*.json	./
 
 # ENV NODE_ENV=production
 # RUN npm ci --omit=dev
