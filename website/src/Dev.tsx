@@ -19,6 +19,7 @@ import { useFrameView } from "./utilities/react/useFrameView";
 export default function Dev() {
 	const clientUuid = useAuthStore((store) => store.clientUuid);
 	const authVerboseMode = useAuthStore((store) => store.authVerboseMode);
+	const frontendValidation = useAuthStore((store) => store.frontendValidation);
 	const fillSeatsWithBots = useBotStore((store) => store.fillSeatsWithBots);
 	const removeBots = useBotStore((store) => store.removeBots);
 	const chatVerboseMode = useChatStore((store) => store.chatVerboseMode);
@@ -154,6 +155,7 @@ export default function Dev() {
 			{/* authentication */}
 				<ul className="flex place-content-between">
 					<DevButton label={`clientUuid: ${clientUuid}`} call={() => clientUuid && navigator.clipboard.writeText(clientUuid)}/>
+					<DevButton label={`frontendValidation: ${frontendValidation}`} call={() => useAuthStore.setState({ frontendValidation: !frontendValidation })}/>
 					<DevButton label={`authVerboseMode: ${authVerboseMode}`} call={() => useAuthStore.setState({ authVerboseMode: !authVerboseMode })}/>
 				</ul>
 			{/* profile */}

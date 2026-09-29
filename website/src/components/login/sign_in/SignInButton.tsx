@@ -11,8 +11,7 @@ export const SignInButton = () => {
 				btn-text bg-light
 				h-3rem aspect-6/1
 				text-1.25rem text-n0
-			"
-		>
+		">
 			SIGN IN
 		</button>
 	);

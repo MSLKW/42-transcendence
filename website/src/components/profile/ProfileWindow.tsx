@@ -54,15 +54,15 @@ export const ProfileWindow = () => {
 		if (!isValid)
 			return;
 
-		if (hasChange) {
-			void handlePutProfile(name, avatar!, badge)
-				.then(() => { partySocket.refresh() })
-				.finally(() => {
-					useNotificationStore.getState().showNotification("Profile updated", NOTIFICATION_TYPE.message);
-					setShowWindow("profile", false);
-				});
-		} else
+		if (!hasChange)
 			setShowWindow("profile", false);
+
+		void handlePutProfile(name, avatar!, badge)
+			.then(() => {
+				partySocket.refresh()
+				useNotificationStore.getState().showNotification("Profile updated", NOTIFICATION_TYPE.message);
+				setShowWindow("profile", false);
+			}).catch (() => {});
 	}
 
 	return (

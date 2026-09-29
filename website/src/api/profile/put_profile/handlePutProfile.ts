@@ -6,13 +6,20 @@ export const handlePutProfile = async (username: string, avatarPath: string, bad
 	try {
 		const response = await fetchPutProfile(username, avatarPath, badge);
 
+		if (!response.ok)
+			throw new Error("Name taken. Try a different name");
+
 		if (useProfileStore.getState().profileVerboseMode)
 			console.log("[profile > 'PUT' profile] response:", response);
+
+		return response;
 	} catch (err) {
 		const error = err instanceof Error ? err.message : "Something went wrong. Please try again";
 
 		useNotificationStore.getState().showNotification(error, NOTIFICATION_TYPE.error);
 
 		console.warn("[profile > 'PUT' profile] error:", error);
+
+		throw err;
 	}
 }

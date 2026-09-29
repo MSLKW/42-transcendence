@@ -11,8 +11,11 @@ export const fetchPutProfile = async (username: string, avatarPath: string, badg
 		}),
 	});
 
-	if (!response.ok)
+	if (!response.ok) {
+		if (response.status === 409)
+			throw new Error("Name taken. Use a different name");
 		throw new Error(`Failed to update profile (${response.status} ${response.statusText})`);
+	}
 
 	return response;
 }
