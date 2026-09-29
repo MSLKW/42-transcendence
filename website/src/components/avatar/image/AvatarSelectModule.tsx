@@ -6,9 +6,9 @@ import { AvatarUploadButton } from "./AvatarUploadButton";
 interface AvatarSelectModuleProps {
 	avatar: string | undefined;
 	setAvatar: (avatar: string) => void;
-	setHasChange: (change: boolean) => void;
+	setHasChange?: (change: boolean) => void;
 }
-export const AvatarSelectModule = ({ avatar, setAvatar, setHasChange }: AvatarSelectModuleProps) => {
+export const AvatarSelectModule = ({ avatar, setAvatar, setHasChange = () => {} }: AvatarSelectModuleProps) => {
 	const clientUuid = useAuthStore((store) => store.clientUuid);
 
 	const AVATAR_IMGS = [

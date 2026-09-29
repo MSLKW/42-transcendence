@@ -1,26 +1,17 @@
 import { useRef, useEffect } from "react";
-// import { Canvas } from "@react-three/fiber";
-// import { Stats, PerspectiveCamera, OrbitControls, AdaptiveDpr } from "@react-three/drei";
-import { Stats } from "@react-three/drei";
-
 import { chatSocket } from "./api/chat/chatSocket";
 import { partySocket } from "./api/party/partySocket";
-
 import { useAuthStore } from "./store/AuthStore";
-import { useChatStore } from "./store/ChatStore";
 import { useDevStore } from "./store/DevStore";
-import { usePartyStore } from "./store/PartyStore";
 import { useProfileStore } from "./store/ProfileStore";
 import { useSceneStore } from "./store/SceneStore";
-
+import { handleValidate } from "./api/authentication/validate/handleValidate";
 import { subscribeToMessages } from "./api/chat/subscribe/subscribeToMessages";
 import { subscribeToUserJoined } from "./api/chat/subscribe/subscribeToUserJoined";
 import { subscribeToUserLeft } from "./api/chat/subscribe/subscribeToUserLeft";
 import { subscribeToUserTyping } from "./api/chat/subscribe/subscribeToUserTyping";
 import { subscribeToRateLimited } from "./api/chat/subscribe/subscribeToRateLimited";
-
 import { useScrollToTop } from "./utilities/react/useScrollToTop";
-
 import { StripeBg } from "./components/bg/Stripe";
 import { LoginScene } from "./components/login/LoginScene";
 import { HomeScene } from "./components/home/HomeScene";
@@ -43,13 +34,11 @@ import { SetupWindow } from "./components/setup/SetupWindow";
 import { StatsWindow } from "./components/stats/StatsWindow";
 import { ThreeJsManager } from './components/3d/ThreeJsManager';
 import Dev from "./Dev";
-import { handleValidate } from "./api/authentication/validate/handleValidate";
 
 export let threejsManager: ThreeJsManager;
 
 export default function App() {
 	const clientUuid = useAuthStore((store) => store.clientUuid);
-	const hostUuid = usePartyStore((store) => store.hostUuid);
 	const cachedData = useProfileStore((store) => store.cachedData);
 	const isProfileLoaded = useProfileStore((store) => store.isProfileLoaded);
 	const currentScene = useSceneStore((store) => store.currentScene);
@@ -95,14 +84,6 @@ export default function App() {
 			unsubscribeFromRateLimited();
 		};
 	}, [chatSocket.isConnected()]);
-
-	//chat room changes
-	useEffect(() => {
-		if (!chatSocket.isConnected())
-			return;
-		const roomId = hostUuid ?? clientUuid!;
-		chatSocket.joinRoom(roomId);
-	}, [hostUuid, chatSocket.isConnected()]);
 
 	//three js manager
 	const containerRef = useRef<HTMLDivElement>(null);

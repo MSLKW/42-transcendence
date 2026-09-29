@@ -3,12 +3,12 @@ import { AvatarImage } from "../image/AvatarImage";
 
 interface AvatarSetNameModuleProps {
 	name: string;
-	setName: (name: string) => void;
 	avatar: string | undefined;
 	uuid: string | undefined;
-	setHasChange: (change: boolean) => void;
+	setName: (name: string) => void;
+	setHasChange?: (change: boolean) => void;
 }
-export const AvatarSetNameModule = ({ name, setName, avatar, uuid, setHasChange }: AvatarSetNameModuleProps) => {
+export const AvatarSetNameModule = ({ name, avatar, uuid, setName, setHasChange = () => {} }: AvatarSetNameModuleProps) => {
 	const handleInput = (e: React.ChangeEvent<HTMLInputElement>) => {
 		setName(e.target.value);
 		setHasChange(true);

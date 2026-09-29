@@ -32,9 +32,9 @@ export const SetupWindow = () => {
 				">
 					<AvatarSetNameModule
 						name={name}
-						setName={setName}
 						avatar={avatar}
 						uuid={clientUuid ?? undefined}
+						setName={setName}
 					/>
 					<AvatarSelectModule
 						avatar={avatar}
