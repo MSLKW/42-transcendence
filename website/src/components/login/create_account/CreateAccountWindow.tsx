@@ -7,7 +7,7 @@ import { FormInputModule } from "../form/FormInputModule";
 
 export const CreateAccountWindow = () => {
 	const showNotification = useNotificationStore((store) => store.showNotification);
-	const frontendValidation = useAuthStore((store) => store.frontendValidation);
+	const authValidation = useAuthStore((store) => store.authValidation);
 
 	const [email, setEmail] = useState("");
 	const [password, setPassword] = useState("");
@@ -17,7 +17,7 @@ export const CreateAccountWindow = () => {
 	const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
 
-		if (frontendValidation) {
+		if (authValidation) {
 			if (!email || !password || !confirmPassword) {
 				showNotification("All fields are required", NOTIFICATION_TYPE.error);
 				return;

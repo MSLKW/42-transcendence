@@ -3,7 +3,7 @@ import { persist } from "zustand/middleware";
 
 interface AuthValues {
 	authVerboseMode: boolean;
-	frontendValidation: boolean;
+	authValidation: boolean;
 	clientUuid: string | null;
 	createdAt: Date | null;
 	lastLogin: Date | null;
@@ -16,8 +16,8 @@ interface AuthState extends AuthValues {
 export const useAuthStore = create<AuthState>() (
 	persist(
 		(set, _get) => ({
-			authVerboseMode: false,
-			frontendValidation: false,
+			authVerboseMode: true,
+			authValidation: false,
 			clientUuid: null,
 			createdAt: null,
 			lastLogin: null,

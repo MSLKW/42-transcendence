@@ -19,42 +19,36 @@ import { useFrameView } from "./utilities/react/useFrameView";
 export default function Dev() {
 	const clientUuid = useAuthStore((store) => store.clientUuid);
 	const authVerboseMode = useAuthStore((store) => store.authVerboseMode);
-	const frontendValidation = useAuthStore((store) => store.frontendValidation);
-	const fillSeatsWithBots = useBotStore((store) => store.fillSeatsWithBots);
-	const removeBots = useBotStore((store) => store.removeBots);
+	const authValidation = useAuthStore((store) => store.authValidation);
 	const chatVerboseMode = useChatStore((store) => store.chatVerboseMode);
 	const chatSocketId = useChatStore((store) => store.chatSocketId);
 	const chatRoomId = useChatStore((store) => store.chatRoomId);
-	const toggleFlag = useDevStore((store) => store.toggleFlag);
 	const cachedFriends = useFriendStore((store) => store.cachedFriends);
 	const gameVerboseMode = useGameStore((store) => store.gameVerboseMode);
 	const gameSocketId = useGameStore((store) => store.gameSocketId);
 	const userSeats = useGameStore((store) => store.userSeats);
 	const totalPlayers = useGameStore((store) => store.totalPlayers);
-	const leaveSeat = useGameStore((store) => store.leaveSeat);
 	const notifications = useNotificationStore((store) => store.notifications);
-	const showNotification = useNotificationStore((store) => store.showNotification);
 	const partyVerboseMode = usePartyStore((store) => store.partyVerboseMode);
 	const partySocketId = usePartyStore((store) => store.partySocketId);
 	const partyGameId = usePartyStore((store) => store.partyGameId);
 	const members = usePartyStore((store) => store.members);
 	const hostUuid = usePartyStore((store) => store.hostUuid);
+	const profileValidation = useProfileStore((store) => store.profileValidation);
 	const profileVerboseMode = useProfileStore((store) => store.profileVerboseMode);
-	const resetProfilesInDb = useProfileStore((store) => store.resetProfilesInDb);
 	const cachedData = useProfileStore((store) => store.cachedData);
 	const results = useResultsStore((store) => store.results);
 	const sceneVerboseMode = useSceneStore((store) => store.sceneVerboseMode);
 	const showWindow = useSceneStore((store) => store.showWindow);
 	const currentScene = useSceneStore((store) => store.currentScene);
-	const setCurrentScene = useSceneStore((store) => store.setCurrentScene);
 
 	const [fetchUrl, setFetchUrl] = useState("");
 	const [fetchBody, setFetchBody] = useState("");
 
 	const handleResetAll = async () => {
-		resetProfilesInDb();
+		useProfileStore.getState().resetProfilesInDb();
 		await handleSignOut();
-		setCurrentScene("Login");
+		useSceneStore.getState().setCurrentScene("Login");
 		useSceneStore.setState({ showWindow: defaultShowWindow });
 		useChatStore.setState({ cachedChat: [] });
 		console.log("[Dev] Game have been reset");
@@ -121,15 +115,15 @@ export default function Dev() {
 		<section className="w-full text-b4 py-1rem gap-1rem flex flex-col px-3rem">
 			{/* utilities */}
 				<ul className="flex place-content-between">
-					<DevButton label="Frame" call={() => toggleFlag("showFrame")} />
-					<DevButton label="Stats" call={() => toggleFlag("showStats")} />
+					<DevButton label="Frame" call={() => useDevStore.setState((store) => ({ showFrame: !store.showFrame }))} />
+					<DevButton label="Stats" call={() => useDevStore.setState((store) => ({ showStats: !store.showStats }))} />
 					<DevButton label="Reset All" call={handleResetAll} />
 				</ul>
 			{/* notification */}
 				<ul className="flex place-content-between">
-					<DevButton label="Notify Message" call={() => showNotification("This is a message notification", NOTIFICATION_TYPE.message)} />
-					<DevButton label="Notify Invite" call={() => showNotification("This is an invite notification", NOTIFICATION_TYPE.invite)} />
-					<DevButton label="Notify Error" call={() => showNotification("This is an error notification", NOTIFICATION_TYPE.error)} />
+					<DevButton label="Notify Message" call={() => useNotificationStore.getState().showNotification("This is a message notification", NOTIFICATION_TYPE.message)} />
+					<DevButton label="Notify Invite" call={() => useNotificationStore.getState().showNotification("This is an invite notification", NOTIFICATION_TYPE.invite)} />
+					<DevButton label="Notify Error" call={() => useNotificationStore.getState().showNotification("This is an error notification", NOTIFICATION_TYPE.error)} />
 					<DevButton label={`notifications:${notifications.length}`} call={() => console.log("notifications:", notifications)} />
 				</ul>
 			{/* scene */}
@@ -155,12 +149,13 @@ export default function Dev() {
 			{/* authentication */}
 				<ul className="flex place-content-between">
 					<DevButton label={`clientUuid: ${clientUuid}`} call={() => clientUuid && navigator.clipboard.writeText(clientUuid)}/>
-					<DevButton label={`frontendValidation: ${frontendValidation}`} call={() => useAuthStore.setState({ frontendValidation: !frontendValidation })}/>
+					<DevButton label={`authValidation: ${authValidation}`} call={() => useAuthStore.setState({ authValidation: !authValidation })}/>
 					<DevButton label={`authVerboseMode: ${authVerboseMode}`} call={() => useAuthStore.setState({ authVerboseMode: !authVerboseMode })}/>
 				</ul>
 			{/* profile */}
 				<ul className="flex place-content-between">
 					<DevButton label={`cachedData: ${Object.keys(cachedData).length}`} call={() => console.log(useProfileStore.getState().cachedData)} />
+					<DevButton label={`profileValidation: ${profileValidation}`} call={() => useProfileStore.setState({ profileValidation: !profileValidation })}/>
 					<DevButton label="Clear cachedData" call={() => useProfileStore.getState().clearCachedData()} />
 					<DevButton label={`profileVerboseMode: ${profileVerboseMode}`} call={() => useProfileStore.setState({ profileVerboseMode: !profileVerboseMode })}/>
 				</ul>
@@ -224,9 +219,9 @@ export default function Dev() {
 				}
 			{/* bots */}
 				<ul className="flex place-content-between">
-					{currentScene === "Lobby" && <DevButton label="Fill Bots" call={() => fillSeatsWithBots()} />}
-					{currentScene === "Lobby" && <DevButton label="Remove Bots" call={() => removeBots()} />}
-					{currentScene === "Lobby" && <DevButton label="Unseat" call={() => leaveSeat()} />}
+					{currentScene === "Lobby" && <DevButton label="Fill Bots" call={() => useBotStore.getState().fillSeatsWithBots()} />}
+					{currentScene === "Lobby" && <DevButton label="Remove Bots" call={() => useBotStore.getState().removeBots()} />}
+					{currentScene === "Lobby" && <DevButton label="Unseat" call={() => useGameStore.getState().leaveSeat()} />}
 				</ul>
 		</section>
 	);

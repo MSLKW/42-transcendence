@@ -18,9 +18,10 @@ import { LeavePartyModule } from "./LeavePartyModule";
 
 export const ProfileWindow = () => {
 	const clientUuid = useAuthStore((store) => store.clientUuid);
-	const setShowWindow = useSceneStore((store) => store.setShowWindow);
-	const cachedData = useProfileStore((store) => store.cachedData);
 	const members = usePartyStore((store) => store.members);
+	const profileValidation = useProfileStore((store) => store.profileValidation);
+	const cachedData = useProfileStore((store) => store.cachedData);
+	const setShowWindow = useSceneStore((store) => store.setShowWindow);
 
 	const profile = clientUuid ? cachedData[clientUuid] : undefined;
 	const [name, setName] = useState(profile?.name ?? "n/a");
@@ -51,7 +52,7 @@ export const ProfileWindow = () => {
 	const isBadgeValid = Boolean(badge);
 	const isValid = isNameValid && isAvatarValid && isBadgeValid;
 	const handleProfileUpdate = () => {
-		if (!isValid)
+		if (profileValidation && !isValid)
 			return;
 
 		if (!hasChange)
@@ -69,7 +70,7 @@ export const ProfileWindow = () => {
 		<Window
 			title={`Profile`}
 			dismissKey="profile"
-			isDismissable={isNameValid}
+			isDismissable={profileValidation ? isValid : true}
 			hasPinButton={false}
 			call={handleProfileUpdate}
 		>
@@ -96,7 +97,7 @@ export const ProfileWindow = () => {
 						setHasChange={setHasChange}
 					/>
 				</div>
-				{!isNameValid &&
+				{profileValidation && !isNameValid &&
 					<h3 className="text-n6 text-center mb-5">Name must be 3–20 characters and contain only letters, numbers, hyphens, or underscores</h3>
 				}
 				<AvatarSelectModule

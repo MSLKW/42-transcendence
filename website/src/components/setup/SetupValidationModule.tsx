@@ -1,4 +1,5 @@
 import { handlePutProfile } from "../../api/profile/put_profile/handlePutProfile";
+import { useNotificationStore, NOTIFICATION_TYPE } from "../../store/NotificationStore";
 import { useProfileStore } from "../../store/ProfileStore";
 import { useSceneStore } from "../../store/SceneStore";
 import { checkNameValidity } from "../../utilities/react/checkNameValidity";
@@ -19,11 +20,12 @@ export const SetupValidationModule = ({ name, avatar }: SetupValidationModulePro
 		if (!isValid)
 			return;
 
-		void handlePutProfile(name, avatar, "Newcomer").then(() => {
-			useProfileStore.getState().setCachedData();
-		}).finally(() => {
-			setShowWindow("setup", false);
-		});
+		void handlePutProfile(name, avatar, "Newcomer")
+			.then(() => {
+				useProfileStore.getState().setCachedData();
+				useNotificationStore.getState().showNotification("Profile created", NOTIFICATION_TYPE.message);
+				setShowWindow("setup", false);
+			}).catch(() => {});
 	};
 
 	return (
