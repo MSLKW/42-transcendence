@@ -20,12 +20,16 @@
 <body>
 
 <div id="uuid-box">
-  <b>My UUID:</b>
-  <input id="my-uuid" placeholder="<uuid as in database>" onkeydown="if(event.key==='Enter') start()" />
+  <b>My UUID (from session):</b>
+  <input id="my-uuid" placeholder="filled in after Connect" readonly />
   <button onclick="start()">Connect</button>
   <button onclick="disconnect()">Disconnect</button>
-  <button onclick="openTab()">+ Open another tester tab</button>
+  <button onclick="openTab()">+ Open another tab (same user)</button>
   <div id="connectionStatus" style="margin-top:6px; font-size:13px;">⚪ not connected</div>
+  <div style="margin-top:4px; font-size:12px; color:#999;">
+    Sign in first (e.g. on the website): the session cookie decides who you are.
+    Tabs in the same browser share one user.
+  </div>
 </div>
 
 <h2>Send a friend request</h2>
@@ -47,9 +51,11 @@
 <script>
 // const API = "http://localhost:3000";
 const API = "http://localhost/api/friends";
+const AUTH_API = "http://localhost/api/auth";
 let myUuid = null;
 let evtSource = null;
 let pollTimer = null;
+let connecting = false;
 
 function log(msg) {
   const el = document.getElementById("log");
@@ -64,14 +70,51 @@ function openTab() {
   window.open(window.location.pathname, "_blank");
 }
 
-function start() {
-  if (evtSource) return log("already connected — click Disconnect first to reconnect");
+// Identity comes from the session cookie, so ask auth who we are.
+// Returns the user's uuid, or null (and logs why) if we can't get one.
+async function fetchMyUuid() {
+  let authRes;
+  try {
+    authRes = await fetch(`${AUTH_API}/validate`, { credentials: "include" });
+  } catch {
+    log("Could not reach the auth service.");
+    return null;
+  }
 
-  myUuid = document.getElementById("my-uuid").value.trim();
-  if (!myUuid) return alert("enter a uuid first");
+  if (!authRes.ok) {
+    log("Not logged in, or session expired — sign in first, then click Connect.");
+    return null;
+  }
+
+  let data = null;
+  try {
+    data = await authRes.json();
+  } catch {
+    data = null;
+  }
+
+  if (!data || typeof data.userId !== "string") {
+    log("Unexpected reply from the auth service.");
+    return null;
+  }
+  return data.userId;
+}
+
+async function start() {
+  if (evtSource) return log("already connected — click Disconnect first to reconnect");
+  if (connecting) return; // ignore double-clicks while we wait for auth
+
+  connecting = true;
+  const uuid = await fetchMyUuid();
+  connecting = false;
+  if (!uuid) return;
+
+  myUuid = uuid;
+  document.getElementById("my-uuid").value = myUuid;
   document.title = "tester: " + myUuid;
 
-  evtSource = new EventSource(`${API}/events/${myUuid}`);
+  // no uuid in the URL: friends identifies us from the session cookie
+  evtSource = new EventSource(`${API}/events`, { withCredentials: true });
   evtSource.addEventListener("connected", () => {
     log("SSE connected as " + myUuid);
     setConnectionStatus("🟢 live (SSE connected)");
@@ -81,14 +124,14 @@ function start() {
   // The one signal we DO get is readyState:
   //  - CONNECTING (0): the browser will retry automatically (network blip, server restart, etc)
   //  - CLOSED (2): the browser gave up for good — this happens when the server responds
-  //    with a non-2xx status (e.g. 404 for an unknown uuid) instead of upgrading to SSE.
-  // So on the backend, /events/:ownerUuid should respond 404 (not open an SSE stream) when the
-  // uuid doesn't exist in the database — that's what makes this distinction possible at all.
+  //    with a non-2xx status instead of upgrading to SSE. For /events that means
+  //    401 (no/invalid/expired session), 502 (bad reply from auth) or 503 (auth unreachable).
+  //    Check the browser's Network tab to see which one it was.
   evtSource.onerror = () => {
     if (!evtSource) return; // already handled by "replaced" or disconnect()
     if (evtSource.readyState === EventSource.CLOSED) {
-      setConnectionStatus("⛔ rejected — this uuid may not exist in the database");
-      log("Server refused the SSE connection and won't retry. Check the uuid, then click Connect again.");
+      setConnectionStatus("⛔ rejected — no valid session, or auth/friends unavailable");
+      log("Server refused the SSE connection and the browser won't retry. Sign in again (or check the services), then click Connect.");
       evtSource = null;
       clearInterval(pollTimer);
       pollTimer = null;
@@ -113,7 +156,7 @@ function start() {
     clearInterval(pollTimer);
     pollTimer = null;
     setConnectionStatus("⚪ connected elsewhere");
-    log("This uuid connected in another tab/device — this tab disconnected to avoid a reconnect loop.");
+    log("This user connected in another tab/device — this tab disconnected to avoid a reconnect loop.");
   });
 
 
