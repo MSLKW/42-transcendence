@@ -49,7 +49,7 @@ export const Window: React.FC<WindowProps> = ({
 			flex place-content-center place-items-center
 			pointer-events-none
 		">
-			{ headerType === "Standard" && isPinned &&
+			{ headerType !== "None" && isPinned &&
 				<LightboxButton
 					dismiss={dismissKey}
 					blur={true}

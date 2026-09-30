@@ -1,5 +1,6 @@
 import { Socket } from "socket.io-client";
 import { usePartyStore } from "../../../store/PartyStore";
+import { handleValidate } from "../../authentication/validate/handleValidate";
 
 export function connectionHandlers(socket: Socket) {
 	socket.on("connect", () => {
@@ -17,6 +18,8 @@ export function connectionHandlers(socket: Socket) {
 			partySocketId: null,
 			hostUuid: null,
 		});
+
+		handleValidate();
 	});
 
 	socket.on("connect_error", (error) => {

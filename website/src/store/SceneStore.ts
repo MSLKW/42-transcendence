@@ -25,6 +25,7 @@ export const defaultShowWindow = {
 	bots: false,
 	chat: false,
 	createAccount: false,
+	disconnect: false,
 	info: false,
 	leave: false,
 	notification: false,

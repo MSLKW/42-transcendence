@@ -13,6 +13,8 @@ export const handleValidate = async () => {
 			console.log("[authentication > 'GET' validate] response:", response);
 
 		useAuthStore.setState({ clientUuid: response.userId });
+
+		return response;
 	} catch(error) {
 		useSceneStore.getState().setCurrentScene("Login");
 
@@ -23,5 +25,7 @@ export const handleValidate = async () => {
 		);
 
 		console.warn("[authentication > 'GET' validate] error:", error);
+
+		return null;
 	}
 };

@@ -22,7 +22,7 @@ import { BotsWindow } from "./components/bots/BotsWindow";
 import { ChatWindow } from "./components/chat/ChatWindow";
 import { CreateAccountWindow } from "./components/login/create_account/CreateAccountWindow";
 import { InfoWindow } from "./components/info/InfoWindow";
-import { LeaveWindow } from "./components/leave/Leave";
+import { LeaveWindow } from "./components/leave/LeaveWindow";
 import { NotificationWindow } from "./components/notification/NotificationWindow";
 import { PartyWindow } from "./components/party/PartyWindow";
 import { ProfileWindow } from "./components/profile/ProfileWindow";
@@ -31,6 +31,7 @@ import { ResultsWindow } from "./components/results/ResultsWindow";
 import { SignInWindow } from "./components/login/sign_in/SignInWindow";
 import { SettingsWindow } from "./components/settings/SettingsWindow";
 import { SetupWindow } from "./components/setup/SetupWindow";
+// import { StaleWindow } from "./components/stale/StaleWindow";
 import { StatsWindow } from "./components/stats/StatsWindow";
 import { ThreeJsManager } from './components/3d/ThreeJsManager';
 import Dev from "./Dev";
@@ -168,6 +169,7 @@ export default function App() {
 				{ showWindow["setup"] && <SetupWindow /> }
 				{ showWindow["settings"] && <SettingsWindow /> }
 				{ showWindow["signIn"] && <SignInWindow /> }
+				{/* { showWindow["stale"] && <StaleWindow /> } */}
 				{ showWindow["stats"] && <StatsWindow /> }
 			</section>
 			{ showDevSection && <Dev /> }

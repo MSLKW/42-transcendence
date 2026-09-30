@@ -3,14 +3,6 @@ import { useSceneStore } from "../../store/SceneStore";
 import { Window } from "../window/Window";
 
 export const LeaveWindow = () => {
-	const setShowWindow = useSceneStore((store) => store.setShowWindow);
-	const endGame = useGameStore((store) => store.endGame);
-
-	const handleLeaveGame = () => {
-		setShowWindow("leave", false);
-		endGame();
-	}
-
 	return (
 		<Window
 			title="WARNING!"
@@ -18,46 +10,41 @@ export const LeaveWindow = () => {
 			hasPinButton={false}
 			headerType="Warning"
 		>
-			<div
-				className="
-					flex flex-col
-					py-3rem px-3rem gap-2.5rem
-				"
-			>
-				<div
-					className="
-						flex flex-col place-content-center place-items-center
-						gap-1rem
-						text-n6
-					"
-				>
+			<div className="
+				flex flex-col
+				py-3rem px-3rem gap-2.5rem
+			">
+				<div className="
+					flex flex-col place-content-center place-items-center
+					gap-1rem
+					text-n6
+				">
 					<h2>Leaving now will result in a loss</h2>
 					<h2>Are you sure?</h2>
 				</div>
-				<div
-					className="
-						flex
-						gap-1rem
-					"
-				>
+				<div className="
+					flex
+					gap-1rem
+				">
 					<button
-						onClick={handleLeaveGame}
+						onClick={() => {
+							useSceneStore.getState().setShowWindow("leave", false);
+							useGameStore.getState().endGame();
+						}}
 						className="
 							h-3rem aspect-5/1
 							btn-text bg-r2
 							text-n6
-						"
-					>
+					">
 						LEAVE
 					</button>
 					<button
-						onClick={() => setShowWindow("leave", false)}
+						onClick={() => useSceneStore.getState().setShowWindow("leave", false)}
 						className="
 							h-3rem aspect-5/1
 							btn-text bg-light
 							text-n0
-						"
-					>
+					">
 						STAY
 					</button>
 				</div>
