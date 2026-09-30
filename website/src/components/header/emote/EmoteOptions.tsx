@@ -7,8 +7,8 @@ interface EmoteOptionsProps {
 }
 
 export const EmoteOptions = ({ emoji, tip }: EmoteOptionsProps) => {
-	const rateLimitMessage = useChatStore((store) => store.rateLimitMessage);
-	
+	const rateLimited = useChatStore((store) => store.rateLimited);
+
 	const handleSend = (e: React.MouseEvent<HTMLButtonElement>) => {
 		e.currentTarget.blur();
 		chatSocket.sendChat("EMOTE", emoji);
@@ -18,7 +18,7 @@ export const EmoteOptions = ({ emoji, tip }: EmoteOptionsProps) => {
 		<button
 			key={emoji}
 			data-tip={tip}
-			disabled={rateLimitMessage ? true : false}
+			disabled={rateLimited ? true : false}
 			onClick={handleSend}
 			className="
 				text-3rem rounded-full

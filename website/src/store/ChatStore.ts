@@ -19,7 +19,7 @@ interface ChatValues {
 	chatSocketId: string | null;
 	chatRoomId: string | null;
 	cachedChat: ChatData[];
-	rateLimitMessage: string | null;
+	rateLimited: string | null;
 }
 
 interface ChatState extends ChatValues {
@@ -30,7 +30,7 @@ interface ChatState extends ChatValues {
 		avatar: string | undefined,
 		msg: string
 	) => void;
-	showRateLimitMessage: (message: string) => void;
+	showRateLimited: (message: string) => void;
 	resetValues: () => void;
 }
 
@@ -42,7 +42,7 @@ export const useChatStore = create<ChatState>() (
 			chatSocketId: null,
 			chatRoomId: null,
 			cachedChat: [],
-			rateLimitMessage: null,
+			rateLimited: null,
 
 			addToCachedChat: (type, uuid, name, avatar, msg) => {
 				set((state: { cachedChat: any }) => ({
@@ -53,13 +53,13 @@ export const useChatStore = create<ChatState>() (
 				}));
 			},
 
-			showRateLimitMessage: (message) => {
+			showRateLimited: (message) => {
 				if (rateLimitTimeout)
 					clearTimeout(rateLimitTimeout);
 
-				set({ rateLimitMessage: message });
+				set({ rateLimited: message });
 				rateLimitTimeout = setTimeout(() => {
-					set({ rateLimitMessage: null });
+					set({ rateLimited: null });
 					rateLimitTimeout = null;
 				}, 3000);
 			},
@@ -70,7 +70,7 @@ export const useChatStore = create<ChatState>() (
 					chatSocketId: null,
 					chatRoomId: null,
 					cachedChat: [],
-					rateLimitMessage: null,
+					rateLimited: null,
 				});
 			},
 		}),

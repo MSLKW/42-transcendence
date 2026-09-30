@@ -10,7 +10,7 @@ import { ChatRateLimit } from "./ChatRateLimit";
 
 export const ChatWindow = () => {
 	const cachedChat = useChatStore((store) => store.cachedChat);
-	const rateLimitMessage = useChatStore((store) => store.rateLimitMessage);
+	const rateLimited = useChatStore((store) => store.rateLimited);
 	const [ message, setMessage ] = useState("");
 	const focusRef = useRef<HTMLInputElement | null>(null);
 	const scrollContainerRef = useRef<HTMLDivElement | null>(null);
@@ -71,14 +71,12 @@ export const ChatWindow = () => {
 			pinState={false}
 			hasClearChatButton={true}
 		>
-			<div
-				className="
-					w-100 max-h-[75vh]
-					flex flex-col place-content-start place-items-center
-					py-1rem px-1rem gap-1rem
-					pointer-events-auto
-				"
-			>
+			<div className="
+				w-100 max-h-[75vh]
+				flex flex-col place-content-start place-items-center
+				py-1rem px-1rem gap-1rem
+				pointer-events-auto
+			">
 				<div
 					ref={scrollContainerRef}
 					tabIndex={-1}
@@ -89,8 +87,7 @@ export const ChatWindow = () => {
 						overflow-y-auto
 						flex flex-col place-content-center place-items-center
 						gap-1rem
-					"
-				>
+				">
 					{!cachedChat.length
 						?
 							<h2 className="text-n6/50">Chat messages appear here</h2>
@@ -137,7 +134,7 @@ export const ChatWindow = () => {
 				>
 					<input
 						ref={focusRef}
-						disabled={rateLimitMessage ? true : false}
+						disabled={rateLimited ? true : false}
 						type="text"
 						placeholder="Message"
 						value={message}

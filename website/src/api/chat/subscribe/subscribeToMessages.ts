@@ -12,13 +12,15 @@ export const subscribeToMessages = () => {
 		const addToCachedChat = useChatStore.getState().addToCachedChat;
 		const cachedData = useProfileStore.getState().cachedData;
 
-		addToCachedChat(
-			chat.type,
-			chat.senderUuid,
-			cachedData[chat.senderUuid ?? ""]?.name ?? "-",
-			cachedData[chat.senderUuid ?? ""]?.avatar ?? undefined,
-			chat.message
-		);
+		if (chat.type === "MESSAGE") {
+			addToCachedChat(
+				chat.type,
+				chat.senderUuid,
+				cachedData[chat.senderUuid ?? ""]?.name ?? "-",
+				cachedData[chat.senderUuid ?? ""]?.avatar ?? undefined,
+				chat.message
+			);
+		}
 
 		addBubble(chat.senderUuid, chat.type, chat.message);
 	});

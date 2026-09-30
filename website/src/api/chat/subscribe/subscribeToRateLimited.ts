@@ -6,6 +6,6 @@ export const subscribeToRateLimited = () => {
 		if (useChatStore.getState().chatVerboseMode)
 			console.log("[chat > 'subscribe' onRateLimited] notif:", notif);
 
-		useChatStore.getState().showRateLimitMessage(notif.message);
+		useChatStore.getState().showRateLimited(notif.message);
 	});
 };
