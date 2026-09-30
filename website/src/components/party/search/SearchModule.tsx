@@ -18,7 +18,7 @@ export const SearchModule = ({ value, onChange, search }: SearchModuleProps) => 
 		<form
 			onSubmit={(e: React.FormEvent<HTMLFormElement>) => e.preventDefault()}
 			className="
-				w-[90%]
+				w-full
 				flex place-content-center place-items-center
 				gap-1rem
 		">
@@ -33,6 +33,7 @@ export const SearchModule = ({ value, onChange, search }: SearchModuleProps) => 
 			/>
 			<button
 				data-tip="Search"
+				disabled={value ? false : true}
 				className="btn-icon bg-accent data-tip-up"
 				onClick={search}
 			>

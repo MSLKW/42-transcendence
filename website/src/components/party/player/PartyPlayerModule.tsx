@@ -87,7 +87,7 @@ export const PartyPlayerModule = ({ uuid }: PartyPlayerModuleProps) => {
 				disabled={hostUuid !== clientUuid}
 				onClick={() => partySocket.sendInvite(uuid, playerData?.username ?? "Player")}
 				className={`
-					h-auto w-auto
+					h-auto min-w-60
 					py-0.5rem px-1.5rem
 					${
 						relation === "Self" ? "bg-party-self" :

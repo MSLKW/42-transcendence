@@ -65,7 +65,7 @@ export const Window: React.FC<WindowProps> = ({
 					bg-linear-to-b from-n0 to-n1
 					border border-n2 rounded-xl
 					pointer-events-auto
-					will-change-transform
+					will-change-transform overflow-hidden
 				`}
 			>
 				{ headerType !== "None" &&

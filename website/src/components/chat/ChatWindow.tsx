@@ -1,6 +1,8 @@
 import { useState, useRef, useEffect } from "react";
 import { chatSocket } from "../../api/chat/chatSocket";
 import { useChatStore } from "../../store/ChatStore";
+import { usePartyStore } from "../../store/PartyStore";
+import { useTypingStore } from "../../store/TypingStore";
 import { Window } from "../window/Window";
 import { SendButton } from "./send/SendButton";
 import { ChatMessage } from "./ChatMessage";
@@ -11,7 +13,11 @@ import { ChatRateLimit } from "./ChatRateLimit";
 export const ChatWindow = () => {
 	const cachedChat = useChatStore((store) => store.cachedChat);
 	const rateLimited = useChatStore((store) => store.rateLimited);
-	const [ message, setMessage ] = useState("");
+	const members = usePartyStore((store) => store.members);
+	const typingUsers = useTypingStore((store) => store.typingUsers);
+
+	const [message, setMessage] = useState("");
+
 	const focusRef = useRef<HTMLInputElement | null>(null);
 	const scrollContainerRef = useRef<HTMLDivElement | null>(null);
 
@@ -72,9 +78,9 @@ export const ChatWindow = () => {
 			hasClearChatButton={true}
 		>
 			<div className="
-				w-100 max-h-[75vh]
+				w-100 max-h-75
 				flex flex-col place-content-start place-items-center
-				py-1rem px-1rem gap-1rem
+				pt-1rem px-1rem gap-0.5rem
 				pointer-events-auto
 			">
 				<div
@@ -82,7 +88,7 @@ export const ChatWindow = () => {
 					tabIndex={-1}
 					className="
 						w-full h-full
-						bg-dark-semi rounded-xl
+						bg-dark rounded-md
 						py-1rem px-1rem
 						overflow-y-auto
 						flex flex-col place-content-center place-items-center
@@ -122,16 +128,13 @@ export const ChatWindow = () => {
 							</ul>
 					}
 				</div>
-				<ChatTypingIndicator />
-				<ChatRateLimit />
 				<form
 					onSubmit={handleSend}
 					className="
-						w-full
-						flex place-content-between place-items-center
-						gap-3
-					"
-				>
+					w-full
+					flex place-content-between place-items-center
+					gap-1rem
+				">
 					<input
 						ref={focusRef}
 						disabled={rateLimited ? true : false}
@@ -143,6 +146,17 @@ export const ChatWindow = () => {
 					/>
 					<SendButton message={message}/>
 				</form>
+			</div>
+			<div className="
+				w-full h-2rem
+				flex place-content-center place-items-center
+				text-n6 opacity-60
+			">
+				{ 
+					rateLimited ? <ChatRateLimit /> :
+					Object.keys(typingUsers).length ? <ChatTypingIndicator /> :
+					<p>{members.length === 1 ? "1 player" : members.length + " players"} in chat</p>
+				}
 			</div>
 		</Window>
 	);
