@@ -32,16 +32,6 @@ export class Player extends Participant {
 	}
 
 	private setupListeners() {
-		this.socket.on("player_play_card_hand_request", (status: StatusTransmit) => {
-			if (status.success === true) {
-				const cardHand = this.cardManager.sendSelectedCards();
-				this.cardHeapRef.receiveCardHand(cardHand);
-				useGameStore.getState().reduceCardsLeft(this.uuid, cardHand.cards.length);
-			} else {
-				console.log(`player_play_card_hand_request error: ${status.message}`);
-			}
-		});
-		
 		this.socket.on("player_turn", (playerTurn: PlayerTurnTransmit) => {
 			const activeSeat = useGameStore.getState().gameSeats.findIndex((uuid) => uuid === playerTurn.playerId);
 			useGameStore.setState({
@@ -51,12 +41,6 @@ export class Player extends Participant {
 			});
 			console.log(`It is now Player<${playerTurn.playerId}>'s turn! Timer is set at ${playerTurn.timer} milliseconds!`);
 		});
-
-		this.socket.on("player_skip_turn_request", (status: StatusTransmit) => {
-			if (status.success === false) {
-				console.log(`player_skip_turn_request message: ${status.message}`);
-			}
-		})
 
 		this.socket.on("player_skip_turn", (skipTurn: SkipTurnTransmit) => {
 			console.log(`Player<${skipTurn.playerId}> skipped their turn!`);
@@ -117,11 +101,24 @@ export class Player extends Participant {
 
 	public sendCardsButtonHandler() {
 		const cardHandTransmit = this.cardManager.selectedCards.transmit();
-		this.socket.emit("player_play_card_hand_request", cardHandTransmit);
+		this.socket.emit("player_play_card_hand_request", cardHandTransmit, (status: StatusTransmit) => {
+			if (status.success === true) {
+				const cardHand = this.cardManager.sendSelectedCards();
+				this.cardHeapRef.receiveCardHand(cardHand);
+				useGameStore.getState().reduceCardsLeft(this.uuid, cardHand.cards.length);
+			}
+			else {
+				console.log(`player_play_card_hand_request error: ${status.message}`);
+			}
+		});
 	}
 
 	public skipTurnButtonHandler() {
-		this.socket.emit("player_skip_turn_request");
+		this.socket.emit("player_skip_turn_request", (status: StatusTransmit) => {
+			if (status.success === false) {
+				console.log(`[gameSocket] 'player_skip_turn_request' message: ${status.message}`);
+			}
+		});
 	}
 
 	// public sortCardsByRankButtonHandler() {

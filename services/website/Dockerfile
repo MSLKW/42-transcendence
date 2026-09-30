@@ -1,4 +1,4 @@
-# #### --- original implementation of int/KAN-1
+# #### --- ori
 # # FROM node:24
 # # WORKDIR /app
 
@@ -30,8 +30,8 @@
 
 # CMD ["npm", "run", "dev"]
 
-#### --- fix original implementation of int/KAN-1 to adapt with current directories layout
 
+#### --- fix original implementation of int/KAN-1 to adapt with current directories layout
 FROM node:24
 WORKDIR /app
 
@@ -59,7 +59,6 @@ WORKDIR /app/services/website
 CMD ["npm", "run", "dev"]
 
 # #### --- optimized docker to be applied before production
-#
 # FROM node:24 AS builder
 # WORKDIR /app
 

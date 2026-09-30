@@ -2,7 +2,7 @@ import { Socket } from 'socket.io';
 import { io, kickSocket, LobbyRequest } from './server.js';
 import { UserState } from './UserState.js';
 import { GameState } from './GameState.js';
-import { GameSettingsTransmit, GameStartRequest, SeatOrderTransmit, StatusTransmit } from '@big2/game-types';
+import { GameSettingsTransmit, SeatOrderTransmit, StatusTransmit } from '@big2/game-types';
 import { EventEmitter } from 'node:events';
 import { success } from 'zod';
 import { privateDecrypt } from 'node:crypto';
@@ -114,20 +114,21 @@ export class Lobby {
 			this.disconnectUser(user);
 		});
 
-		user.socket.on("game_start_request", () => {
-			this.GameStartRequest(user);
+		user.socket.on("game_start_request", (statusCallback) => {
+			statusCallback(this.GameStartRequest(user));
 		});
 
-		user.socket.on("user_seat_change", (totalSeats: number) => {
-			user.socket.emit("user_seat_change", this.initSeats(totalSeats, user.uuid));
+		user.socket.on("user_seat_change", (totalSeats: number, statusCallback) => {
+			statusCallback(this.initSeats(totalSeats, user.uuid));
 		});
 
-		user.socket.on("game_settings_set", (gameSettings: GameSettingsTransmit) => {
+		user.socket.on("game_settings_set", (gameSettings: GameSettingsTransmit, statusCallback) => {
 			const status = this.GameSetSettings(user, gameSettings);
 			user.socket.emit("game_settings_set", status);
 			if (status.success === true) {
 				this.emit("game_settings_update", this.game.settings);
 			}
+			statusCallback(status);
 		});
 	}
 
@@ -149,14 +150,13 @@ export class Lobby {
 		}
 	}
 
-	private GameStartRequest(user: UserState) {
+	private GameStartRequest(user: UserState): StatusTransmit {
 		if (this.hostUuid !== user.uuid) {
 			const status: StatusTransmit = {
 				success: false,
 				message: "Not the host"
 			}
-			user.socket.emit("game_start_request", status);
-			return ;
+			return (status);
 		}
 		const usersToPlay = this.users.filter((user) => user.seat >= 0).sort((userA, userB) => userA.seat - userB.seat);
 		for (let i = 0; i < usersToPlay.length; i++) {
@@ -166,7 +166,7 @@ export class Lobby {
 		for (let i = 0; i < userSpectators.length; i++) {
 			this.game.addSpectator(userSpectators[i]);
 		}
-		user.socket.emit("game_start_request", this.game.startGame());
+		return (this.game.startGame());
 	}
 
 	public GameSetSettings(user: UserState, settings: GameSettingsTransmit): StatusTransmit {
@@ -198,7 +198,7 @@ export class Lobby {
 			}
 		}
 		this.hostUuid = data.hostUuid;
-		console.log(`Lobby<${this.sessionId}> is updated with ${data}`);
+		console.log(`Lobby<${this.sessionId}> is updated:`, data);
 		return (true);
 	}
 
