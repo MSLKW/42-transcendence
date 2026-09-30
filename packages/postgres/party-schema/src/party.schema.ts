@@ -8,11 +8,8 @@ export const playerStatus = partySchema.table("player_status", {
 	id: uuid("id")
 		.primaryKey()
 		.references(() => users.id, { onDelete: "cascade" }),
-	isOnline: boolean("is_online")
-		.default(false)
-		.notNull(),
-	isInGame: boolean("is_in_game")
-		.default(false)
+	lastOnline: timestamp("last_online", { withTimezone: true })
+		.defaultNow()
 		.notNull(),
 	updatedAt: timestamp("updated_at", { withTimezone: true })
 		.defaultNow()

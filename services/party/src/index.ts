@@ -9,7 +9,8 @@ import { clientManager } from "./client/ClientManager";
 import { registerEventHandlers } from "./client/event_handlers";
 
 import { UserStore } from "./store/UserStore";
-import { FileUserStore } from "./store/FileUserStore";
+// import { FileUserStore } from "./store/FileUserStore";
+import { DrizzleUserStore } from "./store/DrizzleUserStore";
 
 const PORT = Number(process.env.PORT) || 3000;
 const AUTH_SERVICE_URL = process.env.AUTH_SERVICE_URL;
@@ -28,7 +29,8 @@ const INTENTIONAL_DISCONNECT_REASONS = new Set([
 
 const pendingRemovals = new Map<string, NodeJS.Timeout>();
 
-const userStore = new FileUserStore;
+// const userStore = new FileUserStore;
+const userStore = new DrizzleUserStore;
 
 const app = express();
 app.use(express.json());
@@ -141,12 +143,19 @@ io.on("connection", (socket: Socket) =>
 	});
 });
 
-function finalizeRemoval(uuid: string, reason: string)
+async function finalizeRemoval(uuid: string, reason: string)
 {
-	userStore.setUser({
-		uuid: uuid,
-		lastOnline: new Date	
-	});
+	try
+	{
+		await userStore.setUser({
+			uuid: uuid,
+			lastOnline: new Date	
+		});
+	}
+	catch (err)
+	{
+		console.error(`Failed to save lastOnline for <${uuid}>:`, err);
+	}
 	
 	clientManager.removeByUuid(uuid);
 	console.log(`User<${uuid}> disconnected - ${reason}`);
