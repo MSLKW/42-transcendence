@@ -115,6 +115,5 @@ EXPOSE ${PORT}
 
 WORKDIR /app/services/game-server
 
-# CMD ["npm", "run", "server"]
-#priotize what game-server originally use to run on
-CMD ["node", "server_build/src/server.js"] 
+# CMD ["node", "server_build/src/server.js"] 
+CMD ["npm", "run", "server"]

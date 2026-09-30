@@ -16,8 +16,8 @@
     "test:logout":    "npm run test:logout    -w authentication",
     "test:validate":  "npm run test:validate  -w authentication",
     "test:guest":     "npm run test:guest     -w authentication",
-    "build":          "npm run build          -w --if-present",
-    "dev":            "npm run dev            -w --if-present",
+    "build":          "npm run build          -ws --if-present",
+    "dev":            "npm run dev            -ws --if-present",
     "lint":           "eslint .",
     "format":         "prettier --write ."
   },

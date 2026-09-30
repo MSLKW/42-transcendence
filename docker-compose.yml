@@ -124,7 +124,6 @@ services:
       PGUSER_PROFILE: ${PGUSER_PROFILE}
       PGUSER_GAME_STATS: ${PGUSER_GAME_STATS}
       PGUSER_FRIENDS: ${PGUSER_FRIENDS}
-      PG_MAX_CONNECTIONS: ${PG_MAX_CONNECTIONS}
     secrets:
       - db-admin-password
     networks:
@@ -217,6 +216,7 @@ services:
       SESSION_DURATION_MS: ${AUTH_SERVICE_SESSION_DURATION_MS}
       SESSION_CLEANUP_CRON_SCHEDULE_STRING: ${AUTH_SERVICE_SESSION_CLEANUP_CRON_SCHEDULE_STRING}
       PROFILE_SERVICE_URL: ${PROFILE_SERVICE_URL}
+      PG_POOL_MAX: ${PG_POOL_MAX}
     secrets:
       - db-auth-password
     networks:
@@ -249,6 +249,7 @@ services:
       PORT: ${PARTY_SERVICE_PORT}
       AUTH_SERVICE_URL: ${AUTH_SERVICE_URL}
       GAME_SERVER_SERVICE_URL: ${GAME_SERVER_SERVICE_URL}
+      PG_POOL_MAX: ${PG_POOL_MAX}
     secrets:
       - db-party-password
     networks:
@@ -282,6 +283,7 @@ services:
       PORT: ${PROFILE_SERVICE_PORT}
       AUTH_SERVICE_URL: ${AUTH_SERVICE_URL}
       AVATAR_DIR: "${PROFILE_SERVICE_AVATAR_DIR}"
+      PG_POOL_MAX: ${PG_POOL_MAX}
     volumes:
       - avatars-data:${PROFILE_SERVICE_AVATAR_DIR}
     secrets:
@@ -315,6 +317,7 @@ services:
       PGHOST: ${PGHOST}
       PGDATABASE: ${PGDATABASE}
       AUTH_SERVICE_URL: ${AUTH_SERVICE_URL}
+      PG_POOL_MAX: ${PG_POOL_MAX}
     secrets:
       - db-friends-password
     networks:
@@ -388,6 +391,7 @@ services:
   #     PGPORT: ${PGPORT}
   #     PGHOST: ${PGHOST}
   #     PGDATABASE: ${PGDATABASE}
+      # PG_POOL_MAX: ${PG_POOL_MAX}
   #   secrets:
   #     - db-game-stats-password
   #   depends_on:
