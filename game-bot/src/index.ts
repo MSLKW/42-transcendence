@@ -23,6 +23,11 @@ const server = app.listen(PORT, ()=> {
 	console.log(`Server running on http://localhost:${PORT}`);
 });
 
+server.on("error", (err: NodeJS.ErrnoException) =>
+{
+	console.error(err.message);
+});
+
 process.on("SIGINT", () => {
 	manager.stopAll();
 	server.close();
