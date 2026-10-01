@@ -3,6 +3,7 @@ import express from "express";
 
 import { config } from "./config";
 import { BotManager } from "./bot/BotManager";
+import { healthCheck } from "./handlers/healthCheck";
 import { newBotHandler } from "./handlers/newBotHandler";
 import { RandomController } from "./ai/RandomController";
 import { PassiveController } from "./ai/PassiveController";
@@ -15,6 +16,7 @@ const manager = new BotManager();
 const app = express();
 app.use(express.json());
 
+app.get("/health", healthCheck());
 app.post("/new_bot", newBotHandler(manager));
 
 const server = app.listen(PORT, ()=> {
@@ -23,5 +25,6 @@ const server = app.listen(PORT, ()=> {
 
 process.on("SIGINT", () => {
 	manager.stopAll();
+	server.close();
 	process.exit(0);
 });
