@@ -30,9 +30,3 @@ secrets/
 # build files
 tsconfig.tsbuildinfo
 .tsbuildinfo
-
-# aisyah's personal .md files
-FORGET_ME_NOTS.md
-FUTURE_PROJECT_README.md
-IDEAS.md
-KAN16docker-TODOs.md

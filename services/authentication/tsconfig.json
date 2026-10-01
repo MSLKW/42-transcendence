@@ -10,15 +10,6 @@
 		"skipLibCheck": true,
 		"forceConsistentCasingInFileNames": true,
 		"types": ["node"],
-		// //
-		// // previously added by aisyah, will cleanup later
-		// "isolatedModules": true,
-		// "moduleDetection": "force",
-		// // "verbatimModuleSyntax": true,
-		// "noUncheckedSideEffectImports": true,
-		// "outDir": "./dist",
-		// "rootDir": "./src",
-		// //
 		"incremental": true,
 		"tsBuildInfoFile": "./.tsbuildinfo"
 	},
