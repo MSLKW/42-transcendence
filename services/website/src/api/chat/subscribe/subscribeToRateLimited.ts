@@ -3,6 +3,9 @@ import { chatSocket } from "../chatSocket"
 
 export const subscribeToRateLimited = () => {
 	return chatSocket.onRateLimited((notif) => {
-		useChatStore.getState().showRateLimitMessage(notif.message);
+		if (useChatStore.getState().chatVerboseMode)
+			console.log("[chat > 'subscribe' onRateLimited] notif:", notif);
+
+		useChatStore.getState().showRateLimited(notif.message);
 	});
 };

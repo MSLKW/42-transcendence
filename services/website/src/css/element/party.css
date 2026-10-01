@@ -11,6 +11,9 @@
 @utility bg-party-offline {
 	@apply
 		border border-red-500/40 rounded-sm outline-b5
+		hover:scale-105
+		cursor-pointer
+		data-tip-up
 		;
 }
 

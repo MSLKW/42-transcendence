@@ -12,8 +12,8 @@ export class CardHeap {
 	private cardHands: Array<CardHand>;
 
 	constructor(position: THREE.Vector3) {
-		this.originalPosition = position.clone();
-		this.position = this.originalPosition.clone();
+		this.originalPosition = position;
+		this.position = this.originalPosition;
 		this.rotation = new THREE.Euler(-Math.PI / 2, 0, this.getRandomRange(-0.3, 0.3));
 		this.cardHands = [];
 		this.cardHandQueue = gsap.timeline({ paused: true });
@@ -93,7 +93,7 @@ export class CardHeap {
 			this.cardHands[i].disposeCards();
 		}
 		this.cardHands.length = 0;
-		this.position.copy(this.originalPosition);
+		this.position = this.originalPosition;
 		this.cardHandQueue.kill();
 		this.cardHandQueue = gsap.timeline({ paused: true });
 	}

@@ -1,34 +1,27 @@
 import { fetchSignIn } from "./fetchSignIn";
 import { useAuthStore } from "../../../store/AuthStore";
 import { useNotificationStore, NOTIFICATION_TYPE } from "../../../store/NotificationStore";
-import { useProfileStore } from "../../../store/ProfileStore";
 import { useSceneStore } from "../../../store/SceneStore";
-import { handleGetProfile } from "../../profile/get_profile/handleGetProfile";
 
 export const handleSignIn = async (email: string, password: string) => {
-	const { setShowWindow, setCurrentScene } = useSceneStore.getState();
-	const { showNotification } = useNotificationStore.getState();
+	const showNotification = useNotificationStore.getState().showNotification;
 
 	try {
 		const response = await fetchSignIn(email, password);
-		useAuthStore.setState({
-			clientUuid: response.id,
-		});
-		useProfileStore.setState({
-			validateResponse: response,
-		});
 
-		await handleGetProfile(response.id);
-		await useProfileStore.getState().setCachedData();
+		if (useAuthStore.getState().authVerboseMode)
+			console.log("[authentication > 'POST' signin] response:", response);
 
-		setShowWindow("signIn", false);
-		setCurrentScene("Home");
+		useAuthStore.setState({ clientUuid: response.id });
+		useSceneStore.getState().setShowWindow("signIn", false);
+		useSceneStore.getState().setCurrentScene("Home");
 
 		showNotification("Signed in successfully", NOTIFICATION_TYPE.message);
-		console.log("[handleSignIn] response.id: ", response.id);
 	} catch (err) {
-		const errorMsg = err instanceof Error ? err.message : "Something went wrong. Please try again";
-		console.log("[handleSignIn] errorMsg:", errorMsg);
-		showNotification(errorMsg, NOTIFICATION_TYPE.error);
+		const error = err instanceof Error ? err.message : "Something went wrong. Please try again";
+
+		showNotification(error, NOTIFICATION_TYPE.error);
+
+		console.warn("[handleSignIn] 'POST' error:", error);
 	}
 }

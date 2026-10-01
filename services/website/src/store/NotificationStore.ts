@@ -69,7 +69,7 @@ export const useNotificationStore = create<NotificationState>()(
 
 			useSceneStore.getState().setShowWindow("notification", true);
 		},
-		
+
 		removeNotification: (id) => {
 			set((state) => {
 				const updated = state.notifications.filter((n) => n.id !== id);

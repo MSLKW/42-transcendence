@@ -1,14 +1,13 @@
+const partyUrl = import.meta.env.VITE_PARTY_API_URL;
+
 export const fetchGetOnline = async (uuid: string) => {
-	const response = await fetch(`/api/party/online/${uuid}`, {
+	const response = await fetch(`${partyUrl}/online/${uuid}`, {
 		method: "GET",
 		credentials: "include",
 	});
 
-	if (!response.ok) {
-		const errorData = await response.json().catch(() => ({}));
-		console.log(errorData.message || "Cannot fetch online status with uuid");
-	}
+	if (!response.ok)
+		throw new Error(`Failed to get online data (${response.status}, ${response.statusText})`);
 
-	console.log("[/api/party/online] 200 OK");
 	return await response.json();
 };

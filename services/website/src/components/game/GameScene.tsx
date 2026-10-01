@@ -1,9 +1,9 @@
-import { useEffect } from "react";
+// import { useEffect } from "react";
 import { useGameStore } from "../../store/GameStore";
 import { useProfileStore } from "../../store/ProfileStore";
-import { useResultsStore } from "../../store/ResultsStore";
-import { useSceneStore } from "../../store/SceneStore";
-import { useAutoPass } from "../../utilities/useAutoPass";
+// import { useResultsStore } from "../../store/ResultsStore";
+// import { useSceneStore } from "../../store/SceneStore";
+// import { useAutoPass } from "../../utilities/react/useAutoPass";
 import { HeaderModule } from "../header/HeaderModule";
 import { AvatarModule } from "../avatar/AvatarModule";
 import { RankCallButton } from "./rank/RankCallButton";
@@ -18,8 +18,19 @@ export const GameScene = () => {
 	const cardsLeft = useGameStore((store) => store.cardsLeft);
 	const activeSeat = useGameStore((store) => store.activeSeat);
 	const gameStarted = useGameStore((store) => store.gameStarted);
-	const playerDisconnection = useGameStore((store) => store.playerDisconnection);
 	const cachedData = useProfileStore((store) => store.cachedData);
+	// const setResults = useResultsStore((store) => store.setResults);
+	// const setCurrentScene = useSceneStore((store) => store.setCurrentScene);
+	// const setShowWindow = useSceneStore((store) => store.setShowWindow);
+
+	// useAutoPass();
+	// useEffect(() => {
+	// 	if (cardsLeft.includes(0)) {
+	// 		setResults();
+	// 		setCurrentScene("Lobby");
+	// 		setShowWindow("results", true);
+	// 	}
+	// }, [cardsLeft]);
 
 	return (
 		<>
@@ -35,7 +46,6 @@ export const GameScene = () => {
 									image={cachedData[gameSeats[seatRef[1]] ?? ""]?.avatar ?? undefined}
 									cornerButton={cardsLeft[seatRef[1]] ?? -1}
 									isActive={gameStarted && activeSeat === seatRef[1]}
-									isDisconnected={playerDisconnection[gameSeats[seatRef[1]] ?? ""]}
 								/>
 							}
 						</div>
@@ -47,7 +57,6 @@ export const GameScene = () => {
 									image={cachedData[gameSeats[seatRef[2]] ?? ""]?.avatar ?? undefined}
 									cornerButton={cardsLeft[seatRef[2]] ?? -1}
 									isActive={gameStarted && activeSeat === seatRef[2]}
-									isDisconnected={playerDisconnection[gameSeats[seatRef[2]] ?? ""]}
 								/>
 							}
 						</div>
@@ -59,7 +68,6 @@ export const GameScene = () => {
 									image={cachedData[gameSeats[seatRef[3]] ?? ""]?.avatar ?? undefined}
 									cornerButton={cardsLeft[seatRef[3]] ?? -1}
 									isActive={gameStarted && activeSeat === seatRef[3]}
-									isDisconnected={playerDisconnection[gameSeats[seatRef[3]] ?? ""]}
 								/>
 							}
 						</div>
@@ -75,7 +83,6 @@ export const GameScene = () => {
 									image={cachedData[gameSeats[seatRef[1]] ?? ""]?.avatar ?? undefined}
 									cornerButton={cardsLeft[seatRef[1]] ?? -1}
 									isActive={gameStarted && activeSeat === seatRef[1]}
-									isDisconnected={playerDisconnection[gameSeats[seatRef[1]] ?? ""]}
 								/>
 							}
 						</div>
@@ -87,7 +94,6 @@ export const GameScene = () => {
 									image={cachedData[gameSeats[seatRef[2]] ?? ""]?.avatar ?? undefined}
 									cornerButton={cardsLeft[seatRef[2]] ?? -1}
 									isActive={gameStarted && activeSeat === seatRef[2]}
-									isDisconnected={playerDisconnection[gameSeats[seatRef[2]] ?? ""]}
 								/>
 							}
 						</div>
@@ -102,7 +108,6 @@ export const GameScene = () => {
 								image={cachedData[gameSeats[seatRef[1]] ?? ""]?.avatar ?? undefined}
 								cornerButton={cardsLeft[seatRef[1]] ?? -1}
 								isActive={gameStarted && activeSeat === seatRef[1]}
-								isDisconnected={playerDisconnection[gameSeats[seatRef[1]] ?? ""]}
 							/>
 						}
 					</div>
@@ -110,12 +115,10 @@ export const GameScene = () => {
 				<div className="absolute left-1/2 top-[24%] -translate-x-1/2">
 					<RankCallButton />
 				</div>
-				<div
-					className="
-						absolute left-1/2 top-[64%] -translate-x-1/2
-						flex gap-2rem
-					"
-				>
+				<div className="
+					absolute left-1/2 top-[64%] -translate-x-1/2
+					flex gap-2rem
+				">
 					<GamePassButton />
 					<GamePlayButton />
 				</div>
@@ -128,16 +131,13 @@ export const GameScene = () => {
 						image={cachedData[gameSeats[seatRef[0]] ?? ""]?.avatar ?? undefined}
 						cornerButton={cardsLeft[seatRef[0]]}
 						isActive={gameStarted && activeSeat === seatRef[0]}
-						isDisconnected={playerDisconnection[gameSeats[seatRef[0]] ?? ""]}
 					/>
 				}
-				<div
-					className="
-						w-[clamp(1rem,10vw+0.5rem,5rem)] h-full
-						flex flex-col place-content-between
-						gap-0.5rem
-					"
-				>
+				<div className="
+					w-[clamp(1rem,10vw+0.5rem,5rem)] h-full
+					flex flex-col place-content-between
+					gap-0.5rem
+				">
 					<SortButtons />
 				</div>
 			</footer>

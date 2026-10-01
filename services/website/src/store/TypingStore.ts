@@ -6,6 +6,7 @@ interface TypingValues {
 
 interface TypingState extends TypingValues {
 	setTyping: (senderUuid: string, isTyping: boolean) => void;
+	resetValues: () => void;
 }
 
 export const useTypingStore = create<TypingState>(
@@ -27,6 +28,12 @@ export const useTypingStore = create<TypingState>(
 					return { typingUsers };
 				});
 			}
+		},
+
+		resetValues: () => {
+			set({
+				typingUsers: {},
+			});
 		},
 	}),
 );

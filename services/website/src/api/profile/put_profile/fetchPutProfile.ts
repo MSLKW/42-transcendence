@@ -1,5 +1,7 @@
+const profileUrl = import.meta.env.VITE_PROFILE_API_URL;
+
 export const fetchPutProfile = async (username: string, avatarPath: string, badge: string) => {
-	const response = await fetch(`/api/profile/profile`, {
+	const response = await fetch(`${profileUrl}/profile`, {
 		method: "PUT",
 		headers: { "Content-Type": "application/json" },
 		body: JSON.stringify({
@@ -10,10 +12,10 @@ export const fetchPutProfile = async (username: string, avatarPath: string, badg
 	});
 
 	if (!response.ok) {
-		console.log("[fetchPutProfile] failed");
-		return;
+		if (response.status === 409)
+			throw new Error("Name taken. Use a different name");
+		throw new Error(`Failed to update profile (${response.status} ${response.statusText})`);
 	}
-	
-	console.log("[fetchPutProfile] 200 OK");
+
 	return response;
 }

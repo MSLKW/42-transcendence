@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import { io, Socket } from 'socket.io-client';
-import { CardHandTransmit, CardRank, CardSuit, GameStateTransmit, StatusTransmit, SeatOrderTransmit, GameSettingsTransmit, GameEndStatsTransmit } from '@big2/game-types';
+import { CardHandTransmit, CardRank, CardSuit, GameStateTransmit, GameStartRequest, StatusTransmit, SeatOrderTransmit, GameSettingsTransmit, GameEndStatsTransmit } from '@big2/game-types';
 import { CardHeap } from './CardHeap.ts';
 import { Player } from './Player.ts';
 import { Opponent } from './Opponent.ts';
@@ -32,9 +32,7 @@ export class Game {
 			}
 		})
 		if (this.playerId === usePartyStore.getState().hostUuid) {
-			this.socket.emit("user_seat_change", useGameStore.getState().totalPlayers, (status: StatusTransmit) => {
-				console.log("[gameSocket] user_seat_change: ", status);
-			});
+			this.socket.emit("user_seat_change", useGameStore.getState().totalPlayers);
 		}
 
 		this.participants = [];
@@ -44,65 +42,79 @@ export class Game {
 	}
 
 	public startGame() {
-		console.log("[game] Emitting game_start_request");
-		this.socket.emit("game_start_request", (status: StatusTransmit) => {
-			console.log(`Start Game: ${status.success} | ${status.message}`);
-		});
+		const gameStartRequest: GameStartRequest = {
+			playerId: this.playerId
+		}
+		if (useGameStore.getState().gameVerboseMode)
+			console.log("[game] Sending game_start_request");
+		this.socket.emit("game_start_request", gameStartRequest);
 	}
 
 	public takeSeat(seatIndex: number) {
-		this.socket.emit("user_seat_take", seatIndex, (status: StatusTransmit) => {
-			console.log(`[gameSocket] user_seat_take: ${status.success} | ${status.message}`);
-		});
+		this.socket.emit("user_seat_take", seatIndex);
 	}
 
 	public leaveSeat() {
-		this.socket.emit("user_seat_leave", (status: StatusTransmit) => {
-			console.log(`[gameSocket] user_seat_leave: ${status.success} | ${status.message}`);
-		});
+		this.socket.emit("user_seat_leave");
 	}
 
 	private bindSocketEvents() {
-		this.socket.on("connect_error", (error) => {
-			console.log("[gameSocket] 'connect_error': ", error.message);
-		});
-
 		this.socket.on("connect", () => {
-			console.log(`[gameSocket] 'connect' id: ${this.socket.id}`);
-			useSceneStore.getState().setCurrentScene("Lobby");
+			useGameStore.setState({ gameSocketId: this.socket.id });
+			if (useGameStore.getState().gameVerboseMode)
+				console.log(`[gameSocket] 'connect' id: ${this.socket.id}`);
 		});
-
 		this.socket.on("graceful_disconnect", (reason: string) => {
-			console.log(`[gameSocket 'graceful_disconnect' reason: ${reason}]`);
+			if (useGameStore.getState().gameVerboseMode)
+				console.log(`[gameSocket 'graceful_disconnect' reason: ${reason}]`);
 			this.socket.disconnect();
 		});
-
 		this.socket.on("disconnect", (reason) => {
-			console.log(`[gameSocket] 'disconnect' reason: ${reason}`);
+			if (useGameStore.getState().gameVerboseMode)
+				console.log(`[gameSocket] 'disconnect' reason: ${reason}`);
+			useGameStore.setState({ gameSocketId: null });
 			useSceneStore.getState().setCurrentScene("Home");
+		});
+
+		this.socket.on("game_start_request", (status: StatusTransmit) => {
+			if (useGameStore.getState().gameVerboseMode)
+				console.log(`Start Game: ${status.success} | ${status.message}`);
 		});
 	
 		this.socket.on("game_end", (gameEndStats: GameEndStatsTransmit) => {
 			useResultsStore.getState().setResults(gameEndStats);
-			useGameStore.setState({ round: gameEndStats.temporaryRoundsPlayed });
 			this.resetGame();
-			useSceneStore.getState().setCurrentScene("Lobby");
-			useSceneStore.getState().setShowWindow("results", true);
 		});
 	
-		this.socket.on("player_connection_update", (disconnections: Record<string, boolean>) => {
-			useGameStore.setState({ playerDisconnection: disconnections });
-			console.log("[gameSocket] Received 'player_connection_update': " + disconnections);
+		this.socket.on("player_connection_update", (connections: Record<string, boolean>) => {
+			if (useGameStore.getState().gameVerboseMode)
+				console.log(connections);
 		});
+	
+		// this.socket.on("user_seat_take", (status: StatusTransmit) => {
+			// if (useGameStore.getState().gameVerboseMode)
+			// 	console.log(`Take seat: ${status.success} | ${status.message}`);
+		// });
+	
+		// this.socket.on("user_seat_leave", (status: StatusTransmit) => {
+		// 	if (useGameStore.getState().gameVerboseMode)
+		// 		console.log(`Left Seat: ${status.success} | ${status.message}`);
+		// });
 	
 		this.socket.on("user_seat_update", (seatData: SeatOrderTransmit) => {
 			const totalPlayers = useGameStore.getState().totalPlayers;
-			console.log(`[gameSocket] 'user_seat_update' | totalSeats: ${seatData.totalSeats} | seatOrder: ${seatData.seatOrder}`);
+			if (useGameStore.getState().gameVerboseMode)
+				console.log(`[gameSocket] 'user_seat_update' | totalSeats: ${seatData.totalSeats} | seatOrder: ${seatData.seatOrder}`);
 			if (totalPlayers !== seatData.totalSeats) {
 				useGameStore.setState({totalPlayers: seatData.totalSeats})
 				useGameStore.getState().initSeats();
 			}
 			useGameStore.setState({userSeats: seatData.seatOrder});
+		});
+
+		this.socket.on("user_seat_change", (status: StatusTransmit) => {
+			if (useGameStore.getState().gameVerboseMode)
+				console.log(status);
 		});
 	
 		this.socket.on("user_list_update", (userList: Array<string>) => {
@@ -117,40 +129,42 @@ export class Game {
 		})
 
 		this.socket.on("game_settings_update", (gameSettings: GameSettingsTransmit) => {
-			console.log(gameSettings);
+			if (useGameStore.getState().gameVerboseMode)
+				console.log(gameSettings);
 		});
 	
 		this.socket.on("game_state", (gameState: GameStateTransmit) => {
-			console.log("[gameSocket] Received game_state");
-			this.resetGame();
+			if (useGameStore.getState().gameVerboseMode)
+				console.log("[gameSocket] Received game_state");
 			this.initGame(gameState);
 		});
 	}
 
 	private initGame(gameState: GameStateTransmit) {
+		useGameStore.setState({ round: useGameStore.getState().round + 1 });
 		useSceneStore.getState().setShowWindow("results", false);
 		this.initParticipants(gameState);
-		console.log(gameState.playerSeatOrder);
 		const seats: string[] = Object.entries(gameState.playerSeatOrder)
 			.sort((a, b) => a[1] - b[1])
 			.map(([key]) => key);
-		console.log(seats);
 		useGameStore.setState({ gameSeats: seats });
 		useGameStore.setState({ totalPlayers: this.participants.length });
 		useGameStore.getState().setCardsLeft(gameState.playerCardsAmount);
-		useGameStore.getState().setSeatRef(useGameStore.getState().gameSeats);
+		useGameStore.getState().setSeatRef();
 		useSceneStore.getState().setCurrentScene("Game");
 		this.moveCamera();
 		this.initDeckDealing(gameState);
 	}
 
-	public resetGame() {
+	private resetGame() {
 		this.cardHeap.reset();
 		for (let i = 0; i < this.participants.length; i++) {
 			this.participants[i].cardManager.reset();
 		}
 		this.playerRef = null;
 		this.participants.length = 0;
+		useSceneStore.getState().setCurrentScene("Lobby");
+		useSceneStore.getState().setShowWindow("results", true);
 	}
 
 	private initParticipants(gameState: GameStateTransmit) {

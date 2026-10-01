@@ -243,7 +243,8 @@ export class CardManager {
 				if (updatedPosition !== card.object.position || updatedRotation !== card.object.quaternion) {
 					timeline.add(card.move(updatedPosition, updatedRotation, duration), 0);
 				}
-				// console.log(`updated card object rank: ${card.rank} suit: ${card.suit} position: ${card.object.position.x},${card.object.position.y},${card.object.position.z} index: ${normalizedIndex}`);
+				// if (useGameStore.getState().gameVerboseMode)
+					// console.log(`updated card object rank: ${card.rank} suit: ${card.suit} position: ${card.object.position.x},${card.object.position.y},${card.object.position.z} index: ${normalizedIndex}`);
 			}
 		}
 		return (timeline);

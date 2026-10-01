@@ -1,21 +1,30 @@
 import { Socket } from "socket.io-client";
 import { usePartyStore } from "../../../store/PartyStore";
+import { useSceneStore } from "../../../store/SceneStore";
 
-export function registerConnectionHandlers(socket: Socket, setIsConnecting: (value: boolean) => void) {
+export function connectionHandlers(socket: Socket) {
 	socket.on("connect", () => {
-		setIsConnecting(false);
+		if (usePartyStore.getState().partyVerboseMode)
+			console.log("[party > 'on' connect] id:", socket?.id);
+
 		usePartyStore.setState({ partySocketId: socket?.id });
-		console.log("[partySocket] 'connect' id:", socket?.id);
 	});
 
 	socket.on("disconnect", (reason) => {
-		setIsConnecting(false);
-		usePartyStore.setState({ partySocketId: null });
-		console.log("[partySocket] 'disconnect' reason:", reason);
+		if (usePartyStore.getState().partyVerboseMode)
+			console.log("[party > 'on' disconnect] reason:", reason);
+
+		usePartyStore.setState({
+			partySocketId: null,
+			hostUuid: null,
+		});
+
+		if (useSceneStore.getState().currentScene !== "Login")
+			useSceneStore.getState().setShowWindow("stale", true);
 	});
 
 	socket.on("connect_error", (error) => {
-		setIsConnecting(false);
-		console.log("[partySocket] 'connect_error' message:", error.message);
+		if (usePartyStore.getState().partyVerboseMode)
+			console.warn("[party > 'on' connect_error] message:", error.message);
 	});
 }

@@ -22,7 +22,7 @@ export const TakeSeatButton = ({ seatNumber }: TakeSeatButtonProps ) => {
 				}}
 				className="
 					h-6rem aspect-square
-					bg-dark btn-icon rounded-sm
+					bg-dark-semi btn-icon rounded-sm
 					data-tip-up
 					flex place-content-center place-items-center
 				"

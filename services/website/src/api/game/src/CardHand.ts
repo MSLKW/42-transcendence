@@ -1,3 +1,4 @@
+import { useGameStore } from '../../../store/GameStore.ts';
 import { Card } from './Card.ts';
 import { HandType, PentupleType, CardRank, CardSuit, CardHandTransmit} from '@big2/game-types';
 
@@ -14,7 +15,8 @@ export class CardHand {
 
 	public receiveCard(card: Card): boolean {
 		if (this.cards.length >= 5) {
-			console.log('CardHand is full');
+			if (useGameStore.getState().gameVerboseMode)
+				console.log('CardHand is full');
 			return (false);
 		}
 		this.cards.push(card);

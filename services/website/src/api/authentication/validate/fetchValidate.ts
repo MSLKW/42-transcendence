@@ -1,22 +1,16 @@
-import { NOTIFICATION_TYPE, useNotificationStore } from "../../../store/NotificationStore";
-import { useProfileStore } from "../../../store/ProfileStore";
-import { useSceneStore } from "../../../store/SceneStore";
+const authUrl = import.meta.env.VITE_AUTH_API_URL;
 
 export const fetchValidate = async () => {
-	const response = await fetch("/api/auth/validate", {
+	const response = await fetch(`${authUrl}/validate`, {
 		method: "GET",
 		credentials: "include",
 	});
-	
+
 	if (!response.ok) {
-		useProfileStore.setState({ isAuthenticated: false });
-		useSceneStore.getState().setCurrentScene("Login");
-		useNotificationStore.getState().showNotification("Invalid or expired session", NOTIFICATION_TYPE.error);
-		console.log("[/api/auth/validate] error: Invalid or expired session");
-		return;
+		if (response.status === 401)
+			throw new Error("Missing or malformed authorization / invalid session");
+		throw new Error(`Failed to validate (${response.status} ${response.statusText})`);
 	}
-	
-	useProfileStore.setState({ isAuthenticated: true });
-	console.log("[/api/auth/validate] 200 OK");
-	return response;
+
+	return await response.json();
 }

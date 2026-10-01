@@ -6,17 +6,18 @@ import { LightboxButton } from "../../../lightbox/LightboxButton";
 interface BadgeWindowProps {
 	badge: BADGE_TYPE;
 	setBadge: (type: BADGE_TYPE) => void;
+	setHasChange: (change: boolean) => void;
 }
 
-export const BadgeWindow = ({ badge, setBadge }: BadgeWindowProps) => {
+export const BadgeWindow = ({ badge, setBadge, setHasChange }: BadgeWindowProps) => {
 	const clientUuid = useAuthStore((store) => store.clientUuid);
 	const getProfileData = useProfileStore((store) => store.getProfileData);
 	const showWindow = useSceneStore((store) => store.showWindow);
 	const setShowWindow = useSceneStore((store) => store.setShowWindow);
 
 	const data = getProfileData(clientUuid!);
-	if (!data)
-		return;
+	// if (!data)
+		// return;
 
 	return (
 		<>
@@ -33,7 +34,8 @@ export const BadgeWindow = ({ badge, setBadge }: BadgeWindowProps) => {
 				py-0.5rem
 			">
 				{BADGE_LABEL.map((badge_label, index) => {
-					const isDisabled = index > data.level;
+					// const isDisabled = index > data.level;
+					const isDisabled = index > 1;
 					return (
 						<li key={badge_label}>
 							<button
@@ -43,6 +45,7 @@ export const BadgeWindow = ({ badge, setBadge }: BadgeWindowProps) => {
 									console.log("[Badge Window] badge_label:", badge_label);
 									setBadge(badge_label);
 									setShowWindow("badge", false);
+									setHasChange(true);
 								}}
 								className={`
 									w-full
@@ -51,6 +54,7 @@ export const BadgeWindow = ({ badge, setBadge }: BadgeWindowProps) => {
 									text-sm
 									${badge === BADGE_LABEL[index] ? "text-b5" : "text-n6"}
 									py-0.5rem px-2rem
+									${isDisabled ? "cursor-default" : "cursor-pointer"}
 							`}>
 								{badge_label}
 							</button>

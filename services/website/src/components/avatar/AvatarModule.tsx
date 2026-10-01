@@ -4,13 +4,13 @@ import { AvatarImage } from "./image/AvatarImage";
 import { AvatarName } from "./name/AvatarName";
 import { AvatarCornerButton } from "./corner/AvatarCornerButton";
 import { ChatBubbles } from "../bubble/ChatBubble";
+import { useAuthStore } from "../../store/AuthStore";
 
 interface AvatarModuleProps {
 	uuid: string;
 	image: string | undefined;
 	cornerButton?: string | number;
 	isActive?: boolean;
-	isDisconnected?: boolean;
 	showName?: boolean;
 }
 
@@ -19,9 +19,9 @@ export const AvatarModule = ({
 	image,
 	cornerButton = "",
 	isActive = false,
-	isDisconnected = false,
 	showName = true,
 }: AvatarModuleProps) => {
+	const clientUuid = useAuthStore((store) => store.clientUuid);
 	const cachedData = useProfileStore((store) => store.cachedData);
 	const currentScene = useSceneStore((store) => store.currentScene);
 	const setShowWindow = useSceneStore((store) => store.setShowWindow);
@@ -29,13 +29,11 @@ export const AvatarModule = ({
 	const relation = cachedData[uuid ?? ""]?.relation ?? null;
 
 	return (
-		<div
-			className="
-				flex flex-col place-content-center place-items-center
-				gap-0.75rem
-				relative
-			"
-		>
+		<div className="
+			flex flex-col place-content-center place-items-center
+			gap-0.75rem
+			relative
+		">
 			<ChatBubbles uuid={uuid} />
 			<button
 				data-tip={
@@ -53,25 +51,21 @@ export const AvatarModule = ({
 					else
 						setShowWindow("stats", true, uuid);
 				}}
+				// animate-glow
 				className={`
-					rounded-xs
+					rounded-sm
 					${ relation === "Self" && currentScene === "Game"
 						? ""
-						: "hover:not-disabled:scale-105 active:hover:not-disabled:scale-100 focus-visible:outline-2 cursor-pointer"
+						: "hover:not-disabled:scale-105 active:hover:not-disabled:scale-100 focus-visible:outline-2 cursor-pointer data-tip-up"
 					}
-					${ relation === "Self" && currentScene === "Game"
-						? ""
-						: cornerButton ? "data-tip-up" : "data-tip-up"
-					}
+					border ${(uuid === clientUuid && image) ? "border-b4 bg-b5/40" : "border-n2 bg-n3/20"}
 					outline-b5
-					relative
-				`}
-			>
+					relative h-min
+			`}>
 				<AvatarImage
 					uuid={uuid}
 					image={image ?? undefined}
 					isActive={isActive}
-					isDisconnected={isDisconnected}
 				/>
 				<AvatarCornerButton cornerButton={cornerButton} />
 			</button>

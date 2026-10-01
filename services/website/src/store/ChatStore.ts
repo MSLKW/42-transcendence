@@ -14,11 +14,12 @@ export interface ChatData {
 let rateLimitTimeout: ReturnType<typeof setTimeout> | null = null;
 
 interface ChatValues {
+	chatVerboseMode: boolean;
+	isChatSubscribed: boolean,
 	chatSocketId: string | null;
 	chatRoomId: string | null;
 	cachedChat: ChatData[];
-	rateLimitMessage: string | null;
-	chatReconnect: number;
+	rateLimited: string | null;
 }
 
 interface ChatState extends ChatValues {
@@ -26,24 +27,25 @@ interface ChatState extends ChatValues {
 		type: CHAT_TYPE,
 		uuid: string,
 		name: string,
-		avatar: string,
+		avatar: string | undefined,
 		msg: string
 	) => void;
-
-	showRateLimitMessage: (message: string) => void;
+	showRateLimited: (message: string) => void;
+	resetValues: () => void;
 }
 
 export const useChatStore = create<ChatState>() (
 	persist(
 		(set, _get) => ({
+			chatVerboseMode: false,
+			isChatSubscribed: false,
 			chatSocketId: null,
 			chatRoomId: null,
 			cachedChat: [],
-			rateLimitMessage: null,
-			chatReconnect: 0,
+			rateLimited: null,
 
 			addToCachedChat: (type, uuid, name, avatar, msg) => {
-				set((state) => ({
+				set((state: { cachedChat: any }) => ({
 					cachedChat: [
 						...state.cachedChat,
 						{ type, uuid, name, avatar, msg }
@@ -51,16 +53,26 @@ export const useChatStore = create<ChatState>() (
 				}));
 			},
 
-			showRateLimitMessage: (message) => {
+			showRateLimited: (message) => {
 				if (rateLimitTimeout)
 					clearTimeout(rateLimitTimeout);
 
-				set({ rateLimitMessage: message });
+				set({ rateLimited: message });
 				rateLimitTimeout = setTimeout(() => {
-					set({ rateLimitMessage: null });
+					set({ rateLimited: null });
 					rateLimitTimeout = null;
 				}, 3000);
-			}
+			},
+
+			resetValues: () => {
+				set({
+					isChatSubscribed: false,
+					chatSocketId: null,
+					chatRoomId: null,
+					cachedChat: [],
+					rateLimited: null,
+				});
+			},
 		}),
 		{
 			name: 'chat-storage',

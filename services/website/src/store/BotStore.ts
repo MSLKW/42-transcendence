@@ -45,6 +45,7 @@ interface BotState extends BotValues {
 	removeBots: () => Promise<void>,
 	fillSeatsWithBots: () => void,
 	countSeatedBots: () => void,
+	resetValues: () => void,
 };
 
 export const useBotStore = create<BotState>() (
@@ -71,17 +72,18 @@ export const useBotStore = create<BotState>() (
 
 			let bot_i = 0;
 			for (let i = 0; i < totalPlayers; i++) {
-				const { userSeats: seats, setSeatWithUuid } = useGameStore.getState();
-				if (seats[i])
+				const userSeats = useGameStore.getState().userSeats;
+				const takeSeat = useGameStore.getState().takeSeat;
+				if (userSeats[i])
 					continue;
 
 				const botKeys = Object.keys(cachedBotData);
-				while (bot_i < Object.keys(cachedBotData).length && seats.includes(botKeys[bot_i])) {
+				while (bot_i < Object.keys(cachedBotData).length && userSeats.includes(botKeys[bot_i])) {
 					bot_i++;
 				}
 				if (bot_i >= Object.keys(cachedBotData).length)
 					break;
-				setSeatWithUuid(botKeys[bot_i]!, i);
+				takeSeat(i);
 
 				const cached = useProfileStore.getState().cachedData;
 				useProfileStore.setState({
@@ -105,6 +107,13 @@ export const useBotStore = create<BotState>() (
 			const seats = useGameStore.getState().userSeats;
 			const count = seats.filter((s) => s?.includes("bot")).length;
 			set({ botCount: count });
+		},
+
+		resetValues: () => {
+			set({
+				currentIntel: "Medium",
+				botCount: 0,
+			});
 		},
 	}),
 );

@@ -32,18 +32,36 @@ export class Player extends Participant {
 	}
 
 	private setupListeners() {
+		this.socket.on("player_play_card_hand_request", (status: StatusTransmit) => {
+			if (status.success === true) {
+				const cardHand = this.cardManager.sendSelectedCards();
+				this.cardHeapRef.receiveCardHand(cardHand);
+				useGameStore.getState().reduceCardsLeft(this.uuid, cardHand.cards.length);
+			} else {
+				console.log(`player_play_card_hand_request error: ${status.message}`);
+			}
+		});
+		
 		this.socket.on("player_turn", (playerTurn: PlayerTurnTransmit) => {
 			const activeSeat = useGameStore.getState().gameSeats.findIndex((uuid) => uuid === playerTurn.playerId);
 			useGameStore.setState({
 				activeSeat: activeSeat, 
-				isActiveSeatSkippable: playerTurn.skippable,
-				playerTimer: playerTurn.timer
+				isActiveSeatSkippable: playerTurn.skippable
 			});
-			console.log(`It is now Player<${playerTurn.playerId}>'s turn! Timer is set at ${playerTurn.timer} milliseconds!`);
+			if (useGameStore.getState().gameVerboseMode)
+				console.log(`It is now Player<${playerTurn.playerId}>'s turn! Timer is set at ${playerTurn.timer} seconds!`);
 		});
 
+		this.socket.on("player_skip_turn_request", (status: StatusTransmit) => {
+			if (status.success === false) {
+				if (useGameStore.getState().gameVerboseMode)
+					console.log(`player_skip_turn_request message: ${status.message}`);
+			}
+		})
+
 		this.socket.on("player_skip_turn", (skipTurn: SkipTurnTransmit) => {
-			console.log(`Player<${skipTurn.playerId}> skipped their turn!`);
+			if (useGameStore.getState().gameVerboseMode)
+				console.log(`Player<${skipTurn.playerId}> skipped their turn!`);
 		});
 
 		threejsManager.renderer.domElement.addEventListener('pointerdown', (event) => {
@@ -92,7 +110,8 @@ export class Player extends Participant {
 				this.cardManager.receiveCard(new Card(0, 0));
 			}
 			else if (event.code === "Backquote") {
-				console.log("enabling or disabling orbit controls");
+				if (useGameStore.getState().gameVerboseMode)
+					console.log("enabling or disabling orbit controls");
 				threejsManager.orbitControls.enabled = !threejsManager.orbitControls.enabled;
 				threejsManager.orbitControls.update();
 			}
@@ -101,24 +120,11 @@ export class Player extends Participant {
 
 	public sendCardsButtonHandler() {
 		const cardHandTransmit = this.cardManager.selectedCards.transmit();
-		this.socket.emit("player_play_card_hand_request", cardHandTransmit, (status: StatusTransmit) => {
-			if (status.success === true) {
-				const cardHand = this.cardManager.sendSelectedCards();
-				this.cardHeapRef.receiveCardHand(cardHand);
-				useGameStore.getState().reduceCardsLeft(this.uuid, cardHand.cards.length);
-			}
-			else {
-				console.log(`player_play_card_hand_request error: ${status.message}`);
-			}
-		});
+		this.socket.emit("player_play_card_hand_request", cardHandTransmit);
 	}
 
 	public skipTurnButtonHandler() {
-		this.socket.emit("player_skip_turn_request", (status: StatusTransmit) => {
-			if (status.success === false) {
-				console.log(`[gameSocket] 'player_skip_turn_request' message: ${status.message}`);
-			}
-		});
+		this.socket.emit("player_skip_turn_request");
 	}
 
 	// public sortCardsByRankButtonHandler() {

@@ -1,5 +1,5 @@
 
-import { useEffect, useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { partySocket } from "../../../api/party/partySocket";
 import { handleGetProfile } from "../../../api/profile/get_profile/handleGetProfile";
 import { handleGetOnline } from "../../../api/party/get_online/handleGetOnline";
@@ -17,120 +17,110 @@ interface PartyPlayerModuleProps {
 
 export const PartyPlayerModule = ({ uuid }: PartyPlayerModuleProps) => {
 	const clientUuid = useAuthStore((store) => store.clientUuid);
+	const hostUuid = usePartyStore((store) => store.hostUuid);
 	const cachedFriends = useFriendStore((store) => store.cachedFriends);
-	const members = usePartyStore((store) => store.members);
+	// const members = usePartyStore((store) => store.members);
+	const availabilityOverride = usePartyStore((store) => store.availabilityOverrides[uuid]);
 
 	//get profile
 	const [isLoading, setIsLoading] = useState<boolean>(true);
-	const [availability, setAvailability] = useState<AVAILABILITY_TYPE | undefined>(undefined);
+	const [availability, setAvailability] = useState<AVAILABILITY_TYPE | null>(null);
+	const [lastOnline, setLastOnline] = useState<Date | null>(null);
 	const [playerData, setPlayerData] = useState<UserData | null>(null);
+
+	const profileLoaded = useRef<string | null>(null);
 	useEffect(() => {
-		let mounted = true;
+		if (profileLoaded.current === uuid)
+			return;
+		profileLoaded.current = uuid;
 
 		const getProfile = async () => {
 			setIsLoading(true);
-			const profile = await handleGetProfile(uuid);
-			const online = await handleGetOnline(uuid); 
-			if (mounted) {
+
+			try {
+				const [profile, online] = await Promise.all([
+					handleGetProfile(uuid),
+					handleGetOnline(uuid),
+				])
+
 				setPlayerData(profile);
-				if (online.isOnline) {
-					if (online.inParty)
-						setAvailability("Busy");
-					else
-						setAvailability("Online");
-				} else
+				if (online?.isOnline)
+					setAvailability(online.inParty ? "Busy" : "Online");
+				else {
 					setAvailability("Offline");
+					setLastOnline(online?.lastOnline ? new Date(online.lastOnline) : null);
+				}
+			} catch (error) {
+				console.error("Failed to fetch player profile:", error);
+			} finally {
 				setIsLoading(false);
 			}
 		};
 		getProfile();
-
-		return () => {
-			mounted = false;
-		};
 	}, [uuid]);
+
+	const effectiveAvailability = availabilityOverride ?? availability;
 
 	const relation = 
 		cachedFriends.includes(uuid) ? "Friend" :
 		clientUuid === uuid ? "Self" :
 		"Stranger";
 
-	const isDisabled = (relation === "Self" || members.includes(uuid) || availability === "Offline");
+	if (isLoading)
+		return (<p>Loading player...</p>);
 
-	const handleInvite = () => {
-		if (isDisabled)
-			return;
-		partySocket.sendInvite(uuid, playerData?.username ?? "Player");
-	}
-
-	if (isLoading) {
-		return (
-			<div>
-				<p>Loading player...</p>
-			</div>
-		);
-	}
-
-	if (!playerData) {
-		return (
-			<div>
-				<p>Unable to load player</p>
-			</div>
-		);
-	}
+	if (!playerData)
+		return (<p>Unable to load player</p>);
 
 	return (
-		<div
-			className="
-				flex place-content-center place-items-center
-				gap-1rem
-			"
-		>
+		<div className="
+			flex place-content-center place-items-stretch
+			gap-1rem
+		">
 			<AvatarModule
 				uuid={uuid}
 				image={playerData.avatarPath ?? undefined}
 				showName={false}
 			/>
 			<button
-				data-tip="Send Invite"
-				disabled={isDisabled}
-				onClick={handleInvite}
+				data-tip={hostUuid === clientUuid ? "Send invite" : "Only host can invite"}
+				disabled={hostUuid !== clientUuid}
+				onClick={() => partySocket.sendInvite(uuid, playerData?.username ?? "Player")}
 				className={`
-					h-full w-full
+					h-auto min-w-60
 					py-0.5rem px-1.5rem
 					${
 						relation === "Self" ? "bg-party-self" :
-						availability === "Online" ? "bg-party-online" :
-						availability === "Offline" ? "bg-party-offline" :
-						availability === "Busy" ? "bg-party-busy" :
+						effectiveAvailability === "Online" ? "bg-party-online" :
+						effectiveAvailability === "Offline" ? "bg-party-offline" :
+						effectiveAvailability === "Busy" ? "bg-party-busy" :
 						undefined
 					}
-					flex flex-col gap-0.5rem
-				`}
-			>
+					flex flex-col gap-0.5rem flex-1
+			`}>
 				<h3>{playerData.username}</h3>
-				<div
-					className={`
-						${
-							((availability === "Online" || availability === "Busy") && relation != "Self")
-								? "place-content-between"
-								: "place-content-center"
-						}
-						place-content-center
-						flex
-						place-items-center
-						gap-1rem
-					`}
-				>
-					<PlayerStatusModule status={availability!}/>
-					{(availability === "Online" || availability === "Busy") && relation != "Self" &&
-						<div
-							className="
-								flex place-content-center place-items-center
-								text-a4
-								gap-0.5rem
-							"
-						>
+				<div className={`
+					${
+						((availability === "Online" || availability === "Busy") && relation != "Self")
+							? "place-content-between"
+							: "place-content-center"
+					}
+					place-content-center
+					flex
+					place-items-center
+					gap-1rem
+				`}>
+					<PlayerStatusModule
+						uuid={uuid}
+						availability={availability}
+						lastOnline={lastOnline}
+					/>
+					{(effectiveAvailability === "Online" || effectiveAvailability === "Busy") && relation != "Self" &&
+						<div className="
+							flex place-content-center place-items-center
+							text-a4
+							gap-0.5rem
+						">
 							<InviteIcon />
 							<p>Invite To Party</p>
 						</div>

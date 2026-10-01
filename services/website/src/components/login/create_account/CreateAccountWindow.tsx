@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useAuthStore } from "../../../store/AuthStore";
 import { useNotificationStore, NOTIFICATION_TYPE } from "../../../store/NotificationStore";
 import { handleSignUp } from "../../../api/authentication/sign_up/handleSignUp";
 import { Window } from "../../window/Window";
@@ -6,6 +7,7 @@ import { FormInputModule } from "../form/FormInputModule";
 
 export const CreateAccountWindow = () => {
 	const showNotification = useNotificationStore((store) => store.showNotification);
+	const authValidation = useAuthStore((store) => store.authValidation);
 
 	const [email, setEmail] = useState("");
 	const [password, setPassword] = useState("");
@@ -15,22 +17,24 @@ export const CreateAccountWindow = () => {
 	const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
 
-		if (!email || !password || !confirmPassword) {
-			showNotification("All fields are required", NOTIFICATION_TYPE.error);
-			return;
-		}
-		const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-		if (!emailRegex.test(email)) {
-			showNotification("Please enter a valid email address", NOTIFICATION_TYPE.error);
-			return;
-		}
-		if (password.length < 8) {
-			showNotification("Password must be at least 8 characters", NOTIFICATION_TYPE.error);
-			return;
-		}
-		if (password !== confirmPassword) {
-			showNotification("Passwords do not match", NOTIFICATION_TYPE.error);
-			return;
+		if (authValidation) {
+			if (!email || !password || !confirmPassword) {
+				showNotification("All fields are required", NOTIFICATION_TYPE.error);
+				return;
+			}
+			const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+			if (!emailRegex.test(email)) {
+				showNotification("Please enter a valid email address", NOTIFICATION_TYPE.error);
+				return;
+			}
+			if (password.length < 8) {
+				showNotification("Password must be at least 8 characters", NOTIFICATION_TYPE.error);
+				return;
+			}
+			if (password !== confirmPassword) {
+				showNotification("Passwords do not match", NOTIFICATION_TYPE.error);
+				return;
+			}
 		}
 		handleSignUp(email, password, setIsLoading);
 	}

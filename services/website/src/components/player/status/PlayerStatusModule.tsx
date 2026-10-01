@@ -1,30 +1,34 @@
-import type { AVAILABILITY_TYPE } from "../../../store/PartyStore";
+import { usePartyStore, type AVAILABILITY_TYPE } from "../../../store/PartyStore";
 
 interface PlayerStatusModuleProps {
-	status: AVAILABILITY_TYPE | null;
+	uuid: string;
+	availability: AVAILABILITY_TYPE | null;
+	lastOnline: Date | null;
 }
 
-export const PlayerStatusModule = ({ status }: PlayerStatusModuleProps) => {
+export const PlayerStatusModule = ({ uuid, availability, lastOnline }: PlayerStatusModuleProps) => {
+	const availabilityOverride = usePartyStore((store) => store.availabilityOverrides[uuid]);
+	const effectiveAvailability = availabilityOverride ?? availability;
+
 	return (
 		<div
-			className="
+			data-tip={`Last Online: ${lastOnline?.toLocaleString()}`}
+			className={`
 				h-full
 				flex place-content-center place-items-center
 				gap-0.5rem
-			"
-		>
-			<div
-				className={`
-					h-1rem aspect-square
-					rounded-full
-					${
-						status === "Offline" ? "bg-red-500" :
-						status === "Online" ? "bg-green-500" :
-						"bg-yellow-500"
-					}
-				`}
-			/>
-			<h3 className="whitespace-nowrap">{status ?? "n/a"}</h3>
+				${availability === "Offline" && "data-tip-up"}
+		`}>
+			<div className={`
+				h-1rem aspect-square
+				rounded-full
+				${
+					effectiveAvailability === "Offline" ? "bg-red-500" :
+					effectiveAvailability === "Online" ? "bg-green-500" :
+					"bg-yellow-500"
+				}
+			`}/>
+			<h3 className="whitespace-nowrap">{effectiveAvailability ?? "n/a"}</h3>
 		</div>
 	);
 }

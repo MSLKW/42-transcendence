@@ -11,7 +11,7 @@ export const RankCallButton = () => {
 			data-tip="View Rank List"
 			onClick={() => setShowWindow("rank", true)}
 			className="
-				btn-text bg-dark
+				btn-text bg-dark-semi
 				data-tip-up
 				h-max w-max
 				flex place-content-between place-items-center

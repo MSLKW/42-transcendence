@@ -7,7 +7,7 @@ interface ResultsItem {
 	uuid: string;
 	points: number;
 	totalPoints: number;
-	totalWins: number;
+	totalWins: number; // investigate this
 	rank: number;
 	rankChanged: number;
 }
@@ -20,6 +20,7 @@ interface ResultsState extends ResultsValues {
 	setResults: (gameEndStats: GameEndStatsTransmit) => void;
 	resetResults: () => void;
 	getLeaderboard: () => ResultsItem[];
+	resetValues: () => void;
 }
 
 export const useResultsStore = create<ResultsState>() (
@@ -28,7 +29,7 @@ export const useResultsStore = create<ResultsState>() (
 			results: [],
 
 			setResults: (gameEndStats: GameEndStatsTransmit) => {
-				const gameSeats = useGameStore.getState().gameSeats;
+				const { gameSeats } = useGameStore.getState();
 				const currentResults = get().results;
 
 				const isFirstRound = currentResults.length === 0 || currentResults.some(r => r.rank === undefined);
@@ -38,13 +39,11 @@ export const useResultsStore = create<ResultsState>() (
 					const cards = gameEndStats.playerFinalCardAmounts[playerUuid] ?? 0;
 
 					const existingPlayer = currentResults.find(r => r.uuid === playerUuid);
-					// temporarily let total wins be temporaryWinstreak
-					// let wins = existingPlayer ? existingPlayer.totalWins : 0;
-					
-					// if (playerUuid === gameEndStats.winnerPlayerUuid) {
-					// 	wins += 1;
-					// }
-					const wins = playerUuid === gameEndStats.winnerPlayerUuid ? gameEndStats.temporaryWinStreakAmount : 0;
+					let wins = existingPlayer ? existingPlayer.totalWins : 0;
+
+					if (playerUuid === gameEndStats.winnerPlayerUuid) {
+						wins += 1;
+					}
 
 					const roundPoints = gameEndStats.playerPenaltyPoints[playerUuid];
 					const previousTotalPoints = existingPlayer ? existingPlayer.totalPoints : 0;
@@ -94,7 +93,7 @@ export const useResultsStore = create<ResultsState>() (
 			},
 
 			resetResults: () => {
-				set({ results: [] });
+				get().resetValues();
 				useGameStore.setState({
 					gameStarted: false,
 					cardsLeft: [],
@@ -107,7 +106,13 @@ export const useResultsStore = create<ResultsState>() (
 
 			getLeaderboard: () => {
 				return [...get().results].sort((a, b) => a.totalPoints - b.totalPoints);
-			}
+			},
+
+			resetValues: () => {
+				set({
+					results: [],
+				});
+			},
 		}),
 		{
 			name: 'results-storage',

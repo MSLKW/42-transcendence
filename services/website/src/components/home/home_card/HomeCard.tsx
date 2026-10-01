@@ -48,7 +48,7 @@ export const HomeCardButton = ({ gameMode, playerCount }: HomeProps) => {
 				p-[clamp(1.25rem,1.786vmin+0.893rem,2.5rem)]
 				flex flex-col place-content-between
 				hover:not-disabled:scale-105 active:hover:not-disabled:scale-100
-				focus-visible:outline-2 outline-b5 outline-offset-5
+				focus-visible:outline-2 outline-b5
 				${clientUuid === hostUuid ? "cursor-pointer" : ""}
 				snap-center
 				${clientUuid === hostUuid ? "" : "data-tip-up"}

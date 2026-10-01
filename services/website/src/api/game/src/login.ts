@@ -1,3 +1,4 @@
+import { useGameStore } from "../../../store/GameStore";
 
 const loginButton = document.getElementById("login");
 const playerId = document.getElementById('player-id') as HTMLInputElement;
@@ -26,7 +27,8 @@ whitelistButton?.addEventListener('click', () => {
 	const whitelistedUUID = whitelistInput.value;
 	whitelistInput.value = "";
 	whitelisted.push(whitelistedUUID);
-	console.log(`Successfully added ${whitelistedUUID} to whitelist`);
+	if (useGameStore.getState().gameVerboseMode)
+		console.log(`Successfully added ${whitelistedUUID} to whitelist`);
 })
 
 interface createLobbyResponse {
@@ -42,7 +44,8 @@ createLobbyButton?.addEventListener('click', () => {
 	createLobbyAsync().then((result) => {
 		sessionId = result.lobbySessionId;
 		whitelisted.length = 0;
-		console.log(`Received sessionId: ${sessionId}`);
+		if (useGameStore.getState().gameVerboseMode)
+			console.log(`Received sessionId: ${sessionId}`);
 	}).catch((err) => {
 		console.log("Failed to create lobby");
 	});
@@ -51,7 +54,8 @@ createLobbyButton?.addEventListener('click', () => {
 updateLobbyButton?.addEventListener('click', () => {
 	const sessionId = sessionIdInput.value;
 	updateLobbyAsync(sessionId).then((result) => {
-		console.log(`Updated lobby<${sessionId}>`);
+		if (useGameStore.getState().gameVerboseMode)
+			console.log(`Updated lobby<${sessionId}>`);
 	}).catch((err) => {
 		console.log("Failed to update lobby");
 	})

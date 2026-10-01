@@ -4,6 +4,7 @@ import { handleGetSearch } from "../../api/profile/get_search/handleGetSearch";
 import { Window } from "../window/Window";
 import { SearchModule } from "./search/SearchModule";
 import { PartyPlayerModule } from "./player/PartyPlayerModule";
+import { usePartyStore } from "../../store/PartyStore";
 
 export const PartyWindow = () => {
 	// const cachedFriends = useFriendStore((store) => store.cachedFriends);
@@ -11,6 +12,7 @@ export const PartyWindow = () => {
 	const [searchQuery, setSearchQuery] = useState<string>("");
 	const [filteredResults, setFilteredResults] = useState<string[]>([]);
 	const [isSearching, setIsSearching] = useState(false);
+	
 	const searchRequestId = useRef(0);
 
 	const searchFunction = async () => {
@@ -23,6 +25,8 @@ export const PartyWindow = () => {
 		}
 
 		setIsSearching(true);
+
+		usePartyStore.setState({ availabilityOverrides: {} });
 
 		const controller = new AbortController();
 		const requestId = ++searchRequestId.current;
@@ -53,39 +57,39 @@ export const PartyWindow = () => {
 
 	return (
 		<Window
-			title="Find Players"
+			title="Search to add / invite players"
 			dismissKey="party"
 			placement="br"
+			hasPinButton={false}
 			pinState={false}
 		>
-			<div
-				className={`
-					min-w-90
-					flex flex-col place-content-center place-items-center
-					text-n6
-					py-1.5rem px-0.5rem gap-1rem
-					pointer-events-auto
-				`}
-			>
+			<div className="
+				w-100 max-h-75
+				flex flex-col place-content-center place-items-center
+				text-n6
+				pt-1rem px-1rem gap-0.5rem
+				pointer-events-auto
+			">
 				<div
 					tabIndex={-1}
 					className="
 						max-h-[50vh] w-full
-						py-0.5rem px-1.5rem
-						overflow-scroll
-						flex flex-col gap-0.75rem
-					"
-				>
+						bg-dark rounded-md
+						py-2rem px-1rem
+						overflow-y-scroll
+						flex flex-col place-content-center place-items-center
+						gap-1rem
+				">
 					{searchQuery.trim() === "" ? (
 						<>
-							<h2>Friends List</h2>
+							<h3 className="text-n6/50">Friends and search results appear here</h3>
+							{/* <h2>Friends List</h2> */}
 							{/* {cachedFriends.map((f) => (
 								<PartyPlayerModule uuid={f}/>
 							))} */}
 						</>
 					) : (
 						<>
-							{isSearching && <h2>Searching...</h2>}
 							{filteredResults.length > 0 ? (
 								filteredResults.map((uuid) => (
 									<PartyPlayerModule key={uuid} uuid={uuid} />
@@ -104,6 +108,23 @@ export const PartyWindow = () => {
 						searchFunction();
 					}}
 				/>
+			</div>
+			<div className="
+				w-full h-2rem
+				flex place-content-center place-items-center
+				text-n6 opacity-60
+			">
+				<p>
+					{
+						isSearching ? "Searching..." :
+						searchQuery.trim() !== "" ? (
+							filteredResults.length >= 2 ? `${filteredResults.length} players found` :
+							filteredResults.length === 1 ? "1 player found" :
+							"No players found"
+						):
+						"0 friends in list"
+					}
+				</p>
 			</div>
 		</Window>
 	);

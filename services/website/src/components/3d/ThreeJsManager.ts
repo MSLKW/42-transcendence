@@ -4,6 +4,7 @@ import { SceneContainer } from './SceneContainer.ts';
 import { LoginScene } from './LoginBg.ts';
 import { gsap } from 'gsap';
 import { GameScene } from '../../api/game/src/GameScene.ts';
+import { useSceneStore } from '../../store/SceneStore.ts';
 
 /*
 	Handles Scene Management and Animation etc...
@@ -122,7 +123,8 @@ export class ThreeJsManager {
 	public changeScene(sceneId: string) {
 		this.currentSceneId = sceneId;
 		const sceneContainer = this.scenes[this.currentSceneId];
-		console.log(`[threeJsManager] Changed scene to "${this.currentSceneId}"`);
+		if (useSceneStore.getState().sceneVerboseMode)
+			console.log(`[threeJsManager] Changed scene to "${this.currentSceneId}"`);
 		if (sceneContainer === undefined) {
 			this.toggleVisibility(false);
 			return ;

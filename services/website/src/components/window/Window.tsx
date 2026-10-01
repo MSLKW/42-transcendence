@@ -1,7 +1,7 @@
 import { useState, type ReactNode } from "react";
 import { useChatStore } from "../../store/ChatStore";
 import { useSceneStore } from "../../store/SceneStore";
-import { useWindowDrag } from "../../utilities/useWindowDrag";
+import { useWindowDrag } from "../../utilities/react/useWindowDrag";
 import { LightboxButton } from "../lightbox/LightboxButton";
 import { ClearIcon } from "./clear/ClearIcon";
 import { PinActiveIcon } from "./pin/PinActiveIcon";
@@ -49,7 +49,7 @@ export const Window: React.FC<WindowProps> = ({
 			flex place-content-center place-items-center
 			pointer-events-none
 		">
-			{ headerType === "Standard" && isPinned &&
+			{ headerType !== "None" && isPinned &&
 				<LightboxButton
 					dismiss={dismissKey}
 					blur={true}
@@ -65,7 +65,7 @@ export const Window: React.FC<WindowProps> = ({
 					bg-linear-to-b from-n0 to-n1
 					border border-n2 rounded-xl
 					pointer-events-auto
-					will-change-transform
+					will-change-transform overflow-hidden
 				`}
 			>
 				{ headerType !== "None" &&
@@ -78,15 +78,12 @@ export const Window: React.FC<WindowProps> = ({
 							flex place-content-between place-items-center
 							${ !isPinned && "cursor-grab active:cursor-grabbing" }
 							select-none
-						`}
-					>
-						<h2
-							className="
-								text-n6
-								ml-5
-								pointer-events-none
-							"
-						>
+					`}>
+						<h2 className="
+							text-n6
+							ml-5
+							pointer-events-none
+						">
 							{title}
 						</h2>
 						<div className="flex">

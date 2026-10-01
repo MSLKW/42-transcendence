@@ -1,11 +1,14 @@
+const authUrl = import.meta.env.VITE_AUTH_API_URL;
+
 export const fetchSignOut = async () => {
-	const response = await fetch("/api/auth/logout", {
+	const response = await fetch(`${authUrl}/logout`, {
 		method: "DELETE",
 		credentials: "include",
 	});
 
 	if (!response.ok) {
-		const errorData = await response.json().catch(() => ({}));
-		throw new Error(errorData.message || "Could not log out. Please try again");
+		if (response.status === 401)
+			throw new Error("Missing or malformed authorization / invalid session");
+		throw new Error(`Failed to log out (${response.status} ${response.statusText})`);
 	}
 };
