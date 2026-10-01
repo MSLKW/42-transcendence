@@ -20,8 +20,8 @@ export const HomeCardButton = ({ gameMode, playerCount }: HomeProps) => {
 	const hostUuid = usePartyStore((store) => store.hostUuid);
 	// const members = usePartyStore((store) => store.members);
 
-	const handleCardClick = () => {
-		handleValidate();
+	const handleCardClick = async () => {
+		await handleValidate();
 
 		useGameStore.setState({ totalPlayers: playerCount });
 		// if (members.length <= 1)

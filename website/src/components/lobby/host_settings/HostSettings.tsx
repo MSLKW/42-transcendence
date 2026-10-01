@@ -1,7 +1,7 @@
 import { useRef, useEffect } from "react";
 import { handleGetSettings } from "../../../api/profile/get_settings/handleGetSettings";
 import { useAuthStore } from "../../../store/AuthStore";
-import { useBotStore, type INTEL_TYPE, INTEL_LABEL } from "../../../store/BotStore";
+import { useBotStore } from "../../../store/BotStore";
 import { useGameStore } from "../../../store/GameStore";
 import { usePartyStore } from "../../../store/PartyStore";
 import { autoPassKeys, useSettingsStore } from "../../../store/SettingsStore";
@@ -155,7 +155,7 @@ export const HostSettings = () => {
 					</button>
 				</div>
 			</label>
-			{ botCount > 0 &&
+			{/* { botCount > 0 && */}
 				<label className="flex flex-col w-full gap-0.5rem cursor-pointer hover:scale-105">
 					<h3 className="w-full"><b>Bot Difficulty:</b></h3>
 					<div className="flex w-full place-items-center gap-1rem">
@@ -190,7 +190,7 @@ export const HostSettings = () => {
 						</button>
 					</div>
 				</label>
-			}
+			{/* } */}
 		</div>
 	);
 }
