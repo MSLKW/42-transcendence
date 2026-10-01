@@ -1,7 +1,7 @@
 import { useRef, useEffect } from "react";
 import { handleGetSettings } from "../../../api/profile/get_settings/handleGetSettings";
 import { useAuthStore } from "../../../store/AuthStore";
-import { useBotStore } from "../../../store/BotStore";
+import { useBotStore, type INTEL_TYPE, INTEL_LABEL } from "../../../store/BotStore";
 import { useGameStore } from "../../../store/GameStore";
 import { usePartyStore } from "../../../store/PartyStore";
 import { autoPassKeys, useSettingsStore } from "../../../store/SettingsStore";
@@ -66,7 +66,7 @@ export const HostSettings = () => {
 					<ToggleButton
 						checked={allow3OfAKind}
 						onChange={() => useSettingsStore.setState({ allow3OfAKind: !allow3OfAKind })}
-						disabled={gameStarted}
+						disabled={clientUuid !== hostUuid}
 					/>
 					<h3 className="text-a4 text-left">
 						{ allow3OfAKind ? "Yes" : "No" }
@@ -79,7 +79,7 @@ export const HostSettings = () => {
 					<ToggleButton
 						checked={allow2OfSpadesEnd}
 						onChange={() => useSettingsStore.setState({ allow2OfSpadesEnd: !allow2OfSpadesEnd })}
-						disabled={gameStarted}
+						disabled={clientUuid !== hostUuid}
 					/>
 					<h3 className="text-a4 text-left">
 						{ allow2OfSpadesEnd ? "Yes": "No" }
@@ -99,7 +99,7 @@ export const HostSettings = () => {
 					max={autoPassKeys.length - 1}
 					step="1"
 					value={autoPassIndex}
-					disabled={gameStarted}
+					disabled={clientUuid !== hostUuid}
 					onChange={ (e) => {
 						const index = parseInt(e.target.value, 10);
 						useSettingsStore.setState({ autoPassIndex: index });
@@ -124,6 +124,7 @@ export const HostSettings = () => {
 					</div>
 					<button
 						onClick={() => useSettingsStore.setState({ endGameCondition: (endGameCondition + 1) % 2 })}
+						disabled={clientUuid !== hostUuid}
 						className="text-sm w-full text-left text-a4 cursor-pointer"
 					>
 						{ endGameCondition ? "When first player finish" : "Until last hand remain" }
@@ -147,6 +148,7 @@ export const HostSettings = () => {
 					</div>
 					<button
 						onClick={() => useSettingsStore.setState({ scoreCalculation: (scoreCalculation + 1) % 2 })}
+						disabled={clientUuid !== hostUuid}
 						className="text-sm w-full text-left text-a4 cursor-pointer"
 					>
 						{ scoreCalculation ? "Number of cards" : "Value of cards" }
@@ -154,12 +156,40 @@ export const HostSettings = () => {
 				</div>
 			</label>
 			{ botCount > 0 &&
-				<div>
-					<h3><b>Bot Difficulty:</b></h3>
-					<h3 className="text-a4">
-						{ currentIntel }
-					</h3>
-				</div>
+				<label className="flex flex-col w-full gap-0.5rem cursor-pointer hover:scale-105">
+					<h3 className="w-full"><b>Bot Difficulty:</b></h3>
+					<div className="flex w-full place-items-center gap-1rem">
+						<div className="flex gap-0.5rem">
+							<div className={`
+								h-2 aspect-square rounded-full
+								${currentIntel === "Easy" ? "bg-b5 border-n0" : "bg-n5 border-n0"}
+								border 
+							`}/>
+							<div className={`
+								h-2 aspect-square rounded-full
+								${currentIntel === "Medium" ? "bg-b5 border-n0" : "bg-n5 border-n0"}
+								border
+							`}/>
+							<div className={`
+								h-2 aspect-square rounded-full
+								${currentIntel === "Hard" ? "bg-b5 border-n0" : "bg-n5 border-n0"}
+								border
+							`}/>
+						</div>
+						<button
+							onClick={() => useBotStore.setState({
+								currentIntel:
+									currentIntel === "Easy" ? "Medium" :
+									currentIntel === "Medium" ? "Hard" :
+									"Easy"
+							})}
+							disabled={clientUuid !== hostUuid}
+							className="text-sm w-full text-left text-a4 cursor-pointer
+						">
+							{ currentIntel }
+						</button>
+					</div>
+				</label>
 			}
 		</div>
 	);
