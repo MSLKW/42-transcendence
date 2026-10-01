@@ -3,6 +3,7 @@ import express from "express";
 
 import { config } from "./config";
 import { BotManager } from "./bot/BotManager";
+import { newBotHandler } from "./handlers/newBotHandler";
 import { RandomController } from "./ai/RandomController";
 import { PassiveController } from "./ai/PassiveController";
 import { AggressiveController } from "./ai/AggressiveController";
@@ -14,7 +15,7 @@ const manager = new BotManager();
 const app = express();
 app.use(express.json());
 
-app.post("/new_bot", ()=>{});
+app.post("/new_bot", newBotHandler(manager));
 
 const server = app.listen(PORT, ()=> {
 	console.log(`Server running on http://localhost:${PORT}`);
