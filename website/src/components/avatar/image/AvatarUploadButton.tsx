@@ -54,7 +54,7 @@ export const AvatarUploadButton = ({ setAvatar }: AvatarUploadButtonProps) => {
 				onClick={handleClick}
 				className="
 					hover:not-disabled:scale-105 active:hover:not-disabled:scale-100
-					focus-visible:outline-double hover:not-disabled:outline-double outline-b5 outline-offset-5
+					focus-visible:outline-double hover:not-disabled:outline-double outline-b5
 					border-n2 bg-n3/20
 					h-6rem aspect-square
 					border rounded-sm

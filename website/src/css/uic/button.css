@@ -1,7 +1,7 @@
 button {
 	@apply
 		focus-visible:scale-105 active:hover:not-disabled:scale-100
-		focus-visible:outline-2 outline-offset-3
+		focus-visible:outline-2
 		disabled:opacity-40
 		transition-all duration-100 ease-in-out
 		pointer-events-auto

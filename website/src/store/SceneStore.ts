@@ -36,6 +36,7 @@ export const defaultShowWindow = {
 	signIn: false,
 	settings: false,
 	setup: false,
+	stale: false,
 	stats: false,
 } as const;
 

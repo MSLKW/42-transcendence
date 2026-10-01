@@ -27,7 +27,7 @@ export const BotSetButton = ({ intel }: BotSetButtonProps) => {
 					bg-a5
 					border border-a6 rounded-sm
 					${ currentScene === "Game" ? "cursor-default" : "hover:scale-105 cursor-pointer" }
-					outline-offset-3 outline-b5
+					outline-b5
 					${currentIntel === intel ? "outline-2" : ""}
 				`}
 			/>

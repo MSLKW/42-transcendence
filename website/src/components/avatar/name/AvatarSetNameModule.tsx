@@ -53,7 +53,7 @@ export const AvatarSetNameModule = ({ name, avatar, uuid, setName, setHasChange 
 						p-4
 						text-n0 text-center
 						pointer-events-auto
-						focus:outline-2 outline-b5 outline-offset-5
+						focus:outline-2 outline-b5
 				"/>
 			</div>
 		</div>

@@ -1,6 +1,6 @@
 import { Socket } from "socket.io-client";
 import { usePartyStore } from "../../../store/PartyStore";
-import { handleValidate } from "../../authentication/validate/handleValidate";
+import { useSceneStore } from "../../../store/SceneStore";
 
 export function connectionHandlers(socket: Socket) {
 	socket.on("connect", () => {
@@ -19,7 +19,8 @@ export function connectionHandlers(socket: Socket) {
 			hostUuid: null,
 		});
 
-		handleValidate();
+		if (useSceneStore.getState().currentScene !== "Login")
+			useSceneStore.getState().setShowWindow("stale", true);
 	});
 
 	socket.on("connect_error", (error) => {

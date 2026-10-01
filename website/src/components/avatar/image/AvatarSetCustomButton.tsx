@@ -32,7 +32,7 @@ export const AvatarSetCustomButton = ({ id, avatar, setAvatar, setHasChange }: A
 				}}
 				className={`
 					hover:not-disabled:scale-105 active:hover:not-disabled:scale-100
-					focus-visible:outline-double hover:not-disabled:outline-double outline-b5 outline-offset-5
+					focus-visible:outline-double hover:not-disabled:outline-double outline-b5
 					${imagePath === avatar ? "outline-2 border-b4 bg-b5/40" : "border-n2 bg-n3/20"}
 					h-6rem aspect-square overflow-hidden
 					border rounded-sm
