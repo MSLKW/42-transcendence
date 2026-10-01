@@ -31,7 +31,6 @@ export const SettingsWindow = () => {
 			fxLevel,
 			mxLevel,
 		});
-		console.log("close");
 		useSceneStore.getState().setShowWindow("settings", false);
 	}
 
@@ -48,128 +47,6 @@ export const SettingsWindow = () => {
 				max-h-[90vh] overflow-scroll
 				gap-2.5rem
 			">
-				<div className="
-					col-span-1
-					flex flex-col gap-1rem
-				">
-					<label className={`
-						gap-5
-						cursor-pointer
-						${gameStarted ? "opacity-50" : ""}
-					`}>
-						<ToggleButton 
-							checked={allow3OfAKind}
-							onChange={() => toggleSettingsValue("allow3OfAKind")}
-							disabled={gameStarted}
-						/>
-						<h3>Allow Three of a Kind</h3>
-					</label>
-					<label className={`
-						gap-5
-						cursor-pointer
-						${gameStarted ? "opacity-50" : ""}
-					`}>
-						<ToggleButton
-							checked={allow2OfSpadesEnd}
-							onChange={() => toggleSettingsValue("allow2OfSpadesEnd")}
-							disabled={gameStarted}
-						/>
-						<h3>Allow Finish with 2 of Spades</h3>
-					</label>
-				</div>
-				<div className="
-					col-span-1
-					flex flex-col gap-1rem
-				">
-					<label htmlFor="autoPassSlider">
-						<h3 className={` ${ gameStarted && "opacity-50" } `}>
-							Auto Pass Time: {autoPassKeys[autoPassIndex]}
-						</h3>
-					</label>
-					<input
-						type="range"
-						id="autoPassSlider"
-						min="0"
-						max={autoPassKeys.length - 1}
-						step="1"
-						value={autoPassIndex}
-						disabled={gameStarted}
-						onChange={ (e) => {
-							const index = parseInt(e.target.value, 10);
-							useSettingsStore.setState({ autoPassIndex: index });
-						}}
-						className="accent-b5 cursor-pointer"
-					/>
-				</div>
-				<div className="
-					col-span-1
-					flex flex-col gap-0.5rem
-				">
-					<h3 className={` ${ gameStarted && "opacity-50" } `}>Game Ends...</h3>
-					<label className={`
-						gap-5
-						cursor-pointer
-						${gameStarted ? "opacity-50" : ""}
-					`}>
-						<RadioButton
-							name="game-ends"
-							value="first-player"
-							onChange={() => useSettingsStore.setState({ endGameCondition: 0 })}
-							checked={endGameCondition === 0}
-							disabled={gameStarted}
-						/>
-						<h3>When first player finish</h3>
-					</label>
-					<label className={`
-						gap-5
-						cursor-pointer
-						${gameStarted ? "opacity-50" : ""}
-					`}>
-						<RadioButton
-							name="game-ends"
-							value="last-hand"
-							onChange={() => useSettingsStore.setState({ autoPassIndex: 1 })}
-							checked={endGameCondition === 1}
-							disabled={gameStarted}
-						/>
-						<h3>Until last hand remain</h3>
-					</label>
-				</div>
-				<div className="
-					col-span-1
-					flex flex-col gap-0.5rem
-				">
-					<h3 className={` ${ gameStarted && "opacity-50" } `}>Calculate Score Based On...</h3>
-					<label className={`
-						gap-5
-						cursor-pointer
-						${gameStarted ? "opacity-50" : ""}
-					`}>
-						<RadioButton
-							name="calculate-score"
-							value="number"
-							onChange={() => useSettingsStore.setState({ scoreCalculation: 0 })}
-							checked={scoreCalculation === 0}
-							disabled={gameStarted}
-						/>
-						<h3>Number of cards</h3>
-					</label>
-					<label className={`
-						gap-5
-						cursor-pointer
-						${gameStarted ? "opacity-50" : ""}
-					`}>
-						<RadioButton
-							name="calculate-score"
-							value="value"
-							onChange={() => useSettingsStore.setState({ scoreCalculation: 1 })}
-							checked={scoreCalculation === 1}
-							disabled={gameStarted}
-						/>
-						<h3>Value of cards</h3>
-					</label>
-				</div>
-				<hr className="col-span-full text-n2/40"/>
 				<div className="
 					col-span-1
 					flex flex-col gap-0.5rem

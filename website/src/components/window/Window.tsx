@@ -147,13 +147,9 @@ export const Window: React.FC<WindowProps> = ({
 							<button
 								data-tip="Close Window"
 								disabled={!isDismissable}
-								onClick={
-									call
-										? call
-										: () => setShowWindow(dismissKey, false)
-								}
-								className="btn-icon data-tip-down"
-							>
+								onClick={call ? call : () => setShowWindow(dismissKey, false)}
+								className="btn-icon data-tip-down
+							">
 								<CloseIcon />
 							</button>
 						</div>

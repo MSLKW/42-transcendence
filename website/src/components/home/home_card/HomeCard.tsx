@@ -52,8 +52,7 @@ export const HomeCardButton = ({ gameMode, playerCount }: HomeProps) => {
 				${clientUuid === hostUuid ? "cursor-pointer" : ""}
 				snap-center
 				${clientUuid === hostUuid ? "" : "data-tip-up"}
-			`}
-		>
+		`}>
 			{ gameMode === "4 Players" &&
 				<>
 					<div className="
