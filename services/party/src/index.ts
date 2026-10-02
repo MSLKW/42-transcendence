@@ -145,17 +145,10 @@ io.on("connection", (socket: Socket) =>
 
 async function finalizeRemoval(uuid: string, reason: string)
 {
-	try
-	{
-		await userStore.setUser({
-			uuid: uuid,
-			lastOnline: new Date	
-		});
-	}
-	catch (err)
-	{
-		console.error(`Failed to save lastOnline for <${uuid}>:`, err);
-	}
+	await userStore.setUser({
+		uuid: uuid,
+		lastOnline: new Date	
+	});
 	
 	clientManager.removeByUuid(uuid);
 	console.log(`User<${uuid}> disconnected - ${reason}`);
