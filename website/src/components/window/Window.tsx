@@ -4,10 +4,7 @@ import { useSceneStore } from "../../store/SceneStore";
 import { useWindowDrag } from "../../utilities/react/useWindowDrag";
 import { LightboxButton } from "../lightbox/LightboxButton";
 import { ClearIcon } from "./clear/ClearIcon";
-import { PinActiveIcon } from "./pin/PinActiveIcon";
-import { PinInactiveIcon } from "./pin/PinInactiveIcon";
 import { CloseIcon } from "./close/CloseIcon";
-// import { MaximizeIcon } from "./maximize/MaximizeIcon";
 
 export type HEADER_TYPE = "Standard" | "None" | "Warning";
 
@@ -17,8 +14,6 @@ interface WindowProps {
 	children: ReactNode;
 	placement?: string;
 	headerType?: HEADER_TYPE;
-	hasPinButton?: boolean;
-	pinState?: boolean;
 	hasClearChatButton?: boolean;
 	isDismissable?: boolean;
 	call?: () => void | undefined;
@@ -30,15 +25,12 @@ export const Window: React.FC<WindowProps> = ({
 	children,
 	placement = "c",
 	headerType = "Standard",
-	hasPinButton = true,
-	pinState = true,
 	hasClearChatButton = false,
 	isDismissable = true,
 	call,
 }) => {
 	const setShowWindow = useSceneStore((store) => store.setShowWindow);
 
-	const [isPinned, setIsPinned] = useState(pinState);
 	const { position, handleMouseDown } = useWindowDrag();
 
 	return (
@@ -49,7 +41,7 @@ export const Window: React.FC<WindowProps> = ({
 			flex place-content-center place-items-center
 			pointer-events-none
 		">
-			{ headerType !== "None" && isPinned &&
+			{ headerType !== "None" &&
 				<LightboxButton
 					dismiss={dismissKey}
 					blur={true}
@@ -70,13 +62,13 @@ export const Window: React.FC<WindowProps> = ({
 			>
 				{ headerType !== "None" &&
 					<div
-						onMouseDown={!isPinned ? handleMouseDown : undefined}
+						onMouseDown={handleMouseDown}
 						className={`
 							h-4rem
 							${ headerType === "Standard" ? "bg-a2" : "bg-r2" }
 							rounded-t-lg
 							flex place-content-between place-items-center
-							${ !isPinned && "cursor-grab active:cursor-grabbing" }
+							cursor-grab active:cursor-grabbing
 							select-none
 					`}>
 						<h2 className="
@@ -96,54 +88,6 @@ export const Window: React.FC<WindowProps> = ({
 									<ClearIcon />
 								</button>
 							}
-							{ hasPinButton &&
-								<button
-									data-tip={isPinned ? "Unpin Window" : "Pin Window"}
-									onClick={() => setIsPinned(!isPinned)}
-									className="btn-icon data-tip-down"
-								>
-									{ isPinned ? <PinActiveIcon /> : <PinInactiveIcon /> }
-								</button>
-							}
-							{/* { profileIndex != 0 &&
-								<button
-									data-tip="Open In New Window"
-									onClick={() => {
-										const statsHTML = `
-											<!DOCTYPE html>
-											<html lang="en">
-											<head>
-												<meta charset="UTF-8">
-												<title>Stats - ${members[profileIndex]?.name || "Player"}</title>
-												<script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
-												<style>
-													body { background: #000; margin: 0; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
-												</style>
-											</head>
-											<body>
-												<div class="h-fit w-120 bg-linear-to-b from-n0 to-n1 border border-n2 rounded-xl overflow-hidden">
-													<div class="bg-a2 flex place-content-between place-items-center p-2 box-border select-none">
-														<h2 class="text-n6 ml-5 font-bold">Stats: ${members[profileIndex]?.name || "Guest"}</h2>
-													</div>
-													<div class="window-body divide-y divide-n2 text-white p-4">
-														<p>Stats: ${members[profileIndex]?.name || "Guest"}</p>
-													</div>
-												</div>
-											</body>
-											</html>
-										`;
-
-										const blob = new Blob([statsHTML], { type: "text/html" });
-										const url = URL.createObjectURL(blob);
-
-										window.open(url, "_blank", "width=500,height=700");
-										setShowWindow(dismissKey, false);
-									}}
-									className="btn-icon data-tip-down"
-								>
-									<MaximizeIcon />
-								</button>
-							} */}
 							<button
 								data-tip="Close Window"
 								disabled={!isDismissable}

@@ -18,7 +18,6 @@ export const StaleWindow = () => {
 			<Window
 				title="Session terminated"
 				dismissKey={""}
-				hasPinButton={false}
 				headerType="None"
 				isDismissable={false}
 			>
