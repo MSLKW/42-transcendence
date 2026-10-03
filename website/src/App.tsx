@@ -29,7 +29,6 @@ import { ProfileWindow } from "./components/profile/ProfileWindow";
 import { RankWindow } from "./components/game/rank/RankWindow";
 import { ResultsWindow } from "./components/results/ResultsWindow";
 import { SignInWindow } from "./components/login/sign_in/SignInWindow";
-import { SettingsWindow } from "./components/settings/SettingsWindow";
 import { SetupWindow } from "./components/setup/SetupWindow";
 import { StaleWindow } from "./components/stale/StaleWindow";
 import { StatsWindow } from "./components/stats/StatsWindow";
@@ -167,7 +166,6 @@ export default function App() {
 				{ showWindow["rank"] && <RankWindow /> }
 				{ showWindow["results"] && <ResultsWindow /> }
 				{ showWindow["setup"] && <SetupWindow /> }
-				{ showWindow["settings"] && <SettingsWindow /> }
 				{ showWindow["signIn"] && <SignInWindow /> }
 				{ showWindow["stale"] && <StaleWindow /> }
 				{ showWindow["stats"] && <StatsWindow /> }

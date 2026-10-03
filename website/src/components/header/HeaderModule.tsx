@@ -29,10 +29,10 @@ export const HeaderModule = ({ back }: HeaderModuleProps) => {
 				autoPassIndex: useSettingsStore.getState().autoPassIndex,
 				endGameCondition: useSettingsStore.getState().endGameCondition,
 				scoreCalculation: useSettingsStore.getState().scoreCalculation,
-				cardStyle: useSettingsStore.getState().cardStyle,
-				uiColor: useSettingsStore.getState().uiColor,
-				fxLevel: useSettingsStore.getState().fxLevel,
-				mxLevel: useSettingsStore.getState().mxLevel,
+				cardStyle: 0,
+				uiColor: 0,
+				fxLevel: 0,
+				mxLevel: 0,
 			});
 		}
 		endGame();

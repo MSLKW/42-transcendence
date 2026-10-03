@@ -5,13 +5,13 @@ import { useBotStore } from "../../../store/BotStore";
 import { useGameStore } from "../../../store/GameStore";
 import { usePartyStore } from "../../../store/PartyStore";
 import { autoPassKeys, useSettingsStore } from "../../../store/SettingsStore";
-import { ToggleButton } from "../../settings/toggle/ToggleButton";
+import { ToggleButton } from "../toggle/ToggleButton";
 
 export const HostSettings = () => {
 	const gameStarted = useGameStore((store) => store.gameStarted);
 	const clientUuid = useAuthStore(store => store.clientUuid);
 	const currentIntel = useBotStore((store) => store.currentIntel);
-	const botCount = useBotStore((store) => store.botCount);
+	// const botCount = useBotStore((store) => store.botCount);
 	const hostUuid = usePartyStore((store) => store.hostUuid);
 	const autoPassIndex = useSettingsStore((store) => store.autoPassIndex);
 	const allow3OfAKind = useSettingsStore((store) => store.allow3OfAKind);
@@ -34,10 +34,6 @@ export const HostSettings = () => {
 					autoPassIndex: response.autoPassIndex,
 					endGameCondition: response.endGameCondition,
 					scoreCalculation: response.scoreCalculation,
-					cardStyle: response.cardStyle,
-					uiColor: response.uiColor,
-					fxLevel: response.fxLevel,
-					mxLevel: response.mxLevel,
 				});
 			}
 			fetchGetSettings();
