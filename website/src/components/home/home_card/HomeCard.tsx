@@ -5,7 +5,6 @@ import { usePartyStore } from "../../../store/PartyStore";
 import { useAuthStore } from "../../../store/AuthStore";
 import { useSceneStore } from "../../../store/SceneStore";
 import { PersonIcon } from "./person/PersonIcon";
-import { TutorialIcon } from "./tutorial/TutorialIcon";
 
 interface HomeProps {
 	gameMode: GAMEMODE_TYPE;
@@ -29,10 +28,6 @@ export const HomeCardButton = ({ gameMode, playerCount }: HomeProps) => {
 		// else
 		// 	initSeats();
 
-		if (gameMode === "Tutorial")
-			setCurrentScene("Test");
-		// else
-			// setCurrentScene("Lobby");
 		partySocket.startGameSession();
 	};
 
@@ -144,16 +139,6 @@ export const HomeCardButton = ({ gameMode, playerCount }: HomeProps) => {
 						</div>
 					</div>
 					<h1 className="text-n0">2 Players</h1>
-				</>
-			}
-			{ gameMode === "Tutorial" &&
-				<>
-					<div className="
-						h-[clamp(2.5rem,3.571vmin+1.786rem,5rem)] aspect-square w-max
-					">
-						<TutorialIcon />
-					</div>
-					<h1 className="text-n0">Tutorial</h1>
 				</>
 			}
 		</button>

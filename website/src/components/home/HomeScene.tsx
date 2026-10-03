@@ -53,7 +53,6 @@ export const HomeScene = () => {
 						<HomeCardButton gameMode="4 Players" playerCount={4}/>
 						<HomeCardButton gameMode="3 Players" playerCount={3}/>
 						<HomeCardButton gameMode="2 Players" playerCount={2}/>
-						<HomeCardButton gameMode="Tutorial" playerCount={1}/>
 					</div>
 				</div>
 			</main>
