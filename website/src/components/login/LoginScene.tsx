@@ -61,15 +61,6 @@ export const LoginScene = () => {
 					<CreateAccountButton />
 					<SignInButton />
 				</div>
-				<button
-					onClick={() => useSceneStore.getState().setCurrentScene("Home")}
-					className="
-						btn-text bg-clear
-						h-3rem aspect-6/1
-						text-1.25rem text-n6 hover:not-disabled:text-b5 focus-visible:text-b5
-				">
-					<u>PLAY AS GUEST</u>
-				</button>
 			</footer>
 		</>
 	);
