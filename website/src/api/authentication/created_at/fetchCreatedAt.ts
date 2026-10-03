@@ -1,4 +1,5 @@
 const authUrl = import.meta.env.VITE_AUTH_API_URL;
+// const authUrl = process.env.VITE_AUTH_API_URL;
 
 export const fetchCreatedAt = async (uuid: string) => {
 	const response = await fetch(`${authUrl}/created-at/${uuid}`, {

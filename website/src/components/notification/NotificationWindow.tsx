@@ -1,11 +1,16 @@
 import { createPortal } from "react-dom";
 import { motion, AnimatePresence } from "motion/react";
-import { useNotificationStore } from "../../store/NotificationStore";
+import { NOTIFICATION_TYPE, useNotificationStore } from "../../store/NotificationStore";
 import { useScrollToTop } from "../../utilities/react/useScrollToTop";
 import { SingleNotification } from "./SingleNotification";
 
 export const NotificationWindow = () => {
 	const notifications = useNotificationStore((store) => store.notifications);
+	const isNotifFiltered = useNotificationStore((store) => store.isNotifFiltered);
+
+	const visibleNotification = notifications.filter(
+		(item) => !isNotifFiltered || item.type !== NOTIFICATION_TYPE.invite
+	);
 
 	if (notifications.length === 0)
 		return null;
@@ -19,7 +24,7 @@ export const NotificationWindow = () => {
 			pointer-events-none
 		">
 			<AnimatePresence initial={false}>
-				{ notifications.map((item) => (
+				{ visibleNotification.map((item) => (
 					<motion.div
 						key={item.id}
 						layout

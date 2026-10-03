@@ -5,7 +5,7 @@ import { BackButton } from "./back/BackButton";
 import { ChatButton } from "./chat/ChatButton";
 import { EmoteGroup } from "./emote/EmoteGroup";
 import { SignOutButton } from "./sign_out/SignOutButton";
-import { SettingsButton } from "./settings/SettingsButton";
+import { NotifToggleButton } from "./notification/NotifToggleButton";
 import { handlePutSettings } from "../../api/profile/put_settings/handlePutSettings";
 
 interface HeaderModuleProps {
@@ -45,7 +45,7 @@ export const HeaderModule = ({ back }: HeaderModuleProps) => {
 					? <SignOutButton />
 					: <BackButton scene={handleBackClick} />
 				}
-				<SettingsButton />
+				<NotifToggleButton />
 			</div>
 			<div className="flex rounded-full bg-dark-semi">
 				<EmoteGroup />

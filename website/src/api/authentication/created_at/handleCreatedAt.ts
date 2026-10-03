@@ -12,7 +12,8 @@ export const handleCreatedAt = async (uuid: string) => {
 	} catch (err) {
 		const error = err instanceof Error ? err.message : "Something went wrong. Please try again";
 
-		console.warn("[authentication > 'GET' created-at] error:", error);
+		if (useAuthStore.getState().authVerboseMode)
+			console.warn("[authentication > 'GET' created-at] error:", error);
 
 		return null;
 	}
