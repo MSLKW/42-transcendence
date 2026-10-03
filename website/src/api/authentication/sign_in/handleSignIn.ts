@@ -12,7 +12,10 @@ export const handleSignIn = async (email: string, password: string) => {
 		if (useAuthStore.getState().authVerboseMode)
 			console.log("[authentication > 'POST' signin] response:", response);
 
-		useAuthStore.setState({ clientUuid: response.id });
+		useAuthStore.setState({
+			isAuthenticated: true,
+			clientUuid: response.id,
+		});
 		useSceneStore.getState().setShowWindow("signIn", false);
 		useSceneStore.getState().setCurrentScene("Home");
 
@@ -21,6 +24,11 @@ export const handleSignIn = async (email: string, password: string) => {
 		const error = err instanceof Error ? err.message : "Something went wrong. Please try again";
 
 		showNotification(error, NOTIFICATION_TYPE.error);
+
+		useAuthStore.setState({
+			isAuthenticated: false,
+			clientUuid: null,
+		});
 
 		console.warn("[handleSignIn] 'POST' error:", error);
 	}

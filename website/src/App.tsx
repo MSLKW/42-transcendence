@@ -45,14 +45,6 @@ export default function App() {
 	const setShowWindow = useSceneStore((store) => store.setShowWindow);
 	const showDevSection = useDevStore((store) => store.showDevSection);
 
-	//validate
-	useEffect(() => {
-		if (currentScene === "Login" || clientUuid)
-			return;
-
-		handleValidate();
-	}, [currentScene, clientUuid]);
-
 	//party socket connection
 	useEffect(() => {
 		if (!clientUuid)

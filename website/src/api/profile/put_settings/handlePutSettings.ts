@@ -1,6 +1,5 @@
 import { NOTIFICATION_TYPE, useNotificationStore } from "../../../store/NotificationStore";
 import { fetchPutSettings } from "./fetchPutSettings";
-// import type { SettingsValues } from "../../../store/SettingsStore";
 import { useProfileStore } from "../../../store/ProfileStore";
 
 interface SettingsValues {

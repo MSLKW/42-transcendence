@@ -1,7 +1,11 @@
+import { useAuthStore } from "../../store/AuthStore";
 import { useSceneStore } from "../../store/SceneStore";
 import { Window } from "../window/Window";
 
 export const StaleWindow = () => {
+	const isAuthenticated = useAuthStore((store) => store.isAuthenticated);
+	console.log("isAuthenticated:", isAuthenticated);
+
 	return (
 		<div className="z-999">
 			<div
@@ -27,7 +31,7 @@ export const StaleWindow = () => {
 						gap-1rem
 						text-n6
 					">
-						<h2>You're logged in another device</h2>
+						<h2>{ isAuthenticated ? "You're logged in another tab" : "You're logged in another browser" }</h2>
 					</div>
 					<div className="
 						flex place-content-center
@@ -42,6 +46,17 @@ export const StaleWindow = () => {
 						">
 							Back to login
 						</button>
+						{ isAuthenticated &&
+							<button
+								onClick={() => window.location.reload()}
+								className="
+									h-3rem aspect-5/1
+									btn-text bg-r2
+									text-n6
+							">
+								Refresh
+							</button>
+						}
 					</div>
 				</div>
 			</Window>

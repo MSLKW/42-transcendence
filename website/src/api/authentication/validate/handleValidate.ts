@@ -1,6 +1,5 @@
 import { fetchValidate } from "./fetchValidate";
 import { NOTIFICATION_TYPE, useNotificationStore } from "../../../store/NotificationStore";
-import { useSceneStore } from "../../../store/SceneStore";
 import { useAuthStore } from "../../../store/AuthStore";
 
 export const handleValidate = async () => {
@@ -12,11 +11,17 @@ export const handleValidate = async () => {
 		if (useAuthStore.getState().authVerboseMode)
 			console.log("[authentication > 'GET' validate] response:", response);
 
-		useAuthStore.setState({ clientUuid: response.userId });
+		useAuthStore.setState({
+			isAuthenticated: true,
+			clientUuid: response.userId,
+		});
 
 		return response;
 	} catch(error) {
-		useSceneStore.getState().setCurrentScene("Login");
+		useAuthStore.setState({
+			isAuthenticated: false,
+			clientUuid: null,
+		});
 
 		useNotificationStore.getState().showNotification(
 			error instanceof Error

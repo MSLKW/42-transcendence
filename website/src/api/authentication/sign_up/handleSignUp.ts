@@ -16,7 +16,10 @@ export const handleSignUp = async (email: string, password: string, setIsLoading
 			console.log("[authentication > 'POST' signup]");
 
 		const response = await fetchSignIn(email, password);
-		useAuthStore.setState({ clientUuid: response.id });
+		useAuthStore.setState({
+			isAuthenticated: true,
+			clientUuid: response.id,
+		});
 		useSceneStore.getState().setShowWindow("createAccount", false);
 		useSceneStore.getState().setCurrentScene("Home");
 
@@ -25,7 +28,10 @@ export const handleSignUp = async (email: string, password: string, setIsLoading
 		const error = err instanceof Error ? err.message : "Something went wrong. Please try again";
 
 		showNotification(error, NOTIFICATION_TYPE.error);
-
+		useAuthStore.setState({
+			isAuthenticated: false,
+			clientUuid: null,
+		});
 		console.warn("[authentication > 'POST' signup] error:", error);
 	} finally {
 		setIsLoading(false);
