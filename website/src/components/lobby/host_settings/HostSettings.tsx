@@ -1,7 +1,6 @@
 import { useRef, useEffect } from "react";
 import { handleGetSettings } from "../../../api/profile/get_settings/handleGetSettings";
 import { useAuthStore } from "../../../store/AuthStore";
-import { useBotStore } from "../../../store/BotStore";
 import { useGameStore } from "../../../store/GameStore";
 import { usePartyStore } from "../../../store/PartyStore";
 import { autoPassKeys, useSettingsStore } from "../../../store/SettingsStore";
@@ -10,14 +9,10 @@ import { ToggleButton } from "../toggle/ToggleButton";
 export const HostSettings = () => {
 	const gameStarted = useGameStore((store) => store.gameStarted);
 	const clientUuid = useAuthStore(store => store.clientUuid);
-	const currentIntel = useBotStore((store) => store.currentIntel);
-	// const botCount = useBotStore((store) => store.botCount);
 	const hostUuid = usePartyStore((store) => store.hostUuid);
 	const autoPassIndex = useSettingsStore((store) => store.autoPassIndex);
 	const allow3OfAKind = useSettingsStore((store) => store.allow3OfAKind);
 	const allow2OfSpadesEnd = useSettingsStore((store) => store.allow2OfSpadesEnd);
-	const endGameCondition = useSettingsStore((store) => store.endGameCondition);
-	const scoreCalculation = useSettingsStore((store) => store.scoreCalculation);
 
 	const settingsFetched = useRef(false);
 	useEffect(() => {
@@ -32,8 +27,6 @@ export const HostSettings = () => {
 					allow3OfAKind: response.allow3OfAKind,
 					allow2OfSpadesEnd: response.allow2OfSpadesEnd,
 					autoPassIndex: response.autoPassIndex,
-					endGameCondition: response.endGameCondition,
-					scoreCalculation: response.scoreCalculation,
 				});
 			}
 			fetchGetSettings();
@@ -103,90 +96,6 @@ export const HostSettings = () => {
 					className="accent-b5 cursor-pointer"
 				/>
 			</div>
-			<label className="flex flex-col w-full gap-0.5rem cursor-pointer hover:scale-105">
-				<h3 className="w-full"><b>End Game Condition:</b></h3>
-				<div className="flex w-full place-items-center gap-1rem">
-					<div className="flex gap-0.5rem">
-						<div className={`
-							h-2 aspect-square rounded-full
-							${endGameCondition === 0 ? "bg-b5 border-n0" : "bg-n5 border-n0"}
-							border 
-						`}/>
-						<div className={`
-							h-2 aspect-square rounded-full
-							${endGameCondition === 1 ? "bg-b5 border-n0" : "bg-n5 border-n0"}
-							border
-						`}/>
-					</div>
-					<button
-						onClick={() => useSettingsStore.setState({ endGameCondition: (endGameCondition + 1) % 2 })}
-						disabled={clientUuid !== hostUuid}
-						className="text-sm w-full text-left text-a4 cursor-pointer"
-					>
-						{ endGameCondition ? "When first player finish" : "Until last hand remain" }
-					</button>
-				</div>
-			</label>
-			<label className="flex flex-col w-full gap-0.5rem cursor-pointer hover:scale-105">
-				<h3 className="w-full"><b>Score Calculation:</b></h3>
-				<div className="flex w-full place-items-center gap-1rem">
-					<div className="flex gap-0.5rem">
-						<div className={`
-							h-2 aspect-square rounded-full
-							${scoreCalculation === 0 ? "bg-b5 border-n0" : "bg-n5 border-n0"}
-							border 
-						`}/>
-						<div className={`
-							h-2 aspect-square rounded-full
-							${scoreCalculation === 1 ? "bg-b5 border-n0" : "bg-n5 border-n0"}
-							border
-						`}/>
-					</div>
-					<button
-						onClick={() => useSettingsStore.setState({ scoreCalculation: (scoreCalculation + 1) % 2 })}
-						disabled={clientUuid !== hostUuid}
-						className="text-sm w-full text-left text-a4 cursor-pointer"
-					>
-						{ scoreCalculation ? "Number of cards" : "Value of cards" }
-					</button>
-				</div>
-			</label>
-			{/* { botCount > 0 && */}
-				<label className="flex flex-col w-full gap-0.5rem cursor-pointer hover:scale-105">
-					<h3 className="w-full"><b>Bot Difficulty:</b></h3>
-					<div className="flex w-full place-items-center gap-1rem">
-						<div className="flex gap-0.5rem">
-							<div className={`
-								h-2 aspect-square rounded-full
-								${currentIntel === "Easy" ? "bg-b5 border-n0" : "bg-n5 border-n0"}
-								border 
-							`}/>
-							<div className={`
-								h-2 aspect-square rounded-full
-								${currentIntel === "Medium" ? "bg-b5 border-n0" : "bg-n5 border-n0"}
-								border
-							`}/>
-							<div className={`
-								h-2 aspect-square rounded-full
-								${currentIntel === "Hard" ? "bg-b5 border-n0" : "bg-n5 border-n0"}
-								border
-							`}/>
-						</div>
-						<button
-							onClick={() => useBotStore.setState({
-								currentIntel:
-									currentIntel === "Easy" ? "Medium" :
-									currentIntel === "Medium" ? "Hard" :
-									"Easy"
-							})}
-							disabled={clientUuid !== hostUuid}
-							className="text-sm w-full text-left text-a4 cursor-pointer
-						">
-							{ currentIntel }
-						</button>
-					</div>
-				</label>
-			{/* } */}
 		</div>
 	);
 }

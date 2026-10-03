@@ -20,8 +20,6 @@ export interface SettingsValues {
 	allow3OfAKind: boolean;
 	allow2OfSpadesEnd: boolean;
 	autoPassIndex: number;
-	endGameCondition: number;
-	scoreCalculation: number;
 }
 
 interface SettingsState extends SettingsValues {
@@ -35,8 +33,6 @@ export const useSettingsStore = create<SettingsState>()(
 			allow3OfAKind: true,
 			allow2OfSpadesEnd: true,
 			autoPassIndex: 6,
-			endGameCondition: 0,
-			scoreCalculation: 1,
 
 			toggleSettingsValue: (key) => { set((state) => ({ [key]: !state[key] })) },
 
@@ -45,8 +41,6 @@ export const useSettingsStore = create<SettingsState>()(
 					allow3OfAKind: true,
 					allow2OfSpadesEnd: true,
 					autoPassIndex: 6,
-					endGameCondition: 0,
-					scoreCalculation: 1,
 				});
 			}
 		}),
