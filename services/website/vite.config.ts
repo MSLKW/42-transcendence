@@ -31,6 +31,11 @@ export default defineConfig({
 		react(),
 		tailwindcss(),
 	],
+	envPrefix: [
+		// "VITE_", // TODO: consult website PIC if need this
+		"API_", 
+		"SOCKET_"
+	],
 	build: {
 		chunkSizeWarningLimit: 1000, 
 		rolldownOptions: {

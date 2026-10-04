@@ -1,4 +1,4 @@
-const authUrl = import.meta.env.VITE_AUTH_API_URL;
+const authUrl = import.meta.env.API_AUTH_PATH;
 
 export const fetchSignOut = async () => {
 	const response = await fetch(`${authUrl}/logout`, {

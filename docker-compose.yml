@@ -144,7 +144,7 @@ services:
       - "${DOMAIN_PORT}:${DOMAIN_PORT}"
     environment:
       DOMAIN_PORT: ${DOMAIN_PORT}
-      NGINX_ENVSUBST_FILTER: ^(DOMAIN_PORT|.*_SERVICE_URL|PROFILE_SERVICE_AVATAR_DIR)$
+      NGINX_ENVSUBST_FILTER: ^(DOMAIN_PORT|.*_SERVICE_URL|PROFILE_SERVICE_AVATAR_DIR|API_.*_PATH|SOCKET_.*_PATH)$
       WEBSITE_SERVICE_URL: ${WEBSITE_SERVICE_URL}
       AUTH_SERVICE_URL: ${AUTH_SERVICE_URL}
       PARTY_SERVICE_URL: ${PARTY_SERVICE_URL}
@@ -155,6 +155,15 @@ services:
       GAME_SERVER_SERVICE_URL: ${GAME_SERVER_SERVICE_URL}
       GAME_BOT_SERVICE_URL: ${GAME_BOT_SERVICE_URL}
       PROFILE_SERVICE_AVATAR_DIR: ${PROFILE_SERVICE_AVATAR_DIR}
+      API_AUTH_PATH: ${API_AUTH_PATH}
+      API_PROFILE_PATH: ${API_PROFILE_PATH}
+      API_PARTY_PATH: ${API_PARTY_PATH}
+      API_FRIENDS_PATH: ${API_FRIENDS_PATH}
+      API_GAME_STATS_PATH: ${API_GAME_STATS_PATH}
+      SOCKET_CHAT_PATH: ${SOCKET_CHAT_PATH}
+      SOCKET_PARTY_PATH: ${SOCKET_PARTY_PATH}
+      SOCKET_GAME_SERVER_PATH: ${SOCKET_GAME_SERVER_PATH}
+      SOCKET_GAME_BOT_PATH: ${SOCKET_GAME_BOT_PATH}
     networks:
       - transcendence
     volumes:
@@ -184,12 +193,33 @@ services:
         game-types: ./packages/types/game-types
     pull_policy: never
     restart: unless-stopped
-    volumes: # temporary for vite hmr
+    volumes: # temporary for vite hmr in development stage
       - ./services/website:/app/services/website
       - /app/node_modules
       - /app/services/website/node_modules
-    environment:
+    environment: # for development stage only
       DOMAIN_PORT: ${DOMAIN_PORT} # Right now only for vite config, can remove in production
+      API_AUTH_PATH: ${API_AUTH_PATH}
+      API_PROFILE_PATH: ${API_PROFILE_PATH}
+      API_PARTY_PATH: ${API_PARTY_PATH}
+      API_FRIENDS_PATH: ${API_FRIENDS_PATH}
+      API_GAME_STATS_PATH: ${API_GAME_STATS_PATH}
+      SOCKET_CHAT_PATH: ${SOCKET_CHAT_PATH}
+      SOCKET_PARTY_PATH: ${SOCKET_PARTY_PATH}
+      SOCKET_GAME_SERVER_PATH: ${SOCKET_GAME_SERVER_PATH}
+      SOCKET_GAME_BOT_PATH: ${SOCKET_GAME_BOT_PATH}
+      SOCKET_URL: ${SOCKET_URL} # TODO: can be opt out in oi. consult website PIC first
+    # args: # production stage only
+    #   API_AUTH_PATH: ${API_AUTH_PATH}
+    #   API_PROFILE_PATH: ${API_PROFILE_PATH}
+    #   API_PARTY_PATH: ${API_PARTY_PATH}
+    #   API_FRIENDS_PATH: ${API_FRIENDS_PATH}
+    #   API_GAME_STATS_PATH: ${API_GAME_STATS_PATH}
+    #   SOCKET_CHAT_PATH: ${SOCKET_CHAT_PATH}
+    #   SOCKET_PARTY_PATH: ${SOCKET_PARTY_PATH}
+    #   SOCKET_GAME_SERVER_PATH: ${SOCKET_GAME_SERVER_PATH}
+    #   SOCKET_GAME_BOT_PATH: ${SOCKET_GAME_BOT_PATH}
+    #   SOCKET_URL: ${SOCKET_URL}
     networks:
       - transcendence
 
@@ -343,6 +373,7 @@ services:
     environment:
       PORT: ${CHAT_SERVICE_PORT}
       AUTH_SERVICE_URL: ${AUTH_SERVICE_URL}
+      SOCKET_CHAT_PATH: ${SOCKET_CHAT_PATH}
     networks:
       - transcendence
     depends_on:

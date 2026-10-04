@@ -40,12 +40,13 @@ COPY 					package.json	./services/website/
 COPY --from=root 		package*.json	./
 
 RUN npm i
+# RUN npm ci # better option, but can keep npm i in dev
 
 COPY --from=game-types	. ./packages/types/game-types/
 COPY 					. ./services/website/
 
 RUN npm run docker:build	-w @big2/game-types
-# # after they have put in types in imports, recieve error below:
+# # use build only after they have put in types in imports, coz now recieve error below:
 # # error TS2307: Cannot find module '@big2/game-types' or its corresponding type declarations.
 # RUN npm run build -w website
 
@@ -71,9 +72,22 @@ CMD ["npm", "run", "dev"]
 # COPY --from=game-types . ./packages/types/game-types/
 # COPY 					 . ./services/website/
 
-# RUN npm run build:docker -w website
+# # These must exist at BUILD time: vite build bakes them into the JS.
+# # ARG values are visible to RUN commands, so no ENV lines are needed.
+# ARG API_AUTH_PATH
+# ARG API_PROFILE_PATH
+# ARG API_PARTY_PATH
+# ARG API_FRIENDS_PATH
+# ARG API_GAME_STATS_PATH
+# ARG SOCKET_CHAT_PATH
+# ARG SOCKET_PARTY_PATH
+# ARG SOCKET_GAME_SERVER_PATH
+# ARG SOCKET_GAME_BOT_PATH
+# ARG SOCKET_URL
 
-# FROM node:20 AS runner
+# RUN npm run build -w website
+
+# FROM node:24 AS runner # website might not need runner, will fix on this more later
 # WORKDIR /app
 
 # COPY --from=game-types	package.json	./packages/types/game-types/
@@ -83,8 +97,8 @@ CMD ["npm", "run", "dev"]
 # ENV NODE_ENV=production
 # RUN npm ci --omit=dev
 
-# COPY --from=builder	app/packages/types/game-types/dist	./packages/types/game-types/dist
-# COPY --from=builder	app/services/website/dist			./services/website/dist
+# COPY --from=builder	/app/packages/types/game-types/dist	./packages/types/game-types/dist
+# COPY --from=builder	/app/services/website/dist			./services/website/dist
 
 # ENV PORT=5173
 # # ^ default fallback only, in case someone runs this image standalone without Compose.

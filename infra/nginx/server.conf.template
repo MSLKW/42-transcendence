@@ -25,28 +25,28 @@ server {
 		proxy_pass $upstream;						# no rewrite: original URI is passed as-is
 	}
 
-	location /api/auth/ {
+	location ${API_AUTH_PATH}/ {
 		set $upstream ${AUTH_SERVICE_URL};
-        rewrite ^/api/auth/(.*)$ /$1 break;          # /api/auth/signup -> /signup
+        rewrite ^${API_AUTH_PATH}/(.*)$ /$1 break;          # /api/auth/signup -> (signup) -> /signup
 		proxy_pass $upstream;
 	}
 
-	location /api/profile/ {
+	location ${API_PROFILE_PATH}/ {
 		set $upstream ${PROFILE_SERVICE_URL};
-        rewrite ^/api/profile/(.*)$ /$1 break;
+        rewrite ^${API_PROFILE_PATH}/(.*)$ /$1 break;
 		proxy_pass $upstream;
 	}
 
-	location /api/party/ {
+	location ${API_PARTY_PATH}/ {
 		set $upstream ${PARTY_SERVICE_URL};
-        rewrite ^/api/party/(.*)$ /$1 break;
+        rewrite ^${API_PARTY_PATH}/(.*)$ /$1 break;
 		proxy_pass $upstream;
 	}
 
 	# SSE, Server-Sent Events: do not buffer, keep the stream open
-	location /api/friends/ {
+	location ${API_FRIENDS_PATH}/ {
 		set $upstream ${FRIENDS_SERVICE_URL};
-        rewrite ^/api/friends/(.*)$ /$1 break;
+        rewrite ^${API_FRIENDS_PATH}/(.*)$ /$1 break;
 		proxy_pass $upstream;
 
 		proxy_set_header	Connection '';
@@ -59,10 +59,8 @@ server {
 # Chat block adds Host, so it stops inheriting Upgrade and Connection, 
 # and the WebSocket handshake would fail.
 # Friends loses them too, but SSE doesn't need Upgrade
-	location /socket/chat/ {
+	location ${SOCKET_CHAT_PATH}/ {
 		set $upstream ${CHAT_SERVICE_URL};
-    #    rewrite ^/socket/chat/(.*)$ /socket.io/$1 break;
-    #    rewrite ^/socket/chat/(.*)$ /$1 break;				# USE THIS FIRST, AS THIS IS WHAT IS IN THE ORIGINAL MERGED ONE, and they make it working already using this
 		proxy_pass $upstream;
 
 		proxy_set_header Host		$host;
@@ -71,37 +69,36 @@ server {
 		proxy_cache_bypass			$http_upgrade;
 	}
 
-	location /socket/party/ {
+	location ${SOCKET_PARTY_PATH}/ {
 		set $upstream ${PARTY_SERVICE_URL};
-        rewrite ^/socket/party/(.*)$ /socket.io/$1 break;
+        rewrite ^${SOCKET_PARTY_PATH}/(.*)$ /socket.io/$1 break;
 		proxy_pass $upstream;
 	}
 
-	# Temporary for direct website calling party
-	# will be used for real soon too to send stats data to game-stats
-	location /api/game/ {
-		set $upstream ${GAME_SERVER_SERVICE_URL};
-        rewrite ^/api/game/(.*)$ /$1 break;
-		proxy_pass $upstream;
-	}
+	# # Temporary for direct website calling party
+	# location /api/game/ {
+	# 	set $upstream ${GAME_SERVER_SERVICE_URL};
+    #     rewrite ^/api/game/(.*)$ /$1 break;
+	# 	proxy_pass $upstream;
+	# }
 
-	location /socket/game/ {
+	location ${SOCKET_GAME_SERVER_PATH}/ {
 		set $upstream ${GAME_SERVER_SERVICE_URL};
-        rewrite ^/socket/game/(.*)$ /socket.io/$1 break;
+        rewrite ^${SOCKET_GAME_SERVER_PATH}/(.*)$ /socket.io/$1 break;
 		proxy_pass $upstream;
 	}
 
 	#TO BE MERGED LATER, not completed yet
-	location /api/game-stats/ {
+	location ${API_GAME_STATS_PATH}/ {
 		set $upstream ${GAME_STATS_SERVICE_URL};
-        rewrite ^/api/game-stats/(.*)$ /$1 break;
+        rewrite ^${API_GAME_STATS_PATH}/(.*)$ /$1 break;
 		proxy_pass $upstream;
 	}
 
 	#TO BE MERGED LATER, not completed yet
-	location /socket/game-bot/ {
+	location ${SOCKET_GAME_BOT_PATH}/ {
 		set $upstream ${GAME_BOT_SERVICE_URL};
-        rewrite ^/socket/game-bot/(.*)$ /socket.io/$1 break;
+        rewrite ^${SOCKET_GAME_BOT_PATH}/(.*)$ /socket.io/$1 break;
 		proxy_pass $upstream;
 	}
 

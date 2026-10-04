@@ -25,7 +25,7 @@ export class Game {
 	constructor(sessionId: string, playerId: string) {
 		this.playerId = playerId;
 		this.socket = io({
-			path: "/socket/game/",
+			path: import.meta.env.SOCKET_GAME_SERVER_PATH,
 			auth: {
 				lobbyId: sessionId,
 				uuid: playerId

@@ -9,6 +9,10 @@ const PORT = Number(process.env.PORT) || 3000;
 const AUTH_SERVICE_URL = process.env.AUTH_SERVICE_URL;
 if (!AUTH_SERVICE_URL)
 	throw new Error("AUTH_SERVICE_URL is not set");
+const SOCKET_CHAT_PATH = process.env.SOCKET_CHAT_PATH;
+if (!SOCKET_CHAT_PATH)
+	throw new Error("SOCKET_CHAT_PATH is not set");
+
 const RECONNECT_GRACE_PERIOD_MS = Number(process.env.DISCONNECT_GRACE_PERIOD_MS) || 15_000;
 const PERMANENT_DISCONNECT_REASONS = new Set([
 	"server namespace disconnect",
@@ -24,7 +28,7 @@ const io = new Server<ClientToServerEvents, ServerToClientEvents>(httpServer, {
 		// origin: GAME_ORIGIN,
 		// credentials: true
 	},
-	path: "/socket/chat/",
+	path: SOCKET_CHAT_PATH, // Socket.io (through engine.io) strips a trailing slash from path and adds one back itself, so "/socket/chat" and "/socket/chat/" behave the same.
 }); 
 
 type ChatSocket = Socket<ClientToServerEvents, ServerToClientEvents>;
