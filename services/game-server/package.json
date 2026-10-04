@@ -12,12 +12,12 @@
     "express": "^5.2.1",
     "socket.io": "^4.8.3",
     "zod": "^4.4.3",
-    "@big2/game-types": "*"
+	  "@big2/game-types": "*"
   },
   "scripts": {
-    "docker:build": "tsc",
+    "build": "tsc --project tsconfig.backend.json",
     "build:docker": "tsc -b",
     "server": "node server_build/src/server.js",
-    "all": "npm run docker:build && npm run server"
+    "all": "npm run build && npm run server"
   }
 }

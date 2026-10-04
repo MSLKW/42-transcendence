@@ -12,30 +12,19 @@ export class LobbyManager {
 		this.newSessionId = 0;
 		this.lobbyLimit = 100;
 
-		io.use((socket, next) => {
-			const lobbyId = socket.handshake.auth.lobbyId;
-			const uuid = socket.data.uuid;
-			const lobby = this.lobbies[lobbyId];
-			if (uuid === undefined || uuid === null) {
-				const error = new Error("Authentication failed and uuid could not be retrieved");
-				next(error);
-				return ;
-			}
-			if (lobby === undefined) {
-				const error = new Error(`Lobby<${lobbyId}> not found`);
-				next(error);
-				return ;
-			}
-			next();
-		})
-
 		io.on("connection", (socket) => {
 			const lobbyId = socket.handshake.auth.lobbyId;
 			const uuid = socket.data.uuid;
 			const lobby = this.lobbies[lobbyId];
-
-			socket.use()
-
+			// switch to connect_error
+			if (uuid === undefined || uuid === null) {
+				kickSocket(socket, `Authentication failed and could not give uuid`);
+				return ;
+			}
+			if (lobby === undefined) {
+				kickSocket(socket, `Lobby<${lobbyId}> not found`);
+				return ;
+			}
 			lobby.connectUser(socket, uuid);
 		});
 	}

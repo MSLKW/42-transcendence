@@ -1,9 +1,9 @@
-dist/
-node_modules/
-
-.dockerignore
-.gitignore
 Dockerfile
-.tsbuildinfo
-package-lock.json
+.dockerignore
+
+node_modules/
 README.md
+dist
+server_build
+.tsbuildinfo
+.gitignore

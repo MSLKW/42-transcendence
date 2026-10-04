@@ -61,6 +61,10 @@ export type GameStateTransmit = {
 	isPlayerTurn: boolean
 }
 
+export type GameStartRequest = {
+	playerId: string
+}
+
 export type GameSettingsTransmit = {
 	allow3OfAKind: boolean,
 	allow2OfSpadesEnd: boolean,
@@ -71,10 +75,8 @@ export type GameSettingsTransmit = {
 
 export type GameEndStatsTransmit = {
 	winnerPlayerUuid: string,
-	playerFinalCardAmounts: Record<string, number>,
-	playerPenaltyPoints: Record<string, number>,
-	temporaryWinStreakAmount: number,
-	temporaryRoundsPlayed: number,
+	playerFinalCardAmounts: Record<string, number>
+	playerPenaltyPoints: Record<string, number>
 }
 
 export type SeatOrderTransmit = {

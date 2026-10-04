@@ -3,7 +3,7 @@ import { io } from './server.js';
 import { PlayerState } from './PlayerState.js';
 import { CardDeckState } from './CardDeckState.js'
 import { CardHeapState } from './CardHeapState.js'
-import { CardRank, CardSuit, GameStateTransmit, GameEndStatsTransmit, StatusTransmit, PlayerTurnTransmit, SkipTurnTransmit, CardTransmit, GameSettingsTransmit } from '@big2/game-types';
+import { CardRank, CardSuit, GameStateTransmit, GameEndStatsTransmit, StatusTransmit, PlayerTurnTransmit, GameStartRequest, SkipTurnTransmit, CardTransmit, GameSettingsTransmit } from '@big2/game-types';
 import { UserState } from './UserState.js';
 
 export class GameState {
@@ -15,12 +15,6 @@ export class GameState {
 	private	playerTurnIndex: number;
 	private playerTurnTimeoutId: NodeJS.Timeout | undefined;
 	public	gameRoomId: string;
-
-	private	previousSeatOrder: string[];
-	private	temporaryWinStreakWinnerUuid: string;
-	private	temporaryWinStreakAmount: number;
-	private	temporaryRoundsPlayed: number;
-
 
 	// Game Settings
 	public	settings: GameSettingsTransmit;
@@ -40,14 +34,10 @@ export class GameState {
 		this.settings = {
 			allow3OfAKind: true,
 			allow2OfSpadesEnd: false,
-			autoPassInMilliseconds: 60000,
+			autoPassInMilliseconds: 0,
 			endGameCondition: 0,
 			scoreCalculation: 0,
-		};
-		this.previousSeatOrder = [];
-		this.temporaryWinStreakWinnerUuid = "";
-		this.temporaryWinStreakAmount = 0;
-		this.temporaryRoundsPlayed = 0;
+		}
 	}
 
 	public emit(event: string, payload: any) {
@@ -128,23 +118,20 @@ export class GameState {
 		}
 		this.playerTurnEvent();
 		this.isGameStarted = true;
-		console.log(`Game<${this.gameRoomId}> has started`);
+		console.log("Game Started");
 		status.success = true;
 		status.message = "Game has successfully started";
 		return (status);
 	}
 
 	public endGame(winner: PlayerState) {
-		console.log(`Game<${this.gameRoomId}> has ended | Winner is Player<${winner.uuid}>`);
-		this.trackTemporaryStats(winner);
+		console.log(`Game Ended | Winner is Player<${winner.uuid}>`);
 		const gameEndStats: GameEndStatsTransmit = {
 			winnerPlayerUuid: winner.uuid,
 			playerFinalCardAmounts: this.getPlayerCardsAmount(),
-			playerPenaltyPoints: this.getPlayerPenaltyPoints(),
-			temporaryWinStreakAmount: this.temporaryWinStreakAmount,
-			temporaryRoundsPlayed: this.temporaryRoundsPlayed,
+			playerPenaltyPoints: this.getPlayerPenaltyPoints()
 		}
-		this.resetGame();`	`
+		this.resetGame();
 		this.isGameStarted = false;
 		this.emit("game_end", gameEndStats);
 	}
@@ -167,34 +154,6 @@ export class GameState {
 			seatOrder[this.players[i].uuid] = i;
 		}
 		return (seatOrder);
-	}
-	
-	private trackTemporaryStats(winner: PlayerState) {
-		let resetPreviousSeatOrder: boolean = false;
-		if (this.previousSeatOrder.length === 0) {
-			resetPreviousSeatOrder = true;
-		}
-		for (let i = 0; i < this.previousSeatOrder.length; i++) {
-			if (this.previousSeatOrder[i] !== this.players[i].uuid) {
-				resetPreviousSeatOrder = true;
-				break ;
-			}
-		}
-		if (resetPreviousSeatOrder === true) {
-			this.temporaryWinStreakWinnerUuid = "";
-			this.temporaryWinStreakAmount = 0;
-			this.temporaryRoundsPlayed = 0;
-			for (let i = 0; i < this.players.length; i++) {
-				this.previousSeatOrder[i] = this.players[i].uuid;
-			}
-		}
-		
-		if (this.temporaryWinStreakWinnerUuid !== winner.uuid) {
-			this.temporaryWinStreakWinnerUuid = winner.uuid;
-			this.temporaryWinStreakAmount = 0;
-		}
-		this.temporaryWinStreakAmount++;
-		this.temporaryRoundsPlayed++;
 	}
 
 	public uuidInGame(uuid: string): boolean {
@@ -235,11 +194,21 @@ export class GameState {
 			timer: this.settings.autoPassInMilliseconds
 		}
 		if (this.settings.autoPassInMilliseconds > 0) {
-			this.playerTurnTimeoutId = setTimeout(() => {player.skipTurn()}, this.settings.autoPassInMilliseconds);
+			this.playerTurnTimeoutId = setTimeout(() => {this.playerTimeout(player)}, this.settings.autoPassInMilliseconds);
 		}
 		this.emit("player_turn", playerTurnTransmit);
 	}
-	
+
+	private playerTimeout(player: PlayerState) {
+		console.log(`Timing out player<${player.uuid}>`)
+		const status: StatusTransmit = {
+			success: true,
+			message: "Timer ran out"
+		}
+		player.socket.emit("player_skip_turn_request", status);
+		player.skipTurn();
+	}
+
 	public nextPlayerTurn() {
 		clearTimeout(this.playerTurnTimeoutId);
 		this.playerTurnTimeoutId = undefined;
