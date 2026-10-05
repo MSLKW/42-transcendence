@@ -45,7 +45,7 @@ RUN npm i
 COPY --from=game-types	. ./packages/types/game-types/
 COPY 					. ./services/website/
 
-RUN npm run docker:build	-w @big2/game-types
+RUN npm run build	-w @big2/game-types
 # # use build only after they have put in types in imports, coz now recieve error below:
 # # error TS2307: Cannot find module '@big2/game-types' or its corresponding type declarations.
 # RUN npm run build -w website
