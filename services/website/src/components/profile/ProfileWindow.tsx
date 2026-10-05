@@ -72,6 +72,7 @@ export const ProfileWindow = () => {
 			dismissKey="profile"
 			isDismissable={profileValidation ? isValid : true}
 			call={handleProfileUpdate}
+			lightbox={true}
 		>
 			<div className="
 				max-h-[85vh] w-[80vw] max-w-215

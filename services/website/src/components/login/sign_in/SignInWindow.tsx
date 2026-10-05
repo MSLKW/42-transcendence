@@ -28,6 +28,7 @@ export const SignInWindow = () => {
 		<Window
 			title="Sign In"
 			dismissKey="signIn"
+			lightbox={true}
 		>
 			<form 
 				onSubmit={handleSubmit}

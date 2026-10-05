@@ -4,6 +4,7 @@ import { useAuthStore } from "../../../store/AuthStore";
 import { useGameStore } from "../../../store/GameStore";
 import { usePartyStore } from "../../../store/PartyStore";
 import { autoPassKeys, useSettingsStore } from "../../../store/SettingsStore";
+import { Tooltip } from "../../../utilities/react/Tooltip";
 import { ToggleButton } from "../toggle/ToggleButton";
 
 export const HostSettings = () => {
@@ -36,66 +37,66 @@ export const HostSettings = () => {
 	}, [hostUuid]);
 
 	return (
-		<div
-			tabIndex={-1}
-			data-tip="Rules set by host"
-			className={`
-				w-max
-				bg-n1/50 rounded-xl
-				py-1.5rem px-2rem
-				text-n6/80
-				flex flex-col gap-1.5rem
-				${clientUuid === hostUuid ? "" : "data-tip-up opacity-60"}
-				pointer-events-auto
-		`}>
-			<h1>Lobby Rules</h1>
-			<label className="flex flex-col w-full gap-0.5rem cursor-pointer hover:scale-105">
-				<h3 className="w-full"><b>Play Three of a Kind?</b></h3>
-				<div className="flex place-content-start place-items-start w-full gap-1rem">
-					<ToggleButton
-						checked={allow3OfAKind}
-						onChange={() => useSettingsStore.setState({ allow3OfAKind: !allow3OfAKind })}
-						disabled={clientUuid !== hostUuid}
-					/>
-					<h3 className="text-a4 text-left">
-						{ allow3OfAKind ? "Yes" : "No" }
-					</h3>
-				</div>
-			</label>
-			<label className="flex flex-col w-full gap-0.5rem cursor-pointer hover:scale-105">
-				<h3 className="w-full"><b>Finish with 2 of Spades?</b></h3>
-				<div className="flex place-content-start place-items-start w-full gap-1rem">
-					<ToggleButton
-						checked={allow2OfSpadesEnd}
-						onChange={() => useSettingsStore.setState({ allow2OfSpadesEnd: !allow2OfSpadesEnd })}
-						disabled={clientUuid !== hostUuid}
-					/>
-					<h3 className="text-a4 text-left">
-						{ allow2OfSpadesEnd ? "Yes": "No" }
-					</h3>
-				</div>
-			</label>
-			<div className="flex flex-col gap-0.5rem">
-				<label htmlFor="autoPassSlider">
-					<h3 className={` ${ gameStarted && "opacity-50" } `}>
-						<b>Auto Pass Time: <span className="text-a4 font-normal">{autoPassKeys[autoPassIndex]}</span></b>
-					</h3>
+		<Tooltip text="Rules set by host">
+			<div
+				tabIndex={-1}
+				className={`
+					w-max
+					bg-n1/50 rounded-xl
+					py-1.5rem px-2rem
+					text-n6/80
+					flex flex-col gap-1.5rem
+					pointer-events-auto
+			`}>
+				<h1>Lobby Rules</h1>
+				<label className="flex flex-col w-full gap-0.5rem cursor-pointer hover:scale-105">
+					<h3 className="w-full"><b>Play Three of a Kind?</b></h3>
+					<div className="flex place-content-start place-items-start w-full gap-1rem">
+						<ToggleButton
+							checked={allow3OfAKind}
+							onChange={() => useSettingsStore.setState({ allow3OfAKind: !allow3OfAKind })}
+							disabled={clientUuid !== hostUuid}
+						/>
+						<h3 className="text-a4 text-left">
+							{ allow3OfAKind ? "Yes" : "No" }
+						</h3>
+					</div>
 				</label>
-				<input
-					type="range"
-					id="autoPassSlider"
-					min="0"
-					max={autoPassKeys.length - 1}
-					step="1"
-					value={autoPassIndex}
-					disabled={clientUuid !== hostUuid}
-					onChange={ (e) => {
-						const index = parseInt(e.target.value, 10);
-						useSettingsStore.setState({ autoPassIndex: index });
-					}}
-					className="accent-b5 cursor-pointer"
-				/>
+				<label className="flex flex-col w-full gap-0.5rem cursor-pointer hover:scale-105">
+					<h3 className="w-full"><b>Finish with 2 of Spades?</b></h3>
+					<div className="flex place-content-start place-items-start w-full gap-1rem">
+						<ToggleButton
+							checked={allow2OfSpadesEnd}
+							onChange={() => useSettingsStore.setState({ allow2OfSpadesEnd: !allow2OfSpadesEnd })}
+							disabled={clientUuid !== hostUuid}
+						/>
+						<h3 className="text-a4 text-left">
+							{ allow2OfSpadesEnd ? "Yes": "No" }
+						</h3>
+					</div>
+				</label>
+				<div className="flex flex-col gap-0.5rem">
+					<label htmlFor="autoPassSlider">
+						<h3 className={` ${ gameStarted && "opacity-50" } `}>
+							<b>Auto Pass Time: <span className="text-a4 font-normal">{autoPassKeys[autoPassIndex]}</span></b>
+						</h3>
+					</label>
+					<input
+						type="range"
+						id="autoPassSlider"
+						min="0"
+						max={autoPassKeys.length - 1}
+						step="1"
+						value={autoPassIndex}
+						disabled={clientUuid !== hostUuid}
+						onChange={ (e) => {
+							const index = parseInt(e.target.value, 10);
+							useSettingsStore.setState({ autoPassIndex: index });
+						}}
+						className="accent-b5 cursor-pointer"
+					/>
+				</div>
 			</div>
-		</div>
+		</Tooltip>
 	);
 }

@@ -7,6 +7,7 @@ import { useAuthStore } from "../../../store/AuthStore";
 import { useFriendStore } from "../../../store/FriendStore";
 import { usePartyStore, type AVAILABILITY_TYPE } from "../../../store/PartyStore";
 import type { UserData } from "../../../store/ProfileStore";
+import { Tooltip } from "../../../utilities/react/Tooltip";
 import { PlayerStatusModule } from "../../player/status/PlayerStatusModule";
 import { AvatarModule } from "../../avatar/AvatarModule";
 import { InviteIcon } from "../invite/InviteIcon";
@@ -82,49 +83,50 @@ export const PartyPlayerModule = ({ uuid }: PartyPlayerModuleProps) => {
 				image={playerData.avatarPath ?? undefined}
 				showName={false}
 			/>
-			<button
-				data-tip={hostUuid === clientUuid ? "Send invite" : "Only host can invite"}
-				disabled={hostUuid !== clientUuid}
-				onClick={() => partySocket.sendInvite(uuid, playerData?.username ?? "Player")}
-				className={`
-					h-auto min-w-60
-					py-0.5rem px-1.5rem
-					${
-						relation === "Self" ? "bg-party-self" :
-						effectiveAvailability === "Online" ? "bg-party-online" :
-						effectiveAvailability === "Offline" ? "bg-party-offline" :
-						effectiveAvailability === "Busy" ? "bg-party-busy" :
-						undefined
-					}
-					flex flex-col gap-0.5rem flex-1
-			`}>
-				<h3>{playerData.username}</h3>
-				<div className={`
-					${
-						((availability === "Online" || availability === "Busy") && relation != "Self")
-							? "place-content-between"
-							: "place-content-center"
-					}
-					flex place-items-center
-					gap-1rem
+			<Tooltip text={hostUuid === clientUuid ? "Send invite" : "Only host can invite"}>
+				<button
+					disabled={hostUuid !== clientUuid}
+					onClick={() => partySocket.sendInvite(uuid, playerData?.username ?? "Player")}
+					className={`
+						h-auto min-w-60
+						py-0.5rem px-1.5rem
+						${
+							relation === "Self" ? "bg-party-self" :
+							effectiveAvailability === "Online" ? "bg-party-online" :
+							effectiveAvailability === "Offline" ? "bg-party-offline" :
+							effectiveAvailability === "Busy" ? "bg-party-busy" :
+							undefined
+						}
+						flex flex-col gap-0.5rem flex-1
 				`}>
-					<PlayerStatusModule
-						uuid={uuid}
-						availability={availability}
-						lastOnline={lastOnline}
-					/>
-					{(effectiveAvailability === "Online" || effectiveAvailability === "Busy") && relation != "Self" &&
-						<div className="
-							flex place-content-center place-items-center
-							text-a4
-							gap-0.5rem
-						">
-							<InviteIcon />
-							<p>Invite To Party</p>
-						</div>
-					}
-				</div>
-			</button>
+					<h3>{playerData.username}</h3>
+					<div className={`
+						${
+							((availability === "Online" || availability === "Busy") && relation != "Self")
+								? "place-content-between"
+								: "place-content-center"
+						}
+						flex place-items-center
+						gap-1rem
+					`}>
+						<PlayerStatusModule
+							uuid={uuid}
+							availability={availability}
+							lastOnline={lastOnline}
+						/>
+						{(effectiveAvailability === "Online" || effectiveAvailability === "Busy") && relation != "Self" &&
+							<div className="
+								flex place-content-center place-items-center
+								text-a4
+								gap-0.5rem
+							">
+								<InviteIcon />
+								<p>Invite To Party</p>
+							</div>
+						}
+					</div>
+				</button>
+			</Tooltip>
 		</div>
 	);
 }

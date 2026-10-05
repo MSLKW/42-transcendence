@@ -1,6 +1,7 @@
-import { useState, type ReactNode } from "react";
+import type { ReactNode } from "react";
 import { useChatStore } from "../../store/ChatStore";
 import { useSceneStore } from "../../store/SceneStore";
+import { Tooltip } from "../../utilities/react/Tooltip";
 import { useWindowDrag } from "../../utilities/react/useWindowDrag";
 import { LightboxButton } from "../lightbox/LightboxButton";
 import { ClearIcon } from "./clear/ClearIcon";
@@ -15,6 +16,7 @@ interface WindowProps {
 	placement?: string;
 	headerType?: HEADER_TYPE;
 	hasClearChatButton?: boolean;
+	lightbox?: boolean;
 	isDismissable?: boolean;
 	call?: () => void | undefined;
 }
@@ -26,6 +28,7 @@ export const Window: React.FC<WindowProps> = ({
 	placement = "c",
 	headerType = "Standard",
 	hasClearChatButton = false,
+	lightbox = false,
 	isDismissable = true,
 	call,
 }) => {
@@ -41,7 +44,7 @@ export const Window: React.FC<WindowProps> = ({
 			flex place-content-center place-items-center
 			pointer-events-none
 		">
-			{ headerType !== "None" &&
+			{ lightbox &&
 				<LightboxButton
 					dismiss={dismissKey}
 					blur={true}
@@ -53,13 +56,16 @@ export const Window: React.FC<WindowProps> = ({
 				style={{ transform: `translate(${position.x}px, ${position.y}px)`, }} 
 				className={`
 					absolute
-					${ placement === "br" && "bottom-10 right-10"}
+					${
+						placement === "br" ? "bottom-10 right-10" :
+						placement === "bl" ? "bottom-50 left-10" :
+						""
+					}
 					bg-linear-to-b from-n0 to-n1
 					border border-n2 rounded-xl
 					pointer-events-auto
 					will-change-transform overflow-hidden
-				`}
-			>
+			`}>
 				{ headerType !== "None" &&
 					<div
 						onMouseDown={handleMouseDown}
@@ -80,22 +86,24 @@ export const Window: React.FC<WindowProps> = ({
 						</h2>
 						<div className="flex">
 							{ hasClearChatButton &&
-								<button
-									data-tip="Clear Chat"
-									onClick={() => useChatStore.setState({ cachedChat: [] })}
-									className="btn-icon data-tip-down"
-								>
-									<ClearIcon />
-								</button>
+								<Tooltip text="Clear Chat">
+									<button
+										onClick={() => useChatStore.setState({ cachedChat: [] })}
+										className="btn-icon"
+									>
+										<ClearIcon />
+									</button>
+								</Tooltip>
 							}
-							<button
-								data-tip="Close Window"
-								disabled={!isDismissable}
-								onClick={call ? call : () => setShowWindow(dismissKey, false)}
-								className="btn-icon data-tip-down
-							">
-								<CloseIcon />
-							</button>
+							<Tooltip text="Close Window">
+								<button
+									disabled={!isDismissable}
+									onClick={call ? call : () => setShowWindow(dismissKey, false)}
+									className="btn-icon"
+								>
+									<CloseIcon />
+								</button>
+							</Tooltip>
 						</div>
 					</div>
 				}

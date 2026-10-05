@@ -1,3 +1,4 @@
+import { Tooltip } from "../../../utilities/react/Tooltip";
 import { SendIcon } from "./SendIcon";
 
 interface SendButtonProps {
@@ -5,13 +6,14 @@ interface SendButtonProps {
 }
 export const SendButton = ({ message }: SendButtonProps) => {
     return (
-        <button
-            type="submit"
-            disabled={message.length === 0}
-            data-tip="Send Message"
-            className="btn-icon bg-accent data-tip-up"
-        >
-            <SendIcon />
-        </button>
+        <Tooltip text="Send Message">
+            <button
+                type="submit"
+                disabled={message.length === 0}
+                className="btn-icon bg-accent"
+            >
+                <SendIcon />
+            </button>
+        </Tooltip>
     );
 }

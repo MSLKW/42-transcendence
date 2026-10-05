@@ -1,3 +1,4 @@
+import { Tooltip } from "../../../utilities/react/Tooltip";
 import { BackIcon } from "./BackIcon";
 
 interface BackButtonProps {
@@ -7,11 +8,12 @@ interface BackButtonProps {
 export const BackButton = ({ scene }: BackButtonProps) => {
 	return (
 		<button
-			data-tip="Back"
 			onClick={scene}
-			className="btn-icon data-tip-down"
+			className="btn-icon"
 		>
-			<BackIcon />
+			<Tooltip text="Back" position="bottom">
+				<BackIcon />
+			</Tooltip>
 		</button>
 	);
 }

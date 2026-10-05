@@ -23,6 +23,7 @@ export const SetupWindow = () => {
 				title="Setup"
 				dismissKey="setup"
 				headerType="None"
+				lightbox={true}
 			>
 				<div className="
 					max-h-[85vh] w-[80vw] max-w-215

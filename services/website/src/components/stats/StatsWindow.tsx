@@ -61,6 +61,7 @@ export const StatsWindow: React.FC = () => {
 		<Window
 			title={`Player Profile: ${name ?? "-"}`}
 			dismissKey="stats"
+			lightbox={true}
 		>
 			<div className="
 				px-3rem

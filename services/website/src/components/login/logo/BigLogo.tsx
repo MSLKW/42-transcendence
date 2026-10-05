@@ -1,4 +1,5 @@
 import { useSceneStore } from "../../../store/SceneStore";
+import { Tooltip } from "../../../utilities/react/Tooltip";
 
 export const BigLogo = () => {
 	const showWindow = useSceneStore((store) => store.showWindow);
@@ -30,19 +31,19 @@ export const BigLogo = () => {
 					2
 				</span>
 			</div>
-			<button
-				data-tip="About This Project"
-				onClick={() => setShowWindow("info", !showWindow.info)}
-				className="
-					btn-text
-					border border-transparent hover:not-disabled:border-n6
-					text-1.5rem text-b5 focus-visible:text-n6 hover:text-n6 font-extralight tracking-widest whitespace-nowrap
-					h-4rem aspect-8/1
-					outline-n6
-					data-tip-down
-			">
-				A 42 TRANSCENDENCE PROJECT
-			</button>
+			<Tooltip text="About This Project">
+				<button
+					onClick={() => setShowWindow("info", !showWindow.info)}
+					className="
+						btn-text
+						border border-transparent hover:not-disabled:border-n6
+						text-1.5rem text-b5 focus-visible:text-n6 hover:text-n6 font-extralight tracking-widest whitespace-nowrap
+						h-4rem aspect-8/1
+						outline-n6
+				">
+					A 42 TRANSCENDENCE PROJECT
+				</button>
+			</Tooltip>
 		</div>
 	);
 }

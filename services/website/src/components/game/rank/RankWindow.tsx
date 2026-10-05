@@ -20,21 +20,17 @@ export const RankWindow = () => {
 					flex gap-1rem
 					rounded-bl-xl
 				">
-					<div
-						className="
+					<div className="
 							flex place-items-center
 							text-b5
-						"
-					>
+					">
 						<RankLongArrowIcon />
 					</div>
-					<div
-						className="
-							flex flex-col
-							gap-1rem
-							text-n6 text-right whitespace-nowrap
-						"
-					>
+					<div className="
+						flex flex-col
+						gap-1rem
+						text-n6 text-right whitespace-nowrap
+					">
 						{ HAND_LABEL.map((hand) => (
 							<h3
 								key={hand}
@@ -45,14 +41,12 @@ export const RankWindow = () => {
 						))}
 					</div>
 				</div>
-				<div
-					className="
-						px-1.5rem py-2rem
-						flex gap-1rem
-						bg-n6
-						rounded-br-xl
-					"
-				>
+				<div className="
+					px-1.5rem py-2rem
+					flex gap-1rem
+					bg-n6
+					rounded-br-xl
+				">
 					<div className="
 						flex flex-col place-content-between
 					">

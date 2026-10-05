@@ -1,3 +1,4 @@
+import { useAuthStore } from "../../../store/AuthStore";
 import { useProfileStore } from "../../../store/ProfileStore";
 import { useSettingsStore } from "../../../store/SettingsStore";
 
@@ -9,6 +10,7 @@ interface AvatarProps {
 }
 
 export const AvatarImage = ({ uuid, image, isActive, isChat = false }: AvatarProps) => {
+	const clientUuid = useAuthStore((store) => store.clientUuid);
 	const autoPassIndex = useSettingsStore((store) => store.autoPassIndex);
 	const avatarVersion = useProfileStore((store) => store.avatarVersions[uuid ?? ""] ?? 0);
 
@@ -20,7 +22,8 @@ export const AvatarImage = ({ uuid, image, isActive, isChat = false }: AvatarPro
 		<div className={`
 			${isChat ? "h-full w-full" : "h-6rem aspect-square"}
 			flex place-content-center place-items-center
-			relative rounded-sm border border-n2
+			relative rounded-sm
+			border ${(uuid === clientUuid && image) ? "border-b4 bg-b5/40" : "border-n2 bg-n3/20"}
 		`}>
 			{ imageSrc &&
 				<img

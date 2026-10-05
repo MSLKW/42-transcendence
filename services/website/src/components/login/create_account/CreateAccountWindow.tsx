@@ -43,6 +43,7 @@ export const CreateAccountWindow = () => {
 		<Window
 			title="Create Account"
 			dismissKey="createAccount"
+			lightbox={true}
 		>
 			<form
 				onSubmit={handleSubmit}

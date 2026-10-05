@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import { gameInstance } from "../../../api/game/src/main";
 import { useGameStore } from "../../../store/GameStore";
+import { Tooltip } from "../../../utilities/react/Tooltip";
 
 interface SortButtonProps {
 	call?: (e: React.MouseEvent<HTMLButtonElement>) => void;
@@ -11,20 +12,19 @@ interface SortButtonProps {
 
 export const SortButton = ({ call, sortType, type, tip }: SortButtonProps) => {
 	return (
-		<button
-			data-tip={tip}
-			onClick={call}
-			className={`
-				btn-text bg-dark-semi
-				h-2.5rem
-				text-n6 text-1.25rem
-				focus:outline-double
-				data-tip-left
-				${sortType === type ? "outline-2" : "outline-none"}
-			`}
-		>
-			{type}
-		</button>
+		<Tooltip text={tip} position="left">
+			<button
+				onClick={call}
+				className={`
+					btn-text bg-dark-semi
+					h-2.5rem
+					text-n6 text-1.25rem
+					focus:outline-double
+					${sortType === type ? "outline-2" : "outline-none"}
+			`}>
+				{type}
+			</button>
+		</Tooltip>
 	);
 }
 

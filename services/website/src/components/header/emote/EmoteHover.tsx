@@ -1,3 +1,4 @@
+import { Tooltip } from "../../../utilities/react/Tooltip";
 import { EmojiIcon } from "./EmojiIcon";
 
 export const EmoteHover = () => {
@@ -8,13 +9,12 @@ export const EmoteHover = () => {
 
 	return (
 		<button
-			data-tip="Emote"
 			onClick={(e) => {handleSend(e)}}
-			className="
-				btn-icon
-				data-tip-left
-		">
-			<EmojiIcon />
+			className="btn-icon"
+		>
+			<Tooltip text="Emote" position="left">
+				<EmojiIcon />
+			</Tooltip>
 		</button>
 	);
 }

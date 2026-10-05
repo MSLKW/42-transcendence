@@ -1,4 +1,5 @@
 import { useRef, useEffect } from "react";
+import { Tooltip } from "../../../utilities/react/Tooltip";
 import { SearchIcon } from "./SearchIcon";
 
 interface SearchModuleProps {
@@ -31,14 +32,15 @@ export const SearchModule = ({ value, onChange, search }: SearchModuleProps) => 
 				onChange={(e) => onChange(e.target.value)}
 				className="input-chat"
 			/>
-			<button
-				data-tip="Search"
-				disabled={value ? false : true}
-				className="btn-icon bg-accent data-tip-up"
-				onClick={search}
-			>
-				<SearchIcon />
-			</button>
+			<Tooltip text="Search">
+				<button
+					disabled={value ? false : true}
+					className="btn-icon bg-accent"
+					onClick={search}
+				>
+					<SearchIcon />
+				</button>
+			</Tooltip>
 		</form>
 	);
 }

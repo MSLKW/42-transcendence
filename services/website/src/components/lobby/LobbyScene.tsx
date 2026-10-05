@@ -6,15 +6,17 @@ import { useGameStore } from "../../store/GameStore";
 import { usePartyStore } from "../../store/PartyStore";
 import { useProfileStore } from "../../store/ProfileStore";
 import { useResultsStore } from "../../store/ResultsStore";
+import { useSceneStore } from "../../store/SceneStore";
 import { useSettingsStore } from "../../store/SettingsStore";
+import { Tooltip } from "../../utilities/react/Tooltip";
 import { HeaderModule } from "../header/HeaderModule";
 import { AvatarModule } from "../avatar/AvatarModule";
 import { PartyCallButton } from "../party/call/PartyCallButton";
+import { ResultsCallButton } from "../results/call/ResultsCallButton";
 import { BotManagerButton } from "./bots/BotManagerButton";
 import { HostSettings } from "./host_settings/HostSettings";
 import { TakeSeatButton } from "./take_seat/TakeSeatButton";
 import { UnseatButton } from "./unseat/UnseatButton";
-import { ResultsCallButton } from "../results/call/ResultsCallButton";
 
 export const LobbyScene = () => {
 	const clientUuid = useAuthStore((store) => store.clientUuid);
@@ -36,7 +38,7 @@ export const LobbyScene = () => {
 			// fillSeatsWithBots();
 			return;
 		}
-		
+
 		if (userSeats.includes(null)) {
 			resetResults();
 			removeBots();
@@ -124,31 +126,32 @@ export const LobbyScene = () => {
 								: <TakeSeatButton seatNumber={1}/>
 							)
 						}
-						<button
-							data-tip={seatsFilled ? "Let's Play!" : "Waiting for seats to be filled"}
-							disabled={!(seatsFilled && clientUuid === hostUuid)}
-							onClick={() => {
-								handlePutSettings({
-									allow3OfAKind: useSettingsStore.getState().allow3OfAKind,
-									allow2OfSpadesEnd: useSettingsStore.getState().allow2OfSpadesEnd,
-									autoPassIndex: useSettingsStore.getState().autoPassIndex,
-									endGameCondition: 0,
-									scoreCalculation: 0,
-									cardStyle: 0,
-									uiColor: 0,
-									fxLevel: 0,
-									mxLevel: 0,
-								});
-								startGame;
-							}}
-							className="
-								btn-text bg-light
-								h-3rem aspect-4/1
-								text-1.25rem text-n0
-								data-tip-up
-						">
-							START
-						</button>
+						<Tooltip text={seatsFilled ? "Let's Play!" : "Waiting for seats to be filled"}>
+							<button
+								disabled={!(seatsFilled && clientUuid === hostUuid)}
+								onClick={() => {
+									handlePutSettings({
+										allow3OfAKind: useSettingsStore.getState().allow3OfAKind,
+										allow2OfSpadesEnd: useSettingsStore.getState().allow2OfSpadesEnd,
+										autoPassIndex: useSettingsStore.getState().autoPassIndex,
+										endGameCondition: 0,
+										scoreCalculation: 0,
+										cardStyle: 0,
+										uiColor: 0,
+										fxLevel: 0,
+										mxLevel: 0,
+									});
+									startGame;
+									useSceneStore.getState().setCurrentScene("Game");
+								}}
+								className="
+									btn-text bg-light
+									h-3rem aspect-4/1
+									text-1.25rem text-n0
+							">
+								START
+							</button>
+						</Tooltip>
 						{ totalPlayers === 4 &&
 							( userSeats[3]
 								?
