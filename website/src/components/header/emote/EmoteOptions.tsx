@@ -1,5 +1,6 @@
 import { chatSocket } from "../../../api/chat/chatSocket";
 import { useChatStore } from "../../../store/ChatStore";
+import { Tooltip } from "../../../utilities/react/Tooltip";
 
 interface EmoteOptionsProps {
 	emoji: string;
@@ -15,19 +16,19 @@ export const EmoteOptions = ({ emoji, tip }: EmoteOptionsProps) => {
 	}
 
 	return (
-		<button
-			key={emoji}
-			data-tip={tip}
-			disabled={rateLimited ? true : false}
-			onClick={handleSend}
-			className="
-				text-3rem rounded-full
-				h-12 aspect-square
-				flex place-content-center place-items-center
-				hover:outline outline-b5
-				data-tip-down
-		">
-			{emoji}
-		</button>
+		<Tooltip text={tip}>
+			<button
+				key={emoji}
+				disabled={rateLimited ? true : false}
+				onClick={handleSend}
+				className="
+					text-3rem rounded-full
+					h-12 aspect-square
+					flex place-content-center place-items-center
+					hover:outline outline-b5
+			">
+				{emoji}
+			</button>
+		</Tooltip>
 	);
 }

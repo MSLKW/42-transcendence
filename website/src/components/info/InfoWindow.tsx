@@ -9,22 +9,20 @@ export const InfoWindow = () => {
 		<Window
 			title="Info"
 			dismissKey="info"
+			lightbox={true}
 		>
-			<div
-				className="
-					w-200 max-w-[80vw]
-					flex place-content-center place-items-center
-					pointer-events-auto
-					relative
-					text-n6
-				"
-			>
-				<div
-					className="
-						h-200 max-h-[80vh]
-						px-3rem
-						divide-n2/40 divide-y-2
-						overflow-scroll
+			<div className="
+				w-200 max-w-[80vw]
+				flex place-content-center place-items-center
+				pointer-events-auto
+				relative
+				text-n6
+			">
+				<div className="
+					h-200 max-h-[80vh]
+					px-3rem
+					divide-n2/40 divide-y-2
+					overflow-scroll
 				">
 					<AboutModule />
 					<TechModule />

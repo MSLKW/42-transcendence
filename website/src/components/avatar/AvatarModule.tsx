@@ -5,6 +5,7 @@ import { AvatarName } from "./name/AvatarName";
 import { AvatarCornerButton } from "./corner/AvatarCornerButton";
 import { ChatBubbles } from "../bubble/ChatBubble";
 import { useAuthStore } from "../../store/AuthStore";
+import { Tooltip } from "../../utilities/react/Tooltip";
 
 interface AvatarModuleProps {
 	uuid: string;
@@ -36,11 +37,6 @@ export const AvatarModule = ({
 		">
 			<ChatBubbles uuid={uuid} />
 			<button
-				data-tip={
-					relation === "Self" && currentScene !== "Game" ? "Edit Profile" :
-					relation === "Bot" ? "Set Bot Settings" :
-					"View Profile"
-				}
 				onClick={(e) => {
 					e.currentTarget.blur();
 
@@ -54,19 +50,17 @@ export const AvatarModule = ({
 				// animate-glow
 				className={`
 					rounded-sm
-					${ relation === "Self" && currentScene === "Game"
-						? ""
-						: "hover:not-disabled:scale-105 active:hover:not-disabled:scale-100 focus-visible:outline-2 cursor-pointer data-tip-up"
-					}
-					border ${(uuid === clientUuid && image) ? "border-b4 bg-b5/40" : "border-n2 bg-n3/20"}
+					${ currentScene !== "Game" && "hover:not-disabled:scale-105 active:hover:not-disabled:scale-100 focus-visible:outline-2 cursor-pointer" }
 					outline-b5
 					relative h-min
-			`}>
-				<AvatarImage
-					uuid={uuid}
-					image={image ?? undefined}
-					isActive={isActive}
-				/>
+					`}>
+				<Tooltip text={relation === "Self" ? "Edit Profile" : "View Profile"}>
+					<AvatarImage
+						uuid={uuid}
+						image={image ?? undefined}
+						isActive={isActive}
+					/>
+				</Tooltip>
 				<AvatarCornerButton cornerButton={cornerButton} />
 			</button>
 			{ showName && <AvatarName name={cachedData[uuid?? ""]?.name ?? "-"} /> }

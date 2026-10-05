@@ -59,7 +59,7 @@ export const PartyWindow = () => {
 		<Window
 			title="Search to add / invite players"
 			dismissKey="party"
-			placement="br"
+			placement="bl"
 		>
 			<div className="
 				w-100 max-h-75

@@ -1,6 +1,7 @@
 import { useNotificationStore } from "../../../store/NotificationStore";
 import { NotifShowAllIcon } from "./NotifShowAllIcon";
 import { NotifFilteredIcon } from "./NotifFilteredIcon";
+import { Tooltip } from "../../../utilities/react/Tooltip";
 
 export const NotifToggleButton = () => {
 	const isNotifFiltered = useNotificationStore((store) => store.isNotifFiltered);
@@ -8,14 +9,18 @@ export const NotifToggleButton = () => {
 
 	return (
 		<button
-			data-tip={isNotifFiltered ? "Invite notifications hidden" : "All notifications shown"}
 			onClick={() => useNotificationStore.setState({ isNotifFiltered: !isNotifFiltered })}
-			className="btn-icon data-tip-down"
+			className="btn-icon relative"
 		>
-			{ isNotifFiltered
-				? <NotifFilteredIcon />
-				: <NotifShowAllIcon />
-			}
+			<Tooltip
+				text={isNotifFiltered ? "All notifications shown" : "Invite notifications hidden"}
+				position="bottom"
+			>
+				{ isNotifFiltered
+					? <NotifShowAllIcon />
+					: <NotifFilteredIcon />
+				}
+			</Tooltip>
 			<div className="
 				absolute top-0 right-0 -translate-y-1/4 translate-x-1/4
 				bg-dark rounded-full

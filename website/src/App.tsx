@@ -42,7 +42,6 @@ export default function App() {
 	const isProfileLoaded = useProfileStore((store) => store.isProfileLoaded);
 	const currentScene = useSceneStore((store) => store.currentScene);
 	const showWindow = useSceneStore((store) => store.showWindow);
-	const setShowWindow = useSceneStore((store) => store.setShowWindow);
 	const showDevSection = useDevStore((store) => store.showDevSection);
 
 	//party socket connection
@@ -113,9 +112,9 @@ export default function App() {
 			return;
 
 		if (!cachedData[clientUuid]?.name || !cachedData[clientUuid]?.avatar)
-			setShowWindow("setup", true);
+			useSceneStore.getState().setShowWindow("setup", true);
 		else
-			setShowWindow("setup", false);
+			useSceneStore.getState().setShowWindow("setup", false);
 	}, [currentScene, clientUuid, cachedData, isProfileLoaded]);
 
 	//close window on scene change

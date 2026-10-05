@@ -8,6 +8,7 @@ export const LeaveWindow = () => {
 			title="WARNING!"
 			dismissKey="leave"
 			headerType="Warning"
+			lightbox={true}
 		>
 			<div className="
 				flex flex-col

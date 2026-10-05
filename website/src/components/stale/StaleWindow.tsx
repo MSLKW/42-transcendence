@@ -20,6 +20,7 @@ export const StaleWindow = () => {
 				dismissKey={""}
 				headerType="None"
 				isDismissable={false}
+				lightbox={true}
 			>
 				<div className="
 					flex flex-col

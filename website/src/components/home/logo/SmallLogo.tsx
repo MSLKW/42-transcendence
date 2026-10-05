@@ -1,11 +1,11 @@
 import { useSceneStore } from "../../../store/SceneStore";
+import { Tooltip } from "../../../utilities/react/Tooltip";
 
 export const SmallLogo = () => {
 	const setShowWindow = useSceneStore((store) => store.setShowWindow);
 
 	return (
 		<button
-			data-tip="About This Project"
 			onClick={() => setShowWindow("info", true)}
 			className="
 				btn-text rounded-xl
@@ -13,35 +13,35 @@ export const SmallLogo = () => {
 				absolute z-0 top-1/2 -translate-y-1/2 right-0
 				flex flex-col place-items-end
 				py-1rem px-1.5rem
-				hover:not-disabled:scale-105 active:hover:not-disabled:scale-100
-				data-tip-up
-			"
-		>
-			<div className="
-				flex place-items-center
-				gap-1rem
-			">
-				<span className="
-					text-2.5rem
-					tracking-[clamp(1rem,1.429vmin+0.714rem,2rem)]
-					font-extrabold text-n6
+				hover:not-disabled:scale-105
+		">
+			<Tooltip text="About This Project">
+				<div className="
+					flex place-content-end place-items-center 
+					gap-1rem
 				">
-					BIG
-				</span>
-				<span className="
-					text-4rem
-					leading-[clamp(1.5rem,4.615vmin+0.115rem,3rem)]
-					font-extrabold text-n6
+					<span className="
+						text-2.5rem
+						tracking-[clamp(1rem,1.429vmin+0.714rem,2rem)]
+						font-extrabold text-n6
+					">
+						BIG
+					</span>
+					<span className="
+						text-4rem
+						leading-[clamp(1.5rem,4.615vmin+0.115rem,3rem)]
+						font-extrabold text-n6
+					">
+						2
+					</span>
+				</div>
+				<span className="`
+					text-[clamp(0.375rem,1.154vmin+0.029rem,0.75rem)]
+					text-b5 font-light text-right tracking-widest whitespace-nowrap leading-6
 				">
-					2
+					A 42 TRANSCENDENCE PROJECT
 				</span>
-			</div>
-			<span className="`
-				text-[clamp(0.375rem,1.154vmin+0.029rem,0.75rem)]
-				text-b5 font-light text-right tracking-widest whitespace-nowrap leading-6
-			">
-				A 42 TRANSCENDENCE PROJECT
-			</span>
+			</Tooltip>
 		</button>
 	);
 }

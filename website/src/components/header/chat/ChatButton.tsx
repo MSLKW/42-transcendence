@@ -1,4 +1,5 @@
 import { useSceneStore } from "../../../store/SceneStore";
+import { Tooltip } from "../../../utilities/react/Tooltip";
 import { ChatIcon } from "./ChatIcon";
 
 export const ChatButton = () => {
@@ -7,14 +8,12 @@ export const ChatButton = () => {
 
 	return (
 		<button
-			data-tip="Chat"
 			onClick={() => setShowWindow("chat", !showWindow.chat)}
-			className="
-				btn-icon
-				data-tip-down
-			"
+			className="btn-icon"
 		>
-			<ChatIcon />
+			<Tooltip text="Chat" position="bottom">
+				<ChatIcon />
+			</Tooltip>
 		</button>
 	);
 }

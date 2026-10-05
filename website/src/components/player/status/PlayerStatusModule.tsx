@@ -1,4 +1,5 @@
 import { usePartyStore, type AVAILABILITY_TYPE } from "../../../store/PartyStore";
+import { Tooltip } from "../../../utilities/react/Tooltip";
 
 interface PlayerStatusModuleProps {
 	uuid: string;
@@ -11,14 +12,11 @@ export const PlayerStatusModule = ({ uuid, availability, lastOnline }: PlayerSta
 	const effectiveAvailability = availabilityOverride ?? availability;
 
 	return (
-		<div
-			data-tip={`Last Online: ${lastOnline?.toLocaleString()}`}
-			className={`
-				h-full
-				flex place-content-center place-items-center
-				gap-0.5rem
-				${availability === "Offline" && "data-tip-up"}
-		`}>
+		<div className="
+			h-full
+			flex place-content-center place-items-center
+			gap-0.5rem
+		">
 			<div className={`
 				h-1rem aspect-square
 				rounded-full
@@ -29,6 +27,18 @@ export const PlayerStatusModule = ({ uuid, availability, lastOnline }: PlayerSta
 				}
 			`}/>
 			<h3 className="whitespace-nowrap">{effectiveAvailability ?? "n/a"}</h3>
+			{effectiveAvailability === "Offline" &&
+				<Tooltip text={`Last Online: ${lastOnline?.toLocaleString()}`}>
+					<p className="
+						h-2rem aspect-square
+						rounded-full
+						border border-n6 text-n6 opacity-60
+						flex place-content-center place-items-center
+					">
+						❔
+					</p>
+				</Tooltip>
+			}
 		</div>
 	);
 }
