@@ -59,6 +59,8 @@ clean:
 fclean: clean 
 	@echo "$(PURPLE)\n🗑️🚨 Removing this project's Docker volumes...\n$(RESET)"
 	@$(COMPOSE) down --volumes
+	@echo "$(PURPLE)docker volume prune -a (remove anonymous volumes) \n$(RESET)"
+	@docker volume prune -a
 	@echo "$(PURPLE)\n🗑️💥 Done, Absolutely everything are removed now!\n$(RESET)"
 
 

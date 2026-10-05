@@ -32,7 +32,6 @@ export default defineConfig({
 		tailwindcss(),
 	],
 	envPrefix: [
-		// "VITE_", // TODO: consult website PIC if need this
 		"API_", 
 		"SOCKET_"
 	],

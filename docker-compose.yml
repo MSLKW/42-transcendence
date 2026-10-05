@@ -208,7 +208,7 @@ services:
       SOCKET_PARTY_PATH: ${SOCKET_PARTY_PATH}
       SOCKET_GAME_SERVER_PATH: ${SOCKET_GAME_SERVER_PATH}
       SOCKET_GAME_BOT_PATH: ${SOCKET_GAME_BOT_PATH}
-      SOCKET_URL: ${SOCKET_URL} # TODO: can be opt out in oi. consult website PIC first
+      SOCKET_URL: ${SOCKET_URL}
     # args: # production stage only
     #   API_AUTH_PATH: ${API_AUTH_PATH}
     #   API_PROFILE_PATH: ${API_PROFILE_PATH}
