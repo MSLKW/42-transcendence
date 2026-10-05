@@ -9,7 +9,8 @@ import { clientManager } from "./client/ClientManager";
 import { registerEventHandlers } from "./client/event_handlers";
 
 import { UserStore } from "./store/UserStore";
-import { FileUserStore } from "./store/FileUserStore";
+// import { FileUserStore } from "./store/FileUserStore";
+import { DrizzleUserStore } from "./store/DrizzleUserStore";
 
 const PORT = Number(process.env.PORT) || 3000;
 const AUTH_SERVICE_URL = process.env.AUTH_SERVICE_URL;
@@ -28,7 +29,8 @@ const INTENTIONAL_DISCONNECT_REASONS = new Set([
 
 const pendingRemovals = new Map<string, NodeJS.Timeout>();
 
-const userStore = new FileUserStore;
+// const userStore = new FileUserStore;
+const userStore = new DrizzleUserStore;
 
 const app = express();
 app.use(express.json());
@@ -64,7 +66,7 @@ io.use(async (socket, next) => {
 		});
 
 		if (!response.ok)
-return next(new Error("UNAUTHORIZED: invalid or expired session"));
+			return next(new Error("UNAUTHORIZED: invalid or expired session"));
 
 		const data = await response.json();
 
@@ -116,9 +118,6 @@ io.on("connection", (socket: Socket) =>
 		console.log(`User<${uuid}> connected on socket ${socket.id}`);
 	}
 	
-
-	// TODO: mark presence as online in Postgres
-
 	socket.on("disconnect", (reason: DisconnectReason) =>
 	{
 		const client = clientManager.getBySocketId(socket.id);
@@ -136,7 +135,7 @@ io.on("connection", (socket: Socket) =>
 			}, RECONNECT_GRACE_PERIOD_MS);
 
 			pendingRemovals.set(uuid, timer);
-			console.log(`User<${uuid}> disconnected unintentionally. Waiting for reconnection`)
+			console.log(`User<${uuid}> disconnected unintentionally. Waiting for reconnection`);
 		}
 	});
 });
