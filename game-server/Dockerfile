@@ -6,11 +6,11 @@ COPY --from=game-types . ./packages/game-types/.
 COPY --from=root package*.json ./
 
 RUN npm install --workspace=@big2/game-types
-RUN cd ./packages/game-types && npm run docker:build
+RUN cd ./packages/game-types && npm run build:docker
 
 RUN npm install
 
-RUN cd ./game-server && npm run docker:build
+RUN cd ./game-server && npm run build:docker
 
 # -----
 
@@ -22,7 +22,7 @@ COPY --from=game-types . ./packages/game-types/.
 COPY --from=root package*.json .
 
 RUN npm install --workspace=@big2/game-types
-RUN cd ./packages/game-types && npm run docker:build
+RUN cd ./packages/game-types && npm run build:docker
 
 RUN npm ci --omit=dev
 

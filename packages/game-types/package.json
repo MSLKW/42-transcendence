@@ -19,6 +19,6 @@
 		}
 	},
 	"scripts": {
-		"docker:build": "tsc"
+		"build:docker": "tsc -b"
 	}
 }
