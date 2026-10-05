@@ -1,6 +1,7 @@
 import { io, kickSocket, LobbyRequest } from './server.js';
 import { Socket } from 'socket.io';
 import { Lobby } from './Lobby.js';
+import { IncomingEventRegistry, EventConfig } from './Validation.js';
 
 export class LobbyManager {
 	private lobbies: Record<string, Lobby>;
@@ -34,8 +35,46 @@ export class LobbyManager {
 			const uuid = socket.data.uuid;
 			const lobby = this.lobbies[lobbyId];
 
-			socket.use()
+			socket.use((packet, next) => {
+				const eventName = packet[0];
+				console.log(`Validating ${eventName}: `, packet);
+				const eventConfig: EventConfig = IncomingEventRegistry[eventName];
+				if (eventConfig === undefined) {
+					return (next(new Error("Unknown Event")));
+				}
+				let callback = undefined;
+				if (typeof packet[packet.length - 1] === 'function') {
+					callback = packet[packet.length - 1];
+				}
+				let payload = undefined;
+				if (packet[1] !== callback) {
+					payload = packet[1];
+				}
+				if (eventConfig.payload !== undefined) {
+					if (payload === undefined) {
+						return (next(new Error("Event does not have payload attached")));
+					}
+					const payloadParseResult = eventConfig.payload.safeParse(payload);
+					if (payloadParseResult.success === false) {
+						return (next(new Error("Event payload has failed validation")));
+					}
+				}
+				if (eventConfig.callback !== undefined) {
+					if (callback === undefined) {
+						return (next(new Error("Event does not have callback attached")));
+					}
+					const callbackParseResult = eventConfig.callback.safeParse(callback);
+					if (callbackParseResult.success === false) {
+						return (next(new Error("Event callback has failed validation")));
+					}
+				}
+				next();
+			});
 
+			socket.on("error", (error) => {
+				console.log("Received 'error': ", error.message);
+			});
+			
 			lobby.connectUser(socket, uuid);
 		});
 	}

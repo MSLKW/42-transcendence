@@ -8,6 +8,16 @@
 	},
 	"main": "./dist/Types.js",
 	"types": "./dist/types/Types.d.ts",
+	"exports": {
+		".": {
+			"types": "./dist/types/Types.d.ts",
+			"import": "./dist/Types.js"
+		},
+		"./validation": {
+			"types": "./dist/types/Validation.d.ts",
+			"import": "./dist/Validation.js"
+		}
+	},
 	"scripts": {
 		"docker:build": "tsc"
 	}
