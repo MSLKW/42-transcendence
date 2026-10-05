@@ -8,11 +8,15 @@ export const handleGetSettings = async (uuid: string) => {
 
 		if (useProfileStore.getState().profileVerboseMode)
 			console.log(`[profile > 'GET' settings/${uuid}] response:`, response);
+
+		return response;
 	} catch (err) {
 		const error = err instanceof Error ? err.message : "Something went wrong. Please try again";
 
 		useNotificationStore.getState().showNotification(error, NOTIFICATION_TYPE.error);
 
 		console.warn(`[profile > 'GET' settings/${uuid}] error:${error}`);
+
+		return null;
 	}
 }

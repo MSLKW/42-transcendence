@@ -2,13 +2,6 @@ import { create } from "zustand";
 import { useGameStore } from "./GameStore";
 import { useProfileStore, type CachedData } from "./ProfileStore";
 
-export const INTEL_LABEL = [
-	"Easy",
-	"Medium",
-	"Hard",
- ] as const;
-export type INTEL_TYPE = typeof INTEL_LABEL[number];
-
 export const cachedBotData: Record<string, CachedData> = {
 	"bot-0": {
 		name: "Norminette",
@@ -37,7 +30,6 @@ export const cachedBotData: Record<string, CachedData> = {
 };
 
 interface BotValues {
-	currentIntel: INTEL_TYPE;
 	botCount: number;
 }
 
@@ -50,7 +42,6 @@ interface BotState extends BotValues {
 
 export const useBotStore = create<BotState>() (
 	(set, get) => ({
-		currentIntel: "Medium",
 		botCount: 0,
 
 		removeBots: async () => {
@@ -111,7 +102,6 @@ export const useBotStore = create<BotState>() (
 
 		resetValues: () => {
 			set({
-				currentIntel: "Medium",
 				botCount: 0,
 			});
 		},

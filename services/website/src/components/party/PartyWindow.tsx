@@ -60,8 +60,6 @@ export const PartyWindow = () => {
 			title="Search to add / invite players"
 			dismissKey="party"
 			placement="br"
-			hasPinButton={false}
-			pinState={false}
 		>
 			<div className="
 				w-100 max-h-75

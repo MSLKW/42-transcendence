@@ -4,8 +4,6 @@ import { useNotificationStore, NOTIFICATION_TYPE } from "../../../store/Notifica
 import { usePartyStore } from "../../../store/PartyStore";
 
 export async function startGameSessionAction(socket: Socket | null) {
-	const { showNotification } = useNotificationStore.getState();
-
 	if (!socket)
 		return;
 
@@ -17,7 +15,7 @@ export async function startGameSessionAction(socket: Socket | null) {
 		if (usePartyStore.getState().partyVerboseMode)
 			console.log("[party > 'emit' start_game_session]");
 	} catch (error) {
-		showNotification(
+		useNotificationStore.getState().showNotification(
 			"Unable to connect to party socket",
 			NOTIFICATION_TYPE.error
 		);

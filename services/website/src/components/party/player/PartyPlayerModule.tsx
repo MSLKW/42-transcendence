@@ -105,9 +105,7 @@ export const PartyPlayerModule = ({ uuid }: PartyPlayerModuleProps) => {
 							? "place-content-between"
 							: "place-content-center"
 					}
-					place-content-center
-					flex
-					place-items-center
+					flex place-items-center
 					gap-1rem
 				`}>
 					<PlayerStatusModule

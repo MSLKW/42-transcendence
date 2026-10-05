@@ -1,10 +1,12 @@
 import { useEffect } from "react";
+import { handlePutSettings } from "../../api/profile/put_settings/handlePutSettings";
 import { useAuthStore } from "../../store/AuthStore";
 import { useBotStore } from "../../store/BotStore";
 import { useGameStore } from "../../store/GameStore"; 
 import { usePartyStore } from "../../store/PartyStore";
 import { useProfileStore } from "../../store/ProfileStore";
 import { useResultsStore } from "../../store/ResultsStore";
+import { useSettingsStore } from "../../store/SettingsStore";
 import { HeaderModule } from "../header/HeaderModule";
 import { AvatarModule } from "../avatar/AvatarModule";
 import { PartyCallButton } from "../party/call/PartyCallButton";
@@ -20,14 +22,14 @@ export const LobbyScene = () => {
 	const removeBots = useBotStore((store) => store.removeBots);
 	const totalPlayers = useGameStore((store) => store.totalPlayers);
 	const userSeats = useGameStore((store) => store.userSeats);
-	const seatRef = useGameStore((store => store.seatRef));
+	// const seatRef = useGameStore((store => store.seatRef));
 	const startGame = useGameStore((store) => store.startGame);
 	const round = useGameStore((store) => store.round);
 	const members = usePartyStore((store) => store.members);
 	const hostUuid = usePartyStore((store) => store.hostUuid);
 	const cachedData = useProfileStore((store) => store.cachedData);
 	const resetResults = useResultsStore((store) => store.resetResults);
-	
+
 	useEffect(() => {
 		const humansSeated = userSeats.filter((seat): seat is string => seat !== null && !seat.includes("bot")).length;
 		if (humansSeated === members.length) {
@@ -105,13 +107,11 @@ export const LobbyScene = () => {
 							)
 						}
 					</div>
-					<div
-						className={`
-							w-full h-full
-							flex
-							place-items-center place-content-evenly
-						`}
-					>
+					<div className={`
+						w-full h-full
+						flex
+						place-items-center place-content-evenly
+					`}>
 						{ totalPlayers === 4 &&
 							( userSeats[1]
 								?
@@ -127,14 +127,26 @@ export const LobbyScene = () => {
 						<button
 							data-tip={seatsFilled ? "Let's Play!" : "Waiting for seats to be filled"}
 							disabled={!(seatsFilled && clientUuid === hostUuid)}
-							onClick={startGame}
+							onClick={() => {
+								handlePutSettings({
+									allow3OfAKind: useSettingsStore.getState().allow3OfAKind,
+									allow2OfSpadesEnd: useSettingsStore.getState().allow2OfSpadesEnd,
+									autoPassIndex: useSettingsStore.getState().autoPassIndex,
+									endGameCondition: 0,
+									scoreCalculation: 0,
+									cardStyle: 0,
+									uiColor: 0,
+									fxLevel: 0,
+									mxLevel: 0,
+								});
+								startGame;
+							}}
 							className="
 								btn-text bg-light
 								h-3rem aspect-4/1
 								text-1.25rem text-n0
 								data-tip-up
-							"
-						>
+						">
 							START
 						</button>
 						{ totalPlayers === 4 &&
@@ -164,13 +176,11 @@ export const LobbyScene = () => {
 					</div>
 				</div>
 			</main>
-			<footer
-				className="
-					pointer-events-auto
-					flex place-content-between place-items-center
-					relative
-				"
-			>
+			<footer className="
+				pointer-events-auto
+				flex place-content-between place-items-center
+				relative
+			">
 				<div
 					tabIndex={-1}
 					className="
@@ -178,8 +188,7 @@ export const LobbyScene = () => {
 						flex
 						gap-2rem pt-2rem
 						sm:overflow-x-visible overflow-x-auto
-					"
-				>
+				">
 					<PartyCallButton />
 					{ members.map((uuid) => (
 						uuid && !userSeats.includes(uuid) &&

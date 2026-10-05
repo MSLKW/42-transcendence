@@ -4,6 +4,7 @@ import { persist } from "zustand/middleware";
 interface AuthValues {
 	authVerboseMode: boolean;
 	authValidation: boolean;
+	isAuthenticated: boolean;
 	clientUuid: string | null;
 	createdAt: Date | null;
 	lastLogin: Date | null;
@@ -18,12 +19,14 @@ export const useAuthStore = create<AuthState>() (
 		(set, _get) => ({
 			authVerboseMode: true,
 			authValidation: false,
+			isAuthenticated: false,
 			clientUuid: null,
 			createdAt: null,
 			lastLogin: null,
 
 			resetValues: () => {
 				set({
+					isAuthenticated: false,
 					clientUuid: null,
 					createdAt: null,
 					lastLogin: null,

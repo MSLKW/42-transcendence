@@ -71,7 +71,6 @@ export const ProfileWindow = () => {
 			title={`Profile`}
 			dismissKey="profile"
 			isDismissable={profileValidation ? isValid : true}
-			hasPinButton={false}
 			call={handleProfileUpdate}
 		>
 			<div className="

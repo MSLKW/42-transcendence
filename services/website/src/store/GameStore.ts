@@ -13,7 +13,6 @@ export const GAMEMODE_LABEL = [
 	"4 Players",
 	"3 Players",
 	"2 Players",
-	"Tutorial",
 ] as const;
 export type GAMEMODE_TYPE = typeof GAMEMODE_LABEL[number];
 

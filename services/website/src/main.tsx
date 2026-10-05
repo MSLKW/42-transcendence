@@ -9,9 +9,8 @@ createRoot(document.getElementById('root')!).render(
 	</StrictMode>,
 )
 
-const originalWarn = console.warn;
-console.warn = (...args) => {
-	if (typeof args[0] === 'string' && args[0].includes('THREE.Clock: This module has been deprecated. Please use THREE.Timer instead.'))
-		return;
-	originalWarn(...args);
-};
+if (import.meta.hot) {
+	import.meta.hot.on('vite:beforeUpdate', () => {
+		window.location.reload();
+	});
+}

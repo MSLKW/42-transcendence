@@ -73,8 +73,6 @@ export const ChatWindow = () => {
 			title="Chat"
 			dismissKey="chat"
 			placement="br"
-			hasPinButton={false}
-			pinState={false}
 			hasClearChatButton={true}
 		>
 			<div className="

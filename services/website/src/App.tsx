@@ -18,7 +18,6 @@ import { HomeScene } from "./components/home/HomeScene";
 import { LobbyScene } from "./components/lobby/LobbyScene";
 import { TestScene } from "./components/test/TestScene";
 import { GameScene } from "./components/game/GameScene";
-import { BotsWindow } from "./components/bots/BotsWindow";
 import { ChatWindow } from "./components/chat/ChatWindow";
 import { CreateAccountWindow } from "./components/login/create_account/CreateAccountWindow";
 import { InfoWindow } from "./components/info/InfoWindow";
@@ -29,7 +28,6 @@ import { ProfileWindow } from "./components/profile/ProfileWindow";
 import { RankWindow } from "./components/game/rank/RankWindow";
 import { ResultsWindow } from "./components/results/ResultsWindow";
 import { SignInWindow } from "./components/login/sign_in/SignInWindow";
-import { SettingsWindow } from "./components/settings/SettingsWindow";
 import { SetupWindow } from "./components/setup/SetupWindow";
 import { StaleWindow } from "./components/stale/StaleWindow";
 import { StatsWindow } from "./components/stats/StatsWindow";
@@ -46,14 +44,6 @@ export default function App() {
 	const showWindow = useSceneStore((store) => store.showWindow);
 	const setShowWindow = useSceneStore((store) => store.setShowWindow);
 	const showDevSection = useDevStore((store) => store.showDevSection);
-
-	//validate
-	useEffect(() => {
-		if (currentScene === "Login" || clientUuid)
-			return;
-
-		handleValidate();
-	}, [currentScene, clientUuid]);
 
 	//party socket connection
 	useEffect(() => {
@@ -156,7 +146,6 @@ export default function App() {
 				{ currentScene === "Lobby" && <LobbyScene /> }
 				{ currentScene === "Test" && <TestScene /> }
 				{ currentScene === "Game" && <GameScene /> }
-				{ showWindow["bots"] && <BotsWindow /> }
 				{ showWindow["chat"] && <ChatWindow /> }
 				{ showWindow["createAccount"] && <CreateAccountWindow /> }
 				{ showWindow["info"] && <InfoWindow /> }
@@ -167,7 +156,6 @@ export default function App() {
 				{ showWindow["rank"] && <RankWindow /> }
 				{ showWindow["results"] && <ResultsWindow /> }
 				{ showWindow["setup"] && <SetupWindow /> }
-				{ showWindow["settings"] && <SettingsWindow /> }
 				{ showWindow["signIn"] && <SignInWindow /> }
 				{ showWindow["stale"] && <StaleWindow /> }
 				{ showWindow["stats"] && <StatsWindow /> }
