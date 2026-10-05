@@ -14,6 +14,14 @@
 		;
 }
 
+@utility bg-dark-semi {
+	@apply
+		bg-n1/40
+		border border-n2
+		outline-b5
+		;
+}
+
 @utility bg-accent {
 	@apply
 		bg-b5

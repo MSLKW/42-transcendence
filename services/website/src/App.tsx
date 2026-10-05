@@ -1,115 +1,165 @@
 import { useRef, useEffect } from "react";
-import { Canvas } from "@react-three/fiber";
-import { Stats, PerspectiveCamera, OrbitControls, AdaptiveDpr } from "@react-three/drei";
+import { chatSocket } from "./api/chat/chatSocket";
+import { partySocket } from "./api/party/partySocket";
+import { useAuthStore } from "./store/AuthStore";
 import { useDevStore } from "./store/DevStore";
-import { usePlayerStore } from "./store/PlayerStore";
+import { useProfileStore } from "./store/ProfileStore";
 import { useSceneStore } from "./store/SceneStore";
+import { handleValidate } from "./api/authentication/validate/handleValidate";
+import { subscribeToMessages } from "./api/chat/subscribe/subscribeToMessages";
+import { subscribeToUserJoined } from "./api/chat/subscribe/subscribeToUserJoined";
+import { subscribeToUserLeft } from "./api/chat/subscribe/subscribeToUserLeft";
+import { subscribeToUserTyping } from "./api/chat/subscribe/subscribeToUserTyping";
+import { subscribeToRateLimited } from "./api/chat/subscribe/subscribeToRateLimited";
+import { useScrollToTop } from "./utilities/react/useScrollToTop";
 import { StripeBg } from "./components/bg/Stripe";
-import { SphereBg } from "./components/3d/Sphere";
-import { Card } from "./components/3d/PCard";
-import { Login } from "./pages/Login";
-import { Home } from "./pages/Home";
-import { Lobby } from "./pages/Lobby";
-import { Gameplay } from "./pages/Gameplay";
-import { R3F } from "./pages/R3F";
-import { Results } from "./pages/Results";
-import { BotsWindow } from "./window/Bots";
-import { ChatWindow } from "./window/Chat";
-import { CreateAccountWindow } from "./window/CreateAccount";
-import { InfoWindow } from "./window/Info";
-import { NotificationWindow } from "./window/Notification";
-import { PartyWindow } from "./window/Party";
-import { ProfileWindow } from "./window/Profile";
-import { RankWindow } from "./window/Rank";
-import { SetupWindow } from "./window/Setup";
-import { SettingsWindow } from "./window/Settings";
-import { SignInWindow } from "./window/SignIn";
-import { StatsWindow } from "./window/Stats";
-import { useNotificationStore } from "./store/NotificationStore";
+import { LoginScene } from "./components/login/LoginScene";
+import { HomeScene } from "./components/home/HomeScene";
+import { LobbyScene } from "./components/lobby/LobbyScene";
+import { TestScene } from "./components/test/TestScene";
+import { GameScene } from "./components/game/GameScene";
+import { ChatWindow } from "./components/chat/ChatWindow";
+import { CreateAccountWindow } from "./components/login/create_account/CreateAccountWindow";
+import { InfoWindow } from "./components/info/InfoWindow";
+import { LeaveWindow } from "./components/leave/LeaveWindow";
+import { NotificationWindow } from "./components/notification/NotificationWindow";
+import { PartyWindow } from "./components/party/PartyWindow";
+import { ProfileWindow } from "./components/profile/ProfileWindow";
+import { RankWindow } from "./components/game/rank/RankWindow";
+import { ResultsWindow } from "./components/results/ResultsWindow";
+import { SignInWindow } from "./components/login/sign_in/SignInWindow";
+import { SetupWindow } from "./components/setup/SetupWindow";
+import { StaleWindow } from "./components/stale/StaleWindow";
+import { StatsWindow } from "./components/stats/StatsWindow";
+import { ThreeJsManager } from './components/3d/ThreeJsManager';
+import Dev from "./Dev";
+
+export let threejsManager: ThreeJsManager;
 
 export default function App() {
-	const { data } = usePlayerStore();
+	const clientUuid = useAuthStore((store) => store.clientUuid);
+	const cachedData = useProfileStore((store) => store.cachedData);
+	const isProfileLoaded = useProfileStore((store) => store.isProfileLoaded);
+	const currentScene = useSceneStore((store) => store.currentScene);
+	const showWindow = useSceneStore((store) => store.showWindow);
+	const showDevSection = useDevStore((store) => store.showDevSection);
 
-	const { setSceneHeight, setSceneWidth, currentScene, showWindow, setShowWindow } = useSceneStore();
+	//party socket connection
 	useEffect(() => {
-		window.scrollTo({
-			top: 0,
-			behavior: 'smooth',
-		});
-		if (!data.name && currentScene != "LOGIN")
-			setShowWindow("setup", true);
-	}, [currentScene]);
-
-	const containerRef = useRef(null);
-	useEffect(() => {
-		if (!containerRef.current)
+		if (!clientUuid)
 			return;
 
-		const observer = new ResizeObserver((entries) => {
-			for (let entry of entries) {
-				setSceneWidth(entry.target.scrollWidth);
-				setSceneHeight(entry.target.scrollHeight);
+		partySocket.connect();
+
+		return () => {
+			partySocket.disconnect();
+		};
+	}, [clientUuid]);
+
+	//chat socket connection + subscriptions
+	useEffect(() => {
+		if (!clientUuid)
+			return;
+
+		chatSocket.connect();
+		const unsubscribeFromMessages = subscribeToMessages();
+		const unsubscribeFromUserJoined = subscribeToUserJoined();
+		const unsubscribeFromUserLeft = subscribeToUserLeft();
+		const unsubscribeFromUserTyping = subscribeToUserTyping();
+		const unsubscribeFromRateLimited = subscribeToRateLimited();
+
+		return () => {
+			unsubscribeFromMessages();
+			unsubscribeFromUserJoined();
+			unsubscribeFromUserLeft();
+			unsubscribeFromUserTyping();
+			unsubscribeFromRateLimited();
+			chatSocket.disconnect();
+		};
+	}, [clientUuid]);
+
+	//three js manager
+	const containerRef = useRef<HTMLDivElement>(null);
+	useEffect(() => {
+		if (!containerRef.current) {
+			return ;
+		}
+		threejsManager = new ThreeJsManager(containerRef.current);
+
+		return () => {
+			if (threejsManager) {
+				threejsManager.dispose()
 			}
-		});
-		observer.observe(containerRef.current);
-		return () => observer.disconnect();
+		}
 	}, []);
 
-	const showStats = useDevStore((devStore) => devStore.showStats);
+	//three js scene handler
+	useEffect(() => {
+		const currentSceneLowered = currentScene.toLowerCase();
+		if (threejsManager.getSceneId() !== currentSceneLowered) {
+			threejsManager.changeScene(currentSceneLowered);
+		}
+	}, [currentScene]);
 
-	const { id } = useNotificationStore();
+	//scroll to top
+	useEffect(() => {
+		useScrollToTop();
+	}, [currentScene]);
+
+	//inital profile setup
+	useEffect(() => {
+		if (currentScene === "Login" || !clientUuid || !isProfileLoaded)
+			return;
+
+		if (!cachedData[clientUuid]?.name || !cachedData[clientUuid]?.avatar)
+			useSceneStore.getState().setShowWindow("setup", true);
+		else
+			useSceneStore.getState().setShowWindow("setup", false);
+	}, [currentScene, clientUuid, cachedData, isProfileLoaded]);
+
+	//close window on scene change
+	useEffect(() => {
+		useSceneStore.getState().resetWindows();
+	}, [currentScene]);
 
 	return (
 		<>
-			{ (currentScene === "LOGIN" || currentScene === "HOME") && <StripeBg /> }
-			{showStats && <Stats />}
-			<section ref={containerRef} className="
-				z-0
-				absolute top-0 left-1/2 -translate-x-1/2
-				w-full min-w-80 max-w-360
+			{ (currentScene === "Login" || currentScene === "Home") && <StripeBg /> }
+			<section className="
+				z-0 absolute top-0 left-1/2 -translate-x-1/2
 				h-full min-h-120 max-h-360
+				w-full min-w-80 max-w-360
 			">
-				<Canvas>
-					{ (currentScene === "LOGIN" || currentScene === "LOBBY" || currentScene === "R3F" || currentScene === "RESULTS") && 
-						<>
-							<AdaptiveDpr />
-							<ambientLight intensity={0.5} />
-							<directionalLight position={[0, 5, 5]} intensity={0.5} />
-							{ currentScene === "LOGIN" &&
-								<Card
-									position={[0,0.25,0]}
-									rotation={[-Math.PI/4,0,0]}
-									color="gold"
-								/>
-							}
-							<SphereBg />
-							<PerspectiveCamera makeDefault position={[0, 0, 2.25]} />
-							<OrbitControls enableZoom={false} />
-						</>
-					}
-				</Canvas>
+				{ <div className="w-full h-full" ref={containerRef}/> }
 			</section>
-			<section className="cont-body">
-			{/* <section className="h-screen w-screen"> */}
-				{ currentScene === 'LOGIN' && <Login /> }
-				{ currentScene === 'HOME' && <Home /> }
-				{ currentScene === 'LOBBY' && <Lobby /> }
-				{ currentScene === 'GAMEPLAY' && <Gameplay /> }
-				{ currentScene === 'R3F' && <R3F /> }
-				{ currentScene === 'RESULTS' && <Results /> }
-				{ showWindow["bots"] && <BotsWindow /> }
+			<section className="
+				h-full min-h-120 max-h-360
+				w-full min-w-80 max-w-360
+				mx-auto p-[clamp(0.125rem,5vw+0.125rem,3.125rem)]
+				flex flex-col
+				z-1 relative
+				pointer-events-none
+			">
+				{ currentScene === "Login" && <LoginScene /> }
+				{ currentScene === "Home" && <HomeScene /> }
+				{ currentScene === "Lobby" && <LobbyScene /> }
+				{ currentScene === "Test" && <TestScene /> }
+				{ currentScene === "Game" && <GameScene /> }
 				{ showWindow["chat"] && <ChatWindow /> }
 				{ showWindow["createAccount"] && <CreateAccountWindow /> }
 				{ showWindow["info"] && <InfoWindow /> }
-				{ showWindow["notification"] && <NotificationWindow key={id}/> }
+				{ showWindow["notification"] && <NotificationWindow /> }
+				{ showWindow["leave"] && <LeaveWindow /> }
 				{ showWindow["party"] && <PartyWindow /> }
 				{ showWindow["profile"] && <ProfileWindow /> }
 				{ showWindow["rank"] && <RankWindow /> }
+				{ showWindow["results"] && <ResultsWindow /> }
 				{ showWindow["setup"] && <SetupWindow /> }
-				{ showWindow["settings"] && <SettingsWindow /> }
 				{ showWindow["signIn"] && <SignInWindow /> }
+				{ showWindow["stale"] && <StaleWindow /> }
 				{ showWindow["stats"] && <StatsWindow /> }
 			</section>
+			{ showDevSection && <Dev /> }
 		</>
 	);
 }

@@ -1,6 +1,7 @@
 import { SessionStore } from "../store/sessionStore";
 import { Session } from "../models/session";
 import { SESSION_DURATION_MS } from "../config/sessionConfig";
+import { hashToken } from "./hash";
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const MIN_PASSWORD_LENGTH = 8;
@@ -30,24 +31,23 @@ export function validateUsername(username: string): { valid: boolean; reason?: s
 	return { valid: true };
 }
 
-export async function validateSession(
-	sessionStore: SessionStore,
-	token: string
-): Promise<Session | null> {
-	const session = await sessionStore.getSession(token);
+export async function validateSession(sessionStore: SessionStore, token: string): Promise<Session | null>
+{
+	const tokenHash = hashToken(token);
+	const session = await sessionStore.getSession(tokenHash);
 
-	if (session === null) {
+	if (session === null)
 		return null;
-	}
 
 	const now = new Date();
-	if (session.expiresAt < now) {
-		await sessionStore.deleteSession(token);
+	if (session.expiresAt < now)
+	{
+		await sessionStore.deleteSession(tokenHash);
 		return null;
 	}
 
 	const newExpiresAt = new Date(now.getTime() + SESSION_DURATION_MS);
-	await sessionStore.updateExpiry(token, newExpiresAt);
+	await sessionStore.updateExpiry(tokenHash, newExpiresAt);
 
 	return { ...session, expiresAt: newExpiresAt };
 }

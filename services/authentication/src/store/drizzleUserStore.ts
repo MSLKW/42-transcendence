@@ -1,4 +1,4 @@
-import { eq } from "drizzle-orm";
+import { eq, sql } from "drizzle-orm";
 import { users } from "@big2/auth-schema";
 import { postgresClient } from "./postgresClient";
 import { User } from "../models/user";
@@ -6,11 +6,21 @@ import { UserStore } from "./userStore";
 
 export class DrizzleUserStore implements UserStore {
 	async createUser(email: string, passwordHash: string): Promise<User> {
-		const [user] = await postgresClient
-			.insert(users)
-			.values({ email, passwordHash })
-			.returning();
-		return user;
+		try
+		{
+			const [user] = await postgresClient
+				.insert(users)
+				.values({ email, passwordHash })
+				.returning();
+			return user;
+		}
+		catch (error: any)
+		{
+			if (error.code === "23505") //Postgres's unique_violation
+				throw new Error("DUPLICATE_EMAIL");
+			console.error("Failed to createUser in database", error);			
+			throw error;
+		}
 	}
 
 	async getUserById(id: string): Promise<User | null> {
@@ -45,14 +55,17 @@ export class DrizzleUserStore implements UserStore {
 	}
 
 	async incrementFailedAttempts(id: string): Promise<void> {
-		// Note: This requires getting current value or using sql increments
-		const user = await this.getUserById(id);
-		if (!user)
-			throw new Error("USER_NOT_FOUND");
-		await postgresClient
+		// avoid race conditions: This requires using sql increments, in 1 query.
+		const result = await postgresClient
 			.update(users)
-			.set({failedLoginAttempts: user.failedLoginAttempts + 1})
+			// .set({failedLoginAttempts: user.failedLoginAttempts + 1})
+			.set({ //Atomic = 1 query instead of 2
+				failedLoginAttempts: sql`${users.failedLoginAttempts} + 1`,
+			})
 			.where(eq(users.id, id));
+
+		if (result.rowCount === 0)
+			throw new Error("USER_NOT_FOUND");
 	}
 
 	async resetFailedAttempts(id: string): Promise<void> {

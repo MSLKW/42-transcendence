@@ -35,7 +35,7 @@ export const users = authSchema.table("users", {
 
 //            b. Sessions Table
 export const sessions = authSchema.table("sessions", {
-  token: text("token")
+  tokenHash: text("token_hash")
     .primaryKey(),
   userId: uuid("user_id")
           .unique()

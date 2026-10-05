@@ -1,0 +1,16 @@
+@keyframes keyframe-glow {
+	0%, 100% {
+		box-shadow:
+			0 0 16px color-mix(in srgb, var(--color-b5) 40%, transparent),
+			0 0 8px color-mix(in srgb, var(--color-b5) 20%, transparent);
+	}
+	50% {
+		box-shadow:
+			0 0 32px color-mix(in srgb, var(--color-b5) 80%, transparent),
+			0 0 16px color-mix(in srgb, var(--color-b5) 80%, transparent);
+	}
+}
+
+.animate-glow {
+	animation: keyframe-glow 1.6s ease-in-out infinite;
+}

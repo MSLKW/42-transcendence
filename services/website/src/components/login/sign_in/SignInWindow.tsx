@@ -1,0 +1,74 @@
+import { useState } from "react";
+import { useNotificationStore, NOTIFICATION_TYPE } from "../../../store/NotificationStore";
+import { Window } from "../../window/Window";
+import { FormInputModule } from "../form/FormInputModule";
+import { handleSignIn } from "../../../api/authentication/sign_in/handleSignIn";
+
+export const SignInWindow = () => {
+	const showNotification = useNotificationStore((store) => store.showNotification);
+
+	const [email, setEmail] = useState("");
+	const [password, setPassword] = useState("");
+	const [isLoading, setIsLoading] = useState(false);
+
+	const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+		e.preventDefault();
+
+		setIsLoading(true);
+		if (!email || !password) {
+			showNotification("All fields are required", NOTIFICATION_TYPE.error);
+			return;
+		}
+
+		await handleSignIn(email, password);
+		setIsLoading(false);
+	}
+
+	return (
+		<Window
+			title="Sign In"
+			dismissKey="signIn"
+			lightbox={true}
+		>
+			<form 
+				onSubmit={handleSubmit}
+				className="
+					flex flex-col place-content-center place-items-center
+					py-2rem px-3rem gap-2rem
+					pointer-events-auto
+				"
+			>
+				<div className="flex flex-col gap-1rem">
+					<FormInputModule
+						label="Email / Username"
+						value={email}
+						placeholder="Enter your email / username"
+						inputFor="email"
+						hasFocusRef={true}
+						call={setEmail}
+					/>
+					<FormInputModule
+						label="Password"
+						value={password}
+						placeholder="At least 8 characters"
+						inputFor="password"
+						isPassword={true}
+						hasFocusRef={false}
+						call={setPassword}
+					/>
+				</div>
+				<button
+					type="submit"
+					disabled={isLoading}
+					className="
+						btn-text bg-white
+						h-3rem aspect-6/1
+						text-1.25rem text-n0
+					"
+				>
+					{ isLoading ? "SIGNING IN...": "SIGN IN" }
+				</button>
+			</form>
+		</Window>
+	);
+}

@@ -1,0 +1,15 @@
+{
+	"name": "@big2/friends-types",
+	"private": true,
+	"main": "./dist/types.js",
+	"types": "./dist/types.d.ts",
+	"scripts": {
+		"build": "tsc"
+	},
+	"devDependencies": {
+		"typescript": "^5.9.3"
+	},
+	"dependencies": {
+		"@big2/badge-types": "*"
+  	}
+}

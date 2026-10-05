@@ -4,20 +4,36 @@ import tailwindcss from '@tailwindcss/vite'
 
 export default defineConfig({
 	server: {
-		allowedHosts: [
-		"website"
-		],
-		proxy: {
-			"/api": {
-				target: "http://localhost:3000",
-				changeOrigin: true,
-				rewrite: (path) => path.replace(/^\/api/, ""),
-			}
-		}
+		host: true,
+		port: 5173,
+		strictPort: true,
+		watch: {
+			usePolling: true,
+		},
+		ws: {
+			host: 'localhost',
+			port: 5173,
+			clientPort: process.env.DOMAIN_PORT ? Number(process.env.DOMAIN_PORT) : 80,
+		},
+		allowedHosts: true,
+		// allowedHosts: [
+		// 	"website"
+		// ],
+		// proxy: {
+		// 	"/api": {
+		// 		target: "http://localhost:3000",
+		// 		changeOrigin: true,
+		// 		rewrite: (path) => path.replace(/^\/api/, ""),
+		// 	}
+		// }
 	},
 	plugins: [
 		react(),
 		tailwindcss(),
+	],
+	envPrefix: [
+		"API_", 
+		"SOCKET_"
 	],
 	build: {
 		chunkSizeWarningLimit: 1000, 

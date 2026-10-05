@@ -1,5 +1,5 @@
 {
-  "id": "41088197-9248-4d74-befd-71a65029bf8e",
+  "id": "39a6db64-171c-4d39-b6a5-46b1a7b3a8f1",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -8,8 +8,8 @@
       "name": "sessions",
       "schema": "auth_schema",
       "columns": {
-        "token": {
-          "name": "token",
+        "token_hash": {
+          "name": "token_hash",
           "type": "text",
           "primaryKey": true,
           "notNull": true
@@ -168,9 +168,9 @@
       "checkConstraints": {},
       "isRLSEnabled": false
     },
-    "party_manager_schema.player_status": {
+    "party_schema.player_status": {
       "name": "player_status",
-      "schema": "party_manager_schema",
+      "schema": "party_schema",
       "columns": {
         "id": {
           "name": "id",
@@ -223,9 +223,9 @@
       "checkConstraints": {},
       "isRLSEnabled": false
     },
-    "friends_system_schema.friend_requests": {
+    "friends_schema.friend_requests": {
       "name": "friend_requests",
-      "schema": "friends_system_schema",
+      "schema": "friends_schema",
       "columns": {
         "id": {
           "name": "id",
@@ -249,7 +249,7 @@
         "friend_request_status": {
           "name": "friend_request_status",
           "type": "friend_request_status_enum",
-          "typeSchema": "friends_system_schema",
+          "typeSchema": "friends_schema",
           "primaryKey": false,
           "notNull": true,
           "default": "'Pending'"
@@ -328,7 +328,7 @@
             }
           ],
           "isUnique": true,
-          "where": "\"friends_system_schema\".\"friend_requests\".\"friend_request_status\" = 'Pending'",
+          "where": "\"friends_schema\".\"friend_requests\".\"friend_request_status\" = 'Pending'",
           "concurrently": false,
           "method": "btree",
           "with": {}
@@ -370,9 +370,9 @@
       "checkConstraints": {},
       "isRLSEnabled": false
     },
-    "friends_system_schema.friendships": {
+    "friends_schema.friendships": {
       "name": "friendships",
-      "schema": "friends_system_schema",
+      "schema": "friends_schema",
       "columns": {
         "id": {
           "name": "id",
@@ -467,14 +467,14 @@
       "checkConstraints": {
         "ordered_friends_pair_check": {
           "name": "ordered_friends_pair_check",
-          "value": "\"friends_system_schema\".\"friendships\".\"friend_small_id\" < \"friends_system_schema\".\"friendships\".\"friend_big_id\""
+          "value": "\"friends_schema\".\"friendships\".\"friend_small_id\" < \"friends_schema\".\"friendships\".\"friend_big_id\""
         }
       },
       "isRLSEnabled": false
     },
-    "game_schema.player_stats": {
+    "game_stats_schema.player_stats": {
       "name": "player_stats",
-      "schema": "game_schema",
+      "schema": "game_stats_schema",
       "columns": {
         "id": {
           "name": "id",
@@ -555,9 +555,9 @@
       "checkConstraints": {},
       "isRLSEnabled": false
     },
-    "profile_system_schema.user_data": {
+    "profile_schema.user_data": {
       "name": "user_data",
-      "schema": "profile_system_schema",
+      "schema": "profile_schema",
       "columns": {
         "id": {
           "name": "id",
@@ -623,9 +623,9 @@
       "checkConstraints": {},
       "isRLSEnabled": false
     },
-    "profile_system_schema.user_settings": {
+    "profile_schema.user_settings": {
       "name": "user_settings",
-      "schema": "profile_system_schema",
+      "schema": "profile_schema",
       "columns": {
         "id": {
           "name": "id",
@@ -710,7 +710,7 @@
           "name": "user_settings_id_user_data_id_fk",
           "tableFrom": "user_settings",
           "tableTo": "user_data",
-          "schemaTo": "profile_system_schema",
+          "schemaTo": "profile_schema",
           "columnsFrom": [
             "id"
           ],
@@ -729,9 +729,9 @@
     }
   },
   "enums": {
-    "friends_system_schema.friend_request_status_enum": {
+    "friends_schema.friend_request_status_enum": {
       "name": "friend_request_status_enum",
-      "schema": "friends_system_schema",
+      "schema": "friends_schema",
       "values": [
         "Pending",
         "Accepted",
@@ -741,10 +741,10 @@
   },
   "schemas": {
     "auth_schema": "auth_schema",
-    "party_manager_schema": "party_manager_schema",
-    "friends_system_schema": "friends_system_schema",
-    "game_schema": "game_schema",
-    "profile_system_schema": "profile_system_schema"
+    "party_schema": "party_schema",
+    "friends_schema": "friends_schema",
+    "game_stats_schema": "game_stats_schema",
+    "profile_schema": "profile_schema"
   },
   "sequences": {},
   "roles": {},

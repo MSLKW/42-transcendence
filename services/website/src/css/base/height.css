@@ -1,6 +1,27 @@
+@utility h-8rem {
+	@apply
+		h-[clamp(4rem,5.714vmin+2.857rem,8rem)]
+		box-border
+		;
+}
+
+@utility h-7rem {
+	@apply
+		h-[clamp(3.5rem,5vmin+2.5rem,7rem)]
+		box-border
+		;
+}
+
+@utility h-6rem {
+	@apply
+		h-[clamp(3rem,4.286vmin+2.143rem,6rem)]
+		box-border
+		;
+}
+
 @utility h-5rem {
 	@apply
-		h-[clamp(2rem,2.857vmin+1.429rem,4rem)]
+		h-[clamp(2.5rem,3.571vmin+1.786rem,5rem)]
 		box-border
 		;
 }

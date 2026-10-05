@@ -1,18 +1,17 @@
 import "dotenv/config";
 import express from "express";
+import cookieParser from "cookie-parser";
+// import { FileUserStore } from "./store/fileUserStore";
+// import { FileSessionStore } from "./store/fileSessionStore";
 import { DrizzleUserStore } from "./store/drizzleUserStore";
 import { DrizzleSessionStore } from "./store/drizzleSessionStore";
-import cookieParser from "cookie-parser";
 import { signupHandler } from "./handlers/signup";
 import { signinHandler } from "./handlers/signin";
 import { guestHandler } from "./handlers/guest";
 import { logoutHandler } from "./handlers/logout";
 import { validateSessionHandler } from "./handlers/validateSession";
-import { startSessionCleanupJob } from "./jobs/cleanupSessions";
-import { getInternalInfosForProfile } from "./routes/getInternalInfosForProfile";
-import { setInternalUsernameFromProfile } from "./routes/setInternalUsernameFromProfile";
-import { checkUserExistanceForFriends } from "./routes/checkUserExistanceForFriends";
-
+import { getCreatedAt } from "./handlers/getCreatedAt";
+import { scheduleSessionCleanup } from "./jobs/ScheduleSessionCleanup";
 
 const app = express();
 app.use(express.json());
@@ -27,12 +26,9 @@ app.post("/signin", signinHandler(userStore, sessionStore));
 app.post("/guest", guestHandler(sessionStore));
 app.delete("/logout", logoutHandler(sessionStore));
 app.get("/validate", validateSessionHandler(sessionStore));
+app.get("/created-at/:uuid", getCreatedAt(userStore));
+scheduleSessionCleanup(sessionStore);
 
-// REST API fetch by other services
-app.get("/internal/profile/infos/:uuid", getInternalInfosForProfile());
-app.patch("/internal/profile/username/:uuid", setInternalUsernameFromProfile());
-app.get("/internal/friends/uuidexistance/:uuid", checkUserExistanceForFriends());
-app.get("/", (req, res) => res.sendStatus(200)); // temporary healthcheck only, to enable docker run 
 
 app.use((err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {
 	if (err.type === "entity.parse.failed") {
@@ -42,7 +38,7 @@ app.use((err: any, req: express.Request, res: express.Response, next: express.Ne
 	return res.status(500).json({ error: "Something went wrong." });
 });
 
-const PORT = 3000;
+const PORT = Number(process.env.PORT) || 3000;
 const ERROR_MESSAGES: Record<string, string> = {
 	EADDRINUSE: `Port ${PORT} is already in use.`,
 	EACCES: `Insufficient permissions to bind to port ${PORT}.`,
@@ -60,6 +56,3 @@ server.on("error", (err: NodeJS.ErrnoException) => {
 	);
 	process.exit(1);
 });
-
-// after your db connection / app setup is ready
-startSessionCleanupJob();

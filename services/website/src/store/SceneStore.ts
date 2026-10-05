@@ -1,61 +1,88 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import { useGameStore } from "./GameStore";
+import type { BADGE_TYPE } from "./ProfileStore";
+import { threejsManager } from "../App";
 
-export type SCENES = "BADGE" | "LOGIN" | "HOME" | "LOBBY" | "GAMEPLAY" | "R3F" | "RESULTS";
+export type SCENES = "Badge" | "Login" | "Home" | "Lobby" | "Test" | "Game";
 
 interface SceneValues {
+	sceneVerboseMode: boolean;
 	currentScene: SCENES;
-	sceneHeight: number;
-	sceneWidth: number;
 	showWindow: Record<string, boolean>;
-	profileIndex: number;
+	statsUuid: string | null;
 }
 
 interface SceneState extends SceneValues {
-	setSceneValue: <K extends keyof SceneValues>(key: K, value: SceneValues[K]) => void;
 	setCurrentScene: (scene: SCENES) => void;
-	setSceneWidth: (width: number) => void;
-	setSceneHeight: (height: number) => void;
-	setShowWindow: (window: string, show: boolean) => void;
-} 
+	setShowWindow: (window: string, show: boolean, uuid?: string | BADGE_TYPE) => void;
+	resetWindows: () => void;
+	resetValues: () =>void
+}
+
+export const defaultShowWindow = {
+	badge: false,
+	bots: false,
+	chat: false,
+	createAccount: false,
+	disconnect: false,
+	info: false,
+	leave: false,
+	notification: false,
+	party: false,
+	profile: false,
+	rank: false,
+	results: false,
+	signIn: false,
+	settings: false,
+	setup: false,
+	stale: false,
+	stats: false,
+} as const;
 
 export const useSceneStore = create<SceneState>() (
 	persist( 
-		(set) => ({
-			currentScene: "LOGIN",
-			sceneHeight: 320,
-			sceneWidth: 320,
-			showWindow: {
-				badge: false,
-				bots: false,
-				createAccount: false,
-				signIn: false,
-				settings: false,
-				info: false,
-				notification: false,
-				profile: false,
-				setup: false,
-				stats: false,
-				party: false,
-				chat: false,
-				rank: false,
-			},
-			profileIndex: 0,
+		(set, get) => ({
+			sceneVerboseMode: false,
+			currentScene: "Login",
+			showWindow: defaultShowWindow,
+			statsUuid: null,
 
-			setSceneValue: (key, value) => set(() => ({ [key]: value })),
 			setCurrentScene: (scene) => {
 				set({ currentScene: scene });
-				useGameStore.getState().setGameValue("gameStarted", scene === "R3F" || scene === "GAMEPLAY");
+				threejsManager?.changeScene(scene.toLowerCase());
+				useGameStore.setState({ gameStarted: scene === "Game" });
 			},
-			setSceneWidth: (sceneWidth) => set({ sceneWidth }),
-			setSceneHeight: (sceneHeight) => set({ sceneHeight }),
-			setShowWindow: (window, show) => set((state) => ({ 
-				showWindow: {
-					...state.showWindow,
-					[window]: show,
-				}
-			})),
+
+			setShowWindow: (window, show, uuid) => {
+				const showWindow = get().showWindow;
+				set({
+					statsUuid: uuid,
+					showWindow: {
+						...showWindow,
+						[window]: show,
+					},
+				});
+			},
+
+			resetWindows: () => {
+				const showWindow = get().showWindow;
+				set({
+					showWindow: {
+						...defaultShowWindow,
+						notification: showWindow.notification,
+						chat: showWindow.chat,
+					}
+				});
+			},
+
+			resetValues: () => {
+				get().resetWindows();
+				set({
+					currentScene: "Login",
+					statsUuid: null,
+				});
+			},
 		}),
 		{
 			name: 'scene-storage',
