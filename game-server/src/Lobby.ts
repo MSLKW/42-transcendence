@@ -151,14 +151,19 @@ export class Lobby {
 	}
 
 	private GameStartRequest(user: UserState): StatusTransmit {
+		const status: StatusTransmit = {
+			success: false,
+			message: ""
+		}
 		if (this.hostUuid !== user.uuid) {
-			const status: StatusTransmit = {
-				success: false,
-				message: "Not the host"
-			}
+			status.message = "You are not the host";
 			return (status);
 		}
 		const usersToPlay = this.users.filter((user) => user.seat >= 0).sort((userA, userB) => userA.seat - userB.seat);
+		if (usersToPlay.length !== this.totalSeats) {
+			status.message = "Lobby is not fully seated with players";
+			return (status);
+		}
 		for (let i = 0; i < usersToPlay.length; i++) {
 			this.game.addPlayer(usersToPlay[i]);
 		}

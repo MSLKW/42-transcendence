@@ -73,7 +73,7 @@ export class Game {
 		});
 
 		this.socket.on("graceful_disconnect", (reason: string) => {
-			console.log(`[gameSocket 'graceful_disconnect' reason: ${reason}]`);
+			console.log(`[gameSocket] 'graceful_disconnect' reason: `, reason);
 			this.socket.disconnect();
 		});
 
@@ -92,7 +92,7 @@ export class Game {
 	
 		this.socket.on("player_connection_update", (disconnections: Record<string, boolean>) => {
 			useGameStore.setState({ playerDisconnection: disconnections });
-			console.log("[gameSocket] Received 'player_connection_update': " + disconnections);
+			console.log("[gameSocket] Received 'player_connection_update': ", disconnections);
 		});
 	
 		this.socket.on("user_seat_update", (seatData: SeatOrderTransmit) => {

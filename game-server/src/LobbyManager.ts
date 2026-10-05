@@ -37,7 +37,6 @@ export class LobbyManager {
 
 			socket.use((packet, next) => {
 				const eventName = packet[0];
-				console.log(`Validating ${eventName}: `, packet);
 				const eventConfig: EventConfig = IncomingEventRegistry[eventName];
 				if (eventConfig === undefined) {
 					return (next(new Error("Unknown Event")));

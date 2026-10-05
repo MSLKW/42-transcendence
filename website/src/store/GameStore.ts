@@ -171,6 +171,7 @@ export const useGameStore = create<GameState>() (
 					totalPlayers: 0,
 					userSeats: [],
 					gameSeats: [],
+					playerDisconnection: {},
 					gameStarted: false,
 					cardsLeft: [],
 					currentHand: "None",
