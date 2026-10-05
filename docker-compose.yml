@@ -68,7 +68,7 @@ services:
     environment:
       PORT: ${PARTY_SERVICE_PORT}
       AUTH_SERVICE_URL: ${AUTH_SERVICE_URL}
-      GAME_SERVICE_URL: ${GAME_SERVICE_URL}
+      GAME_SERVICE_URL: ${GAME_SERVER_SERVICE_URL}
     networks:
       - big2
 
@@ -84,6 +84,7 @@ services:
     restart: unless-stopped
     environment:
       AUTH_SERVICE_URL: ${AUTH_SERVICE_URL}
+      PORT: ${GAME_SERVER_SERVICE_PORT}
     networks:
       - big2
 

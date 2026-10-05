@@ -10,19 +10,17 @@ import { LobbyManager } from './LobbyManager.js';
 
 const app = express();
 const httpServer = createServer(app);
-const port = 3000;
 
+const PORT = process.env.PORT;
 const AUTH_SERVICE_URL = process.env.AUTH_SERVICE_URL;
 
 if (!AUTH_SERVICE_URL)
 	throw new Error("AUTH_SERVICE_URL is not set");
 
-app.use(express.static('dist'));
-
 app.use(express.json());
 
-httpServer.listen(port, () => {
-	console.log(`Server is running on ${port}`);
+httpServer.listen(PORT, () => {
+	console.log(`Game Server is running and listening on ${PORT}`);
 });
 
 export const io = new Server(httpServer);
