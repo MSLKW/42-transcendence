@@ -12,4 +12,5 @@ interface ImportMetaEnv {
 	readonly SOCKET_PARTY_PATH: string;
 	readonly SOCKET_GAME_SERVER_PATH: string;
 	readonly SOCKET_GAME_BOT_PATH: string;
+	readonly SOCKET_URL: string;
 }
