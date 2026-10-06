@@ -1,9 +1,10 @@
-import { BadgeLabel } from "@big2/badge-types";
+import { type BadgeLabel } from "@big2/badge-types";
 
 export type UserData = {
 	username:		string | null,
 	avatarPath:		string | null,
 	badge:			BadgeLabel,
+	// selectedBadge: BadgeLabel, // TODO: replace the above with this later
 };
 
 export type UserSettings = {

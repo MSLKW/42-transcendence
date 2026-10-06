@@ -22,3 +22,19 @@ export const NULL_ACHIEVEMENTS: Record<AchievementLabel, Date | null> = {
 	"WIN_STREAK_10": null,
 	"MASTER_COLLECTOR": null
 } as const;
+
+export const MEDAL_LABEL = [
+	"High",
+	"Double",
+	"Triple",
+	"Straight",
+	"Flush",
+	"Full House",
+	"4 Of A Kind",
+	"Straight Flush",
+	"First Win",
+	"3 Of Diamonds",
+	"2 Of Spades",
+	"No Pass",
+] as const;
+export type MEDAL_TYPE = typeof MEDAL_LABEL[number];

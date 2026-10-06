@@ -16,6 +16,7 @@ export const userData = profileSchema.table("user_data", {
 		.unique(),
 	avatarPath: text("avatar_path"),
 	badge: text("badge") // TODO: will need to fix this later after game-stats is done. (profile: handles what is on display, game-stats: handles what is unlocked)
+	// selectedBadge: text("selected_badge") // TODO: replace this over the top later
 		.$type<BadgeLabel>()
 		.default("Newcomer")
 		.notNull(),

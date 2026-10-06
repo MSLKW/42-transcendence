@@ -1,8 +1,8 @@
 {
 	"compilerOptions": {
-		"target": "esnext",
-		"module": "esnext",
-		"moduleResolution": "bundler",
+		"target": "ES2022",
+		"module": "NodeNext",
+		"moduleResolution": "NodeNext",
 		"outDir": "./dist",
 		"rootDir": "./src",
 		"strict": true,
@@ -18,6 +18,6 @@
 		{ "path": "../../packages/types/badge-types"},
 		{ "path": "../../packages/types/game-stats-types"},
 		{ "path": "../../packages/postgres/game-stats-schema"},
-		{ "path": "../../packages/postgres/postgres-client"}
-	 ]
+		{ "path": "../../packages/postgres/postgres-client"},
+	]
 }

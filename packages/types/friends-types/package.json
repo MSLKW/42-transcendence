@@ -8,8 +8,5 @@
 	},
 	"devDependencies": {
 		"typescript": "^5.9.3"
-	},
-	"dependencies": {
-		"@big2/badge-types": "*"
-  	}
+	}
 }

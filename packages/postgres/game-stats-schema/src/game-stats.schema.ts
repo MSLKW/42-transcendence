@@ -1,12 +1,11 @@
-import { pgSchema, uuid, unique, integer, timestamp, index, check } from "drizzle-orm/pg-core";
-// import { sql } from "drizzle-orm"; => use later on postgres-18-bookworm
+import { pgSchema, uuid, unique, text, integer, timestamp, index, check } from "drizzle-orm/pg-core";
 import { users } from "@big2/auth-schema";
-// import {} from "@big2/badge-types";
+import { type BadgeLabel } from "@big2/badge-types";
 // import {} from "@big2/game-stats-types";
 
 export const gameStatsSchema = pgSchema("game_stats_schema");
 
-export const player = gameStatsSchema.table("player_stats", {
+export const playerStats = gameStatsSchema.table("player_stats", {
 	id: uuid("id")
 		.primaryKey()
 		.references(() => users.id, { onDelete: "cascade" }),
@@ -25,14 +24,18 @@ export const player = gameStatsSchema.table("player_stats", {
 	totalLoss: integer("total_loss")
 		.default(0)
 		.notNull(),
-	winStreak: integer("win_streak")
+	currentWinStreak: integer("current_win_streak")
 		.default(0)
+		.notNull(),
+	unlockedBadges: text("unlocked_badges")
+		.$type<BadgeLabel>()
+		.default("Newcomer")
 		.notNull(),
 	updatedAt: timestamp("updated_at", { withTimezone: true })
 		.defaultNow()
 		.notNull(),
 }
-// for learning purpose , i keep her for now. might be useful for game_schema
+// for learning purpose , i keep here for now. might be useful for game_stats_schema
 // , (table) => [
 // 	index("player_stats_xp_idx").on(table.xp),
 // 	check("xp_non_negative", sql`${table.xp} >= 0`),
