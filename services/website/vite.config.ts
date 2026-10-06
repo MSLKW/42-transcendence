@@ -31,10 +31,6 @@ export default defineConfig({
 		react(),
 		tailwindcss(),
 	],
-	envPrefix: [
-		"API_", 
-		"SOCKET_"
-	],
 	build: {
 		chunkSizeWarningLimit: 1000, 
 		rolldownOptions: {
