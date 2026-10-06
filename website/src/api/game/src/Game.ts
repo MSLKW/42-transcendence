@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import { io, Socket } from 'socket.io-client';
-import { CardHandTransmit, CardRank, CardSuit, GameStateTransmit, StatusTransmit, SeatOrderTransmit, GameSettingsTransmit, GameEndStatsTransmit } from '@big2/game-types';
+import { GameStateTransmit, StatusTransmit, SeatOrderTransmit, GameSettingsTransmit, GameEndStatsTransmit } from '@big2/game-types';
 import { CardHeap } from './CardHeap.ts';
 import { Player } from './Player.ts';
 import { Opponent } from './Opponent.ts';
@@ -43,6 +43,11 @@ export class Game {
 		this.bindSocketEvents();
 	}
 
+	public disconnect() {
+		this.resetGame();
+		this.socket.disconnect();
+	}
+
 	public startGame() {
 		console.log("[game] Emitting game_start_request");
 		this.socket.emit("game_start_request", (status: StatusTransmit) => {
@@ -79,7 +84,11 @@ export class Game {
 
 		this.socket.on("disconnect", (reason) => {
 			console.log(`[gameSocket] 'disconnect' reason: ${reason}`);
-			useSceneStore.getState().setCurrentScene("Home");
+			const currentScene = useSceneStore.getState().currentScene;
+			if (currentScene === "Lobby" || currentScene === "Game") {
+				useSceneStore.getState().setCurrentScene("Home");
+			}
+			useGameStore.getState().resetGame();
 		});
 	
 		this.socket.on("game_end", (gameEndStats: GameEndStatsTransmit) => {

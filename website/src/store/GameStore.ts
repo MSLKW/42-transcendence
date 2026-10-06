@@ -185,7 +185,7 @@ export const useGameStore = create<GameState>() (
 
 			endGame: () => {
 				get().resetGame();
-				useSceneStore.getState().setCurrentScene("Home");
+				gameInstance?.disconnect();
 				partySocket.leaveParty();
 			},
 			incTotalWin: (uuid) => {
