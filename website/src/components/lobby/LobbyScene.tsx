@@ -1,5 +1,4 @@
 import { useEffect } from "react";
-import { handlePutSettings } from "../../api/profile/put_settings/handlePutSettings";
 import { useAuthStore } from "../../store/AuthStore";
 import { useBotStore } from "../../store/BotStore";
 import { useGameStore } from "../../store/GameStore"; 
@@ -7,7 +6,6 @@ import { usePartyStore } from "../../store/PartyStore";
 import { useProfileStore } from "../../store/ProfileStore";
 import { useResultsStore } from "../../store/ResultsStore";
 import { useSceneStore } from "../../store/SceneStore";
-import { useSettingsStore } from "../../store/SettingsStore";
 import { Tooltip } from "../../utilities/react/Tooltip";
 import { HeaderModule } from "../header/HeaderModule";
 import { AvatarModule } from "../avatar/AvatarModule";
@@ -130,17 +128,6 @@ export const LobbyScene = () => {
 							<button
 								disabled={!(seatsFilled && clientUuid === hostUuid)}
 								onClick={() => {
-									handlePutSettings({
-										allow3OfAKind: useSettingsStore.getState().allow3OfAKind,
-										allow2OfSpadesEnd: useSettingsStore.getState().allow2OfSpadesEnd,
-										autoPassIndex: useSettingsStore.getState().autoPassIndex,
-										endGameCondition: 0,
-										scoreCalculation: 0,
-										cardStyle: 0,
-										uiColor: 0,
-										fxLevel: 0,
-										mxLevel: 0,
-									});
 									startGame;
 									useSceneStore.getState().setCurrentScene("Game");
 								}}
