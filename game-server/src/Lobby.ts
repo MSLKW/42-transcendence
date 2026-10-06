@@ -88,18 +88,16 @@ export class Lobby {
 			kickSocket(socket, reason);
 			return ;
 		}
-		const userInGame = this.users.find((user) => user.uuid === uuid);
-		if (userInGame !== undefined) {
-			// kickSocket(userInGame.socket);
-			// console.log(`User<${uuid}> old socket is kicked: ${userInGame.socket.id}`);
-			// maybe have it reconnect with new socket instead of deleting it
-			kickSocket(socket, "User is already in game");
-			return ;
-		}
 		
 		const user = new UserState(socket, uuid, this);
+
+		const userInLobby = this.users.find((user) => user.uuid === uuid);
+		if (userInLobby !== undefined) {
+			kickSocket(userInLobby.socket, "Kicking old user because new user is logging in");
+			user.seat = userInLobby.seat;
+		}
 		this.users.push(user);
-		console.log(`User<${user.uuid}> has connected`);
+		console.log(`Lobby<${this.sessionId}>: User<${user.uuid}> has connected`);
 		this.emitUserList();
 		user.socket.emit("user_seat_update", this.getSeatData());
 
@@ -144,7 +142,7 @@ export class Lobby {
 		disconnectedUser.leaveSeat();
 		this.users.splice(index, 1);
 		this.emitUserList();
-		console.log(`User<${disconnectedUser.uuid}> disconnected`);
+		console.log(`Lobby<${this.sessionId}>: User<${disconnectedUser.uuid}> has disconnected`);
 		if (this.isActive() === false) {
 			this.events.emit("lobby:inactive");
 		}
