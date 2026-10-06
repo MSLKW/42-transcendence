@@ -6,15 +6,34 @@
 
 
 import fs from "fs";
-import 'dotenv/config'; // 1. Load .env files
+import 'dotenv/config'; 
 import { defineConfig } from "drizzle-kit";
 
 
-// 2. Helper to safely read the password
-const password = fs.readFileSync(process.env.PGPASSWORD_FILE!, 'utf-8').trim();
-if (!password) {
+// 1. Check the environment vars are properly loaded
+const PGPASSWORD = fs.readFileSync(process.env.PGPASSWORD_FILE!, 'utf-8').trim();
+if (!PGPASSWORD)
   throw new Error("CRITICAL: Database password could not be loaded from the secret file itself.");
-}
+
+export const PGPORT = process.env.PGPORT;
+export const PGHOST = process.env.PGHOST;
+export const PGDATABASE = process.env.PGDATABASE;
+export const PGUSER = process.env.PGUSER;
+export const PGUSER_AUTH = process.env.PGUSER_AUTH;
+export const PGUSER_PARTY = process.env.PGUSER_PARTY;
+export const PGUSER_PROFILE = process.env.PGUSER_PROFILE;
+export const PGUSER_GAME_STATS = process.env.PGUSER_GAME_STATS;
+export const PGUSER_FRIENDS = process.env.PGUSER_FRIENDS;
+
+if (!PGPORT)            throw new Error("[Error] PGPORT not set");
+if (!PGHOST)            throw new Error("[Error] PGHOST not set");
+if (!PGDATABASE)        throw new Error("[Error] PGDATABASE not set");
+if (!PGUSER)            throw new Error("[Error] PGUSER not set");
+if (!PGUSER_AUTH)       throw new Error("[Error] PGUSER_AUTH not set");
+if (!PGUSER_PARTY)      throw new Error("[Error] PGUSER_PARTY not set");
+if (!PGUSER_PROFILE)    throw new Error("[Error] PGUSER_PROFILE not set");
+if (!PGUSER_GAME_STATS) throw new Error("[Error] PGUSER_GAME_STATS not set");
+if (!PGUSER_FRIENDS)    throw new Error("[Error] PGUSER_FRIENDS not set");
 
 
 // 3. Define the main guidance of how Drizzle do its work
@@ -32,7 +51,7 @@ export default defineConfig({
     out: "./migrations", // naming is following industry standard / drizzle kit's default behaviour / drizzle's documentation
     dbCredentials: {
         // Construct the URL using the helper
-        url: `postgresql://${process.env.PGUSER}:${password}@${process.env.PGHOST}:${process.env.PGPORT}/${process.env.PGDATABASE}`,
+        url: `postgresql://${process.env.PGUSER}:${PGPASSWORD}@${process.env.PGHOST}:${process.env.PGPORT}/${process.env.PGDATABASE}`,
     },
     // Optional: Add verbose logging for debugging migrations
     verbose: true, // Makes the terminal output talkative. It will show you the exact SQL strings it's running. This is vital when you are learning or debugging why a migration might be failing.

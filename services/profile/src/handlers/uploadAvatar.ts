@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { AVATAR_DIR } from "../config";
+import { AVATAR_DIR } from "../config/env";
 import { authenticate } from "../utils/authenticate";
 import multer from "multer";
 import sharp from "sharp";

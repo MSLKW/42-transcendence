@@ -1,25 +1,29 @@
-name: ${PROJECT_NAME}
+# :? 
+  # catches a missing or empty value in .env, before anything starts. 
+  # docker compose up then aborts immediately
+
+name: ${PROJECT_NAME:?}
 
 # Docker bridge networks are IPv4-only by default.
 networks:
   transcendence: # internet-facing , 
-    name: ${MAIN_NETWORK}
+    name: ${MAIN_NETWORK:?}
     driver: bridge # no ingress (Incoming traffic or data is completely blocked from entering this network)
   database: # securing of anything database related from being expose to those not talking to database
-    name: ${DB_NETWORK}
+    name: ${DB_NETWORK:?}
     driver: bridge # no ingress (Incoming traffic or data is completely blocked from entering this network)
     internal: true # no egress (Outgoing traffic or data is completely blocked from leaving this network)
 
 
 volumes: # industry standard => name volumes => more secure oppose to anyone ever can adjust volumes (data's disk) on host if volumes are bind mounted
   pg-data:
-    name: ${PG_VOLUME}
+    name: ${PG_VOLUME:?}
   dg-data:
-    name: ${DG_VOLUME}
+    name: ${DG_VOLUME:?}
   website-data:
-    name: ${WEBSITE_VOLUME}
+    name: ${WEBSITE_VOLUME:?}
   avatars-data:
-    name: ${PROFILE_AVATARS_VOLUME}
+    name: ${PROFILE_AVATARS_VOLUME:?}
 
 
 secrets: # auto make all secret files just read only mode
@@ -39,7 +43,7 @@ secrets: # auto make all secret files just read only mode
 
 services:
 
-  #     POSTGRESQL ( RDBMS Database Engine ), RDBMS = Relational Database Managaement System
+  #     POSTGRESQL ( RDBMS Database Engine ), RDBMS = Relational Database Managaement System 
   #     INFRASTRUCTURE MICROSERVICE
   postgresql:
     container_name: postgresql
@@ -52,15 +56,15 @@ services:
     environment:
       # POSTGRES_* Variables  => Server Configuration (the database container itself), 
       # PG* Variables         => Client Configuration, command-line utilities (like psql, pg_dump, or pg_isready))
-      POSTGRES_DB: ${PGDATABASE}
-      POSTGRES_USER: ${PGUSER}
       POSTGRES_PASSWORD_FILE: /run/secrets/db-admin-password
-      PGPORT: ${PGPORT}
-      PGUSER_AUTH: ${PGUSER_AUTH}
-      PGUSER_PARTY: ${PGUSER_PARTY}
-      PGUSER_PROFILE: ${PGUSER_PROFILE}
-      PGUSER_GAME_STATS: ${PGUSER_GAME_STATS}
-      PGUSER_FRIENDS: ${PGUSER_FRIENDS}
+      POSTGRES_DB: ${PGDATABASE:?}
+      POSTGRES_USER: ${PGUSER:?}
+      PGPORT: ${PGPORT:?}
+      PGUSER_AUTH: ${PGUSER_AUTH:?}
+      PGUSER_PARTY: ${PGUSER_PARTY:?}
+      PGUSER_PROFILE: ${PGUSER_PROFILE:?}
+      PGUSER_GAME_STATS: ${PGUSER_GAME_STATS:?}
+      PGUSER_FRIENDS: ${PGUSER_FRIENDS:?}
     secrets:
       - db-admin-password
       - db-auth-password
@@ -84,16 +88,15 @@ services:
     pull_policy: missing # to stick to the current version used, previously by default used missing too anyway.
     restart: unless-stopped
     ports:
-      - "${LOCALHOST}:${DRIZZLE_GATEWAY_PORT}:${DRIZZLE_GATEWAY_PORT}"
+      - "${LOCALHOST:?}:${DRIZZLE_GATEWAY_PORT:?}:${DRIZZLE_GATEWAY_PORT:?}"
     environment: # DB_* / PG_* - not recognized as per DG documentation, better use PG* 
-      PORT: ${DRIZZLE_GATEWAY_PORT}
-      STORE_PATH: /app
-      PGPORT: ${PGPORT}
-      PGHOST: ${PGHOST}
-      PGDATABASE: ${PGDATABASE}
-      PGUSER: ${PGUSER}
+      PORT: ${DRIZZLE_GATEWAY_PORT:?}
+      PGPORT: ${PGPORT:?}
+      PGHOST: ${PGHOST:?}
+      PGDATABASE: ${PGDATABASE:?}
+      PGUSER: ${PGUSER:?}
     volumes:
-      - dg-data:/app # Required persistent volume mounting to /app
+      - dg-data:/app # Required by Drizzle-Gateway;s documentation: persistent volume mounting to /app
     networks:
       - transcendence # must need this, to enable opening this GUI dev tool at browser
       - database
@@ -115,15 +118,15 @@ services:
     restart: "no" # one-shot container = It runs psql + migrations only, then, the end (exit 0)! that's the sole purpose of this container's existance. 
     environment:
       PGPASSWORD_FILE: /run/secrets/db-admin-password
-      PGPORT: ${PGPORT}
-      PGHOST: ${PGHOST}
-      PGDATABASE: ${PGDATABASE}
-      PGUSER: ${PGUSER}
-      PGUSER_AUTH: ${PGUSER_AUTH}
-      PGUSER_PARTY: ${PGUSER_PARTY}
-      PGUSER_PROFILE: ${PGUSER_PROFILE}
-      PGUSER_GAME_STATS: ${PGUSER_GAME_STATS}
-      PGUSER_FRIENDS: ${PGUSER_FRIENDS}
+      PGPORT: ${PGPORT:?}
+      PGHOST: ${PGHOST:?}
+      PGDATABASE: ${PGDATABASE:?}
+      PGUSER: ${PGUSER:?}
+      PGUSER_AUTH: ${PGUSER_AUTH:?}
+      PGUSER_PARTY: ${PGUSER_PARTY:?}
+      PGUSER_PROFILE: ${PGUSER_PROFILE:?}
+      PGUSER_GAME_STATS: ${PGUSER_GAME_STATS:?}
+      PGUSER_FRIENDS: ${PGUSER_FRIENDS:?}
     secrets:
       - db-admin-password
     networks:
@@ -133,7 +136,7 @@ services:
         condition: service_healthy
 
   
-  #     INFRASTRUCTURE MICROSERVICE
+  #     INFRASTRUCTURE MICROSERVICE 
   nginx:
     container_name: nginx
     image: nginx:infra
@@ -141,33 +144,33 @@ services:
     pull_policy: missing    # default
     restart: unless-stopped
     ports:
-      - "${DOMAIN_PORT}:${DOMAIN_PORT}"
+      - "${DOMAIN_PORT:?}:${DOMAIN_PORT:?}"
     environment:
-      DOMAIN_PORT: ${DOMAIN_PORT}
+      DOMAIN_PORT: ${DOMAIN_PORT:?}
       NGINX_ENVSUBST_FILTER: ^(DOMAIN_PORT|.*_SERVICE_URL|PROFILE_SERVICE_AVATAR_DIR|API_.*_PATH|SOCKET_.*_PATH)$
-      WEBSITE_SERVICE_URL: ${WEBSITE_SERVICE_URL}
-      AUTH_SERVICE_URL: ${AUTH_SERVICE_URL}
-      PARTY_SERVICE_URL: ${PARTY_SERVICE_URL}
-      PROFILE_SERVICE_URL: ${PROFILE_SERVICE_URL}
-      FRIENDS_SERVICE_URL: ${FRIENDS_SERVICE_URL}
-      CHAT_SERVICE_URL: ${CHAT_SERVICE_URL}
-      GAME_STATS_SERVICE_URL: ${GAME_STATS_SERVICE_URL}
-      GAME_SERVER_SERVICE_URL: ${GAME_SERVER_SERVICE_URL}
-      GAME_BOT_SERVICE_URL: ${GAME_BOT_SERVICE_URL}
-      PROFILE_SERVICE_AVATAR_DIR: ${PROFILE_SERVICE_AVATAR_DIR}
-      API_AUTH_PATH: ${API_AUTH_PATH}
-      API_PROFILE_PATH: ${API_PROFILE_PATH}
-      API_PARTY_PATH: ${API_PARTY_PATH}
-      API_FRIENDS_PATH: ${API_FRIENDS_PATH}
-      API_GAME_STATS_PATH: ${API_GAME_STATS_PATH}
-      SOCKET_CHAT_PATH: ${SOCKET_CHAT_PATH}
-      SOCKET_PARTY_PATH: ${SOCKET_PARTY_PATH}
-      SOCKET_GAME_SERVER_PATH: ${SOCKET_GAME_SERVER_PATH}
-      SOCKET_GAME_BOT_PATH: ${SOCKET_GAME_BOT_PATH}
+      WEBSITE_SERVICE_URL: ${WEBSITE_SERVICE_URL:?}
+      AUTH_SERVICE_URL: ${AUTH_SERVICE_URL:?}
+      PARTY_SERVICE_URL: ${PARTY_SERVICE_URL:?}
+      PROFILE_SERVICE_URL: ${PROFILE_SERVICE_URL:?}
+      FRIENDS_SERVICE_URL: ${FRIENDS_SERVICE_URL:?}
+      CHAT_SERVICE_URL: ${CHAT_SERVICE_URL:?}
+      GAME_STATS_SERVICE_URL: ${GAME_STATS_SERVICE_URL:?}
+      GAME_SERVER_SERVICE_URL: ${GAME_SERVER_SERVICE_URL:?}
+      GAME_BOT_SERVICE_URL: ${GAME_BOT_SERVICE_URL:?}
+      PROFILE_SERVICE_AVATAR_DIR: ${PROFILE_SERVICE_AVATAR_DIR:?}
+      API_AUTH_PATH: ${API_AUTH_PATH:?}
+      API_PROFILE_PATH: ${API_PROFILE_PATH:?}
+      API_PARTY_PATH: ${API_PARTY_PATH:?}
+      API_FRIENDS_PATH: ${API_FRIENDS_PATH:?}
+      API_GAME_STATS_PATH: ${API_GAME_STATS_PATH:?}
+      SOCKET_CHAT_PATH: ${SOCKET_CHAT_PATH:?}
+      SOCKET_PARTY_PATH: ${SOCKET_PARTY_PATH:?}
+      SOCKET_GAME_SERVER_PATH: ${SOCKET_GAME_SERVER_PATH:?}
+      SOCKET_GAME_BOT_PATH: ${SOCKET_GAME_BOT_PATH:?}
     networks:
       - transcendence
     volumes:
-      - avatars-data:${PROFILE_SERVICE_AVATAR_DIR}:ro
+      - avatars-data:${PROFILE_SERVICE_AVATAR_DIR:?}:ro
 
 
   # #     INFRASTRUCTURE MICROSERVICE
@@ -198,28 +201,28 @@ services:
       - /app/node_modules
       - /app/services/website/node_modules
     environment: # for development stage only
-      DOMAIN_PORT: ${DOMAIN_PORT} # Right now only for vite config, can remove in production
-      VITE_API_AUTH_PATH: ${API_AUTH_PATH}
-      VITE_API_PROFILE_PATH: ${API_PROFILE_PATH}
-      VITE_API_PARTY_PATH: ${API_PARTY_PATH}
-      VITE_API_FRIENDS_PATH: ${API_FRIENDS_PATH}
-      VITE_API_GAME_STATS_PATH: ${API_GAME_STATS_PATH}
-      VITE_SOCKET_CHAT_PATH: ${SOCKET_CHAT_PATH}
-      VITE_SOCKET_PARTY_PATH: ${SOCKET_PARTY_PATH}
-      VITE_SOCKET_GAME_SERVER_PATH: ${SOCKET_GAME_SERVER_PATH}
-      VITE_SOCKET_GAME_BOT_PATH: ${SOCKET_GAME_BOT_PATH}
-      VITE_SOCKET_URL: ${SOCKET_URL}
+      DOMAIN_PORT: ${DOMAIN_PORT:?} # Right now only for vite config, can remove in production
+      VITE_API_AUTH_PATH: ${API_AUTH_PATH:?}
+      VITE_API_PROFILE_PATH: ${API_PROFILE_PATH:?}
+      VITE_API_PARTY_PATH: ${API_PARTY_PATH:?}
+      VITE_API_FRIENDS_PATH: ${API_FRIENDS_PATH:?}
+      VITE_API_GAME_STATS_PATH: ${API_GAME_STATS_PATH:?}
+      VITE_SOCKET_CHAT_PATH: ${SOCKET_CHAT_PATH:?}
+      VITE_SOCKET_PARTY_PATH: ${SOCKET_PARTY_PATH:?}
+      VITE_SOCKET_GAME_SERVER_PATH: ${SOCKET_GAME_SERVER_PATH:?}
+      VITE_SOCKET_GAME_BOT_PATH: ${SOCKET_GAME_BOT_PATH:?}
+      VITE_SOCKET_URL: ${SOCKET_URL:?}
     # args: # production stage only
-    #   VITE_API_AUTH_PATH: ${API_AUTH_PATH}
-    #   VITE_API_PROFILE_PATH: ${API_PROFILE_PATH}
-    #   VITE_API_PARTY_PATH: ${API_PARTY_PATH}
-    #   VITE_API_FRIENDS_PATH: ${API_FRIENDS_PATH}
-    #   VITE_API_GAME_STATS_PATH: ${API_GAME_STATS_PATH}
-    #   VITE_SOCKET_CHAT_PATH: ${SOCKET_CHAT_PATH}
-    #   VITE_SOCKET_PARTY_PATH: ${SOCKET_PARTY_PATH}
-    #   VITE_SOCKET_GAME_SERVER_PATH: ${SOCKET_GAME_SERVER_PATH}
-    #   VITE_SOCKET_GAME_BOT_PATH: ${SOCKET_GAME_BOT_PATH}
-    #   VITE_SOCKET_URL: ${SOCKET_URL}
+    #   VITE_API_AUTH_PATH: ${API_AUTH_PATH:?}
+    #   VITE_API_PROFILE_PATH: ${API_PROFILE_PATH:?}
+    #   VITE_API_PARTY_PATH: ${API_PARTY_PATH:?}
+    #   VITE_API_FRIENDS_PATH: ${API_FRIENDS_PATH:?}
+    #   VITE_API_GAME_STATS_PATH: ${API_GAME_STATS_PATH:?}
+    #   VITE_SOCKET_CHAT_PATH: ${SOCKET_CHAT_PATH:?}
+    #   VITE_SOCKET_PARTY_PATH: ${SOCKET_PARTY_PATH:?}
+    #   VITE_SOCKET_GAME_SERVER_PATH: ${SOCKET_GAME_SERVER_PATH:?}
+    #   VITE_SOCKET_GAME_BOT_PATH: ${SOCKET_GAME_BOT_PATH:?}
+    #   VITE_SOCKET_URL: ${SOCKET_URL:?}
     networks:
       - transcendence
 
@@ -237,16 +240,16 @@ services:
     pull_policy: never
     restart: unless-stopped
     environment:
-      PGUSER: ${PGUSER_AUTH}
       PGPASSWORD_FILE: /run/secrets/db-auth-password
-      PGPORT: ${PGPORT}
-      PGHOST: ${PGHOST}
-      PGDATABASE: ${PGDATABASE}
-      PORT: ${AUTH_SERVICE_PORT}
-      SESSION_DURATION_MS: ${AUTH_SERVICE_SESSION_DURATION_MS}
-      SESSION_CLEANUP_CRON_SCHEDULE_STRING: ${AUTH_SERVICE_SESSION_CLEANUP_CRON_SCHEDULE_STRING}
-      PROFILE_SERVICE_URL: ${PROFILE_SERVICE_URL}
-      PG_POOL_MAX: ${PG_POOL_MAX}
+      PGUSER: ${PGUSER_AUTH:?}
+      PGPORT: ${PGPORT:?}
+      PGHOST: ${PGHOST:?}
+      PGDATABASE: ${PGDATABASE:?}
+      PG_POOL_MAX: ${PG_POOL_MAX:?}
+      PORT: ${AUTH_SERVICE_PORT:?}
+      SESSION_DURATION_MS: ${AUTH_SERVICE_SESSION_DURATION_MS:?}
+      SESSION_CLEANUP_CRON_SCHEDULE_STRING: ${AUTH_SERVICE_SESSION_CLEANUP_CRON_SCHEDULE_STRING:?}
+      PROFILE_SERVICE_URL: ${PROFILE_SERVICE_URL:?}
     secrets:
       - db-auth-password
     networks:
@@ -271,15 +274,15 @@ services:
     pull_policy: never
     restart: unless-stopped
     environment:
-      PGUSER: ${PGUSER_PARTY}
       PGPASSWORD_FILE: /run/secrets/db-party-password
-      PGPORT: ${PGPORT}
-      PGHOST: ${PGHOST}
-      PGDATABASE: ${PGDATABASE}
-      PORT: ${PARTY_SERVICE_PORT}
-      AUTH_SERVICE_URL: ${AUTH_SERVICE_URL}
-      GAME_SERVER_SERVICE_URL: ${GAME_SERVER_SERVICE_URL}
-      PG_POOL_MAX: ${PG_POOL_MAX}
+      PGUSER: ${PGUSER_PARTY:?}
+      PGPORT: ${PGPORT:?}
+      PGHOST: ${PGHOST:?}
+      PGDATABASE: ${PGDATABASE:?}
+      PG_POOL_MAX: ${PG_POOL_MAX:?}
+      PORT: ${PARTY_SERVICE_PORT:?}
+      AUTH_SERVICE_URL: ${AUTH_SERVICE_URL:?}
+      GAME_SERVER_SERVICE_URL: ${GAME_SERVER_SERVICE_URL:?}
     secrets:
       - db-party-password
     networks:
@@ -305,17 +308,17 @@ services:
     pull_policy: never
     restart: unless-stopped
     environment:
-      PGUSER: ${PGUSER_PROFILE}
       PGPASSWORD_FILE: /run/secrets/db-profile-password
-      PGPORT: ${PGPORT}
-      PGHOST: ${PGHOST}
-      PGDATABASE: ${PGDATABASE}
-      PORT: ${PROFILE_SERVICE_PORT}
-      AUTH_SERVICE_URL: ${AUTH_SERVICE_URL}
-      AVATAR_DIR: "${PROFILE_SERVICE_AVATAR_DIR}"
-      PG_POOL_MAX: ${PG_POOL_MAX}
+      PGUSER: ${PGUSER_PROFILE:?}
+      PGPORT: ${PGPORT:?}
+      PGHOST: ${PGHOST:?}
+      PGDATABASE: ${PGDATABASE:?}
+      PG_POOL_MAX: ${PG_POOL_MAX:?}
+      PORT: ${PROFILE_SERVICE_PORT:?}
+      AUTH_SERVICE_URL: ${AUTH_SERVICE_URL:?}
+      AVATAR_DIR: "${PROFILE_SERVICE_AVATAR_DIR:?}"
     volumes:
-      - avatars-data:${PROFILE_SERVICE_AVATAR_DIR}
+      - avatars-data:${PROFILE_SERVICE_AVATAR_DIR:?}
     secrets:
       - db-profile-password
     networks:
@@ -341,13 +344,13 @@ services:
     pull_policy: never
     restart: unless-stopped
     environment:
-      PGUSER: ${PGUSER_FRIENDS}
       PGPASSWORD_FILE: /run/secrets/db-friends-password
-      PGPORT: ${PGPORT}
-      PGHOST: ${PGHOST}
-      PGDATABASE: ${PGDATABASE}
-      AUTH_SERVICE_URL: ${AUTH_SERVICE_URL}
-      PG_POOL_MAX: ${PG_POOL_MAX}
+      PGUSER: ${PGUSER_FRIENDS:?}
+      PGPORT: ${PGPORT:?}
+      PGHOST: ${PGHOST:?}
+      PGDATABASE: ${PGDATABASE:?}
+      PG_POOL_MAX: ${PG_POOL_MAX:?}
+      AUTH_SERVICE_URL: ${AUTH_SERVICE_URL:?}
     secrets:
       - db-friends-password
     networks:
@@ -369,11 +372,11 @@ services:
     pull_policy: never
     restart: unless-stopped
     ports:
-      - "3001:${CHAT_SERVICE_PORT}"
+      - "3001:${CHAT_SERVICE_PORT:?}"
     environment:
-      PORT: ${CHAT_SERVICE_PORT}
-      AUTH_SERVICE_URL: ${AUTH_SERVICE_URL}
-      SOCKET_CHAT_PATH: ${SOCKET_CHAT_PATH}
+      PORT: ${CHAT_SERVICE_PORT:?}
+      AUTH_SERVICE_URL: ${AUTH_SERVICE_URL:?}
+      SOCKET_CHAT_PATH: ${SOCKET_CHAT_PATH:?}
     networks:
       - transcendence
     depends_on:
@@ -393,7 +396,7 @@ services:
     pull_policy: never
     restart: unless-stopped
     environment:
-      AUTH_SERVICE_URL: ${AUTH_SERVICE_URL}
+      AUTH_SERVICE_URL: ${AUTH_SERVICE_URL:?}
     networks:
       - transcendence
 
@@ -417,12 +420,12 @@ services:
   #   container_name: game-stats
   #   image: game-stats:services
   #   environment:
-  #     PGUSER: ${PGUSER_GAME_STATS}
+  #     PGUSER: ${PGUSER_GAME_STATS:?}
   #     PGPASSWORD_FILE: /run/secrets/db-game-stats-password
-  #     PGPORT: ${PGPORT}
-  #     PGHOST: ${PGHOST}
-  #     PGDATABASE: ${PGDATABASE}
-      # PG_POOL_MAX: ${PG_POOL_MAX}
+  #     PGPORT: ${PGPORT:?}
+  #     PGHOST: ${PGHOST:?}
+  #     PGDATABASE: ${PGDATABASE:?}
+      # PG_POOL_MAX: ${PG_POOL_MAX:?}
   #   secrets:
   #     - db-game-stats-password
   #   depends_on:

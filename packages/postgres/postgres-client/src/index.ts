@@ -1,17 +1,28 @@
 import fs from 'fs';
-import 'dotenv/config'; // 1. Load .env files // When you import dotenv/config, the package executes its config() function immediately as a side effect. This loads the variables from your .env file into process.env automatically.
+import 'dotenv/config'; // Load .env files - When you import dotenv/config, the package executes its config() function immediately as a side effect. This loads the variables from your .env file into process.env automatically.
 import { drizzle } from "drizzle-orm/node-postgres";
 import { Pool } from "pg";
 
 
-// 2. Helper to safely read the password
+// 1. Check the environment vars are properly loaded
 const PGPASSWORD = fs.readFileSync(process.env.PGPASSWORD_FILE!, 'utf-8').trim();
-if (!PGPASSWORD) {
+if (!PGPASSWORD)
   throw new Error("CRITICAL: Database password could not be loaded from the secret file itself.");
-}
+
+export const PGUSER = process.env.PGUSER;
+export const PGPORT = process.env.PGPORT;
+export const PGHOST = process.env.PGHOST;
+export const PGDATABASE = process.env.PGDATABASE;
+export const PG_POOL_MAX = process.env.PG_POOL_MAX;
+
+if (!PGUSER)      throw new Error("[Error] PGUSER not set");
+if (!PGPORT)      throw new Error("[Error] PGPORT not set");
+if (!PGHOST)      throw new Error("[Error] PGHOST not set");
+if (!PGDATABASE)  throw new Error("[Error] PGDATABASE not set");
+if (!PG_POOL_MAX) throw new Error("[Error] PG_POOL_MAX not set");
 
 
-// 3. Create the single shared connection pool, using password
+// 2. Create the single shared connection pool, using password
 const pool = new Pool({
     host: process.env.PGHOST,
     user: process.env.PGUSER,
@@ -26,7 +37,7 @@ const pool = new Pool({
   });
 
 
-// 4. Export the db client instance
+// 3. Export the db client instance
 //    Init Drizzle once with the schema
 // export const postgres = drizzle(pool, { schema }); // this is in full definition how other services going to use this function
 export function createPostgresClient<TSchema extends Record<string, unknown>>(schema: TSchema) {
@@ -34,7 +45,7 @@ export function createPostgresClient<TSchema extends Record<string, unknown>>(sc
 }
 
 
-// 5. Graceful Shutdown 
+// 4. Graceful Shutdown 
 //    (This is the industry-standard term for closing connections cleanly before a process exits).
 //    You can add this if you find your app "hanging" when you try to stop it:
 //    In Dev: It’s convenient so you don't have to restart the Docker container to clear connections.
