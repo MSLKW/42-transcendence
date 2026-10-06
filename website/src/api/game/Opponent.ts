@@ -1,12 +1,10 @@
-import { io, Socket } from 'socket.io-client';
-import * as THREE from 'three';
-import { CardManager } from './CardManager.ts';
-import { CardHeap } from './CardHeap.ts';
-import { Card } from './Card.ts';
-import { CardRank, CardHandTransmit, GameEndStatsTransmit, GameStateTransmit } from '@big2/game-types';
-import { CardHand } from './CardHand.ts';
-import { Participant } from './Participant.ts';
-import { useGameStore } from '../../../store/GameStore.ts';
+import { Socket } from 'socket.io-client';
+import { CardHeap } from './CardHeap';
+import { Card } from './Card';
+import { CardRank, type CardHandTransmit, type GameStateTransmit } from '@big2/game-types';
+import { CardHand } from './CardHand';
+import { Participant } from './Participant';
+import { useGameStore } from '../../store/GameStore';
 
 export class Opponent extends Participant {
 

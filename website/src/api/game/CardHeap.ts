@@ -1,8 +1,8 @@
 import * as THREE from 'three';
 import { gsap } from 'gsap';
-import { CardHand } from './CardHand.ts';
-import { CardHandTransmit } from '@big2/game-types';
-import { Card } from './Card.ts';
+import { CardHand } from './CardHand';
+import { type CardHandTransmit } from '@big2/game-types';
+import { Card } from './Card';
 
 export class CardHeap {
 	public	cardHandQueue: gsap.core.Timeline;
@@ -49,8 +49,8 @@ export class CardHeap {
 		const leftBound = -(boundSpace / 2);
 		const rightBound = boundSpace / 2;
 		for (let i = 0; i < cards.length; i++) {
-			let normalizedIndex = cards.length > 1 ? i / (cards.length - 1) : 0.5;
-			let x = THREE.MathUtils.lerp(leftBound, rightBound, normalizedIndex);
+			const normalizedIndex = cards.length > 1 ? i / (cards.length - 1) : 0.5;
+			const x = THREE.MathUtils.lerp(leftBound, rightBound, normalizedIndex);
 			const position = new THREE.Vector3(this.position.x + x, this.position.y, this.position.z);
 
 			const fanRotationStart = (fanRotation / 2) * (Math.PI / 180);
@@ -78,9 +78,9 @@ export class CardHeap {
 
 	public sync(cardHands: Array<CardHandTransmit>) {
 		for (let i = 0; i < cardHands.length; i++) {
-			let cardHand = new CardHand(cardHands[i].playerId);
+			const cardHand = new CardHand(cardHands[i].playerId);
 			for (let j = 0; j < cardHands[i].cards.length; j++) {
-				let cardTransmit = cardHands[i].cards[j]
+				const cardTransmit = cardHands[i].cards[j]
 				const card = new Card(cardTransmit.rank, cardTransmit.suit);
 				cardHand.receiveCard(card);
 			}

@@ -1,4 +1,4 @@
-import { Game } from './Game.ts';
+import { Game } from './Game';
 
 export let gameInstance: Game | null = null;
 

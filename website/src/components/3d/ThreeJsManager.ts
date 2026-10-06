@@ -3,7 +3,7 @@ import { EffectComposer, OutlinePass, RenderPass, OutputPass, OrbitControls } fr
 import { SceneContainer } from './SceneContainer.ts';
 import { LoginScene } from './LoginBg.ts';
 import { gsap } from 'gsap';
-import { GameScene } from '../../api/game/src/GameScene.ts';
+import { GameScene } from '../../api/game/GameScene.ts';
 
 /*
 	Handles Scene Management and Animation etc...

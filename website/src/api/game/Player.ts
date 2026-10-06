@@ -1,13 +1,11 @@
-import { io, Socket } from 'socket.io-client';
+import { Socket } from 'socket.io-client';
 import * as THREE from 'three';
-import { CardTransmit, GameEndStatsTransmit, GameStateTransmit, PlayerTurnTransmit, StatusTransmit, SkipTurnTransmit } from '@big2/game-types';
-import { CardHand } from './CardHand.ts';
-import { Card } from './Card.ts';
-import { CardManager } from './CardManager.ts';
-import { CardHeap } from './CardHeap.ts';
-import { threejsManager } from '../../../App.tsx';
-import { Participant } from './Participant.ts';
-import { useGameStore } from '../../../store/GameStore.ts';
+import { type CardTransmit, type GameStateTransmit, type PlayerTurnTransmit, type StatusTransmit, type SkipTurnTransmit } from '@big2/game-types';
+import { Card } from './Card';
+import { CardHeap } from './CardHeap';
+import { threejsManager } from '../../App';
+import { Participant } from './Participant';
+import { useGameStore } from '../../store/GameStore';
 
 export class Player extends Participant {
 	private raycaster: THREE.Raycaster;
@@ -83,7 +81,7 @@ export class Player extends Participant {
 		// DEBUG
 		window.addEventListener('keydown', (event) => {
 			if (event.code === "Minus") {
-				const [card, animation] = this.cardManager.removeCardByIndex(0);
+				const [card] = this.cardManager.removeCardByIndex(0);
 				if (card !== undefined) {
 					card.dispose();
 				}
@@ -184,7 +182,7 @@ export class Player extends Participant {
 
 	private collectCards(cardTransmits: Array<CardTransmit>) {
 		for (let i = 0; i < cardTransmits.length; i++) {
-			let card = new Card(cardTransmits[i].rank, cardTransmits[i].suit);
+			const card = new Card(cardTransmits[i].rank, cardTransmits[i].suit);
 			this.cardManager.receiveCard(card);
 		}
 	}

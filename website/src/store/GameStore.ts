@@ -5,7 +5,7 @@ import { useProfileStore, type MEDAL_TYPE } from "./ProfileStore";
 import { usePartyStore } from "./PartyStore";
 import { useResultsStore } from "./ResultsStore";
 import { useSceneStore } from "./SceneStore";
-import { gameInstance } from '../api/game/src/main';
+import { gameInstance } from '../api/game/main';
 import { chatSocket } from "../api/chat/chatSocket";
 import { partySocket } from "../api/party/partySocket";
 import { HandType, PentupleType } from "@big2/game-types";

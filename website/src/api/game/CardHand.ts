@@ -1,5 +1,5 @@
-import { Card } from './Card.ts';
-import { HandType, PentupleType, CardRank, CardSuit, CardHandTransmit} from '@big2/game-types';
+import { Card } from './Card';
+import { HandType, PentupleType, CardRank, type CardHandTransmit} from '@big2/game-types';
 
 export class CardHand {
 	public readonly	cards: Array<Card>;
@@ -26,7 +26,7 @@ export class CardHand {
 		if (this.cards.length == 0) {
 			return (false);
 		}
-		let index = this.cards.indexOf(card);
+		const index = this.cards.indexOf(card);
 		if (index == -1) {
 			return (false);
 		}
@@ -141,7 +141,7 @@ export class CardHand {
 	private isFourOfAKind(cards: Card[]): boolean {
 		if (cards.length !== 5)
 			return (false);
-		let rank: CardRank = cards[1].rank;
+		const rank: CardRank = cards[1].rank;
 		for (let i = 2; i < 4; i++) {
 			if (cards[i].rank !== rank)
 				return (false);

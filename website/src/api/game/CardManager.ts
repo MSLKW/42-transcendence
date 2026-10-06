@@ -1,10 +1,10 @@
 import * as THREE from 'three';
-import { Card } from './Card.ts';
-import { CardHand } from './CardHand.ts';
+import { Card } from './Card';
+import { CardHand } from './CardHand';
 import { gsap } from 'gsap';
-import { threejsManager } from '../../../App.tsx';
-import { gameScene } from '../../../components/3d/ThreeJsManager.ts';
-import { useGameStore } from '../../../store/GameStore.ts';
+import { threejsManager } from '../../App';
+import { gameScene } from '../../components/3d/ThreeJsManager';
+import { useGameStore } from '../../store/GameStore';
 
 export class CardManager {
 	/* Card Manager */
@@ -75,7 +75,7 @@ export class CardManager {
 	}
 
 	public removeCard(card: Card): gsap.core.Timeline | undefined {
-		let index = this.cards.indexOf(card);
+		const index = this.cards.indexOf(card);
 		if (index == -1) {
 			return (undefined);
 		}
@@ -140,8 +140,8 @@ export class CardManager {
 		const leftBound = -(boundSpace / 2);
 		const rightBound = boundSpace / 2;
 		for (let i = 0; i < cards.length; i++) {
-			let normalizedIndex = cards.length > 1 ? i / (cards.length - 1) : 0.5;
-			let x = THREE.MathUtils.lerp(leftBound, rightBound, normalizedIndex);
+			const normalizedIndex = cards.length > 1 ? i / (cards.length - 1) : 0.5;
+			const x = THREE.MathUtils.lerp(leftBound, rightBound, normalizedIndex);
 			const slot = new THREE.Vector3(this.position.x + offset.x + x, this.position.y + offset.y, this.position.z + offset.z);
 			this.rotateAroundPivot(slot, this.position, this.rotation);
 			this.applyFanPositionEffect(slot, this.rotation, normalizedIndex);
@@ -171,7 +171,7 @@ export class CardManager {
 			hitboxMesh.userData.card = cards[i];
 			hitboxMesh.position.copy(slots[i]);
 			hitboxMesh.quaternion.copy(this.rotation);
-			let normalizedIndex = cards.length > 1 ? i / (cards.length - 1) : 0.5;
+			const normalizedIndex = cards.length > 1 ? i / (cards.length - 1) : 0.5;
 			this.applyFanRotationEffect(hitboxMesh.quaternion, normalizedIndex);
 			hitboxes.push(hitboxMesh);
 		}
@@ -232,12 +232,12 @@ export class CardManager {
 	private updateCardObjects(cards: Array<Card>, slots: Array<THREE.Vector3>, duration: number = 0.1): gsap.core.Timeline {
 		const timeline = gsap.timeline();
 		for (let i = 0; i < cards.length; i++) {
-			let card = cards.at(i);
-			let slot = slots.at(i);
+			const card = cards.at(i);
+			const slot = slots.at(i);
 			if (card && slot) {
-				let normalizedIndex = cards.length > 1 ? i / (cards.length - 1) : 0.5;
-				let updatedPosition = slot.clone();
-				let updatedRotation = this.rotation.clone();
+				const normalizedIndex = cards.length > 1 ? i / (cards.length - 1) : 0.5;
+				const updatedPosition = slot.clone();
+				const updatedRotation = this.rotation.clone();
 				this.applyFanRotationEffect(updatedRotation, normalizedIndex);
 				this.applyHoverEffect(card, updatedPosition);
 				if (updatedPosition !== card.object.position || updatedRotation !== card.object.quaternion) {
@@ -317,11 +317,11 @@ export class CardManager {
 		if (this.isLocked === true) {
 			return ;
 		}
-		let cardObjects = Card.getCardObjects(this.cards);
-		let cardHandObjects = Card.getCardObjects(this.selectedCards.cards);
-		let intersected = raycaster.intersectObjects(cardObjects.concat(cardHandObjects));
+		const cardObjects = Card.getCardObjects(this.cards);
+		const cardHandObjects = Card.getCardObjects(this.selectedCards.cards);
+		const intersected = raycaster.intersectObjects(cardObjects.concat(cardHandObjects));
 		if (intersected.length > 0) {
-			let card: Card = intersected[0].object.userData.instance;
+			const card: Card = intersected[0].object.userData.instance;
 			if (card && this.cards.indexOf(card) != -1) {
 				this.selectCard(card);
 			}
@@ -358,11 +358,11 @@ export class CardManager {
 	public pickupDraggedCard(raycaster: THREE.Raycaster) {
 		if (this.draggedCard !== undefined || this.isLocked === true)
 			return ;
-		let cardObjects = Card.getCardObjects(this.cards);
-		let cardHandObjects = Card.getCardObjects(this.selectedCards.cards);
-		let intersected = raycaster.intersectObjects(cardObjects.concat(cardHandObjects));
+		const cardObjects = Card.getCardObjects(this.cards);
+		const cardHandObjects = Card.getCardObjects(this.selectedCards.cards);
+		const intersected = raycaster.intersectObjects(cardObjects.concat(cardHandObjects));
 		if (intersected.length > 0) {
-			let card: Card = intersected[0].object.userData.instance;
+			const card: Card = intersected[0].object.userData.instance;
 			this.draggedCard = card;
 			if (this.cards.indexOf(card) >= 0) {
 				this.removeCard(card);
@@ -427,9 +427,9 @@ export class CardManager {
 		for (let i = 0; i < this.cards.length; i++) {
 			this.cards[i].isHover = false;
 		}
-		let intersected = raycaster.intersectObjects(this.hitboxes);
+		const intersected = raycaster.intersectObjects(this.hitboxes);
 		if (intersected.length > 0) {
-			let card: Card = intersected[0].object.userData.card;
+			const card: Card = intersected[0].object.userData.card;
 			card.isHover = true;
 		}
 		this.updateCardObjects(this.cards, this.slots);

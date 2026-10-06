@@ -1,18 +1,18 @@
 import * as THREE from 'three';
 import { io, Socket } from 'socket.io-client';
-import { GameStateTransmit, StatusTransmit, SeatOrderTransmit, GameSettingsTransmit, GameEndStatsTransmit } from '@big2/game-types';
-import { CardHeap } from './CardHeap.ts';
-import { Player } from './Player.ts';
-import { Opponent } from './Opponent.ts';
-import { Deck } from './Deck.ts';
-import { gameScene } from '../../../components/3d/ThreeJsManager.ts';
+import { type GameStateTransmit, type StatusTransmit, type SeatOrderTransmit, type GameSettingsTransmit, type GameEndStatsTransmit } from '@big2/game-types';
+import { CardHeap } from './CardHeap';
+import { Player } from './Player';
+import { Opponent } from './Opponent';
+import { Deck } from './Deck';
+import { gameScene } from '../../components/3d/ThreeJsManager';
 import { gsap } from 'gsap';
-import { Participant } from './Participant.ts';
-import { useGameStore } from "../../../store/GameStore.ts";
-import { usePartyStore } from "../../../store/PartyStore.ts";
-import { useSceneStore } from "../../../store/SceneStore.ts";
-import { threejsManager } from '../../../App.tsx';
-import { useResultsStore } from '../../../store/ResultsStore.ts';
+import { Participant } from './Participant';
+import { useGameStore } from "../../store/GameStore";
+import { usePartyStore } from "../../store/PartyStore";
+import { useSceneStore } from "../../store/SceneStore";
+import { threejsManager } from '../../App';
+import { useResultsStore } from '../../store/ResultsStore';
 
 export class Game {
 	private socket: Socket;

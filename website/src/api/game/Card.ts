@@ -1,6 +1,6 @@
 import * as THREE from 'three';
-import { CardRank, CardSuit, CardTransmit } from '@big2/game-types';
-import { gameScene } from '../../../components/3d/ThreeJsManager.ts';
+import { CardRank, CardSuit, type CardTransmit } from '@big2/game-types';
+import { gameScene } from '../../components/3d/ThreeJsManager';
 import { gsap } from 'gsap';
 
 export class Card {
@@ -107,7 +107,7 @@ export class Card {
 
 	public static getCardObjects(cards: Array<Card>)
 	{
-		let cardObjects: Array<THREE.Object3D> = [];
+		const cardObjects: Array<THREE.Object3D> = [];
 		for (let i = 0; i < cards.length; i++) {
 			cardObjects.push(cards[i].object);
 		}
@@ -123,7 +123,7 @@ export class Card {
 		// Index starts from bottom-left and goes right(x) and up(y)
 		for (let y: number = 0; y < rows; y++) {
 			for (let x: number = 0; x < cols; x++) {
-				let texture = Card.textureLoader.load(textureAtlasPath);
+				const texture = Card.textureLoader.load(textureAtlasPath);
 				texture.wrapS = THREE.ClampToEdgeWrapping;
 				texture.wrapT = THREE.ClampToEdgeWrapping;
 				texture.minFilter = THREE.NearestFilter;

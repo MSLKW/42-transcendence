@@ -1,6 +1,6 @@
 import * as THREE from 'three';
-import { SceneContainer } from '../../../components/3d/SceneContainer.ts';
-import { ThreeJsManager } from '../../../components/3d/ThreeJsManager.ts';
+import { SceneContainer } from '../../components/3d/SceneContainer';
+import { ThreeJsManager } from '../../components/3d/ThreeJsManager';
 
 export class GameScene extends SceneContainer {
 	public tableGeometry: THREE.CylinderGeometry;
