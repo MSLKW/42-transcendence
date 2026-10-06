@@ -1,4 +1,4 @@
-const profileUrl = import.meta.env.VITE_API_PROFILE_PATH;
+const profileUrl = import.meta.env.VITE_PROFILE_API_URL;
 
 type SearchResponse = {
 	searchResults: string[];

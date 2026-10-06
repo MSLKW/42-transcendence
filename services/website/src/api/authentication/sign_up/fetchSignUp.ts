@@ -1,4 +1,4 @@
-const authUrl = import.meta.env.VITE_API_AUTH_PATH;
+const authUrl = import.meta.env.VITE_AUTH_API_URL;
 
 export const fetchSignUp = async (email: string, password: string) => {
 	const response = await fetch(`${authUrl}/signup`, {

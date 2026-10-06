@@ -1,6 +1,6 @@
 import type { SettingsValues } from "../../../store/SettingsStore";
 
-const profileUrl = import.meta.env.VITE_API_PROFILE_PATH;
+const profileUrl = import.meta.env.VITE_PROFILE_API_URL;
 
 export const fetchPutSettings = async (settings: SettingsValues) => {
 	const response = await fetch(`${profileUrl}/settings`, {

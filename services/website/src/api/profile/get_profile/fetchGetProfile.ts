@@ -1,6 +1,6 @@
 import type { UserData } from "../../../store/ProfileStore";
 
-const profileUrl = import.meta.env.VITE_API_PROFILE_PATH;
+const profileUrl = import.meta.env.VITE_PROFILE_API_URL;
 
 export const fetchGetProfile = async (uuid: string): Promise<UserData> => {
 	const response = await fetch(`${profileUrl}/profile/${uuid}`, {
