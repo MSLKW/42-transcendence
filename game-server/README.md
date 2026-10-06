@@ -8,9 +8,10 @@ The Game Server manages the lobby and game sessions. Handling the lobby and its 
 
 | Name | Type | Description |
 | --- | --- | --- |
-| GAME_SERVER_URL | string | Should contain the server URL and port in the format: “server_url:port”. Will be used for the client socket to connect to |
-| GAME_SERVER_LOBBY_LIMIT | number | Specifies the lobby limit, capping the amount of lobbies that the server will create |
-| GAME_SERVER_LOBBY_USER_LIMIT | number | Specifies the limit for the total users connecting to a single lobby |
+| GAME_SERVER_SERVICE_PORT | number | Determines the port that the game server will listen on |
+| GAME_SERVER_SERVICE_URL | string | Should contain the server URL and port in the format: “server_url:port”. Will be used for the client socket to connect to |
+| GAME_SERVER_SERVICE_LOBBY_LIMIT | number | Specifies the lobby limit, capping the amount of lobbies that the server will create |
+| GAME_SERVER_SERVICE_LOBBY_USER_LIMIT | number | Specifies the limit for the total users connecting to a single lobby, minimum 4 |
 
 # Endpoints
 

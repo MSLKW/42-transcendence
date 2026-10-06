@@ -18,19 +18,23 @@ export class Lobby {
 	public	game: GameState;
 	public	sessionId: string;
 	public	events: EventEmitter;
+	private	lobbyTimeoutId: NodeJS.Timeout | undefined;
+	private lobbyTimeoutMilliseconds: number;
 
 	constructor(data: LobbyRequest, sessionId: string) {
 		this.hostUuid = data.hostUuid;
 		this.users = [];
 		this.whitelist = data.playerUuids;
-		this.totalSeats = 4;
+		this.totalSeats = 0;
 		this.availableSeats = [];
-		this.totalUsersLimit = 5;
+		this.totalUsersLimit = process.env.LOBBY_USER_LIMIT && Number(process.env.LOBBY_USER_LIMIT) > 4 ? Number(process.env.LOBBY_USER_LIMIT) : 4;
+		this.lobbyTimeoutMilliseconds = process.env.LOBBY_DELETE_TIMEOUT_MS ? Number(process.env.LOBBY_DELETE_TIMEOUT_MS) : -1;
 		this.sessionId = sessionId;
 		this.events = new EventEmitter();
 		this.game = new GameState(this.sessionId);
 		this.lobbyRoomId = "lobby" + this.sessionId;
-		this.initSeats(4, this.hostUuid);
+		this.lobbyTimeoutId = undefined;
+		this.initSeats(this.totalSeats, this.hostUuid);
 	}
 
 	public emit(event: string, payload: any) {
@@ -98,6 +102,7 @@ export class Lobby {
 		}
 		this.users.push(user);
 		console.log(`Lobby<${this.sessionId}>: User<${user.uuid}> has connected`);
+		clearTimeout(this.lobbyTimeoutId);
 		this.emitUserList();
 		user.socket.emit("user_seat_update", this.getSeatData());
 
@@ -144,7 +149,12 @@ export class Lobby {
 		this.emitUserList();
 		console.log(`Lobby<${this.sessionId}>: User<${disconnectedUser.uuid}> has disconnected`);
 		if (this.isActive() === false) {
-			this.events.emit("lobby:inactive");
+			if (this.lobbyTimeoutMilliseconds > 0) {
+				this.lobbyTimeoutId = setTimeout(() => {
+					this.events.emit("lobby:delete");
+				}, this.lobbyTimeoutMilliseconds);
+				console.log(`Lobby<${this.sessionId}> is inactive`);
+			}
 		}
 	}
 

@@ -11,7 +11,7 @@ export class LobbyManager {
 	constructor() {
 		this.lobbies = {};
 		this.newSessionId = 0;
-		this.lobbyLimit = 100;
+		this.lobbyLimit = process.env.LOBBY_LIMIT ? Number(process.env.LOBBY_LIMIT) : 0;
 
 		io.use((socket, next) => {
 			const lobbyId = socket.handshake.auth.lobbyId;
@@ -91,9 +91,8 @@ export class LobbyManager {
 		}
 		const sessionId = this.getNewSessionId();
 		const lobby = new Lobby(data, sessionId);
-		lobby.events.on("lobby:inactive", () => {
-			// this.deleteLobby(lobby);
-			console.log("Lobby is deactive ( but not deleted, should delete eventually, temp deactive for testing purposes )");
+		lobby.events.on("lobby:delete", () => {
+			this.deleteLobby(lobby);
 		})
 		console.log(`Lobby<${sessionId}> created with Host<${data.hostUuid}> and whitelist: [${data.playerUuids}]`);
 		this.lobbies[sessionId] = lobby;
