@@ -116,7 +116,6 @@ app.put('/lobby/:lobbySessionId', (req, res) => {
 	return (res.status(500).json({error: "Server failed to update the lobby"}));
 });
 
-
 export function kickSocket(socket: Socket, reason: string) {
 	socket.emit("graceful_disconnect", reason);
 	setTimeout(() => {
@@ -124,3 +123,7 @@ export function kickSocket(socket: Socket, reason: string) {
 	}, 1000);
 	// socket.removeAllListeners();
 }
+
+process.on("SIGTERM", async() => {
+	io.close();
+});
