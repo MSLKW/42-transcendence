@@ -10,7 +10,7 @@ import { onUserTypingAction } from "./actions/onUserTypingAction";
 import { sendChatAction } from "./actions/sendChatAction";
 import { sendTypingAction } from "./actions/sendTypingAction";
 
-const chatSocketUrl = import.meta.env.VITE_PARTY_SOCKET_URL;
+const chatSocketUrl = import.meta.env.VITE_SOCKET_URL;
 
 export type ChatMessage = {
 	type: CHAT_TYPE;

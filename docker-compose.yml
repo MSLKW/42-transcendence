@@ -350,6 +350,7 @@ services:
       PGHOST: ${PGHOST:?}
       PGDATABASE: ${PGDATABASE:?}
       PG_POOL_MAX: ${PG_POOL_MAX:?}
+      PORT: ${FRIENDS_SERVICE_PORT:?}
       AUTH_SERVICE_URL: ${AUTH_SERVICE_URL:?}
     secrets:
       - db-friends-password

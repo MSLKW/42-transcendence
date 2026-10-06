@@ -14,7 +14,7 @@ import { playerLeftHandler } from "./handlers/playerLeftHandler";
 import { playerJoinedHandler } from "./handlers/playerJoinedHandler";
 import { usePartyStore } from "../../store/PartyStore";
 
-const partySocketUrl = import.meta.env.VITE_PARTY_SOCKET_URL;
+const partySocketUrl = import.meta.env.VITE_SOCKET_URL;
 
 export type SendInviteResponse = {
 	success: boolean;

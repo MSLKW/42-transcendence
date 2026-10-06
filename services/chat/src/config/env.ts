@@ -1,7 +1,19 @@
-export const PORT = process.env.PORT;
-export const AUTH_SERVICE_URL = process.env.AUTH_SERVICE_URL;
-export const SOCKET_CHAT_PATH = process.env.SOCKET_CHAT_PATH;
-	  
-if (!PORT) 				throw new Error("[Error] PORT not set");
-if (!AUTH_SERVICE_URL) 	throw new Error("[Error] AUTH_SERVICE_URL not set");
-if (!SOCKET_CHAT_PATH) 	throw new Error("[Error] SOCKET_CHAT_PATH not set");
+function requireEnv(name: string): string
+{
+	const value = process.env[name];
+	if (!value)
+		throw new Error(`[Error] ${name} not set`);
+	return value;
+}
+
+function requireEnvNum(name: string): number
+{
+	const value = Number(requireEnv(name));
+	if (!Number.isInteger(value) || value < 0)
+		throw new Error(`[Error] ${name} must be a non-negative integer`);
+	return value;
+}
+
+export const PORT = requireEnvNum("PORT");
+export const AUTH_SERVICE_URL = requireEnv("AUTH_SERVICE_URL");
+export const SOCKET_CHAT_PATH = requireEnv("SOCKET_CHAT_PATH");

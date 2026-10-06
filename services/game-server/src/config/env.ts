@@ -1,3 +1,9 @@
-export const AUTH_SERVICE_URL = process.env.AUTH_SERVICE_URL;
+function requireEnv(name: string): string
+{
+	const value = process.env[name];
+	if (!value)
+		throw new Error(`[Error] ${name} not set`);
+	return value;
+}
 
-if (!AUTH_SERVICE_URL) throw new Error("[Error] AUTH_SERVICE_URL not set");
+export const AUTH_SERVICE_URL = requireEnv("AUTH_SERVICE_URL");

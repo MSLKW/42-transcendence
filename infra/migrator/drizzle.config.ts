@@ -15,25 +15,31 @@ const PGPASSWORD = fs.readFileSync(process.env.PGPASSWORD_FILE!, 'utf-8').trim()
 if (!PGPASSWORD)
   throw new Error("CRITICAL: Database password could not be loaded from the secret file itself.");
 
-export const PGPORT = process.env.PGPORT;
-export const PGHOST = process.env.PGHOST;
-export const PGDATABASE = process.env.PGDATABASE;
-export const PGUSER = process.env.PGUSER;
-export const PGUSER_AUTH = process.env.PGUSER_AUTH;
-export const PGUSER_PARTY = process.env.PGUSER_PARTY;
-export const PGUSER_PROFILE = process.env.PGUSER_PROFILE;
-export const PGUSER_GAME_STATS = process.env.PGUSER_GAME_STATS;
-export const PGUSER_FRIENDS = process.env.PGUSER_FRIENDS;
+function requireEnv(name: string): string
+{
+	const value = process.env[name];
+	if (!value)
+		throw new Error(`[Error] ${name} not set`);
+	return value;
+}
 
-if (!PGPORT)            throw new Error("[Error] PGPORT not set");
-if (!PGHOST)            throw new Error("[Error] PGHOST not set");
-if (!PGDATABASE)        throw new Error("[Error] PGDATABASE not set");
-if (!PGUSER)            throw new Error("[Error] PGUSER not set");
-if (!PGUSER_AUTH)       throw new Error("[Error] PGUSER_AUTH not set");
-if (!PGUSER_PARTY)      throw new Error("[Error] PGUSER_PARTY not set");
-if (!PGUSER_PROFILE)    throw new Error("[Error] PGUSER_PROFILE not set");
-if (!PGUSER_GAME_STATS) throw new Error("[Error] PGUSER_GAME_STATS not set");
-if (!PGUSER_FRIENDS)    throw new Error("[Error] PGUSER_FRIENDS not set");
+function requireEnvNum(name: string): number
+{
+	const value = Number(requireEnv(name));
+	if (!Number.isInteger(value) || value < 0)
+		throw new Error(`[Error] ${name} must be a non-negative integer`);
+	return value;
+}
+
+export const PGPORT = requireEnvNum("PGPORT");
+export const PGHOST = requireEnv("PGHOST");
+export const PGDATABASE = requireEnv("PGDATABASE");
+export const PGUSER = requireEnv("PGUSER");
+export const PGUSER_AUTH = requireEnv("PGUSER_AUTH");
+export const PGUSER_PARTY = requireEnv("PGUSER_PARTY");
+export const PGUSER_PROFILE = requireEnv("PGUSER_PROFILE");
+export const PGUSER_GAME_STATS = requireEnv("PGUSER_GAME_STATS");
+export const PGUSER_FRIENDS = requireEnv("PGUSER_FRIENDS");
 
 
 // 3. Define the main guidance of how Drizzle do its work
