@@ -31,62 +31,74 @@ export const MedalsModule = ({ uuid }: MedalsModuleProps) => {
 		>
 			<MedalImage
 				icon={<MedalHighIcon />}
-				title={`'HIGH THERE!'\nBest your opponents with a high card`}
+				title="'HIGH THERE'"
+				description="Best your opponents with a high card"
 				date={medals?.["High"] ?? undefined}
 			/>
 			<MedalImage
 				icon={<MedalDoubleIcon />}
-				title={`'DOUBLE TAKE'\nBest your opponents with a pair`}
+				title="'DOUBLE TAKE'"
+				description="Best your opponents with a pair"
 				date={medals?.["Double"] ?? undefined}
 			/>
 			<MedalImage
 				icon={<MedalTripleIcon />}
-				title={`'THIRD TIME'S A CHARM'\nBest your opponents with a triple`}
+				title="'THIRD TIME'S A CHARM'"
+				description="'Best your opponents with a triple"
 				date={medals?.["Triple"] ?? undefined}
 			/>
 			<MedalImage
 				icon={<MedalStraightIcon />}
-				title={`'STRAIGHT TO THE TOP'\nBest your opponents with a straight`}
+				title="'STRAIGHT TO THE TOP'"
+				description="Best your opponents with a straight"
 				date={medals?.["Straight"] ?? undefined}
 			/>
 			<MedalImage
 				icon={<MedalFlushIcon />}
-				title={`'SUIT YOURSELF'\nBest your opponents with a flush`}
+				title="'SUIT YOURSELF'"
+				description="Best your opponents with a flush"
 				date={medals?.["Flush"] ?? undefined}
 			/>
 			<MedalImage
 				icon={<MedalFullHouseIcon />}
-				title={`'NO VACANCY'\nBest your opponents with a full house`}
+				title="'NO VACANCY'"
+				description="Best your opponents with a full house"
 				date={medals?.["Full House"] ?? undefined}
 			/>
 			<MedalImage
 				icon={<Medal4OfAKindIcon />}
-				title={`'FOUR MIDABLE'\nBest your opponents with a 4 of a kind`}
+				title="'FOUR MIDABLE'"
+				description="Best your opponents with a 4 of a kind"
 				date={medals?.["4 Of A Kind"] ?? undefined}
 			/>
 			<MedalImage
 				icon={<MedalStraightFlushIcon />}
-				title={`'FLUSH & FURIOUS'\nBest your opponents with a straight flush`}
+				title="'FLUSH & FURIOUS'"
+				description="Best your opponents with a straight flush"
 				date={medals?.["Straight Flush"] ?? undefined}
 			/>
 			<MedalImage
 				icon={<MedalFirstWinIcon />}
-				title={`'DEAL WITH IT'\nWin a game`}
+				title="'DEAL WITH IT'"
+				description="Win a game"
 				date={medals?.["First Win"] ?? undefined}
 			/>
 			<MedalImage
 				icon={<Medal3OfDiamondsIcon />}
-				title={`'DIAMONDS ARE FOREVER'\nPlay 3 of diamonds`}
+				title="'DIAMONDS ARE FOREVER"
+				description="Play 3 of diamonds"
 				date={medals?.["3 Of Diamonds"] ?? undefined}
 			/>
 			<MedalImage
 				icon={<Medal2OfSpadesIcon />}
-				title={`'BIG 2!'\nPlay 2 of spades`}
+				title="'BIG 2!'"
+				description="Play 2 of spades"
 				date={medals?.["2 Of Spades"] ?? undefined}
 			/>
 			<MedalImage
 				icon={<MedalNoPassIcon />}
-				title={`'I'LL PASS... WAIT, NO I WON'T'\nEnd a game without passing`}
+				title="'I'LL PASS... WAIT, NO I WON'T'"
+				description="End a game without passing"
 				date={medals?.["No Pass"] ?? undefined}
 			/>
 		</div>
