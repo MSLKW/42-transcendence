@@ -5,8 +5,8 @@ import { Pool } from "pg";
 
 
 // 2. Helper to safely read the password
-const password = fs.readFileSync(process.env.PGPASSWORD_FILE!, 'utf-8').trim();
-if (!password) {
+const PGPASSWORD = fs.readFileSync(process.env.PGPASSWORD_FILE!, 'utf-8').trim();
+if (!PGPASSWORD) {
   throw new Error("CRITICAL: Database password could not be loaded from the secret file itself.");
 }
 
@@ -16,7 +16,7 @@ const pool = new Pool({
     host: process.env.PGHOST,
     user: process.env.PGUSER,
     database: process.env.PGDATABASE,
-    password: password,
+    password: PGPASSWORD,
     port: Number(process.env.PGPORT), // syntax: env var, fallback value if forgot to put in .env, parse into decimal number 
 
     // --- Industry Standard Pool Settings ---

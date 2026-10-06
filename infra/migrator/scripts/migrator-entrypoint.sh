@@ -20,7 +20,7 @@ echo "[1/7] Success extracting and exporting postgres user password!"
 # while ! pg_isready -h ${PGHOST} -p ${PGPORT}; do
 #
 # 2. Wait for the postgresql to be ready
-echo "[2/7]  Waiting for ${PGHOST}..."
+echo "[2/7]  Waiting for ${PGHOST} to be ready..."
 while ! pg_isready; do
   sleep 2
 done

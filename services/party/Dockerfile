@@ -35,8 +35,6 @@ COPY --from=builder	/app/packages/postgres/auth-schema/dist		./packages/postgres
 COPY --from=builder /app/packages/postgres/party-schema/dist    ./packages/postgres/party-schema/dist
 COPY --from=builder /app/services/party/dist                    ./services/party/dist
 
-COPY scripts/* /usr/local/bin
-
 ENV PORT=3000
 # ^ default fallback only, in case someone runs this image standalone without Compose.
 # Compose's `environment: PORT=${PARTY_SERVICE_PORT}` overrides this ENV at runtime.
@@ -47,5 +45,4 @@ HEALTHCHECK --interval=5s --timeout=3s --retries=3 --start-period=5s \
 	CMD wget -q --spider http://localhost:${PORT}/health || exit 1
 	
 WORKDIR /app/services/party
-ENTRYPOINT ["/usr/local/bin/party-entrypoint.sh"]
 CMD ["npm", "run", "start"]

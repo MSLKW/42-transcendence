@@ -31,7 +31,8 @@ COPY --from=builder /app/packages/postgres/postgres-client/dist ./packages/postg
 COPY --from=builder /app/packages/postgres/auth-schema/dist     ./packages/postgres/auth-schema/dist
 COPY --from=builder /app/services/authentication/dist           ./services/authentication/dist
 
-COPY scripts/* /usr/local/bin
+COPY scripts/* /usr/local/bin 
+# TODO: delete this COPY script/ line in production - just testers 
 
 ENV PORT=3000
 # ^ default fallback only, in case someone runs this image standalone without Compose.
@@ -43,5 +44,4 @@ EXPOSE ${PORT}
 # 	CMD wget -q --spider http://localhost:${PORT}/health || exit 1
 
 WORKDIR /app/services/authentication
-ENTRYPOINT ["/usr/local/bin/auth-entrypoint.sh"]
 CMD ["npm", "run", "start"]
