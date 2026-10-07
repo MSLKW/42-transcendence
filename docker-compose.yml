@@ -20,10 +20,12 @@ volumes: # industry standard => name volumes => more secure oppose to anyone eve
     name: ${PG_VOLUME:?}
   dg-data:
     name: ${DG_VOLUME:?}
-  website-data:
-    name: ${WEBSITE_VOLUME:?}
   avatars-data:
     name: ${PROFILE_AVATARS_VOLUME:?}
+  root-modules-data:
+    name: ${WEBSITE_ROOT_MODULES_VOLUME:?}
+  website-modules-data:
+    name: ${WEBSITE_SERVICE_MODULES_VOLUME:?}
 
 
 secrets: # auto make all secret files just read only mode
@@ -197,9 +199,9 @@ services:
     pull_policy: never
     restart: unless-stopped
     volumes: # temporary for vite hmr in development stage
-      - ./services/website:/app/services/website
-      - /app/node_modules
-      - /app/services/website/node_modules
+      - ./services/website:/app/services/website # this is the one for hmr
+      - root-modules-data:/app/node_modules
+      - website-modules-data:/app/services/website/node_modules
     environment: # for development stage only
       DOMAIN_PORT: ${DOMAIN_PORT:?} # Right now only for vite config, can remove in production
       VITE_API_AUTH_PATH: ${API_AUTH_PATH:?}
