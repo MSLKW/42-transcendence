@@ -11,10 +11,10 @@ export function newBotHandler(manager: BotManager)
 {
 	return (req: Request, res: Response) =>
 	{
-		if (!req.body || !req.body.seat || typeof req.body.seat !== "number")
+		if (!req.body || req.body.seat == null || req.body.seat == undefined || typeof req.body.seat !== "number")
 			return res.status(400).json({ error: "Invalid request body" });
 
-		const { seat } = req.body;
+		const { seat } = req.body as { seat: number };
 
 		if (seat < 0 || seat >= 4)
 			return res.status(400).json({ error: "seat must be between 0-3" });
