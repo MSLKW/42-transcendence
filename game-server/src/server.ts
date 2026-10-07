@@ -85,7 +85,7 @@ app.get('/lobby/:lobbySessionId', (req, res) => {
 	if (lobby === undefined) {
 		return (res.status(404).end());
 	}
-	return (res.status(200).end());
+	return (res.status(204).end());
 })
 
 app.post('/lobby', (req, res) => {

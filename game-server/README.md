@@ -31,6 +31,23 @@ Healthcheck endpoint for docker orchestrator
 | --- | --- | --- |
 | 204 | N/A | Server is healthy |
 
+## GET /lobby/:lobbySessionId
+
+### Description:
+
+Endpoint to check if a lobby exists
+
+### Header: N/A
+
+### Body: N/A
+
+### Response:
+
+| HTTP Status | Payload | Description |
+| --- | --- | --- |
+| 204 | N/A | Lobby exists |
+| 404 | N/A | Lobby is not found |
+
 ## POST /lobby
 
 ### Description:
