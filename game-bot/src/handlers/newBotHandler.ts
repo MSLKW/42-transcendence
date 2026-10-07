@@ -11,13 +11,16 @@ export function newBotHandler(manager: BotManager)
 {
 	return (req: Request, res: Response) =>
 	{
-		if (!req.body || req.body.seat == null || req.body.seat == undefined || typeof req.body.seat !== "number")
+		if (!req.body)
+			return res.status(400).json({ error: "No request body" });
+
+		const { seat, botSessionToken } = req.body as { seat: number, botSessionToken: string };
+
+		if (typeof seat !== "number" || typeof botSessionToken !== "string")
 			return res.status(400).json({ error: "Invalid request body" });
 
-		const { seat } = req.body as { seat: number };
-
 		if (seat < 0 || seat >= 4)
-			return res.status(400).json({ error: "seat must be between 0-3" });
+			return res.status(400).json({ error: "Seat must be between 0-3" });
 	
 		const botId = manager.addBot("bot", GAME_SERVICE_URL, new RandomController);
 		return res.status(200).json({ botId: botId });
