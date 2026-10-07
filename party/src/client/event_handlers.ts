@@ -3,22 +3,27 @@ import { Client } from "./Client";
 import { Party } from "../party/Party";
 import { clientManager } from "./ClientManager";
 
+const GAME_SERVICE_URL = process.env.GAME_SERVICE_URL;
+if (!GAME_SERVICE_URL)
+	throw new Error("GAME_SERVICE_URL is not set");
+
 export function registerEventHandlers(socket: Socket, client: Client)
 {
-	socket.on("send_invite", (payload: {recipientUuid: string}) =>
+	socket.on("send_invite", (payload: {recipientUuid: string}, callback) =>
 	{
 		if (client.party != null && client.party.hostId != client.uuid)
-			return ;
+			return callback({ success: false, reason: "you are not the host" });
 		if (client.uuid == payload.recipientUuid)
-			return ;
+			return callback({ success: false, reason: "cannot invite yourself" });
 		
 		const recipient = clientManager.getByUuid(payload.recipientUuid);
 		if (!recipient)
-			return ;
+			return callback({ success: false, reason: "user is offline" });
 		if (client.party == null)
 			client.party = new Party(client);
 		client.party.addInvite(recipient);
 		recipient.emit("invite_received", {hostUuid: client.uuid});
+		return callback({ success: true });
 	});
 
 	socket.on("kick_player", (payload: {recipientUuid: string}) =>
@@ -67,10 +72,23 @@ export function registerEventHandlers(socket: Socket, client: Client)
 		client.party.startGameSession();
 	});
 
-	socket.on("refresh", () =>
+	socket.on("refresh", async () =>
 	{
 		if (!client.party)
 			return ;
+		if (client.party.gameId !== null)
+		{
+			try
+			{
+				const res = await fetch(`${GAME_SERVICE_URL}/lobby/${client.party.gameId}`);
+				if (res.status == 404)
+					client.party.gameId = null;	
+			}
+			catch (err)
+			{
+				console.error(`failed to check game id ${client.party.gameId}:`, err);
+			}
+		}
 		client.party.sendUpdates();
 	});
 }
