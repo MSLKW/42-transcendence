@@ -1,13 +1,12 @@
 import { Window } from "../window/Window";
-import { AboutModule } from "./About/AboutModule";
-import { TechModule } from "./Tech/TechModule";
-import { TeamModule } from "./Team/TeamModule";
 import { ShowDevSection } from "./Dev/ShowDevSection";
+import { PrivacyPolicyModule } from "./privacy_policy/PrivacyPolicy";
+import { TermsOfServiceModule } from "./terms_of_service/TermsOfService";
 
 export const InfoWindow = () => {
     return (
 		<Window
-			title="Info"
+			title="Additional Info"
 			dismissKey="info"
 			lightbox={true}
 		>
@@ -24,9 +23,8 @@ export const InfoWindow = () => {
 					divide-n2/40 divide-y-2
 					overflow-scroll
 				">
-					<AboutModule />
-					<TechModule />
-					<TeamModule />
+					<PrivacyPolicyModule />
+					<TermsOfServiceModule />
 					<ShowDevSection />
 				</div>
 			</div>

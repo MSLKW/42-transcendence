@@ -1,0 +1,12 @@
+ul {
+	@apply 
+		list-disc list-inside
+		text-1.25rem
+		;
+}
+ol {
+	@apply
+		list-decimal list-inside
+		text-1.25rem
+		;
+}
