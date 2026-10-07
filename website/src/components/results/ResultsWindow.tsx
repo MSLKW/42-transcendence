@@ -11,7 +11,7 @@ import { useSceneStore } from "../../store/SceneStore";
 
 export const ResultsWindow = () => {
 	const round = useGameStore((store) => store.round);
-	const endGame = useGameStore((store) => store.endGame);
+	const leaveGame = useGameStore((store) => store.leaveGame);
 	const setShowWindow = useSceneStore((store) => store.setShowWindow);
 	const cachedData = useProfileStore((store) => store.cachedData);
 	const getLeaderboard = useResultsStore((store) => store.getLeaderboard);
@@ -50,7 +50,7 @@ export const ResultsWindow = () => {
 						<h2 className="text-n6">{winner}</h2>
 						<div className="flex gap-2rem">
 							<button
-								onClick={endGame}
+								onClick={leaveGame}
 								className="
 									h-3rem aspect-6/1
 									btn-text bg-light

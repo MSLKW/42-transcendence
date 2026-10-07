@@ -49,9 +49,14 @@ export class Game {
 	}
 
 	public startGame() {
-		console.log("[game] Emitting game_start_request");
 		this.socket.emit("game_start_request", (status: StatusTransmit) => {
-			console.log(`Start Game: ${status.success} | ${status.message}`);
+			console.log(`[gameSocket] 'game_start_request': ${status.success} | ${status.message}`);
+		});
+	}
+
+	public deleteLobby() {
+		this.socket.emit("delete_lobby_request", (status: StatusTransmit) => {
+			console.log(`[gameSocket] 'delete_lobby_request': ${status.success} | ${status.message}`);
 		});
 	}
 
@@ -70,6 +75,7 @@ export class Game {
 	private bindSocketEvents() {
 		this.socket.on("connect_error", (error) => {
 			console.log("[gameSocket] 'connect_error': ", error.message);
+			usePartyStore.setState({ partyGameId: null });
 		});
 
 		this.socket.on("connect", () => {

@@ -92,7 +92,8 @@ export class LobbyManager {
 		const sessionId = this.getNewSessionId();
 		const lobby = new Lobby(data, sessionId);
 		lobby.events.on("lobby:delete", () => {
-			this.deleteLobby(lobby);
+			lobby.kickSockets();
+			this.unregisterLobby(lobby);
 		})
 		console.log(`Lobby<${sessionId}> created with Host<${data.hostUuid}> and whitelist: [${data.playerUuids}]`);
 		this.lobbies[sessionId] = lobby;
@@ -103,10 +104,10 @@ export class LobbyManager {
 		return (this.lobbies[sessionId]);
 	}
 
-	public deleteLobby(lobby: Lobby) {
+	public unregisterLobby(lobby: Lobby) {
 		if (this.lobbies[lobby.sessionId] === undefined)
 			return ;
 		delete(this.lobbies[lobby.sessionId]);
-		console.log(`Lobby<${lobby.sessionId}> deleted`);
+		console.log(`Lobby<${lobby.sessionId}> is unregistered`);
 	}
 }

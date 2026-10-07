@@ -4,11 +4,11 @@ import { Window } from "../window/Window";
 
 export const LeaveWindow = () => {
 	const setShowWindow = useSceneStore((store) => store.setShowWindow);
-	const endGame = useGameStore((store) => store.endGame);
+	const leaveGame = useGameStore((store) => store.leaveGame);
 
 	const handleLeaveGame = () => {
 		setShowWindow("leave", false);
-		endGame();
+		leaveGame();
 	}
 
 	return (

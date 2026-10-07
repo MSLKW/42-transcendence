@@ -4,8 +4,6 @@ import { UserState } from './UserState.js';
 import { GameState } from './GameState.js';
 import { GameSettingsTransmit, SeatOrderTransmit, StatusTransmit } from '@big2/game-types';
 import { EventEmitter } from 'node:events';
-import { success } from 'zod';
-import { privateDecrypt } from 'node:crypto';
 
 export class Lobby {
 	private hostUuid: string;
@@ -133,6 +131,11 @@ export class Lobby {
 			}
 			statusCallback(status);
 		});
+
+		user.socket.on("delete_lobby_request", (statusCallback) => {
+			statusCallback(this.deleteLobbyRequest(user));
+		});
+
 	}
 
 	private disconnectUser(disconnectedUser: UserState) {
@@ -240,5 +243,30 @@ export class Lobby {
 		status.success = true;
 		status.message = "Successfully initialized seats";
 		return (status);
+	}
+
+	private deleteLobbyRequest(user: UserState): StatusTransmit {
+		const status: StatusTransmit = {
+			success: false,
+			message: "",
+		};
+		if (user.uuid !== this.hostUuid) {
+			status.message = "Not the Host";
+			return (status);
+		}
+		else if (this.game.isGameStarted === true) {
+			status.message = "Lobby game has already started";
+			return (status);
+		}
+		status.success = true;
+		status.message = "Successfully deleted the lobby";
+		this.events.emit("lobby:delete");
+		return (status);
+	}
+
+	public kickSockets() {
+		for (let i = 0; i < this.users.length; i++) {
+			kickSocket(this.users[i].socket, "Connected lobby is deleted");
+		}
 	}
 }

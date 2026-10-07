@@ -62,7 +62,7 @@ interface GameState extends GameValues {
 	startGame: () => void;
 	skipTurn: () => void;
 
-	endGame: () => void;
+	leaveGame: () => void;
 	incTotalWin: (uuid: string) => void;
 	incTotalLoss: (uuid: string) => void;
 	unlockMedal: (uuid: string, type: MEDAL_TYPE) => void;
@@ -183,10 +183,15 @@ export const useGameStore = create<GameState>() (
 				useSceneStore.getState().setShowWindow("results", false);
 			},
 
-			endGame: () => {
+			leaveGame: () => {
 				get().resetGame();
+				if (useAuthStore.getState().clientUuid === usePartyStore.getState().hostUuid) {
+					gameInstance?.deleteLobby();
+				}
+				else {
+					partySocket.leaveParty();
+				}
 				gameInstance?.disconnect();
-				partySocket.leaveParty();
 			},
 			incTotalWin: (uuid) => {
 				const profileStore = useProfileStore.getState();

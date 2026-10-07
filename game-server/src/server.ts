@@ -79,6 +79,15 @@ app.get('/health', (req, res) => {
 	return (res.status(204).end());
 });
 
+app.get('/lobby/:lobbySessionId', (req, res) => {
+	const lobbySessionId = req.params.lobbySessionId;
+	const lobby = lobbyManager.getLobby(lobbySessionId);
+	if (lobby === undefined) {
+		return (res.status(404).end());
+	}
+	return (res.status(200).end());
+})
+
 app.post('/lobby', (req, res) => {
 	try {
 		const payload: LobbyRequest = lobbyRequestSchema.parse(req.body);
