@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { AUTH_SERVICE_URL, AVATAR_DIR } from "../config";
+import { AUTH_SERVICE_URL, AVATAR_DIR } from "../config/env";
 
 export function healthCheck()
 {

@@ -39,8 +39,6 @@ COPY --from=builder /app/packages/postgres/auth-schema/dist		./packages/postgres
 COPY --from=builder /app/packages/postgres/friends-schema/dist	./packages/postgres/friends-schema/dist
 COPY --from=builder /app/services/friends/dist					./services/friends/dist
 
-COPY scripts/* /usr/local/bin
-
 ENV PORT=3000
 # ^ default fallback only, in case someone runs this image standalone without Compose.
 # Compose's `environment: PORT=${FRIENDS_SERVICE_PORT}` overrides this ENV at runtime.
@@ -51,5 +49,4 @@ EXPOSE ${PORT}
 # 	CMD wget -q --spider http://localhost:${PORT}/health || exit 1
 
 WORKDIR /app/services/friends
-ENTRYPOINT ["/usr/local/bin/friends-entrypoint.sh"]
 CMD ["npm", "run", "start"]

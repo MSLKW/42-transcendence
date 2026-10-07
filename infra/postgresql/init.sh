@@ -20,6 +20,14 @@ PROFILE_PW="$( cat /run/secrets/db-profile-password)"
 FRIENDS_PW="$( cat /run/secrets/db-friends-password)"
 GAME_STATS_PW="$( cat /run/secrets/db-game-stats-password)"
 
+# -n = true when string is NONEMPTY
+[ -n "$AUTH_PW" ]		|| { echo "[Error] db-auth-password is empty" >&2; exit 1; }
+[ -n "$PARTY_PW" ]		|| { echo "[Error] db-party-password is empty" >&2; exit 1; }
+[ -n "$PROFILE_PW" ]	|| { echo "[Error] db-profile-password is empty" >&2; exit 1; }
+[ -n "$FRIENDS_PW" ]	|| { echo "[Error] db-friends-password is empty" >&2; exit 1; }
+[ -n "$GAME_STATS_PW" ]	|| { echo "[Error] db-game-stats-password is empty" >&2; exit 1; }
+
+
 psql -v ON_ERROR_STOP=1 --username "${POSTGRES_USER}" --dbname "${POSTGRES_DB}" <<-EOSQL
 
 	-- 1. create any extensions that only directly on Postgres can do, not Drizzle
@@ -30,7 +38,7 @@ psql -v ON_ERROR_STOP=1 --username "${POSTGRES_USER}" --dbname "${POSTGRES_DB}" 
 	CREATE USER "${PGUSER_PARTY}" WITH PASSWORD '${PARTY_PW}';
 	CREATE USER "${PGUSER_PROFILE}" WITH PASSWORD '${PROFILE_PW}';
 	CREATE USER "${PGUSER_FRIENDS}" WITH PASSWORD '${FRIENDS_PW}';
-	-- CREATE USER "${PGUSER_GAME_STATS}" WITH PASSWORD '${GAME_STATS_PW}';
+	CREATE USER "${PGUSER_GAME_STATS}" WITH PASSWORD '${GAME_STATS_PW}';
 
 	-- 3. Revoke default public schema's access from everyone
 	REVOKE ALL ON SCHEMA public FROM PUBLIC;
@@ -41,6 +49,6 @@ psql -v ON_ERROR_STOP=1 --username "${POSTGRES_USER}" --dbname "${POSTGRES_DB}" 
 	GRANT CONNECT ON DATABASE "${POSTGRES_DB}" TO "${PGUSER_PARTY}";
 	GRANT CONNECT ON DATABASE "${POSTGRES_DB}" TO "${PGUSER_PROFILE}";
 	GRANT CONNECT ON DATABASE "${POSTGRES_DB}" TO "${PGUSER_FRIENDS}";
-	-- GRANT CONNECT ON DATABASE "${POSTGRES_DB}" TO "${PGUSER_GAME_STATS}";
+	GRANT CONNECT ON DATABASE "${POSTGRES_DB}" TO "${PGUSER_GAME_STATS}";
 
 EOSQL

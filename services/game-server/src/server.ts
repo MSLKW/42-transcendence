@@ -126,3 +126,17 @@ export function kickSocket(socket: Socket, reason: string) {
 	}, 1000);
 	// socket.removeAllListeners();
 }
+
+
+// TODO (signal handler): uncomment this when need to implement the signal handler
+// // Graceful shutdown on Ctrl+C / `docker compose down`. 
+// // Stop taking new requests, close the DB
+// // pool cleanly, then exit, well inside Docker's 10s SIGKILL deadline.
+// function shutdown() {
+//   server.close();					// 1. stop accepting new work
+//   									// 2. service-specific cleanup
+//   									// 3. close DB pool (DB services only, this game-server service no need)
+//   process.exit(0);					// 4. end the process, exit code 0 = clean shutdown
+// }
+// process.on('SIGINT', shutdown);		// Ctrl+C
+// process.on('SIGTERM', shutdown);	// `docker compose down`

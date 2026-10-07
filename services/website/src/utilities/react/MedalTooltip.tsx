@@ -1,34 +1,23 @@
 import { useState } from "react";
 import { createPortal } from "react-dom";
 
-type TooltipProps = {
+type MedalTooltipProps = {
 	text: string;
-	position?: string;
+	description: string;
+	date: string;
 	children: React.ReactNode;
 };
 
-export function Tooltip({ text, position = "top", children }: TooltipProps) {
+export function MedalTooltip({ text, date, description, children }: MedalTooltipProps) {
 	const [visible, setVisible] = useState(false);
 	const [pos, setPos] = useState({ top: 0, left: 0 });
 
 	const showTooltip = (e: React.MouseEvent<HTMLDivElement>) => {
 		const rect = e.currentTarget.getBoundingClientRect();
-		if (position === "top") {
-			setPos({
-				top: rect.top - 8,
-				left: rect.left + rect.width / 2,
-			});
-		} else if (position === "left") {
-			setPos({
-				top: rect.top + rect.height / 2,
-				left: rect.left - rect.width / 2 - 16,
-			});
-		} else if (position === "bottom") {
-			setPos({
-				top: rect.bottom + rect.height,
-				left: rect.left + rect.width / 2,
-			});
-		}
+		setPos({
+			top: rect.top - 8,
+			left: rect.left + rect.width / 2,
+		});
 
 		setVisible(true);
 	};
@@ -48,19 +37,22 @@ export function Tooltip({ text, position = "top", children }: TooltipProps) {
 						top: pos.top,
 						left: pos.left,
 					}}
-					className={`
+					className="
 						fixed z-9999
-						${
-							position === "left" ? "-translate-y-1/2" :
-							"-translate-y-full"
-						}
+						-translate-y-full
 						-translate-x-1/2
-						bg-dark rounded-full px-3 py-2
+						bg-dark rounded-md px-2rem py-1rem
 						text-1.25rem text-white shadow-lg
 						pointer-events-none
 						whitespace-nowrap
-				`}>
-					{text}
+						flex flex-col place-content-center place-items-center
+						gap-1rem
+				">
+					<div className="flex flex-col place-items-center">
+						<h3>{text}</h3>
+						<h3>{description}</h3>
+					</div>
+					<p>{date}</p>
 				</div>,
 				document.body
 			)}

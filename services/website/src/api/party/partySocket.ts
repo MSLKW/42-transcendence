@@ -14,7 +14,7 @@ import { playerLeftHandler } from "./handlers/playerLeftHandler";
 import { playerJoinedHandler } from "./handlers/playerJoinedHandler";
 import { usePartyStore } from "../../store/PartyStore";
 
-const partySocketUrl = import.meta.env.SOCKET_URL;
+const partySocketUrl = import.meta.env.VITE_SOCKET_URL;
 
 export type SendInviteResponse = {
 	success: boolean;
@@ -37,7 +37,7 @@ class PartySocketService {
 		}
 
 		this.socket = io(partySocketUrl, {
-			path: import.meta.env.SOCKET_PARTY_PATH,
+			path: "/socket/party",
 			transports: ["websocket", "polling"],
 			autoConnect: false,
 			reconnection: true,

@@ -6,7 +6,6 @@ import { ChatButton } from "./chat/ChatButton";
 import { EmoteGroup } from "./emote/EmoteGroup";
 import { SignOutButton } from "./sign_out/SignOutButton";
 import { NotifToggleButton } from "./notification/NotifToggleButton";
-import { handlePutSettings } from "../../api/profile/put_settings/handlePutSettings";
 
 interface HeaderModuleProps {
 	back: string;
@@ -21,19 +20,6 @@ export const HeaderModule = ({ back }: HeaderModuleProps) => {
 		if (currentScene === "Game") {
 			setShowWindow("leave", true);
 			return;
-		}
-		if (currentScene === "Lobby") {
-			handlePutSettings({
-				allow3OfAKind: useSettingsStore.getState().allow3OfAKind,
-				allow2OfSpadesEnd: useSettingsStore.getState().allow2OfSpadesEnd,
-				autoPassIndex: useSettingsStore.getState().autoPassIndex,
-				endGameCondition: 0,
-				scoreCalculation: 0,
-				cardStyle: 0,
-				uiColor: 0,
-				fxLevel: 0,
-				mxLevel: 0,
-			});
 		}
 		endGame();
 	};

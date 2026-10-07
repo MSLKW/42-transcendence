@@ -16,5 +16,4 @@ function requireEnvNum(name: string): number
 
 export const PORT				= requireEnvNum("PORT");
 export const AUTH_SERVICE_URL	= requireEnv("AUTH_SERVICE_URL");
-
-// TODO: have WEBSITE'S url check and throw here too if its used within CORS middleware at index.ts
+export const AVATAR_DIR			= requireEnv("AVATAR_DIR");

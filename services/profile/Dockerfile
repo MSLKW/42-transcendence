@@ -45,8 +45,6 @@ COPY --from=builder /app/packages/postgres/profile-schema/dist	./packages/postgr
 COPY --from=builder /app/services/profile/test					./services/profile/test
 COPY --from=builder /app/services/profile/dist					./services/profile/dist
 
-COPY scripts/* /usr/local/bin
-
 ENV PORT=3000
 # ^ default fallback only, in case someone runs this image standalone without Compose.
 # Compose's `environment: PORT=${PROFILE_SERVICE_PORT}` overrides this ENV at runtime.
@@ -57,5 +55,4 @@ HEALTHCHECK --interval=5s --timeout=3s --retries=3 --start-period=5s \
 	CMD wget -q --spider http://localhost:${PORT}/health || exit 1
 	
 WORKDIR /app/services/profile
-ENTRYPOINT ["/usr/local/bin/profile-entrypoint.sh"]
 CMD ["npm", "run", "start"]

@@ -41,11 +41,14 @@ up:
 #-d
  
 
-## Down + Up with network/volumes untouched
-recreate: 
-	@echo "$(PURPLE) Starting/Resuming services, picking up changes on docker by replacing containers (except touching volumes)...\n$(RESET)"
-	@$(COMPOSE) up --force-recreate
-#-d
+## Down + Up (removes containers & networks, keeps images & volumes)
+restart: down up
+
+
+## Stop all running containers. Remove nothing
+stop:
+	@echo "$(PURPLE) Stopping all running containers (remove nothing)...\n$(RESET)"
+	@$(COMPOSE) stop
 
 
 ## Remove containers, networks, and images (keeps volumes)
@@ -57,10 +60,8 @@ clean:
 
 ## Clean + wipe volumes
 fclean: clean 
-	@echo "$(PURPLE)\n🗑️🚨 Removing this project's Docker volumes...\n$(RESET)"
-	@$(COMPOSE) down --volumes
-	@echo "$(PURPLE)docker volume prune -a (remove anonymous volumes) \n$(RESET)"
-	@docker volume prune -a
+	@echo "$(PURPLE)\n🗑️🚨 Removing this project's Docker volumes including anonymous volumes...\n$(RESET)"
+	@$(COMPOSE) down -v
 	@echo "$(PURPLE)\n🗑️💥 Done, Absolutely everything are removed now!\n$(RESET)"
 
 
@@ -90,7 +91,7 @@ $(foreach service,$(SHELLABLE_SERVICES),$(eval $(call SHELL_TEMPLATE,$(service))
 ls:
 # 	@echo "$(PURPLE)Project Containers: $(COMPOSE) ps -a$(RESET)"
 # 	@$(COMPOSE) ps -a
-	@echo "$(PURPLE)All Containers: docker ps -a$(RESET)"
+	@echo "$(PURPLE)All Containers within host: docker ps -a$(RESET)"
 	@docker ps -a
 	@echo "$(PURPLE)\ndocker network ls$(RESET)"
 	@docker network ls
@@ -109,7 +110,7 @@ nuclear:
 # -f: Forces removal without prompting.
  
 
-## Remove everything belonging to this specific stack/project
+## Remove everything belong to this specific stack/project
 purge:
 	@docker stop $$(docker ps -aq) 2>/dev/null || true
 	@docker rm $$(docker ps -aq) 2>/dev/null || true
@@ -135,12 +136,11 @@ help:
 	printf "  \033[36m%-20s\033[0m %s\n", a[1], desc; desc=""}' $(MAKEFILE_LIST)
  
  
-.PHONY: all down up recreate clean fclean re logs nuclear purge progress config ls ls-all help shell-
+.PHONY: all down up restart clean fclean re logs nuclear purge progress config ls help shell-
 
 
-# --- as references only, not to be run via makefile commands ----------------------------------------------
-## Step-by-step full teardown of THIS project only (stop, rm containers, rm images, rm volumes, rm networks)
-# complete-clean:
+# --- as learning references only, not to be run via makefile commands. must be in these sequence ----------------------------------------------
+#	# Step-by-step full teardown of THIS project only (stop, rm containers, rm images, rm volumes, rm networks)
 # 	@echo "$(PURPLE)Stopping all running containers for this project...$(RESET)"
 # 	@$(COMPOSE) stop
 # 	@echo "$(PURPLE)Removing all containers for this project...$(RESET)"
