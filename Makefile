@@ -45,6 +45,12 @@ up:
 restart: down up
 
 
+## Stop all running containers. Remove nothing
+stop:
+	@echo "$(PURPLE) Stopping all running containers (remove nothing)...\n$(RESET)"
+	@$(COMPOSE) stop
+
+
 ## Remove containers, networks, and images (keeps volumes)
 clean: 
 	@echo "$(PURPLE)\n🗑️  Removing all containers, network and images including public base images (keeping volumes)...\n$(RESET)"
@@ -55,7 +61,7 @@ clean:
 ## Clean + wipe volumes
 fclean: clean 
 	@echo "$(PURPLE)\n🗑️🚨 Removing this project's Docker volumes including anonymous volumes...\n$(RESET)"
-	@$(COMPOSE) down -v --remove-orphans
+	@$(COMPOSE) down -v
 	@echo "$(PURPLE)\n🗑️💥 Done, Absolutely everything are removed now!\n$(RESET)"
 
 
@@ -85,7 +91,7 @@ $(foreach service,$(SHELLABLE_SERVICES),$(eval $(call SHELL_TEMPLATE,$(service))
 ls:
 # 	@echo "$(PURPLE)Project Containers: $(COMPOSE) ps -a$(RESET)"
 # 	@$(COMPOSE) ps -a
-	@echo "$(PURPLE)All Containers: docker ps -a$(RESET)"
+	@echo "$(PURPLE)All Containers within host: docker ps -a$(RESET)"
 	@docker ps -a
 	@echo "$(PURPLE)\ndocker network ls$(RESET)"
 	@docker network ls
@@ -104,7 +110,7 @@ nuclear:
 # -f: Forces removal without prompting.
  
 
-## Remove everything belonging to this specific stack/project
+## Remove everything belong to this specific stack/project
 purge:
 	@docker stop $$(docker ps -aq) 2>/dev/null || true
 	@docker rm $$(docker ps -aq) 2>/dev/null || true
@@ -126,16 +132,15 @@ config:
 ## Show available Makefile commands
 help: 
 	@awk '/^## /{desc=substr($$0,4); next} \
-	/^[a-zA-Z_%-]+:/{split($$1,a,":"); if(desc) \
+	/^[a-zA-Z_-]+:/{split($$1,a,":"); if(desc) \
 	printf "  \033[36m%-20s\033[0m %s\n", a[1], desc; desc=""}' $(MAKEFILE_LIST)
  
  
 .PHONY: all down up restart clean fclean re logs nuclear purge progress config ls help shell-
 
 
-# --- as references only, not to be run via makefile commands ----------------------------------------------
-## Step-by-step full teardown of THIS project only (stop, rm containers, rm images, rm volumes, rm networks)
-# complete-clean:
+# --- as learning references only, not to be run via makefile commands. must be in these sequence ----------------------------------------------
+#	# Step-by-step full teardown of THIS project only (stop, rm containers, rm images, rm volumes, rm networks)
 # 	@echo "$(PURPLE)Stopping all running containers for this project...$(RESET)"
 # 	@$(COMPOSE) stop
 # 	@echo "$(PURPLE)Removing all containers for this project...$(RESET)"
