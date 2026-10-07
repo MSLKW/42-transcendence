@@ -136,7 +136,7 @@ help:
 	printf "  \033[36m%-20s\033[0m %s\n", a[1], desc; desc=""}' $(MAKEFILE_LIST)
  
  
-.PHONY: all down up restart clean fclean re logs nuclear purge progress config ls help shell-
+.PHONY: all down up stop restart clean fclean re logs nuclear purge progress config ls help shell-
 
 
 # --- as learning references only, not to be run via makefile commands. must be in these sequence ----------------------------------------------

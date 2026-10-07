@@ -129,7 +129,7 @@ export function kickSocket(socket: Socket, reason: string) {
 
 
 // TODO (signal handler): uncomment this when need to implement the signal handler
-// // Graceful shutdown on Ctrl+C / `docker compose down`. 
+// // Graceful shutdown on Ctrl+C / `docker compose down` & `docker compose stop` (both stop containers the same way). 
 // // Stop taking new requests, close the DB
 // // pool cleanly, then exit, well inside Docker's 10s SIGKILL deadline.
 // function shutdown() {
@@ -139,4 +139,4 @@ export function kickSocket(socket: Socket, reason: string) {
 //   process.exit(0);					// 4. end the process, exit code 0 = clean shutdown
 // }
 // process.on('SIGINT', shutdown);		// Ctrl+C
-// process.on('SIGTERM', shutdown);	// `docker compose down`
+// process.on('SIGTERM', shutdown);	// `docker compose down` & `docker compose stop` (both stop containers the same way)
