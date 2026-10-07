@@ -92,8 +92,8 @@ export class LobbyManager {
 		const sessionId = this.getNewSessionId();
 		const lobby = new Lobby(data, sessionId);
 		lobby.events.on("lobby:delete", () => {
-			lobby.kickSockets();
 			this.unregisterLobby(lobby);
+			lobby.kickSockets();
 		})
 		console.log(`Lobby<${sessionId}> created with Host<${data.hostUuid}> and whitelist: [${data.playerUuids}]`);
 		this.lobbies[sessionId] = lobby;

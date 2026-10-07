@@ -28,7 +28,7 @@ export const IncomingEventRegistry: Record<string, EventConfig> = {
 	"game_start_request": {
 		callback: StatusCallbackSchema
 	},
-	"delete_lobby_request": {
+	"lobby_delete_request": {
 		callback: StatusCallbackSchema
 	},
 	"game_settings_set": {

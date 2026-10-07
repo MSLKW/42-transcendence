@@ -187,11 +187,12 @@ export const useGameStore = create<GameState>() (
 				get().resetGame();
 				if (useAuthStore.getState().clientUuid === usePartyStore.getState().hostUuid) {
 					gameInstance?.deleteLobby();
+					partySocket.refresh();
 				}
 				else {
 					partySocket.leaveParty();
+					gameInstance?.disconnect();
 				}
-				gameInstance?.disconnect();
 			},
 			incTotalWin: (uuid) => {
 				const profileStore = useProfileStore.getState();

@@ -10,6 +10,7 @@ import { gsap } from 'gsap';
 import { Participant } from './Participant';
 import { useGameStore } from "../../store/GameStore";
 import { usePartyStore } from "../../store/PartyStore";
+import { partySocket } from "../../api/party/partySocket";
 import { useSceneStore } from "../../store/SceneStore";
 import { threejsManager } from '../../App';
 import { useResultsStore } from '../../store/ResultsStore';
@@ -55,8 +56,9 @@ export class Game {
 	}
 
 	public deleteLobby() {
-		this.socket.emit("delete_lobby_request", (status: StatusTransmit) => {
-			console.log(`[gameSocket] 'delete_lobby_request': ${status.success} | ${status.message}`);
+		console.log("[gameSocket] emitting 'lobby_delete_request");
+		this.socket.emit("lobby_delete_request", (status: StatusTransmit) => {
+			console.log(`[gameSocket] 'lobby_delete_request': ${status.success} | ${status.message}`);
 		});
 	}
 
@@ -94,7 +96,9 @@ export class Game {
 			if (currentScene === "Lobby" || currentScene === "Game") {
 				useSceneStore.getState().setCurrentScene("Home");
 			}
+			this.resetGame();
 			useGameStore.getState().resetGame();
+			partySocket.refresh();
 		});
 	
 		this.socket.on("game_end", (gameEndStats: GameEndStatsTransmit) => {

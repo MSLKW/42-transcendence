@@ -132,8 +132,25 @@ export class Lobby {
 			statusCallback(status);
 		});
 
-		user.socket.on("delete_lobby_request", (statusCallback) => {
-			statusCallback(this.deleteLobbyRequest(user));
+		user.socket.on("lobby_delete_request", (statusCallback) => {
+			const status: StatusTransmit = {
+				success: false,
+				message: "",
+			};
+			if (user.uuid !== this.hostUuid) {
+				status.message = "Not the Host";
+				statusCallback(status);
+				return (status);
+			}
+			else if (this.game.isGameStarted === true) {
+				status.message = "Lobby game has already started";
+				statusCallback(status);
+				return ;
+			}
+			status.success = true;
+			status.message = "Successfully deleted the lobby";
+			statusCallback(status);
+			this.events.emit("lobby:delete");
 		});
 
 	}
@@ -242,25 +259,6 @@ export class Lobby {
 		this.emitSeatOrder();
 		status.success = true;
 		status.message = "Successfully initialized seats";
-		return (status);
-	}
-
-	private deleteLobbyRequest(user: UserState): StatusTransmit {
-		const status: StatusTransmit = {
-			success: false,
-			message: "",
-		};
-		if (user.uuid !== this.hostUuid) {
-			status.message = "Not the Host";
-			return (status);
-		}
-		else if (this.game.isGameStarted === true) {
-			status.message = "Lobby game has already started";
-			return (status);
-		}
-		status.success = true;
-		status.message = "Successfully deleted the lobby";
-		this.events.emit("lobby:delete");
 		return (status);
 	}
 
