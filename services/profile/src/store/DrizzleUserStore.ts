@@ -1,7 +1,7 @@
 import { type UserData, type UserSettings } from "@big2/profile-types";
 import { userData, userSettings } from "@big2/profile-schema";
 import { eq, ilike, and, isNotNull } from "drizzle-orm";
-import { postgresClient } from "./postgresClient";
+import { postgresClient } from "../config/postgresClient";
 import { UserStore } from "./UserStore";
 
 

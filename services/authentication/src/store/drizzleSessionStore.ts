@@ -1,6 +1,6 @@
 import { eq, lte } from "drizzle-orm";
 import { sessions } from "@big2/auth-schema";
-import { postgresClient } from "./postgresClient";
+import { postgresClient } from "../config/postgresClient";
 import { Session } from "../models/session";
 import { SessionStore } from "./sessionStore";
 

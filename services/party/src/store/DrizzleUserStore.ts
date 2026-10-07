@@ -1,6 +1,6 @@
 import { eq } from "drizzle-orm";
 import { UserStore, UserData } from "./UserStore";
-import { postgresClient } from "./postgresClient";
+import { postgresClient } from "../config/postgresClient";
 import { playerStatus } from "@big2/party-schema";
 
 export class DrizzleUserStore implements UserStore {
