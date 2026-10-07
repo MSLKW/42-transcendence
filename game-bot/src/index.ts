@@ -19,6 +19,14 @@ app.use(express.json());
 app.get("/health", healthCheck());
 app.post("/new_bot", newBotHandler(manager));
 
+app.use((err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {
+	if (err.type === "entity.parse.failed") {
+		return res.status(400).json({ error: "Malformed JSON in request body." });
+	}
+	console.error("Unhandled error:", err);
+	return res.status(500).json({ error: "Something went wrong." });
+});
+
 const server = app.listen(PORT, ()=> {
 	console.log(`Server running on http://localhost:${PORT}`);
 });
