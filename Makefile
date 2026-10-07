@@ -41,11 +41,8 @@ up:
 #-d
  
 
-## Down + Up with network/volumes untouched
-recreate: 
-	@echo "$(PURPLE) Starting/Resuming services, picking up changes on docker by replacing containers (except touching volumes)...\n$(RESET)"
-	@$(COMPOSE) up --force-recreate
-#-d
+## Down + Up (removes containers & networks, keeps images & volumes)
+restart: down up
 
 
 ## Remove containers, networks, and images (keeps volumes)
@@ -129,11 +126,11 @@ config:
 ## Show available Makefile commands
 help: 
 	@awk '/^## /{desc=substr($$0,4); next} \
-	/^[a-zA-Z_-]+:/{split($$1,a,":"); if(desc) \
+	/^[a-zA-Z_%-]+:/{split($$1,a,":"); if(desc) \
 	printf "  \033[36m%-20s\033[0m %s\n", a[1], desc; desc=""}' $(MAKEFILE_LIST)
  
  
-.PHONY: all down up recreate clean fclean re logs nuclear purge progress config ls ls-all help shell-
+.PHONY: all down up restart clean fclean re logs nuclear purge progress config ls help shell-
 
 
 # --- as references only, not to be run via makefile commands ----------------------------------------------
