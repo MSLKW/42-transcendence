@@ -27,7 +27,7 @@ function requireEnvNum(name: string): number
 	return value;
 }
 
-export const PGPASSWORD_FILE    = requireEnvNum("PGPASSWORD_FILE");  // throws if not set or empty in compose
+export const PGPASSWORD_FILE    = requireEnv("PGPASSWORD_FILE");  // throws if not set or empty in compose
 export const PGPORT             = requireEnvNum("PGPORT");
 export const PGHOST             = requireEnv("PGHOST");
 export const PGDATABASE         = requireEnv("PGDATABASE");
