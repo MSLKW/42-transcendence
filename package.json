@@ -1,0 +1,10 @@
+{
+	"name": "big2",
+	"private": true,
+	"workspaces": [
+		"packages/*",
+		"game-server",
+		"game-bot",
+		"website"
+	]
+}
