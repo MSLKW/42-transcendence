@@ -71,7 +71,7 @@ server.on("error", (err: NodeJS.ErrnoException) => {
 });
 
 // TODO (signal handler): uncomment this when need to implement the signal handler
-// // Graceful shutdown on Ctrl+C / `docker compose down`. 
+// // Graceful shutdown on Ctrl+C / `docker compose down` & `docker compose stop` (both stop containers the same way). 
 // // Stop new work, stop the cron job, close the DB pool, then exit, well inside Docker's 10s SIGKILL.
 // let shuttingDown = false;
 // async function shutdown() {
@@ -87,4 +87,4 @@ server.on("error", (err: NodeJS.ErrnoException) => {
 // }
 
 // process.on('SIGINT', shutdown);			// Ctrl+C
-// process.on('SIGTERM', shutdown);		// `docker compose down`
+// process.on('SIGTERM', shutdown);		// `docker compose down` & `docker compose stop` (both stop containers the same way)
