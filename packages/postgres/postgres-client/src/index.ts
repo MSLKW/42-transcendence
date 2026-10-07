@@ -5,41 +5,53 @@ import { Pool } from "pg";
 
 
 // 1. Check the environment vars are properly loaded
-const PGPASSWORD = fs.readFileSync(process.env.PGPASSWORD_FILE!, 'utf-8').trim();
-if (!PGPASSWORD)
-  throw new Error("CRITICAL: Database password could not be loaded from the secret file itself.");
+function requireEnv(name: string): string
+{
+	const value = process.env[name];
+	if (!value)
+		throw new Error(`[Error] ${name} not set`);
+	return value;
+}
 
-export const PGUSER = process.env.PGUSER;
-export const PGPORT = process.env.PGPORT;
-export const PGHOST = process.env.PGHOST;
-export const PGDATABASE = process.env.PGDATABASE;
-export const PG_POOL_MAX = process.env.PG_POOL_MAX;
+function requireEnvNum(name: string): number
+{
+	const value = Number(requireEnv(name));
+	if (!Number.isInteger(value) || value < 0)
+		throw new Error(`[Error] ${name} must be a non-negative integer`);
+	return value;
+}
 
-if (!PGUSER)      throw new Error("[Error] PGUSER not set");
-if (!PGPORT)      throw new Error("[Error] PGPORT not set");
-if (!PGHOST)      throw new Error("[Error] PGHOST not set");
-if (!PGDATABASE)  throw new Error("[Error] PGDATABASE not set");
-if (!PG_POOL_MAX) throw new Error("[Error] PG_POOL_MAX not set");
+const PGPASSWORD_FILE = requireEnv("PGPASSWORD_FILE");  // throws if not set or empty in compose
+const PGUSER = requireEnv("PGUSER");
+const PGPORT = requireEnvNum("PGPORT");
+const PGHOST = requireEnv("PGHOST");
+const PGDATABASE = requireEnv("PGDATABASE");
+const PG_POOL_MAX = requireEnvNum("PG_POOL_MAX");
+
+const PGPASSWORD = fs.readFileSync(PGPASSWORD_FILE, 'utf-8').trim();    // readFileSync throws ENOENT and names the path, if doesn't exist	
+if (!PGPASSWORD) 
+  throw new Error(`[Error] password file ${PGPASSWORD_FILE} is empty`); // throw if empty or only whitespace
 
 
 // 2. Create the single shared connection pool, using password
 const pool = new Pool({
-    host: process.env.PGHOST,
-    user: process.env.PGUSER,
-    database: process.env.PGDATABASE,
+    host:     PGHOST,
+    user:     PGUSER,
+    database: PGDATABASE,
     password: PGPASSWORD,
-    port: Number(process.env.PGPORT), // syntax: env var, fallback value if forgot to put in .env, parse into decimal number 
+    port:     PGPORT,
 
     // --- Industry Standard Pool Settings ---
-    max: Number(process.env.PG_POOL_MAX), // Maximum number of clients in the pool (prevents crashing Postgres). PostgreSQL has a default limit of 100 simultaneous connections, controlled by the max_connections parameter
+    max: PG_POOL_MAX, // Maximum number of clients in the pool (prevents crashing Postgres). PostgreSQL has a default limit of 100 simultaneous connections, controlled by the max_connections parameter
     idleTimeoutMillis: 30000, // Close idle clients after 30 seconds
     connectionTimeoutMillis: 2000, // Return an error if connection takes longer than 2 seconds
   });
 
 
-// 3. Export the db client instance
+// 3. Export the postgres client instance
 //    Init Drizzle once with the schema
-// export const postgres = drizzle(pool, { schema }); // this is in full definition how other services going to use this function
+//    postgresql container is the postgres server
+//    creating an object to talk to the server is the client, hence the naming of postgresClient
 export function createPostgresClient<TSchema extends Record<string, unknown>>(schema: TSchema) {
 	return drizzle(pool, { schema });
 }
