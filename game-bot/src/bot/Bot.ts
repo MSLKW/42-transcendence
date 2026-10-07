@@ -3,6 +3,8 @@ import { GameState } from "../game/GameState";
 import { AAIController } from "../ai/AAIController";
 import { logger } from "../utils/logger";
 import { writeFileSync } from "fs";
+import { setTimeout } from "timers/promises";
+
 
 import {
 	GameStateTransmit,
@@ -15,6 +17,10 @@ import {
 } from "../Types";
 
 type CardHand = CardHandTransmit;
+
+const CONNECTION_ATTEMPT_DELAY_MS = 500;
+const CONNECTION_RETRY_LIMIT = 3;
+const CONNECTION_RETRY_DELAY_MS = 1000;
 
 export class Bot
 {
@@ -34,9 +40,31 @@ export class Bot
 		this.ai = ai;
 	}
 
-	start(): void
+	async start(serverUrl: string, lobbyId: string, seat: number, sessionToken: string): Promise<boolean>
 	{
-		this.socket = io(this.serverUrl, { auth: { token: String(this.id) } });
+		await setTimeout(CONNECTION_ATTEMPT_DELAY_MS);
+
+		for (let attempt = 0; attempt < CONNECTION_RETRY_LIMIT && this.socket == null; ++attempt)
+		{
+			await setTimeout(CONNECTION_RETRY_DELAY_MS * attempt);
+			logger.verbose(this.id, `connecting socket to ${serverUrl} (attempt ${attempt})...`);
+			this.socket = io(this.serverUrl, {
+				auth: {
+					lobbyId:		lobbyId,
+					uuid:			this.id,
+					sessionToken:	sessionToken
+				}
+			});
+		}
+		if (this.socket == null)
+		{
+			logger.error(this.id, `failed to socket to ${serverUrl}`);
+			return false;
+		}
+		logger.info(this.id, `connected socket to ${serverUrl}`);
+
+		this.socket.emit("user_seat_take", seat, ({ }))
+
 
 		this.socket.on("connect", () => logger.info(this.id, "connected"));
 		this.socket.on("disconnect", this.disconnect);
@@ -46,6 +74,7 @@ export class Bot
 		this.socket.on("player_play_card_hand", this.checkSuccess);
 		this.socket.on("opponent_play_card_hand", this.checkOpponentMove);
 		this.socket.on("game_end", this.gameEnd);
+		return true;
 	}
 
 	private	playerJoined = (seatOrder: PlayerSeatOrderTransmit) =>

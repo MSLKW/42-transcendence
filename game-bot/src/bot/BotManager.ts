@@ -4,24 +4,25 @@ import { AAIController } from "../ai/AAIController";
 
 export class BotManager
 {
-	private bots: Bot[];
-
-	constructor()
-	{
-		this.bots = [];
-	}
+	private bots: Map<string, Bot> = new Map<string, Bot>;
 
 	addBot(name: string, serverUrl: string, ai: AAIController): string
 	{
-		const id = `${name}-${randomUUID().substring(0, 8)}`;
+		const id = `${name}-${randomUUID()}`;
 		
-		this.bots.push(new Bot(id, serverUrl, ai));
-		return (id);
+		this.bots.set(id, new Bot(id, serverUrl, ai));
+		return id;
 	}
 
-	startAll(): void
+	removeBot(id: string)
 	{
-		this.bots.forEach((bot) => bot.start());
+		this.bots.delete(id);
+	}
+
+	getBot(id: string): Bot | null
+	{
+		const bot = this.bots.get(id);
+		return bot ?? null;
 	}
 
 	stopAll(): void
