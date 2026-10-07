@@ -22,11 +22,11 @@ function requireEnvNum(name: string): number
 }
 
 const PGPASSWORD_FILE = requireEnv("PGPASSWORD_FILE");  // throws if not set or empty in compose
-const PGUSER = requireEnv("PGUSER");
-const PGPORT = requireEnvNum("PGPORT");
-const PGHOST = requireEnv("PGHOST");
-const PGDATABASE = requireEnv("PGDATABASE");
-const PG_POOL_MAX = requireEnvNum("PG_POOL_MAX");
+const PGUSER          = requireEnv("PGUSER");
+const PGPORT          = requireEnvNum("PGPORT");
+const PGHOST          = requireEnv("PGHOST");
+const PGDATABASE      = requireEnv("PGDATABASE");
+const PG_POOL_MAX     = requireEnvNum("PG_POOL_MAX");
 
 const PGPASSWORD = fs.readFileSync(PGPASSWORD_FILE, 'utf-8').trim();    // readFileSync throws ENOENT and names the path, if doesn't exist	
 if (!PGPASSWORD) 

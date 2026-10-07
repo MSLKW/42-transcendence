@@ -27,16 +27,16 @@ function requireEnvNum(name: string): number
 	return value;
 }
 
-export const PGPASSWORD_FILE = requireEnvNum("PGPASSWORD_FILE");  // throws if not set or empty in compose
-export const PGPORT = requireEnvNum("PGPORT");
-export const PGHOST = requireEnv("PGHOST");
-export const PGDATABASE = requireEnv("PGDATABASE");
-export const PGUSER = requireEnv("PGUSER");
-export const PGUSER_AUTH = requireEnv("PGUSER_AUTH");
-export const PGUSER_PARTY = requireEnv("PGUSER_PARTY");
-export const PGUSER_PROFILE = requireEnv("PGUSER_PROFILE");
-export const PGUSER_GAME_STATS = requireEnv("PGUSER_GAME_STATS");
-export const PGUSER_FRIENDS = requireEnv("PGUSER_FRIENDS");
+export const PGPASSWORD_FILE    = requireEnvNum("PGPASSWORD_FILE");  // throws if not set or empty in compose
+export const PGPORT             = requireEnvNum("PGPORT");
+export const PGHOST             = requireEnv("PGHOST");
+export const PGDATABASE         = requireEnv("PGDATABASE");
+export const PGUSER             = requireEnv("PGUSER");
+export const PGUSER_AUTH        = requireEnv("PGUSER_AUTH");
+export const PGUSER_PARTY       = requireEnv("PGUSER_PARTY");
+export const PGUSER_PROFILE     = requireEnv("PGUSER_PROFILE");
+export const PGUSER_GAME_STATS  = requireEnv("PGUSER_GAME_STATS");
+export const PGUSER_FRIENDS     = requireEnv("PGUSER_FRIENDS");
 
 const PGPASSWORD = fs.readFileSync(PGPASSWORD_FILE, 'utf-8').trim();    // readFileSync throws ENOENT and names the path, if doesn't exist
 if (!PGPASSWORD)

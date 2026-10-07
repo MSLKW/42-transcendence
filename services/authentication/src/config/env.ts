@@ -14,9 +14,9 @@ function requireEnvNum(name: string): number
 	return value;
 }
 
-export const PORT = requireEnvNum("PORT");
-export const PROFILE_SERVICE_URL = requireEnv("PROFILE_SERVICE_URL");
-export const SESSION_CLEANUP_CRON_SCHEDULE_STRING = requireEnv("SESSION_CLEANUP_CRON_SCHEDULE_STRING");
+export const PORT									= requireEnvNum("PORT");
+export const PROFILE_SERVICE_URL					= requireEnv("PROFILE_SERVICE_URL");
+export const SESSION_CLEANUP_CRON_SCHEDULE_STRING	= requireEnv("SESSION_CLEANUP_CRON_SCHEDULE_STRING");
 
 // * the values below defined in sessionConfig.ts instead
 // export const SESSION_DURATION_MS = requireEnv("SESSION_DURATION_MS");

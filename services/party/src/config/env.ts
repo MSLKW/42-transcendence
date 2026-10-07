@@ -14,6 +14,6 @@ function requireEnvNum(name: string): number
 	return value;
 }
 
-export const PORT = requireEnvNum("PORT");
-export const AUTH_SERVICE_URL = requireEnv("AUTH_SERVICE_URL");
-export const GAME_SERVER_SERVICE_URL = requireEnv("GAME_SERVER_SERVICE_URL");
+export const PORT						= requireEnvNum("PORT");
+export const AUTH_SERVICE_URL			= requireEnv("AUTH_SERVICE_URL");
+export const GAME_SERVER_SERVICE_URL	= requireEnv("GAME_SERVER_SERVICE_URL");

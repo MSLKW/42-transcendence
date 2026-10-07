@@ -6,4 +6,4 @@ function requireEnv(name: string): string
 	return value;
 }
 
-export const AUTH_SERVICE_URL = requireEnv("AUTH_SERVICE_URL");
+export const AUTH_SERVICE_URL	= requireEnv("AUTH_SERVICE_URL");
