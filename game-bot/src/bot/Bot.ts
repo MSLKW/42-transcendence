@@ -42,10 +42,10 @@ export class Bot
 	async start(serverUrl: string, lobbyId: string, seat: number, sessionToken: string): Promise<boolean>
 	{
 		await setTimeout(CONNECTION_ATTEMPT_DELAY_MS);
-		for (let attempt = 0; attempt < CONNECTION_RETRY_LIMIT && this.socket == null; ++attempt)
+		for (let attempt = 0; attempt < CONNECTION_RETRY_LIMIT && !this.socket?.connected; ++attempt)
 		{
 			await setTimeout(CONNECTION_RETRY_DELAY_MS * attempt);
-			logger.verbose(this.id, `connecting socket to ${serverUrl} (attempt ${attempt})...`);
+			logger.verbose(this.id, `connecting socket to ${serverUrl} (attempt ${attempt})`);
 			this.socket = io(this.serverUrl, {
 				auth: {
 					lobbyId:			lobbyId,
@@ -53,7 +53,7 @@ export class Bot
 				}
 			});
 		}
-		if (this.socket == null)
+		if (!this.socket || !this.socket?.connected)
 		{
 			logger.error(this.id, `failed to socket to ${serverUrl}`);
 			return false;
