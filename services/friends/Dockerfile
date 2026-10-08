@@ -45,8 +45,8 @@ ENV PORT=3000
 
 EXPOSE ${PORT}
 
-# HEALTHCHECK --interval=5s --timeout=3s --retries=3 --start-period=5s \
-# 	CMD wget -q --spider http://localhost:${PORT}/health || exit 1
+HEALTHCHECK --interval=5s --timeout=3s --retries=3 --start-period=5s \
+	CMD wget -q --spider http://localhost:${PORT}/health || exit 1
 
 WORKDIR /app/services/friends
 CMD ["npm", "run", "start"]
