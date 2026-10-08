@@ -4,15 +4,15 @@
 
 | Method | Path | Purpose |
 |:---:|---|---|
-| POST | [`/new-bot`](#post-new-bot) | request for a new bot |
+| POST | [`/new-bot`](#get-new-bot) | request for a new bot |
 
 ### POST /new-bot
 #### Body
 ```
 {
-	lobbyId:		string,
-	seatIndex:		number,
-	sessionToken:	string			
+	lobbyId:			string,
+	seatIndex:			number,
+	botSessionToken:	string			
 }
 ```
 #### Responses

@@ -4,13 +4,12 @@ import { AAIController } from "../ai/AAIController";
 import { logger } from "../utils/logger";
 import { writeFileSync } from "fs";
 import { setTimeout } from "timers/promises";
-
+import { StatusTransmit } from "@big2/game-types";
 
 import {
 	GameStateTransmit,
 	CardHandTransmit,
 	PlayerSeatOrderTransmit,
-	StatusTransmit,
 	PlayerTurnTransmit,
 	GameStartRequest,
 	GameEndStatsTransmit
@@ -43,16 +42,14 @@ export class Bot
 	async start(serverUrl: string, lobbyId: string, seat: number, sessionToken: string): Promise<boolean>
 	{
 		await setTimeout(CONNECTION_ATTEMPT_DELAY_MS);
-
 		for (let attempt = 0; attempt < CONNECTION_RETRY_LIMIT && this.socket == null; ++attempt)
 		{
 			await setTimeout(CONNECTION_RETRY_DELAY_MS * attempt);
 			logger.verbose(this.id, `connecting socket to ${serverUrl} (attempt ${attempt})...`);
 			this.socket = io(this.serverUrl, {
 				auth: {
-					lobbyId:		lobbyId,
-					uuid:			this.id,
-					sessionToken:	sessionToken
+					lobbyId:			lobbyId,
+					botSessionToken:	sessionToken
 				}
 			});
 		}
@@ -63,9 +60,27 @@ export class Bot
 		}
 		logger.info(this.id, `connected socket to ${serverUrl}`);
 
-		this.socket.emit("user_seat_take", seat, ({ }))
+		const status: StatusTransmit = await this.socket.emitWithAck("user_seat_take", seat);
+		if (!status.success)
+		{
+			logger.info(this.id, `failed to take seat ${seat}`);
+			return false;
+		}
 
+		this.setupSocketEvents();
+		return true;
+	}
+	
+	stop(): void
+	{
+		this.socket?.disconnect();
+		this.socket = null;
+	}
 
+	private setupSocketEvents()
+	{
+		if (this.socket == null)
+			return ;
 		this.socket.on("connect", () => logger.info(this.id, "connected"));
 		this.socket.on("disconnect", this.disconnect);
 		this.socket.on("player_join", this.playerJoined);
@@ -74,7 +89,6 @@ export class Bot
 		this.socket.on("player_play_card_hand", this.checkSuccess);
 		this.socket.on("opponent_play_card_hand", this.checkOpponentMove);
 		this.socket.on("game_end", this.gameEnd);
-		return true;
 	}
 
 	private	playerJoined = (seatOrder: PlayerSeatOrderTransmit) =>
@@ -192,9 +206,4 @@ export class Bot
 		this.socket = null;
 	}
 
-	stop(): void
-	{
-		this.socket?.disconnect();
-		this.socket = null;
-	}
 }

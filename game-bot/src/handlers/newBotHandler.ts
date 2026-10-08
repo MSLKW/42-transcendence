@@ -8,9 +8,9 @@ if (!GAME_SERVICE_URL)
 	throw Error("GAME_SERVICE_URL not set");
 
 type ReqBody = {
-	lobbyId:		string,
-	seat:			number,
-	sessionToken:	string
+	lobbyId:			string,
+	seatIndex:			number,
+	botSessionToken:	string
 };
 
 export function newBotHandler(manager: BotManager)
@@ -20,17 +20,17 @@ export function newBotHandler(manager: BotManager)
 		if (!req.body)
 			return res.status(400).json({ error: "No request body" });
 
-		const { lobbyId, seat, sessionToken } = req.body as ReqBody;
+		const { lobbyId, seatIndex, botSessionToken } = req.body as ReqBody;
 
-		if (typeof lobbyId !== "string" || typeof seat !== "number" || typeof sessionToken !== "string")
+		if (typeof lobbyId !== "string" || typeof seatIndex !== "number" || typeof botSessionToken !== "string")
 			return res.status(400).json({ error: "Invalid request body" });
-		if (seat < 0 || seat >= 4)
+		if (seatIndex < 0 || seatIndex >= 4)
 			return res.status(400).json({ error: "Seat must be between 0-3" });
 	
 		const botId = manager.addBot("bot", GAME_SERVICE_URL, new RandomController);
 		res.status(200).json({ botId: botId });
 		
-		if (!await manager.getBot(botId)!.start(GAME_SERVICE_URL, lobbyId, seat, sessionToken))
+		if (!await manager.getBot(botId)!.start(GAME_SERVICE_URL, lobbyId, seatIndex, botSessionToken))
 			manager.removeBot(botId);
 	};
 }

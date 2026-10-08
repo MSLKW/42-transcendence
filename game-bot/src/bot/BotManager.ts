@@ -16,6 +16,7 @@ export class BotManager
 
 	removeBot(id: string)
 	{
+		this.bots.get(id)?.stop();
 		this.bots.delete(id);
 	}
 

@@ -17,7 +17,7 @@ const app = express();
 app.use(express.json());
 
 app.get("/health", healthCheck());
-app.post("/new_bot", newBotHandler(manager));
+app.post("/new-bot", newBotHandler(manager));
 
 app.use((err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {
 	if (err.type === "entity.parse.failed") {
