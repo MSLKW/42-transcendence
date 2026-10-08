@@ -34,5 +34,13 @@ export const IncomingEventRegistry: Record<string, EventConfig> = {
 	"game_settings_set": {
 		payload: GameSettingsTransmitSchema,
 		callback: StatusCallbackSchema
+	},
+	"bot_add": {
+		payload: z.number(),
+		callback: StatusCallbackSchema
+	},
+	"bot_remove": {
+		payload: z.string(),
+		callback: StatusCallbackSchema
 	}
 }

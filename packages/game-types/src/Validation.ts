@@ -31,8 +31,6 @@ export const GameSettingsTransmitSchema = z.object({
 	allow3OfAKind: z.boolean(),
 	allow2OfSpadesEnd: z.boolean(),
 	autoPassInMilliseconds: z.number(),
-	endGameCondition: z.number(),
-	scoreCalculation: z.number(),
 });
 
 export const GameEndStatsTransmitSchema = z.object({

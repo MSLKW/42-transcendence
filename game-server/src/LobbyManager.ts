@@ -2,6 +2,8 @@ import { io, kickSocket, LobbyRequest } from './server.js';
 import { Socket } from 'socket.io';
 import { Lobby } from './Lobby.js';
 import { IncomingEventRegistry, EventConfig } from './Validation.js';
+import { ExtendedError } from 'socket.io';
+import { AUTH_SERVICE_URL } from './server.js';
 
 export class LobbyManager {
 	private lobbies: Record<string, Lobby>;
@@ -13,18 +15,39 @@ export class LobbyManager {
 		this.newSessionId = 0;
 		this.lobbyLimit = process.env.LOBBY_LIMIT ? Number(process.env.LOBBY_LIMIT) : 0;
 
-		io.use((socket, next) => {
-			const lobbyId = socket.handshake.auth.lobbyId;
-			const uuid = socket.data.uuid;
-			const lobby = this.lobbies[lobbyId];
-			if (uuid === undefined || uuid === null) {
-				const error = new Error("Authentication failed and uuid could not be retrieved");
-				next(error);
+		io.use(async (socket, next) => {
+			console.log("Checking bot token and user authentication");
+			if (socket.handshake.auth.botToken !== undefined) {
+				console.log("detecting a bot is connecting right now!!!!");
+				next();
 				return ;
 			}
+			console.log("before userAuthentication");
+			this.userAuthentication(socket, next);
+			return ;
+		});
+
+		io.use((socket, next) => {
+			const	lobbyId = socket.handshake.auth.lobbyId;
+			const	lobby = this.lobbies[lobbyId];
+			const	botToken = socket.handshake.auth.botToken;
+
 			if (lobby === undefined) {
-				const error = new Error(`Lobby<${lobbyId}> not found`);
-				next(error);
+				next(new Error(`Lobby<${lobbyId}> not found`));
+				return ;
+			}
+			if (botToken !== undefined) {
+				const botId = lobby.botSessions[botToken]; // if fail to find it in bot session, then connect_error or kick socket?
+				if (botId === undefined) {
+					next(new Error("Identified connection as Bot however could not get the relevant bot id"));
+					return ;
+				}
+				socket.data.uuid = botId;
+			}
+			console.log(`checking socket.data.uuid: ${socket.data.uuid}`);
+			const uuid = socket.data.uuid;
+			if (uuid === undefined || uuid === null) {
+				next(new Error("Authentication failed and uuid could not be retrieved"));
 				return ;
 			}
 			next();
@@ -32,8 +55,8 @@ export class LobbyManager {
 
 		io.on("connection", (socket) => {
 			const lobbyId = socket.handshake.auth.lobbyId;
-			const uuid = socket.data.uuid;
 			const lobby = this.lobbies[lobbyId];
+			const uuid = socket.data.uuid;
 
 			socket.use((packet, next) => {
 				const eventName = packet[0];
@@ -109,5 +132,46 @@ export class LobbyManager {
 			return ;
 		delete(this.lobbies[lobby.sessionId]);
 		console.log(`Lobby<${lobby.sessionId}> is unregistered`);
+	}
+
+	private async userAuthentication(socket: Socket, next: (err?: ExtendedError) => void) {
+		const sessionToken = socket.handshake.headers.cookie
+			?.split("; ")
+			.find(c => c.startsWith("session_token="))
+			?.split("=")[1];	
+		const token = sessionToken || socket.handshake.auth?.token;
+		console.log("token")
+		if (!token || typeof token !== "string")
+			return next(new Error("UNAUTHORIZED: no session token provided"));
+	
+		try
+		{
+			console.log("fetching")
+			const response = await fetch(`${AUTH_SERVICE_URL}/validate`, {
+				headers: {
+					Cookie: socket.handshake.headers.cookie || "",
+					Authorization: `Bearer ${token}`
+				},
+				signal: AbortSignal.timeout(5000)
+			});
+	
+			if (!response.ok)
+				return next(new Error("UNAUTHORIZED: invalid or expired session"));
+			console.log("response is ok")
+			const data = await response.json();
+			if (!data.userId || typeof data.userId !== "string")
+			{
+				console.error("Auth service returned an OK response with no valid uuid");
+				return next(new Error("UNAUTHORIZED: malformed validation response"));
+			}
+			console.log(`Assigning socket.data.uuid: ${socket.data.uuid}`);
+			socket.data.uuid = data.userId;
+			next();
+		}
+		catch (err)
+		{
+			console.error("Auth validation failed:", err);
+			return next(new Error("UNAUTHORIZED: could not validate session"));
+		}
 	}
 }

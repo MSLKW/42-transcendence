@@ -41,8 +41,6 @@ export class GameState {
 			allow3OfAKind: true,
 			allow2OfSpadesEnd: false,
 			autoPassInMilliseconds: 60000,
-			endGameCondition: 0,
-			scoreCalculation: 0,
 		};
 		this.previousSeatOrder = [];
 		this.temporaryWinStreakWinnerUuid = "";

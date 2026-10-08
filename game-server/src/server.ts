@@ -3,7 +3,7 @@ import type { Request, Response } from 'express';
 import { createServer } from 'http';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import { Server, Socket } from 'socket.io';
+import { ExtendedError, Server, Socket } from 'socket.io';
 import z from 'zod';
 
 import { LobbyManager } from './LobbyManager.js';
@@ -12,7 +12,8 @@ const app = express();
 const httpServer = createServer(app);
 
 const PORT = process.env.PORT;
-const AUTH_SERVICE_URL = process.env.AUTH_SERVICE_URL;
+export const AUTH_SERVICE_URL = process.env.AUTH_SERVICE_URL;
+export const GAME_BOT_SERVICE_URL = process.env.GAME_BOT_SERVICE_URL;
 
 if (!AUTH_SERVICE_URL)
 	throw new Error("AUTH_SERVICE_URL is not set");
@@ -25,47 +26,6 @@ httpServer.listen(PORT, () => {
 
 export const io = new Server(httpServer);
 
-io.use(async (socket, next) => {
-	const sessionToken = socket.handshake.headers.cookie
-		?.split("; ")
-		.find(c => c.startsWith("session_token="))
-		?.split("=")[1];	
-	const token = sessionToken || socket.handshake.auth?.token;
-
-	if (!token || typeof token !== "string")
-		return next(new Error("UNAUTHORIZED: no session token provided"));
-
-	try
-	{
-		const response = await fetch(`${AUTH_SERVICE_URL}/validate`, {
-			headers: {
-				Cookie: socket.handshake.headers.cookie || "",
-				Authorization: `Bearer ${token}`
-			},
-			signal: AbortSignal.timeout(5000)
-		});
-
-		if (!response.ok)
-			return next(new Error("UNAUTHORIZED: invalid or expired session"));
-
-		const data = await response.json();
-
-		if (!data.userId || typeof data.userId !== "string")
-		{
-			console.error("Auth service returned an OK response with no valid uuid");
-			return next(new Error("UNAUTHORIZED: malformed validation response"));
-		}
-
-		socket.data.uuid = data.userId;
-		next();
-	}
-	catch (err)
-	{
-		console.error("Auth validation failed:", err);
-		return next(new Error("UNAUTHORIZED: could not validate session"));
-	}
-});
-
 const lobbyManager = new LobbyManager();
 
 const lobbyRequestSchema = z.object({
@@ -74,6 +34,8 @@ const lobbyRequestSchema = z.object({
 });
 
 export type LobbyRequest = z.infer<typeof lobbyRequestSchema>;
+
+/* ===== Server REST Endpoints ===== */
 
 app.get('/health', (req, res) => {
 	return (res.status(204).end());
