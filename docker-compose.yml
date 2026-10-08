@@ -91,6 +91,23 @@ services:
       LOBBY_DELETE_TIMEOUT_MS: ${GAME_SERVER_SERVICE_LOBBY_DELETE_TIMEOUT_MS}
     networks:
       - big2
+      - game-bot-network
+
+  game-bot:
+    container_name: game-bot
+    build:
+      context: ./game-bot
+      dockerfile: Dockerfile
+      additional_contexts:
+        root: .
+        game-types: ./packages/game-types
+    image: game-bot:test
+    restart: unless-stopped
+    environment:
+      PORT: ${GAME_BOT_SERVICE_PORT}
+      GAME_SERVICE_URL: ${GAME_SERVER_SERVICE_URL}
+    networks:
+      - game-bot-network
 
   chat:
     build: chat
@@ -106,3 +123,4 @@ services:
 
 networks:
   big2:
+  game-bot-network:

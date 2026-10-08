@@ -1,0 +1,86 @@
+
+export enum CardRank {
+	Three,
+	Four,
+	Five,
+	Six,
+	Seven,
+	Eight,
+	Nine,
+	Ten,
+	Jack,
+	Queen,
+	King,
+	Ace,
+	Two
+}
+
+export enum CardSuit {
+	Diamond,
+	Club,
+	Heart,
+	Spade
+}
+
+export interface CardTransmit {
+	rank: CardRank;
+	suit: CardSuit;
+}
+
+export enum HandType {
+	None,
+	Single,
+	Double,
+	Triple,
+	Pentuple
+};
+
+export enum PentupleType {
+	None,
+	Straight,
+	Flush,
+	FullHouse,
+	FourOfAKind,
+	StraightFlush,
+	// RoyalFlush
+}
+
+export interface CardHandTransmit {
+	cards: Array<CardTransmit>;
+	handType: HandType;
+	pentupleType: PentupleType;
+	playerId: string;
+}
+
+export type GameStateTransmit = {
+	cardHeap: Array<CardHandTransmit>,
+	playerCardsAmount: Record<string, number>,
+	playerCards: Array<CardTransmit>,
+	isPlayerTurn: boolean
+}
+
+export type GameStartRequest = {
+	playerId: string
+}
+
+export type GameEndStatsTransmit = {
+	winnerPlayerId: string,
+	playerFinalCardAmounts: Record<string, number>
+	playerPenaltyPoints: Record<string, number>
+}
+
+export type PlayerSeatOrderTransmit = {
+	playerId: string,
+	seatOrder: Record<string, number>
+}
+
+export type StatusTransmit = {
+	success: boolean,
+	message: string
+}
+
+export type PlayerTurnTransmit = {
+	playerId: string,
+	skippable: boolean,
+	timer: number
+}

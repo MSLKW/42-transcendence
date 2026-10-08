@@ -16,9 +16,7 @@ export class LobbyManager {
 		this.lobbyLimit = process.env.LOBBY_LIMIT ? Number(process.env.LOBBY_LIMIT) : 0;
 
 		io.use(async (socket, next) => {
-			console.log("Checking bot token and user authentication");
-			if (socket.handshake.auth.botToken !== undefined) {
-				console.log("detecting a bot is connecting right now!!!!");
+			if (socket.handshake.auth.botSessionToken !== undefined) {
 				next();
 				return ;
 			}
@@ -29,14 +27,14 @@ export class LobbyManager {
 		io.use((socket, next) => {
 			const	lobbyId = socket.handshake.auth.lobbyId;
 			const	lobby = this.lobbies[lobbyId];
-			const	botToken = socket.handshake.auth.botToken;
+			const	botSessionToken = socket.handshake.auth.botSessionToken;
 
 			if (lobby === undefined) {
 				next(new Error(`Lobby<${lobbyId}> not found`));
 				return ;
 			}
-			if (botToken !== undefined) {
-				const botId = lobby.botSessions[botToken]; // if fail to find it in bot session, then connect_error or kick socket?
+			if (botSessionToken !== undefined) {
+				const botId = lobby.botSessions[botSessionToken]; // if fail to find it in bot session, then connect_error or kick socket?
 				if (botId === undefined) {
 					next(new Error("Identified connection as Bot however could not get the relevant bot id"));
 					return ;

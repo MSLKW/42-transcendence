@@ -93,6 +93,7 @@ export class Lobby {
 	}
 
 	public connectUser(socket: Socket, uuid: string) {
+		console.log("whitelist: ", this.whitelist);
 		if (this.whitelist.indexOf(uuid) === -1 || 
 			this.users.length >= this.totalUsersLimit || 
 			(this.game.uuidInGame(uuid) === false && this.users.length >= this.totalUsersLimit - this.game.getDisconnectedPlayers())) {
@@ -296,7 +297,7 @@ export class Lobby {
 			this.botSessions[newSessionToken] = botId;
 			this.whitelist.push(botId);
 			status.success = true;
-			status.message = `Successfully added bot: ${botId}`;
+			status.message = `Successfully registered bot: ${botId}`;
 			return (status);
 		}
 		catch (error) {

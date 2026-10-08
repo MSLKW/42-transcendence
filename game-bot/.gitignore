@@ -1,0 +1,9 @@
+node_modules/
+dist/
+build/
+.tsbuildinfo
+.env
+.env.local
+*.log
+npm-debug.log*
+*.swp
