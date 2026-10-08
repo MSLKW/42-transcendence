@@ -1,17 +1,19 @@
 import express from "express";
 import cors from "cors";
 import { PORT } from "./config/env";
-import { friendRequestsRouter } from "./routes/friend-requests.routes";
-import { friendshipsRouter } from "./routes/friendships.routes";
+import { healthRouter } from "./routes/health.routes";
 import { eventsRouter } from "./routes/events.routes";
+import { friendshipsRouter } from "./routes/friendships.routes";
+import { friendRequestsRouter } from "./routes/friend-requests.routes";
 
 // TODO (signal handler): uncomment this when need to implement the signal handler
 // import { isDbDown, closePostgresClientPool } from "@big2/postgres-client";
 
+
 const app = express();
 app.use(express.json());
 app.use(cors());
-// TODO: restrict to actual frontend origin before production, examples like below:
+// TODO (website): restrict to actual frontend origin before production, examples like below:
 // app.use(cors({ 
 // 	origin: ["http://localhost:5173", "https://your-real-domain.com"], 
 // 	credentials: true 
@@ -26,9 +28,10 @@ app.use(cors());
 // credentials: true => tells browser & server to allow sensitive auth data (cookies, HTTP authorization headers, TLS client cert) sent across different origins.
 // Must specify exact origin to use credentials: true, wildcards (*) are strictly forbidden.
 
+app.use(healthRouter);
 app.use(eventsRouter);
-app.use(friendRequestsRouter);
 app.use(friendshipsRouter);
+app.use(friendRequestsRouter);
 
 // TODO (signal handler): uncomment this when need to implement the signal handler
 // // Central error handler (register AFTER all routes). DB down -> 503 + Retry-After so callers
