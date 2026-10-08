@@ -31,7 +31,7 @@ export const BigLogo = () => {
 					2
 				</span>
 			</div>
-			<Tooltip text="About This Project">
+			<Tooltip text="Additional Info">
 				<button
 					onClick={() => setShowWindow("info", !showWindow.info)}
 					className="

@@ -44,12 +44,12 @@ export const SingleNotification = ({ notification }: SingleNotificationProps) =>
 
 		exitAnimationTimer.current = window.setTimeout(() => {
 			setIsExiting(true);
-		}, 5000);
+		}, 2000);
 
 		autoUnmountTimer.current = window.setTimeout(() => {
 			onButton1Click?.();
 			removeNotification(id);
-		}, 5500);
+		}, 2500);
 
 		return () => {
 			clearTimeout(manualUnmountTimer.current);
@@ -60,14 +60,12 @@ export const SingleNotification = ({ notification }: SingleNotificationProps) =>
 	}, [isTimed, onButton1Click, id, removeNotification]);
 
 	return (
-		<div
-			className={`
-				flex flex-col items-center
-				gap-0.5rem
-				pointer-events-auto w-full
-				${ isExiting ? "animate-slide-out" : "animate-slide-in" }
-			`}
-		>
+		<div className={`
+			flex flex-col items-center
+			gap-0.5rem
+			pointer-events-auto w-full
+			${ isExiting ? "animate-slide-out" : "animate-slide-in" }
+		`}>
 			<button
 				type="button"
 				onClick={isTimed ? handleClose : undefined}
@@ -77,28 +75,23 @@ export const SingleNotification = ({ notification }: SingleNotificationProps) =>
 					py-1rem px-1rem
 					relative
 					${numOfButtons === 0 ? "cursor-pointer" : "cursor-default" }
-				`}
-			>
-				<span
-					className={`
-						relative z-1
-						text-n6
-						text-1.25rem text-center block
-					`}
-				>
+			`}>
+				<span className={`
+					relative z-1
+					text-n6
+					text-1.25rem text-center block
+				`}>
 					{message}
 				</span>
 				{ isTimed &&
-					<div
-						className="
-							absolute top-0 left-0
-							h-full w-full rounded-full
-							overflow-hidden
-						"
-					>
+					<div className="
+						absolute top-0 left-0
+						h-full w-full rounded-full
+						overflow-hidden
+					">
 						<div
 							style={{
-								transitionDuration: "5000ms"
+								transitionDuration: "2000ms"
 							}}
 							className={`
 								h-full rounded-full
@@ -110,10 +103,9 @@ export const SingleNotification = ({ notification }: SingleNotificationProps) =>
 				}
 			</button>
 			{ numOfButtons !== 0 &&
-				<div
-					className="
-						flex gap-5
-						w-full
+				<div className="
+					flex gap-5
+					w-full
 				">
 					<button
 						type="button"
@@ -125,8 +117,7 @@ export const SingleNotification = ({ notification }: SingleNotificationProps) =>
 							btn-text bg-light
 							h-3rem w-full
 							text-1.25rem text-n0
-						"
-					>
+					">
 						Accept
 					</button>
 					<button
@@ -139,8 +130,7 @@ export const SingleNotification = ({ notification }: SingleNotificationProps) =>
 							btn-text bg-light
 							w-full
 							text-1.25rem text-n0
-						"
-					>
+					">
 						Reject
 					</button>
 				</div>

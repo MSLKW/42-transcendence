@@ -1,13 +1,15 @@
 import { Socket } from "socket.io";
 import { ClientToServerEvents, ServerToClientEvents } from "../events";
 
+type ChatSocket = Socket<ClientToServerEvents, ServerToClientEvents>
+
 export class Client {
 	public readonly uuid: string;
-	public socket: Socket<ClientToServerEvents, ServerToClientEvents>;
+	public socket: ChatSocket;
 	public roomId: string;
 
 	constructor(
-		socket: Socket<ClientToServerEvents, ServerToClientEvents>,
+		socket: ChatSocket,
 		uuid: string,
 		roomId: string
 	) {
