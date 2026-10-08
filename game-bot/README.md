@@ -4,9 +4,9 @@
 
 | Method | Path | Purpose |
 |:---:|---|---|
-| POST | [`/new-bot`](#get-new-bot) | request for a new bot |
+| POST | [`/new-bot`](#post-new-bot) | request for a new bot |
 
-### GET /new-bot
+### POST /new-bot
 #### Body
 ```
 {
