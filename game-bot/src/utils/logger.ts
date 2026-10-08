@@ -18,21 +18,21 @@ function format(args: unknown[]): string {
 export const logger = {
 	verbose(id: string, ...args: unknown[]) {
 		if (CURRENT_LEVEL <= LogLevel.VERBOSE)
-			console.log(`[bot ${id}]`, format(args));
+			console.log(`[VERBOSE][${id}]`, format(args));
 	},
 
 	info(id: string, ...args: unknown[]) {
 		if (CURRENT_LEVEL <= LogLevel.INFO)
-			console.log(`[bot ${id}]`, format(args));
+			console.log(`[INFO][${id}]`, format(args));
 	},
 
 	warn(id: string, ...args: unknown[]) {
 		if (CURRENT_LEVEL <= LogLevel.WARN)
-			console.warn(`[bot ${id}]`, format(args));
+			console.warn(`[WARNING][${id}]`, format(args));
 	},
 
 	error(id: string, ...args: unknown[]) {
 		if (CURRENT_LEVEL <= LogLevel.ERROR)
-			console.error(`[bot ${id}]`, format(args));
+			console.error(`[ERROR][${id}]`, format(args));
 	},
 };
