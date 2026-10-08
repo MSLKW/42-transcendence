@@ -255,7 +255,8 @@ export class Lobby {
 			status.message = "You are not the host";
 			return (status);
 		}
-		else if (this.availableSeats.find((availableSeatIndex) => {availableSeatIndex === seatIndex}) === undefined) {
+		const availableSeat = this.availableSeats.find((availableSeatIndex) => availableSeatIndex === seatIndex);
+		if (availableSeat === undefined) {
 			status.message = "The seat is not available";
 			return (status);
 		}
@@ -270,19 +271,27 @@ export class Lobby {
 				body: JSON.stringify({
 					lobbyId: this.sessionId,
 					seatIndex: seatIndex,
-					sessionToken: newSessionToken
+					botSessionToken: newSessionToken
 				})
-			})
-			const payload = await response.json();
+			});
 			
-			if (!response.ok) {
+			if (response.status === 400) {
+				const payload = await response.json();
 				status.message = `Unable to add bot: ${payload.error}`;
 				return (status);
 			}
-			else if (response.status !== 200) {
+			if (!response.ok) {
+				status.message = `game-bot service error`;
+				return (status);
+			}
+
+			const payload = await response.json();
+
+			if (response.status !== 200) {
 				status.message = "Unknown response status";
 				return (status);
 			}
+
 			const botId = payload.botId;
 			this.botSessions[newSessionToken] = botId;
 			this.whitelist.push(botId);
@@ -291,7 +300,12 @@ export class Lobby {
 			return (status);
 		}
 		catch (error) {
-			status.message = "Error occured while adding bot";
+			if (error instanceof TypeError) {
+				status.message = "Network error: game-bot server may be down";
+			}
+			else {
+				status.message = "Error occured while adding bot";
+			}
 			return (status);
 		}
 	}

@@ -22,7 +22,6 @@ export class LobbyManager {
 				next();
 				return ;
 			}
-			console.log("before userAuthentication");
 			this.userAuthentication(socket, next);
 			return ;
 		});
@@ -140,13 +139,11 @@ export class LobbyManager {
 			.find(c => c.startsWith("session_token="))
 			?.split("=")[1];	
 		const token = sessionToken || socket.handshake.auth?.token;
-		console.log("token")
 		if (!token || typeof token !== "string")
 			return next(new Error("UNAUTHORIZED: no session token provided"));
 	
 		try
 		{
-			console.log("fetching")
 			const response = await fetch(`${AUTH_SERVICE_URL}/validate`, {
 				headers: {
 					Cookie: socket.handshake.headers.cookie || "",
@@ -157,14 +154,12 @@ export class LobbyManager {
 	
 			if (!response.ok)
 				return next(new Error("UNAUTHORIZED: invalid or expired session"));
-			console.log("response is ok")
 			const data = await response.json();
 			if (!data.userId || typeof data.userId !== "string")
 			{
 				console.error("Auth service returned an OK response with no valid uuid");
 				return next(new Error("UNAUTHORIZED: malformed validation response"));
 			}
-			console.log(`Assigning socket.data.uuid: ${socket.data.uuid}`);
 			socket.data.uuid = data.userId;
 			next();
 		}

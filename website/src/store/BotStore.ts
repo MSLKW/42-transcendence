@@ -1,6 +1,7 @@
 import { create } from "zustand";
 import { useGameStore } from "./GameStore";
 import { useProfileStore, type CachedData } from "./ProfileStore";
+import { gameInstance } from "../api/game/main";
 
 export const INTEL_LABEL = [
 	"Easy",
@@ -53,57 +54,30 @@ export const useBotStore = create<BotState>() (
 		botCount: 0,
 
 		removeBots: async () => {
-			if (get().botCount <= 0)
-				return;
-
-			const seats = useGameStore.getState().userSeats;
-			const newSeats = seats.filter(seat => !seat?.includes("bot"));
-			useGameStore.setState({ userSeats: newSeats });
-
-			useProfileStore.getState().clearCachedData();
-			await useProfileStore.getState().setCachedData();
-
+			const userSeats = useGameStore.getState().userSeats;
+			const seatedBots = userSeats.filter((seat) => seat?.startsWith("bot-"));
+			for (let i = 0; i < seatedBots.length; i++) {
+				const botId = seatedBots[i] ?? "";
+				if (botId.length > 0) {
+					gameInstance?.removeBot(botId);
+				}
+			}
 			get().countSeatedBots();
 		},
 
 		fillSeatsWithBots: () => {
-			const totalPlayers = useGameStore.getState().totalPlayers;
-
-			let bot_i = 0;
-			for (let i = 0; i < totalPlayers; i++) {
-				const { userSeats: seats, setSeatWithUuid } = useGameStore.getState();
-				if (seats[i])
-					continue;
-
-				const botKeys = Object.keys(cachedBotData);
-				while (bot_i < Object.keys(cachedBotData).length && seats.includes(botKeys[bot_i])) {
-					bot_i++;
+			const userSeats = useGameStore.getState().userSeats;
+			for (let i = 0; i < userSeats.length; i++) {
+				if (userSeats[i] === null) {
+					gameInstance?.addBot(i);
 				}
-				if (bot_i >= Object.keys(cachedBotData).length)
-					break;
-				setSeatWithUuid(botKeys[bot_i]!, i);
-
-				const cached = useProfileStore.getState().cachedData;
-				useProfileStore.setState({
-					cachedData: {
-						...cached,
-						[botKeys[bot_i]!]: {
-							name: cachedBotData[botKeys[bot_i]]?.name,
-							avatar: cachedBotData[botKeys[bot_i]]?.avatar,
-							badge: cachedBotData[botKeys[bot_i]]?.badge,
-							relation: cachedBotData[botKeys[bot_i]]?.relation,
-						},
-					},
-				});
-
-				bot_i++;
 			}
 			get().countSeatedBots();
 		},
 
 		countSeatedBots: () => {
 			const seats = useGameStore.getState().userSeats;
-			const count = seats.filter((s) => s?.includes("bot")).length;
+			const count = seats.filter((seat) => seat?.startsWith("bot-")).length;
 			set({ botCount: count });
 		},
 	}),

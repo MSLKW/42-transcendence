@@ -20,7 +20,6 @@ export const LobbyScene = () => {
 	const removeBots = useBotStore((store) => store.removeBots);
 	const totalPlayers = useGameStore((store) => store.totalPlayers);
 	const userSeats = useGameStore((store) => store.userSeats);
-	const seatRef = useGameStore((store => store.seatRef));
 	const startGame = useGameStore((store) => store.startGame);
 	const round = useGameStore((store) => store.round);
 	const members = usePartyStore((store) => store.members);
@@ -192,8 +191,8 @@ export const LobbyScene = () => {
 					))}
 				</div>
 				<div className="flex gap-2rem pt-2rem">
-					{ members.length > 1 && <UnseatButton /> }
-					{ members.length > 1 && <BotManagerButton /> }
+					{ userSeats.find((seatUserUuid) => seatUserUuid === clientUuid) !== undefined && <UnseatButton /> }
+					<BotManagerButton />
 					{ round >= 1 && <ResultsCallButton /> }
 				</div>
 			</footer>

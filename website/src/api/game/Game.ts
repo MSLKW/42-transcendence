@@ -74,6 +74,19 @@ export class Game {
 		});
 	}
 
+	public addBot(seatIndex: number) {
+		console.log(`bot_add: seatIndex: ${seatIndex}`);
+		this.socket.emit("bot_add", seatIndex, (status: StatusTransmit) => {
+			console.log(`[gameSocket] 'bot_add': ${status.success} | ${status.message}`);
+		});
+	}
+
+	public removeBot(botId: string) {
+		this.socket.emit("bot_remove", botId, (status: StatusTransmit) => {
+			console.log(`[gameSocket] 'bot_remove': ${status.success} | ${status.message}`);
+		});
+	}
+
 	private bindSocketEvents() {
 		this.socket.on("connect_error", (error) => {
 			console.log("[gameSocket] 'connect_error': ", error.message);
