@@ -17,7 +17,6 @@ Healthcheck endpoint for docker orchestrator
 Creates a new party whitelist in chat service. Party manager uses endpoint to notify chat service that a new party exists and UUID of players belonging to the party. Connected players are automatically moved to the party's chat room.
 ### Header:
 ```json
-Authorization: Bearer <PARTY_MANAGER_TOKEN>
 Content-Type: application/json
 ```
 ### Body:
@@ -74,7 +73,6 @@ Solo Party Example:
 Updates an existing party whitelist. This handles adding/removing players from party's chat room and, if host changes, migrates the party's chat room to the new host UUID. Players removed from the party are moved to their own UUID chat room.
 ### Header:
 ```json
-Authorization: Bearer <PARTY_MANAGER_TOKEN>
 Content-Type: application/json
 ```
 ### URL Parameters:
@@ -126,10 +124,7 @@ Host Change Example:
 ## DELETE /party/:hostUuid
 Description:
 Deletes an existing party whitelist. All currently connected players belonging to the party are moved from the party's chat room to their own UUID chat rooms. Players that remain connected after the party is deleted are moved to their own UUID chat rooms. This ensures every connected player always has an assigned chat room.
-### Header:
-```json
-Authorization: Bearer <PARTY_MANAGER_TOKEN>
-```
+### Header: N/A
 ### URL Parameters:
 | Parameter | Type | Validation | Description |
 | --- | --- | --- | --- |

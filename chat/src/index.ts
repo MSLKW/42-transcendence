@@ -16,9 +16,6 @@ const PORT = Number(process.env.PORT) || 3000;
 const AUTH_SERVICE_URL = process.env.AUTH_SERVICE_URL;
 if (!AUTH_SERVICE_URL)
 	throw new Error("AUTH_SERVICE_URL is not set");
-const PARTY_MANAGER_TOKEN = process.env.PARTY_MANAGER_TOKEN;
-if (!PARTY_MANAGER_TOKEN)
-	throw new Error("PARTY_MANAGER_TOKEN is not set");
 const RECONNECT_GRACE_PERIOD_MS = Number(process.env.DISCONNECT_GRACE_PERIOD_MS) || 15_000;
 const PERMANENT_DISCONNECT_REASONS = new Set([
 	"server namespace disconnect",
@@ -168,17 +165,6 @@ async function handleHttpRequest(req: IncomingMessage, res: ServerResponse): Pro
 			return;
 		}
 
-		if (url.pathname === "/party" || url.pathname.startsWith("/party/")) {
-			if (!isAuthorizedPartyManagerRequest(req)) {
-				sendJson(
-					res,
-					401,
-					{ error: "Unauthorized" },
-				)
-				return;
-			}
-		}
-
 		if (method === "POST" && url.pathname === "/party") {
 			const body = await readJsonBody(req);
 			const payload = validatePartyPayload(body);
@@ -204,7 +190,7 @@ async function handleHttpRequest(req: IncomingMessage, res: ServerResponse): Pro
 				);
 				return;
 			}
-			
+
 			const body = await readJsonBody(req);
 			const payload = validatePartyPayload(body);
 			partyManager.updateParty(currentHostUuid, payload);
@@ -240,15 +226,6 @@ async function handleHttpRequest(req: IncomingMessage, res: ServerResponse): Pro
 	} catch (error) {
 		handleHttpError(res, error);
 	}
-}
-
-function isAuthorizedPartyManagerRequest(req: IncomingMessage): boolean {
-	const authorization = req.headers.authorization;
-	if (typeof authorization !== "string" || !authorization.startsWith("Bearer "))
-		return false;
-
-	const token = authorization.slice("Bearer ".length);
-	return token === PARTY_MANAGER_TOKEN;
 }
 
 function validatePartyPayload(body: unknown): PartyPayload {
