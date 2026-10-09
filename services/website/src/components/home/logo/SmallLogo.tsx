@@ -15,7 +15,7 @@ export const SmallLogo = () => {
 				py-1rem px-1.5rem
 				hover:not-disabled:scale-105
 		">
-			<Tooltip text="About This Project">
+			<Tooltip text="Additional Info">
 				<div className="
 					flex place-content-end place-items-center 
 					gap-1rem
