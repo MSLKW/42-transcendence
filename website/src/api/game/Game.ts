@@ -14,6 +14,7 @@ import { partySocket } from "../../api/party/partySocket";
 import { useSceneStore } from "../../store/SceneStore";
 import { threejsManager } from '../../App';
 import { useResultsStore } from '../../store/ResultsStore';
+import { useBotStore } from '../../store/BotStore';
 
 export class Game {
 	private socket: Socket;
@@ -138,9 +139,11 @@ export class Game {
 				useGameStore.getState().initSeats();
 			}
 			useGameStore.setState({userSeats: seatData.seatOrder});
+			useBotStore.getState().cacheBotProfile(seatData);
 		});
 	
 		this.socket.on("user_list_update", (userList: Array<string>) => {
+			console.log(`[gameSocket] 'user_list_update': `, userList);
 			const newUserSeats = [...useGameStore.getState().userSeats];
 			for (let i = 0; i < newUserSeats.length; i++) {
 				const userInList = userList.find((uuid) => uuid === newUserSeats[i]);

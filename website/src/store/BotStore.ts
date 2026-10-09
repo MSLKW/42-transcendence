@@ -2,6 +2,7 @@ import { create } from "zustand";
 import { useGameStore } from "./GameStore";
 import { useProfileStore, type CachedData } from "./ProfileStore";
 import { gameInstance } from "../api/game/main";
+import type { SeatOrderTransmit } from "@big2/game-types";
 
 export const INTEL_LABEL = [
 	"Easy",
@@ -10,26 +11,26 @@ export const INTEL_LABEL = [
  ] as const;
 export type INTEL_TYPE = typeof INTEL_LABEL[number];
 
-export const cachedBotData: Record<string, CachedData> = {
-	"bot-0": {
+export const cachedBotData: Record<number, CachedData> = {
+	0: {
 		name: "Norminette",
 		avatar: "avatar-bot-0.webp",
 		relation: "Bot",
 		badge: "Newcomer",
 	},
-	"bot-1": {
+	1: {
 		name: "Moulinette",
 		avatar: "avatar-bot-1.webp",
 		relation: "Bot",
 		badge: "Newcomer",
 	},
-	"bot-2": {
+	2: {
 		name: "Thila-Bot",
 		avatar: "avatar-bot-2.webp",
 		relation: "Bot",
 		badge: "Newcomer",
 	},
-	"bot-3": {
+	3: {
 		name: "Segfault",
 		avatar: "avatar-bot-3.webp",
 		relation: "Bot",
@@ -46,6 +47,7 @@ interface BotState extends BotValues {
 	removeBots: () => Promise<void>,
 	fillSeatsWithBots: () => void,
 	countSeatedBots: () => void,
+	cacheBotProfile: (seatData: SeatOrderTransmit) => void
 };
 
 export const useBotStore = create<BotState>() (
@@ -62,7 +64,8 @@ export const useBotStore = create<BotState>() (
 					gameInstance?.removeBot(botId);
 				}
 			}
-			get().countSeatedBots();
+			useProfileStore.getState().clearCachedData();
+			await useProfileStore.getState().setCachedData();
 		},
 
 		fillSeatsWithBots: () => {
@@ -72,13 +75,36 @@ export const useBotStore = create<BotState>() (
 					gameInstance?.addBot(i);
 				}
 			}
-			get().countSeatedBots();
 		},
 
 		countSeatedBots: () => {
-			const seats = useGameStore.getState().userSeats;
-			const count = seats.filter((seat) => seat?.startsWith("bot-")).length;
+			const userSeats = useGameStore.getState().userSeats;
+			const count = userSeats.filter((seat) => seat?.startsWith("bot-")).length;
 			set({ botCount: count });
 		},
+
+		cacheBotProfile: (seatData: SeatOrderTransmit) => {
+			const cached = useProfileStore.getState().cachedData;
+			const cachedUuids = Object.keys(cached);
+			for (let i = 0; i < seatData.seatOrder.length; i++) {
+				const seatUuid: string = seatData.seatOrder[i] ?? "";
+				if (seatUuid.length === 0)
+					continue ;
+				const inCachedUuids = cachedUuids.find((uuid) => uuid === seatUuid);
+				if (inCachedUuids === undefined) {
+					useProfileStore.setState({
+						cachedData: {
+							...cached,
+							[seatUuid]: {
+								name: cachedBotData[i]?.name,
+								avatar: cachedBotData[i]?.avatar,
+								badge: cachedBotData[i]?.badge,
+								relation: cachedBotData[i]?.relation,
+							},
+						},
+					});
+				}	
+			}
+		}
 	}),
 );

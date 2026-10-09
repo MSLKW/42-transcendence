@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { useAuthStore } from "../../store/AuthStore";
-import { useBotStore } from "../../store/BotStore";
+import { cachedBotData, useBotStore } from "../../store/BotStore";
 import { useGameStore } from "../../store/GameStore"; 
 import { usePartyStore } from "../../store/PartyStore";
 import { useProfileStore } from "../../store/ProfileStore";
@@ -39,6 +39,11 @@ export const LobbyScene = () => {
 			removeBots();
 		}
 	}, [members, userSeats]);
+
+	// To detect bot count
+	useEffect(() => {
+		useBotStore.getState().countSeatedBots();
+	}, [userSeats])
 
 	const seatsFilled = totalPlayers === userSeats.filter((seat): seat is string => seat !== null).length;
 
@@ -98,6 +103,7 @@ export const LobbyScene = () => {
 										key={userSeats[1]}
 										uuid={userSeats[1]}
 										image={cachedData[userSeats[1]]?.avatar ?? undefined}
+										// image={cachedBotData[1].avatar}
 										cornerButton={userSeats[1] === hostUuid ? "host" : ""}
 									/>
 								: <TakeSeatButton seatNumber={1}/>
