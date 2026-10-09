@@ -1,6 +1,6 @@
-import { Bot } from "./Bot";
+import { Bot } from "./Bot.js";
 import { randomUUID } from "crypto"; 
-import { AAIController } from "../ai/AAIController";
+import { AAIController } from "../ai/AAIController.js";
 
 export class BotManager
 {

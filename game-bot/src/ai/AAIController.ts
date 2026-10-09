@@ -1,8 +1,8 @@
-import { GameState, HandTypeKey } from "../game/GameState";
-import { CardTransmit, CardHandTransmit, HandType, PentupleType } from "../Types";
-import { upperBound } from "../utils/upperBound";
-import { cardHandComp } from "../utils/cardHandComp";
-import { logger } from "../utils/logger";
+import { GameState, HandTypeKey } from "../game/GameState.js";
+import { CardTransmit, CardHandTransmit, HandType, PentupleType } from "@big2/game-types";
+import { upperBound } from "../utils/upperBound.js";
+import { cardHandComp } from "../utils/cardHandComp.js";
+import { logger } from "../utils/logger.js";
 
 type Card = CardTransmit;
 type CardHand = CardHandTransmit;

@@ -1,19 +1,20 @@
 import { io, Socket } from "socket.io-client";
-import { GameState } from "../game/GameState";
-import { AAIController } from "../ai/AAIController";
-import { logger } from "../utils/logger";
+import { GameState } from "../game/GameState.js";
+import { AAIController } from "../ai/AAIController.js";
+import { logger } from "../utils/logger.js";
 import { writeFileSync } from "fs";
 import { setTimeout } from "timers/promises";
-import { StatusTransmit } from "@big2/game-types";
+import { StatusTransmit, GameStateTransmit, CardHandTransmit, PlayerTurnTransmit, GameEndStatsTransmit } from "@big2/game-types";
 
-import {
-	GameStateTransmit,
-	CardHandTransmit,
-	PlayerSeatOrderTransmit,
-	PlayerTurnTransmit,
-	GameStartRequest,
-	GameEndStatsTransmit
-} from "../Types";
+// import {
+// 	GameStateTransmit,
+// 	CardHandTransmit,
+// 	PlayerSeatOrderTransmit,
+// 	PlayerTurnTransmit,
+// 	GameStartRequest,
+// 	GameEndStatsTransmit
+// } from "../Types";
+
 
 type CardHand = CardHandTransmit;
 
@@ -27,7 +28,7 @@ export class Bot
 	private ai:				AAIController;
 	private socket:			Socket | null = null;
 
-	private seatOrder:		PlayerSeatOrderTransmit | null = null;
+	// private seatOrder:		PlayerSeatOrderTransmit | null = null;
 
 	private wins:			number = 0;
 	private gamesPlayed:	number = 0;
@@ -86,31 +87,31 @@ export class Bot
 			return ;
 		this.socket.on("connect", () => logger.info(this.id, "connected"));
 		this.socket.on("disconnect", this.disconnect);
-		this.socket.on("player_join", this.playerJoined);
-		this.socket.on("player_game_state", this.initGameState);
+		// this.socket.on("player_join", this.playerJoined);
+		this.socket.on("game_state", this.initGameState);
 		this.socket.on("player_turn", this.checkTurn);
-		this.socket.on("player_play_card_hand", this.checkSuccess);
-		this.socket.on("opponent_play_card_hand", this.checkOpponentMove);
+		// this.socket.on("player_play_card_hand", this.checkSuccess); use callback instead
+		this.socket.on("player_play_card_hand", this.checkOpponentMove);
 		this.socket.on("game_end", this.gameEnd);
 	}
 
-	private	playerJoined = (seatOrder: PlayerSeatOrderTransmit) =>
-	{
-		logger.verbose(this.id, seatOrder);
-		this.seatOrder = seatOrder;
-		if (seatOrder.seatOrder[this.id] == 3)
-		{	
-			const startRequest: GameStartRequest = {
-				playerId: this.id
-			}
-			this.socket?.emit("game_start", startRequest);
-			console.log(new Date().toTimeString());
-		}
-	}
+	// private	playerJoined = (seatOrder: PlayerSeatOrderTransmit) =>
+	// {
+	// 	logger.verbose(this.id, seatOrder);
+	// 	this.seatOrder = seatOrder;
+	// 	if (seatOrder.seatOrder[this.id] == 3)
+	// 	{	
+	// 		const startRequest: GameStartRequest = {
+	// 			playerId: this.id
+	// 		}
+	// 		this.socket?.emit("game_start", startRequest);
+	// 		console.log(new Date().toTimeString());
+	// 	}
+	// }
 
 	private initGameState = (gameState: GameStateTransmit) =>
 	{
-		this.state = new GameState(this.id, this.seatOrder!.seatOrder, gameState.playerCards);
+		this.state = new GameState(this.id, gameState.playerSeatOrder, gameState.playerCards);
 		logger.verbose(this.id, this.state.ownCards);
 	}
 	
@@ -128,7 +129,7 @@ export class Bot
 		if (this.state.currentPlayer == this.id)
 		{
 			logger.verbose(this.id, "My turn");
-			writeFileSync(`logs/state<${this.id}>${this.state.turnNumber}.log`, this.state.encode().join("\n"), "utf-8");
+			// writeFileSync(`logs/state<${this.id}>${this.state.turnNumber}.log`, this.state.encode().join("\n"), "utf-8");
 			this.playCardHand();
 		}
 		else
@@ -146,7 +147,9 @@ export class Bot
 		{
 			logger.verbose(this.id, "skipping turn");
 			this.state.turnSkipped = true;
-			this.socket?.emit("player_skip_turn");
+			this.socket?.emit("player_skip_turn_request", (status: StatusTransmit) => {
+				console.log("[botSocket] 'player_skip_turn_request' callback: ", status);
+			});
 		}
 		else
 		{
@@ -155,7 +158,9 @@ export class Bot
 			this.state.removeCards(cardHand);
 			logger.verbose(this.id, "attempting to play", cardHand);
 			this.state.turnSkipped = false;
-			this.socket?.emit("player_play_card_hand", cardHand);
+			this.socket?.emit("player_play_card_hand_request", cardHand, (status: StatusTransmit) => {
+				console.log("[botSocket] 'player_play_card_hand_request' callback: ", status);
+			});
 		}
 	}
 
@@ -178,16 +183,18 @@ export class Bot
 	private	gameEnd = (stat: GameEndStatsTransmit) =>
 	{
 		this.gamesPlayed++;
-		if (stat.winnerPlayerId == this.id)
+		if (stat.winnerPlayerUuid == this.id)
 		{
 			logger.verbose(this.id, "I won");
 			this.wins++;
 			if (this.gamesPlayed != this.maxGames)
 			{
-				const startRequest: GameStartRequest = {
-					playerId: this.id
-				};
-				this.socket?.emit("game_start", startRequest);
+				// const startRequest: GameStartRequest = {
+				// 	playerId: this.id
+				// };
+				this.socket?.emit("game_start_request", (status: StatusTransmit) => {
+					console.log("[botSocket] 'game_start_request':", status);
+				});
 			}
 		}
 		else
@@ -197,7 +204,7 @@ export class Bot
 		if (this.gamesPlayed == this.maxGames)
 		{
 			logger.info(this.id, "I won", this.wins, "times");
-			if (stat.winnerPlayerId == this.id)
+			if (stat.winnerPlayerUuid == this.id)
 				console.log(new Date().toTimeString());
 		}
 	}

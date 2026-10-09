@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
-import { BotManager } from "../bot/BotManager";
-import { RandomController } from "../ai/RandomController";
+import { BotManager } from "../bot/BotManager.js";
+import { RandomController } from "../ai/RandomController.js";
 
 const GAME_SERVICE_URL = process.env.GAME_SERVICE_URL as string;
 

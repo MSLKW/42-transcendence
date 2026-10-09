@@ -1,14 +1,14 @@
-import { CardTransmit, CardHandTransmit, HandType } from "../Types";
-import { rankComp, suitComp, cardHandComp } from "../utils/cardHandComp";
-import { normalizePlayerSeats } from "./normalizePlayerSeats"
+import { CardTransmit, CardHandTransmit, HandType } from "@big2/game-types";
+import { rankComp, suitComp, cardHandComp } from "../utils/cardHandComp.js";
+import { normalizePlayerSeats } from "./normalizePlayerSeats.js";
 
-import { initSingles } from "./initSingles";
-import { initMatchingHands } from "./initMatchingHands";
-import { initFullHouses } from "./initFullHouses";
-import { initStraights } from "./initStraights";
-import { initFlushes } from "./initFlushes";
+import { initSingles } from "./initSingles.js";
+import { initMatchingHands } from "./initMatchingHands.js";
+import { initFullHouses } from "./initFullHouses.js";
+import { initStraights } from "./initStraights.js";
+import { initFlushes } from "./initFlushes.js";
 
-import { normalizeCardHand } from "./normalizeCardHand";
+import { normalizeCardHand } from "./normalizeCardHand.js";
 
 type Card = CardTransmit;
 type CardHand = CardHandTransmit;

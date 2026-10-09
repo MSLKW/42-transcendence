@@ -1,13 +1,13 @@
 import "dotenv/config";
 import express from "express";
 
-import { config } from "./config";
-import { BotManager } from "./bot/BotManager";
-import { healthCheck } from "./handlers/healthCheck";
-import { newBotHandler } from "./handlers/newBotHandler";
-import { RandomController } from "./ai/RandomController";
-import { PassiveController } from "./ai/PassiveController";
-import { AggressiveController } from "./ai/AggressiveController";
+import { config } from "./config.js";
+import { BotManager } from "./bot/BotManager.js";
+import { healthCheck } from "./handlers/healthCheck.js";
+import { newBotHandler } from "./handlers/newBotHandler.js";
+import { RandomController } from "./ai/RandomController.js";
+import { PassiveController } from "./ai/PassiveController.js";
+import { AggressiveController } from "./ai/AggressiveController.js";
 
 const PORT = Number(process.env.PORT) || 3000;
 

@@ -59,6 +59,9 @@ export class Game {
 		console.log("[gameSocket] emitting 'lobby_delete_request");
 		this.socket.emit("lobby_delete_request", (status: StatusTransmit) => {
 			console.log(`[gameSocket] 'lobby_delete_request': ${status.success} | ${status.message}`);
+			if (status.success === false) {
+				this.disconnect();
+			}
 		});
 	}
 

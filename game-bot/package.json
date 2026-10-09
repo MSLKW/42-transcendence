@@ -4,7 +4,7 @@
   "description": "",
   "license": "ISC",
   "author": "",
-  "type": "NodeNext",
+  "type": "module",
   "main": "index.js",
   "scripts": {
     "dev": "tsc --noEmit && tsx src/index.ts",

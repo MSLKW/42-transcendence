@@ -1,5 +1,5 @@
-import { AAIController } from "./AAIController";
-import { CardHandTransmit } from "../Types";
+import { AAIController } from "./AAIController.js";
+import { CardHandTransmit } from "@big2/game-types";
 
 type CardHand = CardHandTransmit;
 

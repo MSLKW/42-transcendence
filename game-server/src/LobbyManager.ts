@@ -59,7 +59,7 @@ export class LobbyManager {
 				const eventName = packet[0];
 				const eventConfig: EventConfig = IncomingEventRegistry[eventName];
 				if (eventConfig === undefined) {
-					return (next(new Error("Unknown Event")));
+					return (next(new Error(`Unknown Event: ${eventName}`)));
 				}
 				let callback = undefined;
 				if (typeof packet[packet.length - 1] === 'function') {
@@ -71,20 +71,20 @@ export class LobbyManager {
 				}
 				if (eventConfig.payload !== undefined) {
 					if (payload === undefined) {
-						return (next(new Error("Event does not have payload attached")));
+						return (next(new Error(`Event<"${eventName}"> does not have payload attached`)));
 					}
 					const payloadParseResult = eventConfig.payload.safeParse(payload);
 					if (payloadParseResult.success === false) {
-						return (next(new Error("Event payload has failed validation")));
+						return (next(new Error(`Event<"${eventName}"> payload has failed validation`)));
 					}
 				}
 				if (eventConfig.callback !== undefined) {
 					if (callback === undefined) {
-						return (next(new Error("Event does not have callback attached")));
+						return (next(new Error(`Event<"${eventName}"> does not have callback attached`)));
 					}
 					const callbackParseResult = eventConfig.callback.safeParse(callback);
 					if (callbackParseResult.success === false) {
-						return (next(new Error("Event callback has failed validation")));
+						return (next(new Error(`Event<"${eventName}"> callback has failed validation`)));
 					}
 				}
 				next();

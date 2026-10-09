@@ -1,4 +1,4 @@
-import { CardTransmit, CardHandTransmit, HandType, PentupleType } from "../Types";
+import { CardTransmit, CardHandTransmit, HandType, PentupleType } from "@big2/game-types";
 
 type Card = CardTransmit;
 type CardHand = CardHandTransmit;
