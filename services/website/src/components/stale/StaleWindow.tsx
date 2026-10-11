@@ -37,25 +37,27 @@ export const StaleWindow = () => {
 						flex place-content-center
 						gap-1rem
 					">
-						<button
-							onClick={() => useSceneStore.getState().setCurrentScene("Login")}
-							className="
-								h-3rem aspect-5/1
-								btn-text bg-r2
-								text-n6
-						">
-							Back to login
-						</button>
-						{ isAuthenticated &&
-							<button
-								onClick={() => window.location.reload()}
-								className="
-									h-3rem aspect-5/1
-									btn-text bg-r2
-									text-n6
-							">
-								Refresh
-							</button>
+						{ isAuthenticated
+							?
+								<button
+									onClick={() => window.location.reload()}
+									className="
+										h-3rem aspect-5/1
+										btn-text bg-r2
+										text-n6
+								">
+									Refresh
+								</button>
+							:
+								<button
+									onClick={() => useSceneStore.getState().setCurrentScene("Login")}
+									className="
+										h-3rem aspect-5/1
+										btn-text bg-r2
+										text-n6
+								">
+									Back to login
+								</button>
 						}
 					</div>
 				</div>
