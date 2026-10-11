@@ -2,6 +2,7 @@ import { EventEmitter } from "node:stream";
 import { PlayerState } from "./PlayerState.js";
 import { CardHeapState } from "./CardHeapState.js";
 import { GameState } from "./GameState.js";
+import { GAME_STATS_SERVICE_URL } from './env.js';
 import { CardHandTransmit, GameEndStatsTransmit, HandType, CardRank, CardSuit, PentupleType, SkipTurnTransmit, PlayerStatsTransmit, AchievementUnlockTransmit } from "@big2/game-types";
 
 type PlayerTracker = {
@@ -15,7 +16,6 @@ type PlayerTracker = {
 	Handles Getting Player Achievements to check against detection, Achievement Detection and publishing events
 */
 export class AchievementState {
-	private static readonly GAME_STATS_SERVICE_URL = process.env.GAME_STATS_SERVICE_URL;
 	private playerTrackers: Record<string, PlayerTracker>;
 	private gameEvents: EventEmitter;
 
@@ -106,7 +106,7 @@ export class AchievementState {
 	}
 
 	private fetchPlayerGameStats(playerUuid: string): PlayerStatsTransmit | undefined {
-		// const responsePromise = fetch(`${AchievementState.GAME_STATS_SERVICE_URL}/player-stats`, {
+		// const responsePromise = fetch(`${GAME_STATS_SERVICE_URL}/player-stats`, {
 		// 	method: 'GET',
 		// 	headers: {
 		// 		'Accept': 'application/json'
@@ -154,7 +154,7 @@ export class AchievementState {
 	}
 
 	private async transmitGameEndStats(gameEndStatsTransmit: GameEndStatsTransmit) {
-		// const response = await fetch(`${AchievementState.GAME_STATS_SERVICE_URL}/game-end`, {
+		// const response = await fetch(`${GAME_STATS_SERVICE_URL}/game-end`, {
 		// 	method: 'POST',
 		// 	headers: {
 		// 		'Content-Type': 'application/json',
@@ -165,7 +165,7 @@ export class AchievementState {
 	}
 
 	private async transmitAchievementUnlock(transmit: AchievementUnlockTransmit) {
-		// const response = await fetch(`${AchievementState.GAME_STATS_SERVICE_URL}/achievement-unlock`, {
+		// const response = await fetch(`${GAME_STATS_SERVICE_URL}/achievement-unlock`, {
 		// 	method: 'PUT',
 		// 	headers: {
 		// 		'Content-Type': 'application/json',

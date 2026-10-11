@@ -5,24 +5,14 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import { ExtendedError, Server, Socket } from 'socket.io';
 import z from 'zod';
+import { PORT } from './env.js';
 
 import { LobbyManager } from './LobbyManager.js';
 
 const app = express();
 const httpServer = createServer(app);
 
-const PORT = process.env.PORT;
-export const AUTH_SERVICE_URL = process.env.AUTH_SERVICE_URL;
-export const GAME_BOT_SERVICE_URL = process.env.GAME_BOT_SERVICE_URL;
-
-if (!AUTH_SERVICE_URL)
-	throw new Error("AUTH_SERVICE_URL is not set");
-
 app.use(express.json());
-
-httpServer.listen(PORT, () => {
-	console.log(`Game Server is running and listening on ${PORT}`);
-});
 
 export const io = new Server(httpServer);
 
@@ -97,4 +87,8 @@ export function kickSocket(socket: Socket, reason: string) {
 
 process.on("SIGTERM", async() => {
 	io.close();
+});
+
+httpServer.listen(PORT, () => {
+	console.log(`Game Server is running and listening on ${PORT}`);
 });

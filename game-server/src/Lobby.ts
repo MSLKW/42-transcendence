@@ -5,7 +5,7 @@ import { GameState } from './GameState.js';
 import { GameSettingsTransmit, SeatOrderTransmit, StatusTransmit } from '@big2/game-types';
 import { EventEmitter } from 'node:events';
 import { randomBytes } from 'crypto';
-import { GAME_BOT_SERVICE_URL } from './server.js';
+import { GAME_BOT_SERVICE_URL, LOBBY_DELETE_TIMEOUT_MS, LOBBY_USER_LIMIT } from './env.js';
 
 export class Lobby {
 	private hostUuid: string;
@@ -31,8 +31,8 @@ export class Lobby {
 		this.whitelist = data.playerUuids;
 		this.totalSeats = 0;
 		this.availableSeats = [];
-		this.totalUsersLimit = process.env.LOBBY_USER_LIMIT && Number(process.env.LOBBY_USER_LIMIT) > 4 ? Number(process.env.LOBBY_USER_LIMIT) : 4;
-		this.lobbyTimeoutMilliseconds = process.env.LOBBY_DELETE_TIMEOUT_MS ? Number(process.env.LOBBY_DELETE_TIMEOUT_MS) : -1;
+		this.totalUsersLimit = LOBBY_USER_LIMIT > 4 ? LOBBY_USER_LIMIT : 4;
+		this.lobbyTimeoutMilliseconds = LOBBY_DELETE_TIMEOUT_MS > 0 ? LOBBY_DELETE_TIMEOUT_MS : -1;
 		this.sessionId = sessionId;
 		this.events = new EventEmitter();
 		this.game = new GameState(this.sessionId);

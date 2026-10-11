@@ -3,7 +3,7 @@ import { Socket } from 'socket.io';
 import { Lobby } from './Lobby.js';
 import { IncomingEventRegistry, EventConfig } from './Validation.js';
 import { ExtendedError } from 'socket.io';
-import { AUTH_SERVICE_URL } from './server.js';
+import { AUTH_SERVICE_URL, LOBBY_LIMIT } from './env.js';
 
 export class LobbyManager {
 	private lobbies: Record<string, Lobby>;
@@ -13,7 +13,7 @@ export class LobbyManager {
 	constructor() {
 		this.lobbies = {};
 		this.newSessionId = 0;
-		this.lobbyLimit = process.env.LOBBY_LIMIT ? Number(process.env.LOBBY_LIMIT) : 0;
+		this.lobbyLimit = LOBBY_LIMIT;
 
 		io.use(async (socket, next) => {
 			if (socket.handshake.auth.botSessionToken !== undefined) {
