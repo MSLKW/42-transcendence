@@ -31,7 +31,7 @@ export const StaleWindow = () => {
 						gap-1rem
 						text-n6
 					">
-						<h2>{ isAuthenticated ? "You're logged in another tab" : "You're logged in another browser" }</h2>
+						<h2>{ isAuthenticated ? "You're logged from another tab" : "You're logged from another browser" }</h2>
 					</div>
 					<div className="
 						flex place-content-center
