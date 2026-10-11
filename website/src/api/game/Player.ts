@@ -100,13 +100,11 @@ export class Player extends Participant {
 	public sendCardsButtonHandler() {
 		const cardHandTransmit = this.cardManager.selectedCards.transmit();
 		this.socket.emit("player_play_card_hand_request", cardHandTransmit, (status: StatusTransmit) => {
+			console.log(`[gameSocket] 'player_play_card_hand_request': `, status);
 			if (status.success === true) {
 				const cardHand = this.cardManager.sendSelectedCards();
 				this.cardHeapRef.receiveCardHand(cardHand);
 				useGameStore.getState().reduceCardsLeft(this.uuid, cardHand.cards.length);
-			}
-			else {
-				console.log(`player_play_card_hand_request error: ${status.message}`);
 			}
 		});
 	}

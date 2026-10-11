@@ -119,6 +119,7 @@ export class Game {
 		});
 	
 		this.socket.on("game_end", (gameEndStats: GameEndStatsTransmit) => {
+			console.log(`[gameSocket] 'game_end': `, gameEndStats);
 			useResultsStore.getState().setResults(gameEndStats);
 			useGameStore.setState({ round: gameEndStats.temporaryRoundsPlayed });
 			this.resetGame();

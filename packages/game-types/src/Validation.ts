@@ -37,6 +37,7 @@ export const GameEndStatsTransmitSchema = z.object({
 	winnerPlayerUuid: z.string(),
 	playerFinalCardAmounts: z.record(z.string(), z.number()),
 	playerPenaltyPoints: z.record(z.string(), z.number()),
+	playerXpGains: z.record(z.string(), z.number()),
 	temporaryWinStreakAmount: z.number(),
 	temporaryRoundsPlayed: z.number(),
 });

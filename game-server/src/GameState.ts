@@ -6,7 +6,7 @@ import { CardHeapState } from './CardHeapState.js'
 import { CardRank, CardSuit, GameStateTransmit, GameEndStatsTransmit, StatusTransmit, PlayerTurnTransmit, SkipTurnTransmit, GameSettingsTransmit, CardHandTransmit, AchievementUnlockTransmit } from '@big2/game-types';
 import { UserState } from './UserState.js';
 import { EventEmitter } from 'node:events';
-import { AchievementState } from './AchievementState.js';
+import { StatisticsTracker } from './StatisticsTracker.js';
 
 export class GameState {
 	private players: Array<PlayerState>;
@@ -18,7 +18,7 @@ export class GameState {
 	private playerTurnTimeoutId: NodeJS.Timeout | undefined;
 	public	gameRoomId: string;
 	private	events: EventEmitter;
-	private achievements: AchievementState;
+	private statistics: StatisticsTracker;
 
 	private	previousSeatOrder: string[];
 	private	temporaryWinStreakWinnerUuid: string;
@@ -38,7 +38,7 @@ export class GameState {
 		this.cardDeck = new CardDeckState();
 		this.cardHeap = new CardHeapState();
 		this.events = new EventEmitter();
-		this.achievements = new AchievementState(this.events);
+		this.statistics = new StatisticsTracker(this.events);
 		this.isGameStarted = false;
 		this.playerTurnIndex = -1;
 		this.playerTurnTimeoutId = undefined;
@@ -159,7 +159,7 @@ export class GameState {
 			this.spectators[i].socket.emit("game_state", this.transmit(undefined));
 		}
 		this.playerTurnEvent();
-		this.achievements.setupPlayerTracker(this.players);
+		this.statistics.setupPlayerTracker(this.players);
 		this.isGameStarted = true;
 		console.log(`Game<${this.gameRoomId}> has started`);
 		status.success = true;
@@ -174,6 +174,7 @@ export class GameState {
 			winnerPlayerUuid: winner.uuid,
 			playerFinalCardAmounts: this.getPlayerCardsAmount(),
 			playerPenaltyPoints: this.getPlayerPenaltyPoints(),
+			playerXpGains: this.statistics.getPlayerXpGains(),
 			temporaryWinStreakAmount: this.temporaryWinStreakAmount,
 			temporaryRoundsPlayed: this.temporaryRoundsPlayed,
 		}
@@ -266,7 +267,10 @@ export class GameState {
 		this.togglePlayerTurnFlag();
 		const isPlayerLeading = this.cardHeap.isPlayerLeading(player.uuid);
 		if (isPlayerLeading === true) {
-			this.events.emit("player:is_leading", this.cardHeap.getTopCardHand()?.transmit());
+			const topCardHand = this.cardHeap.getTopCardHand();
+			if (topCardHand !== undefined && topCardHand.playerId === player.uuid) {
+				this.events.emit("player:bested", topCardHand.transmit());
+			}
 		}
 		const playerTurnTransmit: PlayerTurnTransmit = {
 			playerId: player.uuid,

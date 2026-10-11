@@ -149,8 +149,8 @@ export class PlayerState {
 			return (status);
 		}
 		this.cardHeapRef.receiveCardHand(cardHand);
-		this.gameEvents.emit("player:play_card_hand", cardHand.transmit());
 		this.removeCards(cardHand.cards);
+		this.gameEvents.emit("player:play_card_hand", cardHand.transmit());
 
 		status.success = true;
 		status.message = "Successfully played a card hand";

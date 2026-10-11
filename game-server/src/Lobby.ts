@@ -359,6 +359,10 @@ export class Lobby {
 			status.message = "You are not the host";
 			return (status);
 		}
+		if (this.game.isGameStarted === true) {
+			status.message = "Game has already been started";
+			return (status);
+		}
 		if (totalSeats < 1 || totalSeats > 4) {
 			status.message = "Seats are out of bounds";
 			return (status);

@@ -8,14 +8,14 @@ import { CardHandTransmit, GameEndStatsTransmit, HandType, CardRank, CardSuit, P
 type PlayerTracker = {
 	uuid: string,
 	hasPassed: boolean,
+	xpGain: number,
 	stats: PlayerStatsTransmit | undefined
-	// achievements unlocked interface
 }
 
 /* 
-	Handles Getting Player Achievements to check against detection, Achievement Detection and publishing events
+	Handles Player Statistics and Achievements
 */
-export class AchievementState {
+export class StatisticsTracker {
 	private playerTrackers: Record<string, PlayerTracker>;
 	private gameEvents: EventEmitter;
 
@@ -27,7 +27,7 @@ export class AchievementState {
 	}
 
 	private bindEventListeners() {
-		this.gameEvents.on("player:is_leading", (cardHandTransmit: CardHandTransmit) => {
+		this.gameEvents.on("player:bested", (cardHandTransmit: CardHandTransmit) => {
 			if (cardHandTransmit === undefined)
 				return ;
 			const playerUuid = cardHandTransmit.playerId;
@@ -75,6 +75,10 @@ export class AchievementState {
 					}
 				}
 			}
+			const playerTracker = this.playerTrackers[cardHand.playerId];
+			if (playerTracker === undefined)
+				return ;
+			playerTracker.xpGain += cardHand.cards.length;
 		});
 
 		this.gameEvents.on("player:skip_turn", (skipTurnTransmit: SkipTurnTransmit) => {
@@ -90,19 +94,29 @@ export class AchievementState {
 				this.unlockAchievement(gameEndStatsTransmit.winnerPlayerUuid, "first_win");
 			}
 		});
-
 	}
 
 	public setupPlayerTracker(players: Array<PlayerState>) {
+		this.playerTrackers = {};
 		for (let i = 0; i < players.length; i++) {
 			const player = players[i];
 			const playerTracker: PlayerTracker = {
 				uuid: player.uuid,
 				hasPassed: false,
+				xpGain: 0,
 				stats: this.fetchPlayerGameStats(player.uuid),
 			}
 			this.playerTrackers[player.uuid] = playerTracker;
 		}
+	}
+
+	public	getPlayerXpGains(): Record<string, number> {
+		const playersXpGains: Record<string, number> = {};
+		const playerTrackers = Object.entries(this.playerTrackers);
+		for (let i = 0; i < playerTrackers.length; i++) {
+			playersXpGains[playerTrackers[i][0]] = playerTrackers[i][1].xpGain;
+		}
+		return (playersXpGains);
 	}
 
 	private fetchPlayerGameStats(playerUuid: string): PlayerStatsTransmit | undefined {
