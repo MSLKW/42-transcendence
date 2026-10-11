@@ -119,17 +119,6 @@ export class Player extends Participant {
 		});
 	}
 
-	// public sortCardsByRankButtonHandler() {
-	// 	this.cardManager.setSort((a, b) => a.rank - b.rank);
-	// }
-
-	// public sortCardsBySuitButtonHandler() {
-	// 	this.cardManager.setSort((a, b) => {
-	// 		const suitDiff = a.suit - b.suit;
-	// 		return (suitDiff === 0 ? a.rank - b.rank : suitDiff);
-	// 	});
-	// }
-
 	public setSort(sortType: string) {
 		if (sortType === "Rank") {
 			this.cardManager.setSort((a, b) => a.rank - b.rank);

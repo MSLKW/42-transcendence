@@ -3,8 +3,10 @@ import { io } from './server.js';
 import { PlayerState } from './PlayerState.js';
 import { CardDeckState } from './CardDeckState.js'
 import { CardHeapState } from './CardHeapState.js'
-import { CardRank, CardSuit, GameStateTransmit, GameEndStatsTransmit, StatusTransmit, PlayerTurnTransmit, SkipTurnTransmit, CardTransmit, GameSettingsTransmit } from '@big2/game-types';
+import { CardRank, CardSuit, GameStateTransmit, GameEndStatsTransmit, StatusTransmit, PlayerTurnTransmit, SkipTurnTransmit, GameSettingsTransmit, CardHandTransmit, AchievementUnlockTransmit } from '@big2/game-types';
 import { UserState } from './UserState.js';
+import { EventEmitter } from 'node:events';
+import { AchievementState } from './AchievementState.js';
 
 export class GameState {
 	private players: Array<PlayerState>;
@@ -15,6 +17,8 @@ export class GameState {
 	private	playerTurnIndex: number;
 	private playerTurnTimeoutId: NodeJS.Timeout | undefined;
 	public	gameRoomId: string;
+	private	events: EventEmitter;
+	private achievements: AchievementState;
 
 	private	previousSeatOrder: string[];
 	private	temporaryWinStreakWinnerUuid: string;
@@ -33,6 +37,8 @@ export class GameState {
 		this.spectators = [];
 		this.cardDeck = new CardDeckState();
 		this.cardHeap = new CardHeapState();
+		this.events = new EventEmitter();
+		this.achievements = new AchievementState(this.events);
 		this.isGameStarted = false;
 		this.playerTurnIndex = -1;
 		this.playerTurnTimeoutId = undefined;
@@ -46,6 +52,8 @@ export class GameState {
 		this.temporaryWinStreakWinnerUuid = "";
 		this.temporaryWinStreakAmount = 0;
 		this.temporaryRoundsPlayed = 0;
+
+		this.bindGameEventListeners();
 	}
 
 	public emit(event: string, payload: any) {
@@ -60,8 +68,34 @@ export class GameState {
 		this.emit("player_connection_update", playerConnections);
 	}
 
+	private bindGameEventListeners() {
+		this.events.on("player:play_card_hand", (cardHandTransmit: CardHandTransmit) => {
+			this.emit("player_play_card_hand", cardHandTransmit);
+			for (let i = 0; i < this.players.length; i++) {
+				if (this.players[i].cards.length === 0) {
+					this.endGame(this.players[i]);
+					return ;
+				}
+			}
+			this.nextPlayerTurn();
+		});
+
+		this.events.on("player:skip_turn", (skipTurnTransmit: SkipTurnTransmit) => {
+			this.emit("player_skip_turn", skipTurnTransmit);
+			this.nextPlayerTurn();
+		});
+
+		this.events.on("player:unlock_achievement", (achievementTransmit: AchievementUnlockTransmit) => {
+			const player = this.players.find((player) => player.uuid === achievementTransmit.playerUuid);
+			if (player === undefined) {
+				return ;
+			}
+			player.socket.emit("player_unlock_achievement", achievementTransmit);
+		});
+	}
+
 	public addPlayer(user: UserState) {
-		const player = new PlayerState(user.uuid, user.socket, this)
+		const player = new PlayerState(user.uuid, user.socket, this.events, this.gameRoomId, this.cardHeap);
 		this.players.push(player);
 	}
 
@@ -125,6 +159,7 @@ export class GameState {
 			this.spectators[i].socket.emit("game_state", this.transmit(undefined));
 		}
 		this.playerTurnEvent();
+		this.achievements.setupPlayerTracker(this.players);
 		this.isGameStarted = true;
 		console.log(`Game<${this.gameRoomId}> has started`);
 		status.success = true;
@@ -144,6 +179,7 @@ export class GameState {
 		}
 		this.resetGame();
 		this.isGameStarted = false;
+		this.events.emit("game:end", gameEndStats);
 		this.emit("game_end", gameEndStats);
 	}
 
@@ -208,7 +244,7 @@ export class GameState {
 		if (player === undefined) {
 			return ;
 		}
-		player.reconnect(user);
+		player.reconnect(user, this);
 		this.emitPlayerList();
 	}
 
@@ -217,7 +253,7 @@ export class GameState {
 		if (player === undefined) {
 			return ;
 		}
-		player.disconnect();
+		player.disconnect(this);
 		this.emitPlayerList();
 	}
 
@@ -227,9 +263,14 @@ export class GameState {
 			this.nextPlayerTurn();
 			return ;
 		}
+		this.togglePlayerTurnFlag();
+		const isPlayerLeading = this.cardHeap.isPlayerLeading(player.uuid);
+		if (isPlayerLeading === true) {
+			this.events.emit("player:is_leading", this.cardHeap.getTopCardHand()?.transmit());
+		}
 		const playerTurnTransmit: PlayerTurnTransmit = {
 			playerId: player.uuid,
-			skippable: !this.cardHeap.isPlayerLeading(player.uuid),
+			skippable: !isPlayerLeading,
 			timer: this.settings.autoPassInMilliseconds
 		}
 		if (this.settings.autoPassInMilliseconds > 0) {
@@ -251,11 +292,22 @@ export class GameState {
 		this.playerTurnEvent();
 	}
 
-	public isPlayerTurn(player: PlayerState) {
-		if (this.players.indexOf(player) === this.playerTurnIndex) {
-			return (true);
+	// public isPlayerTurn(player: PlayerState) {
+	// 	if (this.players.indexOf(player) === this.playerTurnIndex) {
+	// 		return (true);
+	// 	}
+	// 	return (false);
+	// }
+	
+	private	togglePlayerTurnFlag() {
+		const player = this.players.at(this.playerTurnIndex);
+		if (player === undefined) {
+			return ;
 		}
-		return (false);
+		for (let i = 0; i < this.players.length; i++) {
+			this.players[i].isMyTurn = false;
+		}
+		player.isMyTurn = true;
 	}
 
 	private getPlayerCardsAmount() {
@@ -293,7 +345,7 @@ export class GameState {
 		}
 		if (player !== undefined) {
 			transmitObject.playerCards = player.cards;
-			transmitObject.isPlayerTurn = this.isPlayerTurn(player);
+			transmitObject.isPlayerTurn = player.isMyTurn;
 		}
 		return (transmitObject);
 	}

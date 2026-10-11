@@ -149,6 +149,7 @@ Updates sent to all relevant users
 | player_turn | PlayerTurnTransmit | Notify of a player’s turn |
 | player_play_card_hand | CardHandTransmit | Notify that a player played a card hand |
 | player_skip_turn | SkipTurnTransmit | Notify that a player skipped their turn, usually followed up by player_turn |
+| player_unlock_achievement | AchievementUnlockTransmit | Notify the player that they have unlocked the achievement in real time |
 | game_settings_update | GameSettingsTransmit | Notify that there is an update to the lobby game settings |
 | game_end | GameEndStatsTransmit | Notify that the game has ended |
 | game_state | GameStateTransmit | For initializing the game state on the client |

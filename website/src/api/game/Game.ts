@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import { io, Socket } from 'socket.io-client';
-import { type GameStateTransmit, type StatusTransmit, type SeatOrderTransmit, type GameSettingsTransmit, type GameEndStatsTransmit } from '@big2/game-types';
+import { type GameStateTransmit, type StatusTransmit, type SeatOrderTransmit, type GameSettingsTransmit, type GameEndStatsTransmit, type AchievementUnlockTransmit } from '@big2/game-types';
 import { CardHeap } from './CardHeap';
 import { Player } from './Player';
 import { Opponent } from './Opponent';
@@ -128,12 +128,12 @@ export class Game {
 	
 		this.socket.on("player_connection_update", (disconnections: Record<string, boolean>) => {
 			useGameStore.setState({ playerDisconnection: disconnections });
-			console.log("[gameSocket] Received 'player_connection_update': ", disconnections);
+			console.log("[gameSocket] 'player_connection_update': ", disconnections);
 		});
 	
 		this.socket.on("user_seat_update", (seatData: SeatOrderTransmit) => {
 			const totalPlayers = useGameStore.getState().totalPlayers;
-			console.log(`[gameSocket] 'user_seat_update' | totalSeats: ${seatData.totalSeats} | seatOrder: ${seatData.seatOrder}`);
+			console.log("[gameSocket] 'user_seat_update': ", seatData);
 			if (totalPlayers !== seatData.totalSeats) {
 				useGameStore.setState({totalPlayers: seatData.totalSeats})
 				useGameStore.getState().initSeats();
@@ -143,7 +143,7 @@ export class Game {
 		});
 	
 		this.socket.on("user_list_update", (userList: Array<string>) => {
-			console.log(`[gameSocket] 'user_list_update': `, userList);
+			console.log("[gameSocket] 'user_list_update': ", userList);
 			const newUserSeats = [...useGameStore.getState().userSeats];
 			for (let i = 0; i < newUserSeats.length; i++) {
 				const userInList = userList.find((uuid) => uuid === newUserSeats[i]);
@@ -155,13 +155,17 @@ export class Game {
 		})
 
 		this.socket.on("game_settings_update", (gameSettings: GameSettingsTransmit) => {
-			console.log(gameSettings);
+			console.log("[gameSocket] 'game_settings_update': ", gameSettings);
 		});
 	
 		this.socket.on("game_state", (gameState: GameStateTransmit) => {
-			console.log("[gameSocket] Received game_state");
+			console.log("[gameSocket] 'game_state': ", gameState);
 			this.resetGame();
 			this.initGame(gameState);
+		});
+
+		this.socket.on("player_unlock_achievement", (achievementTransmit: AchievementUnlockTransmit) => {
+			console.log("[gameSocket] 'player_unlock_achievement': ", achievementTransmit);
 		});
 	}
 

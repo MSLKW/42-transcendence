@@ -49,7 +49,7 @@ export class Lobby {
 	}
 
 	public isActive() {
-		return (this.users.length > 0);
+		return (this.users.length > this.users.filter((user) => user.uuid.startsWith("bot-")).length);
 	}
 
 	/* --- */

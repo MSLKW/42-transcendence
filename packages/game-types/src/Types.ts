@@ -43,6 +43,24 @@ export enum PentupleType {
 	// RoyalFlush
 }
 
+// Convert this to zod validation later
+export type AchievementUnlockTransmit = {
+	playerUuid: string,
+	achievementId: string,
+	unlockedAt: string,
+}
+
+// Assumption of what the transmit game-stat will send me
+export type PlayerStatsTransmit = {
+	totalPlayed: number,
+	totalWins: number,
+	winstreak: number,
+	unlockedBadges: Array<string>,
+	unlockedAchievements: Array<AchievementUnlockTransmit>, 
+	xp: number,
+	level: number,
+}
+
 export type CardTransmit = z.infer<typeof s.CardTransmitSchema>;
 export type CardHandTransmit = z.infer<typeof s.CardHandTransmitSchema>;
 export type GameStateTransmit = z.infer<typeof s.GameStateTransmitSchema>;

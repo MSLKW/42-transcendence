@@ -5,39 +5,36 @@ import { CardHeapState } from './CardHeapState.js';
 import { io } from './server.js';
 import { CardHandState } from './CardHandState.js';
 import { UserState } from './UserState.js';
+import { EventEmitter } from 'node:stream';
 
 export class PlayerState {
 	public	socket: Socket;
 	public	uuid: string;
 	public	cards: Array<CardTransmit>;
-	private gameStateRef: GameState;
+	private gameEvents: EventEmitter;
 	private cardHeapRef: CardHeapState;
 	public	isDisconnected: boolean;
 
-	constructor(uuid: string, socket: Socket, gameState: GameState) {
+	public	isMyTurn: boolean;
+
+	// inject gameRoomId
+	constructor(uuid: string, socket: Socket, gameEvents: EventEmitter, gameRoomId: string, cardHeap: CardHeapState) {
 		this.uuid = uuid;
 		this.cards = [];
 		this.socket = socket;
-		this.gameStateRef = gameState;
-		this.cardHeapRef = gameState.cardHeap;
+		this.gameEvents = gameEvents;
+		this.cardHeapRef = cardHeap;
 		this.isDisconnected = false;
+		this.isMyTurn = false;
 
+		this.socket.join(gameRoomId);
 		this.setupSocketListeners()
 	}
 
 	public setupSocketListeners() {
-		this.socket.join(this.gameStateRef.gameRoomId);
 
 		this.socket.on("player_play_card_hand_request", (cardHandTransmit: CardHandTransmit, statusCallback) => {
-			const status: StatusTransmit = this.playCardHand(cardHandTransmit);
-			if (status.success === true) {
-				if (this.cards.length === 0) {
-					this.gameStateRef.endGame(this)
-					return ;
-				}
-				this.gameStateRef.nextPlayerTurn();
-			}
-			statusCallback(status);
+			statusCallback(this.playCardHand(cardHandTransmit));
 		});
 
 		this.socket.on("player_skip_turn_request", (statusCallback) => {
@@ -45,18 +42,18 @@ export class PlayerState {
 		})
 	}
 
-	public disconnect() {
+	public disconnect(gameRef: GameState) {
 		this.isDisconnected = true;
-		if (this.gameStateRef.settings.autoPassInMilliseconds === 0)
+		if (gameRef.settings.autoPassInMilliseconds === 0)
 			this.skipTurn();
 		console.log(`Player<${this.uuid}> has disconnected`)
 	}
 
-	public reconnect(user: UserState) {
+	public reconnect(user: UserState, gameRef: GameState) {
 		this.socket = user.socket;
 		this.isDisconnected = false;
 		this.setupSocketListeners();
-		this.socket.emit("game_state", this.gameStateRef.transmit(this));
+		this.socket.emit("game_state", gameRef.transmit(this));
 		console.log(`Player<${user.uuid}> has reconnected`);
 	}
 
@@ -93,7 +90,7 @@ export class PlayerState {
 			success: false,
 			message: "It's not the player's turn"
 		}
-		if (this.gameStateRef.isPlayerTurn(this) === false) {
+		if (this.isMyTurn === false) {
 			return (status);
 		}
 		if (this.cardHeapRef.isPlayerLeading(this.uuid)) {
@@ -107,15 +104,14 @@ export class PlayerState {
 	}
 
 	public skipTurn() {
-		if (this.gameStateRef.isPlayerTurn(this) === true) {
+		if (this.isMyTurn === true) {
 			if (this.cardHeapRef.isPlayerLeading(this.uuid))
 				this.cardHeapRef.resetPlayerLeading();
 			this.cardHeapRef.requiresThreeDiamonds = false;
 			const playerSkipTurn: SkipTurnTransmit = {
 				playerId: this.uuid
 			}
-			this.gameStateRef.emit("player_skip_turn", playerSkipTurn);
-			this.gameStateRef.nextPlayerTurn();
+			this.gameEvents.emit("player:skip_turn", playerSkipTurn);
 		}
 	}
 
@@ -125,7 +121,7 @@ export class PlayerState {
 			success: false,
 			message: ""
 		};
-		if (this.gameStateRef.isPlayerTurn(this) === false) {
+		if (this.isMyTurn === false) {
 			status.message = "Not your turn";
 			return (status);
 		}
@@ -153,7 +149,7 @@ export class PlayerState {
 			return (status);
 		}
 		this.cardHeapRef.receiveCardHand(cardHand);
-		this.gameStateRef.emit("player_play_card_hand", cardHand.transmit());
+		this.gameEvents.emit("player:play_card_hand", cardHand.transmit());
 		this.removeCards(cardHand.cards);
 
 		status.success = true;

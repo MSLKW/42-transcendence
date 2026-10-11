@@ -24,7 +24,7 @@ export class CardHeapState {
 		return (this.cardHands.length);
 	}
 
-	private getTopCardHand(): CardHandState | undefined {
+	public getTopCardHand(): CardHandState | undefined {
 		return (this.cardHands.at(this.cardHands.length - 1))
 	}
 
