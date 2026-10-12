@@ -31,17 +31,17 @@ export class Player extends Participant {
 
 	private setupListeners() {
 		this.socket.on("player_turn", (playerTurn: PlayerTurnTransmit) => {
+			console.log("[gameSocket] 'player_turn': ", playerTurn);
 			const activeSeat = useGameStore.getState().gameSeats.findIndex((uuid) => uuid === playerTurn.playerId);
 			useGameStore.setState({
 				activeSeat: activeSeat, 
 				isActiveSeatSkippable: playerTurn.skippable,
 				playerTimer: playerTurn.timer
 			});
-			console.log(`It is now Player<${playerTurn.playerId}>'s turn! Timer is set at ${playerTurn.timer} milliseconds!`);
 		});
 
 		this.socket.on("player_skip_turn", (skipTurn: SkipTurnTransmit) => {
-			console.log(`Player<${skipTurn.playerId}> skipped their turn!`);
+			console.log("[gameSocket] 'player_skip_turn': ", skipTurn);
 		});
 
 		threejsManager.renderer.domElement.addEventListener('pointerdown', (event) => {

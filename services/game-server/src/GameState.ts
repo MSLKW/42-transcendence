@@ -73,7 +73,9 @@ export class GameState {
 			this.emit("player_play_card_hand", cardHandTransmit);
 			for (let i = 0; i < this.players.length; i++) {
 				if (this.players[i].cards.length === 0) {
-					this.endGame(this.players[i]);
+					let winner = this.players[i];
+					const newWinner = this.checkLastPlayedTwoSpades(cardHandTransmit, winner);
+					this.endGame(newWinner !== undefined ? newWinner : winner);
 					return ;
 				}
 			}
@@ -295,13 +297,6 @@ export class GameState {
 			this.playerTurnIndex = 0;
 		this.playerTurnEvent();
 	}
-
-	// public isPlayerTurn(player: PlayerState) {
-	// 	if (this.players.indexOf(player) === this.playerTurnIndex) {
-	// 		return (true);
-	// 	}
-	// 	return (false);
-	// }
 	
 	private	togglePlayerTurnFlag() {
 		const player = this.players.at(this.playerTurnIndex);
@@ -337,6 +332,26 @@ export class GameState {
 				disconnectedPlayers++;
 		}
 		return (disconnectedPlayers);
+	}
+
+	private checkLastPlayedTwoSpades(cardHandTransmit: CardHandTransmit, winner: PlayerState): PlayerState | undefined {
+		if (this.settings.allow2OfSpadesEnd === false) {
+			const isFinalPlayer = winner.uuid === cardHandTransmit.playerId;
+			const playedTwoSpades = cardHandTransmit.cards.find((card) => card.rank === CardRank.Two && card.suit === CardSuit.Spade) !== undefined;
+			if (isFinalPlayer && playedTwoSpades) {
+				winner.playedTwoSpadesLast = true;
+				let leastCardsPlayedAmount = Infinity;
+				let leastCardsPlayedPlayer = undefined;
+				for (let i = 0; i < this.players.length; i++) {
+					if (this.players[i].cards.length < leastCardsPlayedAmount && this.players[i] !== winner) {
+						leastCardsPlayedAmount = this.players[i].cards.length;
+						leastCardsPlayedPlayer = this.players[i];
+					}
+				}
+				return(leastCardsPlayedPlayer);
+			}
+		}
+		return (undefined);
 	}
 
 	public transmit(player: PlayerState | undefined) {

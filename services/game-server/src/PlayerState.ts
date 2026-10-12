@@ -16,6 +16,7 @@ export class PlayerState {
 	public	isDisconnected: boolean;
 
 	public	isMyTurn: boolean;
+	public	playedTwoSpadesLast: boolean;
 
 	// inject gameRoomId
 	constructor(uuid: string, socket: Socket, gameEvents: EventEmitter, gameRoomId: string, cardHeap: CardHeapState) {
@@ -26,6 +27,7 @@ export class PlayerState {
 		this.cardHeapRef = cardHeap;
 		this.isDisconnected = false;
 		this.isMyTurn = false;
+		this.playedTwoSpadesLast = false;
 
 		this.socket.join(gameRoomId);
 		this.setupSocketListeners()
@@ -137,7 +139,7 @@ export class PlayerState {
 		for (let i = 0; i < cardHand.cards.length; i++) {
 			if (this.cards.findIndex((card: CardTransmit) => card.rank === cardHand.cards[i].rank && card.suit === cardHand.cards[i].suit ) == -1) {
 				status.message = "cardhand cards not in playerState cards";
-				return (status);
+				return (status); 
 			}
 		}
 		if (this.cardHeapRef.requiresThreeDiamonds === true && PlayerState.hasCard(cardHand.cards, CardRank.Three, CardSuit.Diamond) === false) {
@@ -160,7 +162,11 @@ export class PlayerState {
 	public calculatePenaltyPoints(): number {
 		let penaltyPoints: number = 0;
 		const cardAmount = this.cards.length;
-
+		
+		if (this.playedTwoSpadesLast === true) {
+			penaltyPoints = 99;
+			return (penaltyPoints);
+		}
 		if (cardAmount <= 9) {
 			penaltyPoints = cardAmount;
 		}
@@ -175,5 +181,8 @@ export class PlayerState {
 
 	public reset() {
 		this.cards.length = 0;
+		// this.isDisconnected = false;
+		this.isMyTurn = false;
+		this.playedTwoSpadesLast = false;
 	}
 }
