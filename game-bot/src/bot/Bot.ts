@@ -17,14 +17,27 @@ import {
 
 type CardHand = CardHandTransmit;
 
-const CONNECTION_ATTEMPT_DELAY_MS = 500;
-const CONNECTION_RETRY_LIMIT = 3;
+const CONNECTION_MAX_ATTEMPTS = 3;
 const CONNECTION_RETRY_DELAY_MS = 1000;
+
+function connectSocket(serverUrl: string, lobbyId: string, botSessionToken: string): Promise<Socket | null>
+{
+	return new Promise((resolve) => {
+		const socket = io(serverUrl, {
+			reconnection: false,
+			auth: {
+				lobbyId:			lobbyId,
+				botSessionToken:	botSessionToken
+			}
+		});
+		socket.once("connect", () => { resolve(socket) });
+		socket.once("connect_error", () => { resolve(null) });
+	});
+}
 
 export class Bot
 {
 	private state:			GameState;
-	private ai:				AAIController;
 	private socket:			Socket | null = null;
 
 	private seatOrder:		PlayerSeatOrderTransmit | null = null;
@@ -33,40 +46,30 @@ export class Bot
 	private gamesPlayed:	number = 0;
 	private maxGames:		number = 1000;
 
-	constructor(private id: string, private serverUrl: string, ai: AAIController)
+	constructor(private id: string, private ai: AAIController)
 	{
 		this.state = new GameState("", {}, []);
-		this.ai = ai;
 	}
 
-	async start(serverUrl: string, lobbyId: string, seat: number, sessionToken: string): Promise<boolean>
+	async start(serverUrl: string, lobbyId: string, seatIndex: number, botSessionToken: string): Promise<boolean>
 	{
-		await setTimeout(CONNECTION_ATTEMPT_DELAY_MS);
-		for (let attempt = 0; attempt < CONNECTION_RETRY_LIMIT && !this.socket?.connected; ++attempt)
+		for (let attempt = 0; attempt < CONNECTION_MAX_ATTEMPTS && this.socket == null; ++attempt)
 		{
-			await setTimeout(CONNECTION_RETRY_DELAY_MS * attempt);
+			await setTimeout(CONNECTION_RETRY_DELAY_MS * attempt)
 			logger.verbose(this.id, `connecting socket to ${serverUrl} (attempt ${attempt})`);
-			this.socket = io(this.serverUrl, {
-				auth: {
-					lobbyId:			lobbyId,
-					botSessionToken:	sessionToken
-				}
-			});
+			this.socket = await connectSocket(serverUrl, lobbyId, botSessionToken);
 		}
-		if (!this.socket || !this.socket?.connected)
+		if (!this.socket)
 		{
-			logger.error(this.id, `failed to socket to ${serverUrl}`);
+			logger.error(this.id, `failed to connect to ${serverUrl}`);
 			return false;
 		}
-		logger.info(this.id, `connected socket to ${serverUrl}`);
-
-		const status: StatusTransmit = await this.socket.emitWithAck("user_seat_take", seat);
-		if (!status.success)
+		logger.info(this.id, `connected to ${serverUrl}`);
+		if (!(await this.socket.emitWithAck("user_seat_take", seatIndex)).success)
 		{
-			logger.info(this.id, `failed to take seat ${seat}`);
+			logger.error(this.id, "failed to take seat");
 			return false;
 		}
-
 		this.setupSocketEvents();
 		return true;
 	}
