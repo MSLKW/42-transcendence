@@ -5,7 +5,6 @@ import { useAuthStore } from "./store/AuthStore";
 import { useDevStore } from "./store/DevStore";
 import { useProfileStore } from "./store/ProfileStore";
 import { useSceneStore } from "./store/SceneStore";
-import { handleValidate } from "./api/authentication/validate/handleValidate";
 import { subscribeToMessages } from "./api/chat/subscribe/subscribeToMessages";
 import { subscribeToUserJoined } from "./api/chat/subscribe/subscribeToUserJoined";
 import { subscribeToUserLeft } from "./api/chat/subscribe/subscribeToUserLeft";

@@ -4,7 +4,7 @@ import { useGameStore } from "./GameStore";
 import type { BADGE_TYPE } from "./ProfileStore";
 import { threejsManager } from "../App";
 
-export type SCENES = "Badge" | "Login" | "Home" | "Lobby" | "Test" | "Game";
+export type SCENES = "Badge" | "Login" | "Home" | "Lobby" | "Game";
 
 interface SceneValues {
 	sceneVerboseMode: boolean;

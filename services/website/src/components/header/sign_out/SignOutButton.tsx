@@ -1,11 +1,11 @@
-import { handleSignOut } from "../../../api/authentication/sign_out/handleSignOut";
+import { useSceneStore } from "../../../store/SceneStore";
 import { Tooltip } from "../../../utilities/react/Tooltip";
 import { SignOutIcon } from "./SignOutIcon";
 
 export const SignOutButton = () => {
 	return (
 		<button
-			onClick={handleSignOut}
+			onClick={() => useSceneStore.getState().setShowWindow("leave", true)}
 			className="btn-icon"
 		>
 			<Tooltip text="Sign out" position="bottom">
