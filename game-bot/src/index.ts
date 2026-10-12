@@ -36,8 +36,13 @@ server.on("error", (err: NodeJS.ErrnoException) =>
 	console.error(err.message);
 });
 
-process.on("SIGINT", () => {
+function shutdown()
+{
 	manager.stopAll();
 	server.close();
 	process.exit(0);
-});
+
+}
+
+process.on("SIGINT", shutdown);
+process.on("SIGTERM", shutdown);
