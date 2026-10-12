@@ -28,6 +28,7 @@ export class ClientManager {
 
 		client.socket = socket;
 		this.bySocketId.set(socket.id, client);
+
 		return oldSocket;
 	}
 
@@ -46,7 +47,6 @@ export class ClientManager {
 			const currentClient = this.byUuid.get(uuid);
 			if (!currentClient)
 				return;
-
 			if (currentClient.socket.id !== disconnectedSocketId)
 				return;
 
@@ -71,7 +71,6 @@ export class ClientManager {
 			return undefined;
 
 		this.cancelRemoval(uuid);
-
 		this.byUuid.delete(uuid);
 		this.bySocketId.delete(client.socket.id);
 

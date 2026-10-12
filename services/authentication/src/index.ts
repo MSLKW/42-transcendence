@@ -22,6 +22,8 @@ app.use(express.json());
 app.use(cookieParser());
 
 //replace with actual db user store class like MongoUserStore()
+// const userStore = new FileUserStore();
+// const sessionStore = new FileSessionStore();
 const userStore = new DrizzleUserStore();
 const sessionStore = new DrizzleSessionStore();
 

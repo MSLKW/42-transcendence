@@ -1,0 +1,6 @@
+ol {
+	@apply
+		list-decimal list-inside
+		text-1.25rem
+		;
+}

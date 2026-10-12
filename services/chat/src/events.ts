@@ -28,14 +28,8 @@ export interface ChatRateLimitedPayload {
 }
 
 export interface ClientToServerEvents {
-	chat_join_room: (payload: {
-		roomId: string;
-	}) => void;
-
-	chat_typing: (paylod: {
-		isTyping: boolean;
-	}) => void;
-
+	chat_join_room: (payload: { roomId: string }) => void;
+	chat_typing: (payload: { isTyping: boolean }) => void;
 	chat_message: (payload: {
 		type: ChatType;
 		message: string;
