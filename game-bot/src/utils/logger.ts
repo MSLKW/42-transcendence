@@ -18,12 +18,12 @@ function format(args: unknown[]): string {
 export const logger = {
 	verbose(id: string, ...args: unknown[]) {
 		if (CURRENT_LEVEL <= LogLevel.VERBOSE)
-			console.log(`[VERBOSE][${id}]`, format(args));
+			console.log(`[${id}]`, format(args));
 	},
 
 	info(id: string, ...args: unknown[]) {
 		if (CURRENT_LEVEL <= LogLevel.INFO)
-			console.log(`[INFO][${id}]`, format(args));
+			console.log(`[${id}]`, format(args));
 	},
 
 	warn(id: string, ...args: unknown[]) {
