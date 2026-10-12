@@ -26,6 +26,7 @@ export default function Dev() {
 	const cachedFriends = useFriendStore((store) => store.cachedFriends);
 	const gameVerboseMode = useGameStore((store) => store.gameVerboseMode);
 	const gameSocketId = useGameStore((store) => store.gameSocketId);
+	const playerPassed = useGameStore((store) => store.playerPassed);
 	const userSeats = useGameStore((store) => store.userSeats);
 	const totalPlayers = useGameStore((store) => store.totalPlayers);
 	const notifications = useNotificationStore((store) => store.notifications);

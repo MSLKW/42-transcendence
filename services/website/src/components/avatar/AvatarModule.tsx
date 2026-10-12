@@ -4,8 +4,8 @@ import { AvatarImage } from "./image/AvatarImage";
 import { AvatarName } from "./name/AvatarName";
 import { AvatarCornerButton } from "./corner/AvatarCornerButton";
 import { ChatBubbles } from "../bubble/ChatBubble";
-import { useAuthStore } from "../../store/AuthStore";
 import { Tooltip } from "../../utilities/react/Tooltip";
+import { useGameStore } from "../../store/GameStore";
 
 interface AvatarModuleProps {
 	uuid: string;
@@ -22,10 +22,10 @@ export const AvatarModule = ({
 	isActive = false,
 	showName = true,
 }: AvatarModuleProps) => {
-	const clientUuid = useAuthStore((store) => store.clientUuid);
 	const cachedData = useProfileStore((store) => store.cachedData);
 	const currentScene = useSceneStore((store) => store.currentScene);
 	const setShowWindow = useSceneStore((store) => store.setShowWindow);
+	const playerPassed = useGameStore((store) => store.playerPassed);
 
 	const relation = cachedData[uuid ?? ""]?.relation ?? null;
 
@@ -62,6 +62,15 @@ export const AvatarModule = ({
 					/>
 				</Tooltip>
 				<AvatarCornerButton cornerButton={cornerButton} />
+				{ playerPassed.includes(uuid) &&
+					<div className="
+						absolute bottom-0 translate-y-2 left-1/2 -translate-x-1/2
+						bg-n1/80 text-n6 border border-n2
+						w-[120%] rounded-full
+					">
+						<p>PASSED</p>
+					</div>
+				}
 			</button>
 			{ showName && <AvatarName name={cachedData[uuid?? ""]?.name ?? "-"} /> }
 		</div>
