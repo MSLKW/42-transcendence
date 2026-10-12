@@ -12,7 +12,7 @@
 FROM node:24
 WORKDIR /app
 
-COPY ./package*.json ./website/.
+COPY ./package*.json ./services/website/.
 COPY --from=game-types . ./packages/game-types/.
 COPY --from=root package*.json ./
 
@@ -21,10 +21,10 @@ RUN cd ./packages/game-types && npm run build:docker
 
 RUN npm install
 
-COPY . ./website/.
+COPY . ./services/website/.
 
 EXPOSE 5173
 
-WORKDIR /app/website
+WORKDIR /app/services/website
 
 CMD ["npm", "run", "dev"]

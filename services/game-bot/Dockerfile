@@ -1,7 +1,7 @@
 FROM node:20-alpine AS builder
 WORKDIR /app
 
-COPY . ./game-bot/.
+COPY . ./services/game-bot/.
 COPY --from=game-types . ./packages/game-types/.
 COPY --from=root package*.json ./
 
@@ -10,14 +10,14 @@ RUN cd ./packages/game-types && npm run build:docker
 
 RUN npm install
 
-RUN cd ./game-bot && npm run build
+RUN cd ./services/game-bot && npm run build
 
 # -----
 
 FROM node:20-alpine AS runner
 WORKDIR /app
 
-COPY package*.json ./game-bot/.
+COPY package*.json ./services/game-bot/.
 COPY --from=game-types . ./packages/game-types/.
 COPY --from=root package*.json .
 
@@ -26,10 +26,10 @@ RUN cd ./packages/game-types && npm run build:docker
 
 RUN npm ci --omit=dev
 
-COPY --from=builder /app/game-bot/dist ./game-bot/dist
+COPY --from=builder /app/services/game-bot/dist ./services/game-bot/dist
 
 EXPOSE 3000
 
-WORKDIR /app/game-bot
+WORKDIR /app/services/game-bot
 
 CMD ["npm", "run", "start"]

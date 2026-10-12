@@ -10,7 +10,7 @@ import { gsap } from 'gsap';
 import { Participant } from './Participant';
 import { useGameStore } from "../../store/GameStore";
 import { usePartyStore } from "../../store/PartyStore";
-import { partySocket } from "../../api/party/partySocket";
+import { partySocket } from "../party/partySocket";
 import { useSceneStore } from "../../store/SceneStore";
 import { threejsManager } from '../../App';
 import { useResultsStore } from '../../store/ResultsStore';

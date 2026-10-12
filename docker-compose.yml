@@ -3,7 +3,8 @@ name: big2
 services:
   nginx:
     container_name: nginx
-    build: nginx
+    build:
+      context: ./infra/nginx
     image: nginx:test
     ports:
       - "${DOMAIN_PORT}:${DOMAIN_PORT}"
@@ -17,7 +18,7 @@ services:
   website:
     container_name: website
     build:
-      context: ./website
+      context: ./services/website
       dockerfile: Dockerfile
       additional_contexts:
         root: .
@@ -25,9 +26,9 @@ services:
     image: website:test
     restart: unless-stopped
     volumes: # temporary for vite hmr
-      - ./website:/app/website
+      - ./services/website:/app/services/website
       - /app/node_modules
-      - /app/website/node_modules
+      - /app/services/website/node_modules
     environment:
       DOMAIN_PORT: ${DOMAIN_PORT} # Right now only for vite config, can remove in production
     networks:
@@ -36,7 +37,7 @@ services:
   authentication:
     container_name: authentication
     build:
-      context: ./authentication
+      context: ./services/authentication
     image: authentication:test
     restart: unless-stopped
     environment:
@@ -49,7 +50,8 @@ services:
 
   profile:
     container_name: profile
-    build: profile
+    build:
+      context: ./services/profile
     image: profile:test
     restart: unless-stopped
     environment:
@@ -62,7 +64,7 @@ services:
   party:
     container_name: party
     build:
-      context: ./party
+      context: ./services/party
     image: party:test
     restart: unless-stopped
     environment:
@@ -75,7 +77,7 @@ services:
   game-server:
     container_name: game-server
     build: 
-      context: ./game-server
+      context: ./services/game-server
       dockerfile: Dockerfile
       additional_contexts:
         root: .
@@ -97,7 +99,7 @@ services:
   game-bot:
     container_name: game-bot
     build:
-      context: ./game-bot
+      context: ./services/game-bot
       dockerfile: Dockerfile
       additional_contexts:
         root: .
@@ -111,7 +113,8 @@ services:
       - game-bot-network
 
   chat:
-    build: chat
+    build:
+      context: ./services/chat
     image: chat:test
     restart: unless-stopped
     ports:
