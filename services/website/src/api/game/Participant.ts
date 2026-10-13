@@ -17,4 +17,5 @@ export abstract class Participant {
 	}
 
 	public abstract sync(gameState: GameStateTransmit): void;
+	public abstract reset(): void;
 }

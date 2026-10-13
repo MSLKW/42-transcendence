@@ -35,19 +35,19 @@ export class GameState {
 	constructor(sessionId: string) {
 		this.players = [];
 		this.spectators = [];
+		this.settings = {
+			allow3OfAKind: false,
+			allow2OfSpadesEnd: false,
+			autoPassInMilliseconds: 60000,
+		};
 		this.cardDeck = new CardDeckState();
-		this.cardHeap = new CardHeapState();
+		this.cardHeap = new CardHeapState(this.settings);
 		this.events = new EventEmitter();
 		this.statistics = new StatisticsTracker(this.events);
 		this.isGameStarted = false;
 		this.playerTurnIndex = -1;
 		this.playerTurnTimeoutId = undefined;
 		this.gameRoomId = "game" + sessionId;
-		this.settings = {
-			allow3OfAKind: true,
-			allow2OfSpadesEnd: false,
-			autoPassInMilliseconds: 60000,
-		};
 		this.previousSeatOrder = [];
 		this.temporaryWinStreakWinnerUuid = "";
 		this.temporaryWinStreakAmount = 0;
@@ -154,14 +154,15 @@ export class GameState {
 		}
 		if (this.playerTurnIndex === -1)
 			this.playerTurnIndex = 0;
+		this.togglePlayerTurnFlag();
 		for (let i = 0; i < this.players.length; i++) {
 			this.players[i].socket.emit("game_state", this.transmit(this.players[i]));
 		}
 		for (let i = 0; i < this.spectators.length; i++) {
 			this.spectators[i].socket.emit("game_state", this.transmit(undefined));
 		}
-		this.playerTurnEvent();
 		this.statistics.setupPlayerTracker(this.players);
+		this.playerTurnEvent();
 		this.isGameStarted = true;
 		console.log(`Game<${this.gameRoomId}> has started`);
 		status.success = true;
@@ -307,6 +308,9 @@ export class GameState {
 			this.players[i].isMyTurn = false;
 		}
 		player.isMyTurn = true;
+		for(let i = 0; i < this.players.length; i++) {
+			console.log(`${this.players[i].uuid} isMyTurn: ${this.players[i].isMyTurn}`);
+		}
 	}
 
 	private getPlayerCardsAmount() {

@@ -11,6 +11,10 @@ export class Opponent extends Participant {
 	constructor(socket: Socket, uuid: string, cardHeapRef: CardHeap) {
 		super(socket, uuid, cardHeapRef);
 
+		this.bindListeners();
+	}
+
+	private	bindListeners() {
 		this.socket.on("player_play_card_hand", (cardHandTransmit: CardHandTransmit) => {
 			if (cardHandTransmit.playerId === this.uuid) {
 				const cardHand = new CardHand(this.uuid);
@@ -30,6 +34,10 @@ export class Opponent extends Participant {
 		});
 	}
 
+	private	unbindListeners() {
+		this.socket.off("player_play_card_hand");
+	}
+
 	public override sync(gameState: GameStateTransmit) {
 		this.collectCardsAmount(gameState.playerCardsAmount[this.uuid]);
 	}
@@ -39,5 +47,9 @@ export class Opponent extends Participant {
 			const card = new Card(CardRank.Unknown, 0);
 			this.cardManager.receiveCard(card);
 		}
+	}
+
+	public reset() {
+		this.unbindListeners();
 	}
 }

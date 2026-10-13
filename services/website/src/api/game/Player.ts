@@ -18,7 +18,7 @@ export class Player extends Participant {
 		this.startClick = new THREE.Vector2();
 		this.isDragging = false;
 
-		this.setupListeners();
+		this.bindListeners();
 	}
 
 	public getPlayerId() {
@@ -29,9 +29,10 @@ export class Player extends Participant {
 		this.collectCards(gameState.playerCards);
 	}
 
-	private setupListeners() {
+	private bindListeners() {
 		this.socket.on("player_turn", (playerTurn: PlayerTurnTransmit) => {
 			console.log("[gameSocket] 'player_turn': ", playerTurn);
+			console.log("player_turn listeners amount: ", this.socket.listeners("player_turn").length);
 			const activeSeat = useGameStore.getState().gameSeats.findIndex((uuid) => uuid === playerTurn.playerId);
 			useGameStore.setState({
 				activeSeat: activeSeat, 
@@ -97,6 +98,12 @@ export class Player extends Participant {
 		})
 	}
 
+	public unbindListeners() {
+		this.socket.off("player_turn");
+		this.socket.off("player_skip_turn");
+		// threejsManager.renderer.domElement.removeEventListener('pointerdown');
+	}
+
 	public sendCardsButtonHandler() {
 		const cardHandTransmit = this.cardManager.selectedCards.transmit();
 		this.socket.emit("player_play_card_hand_request", cardHandTransmit, (status: StatusTransmit) => {
@@ -111,9 +118,7 @@ export class Player extends Participant {
 
 	public skipTurnButtonHandler() {
 		this.socket.emit("player_skip_turn_request", (status: StatusTransmit) => {
-			if (status.success === false) {
-				console.log(`[gameSocket] 'player_skip_turn_request' message: ${status.message}`);
-			}
+			console.log("[gameSocket] 'player_skip_turn_request': ", status);
 		});
 	}
 
@@ -172,5 +177,9 @@ export class Player extends Participant {
 			const card = new Card(cardTransmits[i].rank, cardTransmits[i].suit);
 			this.cardManager.receiveCard(card);
 		}
+	}
+
+	public reset() {
+		this.unbindListeners();
 	}
 }

@@ -190,6 +190,7 @@ export class Game {
 	public resetGame() {
 		this.cardHeap.reset();
 		for (let i = 0; i < this.participants.length; i++) {
+			this.participants[i].reset();
 			this.participants[i].cardManager.reset();
 		}
 		this.playerRef = null;
