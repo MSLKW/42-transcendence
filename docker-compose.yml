@@ -236,9 +236,9 @@ services:
     build:
       context: ./services/authentication
       additional_contexts:
-        root: .
-        auth-schema: ./packages/postgres/auth-schema
-        postgres-client: ./packages/postgres/postgres-client
+        root:             .
+        auth-schema:      ./packages/postgres/auth-schema
+        postgres-client:  ./packages/postgres/postgres-client
     pull_policy: never
     restart: unless-stopped
     environment:
@@ -269,10 +269,10 @@ services:
     build:
       context: ./services/party
       additional_contexts:
-        root: .
-        auth-schema: ./packages/postgres/auth-schema
-        party-schema: ./packages/postgres/party-schema
-        postgres-client: ./packages/postgres/postgres-client
+        root:             .
+        auth-schema:      ./packages/postgres/auth-schema
+        party-schema:     ./packages/postgres/party-schema
+        postgres-client:  ./packages/postgres/postgres-client
     pull_policy: never
     restart: unless-stopped
     environment:
@@ -302,11 +302,12 @@ services:
     build:
       context: ./services/profile
       additional_contexts:
-        root: .
-        auth-schema: ./packages/postgres/auth-schema
-        profile-types: ./packages/types/profile-types
-        profile-schema: ./packages/postgres/profile-schema
-        postgres-client: ./packages/postgres/postgres-client
+        root:             .
+        badge-types:      ./packages/types/badge-types
+        profile-types:    ./packages/types/profile-types
+        auth-schema:      ./packages/postgres/auth-schema
+        profile-schema:   ./packages/postgres/profile-schema
+        postgres-client:  ./packages/postgres/postgres-client
     pull_policy: never
     restart: unless-stopped
     environment:
@@ -338,11 +339,11 @@ services:
     build:
       context: ./services/friends
       additional_contexts:
-        root: .
-        auth-schema: ./packages/postgres/auth-schema
-        friends-types: ./packages/types/friends-types 
-        friends-schema: ./packages/postgres/friends-schema
-        postgres-client: ./packages/postgres/postgres-client
+        root:             .
+        friends-types:    ./packages/types/friends-types 
+        auth-schema:      ./packages/postgres/auth-schema
+        friends-schema:   ./packages/postgres/friends-schema
+        postgres-client:  ./packages/postgres/postgres-client
     pull_policy: never
     restart: unless-stopped
     environment:
@@ -390,12 +391,12 @@ services:
   #     BACKEND MICORSERVICE
   game-server:
     container_name: game-server
+    image: game-server:services
     build: 
       context: ./services/game-server
       additional_contexts:
         root: .
         game-types: ./packages/types/game-types
-    image: game-server:services
     pull_policy: never
     restart: unless-stopped
     environment:
@@ -404,33 +405,50 @@ services:
       - transcendence
 
 
-  # #     BACKEND MICORSERVICE
+  # #    BACKEND MICORSERVICE
   # game-bot:
   #   container_name: game-bot
+  #   image: game-bot:services
   #   build: 
   #     context: ./services/game-bot
   #     additional_contexts:
   #       root: .
-  #   image: game-bot:services
+  #       game-types: ./packages/types/game-types
   #   pull_policy: never
   #   restart: unless-stopped
+  #   environment:
+  #     PORT: ${GAME_BOT_SERVICE_PORT:?}
   #   networks:
   #     - transcendence
 
 
-  # # #     BACKEND MICORSERVICE
-  # game-stats:
-  #   container_name: game-stats
-  #   image: game-stats:services
-  #   environment:
-  #     PGUSER: ${PGUSER_GAME_STATS:?}
-  #     PGPASSWORD_FILE: /run/secrets/db-game-stats-password
-  #     PGPORT: ${PGPORT:?}
-  #     PGHOST: ${PGHOST:?}
-  #     PGDATABASE: ${PGDATABASE:?}
-      # PG_POOL_MAX: ${PG_POOL_MAX:?}
-  #   secrets:
-  #     - db-game-stats-password
-  #   depends_on:
-  #     migrator:
-  #       condition: service_completed_successfully  # Waits for migrator to finish and exit with code 0
+  #     BACKEND MICORSERVICE
+  game-stats:
+    container_name: game-stats
+    image: game-stats:services
+    build:
+      context: ./services/game-stats
+      additional_contexts:
+        root:               .
+        game-types:         ./packages/types/game-types
+        badge-types:        ./packages/types/badge-types
+        game-stats-types:   ./packages/types/game-stats-types
+        auth-schema:        ./packages/postgres/auth-schema
+        postgres-client:    ./packages/postgres/postgres-client
+        game-stats-schema:  ./packages/postgres/game-stats-schema
+    environment:
+      PGPASSWORD_FILE: /run/secrets/db-game-stats-password
+      PGUSER: ${PGUSER_GAME_STATS:?}
+      PGPORT: ${PGPORT:?}
+      PGHOST: ${PGHOST:?}
+      PGDATABASE: ${PGDATABASE:?}
+      PG_POOL_MAX: ${PG_POOL_MAX:?}
+      PORT: ${GAME_STATS_SERVICE_PORT:?}
+    secrets:
+      - db-game-stats-password
+    networks:
+      - transcendence
+      - database
+    depends_on:
+      migrator:
+        condition: service_completed_successfully  # Waits for migrator to finish and exit with code 0

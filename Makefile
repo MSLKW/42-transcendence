@@ -21,7 +21,7 @@ SHELLABLE_SERVICES	:=	website authentication party profile friends chat game-ser
 
 
 # --- Makefile Commands -----------------------------------------------------
-## Build (cached) and start all services; recreates only whats changed
+## Build (cached) and start all services; recreates upon new changes
 all: 
 	@echo "$(PURPLE)\n🛠️  Building and launching full Docker environment from scratch... \n$(RESET)"
 	@$(COMPOSE) up --build 
@@ -30,7 +30,7 @@ all:
 
 ## Stop and remove containers + network (keeps images & volumes)
 down: 
-	@echo "$(PURPLE) Removing all containers & networks on Docker (except images and volumes)...\n$(RESET)" 
+	@echo "$(PURPLE) Stopping running containers & removing all containers & networks on Docker (keep images & volumes)...\n$(RESET)" 
 	@$(COMPOSE) down
  
 
@@ -60,7 +60,7 @@ clean:
 
 ## Clean + wipe volumes
 fclean: clean 
-	@echo "$(PURPLE)\n🗑️🚨 Removing this project's Docker volumes including anonymous volumes...\n$(RESET)"
+	@echo "$(PURPLE)\n🗑️🚨 Removing this project's Docker volumes...\n$(RESET)"
 	@$(COMPOSE) down -v
 	@echo "$(PURPLE)\n🗑️💥 Done, Absolutely everything are removed now!\n$(RESET)"
 
@@ -112,20 +112,27 @@ nuclear:
 
 ## Remove everything belong to this specific stack/project
 purge:
+	@echo "$(PURPLE)docker stop $$(docker ps -aq) 2>/dev/null || true$(RESET)"
 	@docker stop $$(docker ps -aq) 2>/dev/null || true
+	@echo "$(PURPLE)docker rm $$(docker ps -aq) 2>/dev/null || true$(RESET)"
 	@docker rm $$(docker ps -aq) 2>/dev/null || true
+	@echo "$(PURPLE)docker rmi $$(docker images -q) 2>/dev/null || true$(RESET)"
 	@docker rmi $$(docker images -q) 2>/dev/null || true
+	@echo "$(PURPLE)docker volume prune -f$(RESET)"
 	@docker volume prune -f
+	@echo "$(PURPLE)docker network prune -f$(RESET)"
 	@docker network prune -f
 
 
 ## Build images with plain text output including exact error messages for debugging 
 progress: 
+	@echo "$(PURPLE)$(COMPOSE) build --progress=plain$(RESET)"
 	@$(COMPOSE) build --progress=plain
  
 
 ## See what Docker reads from docker compose
 config: 
+	@echo "$(PURPLE)$(COMPOSE) config$(RESET)"
 	@$(COMPOSE) config 
  
  

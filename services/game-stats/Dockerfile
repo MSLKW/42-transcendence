@@ -38,17 +38,14 @@ COPY --from=builder /app/packages/types/game-stats-types/dist       ./packages/t
 COPY --from=builder /app/packages/postgres/game-stats-schema/dist   ./packages/postgres/game-stats-schema/dist
 COPY --from=builder /app/services/game-stats/dist                   ./services/game-stats/dist
 
-COPY scripts/* /usr/local/bin
-
 ENV PORT=3000
 # ^ default fallback only, in case someone runs this image standalone without Compose.
 # Compose's `environment: PORT=${FRIENDS_SERVICE_PORT}` overrides this ENV at runtime.
 
 EXPOSE ${PORT}
 
-# HEALTHCHECK --interval=5s --timeout=3s --retries=3 --start-period=5s \
-# 	CMD wget -q --spider http://localhost:${PORT}/health || exit 1
+HEALTHCHECK --interval=5s --timeout=3s --retries=3 --start-period=5s \
+	CMD wget -q --spider http://localhost:${PORT}/health || exit 1
 
 WORKDIR /app/services/game-stats
-ENTRYPOINT ["/usr/local/bin/game-stats-entrypoint.sh"]
 CMD ["npm", "run", "start"]
