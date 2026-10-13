@@ -77,8 +77,7 @@ export const HomeScene = () => {
 						flex
 						gap-2rem pt-2rem
 						sm:overflow-x-visible overflow-x-auto
-					"
-				>
+				">
 					<PartyCallButton />
 					{clientUuid &&
 						<AvatarModule 

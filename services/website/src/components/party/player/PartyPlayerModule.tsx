@@ -4,7 +4,7 @@ import { partySocket } from "../../../api/party/partySocket";
 import { handleGetProfile } from "../../../api/profile/get_profile/handleGetProfile";
 import { handleGetOnline } from "../../../api/party/get_online/handleGetOnline";
 import { useAuthStore } from "../../../store/AuthStore";
-import { useFriendStore } from "../../../store/FriendStore";
+import { useFriendsStore } from "../../../store/FriendsStore";
 import { usePartyStore, type AVAILABILITY_TYPE } from "../../../store/PartyStore";
 import type { UserData } from "../../../store/ProfileStore";
 import { Tooltip } from "../../../utilities/react/Tooltip";
@@ -19,7 +19,7 @@ interface PartyPlayerModuleProps {
 export const PartyPlayerModule = ({ uuid }: PartyPlayerModuleProps) => {
 	const clientUuid = useAuthStore((store) => store.clientUuid);
 	const hostUuid = usePartyStore((store) => store.hostUuid);
-	const cachedFriends = useFriendStore((store) => store.cachedFriends);
+	const cachedFriends = useFriendsStore((store) => store.cachedFriends);
 	// const members = usePartyStore((store) => store.members);
 	const availabilityOverride = usePartyStore((store) => store.availabilityOverrides[uuid]);
 

@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import { partySocket } from "../../api/party/partySocket";
-import { handleCreatedAt } from "../../api/authentication/created_at/handleCreatedAt";
+import { handleCreatedAt } from "../../api/authentication/get_created-at/handleCreatedAt";
 import { handlePutProfile } from "../../api/profile/put_profile/handlePutProfile";
 import { useAuthStore } from "../../store/AuthStore";
 import { useNotificationStore, NOTIFICATION_TYPE } from "../../store/NotificationStore";

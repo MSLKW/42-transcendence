@@ -1,6 +1,6 @@
 import type { Dispatch, SetStateAction } from "react";
 import { fetchSignUp } from "./fetchSignUp";
-import { fetchSignIn } from "../sign_in/fetchSignIn";
+import { fetchSignIn } from "../post_signin/fetchSignIn";
 import { useAuthStore } from "../../../store/AuthStore";
 import { useNotificationStore, NOTIFICATION_TYPE } from "../../../store/NotificationStore";
 import { useSceneStore } from "../../../store/SceneStore";

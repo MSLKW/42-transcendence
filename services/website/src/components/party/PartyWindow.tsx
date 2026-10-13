@@ -1,13 +1,13 @@
 import { useState, useRef, useEffect } from "react";
 import { handleGetSearch } from "../../api/profile/get_search/handleGetSearch";
-// import { useFriendStore } from "../../store/FriendStore";
+// import { useFriendsStore } from "../../store/FriendStore";
 import { Window } from "../window/Window";
 import { SearchModule } from "./search/SearchModule";
 import { PartyPlayerModule } from "./player/PartyPlayerModule";
 import { usePartyStore } from "../../store/PartyStore";
 
 export const PartyWindow = () => {
-	// const cachedFriends = useFriendStore((store) => store.cachedFriends);
+	// const cachedFriends = useFriendsStore((store) => store.cachedFriends);
 
 	const [searchQuery, setSearchQuery] = useState<string>("");
 	const [filteredResults, setFilteredResults] = useState<string[]>([]);

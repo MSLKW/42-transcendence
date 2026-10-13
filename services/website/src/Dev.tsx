@@ -1,12 +1,12 @@
 import { useState } from "react";
-import { handleSignOut } from "./api/authentication/sign_out/handleSignOut";
+import { handleSignOut } from "./api/authentication/delete_logout/handleLogout";
 import { useChatStore } from "./store/ChatStore";
 import { chatSocket } from "./api/chat/chatSocket";
 import { partySocket } from "./api/party/partySocket";
 import { useAuthStore } from "./store/AuthStore";
 import { useBotStore } from "./store/BotStore";
 import { useDevStore } from "./store/DevStore";
-import { useFriendStore } from "./store/FriendStore";
+import { useFriendsStore } from "./store/FriendsStore";
 import { useGameStore } from "./store/GameStore";
 import { useNotificationStore, NOTIFICATION_TYPE } from "./store/NotificationStore";
 import { usePartyStore } from "./store/PartyStore";
@@ -23,7 +23,7 @@ export default function Dev() {
 	const chatVerboseMode = useChatStore((store) => store.chatVerboseMode);
 	const chatSocketId = useChatStore((store) => store.chatSocketId);
 	const chatRoomId = useChatStore((store) => store.chatRoomId);
-	const cachedFriends = useFriendStore((store) => store.cachedFriends);
+	const cachedFriends = useFriendsStore((store) => store.cachedFriends);
 	const gameVerboseMode = useGameStore((store) => store.gameVerboseMode);
 	const gameSocketId = useGameStore((store) => store.gameSocketId);
 	const playerPassed = useGameStore((store) => store.playerPassed);

@@ -1,4 +1,4 @@
-import { useFriendStore } from "../../../store/FriendStore";
+import { useFriendsStore } from "../../../store/FriendsStore";
 import { UnfriendIcon } from "./UnfriendIcon";
 import { AddFriendIcon } from "./AddFriendIcon";
 
@@ -7,8 +7,8 @@ interface FriendToggleButtonProps {
 }
 
 export const FriendToggleButton = ({ uuid }: FriendToggleButtonProps) => {	
-	const toggleFriend = useFriendStore((store) => store.toggleFriend);
-	const cachedFriends = useFriendStore((store) => store.cachedFriends);
+	const toggleFriend = useFriendsStore((store) => store.toggleFriend);
+	const cachedFriends = useFriendsStore((store) => store.cachedFriends);
 
 	return (
 		<button

@@ -1,7 +1,7 @@
 import { useAuthStore } from "../../../store/AuthStore";
 import { useNotificationStore, NOTIFICATION_TYPE } from "../../../store/NotificationStore"; 
 import { useSceneStore } from "../../../store/SceneStore";
-import { fetchSignOut } from "./fetchSignOut";
+import { fetchSignOut } from "./fetchLogout";
 
 export const handleSignOut = async () => {
 	try {

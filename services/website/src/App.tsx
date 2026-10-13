@@ -1,21 +1,21 @@
-import { useRef, useEffect } from "react";
+import { useRef, useEffect, useCallback } from "react";
 import { chatSocket } from "./api/chat/chatSocket";
 import { partySocket } from "./api/party/partySocket";
-import { useAuthStore } from "./store/AuthStore";
-import { useDevStore } from "./store/DevStore";
-import { useProfileStore } from "./store/ProfileStore";
-import { useSceneStore } from "./store/SceneStore";
 import { subscribeToMessages } from "./api/chat/subscribe/subscribeToMessages";
 import { subscribeToUserJoined } from "./api/chat/subscribe/subscribeToUserJoined";
 import { subscribeToUserLeft } from "./api/chat/subscribe/subscribeToUserLeft";
 import { subscribeToUserTyping } from "./api/chat/subscribe/subscribeToUserTyping";
 import { subscribeToRateLimited } from "./api/chat/subscribe/subscribeToRateLimited";
+import { useFriendEvents } from "./api/friends/useFriendEvents";
+import { useAuthStore } from "./store/AuthStore";
+import { useDevStore } from "./store/DevStore";
+import { useProfileStore } from "./store/ProfileStore";
+import { useSceneStore } from "./store/SceneStore";
 import { useScrollToTop } from "./utilities/react/useScrollToTop";
 import { StripeBg } from "./components/bg/Stripe";
 import { LoginScene } from "./components/login/LoginScene";
 import { HomeScene } from "./components/home/HomeScene";
 import { LobbyScene } from "./components/lobby/LobbyScene";
-import { TestScene } from "./components/test/TestScene";
 import { GameScene } from "./components/game/GameScene";
 import { ChatWindow } from "./components/chat/ChatWindow";
 import { CreateAccountWindow } from "./components/login/create_account/CreateAccountWindow";
@@ -76,6 +76,13 @@ export default function App() {
 			chatSocket.disconnect();
 		};
 	}, [clientUuid]);
+
+	//friends connection
+	const handleFriendUpdate = useCallback(() => {
+		//fetch GET /friendships/:ownerUuid
+		console.log("Re-fetching friends list due to SSE hint...");
+	}, []);
+	useFriendEvents(clientUuid, handleFriendUpdate);
 
 	//three js manager
 	const containerRef = useRef<HTMLDivElement>(null);
@@ -142,7 +149,6 @@ export default function App() {
 				{ currentScene === "Login" && <LoginScene /> }
 				{ currentScene === "Home" && <HomeScene /> }
 				{ currentScene === "Lobby" && <LobbyScene /> }
-				{ currentScene === "Test" && <TestScene /> }
 				{ currentScene === "Game" && <GameScene /> }
 				{ showWindow["chat"] && <ChatWindow /> }
 				{ showWindow["createAccount"] && <CreateAccountWindow /> }

@@ -1,7 +1,7 @@
 import { Socket } from "socket.io-client";
 import { usePartyStore } from "../../../store/PartyStore";
 import { useSceneStore } from "../../../store/SceneStore";
-import { handleValidate } from "../../authentication/validate/handleValidate";
+import { handleValidate } from "../../authentication/get_validate/handleValidate";
 
 export function connectionHandlers(socket: Socket) {
 	socket.on("connect", () => {

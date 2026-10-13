@@ -1,4 +1,4 @@
-import { handleSignOut } from "../../api/authentication/sign_out/handleSignOut";
+import { handleSignOut } from "../../api/authentication/delete_logout/handleLogout";
 import { useGameStore } from "../../store/GameStore";
 import { usePartyStore } from "../../store/PartyStore";
 import { useSceneStore } from "../../store/SceneStore";

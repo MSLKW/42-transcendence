@@ -5,7 +5,7 @@ import { useAuthStore } from "../../store/AuthStore";
 import { useBotStore } from "../../store/BotStore";
 import { useBubbleStore } from "../../store/BubbleStore";
 import { useChatStore } from "../../store/ChatStore";
-import { useFriendStore } from "../../store/FriendStore";
+import { useFriendsStore } from "../../store/FriendsStore";
 import { useGameStore } from "../../store/GameStore";
 import { usePartyStore } from "../../store/PartyStore";
 import { useProfileStore } from "../../store/ProfileStore";
@@ -24,7 +24,7 @@ export const LoginScene = () => {
 		useBotStore.getState().resetValues();
 		useBubbleStore.getState().clearAllBubbles();
 		useChatStore.getState().resetValues();
-		useFriendStore.getState().resetValues();
+		useFriendsStore.getState().resetValues();
 		useGameStore.getState().resetValues();
 		usePartyStore.getState().resetValues();
 		useProfileStore.getState().resetValues();

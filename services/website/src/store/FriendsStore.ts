@@ -2,6 +2,7 @@ import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
 interface FriendValues {
+	friendsVerboseMode: boolean;
 	cachedFriends: string[];
 }
 
@@ -17,9 +18,10 @@ const defaultFriends = [
 	"12345678-abcd-efgh-dev0-aisyah000000",
 ] as const;
 
-export const useFriendStore = create<FriendState>() (
+export const useFriendsStore = create<FriendState>() (
 	persist(
 		(set, get) => ({
+			friendsVerboseMode: false;
 			cachedFriends: [...defaultFriends],
 
 			toggleFriend: (uuid) => {

@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from "react";
-import { handleCreatedAt } from "../../api/authentication/created_at/handleCreatedAt";
+import { handleCreatedAt } from "../../api/authentication/get_created-at/handleCreatedAt";
 import { handleGetOnline } from "../../api/party/get_online/handleGetOnline";
 import { handleGetProfile } from "../../api/profile/get_profile/handleGetProfile";
 import { usePartyStore, type AVAILABILITY_TYPE } from "../../store/PartyStore";
