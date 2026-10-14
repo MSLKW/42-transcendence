@@ -1,4 +1,4 @@
-import { CardTransmit, CardHandTransmit, HandType } from "@big2/game-types";
+import { CardTransmit, CardHandTransmit, HandType, CardRank, CardSuit } from "@big2/game-types";
 import { GameState, HandTypeKey } from "../game/GameState.js";
 import { upperBound } from "../utils/upperBound.js";
 import { cardHandComp } from "../utils/cardHandComp.js";
@@ -9,11 +9,12 @@ type CardHand = CardHandTransmit;
 
 export abstract class AAIController
 {
-	public decide(botId: string, state: GameState): CardHand | null
+	public decide(botId: string, state: GameState, skippable: boolean): CardHand | null
 	{
-		if (state.lastCardHand == null)
+		const lowestCard = state.possibleCardHands["single"][0].cards[0];
+		if (lowestCard.rank == 0 && lowestCard.suit == 0)
 			return (this.playLead(state, true));
-		else if (state.lastCardHand.playerId == botId)
+		else if (skippable == false)
 			return (this.playLead(state, false));
 		else
 			return (this.playFollow(botId, state));

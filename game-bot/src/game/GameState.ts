@@ -5,7 +5,6 @@ import {
 } from "@big2/game-types";
 
 import { rankComp, suitComp, cardHandComp } from "../utils/cardHandComp.js";
-import { normalizePlayerSeats } from "./normalizePlayerSeats.js"
 
 import { initSingles } from "./initSingles.js";
 import { initMatchingHands } from "./initMatchingHands.js";
@@ -16,16 +15,19 @@ import { initFlushes } from "./initFlushes.js";
 
 export type HandTypeKey = "single" | "double" | "triple" | "straight" | "flush" | "full_house" | "four_of_a_kind" | "straight_flush";
 
-const EMPTY_POSSIBLE_CARD_HANDS: Record<HandTypeKey, CardHand[]> = {
-	["single"]:			[],
-	["double"]:			[],
-	["triple"]:			[],
-	["straight"]:		[],
-	["flush"]:			[],
-	["full_house"]:		[],
-	["four_of_a_kind"]:	[],
-	["straight_flush"]:	[]
-} as const;
+function createEmptyPossibleCardHands(): Record<HandTypeKey, CardHand[]>
+{
+	return {
+		single:			[],
+		double:			[],
+		triple:			[],
+		straight:		[],
+		flush:			[],
+		full_house:		[],
+		four_of_a_kind:	[],
+		straight_flush:	[]
+	};
+}
 
 export class GameState
 {
@@ -33,7 +35,7 @@ export class GameState
 	readonly playerSeats:	Record<string, number> = {};	
 	ownCards:				Card[] = [];
 	
-	possibleCardHands:		Record<HandTypeKey, CardHand[]> = { ...EMPTY_POSSIBLE_CARD_HANDS };
+	possibleCardHands:		Record<HandTypeKey, CardHand[]> = createEmptyPossibleCardHands();
 	lastCardHand:			CardHand | null = null;
 
 	constructor(botId: string | void, stateTransmit: GameStateTransmit | void)
@@ -43,19 +45,17 @@ export class GameState
 
 		this.botId = botId;
 		this.playerSeats = stateTransmit.playerSeatOrder;
-		this.ownCards = stateTransmit.playerCards;
-
-		normalizePlayerSeats(this.playerSeats, this.botId);
+		this.ownCards = [...stateTransmit.playerCards];
+		
+		this.ownCards.sort(suitComp);
+		initFlushes(this); //ignores straight flushes
 
 		this.ownCards.sort(rankComp);
 		initSingles(this);
 		initMatchingHands(this); //doubles, triples, four of a kinds
 		initFullHouses(this);
 		initStraights(this); //straights and straight flushes
-
-		this.ownCards.sort(suitComp);
-		initFlushes(this); //ignores straight flushes
-		
+				
 		for (const key in this.possibleCardHands)
 			this.possibleCardHands[key as HandTypeKey].sort(cardHandComp);
 	}

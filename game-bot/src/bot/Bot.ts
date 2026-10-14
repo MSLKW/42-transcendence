@@ -87,6 +87,7 @@ export class Bot
 	{
 		this.state = new GameState(this.id, stateTransmit);
 		logger.verbose(this.id, this.state.ownCards);
+		logger.verbose(this.id, "single count: ", this.state.possibleCardHands["single"].length);
 	}
 		
 	private checkTurn = (playerTurn: PlayerTurnTransmit) =>
@@ -94,21 +95,22 @@ export class Bot
 		if (playerTurn.playerId == this.id)
 		{
 			logger.info(this.id, "my turn");
-			this.playCardHand();
+			this.playCardHand(playerTurn.skippable);
 		}
 		else
 			logger.info(this.id, `${playerTurn.playerId}'s turn`);
 	}
 
-	private playCardHand = async () =>
+	private playCardHand = async (skippable: boolean) =>
 	{
-		const cardHand = this.ai.decide(this.id, this.state);
+		const cardHand = this.ai.decide(this.id, this.state, skippable);
 
 		if (cardHand == null)
 		{
-			logger.verbose(this.id, "skipping turn");
 			const status: StatusTransmit = await this.socket?.emitWithAck("player_skip_turn_request");
-			if (!status.success)
+			if (status.success)
+				logger.verbose(this.id, "skipping turn");
+			else
 				logger.error(this.id, `failed to skip turn: ${status.message}`);
 		}
 		else
@@ -118,8 +120,10 @@ export class Bot
 			this.state.removeCards(cardHand);
 			logger.verbose(this.id, "attempting to play", cardHand);
 			const status: StatusTransmit = await this.socket?.emitWithAck("player_play_card_hand_request", cardHand);
-			if (!status.success)
-				logger.error(this.id, `failed to play card hand": ${status.message}`);
+			if (status.success)
+				logger.verbose(this.id, "played hand");
+			else
+				logger.error(this.id, `failed to play card hand: ${status.message}`);
 		}
 	}
 
