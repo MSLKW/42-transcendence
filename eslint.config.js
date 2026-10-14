@@ -13,7 +13,6 @@ const workspaces = [ // TODO: include new ones too dont forget
   "packages/postgres/party-schema",
   "packages/postgres/postgres-client",
   "packages/postgres/profile-schema",
-  "packages/types/badge-types",
   "packages/types/friends-types",
   "packages/types/game-stats-types",
   "packages/types/game-types",

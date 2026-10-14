@@ -303,7 +303,6 @@ services:
       context: ./services/profile
       additional_contexts:
         root:             .
-        badge-types:      ./packages/types/badge-types
         profile-types:    ./packages/types/profile-types
         auth-schema:      ./packages/postgres/auth-schema
         profile-schema:   ./packages/postgres/profile-schema
@@ -431,7 +430,6 @@ services:
       additional_contexts:
         root:               .
         game-types:         ./packages/types/game-types
-        badge-types:        ./packages/types/badge-types
         game-stats-types:   ./packages/types/game-stats-types
         auth-schema:        ./packages/postgres/auth-schema
         postgres-client:    ./packages/postgres/postgres-client

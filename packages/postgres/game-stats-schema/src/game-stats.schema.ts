@@ -1,7 +1,6 @@
 import { sql } from "drizzle-orm";
 import { users } from "@big2/auth-schema";
-import { type BadgeLabel } from "@big2/badge-types";
-import { type AchievementLabel } from "@big2/game-stats-types";
+import type { AchievementLabel, BadgeLabel } from "@big2/game-stats-types";
 import { pgSchema, uuid, text, integer, timestamp, check, primaryKey } from "drizzle-orm/pg-core";
 
 export const gameStatsSchema = pgSchema("game_stats_schema");

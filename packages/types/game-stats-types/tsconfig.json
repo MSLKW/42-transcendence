@@ -19,8 +19,5 @@
 		"declarationMap": true,
 		"sourceMap": true,
 	},
-	"include": ["src/**/*.ts"],
-	"references": [
-    	{ "path": "../badge-types" }
-	]
+	"include": ["src/**/*.ts"]
 }
