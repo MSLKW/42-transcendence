@@ -1,6 +1,5 @@
 import { Request, Response } from "express"
 import { UserStore } from "../store/UserStore";
-// import { UserData } from "../types";
 import { type UserData } from "@big2/profile-types";
 import { authenticate } from "../utils/authenticate";
 
