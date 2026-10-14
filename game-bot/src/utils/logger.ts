@@ -1,4 +1,5 @@
 import { inspect } from 'util';
+import { BOT_LOG_LEVEL } from '../config.js';
 
 enum LogLevel {
 	VERBOSE,
@@ -7,7 +8,16 @@ enum LogLevel {
 	ERROR,
 }
 
-const CURRENT_LEVEL = LogLevel.VERBOSE;
+const loglevelMap: Record<string, LogLevel> = {
+	["verbose"]:	LogLevel.VERBOSE,
+	["info"]:		LogLevel.INFO,
+	["warn"]:		LogLevel.WARN,
+	["error"]:		LogLevel.ERROR,
+} as const;
+
+const CURRENT_LEVEL = loglevelMap[BOT_LOG_LEVEL]
+if (!CURRENT_LEVEL)
+	throw new Error('BOT_LOG_LEVEL must be "verbose", "info", "warn" or "error"');
 
 function format(args: unknown[]): string {
 	return args
