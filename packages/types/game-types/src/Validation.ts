@@ -34,11 +34,11 @@ export const GameSettingsTransmitSchema = z.object({
 });
 
 export const GameEndStatsTransmitSchema = z.object({
-	winnerPlayerUuid: z.string(),
-	playerFinalCardAmounts: z.record(z.string(), z.number()),
+	winnerPlayerUuid: z.string(), 								// the single winner only, to update winstreak & total wins upon that player 
+	playerFinalCardAmounts: z.record(z.string(), z.number()), 
 	playerPenaltyPoints: z.record(z.string(), z.number()),
-	playerXpGains: z.record(z.string(), z.number()),
-	temporaryWinStreakAmount: z.number(),
+	playerXpGains: z.record(z.string(), z.number()),			// ++xp (each player, coz its a record)
+	temporaryWinStreakAmount: z.number(), 
 	temporaryRoundsPlayed: z.number(),
 });
 

@@ -1,3 +1,9 @@
-// export const PORT = process.env.PORT ? Number(process.env.PORT) : 3000;
+function requireEnv(name: string): string
+{
+	const value = process.env[name];
+	if (!value)
+		throw new Error(`[Error] ${name} not set`);
+	return value;
+}
 
-export const PORT = 3000;
+export const PORT = requireEnv("PORT");
