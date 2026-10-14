@@ -31,14 +31,13 @@ export const GameSettingsTransmitSchema = z.object({
 	allow3OfAKind: z.boolean(),
 	allow2OfSpadesEnd: z.boolean(),
 	autoPassInMilliseconds: z.number(),
-	endGameCondition: z.number(),
-	scoreCalculation: z.number(),
 });
 
 export const GameEndStatsTransmitSchema = z.object({
 	winnerPlayerUuid: z.string(),
 	playerFinalCardAmounts: z.record(z.string(), z.number()),
 	playerPenaltyPoints: z.record(z.string(), z.number()),
+	playerXpGains: z.record(z.string(), z.number()),
 	temporaryWinStreakAmount: z.number(),
 	temporaryRoundsPlayed: z.number(),
 });
