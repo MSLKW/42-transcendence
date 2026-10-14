@@ -1,0 +1,25 @@
+{
+	"name": "@big2/game-types",
+	"type": "module",
+	"private": true,
+	"dependencies": {
+		"typescript": "^6.0.3",
+		"zod": "^4.6.7"
+	},
+	"main": "./dist/Types.js",
+	"types": "./dist/types/Types.d.ts",
+	"exports": {
+		".": {
+			"types": "./dist/types/Types.d.ts",
+			"import": "./dist/Types.js"
+		},
+		"./validation": {
+			"types": "./dist/types/Validation.d.ts",
+			"import": "./dist/Validation.js"
+		}
+	},
+	"scripts": {
+		"build": "tsc",
+		"build:docker": "tsc -b"
+	}
+}

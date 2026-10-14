@@ -2,11 +2,11 @@ FROM node:20-alpine AS builder
 WORKDIR /app
 
 COPY . ./services/game-bot/.
-COPY --from=game-types . ./packages/game-types/.
+COPY --from=game-types . ./packages/types/game-types/.
 COPY --from=root package*.json ./
 
 RUN npm install --workspace=@big2/game-types
-RUN cd ./packages/game-types && npm run build:docker
+RUN cd ./packages/types/game-types && npm run build:docker
 
 RUN npm install
 
@@ -18,11 +18,11 @@ FROM node:20-alpine AS runner
 WORKDIR /app
 
 COPY package*.json ./services/game-bot/.
-COPY --from=game-types . ./packages/game-types/.
+COPY --from=game-types . ./packages/types/game-types/.
 COPY --from=root package*.json .
 
 RUN npm install --workspace=@big2/game-types
-RUN cd ./packages/game-types && npm run build:docker
+RUN cd ./packages/types/game-types && npm run build:docker
 
 RUN npm ci --omit=dev
 

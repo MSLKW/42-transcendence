@@ -1,5 +1,6 @@
 {
-	"name": "chat-service",
+	"name": "chat",
+	"private": true,
 	"version": "1.0.0",
 	"description": "",
 	"license": "ISC",
@@ -8,6 +9,7 @@
 	"scripts": {
 		"dev": "tsc --noEmit && tsx src/index.ts",
 		"build": "tsc",
+		"build:docker": "tsc -b",
 		"start": "node dist/index.js",
 		"clean": "rm -rf ./dist .tsbuildinfo"
 	},

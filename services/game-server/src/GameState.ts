@@ -308,9 +308,9 @@ export class GameState {
 			this.players[i].isMyTurn = false;
 		}
 		player.isMyTurn = true;
-		for(let i = 0; i < this.players.length; i++) {
-			console.log(`${this.players[i].uuid} isMyTurn: ${this.players[i].isMyTurn}`);
-		}
+		// for(let i = 0; i < this.players.length; i++) {
+		// 	console.log(`${this.players[i].uuid} isMyTurn: ${this.players[i].isMyTurn}`);
+		// }
 	}
 
 	private getPlayerCardsAmount() {

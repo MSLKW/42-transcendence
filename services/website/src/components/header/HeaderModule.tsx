@@ -1,40 +1,23 @@
-import { useGameStore } from "../../store/GameStore";
-import { useSceneStore } from "../../store/SceneStore";
 import { BackButton } from "./back/BackButton";
 import { ChatButton } from "./chat/ChatButton";
 import { EmoteGroup } from "./emote/EmoteGroup";
 import { SignOutButton } from "./sign_out/SignOutButton";
-import { SettingsButton } from "./settings/SettingsButton";
-
+import { NotifToggleButton } from "./notification/NotifToggleButton";
 interface HeaderModuleProps {
 	back: string;
 }
 
 export const HeaderModule = ({ back }: HeaderModuleProps) => {
-	const leaveGame = useGameStore((store) => store.leaveGame);
-	const currentScene = useSceneStore((store) => store.currentScene);
-	const setShowWindow = useSceneStore((store) => store.setShowWindow);
-
-
-	const handleBackClick = () => {
-		if (currentScene === "Game") {
-			setShowWindow("leave", true);
-			return;
-		}
-		
-		leaveGame();
-	};
-
 	return (
 		<header className="flex justify-between">
-			<div className="flex rounded-full bg-dark">
+			<div className="flex rounded-full bg-dark-semi">
 				{ back === "Login"
 					? <SignOutButton />
-					: <BackButton scene={handleBackClick} />
+					: <BackButton />
 				}
-				<SettingsButton />
+				<NotifToggleButton />
 			</div>
-			<div className="flex rounded-full bg-dark">
+			<div className="flex rounded-full bg-dark-semi">
 				<EmoteGroup />
 				<ChatButton />
 			</div>

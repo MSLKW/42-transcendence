@@ -7,28 +7,27 @@ import { useProfileStore } from "../../../store/ProfileStore";
 
 export function kickedHandler(socket: Socket) {
 	socket.on("kicked", async (payload: {message: string}) => {
-		useNotificationStore.getState().showNotification(
-			"You've been kicked from the party",
-			NOTIFICATION_TYPE.message
-		)
-
-		const addToCachedChat = useChatStore.getState().addToCachedChat;
-				addToCachedChat(
-					"REPORT",
-					"server",
-					"",
-					"",
-					"You've been kicked from the party chat"
-				);
-
 		await useProfileStore.getState().setCachedData();
-
-		const clientUuid = useAuthStore.getState().clientUuid;
+		const clientUuid = useAuthStore.getState().clientUuid!;
 		usePartyStore.setState({
 			members: [ clientUuid ],
 			hostUuid: clientUuid,
 		});
 
-		console.log("[partyStore] 'kicked' message:", payload.message);
+		useNotificationStore.getState().showNotification(
+			"You've been kicked from the party",
+			NOTIFICATION_TYPE.message
+		)
+
+		useChatStore.getState().addToCachedChat(
+			"REPORT",
+			"server",
+			"",
+			"",
+			"You've been kicked from the party chat"
+		);
+
+		if (usePartyStore.getState().partyVerboseMode)
+			console.log("[party > 'on' kicked] message:", payload.message);
 	});
 }

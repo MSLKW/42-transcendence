@@ -21,6 +21,7 @@ export interface NotificationItem {
 
 interface NotificationValues {
 	notifications: NotificationItem[];
+	isNotifFiltered: boolean;
 }
 
 interface NotificationState extends NotificationValues {
@@ -32,6 +33,7 @@ interface NotificationState extends NotificationValues {
 export const useNotificationStore = create<NotificationState>()(
 	(set) => ({
 		notifications: [],
+		isNotifFiltered: false,
 
 		showNotification: (msg, type, btn1, btn2) => {
 			let isError = false;
@@ -69,7 +71,7 @@ export const useNotificationStore = create<NotificationState>()(
 
 			useSceneStore.getState().setShowWindow("notification", true);
 		},
-		
+
 		removeNotification: (id) => {
 			set((state) => {
 				const updated = state.notifications.filter((n) => n.id !== id);

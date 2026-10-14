@@ -1,0 +1,19 @@
+# no need for these files to be bonita by prettier
+.git
+.gitignore
+package-lock.json
+Dockerfile
+.dockerignore
+.vscode/*
+.idea
+*.md
+*.txt
+
+# ignored by git, but might have locally
+.env
+secrets/
+node_modules/
+dist/
+dist-ssr/
+.tsbuildinfo
+tsconfig.tsbuildinfo

@@ -20,7 +20,7 @@ export class Deck {
 		this.playerCardsAmount = 0;
 		this.opponentCardsAmount = 0;
 		this.totalOpponents = 0;
-		this.position = position.clone();
+		this.position = position;
 		this.rotation = new THREE.Euler(Math.PI / 2, 0, 0);
 		this.yOffset = 0;
 		this.yStep = 0.005;

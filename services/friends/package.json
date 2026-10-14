@@ -1,0 +1,32 @@
+{
+  "name": "friends",
+  "private": true,
+  "version": "1.0.0",
+  "description": "",
+  "license": "ISC",
+  "author": "",
+  "main": "dist/index.js",
+  "scripts": {
+    "dev": "tsc --noEmit && tsx src/index.ts",
+    "build": "tsc",
+    "build:docker": "tsc -b",
+    "start": "node dist/index.js",
+    "clean": "rm -rf ./dist .tsbuildinfo"
+  },
+  "devDependencies": {
+    "@types/cors": "^2.8.19",
+    "@types/node": "^26.0.0",
+    "tsx": "^4.22.4",
+    "typescript": "^6.0.3"
+  },
+  "dependencies": {
+    "@big2/friends-schema": "*",
+    "@big2/friends-types": "*",
+    "@big2/postgres-client": "*",
+    "@types/express": "^5.0.6",
+    "cors": "^2.8.6",
+    "dotenv": "^17.4.2",
+    "drizzle-orm": "^0.45.2",
+    "express": "^5.2.1"
+  }
+}

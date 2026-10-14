@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useNotificationStore, NOTIFICATION_TYPE } from "../../../store/NotificationStore";
 import { Window } from "../../window/Window";
 import { FormInputModule } from "../form/FormInputModule";
-import { handleSignIn } from "../../../api/authentication/sign_in/handleSignIn";
+import { handleSignIn } from "../../../api/authentication/post_signin/handleSignIn";
 
 export const SignInWindow = () => {
 	const showNotification = useNotificationStore((store) => store.showNotification);
@@ -28,6 +28,7 @@ export const SignInWindow = () => {
 		<Window
 			title="Sign In"
 			dismissKey="signIn"
+			lightbox={true}
 		>
 			<form 
 				onSubmit={handleSubmit}

@@ -26,20 +26,20 @@ export class UserState {
 		// 	this.inactivityTimeout.refresh();
 		// });
 
-		this.socket.on("user_seat_take", (wantedSeat: number, statusCallback) => {
+		this.socket.on("user_seat_take", (wantedSeat: number) => {
 			const status = this.takeSeat(wantedSeat);
+			this.socket.emit("user_seat_take", status);
 			if (status.success === true) {
 				this.lobbyRef.emitSeatOrder();
 			}
-			statusCallback(status);
 		});
 
-		this.socket.on("user_seat_leave", (statusCallback) => {
+		this.socket.on("user_seat_leave", () => {
 			const status = this.leaveSeat();
+			this.socket.emit("user_seat_leave", status);
 			if (status.success === true) {
 				this.lobbyRef.emitSeatOrder();
 			}
-			statusCallback(status);
 		});
 	}
 

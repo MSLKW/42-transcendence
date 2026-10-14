@@ -52,7 +52,7 @@ export const FormInputModule = ({
 					py-0.5rem px-1.5rem
 					text-n0 placeholder:text-n4 placeholder:italic
 					pointer-events-auto
-					focus:outline-2 outline-b5 outline-offset-5
+					focus:outline-2 outline-b5
 					placeholder:text-1rem
 				"
 			/>

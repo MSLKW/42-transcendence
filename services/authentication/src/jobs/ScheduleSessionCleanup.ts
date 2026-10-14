@@ -6,6 +6,8 @@ const SCHEDULE_STRING = process.env.SESSION_CLEANUP_CRON_SCHEDULE_STRING as stri
 export function scheduleSessionCleanup(sessionStore: SessionStore)
 {
 	cron.schedule(SCHEDULE_STRING, async () =>
+	// TODO (signal handler): uncomment this when need to implement the signal handler, and comment the 1 line above
+	// return cron.schedule(SCHEDULE_STRING, async () =>
 	{
 		try
 		{

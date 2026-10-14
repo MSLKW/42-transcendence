@@ -1,13 +1,13 @@
 import { useChatStore } from "../../store/ChatStore";
 
 export const ChatRateLimit = () => {
-	const rateLimitMessage = useChatStore((store) => store.rateLimitMessage);
+	const rateLimited = useChatStore((store) => store.rateLimited);
 	
 	return (
 		<>
-			{rateLimitMessage &&
+			{rateLimited &&
 				<p className="text-n6">
-					{rateLimitMessage}
+					{rateLimited}
 				</p>
 			}
 		</>

@@ -42,8 +42,7 @@ export const HomeScene = () => {
 						w-full h-full
 						flex pt-[clamp(5rem,25vh,20rem)] pb-[clamp(10rem,32vh,20rem)]
 						overflow-x-auto snap-x snap-mandatory
-					"
-				>
+				">
 					<div className="
 						w-full h-full
 						flex place-content-center-safe place-items-center
@@ -53,7 +52,16 @@ export const HomeScene = () => {
 						<HomeCardButton gameMode="4 Players" playerCount={4}/>
 						<HomeCardButton gameMode="3 Players" playerCount={3}/>
 						<HomeCardButton gameMode="2 Players" playerCount={2}/>
-						<HomeCardButton gameMode="Tutorial" playerCount={1}/>
+						{/* {clientUuid !== hostUuid &&
+							<div className="
+								absolute -translate-y-10
+								w-full
+								place-content-center place-items-center text-center
+								text-n6
+							">
+								<h2>Waiting for host to start game...</h2>
+							</div>
+						} */}
 					</div>
 				</div>
 			</main>
@@ -69,8 +77,7 @@ export const HomeScene = () => {
 						flex
 						gap-2rem pt-2rem
 						sm:overflow-x-visible overflow-x-auto
-					"
-				>
+				">
 					<PartyCallButton />
 					{clientUuid &&
 						<AvatarModule 

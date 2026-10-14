@@ -5,14 +5,16 @@ import { useGameStore } from "../../store/GameStore";
 import { usePartyStore } from "../../store/PartyStore";
 import { useProfileStore } from "../../store/ProfileStore";
 import { useResultsStore } from "../../store/ResultsStore";
+import { useSceneStore } from "../../store/SceneStore";
+import { Tooltip } from "../../utilities/react/Tooltip";
 import { HeaderModule } from "../header/HeaderModule";
 import { AvatarModule } from "../avatar/AvatarModule";
 import { PartyCallButton } from "../party/call/PartyCallButton";
+import { ResultsCallButton } from "../results/call/ResultsCallButton";
 import { BotManagerButton } from "./bots/BotManagerButton";
 import { HostSettings } from "./host_settings/HostSettings";
 import { TakeSeatButton } from "./take_seat/TakeSeatButton";
 import { UnseatButton } from "./unseat/UnseatButton";
-import { ResultsCallButton } from "../results/call/ResultsCallButton";
 
 export const LobbyScene = () => {
 	const clientUuid = useAuthStore((store) => store.clientUuid);
@@ -26,14 +28,14 @@ export const LobbyScene = () => {
 	const hostUuid = usePartyStore((store) => store.hostUuid);
 	const cachedData = useProfileStore((store) => store.cachedData);
 	const resetResults = useResultsStore((store) => store.resetResults);
-	
+
 	useEffect(() => {
 		const humansSeated = userSeats.filter((seat): seat is string => seat !== null && !seat.includes("bot")).length;
 		if (humansSeated === members.length) {
 			// fillSeatsWithBots();
 			return;
 		}
-		
+
 		if (userSeats.includes(null)) {
 			resetResults();
 			removeBots();
@@ -110,13 +112,11 @@ export const LobbyScene = () => {
 							)
 						}
 					</div>
-					<div
-						className={`
-							w-full h-full
-							flex
-							place-items-center place-content-evenly
-						`}
-					>
+					<div className={`
+						w-full h-full
+						flex
+						place-items-center place-content-evenly
+					`}>
 						{ totalPlayers === 4 &&
 							( userSeats[1]
 								?
@@ -129,19 +129,21 @@ export const LobbyScene = () => {
 								: <TakeSeatButton seatNumber={1}/>
 							)
 						}
-						<button
-							data-tip={seatsFilled ? "Let's Play!" : "Waiting for seats to be filled"}
-							disabled={!(seatsFilled && clientUuid === hostUuid)}
-							onClick={startGame}
-							className="
-								btn-text bg-light
-								h-3rem aspect-4/1
-								text-1.25rem text-n0
-								data-tip-up
-							"
-						>
-							START
-						</button>
+						<Tooltip text={seatsFilled ? "Let's Play!" : "Waiting for seats to be filled"}>
+							<button
+								disabled={!(seatsFilled && clientUuid === hostUuid)}
+								onClick={() => {
+									startGame();
+									useSceneStore.getState().setCurrentScene("Game"); // can remove this in theory, cuz already set to game scene when actually connected
+								}}
+								className="
+									btn-text bg-light
+									h-3rem aspect-4/1
+									text-1.25rem text-n0
+							">
+								START
+							</button>
+						</Tooltip>
 						{ totalPlayers === 4 &&
 							( userSeats[3]
 								?
@@ -169,13 +171,11 @@ export const LobbyScene = () => {
 					</div>
 				</div>
 			</main>
-			<footer
-				className="
-					pointer-events-auto
-					flex place-content-between place-items-center
-					relative
-				"
-			>
+			<footer className="
+				pointer-events-auto
+				flex place-content-between place-items-center
+				relative
+			">
 				<div
 					tabIndex={-1}
 					className="
@@ -183,8 +183,7 @@ export const LobbyScene = () => {
 						flex
 						gap-2rem pt-2rem
 						sm:overflow-x-visible overflow-x-auto
-					"
-				>
+				">
 					<PartyCallButton />
 					{ members.map((uuid) => (
 						uuid && !userSeats.includes(uuid) &&

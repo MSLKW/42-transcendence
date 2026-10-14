@@ -18,14 +18,13 @@ export const ResultsWindow = () => {
 
 	const leaderboard = getLeaderboard();
 	const topPlayer = leaderboard[0];
-	const playerName = topPlayer ? cachedData[topPlayer.uuid ?? ""]?.name : "N/A";
+	const playerName = cachedData[topPlayer.uuid ?? ""]?.name;
 	const winner = `Congratulations ${playerName ?? "Winner"}!`;
 
 	return (
 		<Window
 			title={`Results of Round ${round}`}
 			dismissKey="results"
-			hasPinButton={false}
 		>
 			<div
 				className="

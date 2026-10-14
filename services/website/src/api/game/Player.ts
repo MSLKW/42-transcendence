@@ -37,9 +37,16 @@ export class Player extends Participant {
 			useGameStore.setState({
 				activeSeat: activeSeat, 
 				isActiveSeatSkippable: playerTurn.skippable,
-				playerTimer: playerTurn.timer
+				playerTimer: playerTurn.timer,
 			});
 		});
+
+		this.socket.on("player_skip_turn_request", (status: StatusTransmit) => {
+			if (status.success === false) {
+				if (useGameStore.getState().gameVerboseMode)
+					console.log(`player_skip_turn_request message: ${status.message}`);
+			}
+		})
 
 		this.socket.on("player_skip_turn", (skipTurn: SkipTurnTransmit) => {
 			console.log("[gameSocket] 'player_skip_turn': ", skipTurn);
@@ -91,7 +98,8 @@ export class Player extends Participant {
 				this.cardManager.receiveCard(new Card(0, 0));
 			}
 			else if (event.code === "Backquote") {
-				console.log("enabling or disabling orbit controls");
+				if (useGameStore.getState().gameVerboseMode)
+					console.log("enabling or disabling orbit controls");
 				threejsManager.orbitControls.enabled = !threejsManager.orbitControls.enabled;
 				threejsManager.orbitControls.update();
 			}

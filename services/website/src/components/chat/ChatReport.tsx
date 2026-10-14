@@ -12,7 +12,7 @@ export const ChatReport = ({ data }: ChatReportProps) => {
 		">
 			<div className="
 				w-max h-max
-				bg-dark rounded-full
+				bg-dark-semi rounded-full
 				text-n6
 				py-0.5rem px-1rem my-1
 			">

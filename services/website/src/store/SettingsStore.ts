@@ -16,20 +16,15 @@ export const AUTO_PASS_RECORD = {
 export const autoPassKeys = Object.keys(AUTO_PASS_RECORD);
 export const autoPassValues = Object.values(AUTO_PASS_RECORD);
 
-interface SettingsValues {
+export interface SettingsValues {
 	allow3OfAKind: boolean;
 	allow2OfSpadesEnd: boolean;
 	autoPassIndex: number;
-	endGameCondition: number;
-	scoreCalculation: number;
-	cardStyle: number;
-	uiColor: number;
-	fxLevel: number;
-	mxLevel: number;
 }
 
 interface SettingsState extends SettingsValues {
 	toggleSettingsValue: (key: 'allow3OfAKind' | 'allow2OfSpadesEnd') => void;
+	resetValues: () => void;
 }
 
 export const useSettingsStore = create<SettingsState>()(
@@ -38,14 +33,16 @@ export const useSettingsStore = create<SettingsState>()(
 			allow3OfAKind: true,
 			allow2OfSpadesEnd: true,
 			autoPassIndex: 6,
-			endGameCondition: 0,
-			scoreCalculation: 1,
-			cardStyle: 0,
-			uiColor: 0,
-			fxLevel: 75,
-			mxLevel: 50,
 
 			toggleSettingsValue: (key) => { set((state) => ({ [key]: !state[key] })) },
+
+			resetValues: () => {
+				set({
+					allow3OfAKind: true,
+					allow2OfSpadesEnd: true,
+					autoPassIndex: 6,
+				});
+			}
 		}),
 		{ name: 'settings-storage' }
 	)

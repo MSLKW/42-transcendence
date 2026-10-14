@@ -6,7 +6,7 @@ export interface UserStore {
   getUserByEmail(email: string): Promise<User | null>;
   getUserByUsername(username: string): Promise<User | null>;
   setUsername(id: string, username: string): Promise<void>;
-  incrementFailedAttempts(email: string): Promise<void>;
-  resetFailedAttempts(email: string): Promise<void>;
-  lockAccount(email: string, until: Date): Promise<void>;
+  incrementFailedAttempts(id: string): Promise<void>;
+  resetFailedAttempts(id: string): Promise<void>;
+  lockAccount(id: string, until: Date): Promise<void>;
 }

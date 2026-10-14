@@ -1,5 +1,6 @@
 import { UserStore } from "./UserStore";
-import { UserData, UserSettings, NULL_ACHIEVEMENTS } from "../types";
+// import { UserData, UserSettings, NULL_ACHIEVEMENTS } from "../types";
+import { type UserData, type UserSettings, NULL_ACHIEVEMENTS } from "@big2/profile-types";
 import fs from "fs";
 import path from "path";
 

@@ -1,6 +1,6 @@
 import "dotenv/config";
-import express from "express"
-import { healthCheck } from "./handlers/healthCheck"
+import express from "express";
+import { healthCheck } from "./handlers/healthCheck";
 import { checkUuidOnline } from "./handlers/CheckUuidOnline";
 import { createServer } from "http";
 import { DisconnectReason, Server, Socket } from "socket.io";
@@ -9,7 +9,11 @@ import { clientManager } from "./client/ClientManager";
 import { registerEventHandlers } from "./client/event_handlers";
 
 import { UserStore } from "./store/UserStore";
-import { FileUserStore } from "./store/FileUserStore";
+// import { FileUserStore } from "./store/FileUserStore";
+import { DrizzleUserStore } from "./store/DrizzleUserStore";
+
+// TODO (signal handler): uncomment this when need to implement the signal handler
+// import { isDbDown, closePostgresClientPool } from "@big2/postgres-client";
 
 const PORT = Number(process.env.PORT) || 3000;
 const AUTH_SERVICE_URL = process.env.AUTH_SERVICE_URL;
@@ -28,12 +32,23 @@ const INTENTIONAL_DISCONNECT_REASONS = new Set([
 
 const pendingRemovals = new Map<string, NodeJS.Timeout>();
 
-const userStore = new FileUserStore;
+// const userStore = new FileUserStore;
+const userStore = new DrizzleUserStore;
 
 const app = express();
 app.use(express.json());
 app.get("/health", healthCheck());
 app.get("/online/:uuid", checkUuidOnline(userStore, clientManager));
+
+// TODO (signal handler): uncomment this when need to implement the signal handler
+// // Central error handler (register AFTER all routes). 
+// // DB down -> 503 + Retry-After so callers know to retry; anything else is a real bug -> 500.
+// app.use((err: unknown, req: express.Request, res: express.Response, next: express.NextFunction) => {
+// 	if (isDbDown(err))
+// 		return res.status(503).set("Retry-After", "2").json({ error: "database_unavailable" });
+// 	console.error("Unhandled error:", err);
+// 	return res.status(500).json({ error: "Something went wrong." });
+// });
 
 const httpServer = createServer(app);
 
@@ -64,7 +79,7 @@ io.use(async (socket, next) => {
 		});
 
 		if (!response.ok)
-return next(new Error("UNAUTHORIZED: invalid or expired session"));
+			return next(new Error("UNAUTHORIZED: invalid or expired session"));
 
 		const data = await response.json();
 
@@ -116,9 +131,6 @@ io.on("connection", (socket: Socket) =>
 		console.log(`User<${uuid}> connected on socket ${socket.id}`);
 	}
 	
-
-	// TODO: mark presence as online in Postgres
-
 	socket.on("disconnect", (reason: DisconnectReason) =>
 	{
 		const client = clientManager.getBySocketId(socket.id);
@@ -136,14 +148,14 @@ io.on("connection", (socket: Socket) =>
 			}, RECONNECT_GRACE_PERIOD_MS);
 
 			pendingRemovals.set(uuid, timer);
-			console.log(`User<${uuid}> disconnected unintentionally. Waiting for reconnection`)
+			console.log(`User<${uuid}> disconnected unintentionally. Waiting for reconnection`);
 		}
 	});
 });
 
-function finalizeRemoval(uuid: string, reason: string)
+async function finalizeRemoval(uuid: string, reason: string)
 {
-	userStore.setUser({
+	await userStore.setUser({
 		uuid: uuid,
 		lastOnline: new Date	
 	});
@@ -155,3 +167,23 @@ function finalizeRemoval(uuid: string, reason: string)
 httpServer.listen(PORT, () => {
 	console.log(`Socket.IO server listening on port ${PORT}`);
 });
+
+// TODO (signal handler): uncomment this when need to implement the signal handler
+// // Graceful shutdown on Ctrl+C / `docker compose down` & `docker compose stop` (both stop containers the same way).
+// // Close sockets, close the DB pool, then exit, well inside Docker's 10s SIGKILL.
+// let shuttingDown = false; 
+// async function shutdown() {
+// 	if (shuttingDown)
+// 		return;
+// 	shuttingDown = true;
+// 	setTimeout(() => process.exit(1), 8000).unref();	// failsafe: force exit if cleanup hangs
+
+// 	await io.close();										// 1. stop accepting new work
+// 	for (const timer of pendingRemovals.values())
+// 		clearTimeout(timer);						// 2. service-specific cleanup (cancel pending grace-period timers)
+// 	await closePostgresClientPool();				// 3. close DB pool (DB services only)
+// 	process.exit(0);								// 4. end the process, exit code 0 = clean shutdown
+// }
+// process.on('SIGINT', shutdown);		// Ctrl+C
+// process.on('SIGTERM', shutdown);	// `docker compose down` & `docker compose stop` (both stop containers the same way)
+
