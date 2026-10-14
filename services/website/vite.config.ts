@@ -46,7 +46,7 @@ export default defineConfig({
 		rolldownOptions: {
 			output: {
 				manualChunks(id) {
-					if (id.includes('node_modules/three') || id.includes('node_modules/@react-three')) {
+					if (id.includes('node_modules/three')) {
 						return '3d-vendor';
 					}
 					if (id.includes('node_modules')) {

@@ -65,8 +65,9 @@ export const useBotStore = create<BotState>() (
 					gameInstance?.removeBot(botId);
 				}
 			}
-			useProfileStore.getState().clearCachedData();
-			await useProfileStore.getState().setCachedData();
+			// useProfileStore.getState().clearCachedData();
+			// await useProfileStore.getState().setCachedData();
+			// Need a way to clear up the bot cached data
 		},
 
 		fillSeatsWithBots: () => {
