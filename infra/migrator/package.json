@@ -8,10 +8,11 @@
   "author": "",
   "license": "ISC",
   "scripts": {
-    "db:generate": "drizzle-kit generate",
-    "db:migrate": "drizzle-kit migrate",
-    "db:push": "drizzle-kit push",
-    "typecheck": "tsc --noEmit -p tsconfig.drizzle.json"
+    "db:generate":  "drizzle-kit generate",
+    "db:drop":      "drizzle-kit drop",
+    "db:migrate":   "drizzle-kit migrate",
+    "db:push":      "drizzle-kit push",
+    "typecheck":    "tsc --noEmit -p tsconfig.drizzle.json"
   },
   "dependencies": {
     "dotenv": "^17.4.2",

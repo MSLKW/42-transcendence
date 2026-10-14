@@ -1,10 +1,9 @@
 import fs from 'fs';
-import 'dotenv/config'; // loads .env into process.env as a side effect of importing
 import { drizzle } from "drizzle-orm/node-postgres";
 import { Pool } from "pg";
 
 
-// 1. Check the environment vars are properly loaded
+// 1. Load the .env file and check the environment vars are properly set
 function requireEnv(name: string): string
 {
 	const value = process.env[name];
