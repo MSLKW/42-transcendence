@@ -1,7 +1,10 @@
-import { CardTransmit, CardHandTransmit, HandType, PentupleType } from "../Types";
+import {
+	CardTransmit as Card,
+	CardHandTransmit as CardHand,
+	HandType,
+	PentupleType
+} from "@big2/game-types";
 
-type Card = CardTransmit;
-type CardHand = CardHandTransmit;
 
 export function cardHandComp(a: CardHand, b: CardHand): number
 {

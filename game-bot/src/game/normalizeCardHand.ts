@@ -1,5 +1,5 @@
 import { rankComp } from "../utils/cardHandComp";
-import { CardHandTransmit, PentupleType } from "../Types";
+import { CardHandTransmit, PentupleType } from "@big2/game-types";
 
 type CardHand = CardHandTransmit
 

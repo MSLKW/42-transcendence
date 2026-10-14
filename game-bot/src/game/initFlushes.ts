@@ -1,8 +1,11 @@
 import { GameState } from "./GameState";
-import { CardTransmit, CardHandTransmit, HandType, PentupleType } from "../Types";
+import {
+	CardTransmit as Card,
+	CardHandTransmit as CardHand,
+	HandType,
+	PentupleType
+} from "@big2/game-types";
 
-type Card = CardTransmit;
-type CardHand = CardHandTransmit;
 
 export function initFlushes(state: GameState): void
 {

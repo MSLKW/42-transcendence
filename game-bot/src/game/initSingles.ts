@@ -1,8 +1,10 @@
 import { GameState } from "./GameState";
-import { CardTransmit, CardHandTransmit, HandType, PentupleType } from "../Types";
-
-type Card = CardTransmit;
-type CardHand = CardHandTransmit;
+import {
+	CardTransmit as Card,
+	CardHandTransmit as CardHand,
+	HandType,
+	PentupleType
+} from "@big2/game-types";
 
 export function initSingles(state: GameState): void
 {
@@ -12,7 +14,7 @@ export function initSingles(state: GameState): void
 			cards: [card],
 			handType: HandType.Single,
 			pentupleType: PentupleType.None,
-			playerId: "placeholder"
+			playerId: state.botId
 		};
 		state.possibleCardHands["single"].push(single);
 	});

@@ -2,20 +2,15 @@ import { io, Socket } from "socket.io-client";
 import { GameState } from "../game/GameState";
 import { AAIController } from "../ai/AAIController";
 import { logger } from "../utils/logger";
-import { writeFileSync } from "fs";
 import { setTimeout } from "timers/promises";
-import { StatusTransmit } from "@big2/game-types";
+import { CardHandTransmit as CardHand, GameEndStatsTransmit } from "@big2/game-types";
 
 import {
 	GameStateTransmit,
-	CardHandTransmit,
-	PlayerSeatOrderTransmit,
 	PlayerTurnTransmit,
-	GameStartRequest,
-	GameEndStatsTransmit
-} from "../Types";
-
-type CardHand = CardHandTransmit;
+	SkipTurnTransmit,
+	StatusTransmit
+} from "@big2/game-types";
 
 const CONNECTION_MAX_ATTEMPTS = 3;
 const CONNECTION_RETRY_DELAY_MS = 1000;
@@ -37,19 +32,10 @@ function connectSocket(serverUrl: string, lobbyId: string, botSessionToken: stri
 
 export class Bot
 {
-	private state:			GameState;
-	private socket:			Socket | null = null;
+	constructor(private id: string, private ai: AAIController) {}
 
-	private seatOrder:		PlayerSeatOrderTransmit | null = null;
-
-	private wins:			number = 0;
-	private gamesPlayed:	number = 0;
-	private maxGames:		number = 1000;
-
-	constructor(private id: string, private ai: AAIController)
-	{
-		this.state = new GameState("", {}, []);
-	}
+	private state:	GameState = new GameState();
+	private socket:	Socket | null = null;
 
 	async start(serverUrl: string, lobbyId: string, seatIndex: number, botSessionToken: string): Promise<boolean>
 	{
@@ -84,129 +70,87 @@ export class Bot
 	{
 		if (this.socket == null)
 			return ;
-		this.socket.on("connect", () => logger.info(this.id, "connected"));
+
 		this.socket.on("disconnect", this.disconnect);
-		this.socket.on("player_join", this.playerJoined);
-		this.socket.on("player_game_state", this.initGameState);
+		this.socket.on("graceful_disconnect", this.disconnect);
+	
+		this.socket.on("game_settings_update", ()=>{});
+		this.socket.on("game_state", this.initGameState);
+
 		this.socket.on("player_turn", this.checkTurn);
-		this.socket.on("player_play_card_hand", this.checkSuccess);
-		this.socket.on("opponent_play_card_hand", this.checkOpponentMove);
+		this.socket.on("player_play_card_hand", this.registerOpponentMove);
+		this.socket.on("player_skip_turn", this.registerOpponentSkip);
 		this.socket.on("game_end", this.gameEnd);
 	}
 
-	private	playerJoined = (seatOrder: PlayerSeatOrderTransmit) =>
+	private initGameState = (stateTransmit: GameStateTransmit) =>
 	{
-		logger.verbose(this.id, seatOrder);
-		this.seatOrder = seatOrder;
-		if (seatOrder.seatOrder[this.id] == 3)
-		{	
-			const startRequest: GameStartRequest = {
-				playerId: this.id
-			}
-			this.socket?.emit("game_start", startRequest);
-			console.log(new Date().toTimeString());
-		}
-	}
-
-	private initGameState = (gameState: GameStateTransmit) =>
-	{
-		this.state = new GameState(this.id, this.seatOrder!.seatOrder, gameState.playerCards);
+		this.state = new GameState(this.id, stateTransmit);
 		logger.verbose(this.id, this.state.ownCards);
 	}
-	
+		
 	private checkTurn = (playerTurn: PlayerTurnTransmit) =>
 	{
-		if (playerTurn.playerId == this.state.currentPlayer)
-			return ;	
-		if (this.state.turnSkipped)
+		if (playerTurn.playerId == this.id)
 		{
-			logger.verbose(this.id, this.state.currentPlayer, "skipped their turn");
-			this.state.recordSkippedMove(this.state.currentPlayer);
-		}
-		
-		this.state.currentPlayer = playerTurn.playerId;
-		if (this.state.currentPlayer == this.id)
-		{
-			logger.verbose(this.id, "My turn");
-			writeFileSync(`logs/state<${this.id}>${this.state.turnNumber}.log`, this.state.encode().join("\n"), "utf-8");
+			logger.info(this.id, "my turn");
 			this.playCardHand();
 		}
 		else
-		{
-			logger.verbose(this.id, `${this.state.currentPlayer}'s turn`);
-			this.state.turnSkipped = true;
-		}
+			logger.info(this.id, `${playerTurn.playerId}'s turn`);
 	}
 
-	private playCardHand = () =>
+	private playCardHand = async () =>
 	{
-		const cardHand: CardHand | null = this.ai.decide(this.id, this.state);
+		const cardHand = this.ai.decide(this.id, this.state);
 
 		if (cardHand == null)
 		{
 			logger.verbose(this.id, "skipping turn");
-			this.state.turnSkipped = true;
-			this.socket?.emit("player_skip_turn");
+			const status: StatusTransmit = await this.socket?.emitWithAck("player_skip_turn_request");
+			if (!status.success)
+				logger.error(this.id, `failed to skip turn: ${status.message}`);
 		}
 		else
 		{
-			cardHand.playerId = this.id;
 			this.state.setLastCardHand(cardHand);
 			this.state.removeCards(cardHand);
 			logger.verbose(this.id, "attempting to play", cardHand);
-			this.state.turnSkipped = false;
-			this.socket?.emit("player_play_card_hand", cardHand);
+			const status: StatusTransmit = await this.socket?.emitWithAck("player_play_card_hand_request", cardHand);
+			if (!status.success)
+				logger.error(this.id, "failed to play card hand");
 		}
 	}
 
-	private checkSuccess = (stat: StatusTransmit) =>
-	{
-		if (!stat.success)
-			logger.error(this.id, "Error:", stat.message);
-	}
-	
-	private checkOpponentMove = (opponentMove: CardHand) =>
+	private registerOpponentMove = (opponentMove: CardHand) =>
 	{
 		if (opponentMove.playerId != this.id)
 		{
 			logger.verbose(opponentMove.playerId, "played:", opponentMove);
-			this.state.turnSkipped = false;
 			this.state.setLastCardHand(opponentMove);
 		}
 	}
 
-	private	gameEnd = (stat: GameEndStatsTransmit) =>
+	private registerOpponentSkip = (opponentSkip: SkipTurnTransmit) =>
 	{
-		this.gamesPlayed++;
-		if (stat.winnerPlayerId == this.id)
-		{
-			logger.verbose(this.id, "I won");
-			this.wins++;
-			if (this.gamesPlayed != this.maxGames)
-			{
-				const startRequest: GameStartRequest = {
-					playerId: this.id
-				};
-				this.socket?.emit("game_start", startRequest);
-			}
-		}
+		logger.info(this.id, `player<${opponentSkip.playerId}> skipped their turn`);
+	}
+
+	private	gameEnd = (stats: GameEndStatsTransmit) =>
+	{
+		if (stats.winnerPlayerUuid == this.id)
+			logger.info(this.id, "I won");
 		else
 		{
-			logger.verbose(this.id, "I lost");
-		}
-		if (this.gamesPlayed == this.maxGames)
-		{
-			logger.info(this.id, "I won", this.wins, "times");
-			if (stat.winnerPlayerId == this.id)
-				console.log(new Date().toTimeString());
+			logger.info(this.id, "I lost");
+			logger.verbose(`(${stats.playerFinalCardAmounts[this.id]} cards remaining and ${stats.playerPenaltyPoints} penalty points)`);
 		}
 	}
 	
 	private disconnect = (reason: string) =>
 	{
-		logger.warn(this.id, "disconnected:", reason);
+		logger.info(this.id, "disconnected:", reason);
 		this.socket?.disconnect();
 		this.socket = null;
 	}
-
 }

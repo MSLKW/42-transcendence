@@ -41,7 +41,6 @@ function shutdown()
 	manager.stopAll();
 	server.close();
 	process.exit(0);
-
 }
 
 process.on("SIGINT", shutdown);
