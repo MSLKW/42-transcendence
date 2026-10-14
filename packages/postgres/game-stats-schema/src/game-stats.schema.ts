@@ -24,6 +24,10 @@ export const playerStats = gameStatsSchema.table("player_stats", {
 	winStreak: integer("win_streak")
 		.default(0)
 		.notNull(),
+	displayedBadge: text("displayed_badge")
+		.$type<BadgeLabel>()
+		.default("Newcomer")
+		.notNull(),
 	updatedAt: timestamp("updated_at", { withTimezone: true })
 		.defaultNow()
 		.notNull(),
