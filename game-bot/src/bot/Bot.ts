@@ -113,12 +113,13 @@ export class Bot
 		}
 		else
 		{
+			cardHand.playerId = this.id;
 			this.state.setLastCardHand(cardHand);
 			this.state.removeCards(cardHand);
 			logger.verbose(this.id, "attempting to play", cardHand);
 			const status: StatusTransmit = await this.socket?.emitWithAck("player_play_card_hand_request", cardHand);
 			if (!status.success)
-				logger.error(this.id, "failed to play card hand");
+				logger.error(this.id, `failed to play card hand": ${status.message}`);
 		}
 	}
 

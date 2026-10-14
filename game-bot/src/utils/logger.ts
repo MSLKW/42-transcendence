@@ -16,7 +16,7 @@ const loglevelMap: Record<string, LogLevel> = {
 } as const;
 
 const CURRENT_LEVEL = loglevelMap[BOT_LOG_LEVEL]
-if (!CURRENT_LEVEL)
+if (CURRENT_LEVEL == undefined)
 	throw new Error('BOT_LOG_LEVEL must be "verbose", "info", "warn" or "error"');
 
 function format(args: unknown[]): string {
