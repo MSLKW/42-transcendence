@@ -1,9 +1,6 @@
-import { useEffect } from "react";
 import { useGameStore } from "../../store/GameStore";
 import { useProfileStore } from "../../store/ProfileStore";
-import { useResultsStore } from "../../store/ResultsStore";
-import { useSceneStore } from "../../store/SceneStore";
-import { useAutoPass } from "../../utilities/useAutoPass";
+import { useAuthStore } from "../../store/AuthStore";
 import { HeaderModule } from "../header/HeaderModule";
 import { AvatarModule } from "../avatar/AvatarModule";
 import { RankCallButton } from "./rank/RankCallButton";
@@ -20,6 +17,9 @@ export const GameScene = () => {
 	const gameStarted = useGameStore((store) => store.gameStarted);
 	const playerDisconnection = useGameStore((store) => store.playerDisconnection);
 	const cachedData = useProfileStore((store) => store.cachedData);
+	const clientUuid = useAuthStore((store) => store.clientUuid);
+
+	const clientSeat = gameSeats.indexOf(clientUuid);
 
 	return (
 		<>
@@ -116,8 +116,14 @@ export const GameScene = () => {
 						flex gap-2rem
 					"
 				>
-					<GamePassButton />
-					<GamePlayButton />
+					{
+						activeSeat === clientSeat && (
+							<>
+								<GamePassButton />
+								<GamePlayButton />
+							</>
+						)
+					}
 				</div>
 			</main>
 			<footer className="flex place-content-between place-items-center">

@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { gameInstance } from "../../../api/game/src/main";
+import { gameInstance } from "../../../api/game/main";
 import { useGameStore } from "../../../store/GameStore";
 
 interface SortButtonProps {

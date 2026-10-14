@@ -1,4 +1,4 @@
-import { CardHandTransmit, HandType, PentupleType } from '@big2/game-types';
+import { CardHandTransmit, GameSettingsTransmit, HandType, PentupleType } from '@big2/game-types';
 import { PlayerState } from "./PlayerState.js";
 import { CardHandState } from "./CardHandState.js";
 import { io } from "./server.js";
@@ -7,11 +7,13 @@ export class CardHeapState {
 	private cardHands: Array<CardHandState>;
 	private	leadingPlayerId: string;
 	public	requiresThreeDiamonds: boolean;
+	private	gameSettingsRef: GameSettingsTransmit
 
-	constructor() {
+	constructor(gameSettingsRef: GameSettingsTransmit) {
 		this.cardHands = [];
 		this.leadingPlayerId = "";
 		this.requiresThreeDiamonds = true;
+		this.gameSettingsRef = gameSettingsRef;
 	}
 
 	public receiveCardHand(cardHand: CardHandState) {
@@ -24,7 +26,7 @@ export class CardHeapState {
 		return (this.cardHands.length);
 	}
 
-	private getTopCardHand(): CardHandState | undefined {
+	public getTopCardHand(): CardHandState | undefined {
 		return (this.cardHands.at(this.cardHands.length - 1))
 	}
 
@@ -40,6 +42,8 @@ export class CardHeapState {
 
 	public isCardHandPlayable(other: CardHandState): boolean {
 		const topCardHand = this.getTopCardHand();
+		if (this.gameSettingsRef.allow3OfAKind === false && other.handType === HandType.Triple)
+			return (false);
 		if (topCardHand === undefined)
 			return (true);
 		if (this.isPlayerLeading(other.playerId))

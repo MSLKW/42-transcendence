@@ -59,17 +59,14 @@ Ommited fields will be unaffected
 The request body should be a FormData type with .append() used with "avatar" as the name and the image file as the value
 Example usage:
 ```ts
-function uploadFile(file: File)
-{
-	const formData = new FormData();
-	formData.append("avatar", file);
-	const res = await fetch(`${PROFILE_SYSTEM_URL}/avatar`, {
-		method: "PUT",
-		body: formData
-	});
-}
+const formData = new FormData();
+formData.append("avatar", file);
+const res = await fetch(`${PROFILE_SERVICE_URL}/avatar`, {
+	method: "PUT",
+	body: formData
+});
 ```
 #### Responses
-- 200 { message: string, filename: string }
+- 204
 - 400 { error: string }
 - forwards auth system's /validate responses to client on unsuccessful validation

@@ -16,16 +16,6 @@ export default defineConfig({
 			clientPort: process.env.DOMAIN_PORT ? Number(process.env.DOMAIN_PORT) : 80,
 		},
 		allowedHosts: true,
-		// allowedHosts: [
-		// 	"website"
-		// ],
-		// proxy: {
-		// 	"/api": {
-		// 		target: "http://localhost:3000",
-		// 		changeOrigin: true,
-		// 		rewrite: (path) => path.replace(/^\/api/, ""),
-		// 	}
-		// }
 	},
 	plugins: [
 		react(),

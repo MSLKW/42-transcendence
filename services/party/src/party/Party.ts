@@ -114,6 +114,8 @@ export class Party
 					playerUuids: [...this.members.keys()]
 				})
 			});
+			if (response.status == 404)
+				this.gameId = null;
 			if (!response.ok)
 				console.error("could not update game session", response.status);
 		}

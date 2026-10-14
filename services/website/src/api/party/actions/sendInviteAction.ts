@@ -11,7 +11,7 @@ export function sendInviteAction(socket: Socket | null, recipientUuid: string, r
 		return;
 	}
 
-	socket.emit("send_invite", { recipientUuid });
+	socket.emit("send_invite", { recipientUuid }, () => {});
 	showNotification(
 		`Invitation sent to ${recipientName}`,
 		NOTIFICATION_TYPE.message

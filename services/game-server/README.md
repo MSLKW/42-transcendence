@@ -8,9 +8,10 @@ The Game Server manages the lobby and game sessions. Handling the lobby and its 
 
 | Name | Type | Description |
 | --- | --- | --- |
-| GAME_SERVER_URL | string | Should contain the server URL and port in the format: “server_url:port”. Will be used for the client socket to connect to |
-| GAME_SERVER_LOBBY_LIMIT | number | Specifies the lobby limit, capping the amount of lobbies that the server will create |
-| GAME_SERVER_LOBBY_USER_LIMIT | number | Specifies the limit for the total users connecting to a single lobby |
+| GAME_SERVER_SERVICE_PORT | number | Determines the port that the game server will listen on |
+| GAME_SERVER_SERVICE_URL | string | Should contain the server URL and port in the format: “server_url:port”. Will be used for the client socket to connect to |
+| GAME_SERVER_SERVICE_LOBBY_LIMIT | number | Specifies the lobby limit, capping the amount of lobbies that the server will create |
+| GAME_SERVER_SERVICE_LOBBY_USER_LIMIT | number | Specifies the limit for the total users connecting to a single lobby, minimum 4 |
 
 # Endpoints
 
@@ -29,6 +30,23 @@ Healthcheck endpoint for docker orchestrator
 | HTTP Status | Payload | Description |
 | --- | --- | --- |
 | 204 | N/A | Server is healthy |
+
+## GET /lobby/:lobbySessionId
+
+### Description:
+
+Endpoint to check if a lobby exists
+
+### Header: N/A
+
+### Body: N/A
+
+### Response:
+
+| HTTP Status | Payload | Description |
+| --- | --- | --- |
+| 204 | N/A | Lobby exists |
+| 404 | N/A | Lobby is not found |
 
 ## POST /lobby
 
@@ -131,6 +149,7 @@ Updates sent to all relevant users
 | player_turn | PlayerTurnTransmit | Notify of a player’s turn |
 | player_play_card_hand | CardHandTransmit | Notify that a player played a card hand |
 | player_skip_turn | SkipTurnTransmit | Notify that a player skipped their turn, usually followed up by player_turn |
+| player_unlock_achievement | AchievementUnlockTransmit | Notify the player that they have unlocked the achievement in real time |
 | game_settings_update | GameSettingsTransmit | Notify that there is an update to the lobby game settings |
 | game_end | GameEndStatsTransmit | Notify that the game has ended |
 | game_state | GameStateTransmit | For initializing the game state on the client |

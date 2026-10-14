@@ -1,6 +1,6 @@
 dist/
 node_modules/
-
+server_build
 .dockerignore
 .gitignore
 Dockerfile

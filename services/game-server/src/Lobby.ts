@@ -4,34 +4,55 @@ import { UserState } from './UserState.js';
 import { GameState } from './GameState.js';
 import { GameSettingsTransmit, SeatOrderTransmit, StatusTransmit } from '@big2/game-types';
 import { EventEmitter } from 'node:events';
-import { success } from 'zod';
-import { privateDecrypt } from 'node:crypto';
+import { randomBytes } from 'crypto';
+import { GAME_BOT_SERVICE_URL, LOBBY_DELETE_TIMEOUT_MS, LOBBY_USER_LIMIT } from './env.js';
 
 export class Lobby {
 	private hostUuid: string;
-	private users: Array<UserState>;
-	private totalSeats: number;
-	public	availableSeats: Array<number>;
-	private whitelist: Array<string>;
-	private totalUsersLimit: number;
+	public	sessionId: string;
 	public	lobbyRoomId: string;
 	public	game: GameState;
-	public	sessionId: string;
+
+	private totalUsersLimit: number;
+	private totalSeats: number;
+	private whitelist: Array<string>;
+	private users: Array<UserState>;
+	public	availableSeats: Array<number>;
+
 	public	events: EventEmitter;
+	public	botSessions: Record<string, string>;
+
+	private	lobbyTimeoutId: NodeJS.Timeout | undefined;
+	private lobbyTimeoutMilliseconds: number;
 
 	constructor(data: LobbyRequest, sessionId: string) {
 		this.hostUuid = data.hostUuid;
 		this.users = [];
 		this.whitelist = data.playerUuids;
-		this.totalSeats = 4;
+		this.totalSeats = 0;
 		this.availableSeats = [];
-		this.totalUsersLimit = 5;
+		this.totalUsersLimit = LOBBY_USER_LIMIT > 4 ? LOBBY_USER_LIMIT : 4;
+		this.lobbyTimeoutMilliseconds = LOBBY_DELETE_TIMEOUT_MS > 0 ? LOBBY_DELETE_TIMEOUT_MS : -1;
 		this.sessionId = sessionId;
 		this.events = new EventEmitter();
 		this.game = new GameState(this.sessionId);
 		this.lobbyRoomId = "lobby" + this.sessionId;
-		this.initSeats(4, this.hostUuid);
+		this.lobbyTimeoutId = undefined;
+		this.botSessions = {}
+		this.initSeats(this.totalSeats, this.hostUuid);
 	}
+
+	/* Public Getters */
+
+	public getHostUuid() {
+		return (this.hostUuid);
+	}
+
+	public isActive() {
+		return (this.users.length > this.users.filter((user) => user.uuid.startsWith("bot-")).length);
+	}
+
+	/* --- */
 
 	public emit(event: string, payload: any) {
 		io.to(this.lobbyRoomId).emit(event, payload);
@@ -72,6 +93,7 @@ export class Lobby {
 	}
 
 	public connectUser(socket: Socket, uuid: string) {
+		console.log("whitelist: ", this.whitelist);
 		if (this.whitelist.indexOf(uuid) === -1 || 
 			this.users.length >= this.totalUsersLimit || 
 			(this.game.uuidInGame(uuid) === false && this.users.length >= this.totalUsersLimit - this.game.getDisconnectedPlayers())) {
@@ -88,18 +110,17 @@ export class Lobby {
 			kickSocket(socket, reason);
 			return ;
 		}
-		const userInGame = this.users.find((user) => user.uuid === uuid);
-		if (userInGame !== undefined) {
-			// kickSocket(userInGame.socket);
-			// console.log(`User<${uuid}> old socket is kicked: ${userInGame.socket.id}`);
-			// maybe have it reconnect with new socket instead of deleting it
-			kickSocket(socket, "User is already in game");
-			return ;
-		}
 		
 		const user = new UserState(socket, uuid, this);
+
+		const userInLobby = this.users.find((user) => user.uuid === uuid);
+		if (userInLobby !== undefined) {
+			kickSocket(userInLobby.socket, "Kicking old user because new user is logging in");
+			user.seat = userInLobby.seat;
+		}
 		this.users.push(user);
-		console.log(`User<${user.uuid}> has connected`);
+		console.log(`Lobby<${this.sessionId}>: User<${user.uuid}> has connected`);
+		clearTimeout(this.lobbyTimeoutId);
 		this.emitUserList();
 		user.socket.emit("user_seat_update", this.getSeatData());
 
@@ -109,7 +130,10 @@ export class Lobby {
 		else if (this.game.isGameStarted === true) {
 			this.game.addSpectator(user);
 		}
+		this.bindUserSocketEvents(user);
+	}
 
+	private bindUserSocketEvents(user: UserState) {
 		user.socket.on("disconnect", () => {
 			this.disconnectUser(user);
 		});
@@ -130,6 +154,35 @@ export class Lobby {
 			}
 			statusCallback(status);
 		});
+
+		user.socket.on("lobby_delete_request", (statusCallback) => {
+			const status: StatusTransmit = {
+				success: false,
+				message: "",
+			};
+			if (user.uuid !== this.hostUuid) {
+				status.message = "Not the Host";
+				statusCallback(status);
+				return (status);
+			}
+			else if (this.game.isGameStarted === true) {
+				status.message = "Lobby game has already started";
+				statusCallback(status);
+				return ;
+			}
+			status.success = true;
+			status.message = "Successfully deleted the lobby";
+			statusCallback(status);
+			this.events.emit("lobby:delete");
+		});
+
+		user.socket.on("bot_add", async (seatIndex: number, statusCallback) => {
+			statusCallback(await this.AddBot(user, seatIndex));
+		});
+
+		user.socket.on("bot_remove", (botId: string, statusCallback) => {
+			statusCallback(this.removeBot(botId));
+		});
 	}
 
 	private disconnectUser(disconnectedUser: UserState) {
@@ -144,21 +197,31 @@ export class Lobby {
 		disconnectedUser.leaveSeat();
 		this.users.splice(index, 1);
 		this.emitUserList();
-		console.log(`User<${disconnectedUser.uuid}> disconnected`);
+		console.log(`Lobby<${this.sessionId}>: User<${disconnectedUser.uuid}> has disconnected`);
 		if (this.isActive() === false) {
-			this.events.emit("lobby:inactive");
+			if (this.lobbyTimeoutMilliseconds > 0) {
+				this.lobbyTimeoutId = setTimeout(() => {
+					this.events.emit("lobby:delete");
+				}, this.lobbyTimeoutMilliseconds);
+				console.log(`Lobby<${this.sessionId}> is inactive`);
+			}
 		}
 	}
 
 	private GameStartRequest(user: UserState): StatusTransmit {
+		const status: StatusTransmit = {
+			success: false,
+			message: ""
+		}
 		if (this.hostUuid !== user.uuid) {
-			const status: StatusTransmit = {
-				success: false,
-				message: "Not the host"
-			}
+			status.message = "You are not the host";
 			return (status);
 		}
 		const usersToPlay = this.users.filter((user) => user.seat >= 0).sort((userA, userB) => userA.seat - userB.seat);
+		if (usersToPlay.length !== this.totalSeats) {
+			status.message = "Lobby is not fully seated with players";
+			return (status);
+		}
 		for (let i = 0; i < usersToPlay.length; i++) {
 			this.game.addPlayer(usersToPlay[i]);
 		}
@@ -184,13 +247,98 @@ export class Lobby {
 		return (status);
 	}
 
-	public isActive() {
-		return (this.users.length > 0);
+	private async AddBot(user: UserState, seatIndex: number): Promise<StatusTransmit> {
+		const status: StatusTransmit = {
+			success: false,
+			message: ""
+		}
+		if (user.uuid !== this.hostUuid) {
+			status.message = "You are not the host";
+			return (status);
+		}
+		const availableSeat = this.availableSeats.find((availableSeatIndex) => availableSeatIndex === seatIndex);
+		if (availableSeat === undefined) {
+			status.message = "The seat is not available";
+			return (status);
+		}
+
+		const newSessionToken = randomBytes(32).toString("hex");
+		try {
+			const response = await fetch(`${GAME_BOT_SERVICE_URL}/new-bot`, {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json',
+				},
+				body: JSON.stringify({
+					lobbyId: this.sessionId,
+					seatIndex: seatIndex,
+					botSessionToken: newSessionToken
+				})
+			});
+			
+			if (response.status === 400) {
+				const payload = await response.json();
+				status.message = `Unable to add bot: ${payload.error}`;
+				return (status);
+			}
+			if (!response.ok) {
+				status.message = `game-bot service error`;
+				return (status);
+			}
+
+			const payload = await response.json();
+
+			if (response.status !== 200) {
+				status.message = "Unknown response status";
+				return (status);
+			}
+
+			const botId = payload.botId;
+			this.botSessions[newSessionToken] = botId;
+			this.whitelist.push(botId);
+			status.success = true;
+			status.message = `Successfully registered bot: ${botId}`;
+			return (status);
+		}
+		catch (error) {
+			if (error instanceof TypeError) {
+				status.message = "Network error: game-bot server may be down";
+			}
+			else {
+				status.message = "Error occured while adding bot";
+			}
+			return (status);
+		}
+	}
+
+	private removeBot(botId: string): StatusTransmit {
+		const status: StatusTransmit = {
+			success: false,
+			message: ""
+		}
+		const botUser = this.users.find((userUuid) => userUuid.uuid === botId);
+		if (botUser === undefined) {
+			status.message = "Unable to find bot in user list";
+			return (status);
+		}
+		const botSessionEntry = Object.entries(this.botSessions).find(([botSessionToken, botId]) => botId === botUser.uuid);
+		if (botSessionEntry === undefined) {
+			status.message = "Bot Session is not found";
+			return (status);
+		}
+		this.disconnectUser(botUser);
+		this.whitelist.splice(this.whitelist.indexOf(botUser.uuid), 1);
+		const botSessionToken = botSessionEntry[0];
+		delete(this.botSessions[botSessionToken]);
+		status.success = true;
+		status.message = "Successfully removed bot";
+		return (status);
 	}
 
 	public update(data: LobbyRequest): boolean {
-		const kickUuids = this.whitelist.filter((uuid) => data.playerUuids.indexOf(uuid) === -1);
-		this.whitelist = data.playerUuids;
+		const updatedWhitelist = data.playerUuids.concat(Object.values(this.botSessions))
+		const kickUuids = this.whitelist.filter((uuid) => updatedWhitelist.indexOf(uuid) === -1);
+		this.whitelist = updatedWhitelist;
 		for (let i = 0; i < kickUuids.length; i++) {
 			const user = this.users.find((user) => user.uuid === kickUuids[i]);
 			if (user !== undefined) {
@@ -211,6 +359,10 @@ export class Lobby {
 			status.message = "You are not the host";
 			return (status);
 		}
+		if (this.game.isGameStarted === true) {
+			status.message = "Game has already been started";
+			return (status);
+		}
 		if (totalSeats < 1 || totalSeats > 4) {
 			status.message = "Seats are out of bounds";
 			return (status);
@@ -227,5 +379,11 @@ export class Lobby {
 		status.success = true;
 		status.message = "Successfully initialized seats";
 		return (status);
+	}
+
+	public kickSockets() {
+		for (let i = 0; i < this.users.length; i++) {
+			kickSocket(this.users[i].socket, "Connected lobby is deleted");
+		}
 	}
 }

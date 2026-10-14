@@ -1,7 +1,6 @@
 import { Request, Response } from "express";
 import { UserStore } from "../store/UserStore";
-// import { UserData, UserSettings, NULL_ACHIEVEMENTS } from "../types";
-// import { type UserData, type UserSettings, NULL_ACHIEVEMENTS } from "@big2/profile-types";
+import { UserData, UserSettings, NULL_ACHIEVEMENTS } from "../types";
 
 export function getUserSettings(store: UserStore)
 {

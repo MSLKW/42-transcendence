@@ -23,7 +23,7 @@
 
 | <center>Event Name</center> | <center>JSON Payload</center> | <center>Callback</center> |
 |-|-|-|
-| "send_invite" | recipientUuid: string | <center>-</center> |
+| "send_invite" | recipientUuid: string | success: boolean,<br>reason?: string (if success == false) |
 | "kick_player" | recipientUuid: string | <center>-</center> |
 | "accept_invite" | hostUuid: string | success: boolean,<br>reason?: string (if success == false) |
 | "reject_invite" | hostUuid: string | <center>-</center> |
