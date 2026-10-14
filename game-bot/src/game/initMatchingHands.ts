@@ -1,4 +1,4 @@
-import { GameState } from "./GameState";
+import { GameState } from "./GameState.js";
 import { CardTransmit, CardHandTransmit, HandType, PentupleType } from "@big2/game-types";
 
 type Card = CardTransmit;

@@ -1,19 +1,18 @@
 import {
 	CardTransmit as Card,
 	CardHandTransmit as CardHand,
-	GameStateTransmit,
+	GameStateTransmit
 } from "@big2/game-types";
 
-import { rankComp, suitComp, cardHandComp } from "../utils/cardHandComp";
-import { normalizePlayerSeats } from "./normalizePlayerSeats"
+import { rankComp, suitComp, cardHandComp } from "../utils/cardHandComp.js";
+import { normalizePlayerSeats } from "./normalizePlayerSeats.js"
 
-import { initSingles } from "./initSingles";
-import { initMatchingHands } from "./initMatchingHands";
-import { initFullHouses } from "./initFullHouses";
-import { initStraights } from "./initStraights";
-import { initFlushes } from "./initFlushes";
+import { initSingles } from "./initSingles.js";
+import { initMatchingHands } from "./initMatchingHands.js";
+import { initFullHouses } from "./initFullHouses.js";
+import { initStraights } from "./initStraights.js";
+import { initFlushes } from "./initFlushes.js";
 
-import { normalizeCardHand } from "./normalizeCardHand";
 
 export type HandTypeKey = "single" | "double" | "triple" | "straight" | "flush" | "full_house" | "four_of_a_kind" | "straight_flush";
 

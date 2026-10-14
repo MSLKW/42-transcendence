@@ -1,8 +1,8 @@
 import { io, Socket } from "socket.io-client";
-import { GameState } from "../game/GameState";
-import { AAIController } from "../ai/AAIController";
-import { logger } from "../utils/logger";
 import { setTimeout } from "timers/promises";
+import { GameState } from "../game/GameState.js";
+import { AAIController } from "../ai/AAIController.js";
+import { logger } from "../utils/logger.js";
 import { CardHandTransmit as CardHand, GameEndStatsTransmit } from "@big2/game-types";
 
 import {

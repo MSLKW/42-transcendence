@@ -1,4 +1,4 @@
-import { GameState } from "./GameState";
+import { GameState } from "./GameState.js";
 import {
 	CardTransmit as Card,
 	CardHandTransmit as CardHand,
