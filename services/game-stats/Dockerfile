@@ -4,8 +4,9 @@ WORKDIR /app
 
 COPY --from=postgres-client     package.json    ./packages/postgres/postgres-client/
 COPY --from=auth-schema         package.json    ./packages/postgres/auth-schema/
-COPY --from=game-stats-types    package.json    ./packages/types/game-stats-types/
 COPY --from=game-stats-schema   package.json    ./packages/postgres/game-stats-schema/
+COPY --from=game-stats-types    package.json    ./packages/types/game-stats-types/
+COPY --from=game-types    		package.json    ./packages/types/game-types/
 COPY                            package.json    ./services/game-stats/
 COPY --from=root                package*.json   ./
 
@@ -21,8 +22,9 @@ WORKDIR /app
 
 COPY --from=postgres-client     package.json    ./packages/postgres/postgres-client/
 COPY --from=auth-schema         package.json    ./packages/postgres/auth-schema/
-COPY --from=game-stats-types    package.json    ./packages/types/game-stats-types/
 COPY --from=game-stats-schema   package.json    ./packages/postgres/game-stats-schema/
+COPY --from=game-stats-types    package.json    ./packages/types/game-stats-types/
+COPY --from=game-types    		package.json    ./packages/types/game-types/
 COPY                            package.json    ./services/game-stats/
 COPY --from=root                package*.json   ./
 
@@ -31,8 +33,9 @@ RUN npm ci --omit=dev
 
 COPY --from=builder /app/packages/postgres/postgres-client/dist     ./packages/postgres/postgres-client/dist
 COPY --from=builder /app/packages/postgres/auth-schema/dist         ./packages/postgres/auth-schema/dist
-COPY --from=builder /app/packages/types/game-stats-types/dist       ./packages/types/game-stats-types/dist
 COPY --from=builder /app/packages/postgres/game-stats-schema/dist   ./packages/postgres/game-stats-schema/dist
+COPY --from=builder /app/packages/types/game-stats-types/dist       ./packages/types/game-stats-types/dist
+COPY --from=builder /app/packages/types/game-types/dist       		./packages/types/game-types/dist
 COPY --from=builder /app/services/game-stats/dist                   ./services/game-stats/dist
 
 ENV PORT=3000

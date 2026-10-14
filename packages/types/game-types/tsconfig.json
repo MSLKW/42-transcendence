@@ -13,6 +13,7 @@
 
 		"strict": true,
 		"skipLibCheck": true,
+		"composite": true,
 	},
 	"include": ["src/**/*"]
 }
