@@ -1,3 +1,5 @@
+import { z } from "zod";
+import * as s from './Validation.js';
 
 export enum CardRank {
 	Three,
@@ -23,11 +25,6 @@ export enum CardSuit {
 	Spade
 }
 
-export interface CardTransmit {
-	rank: CardRank;
-	suit: CardSuit;
-}
-
 export enum HandType {
 	None,
 	Single,
@@ -46,53 +43,30 @@ export enum PentupleType {
 	// RoyalFlush
 }
 
-export interface CardHandTransmit {
-	cards: Array<CardTransmit>;
-	handType: HandType;
-	pentupleType: PentupleType;
-	playerId: string;
+// Convert this to zod validation later
+export type AchievementUnlockTransmit = {
+	playerUuid: string,
+	achievementId: string,
+	unlockedAt: string,
 }
 
-export type GameStateTransmit = {
-	cardHeap: Array<CardHandTransmit>,
-	playerCardsAmount: Record<string, number>,
-	playerSeatOrder: Record<string, number>,
-	playerCards: Array<CardTransmit>,
-	isPlayerTurn: boolean
+// Assumption of what the transmit game-stat will send me
+export type PlayerStatsTransmit = {
+	totalPlayed: number,
+	totalWins: number,
+	winstreak: number,
+	unlockedBadges: Array<string>,
+	unlockedAchievements: Array<AchievementUnlockTransmit>, 
+	xp: number,
+	level: number,
 }
 
-export type GameSettingsTransmit = {
-	allow3OfAKind: boolean,
-	allow2OfSpadesEnd: boolean,
-	autoPassInMilliseconds: number,
-	endGameCondition: number,
-	scoreCalculation: number,
-}
-
-export type GameEndStatsTransmit = {
-	winnerPlayerUuid: string,
-	playerFinalCardAmounts: Record<string, number>,
-	playerPenaltyPoints: Record<string, number>,
-	temporaryWinStreakAmount: number,
-	temporaryRoundsPlayed: number,
-}
-
-export type SeatOrderTransmit = {
-	totalSeats: number,
-	seatOrder: (string | null)[]
-}
-
-export type StatusTransmit = {
-	success: boolean,
-	message: string
-}
-
-export type PlayerTurnTransmit = {
-	playerId: string,
-	skippable: boolean,
-	timer: number
-}
-
-export type SkipTurnTransmit = {
-	playerId: string
-}
+export type CardTransmit = z.infer<typeof s.CardTransmitSchema>;
+export type CardHandTransmit = z.infer<typeof s.CardHandTransmitSchema>;
+export type GameStateTransmit = z.infer<typeof s.GameStateTransmitSchema>;
+export type GameSettingsTransmit = z.infer<typeof s.GameSettingsTransmitSchema>;
+export type GameEndStatsTransmit = z.infer<typeof s.GameEndStatsTransmitSchema>;
+export type SeatOrderTransmit = z.infer<typeof s.SeatOrderTransmitSchema>;
+export type StatusTransmit = z.infer<typeof s.StatusTransmitSchema>;
+export type PlayerTurnTransmit = z.infer<typeof s.PlayerTurnTransmitSchema>;
+export type SkipTurnTransmit = z.infer<typeof s.SkipTurnTransmit>;
