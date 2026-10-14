@@ -15,6 +15,13 @@
       "when": 1790745637300,
       "tag": "0001_party_schema_revamp_feat_last_online",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1791943059979,
+      "tag": "0002_feat_game_stats_schema",
+      "breakpoints": true
     }
   ]
 }
