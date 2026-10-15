@@ -1,7 +1,7 @@
 import { Socket } from 'socket.io-client';
-import { CardManager } from './CardManager.ts';
-import { CardHeap } from './CardHeap.ts';
-import { GameStateTransmit } from '@big2/game-types';
+import { CardManager } from './CardManager';
+import { CardHeap } from './CardHeap';
+import { type GameStateTransmit } from '@big2/game-types';
 
 export abstract class Participant {
 	protected	socket: Socket;
@@ -17,4 +17,5 @@ export abstract class Participant {
 	}
 
 	public abstract sync(gameState: GameStateTransmit): void;
+	public abstract reset(): void;
 }

@@ -1,0 +1,18 @@
+{
+	"compilerOptions": {
+		"target": "es2022",
+		"module": "nodenext",
+		"moduleResolution": "nodenext",
+		"declaration": true,
+		"declarationMap": true,
+		"sourceMap": true,
+
+		"rootDir": "./",
+		"outDir": "./server_build",
+		"declarationDir": "./server_build/types",
+
+		"strict": true,
+		"skipLibCheck": true,
+	},
+	"include": ["src/**/*", "src_shared/**/*"]
+}

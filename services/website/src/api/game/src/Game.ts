@@ -1,18 +1,20 @@
 import * as THREE from 'three';
 import { io, Socket } from 'socket.io-client';
-import { CardHandTransmit, CardRank, CardSuit, GameStateTransmit, GameStartRequest, StatusTransmit, SeatOrderTransmit, GameSettingsTransmit, GameEndStatsTransmit } from '@big2/game-types';
-import { CardHeap } from './CardHeap.ts';
-import { Player } from './Player.ts';
-import { Opponent } from './Opponent.ts';
-import { Deck } from './Deck.ts';
-import { gameScene } from '../../../components/3d/ThreeJsManager.ts';
+import { type GameStateTransmit, type StatusTransmit, type SeatOrderTransmit, type GameSettingsTransmit, type GameEndStatsTransmit, type AchievementUnlockTransmit } from '@big2/game-types';
+import { CardHeap } from './CardHeap';
+import { Player } from './Player';
+import { Opponent } from './Opponent';
+import { Deck } from './Deck';
+import { gameScene } from '../../components/3d/ThreeJsManager';
 import { gsap } from 'gsap';
-import { Participant } from './Participant.ts';
-import { useGameStore } from "../../../store/GameStore.ts";
-import { usePartyStore } from "../../../store/PartyStore.ts";
-import { useSceneStore } from "../../../store/SceneStore.ts";
-import { threejsManager } from '../../../App.tsx';
-import { useResultsStore } from '../../../store/ResultsStore.ts';
+import { Participant } from './Participant';
+import { useGameStore } from "../../store/GameStore";
+import { usePartyStore } from "../../store/PartyStore";
+import { partySocket } from "../party/partySocket";
+import { useSceneStore } from "../../store/SceneStore";
+import { threejsManager } from '../../App';
+import { useResultsStore } from '../../store/ResultsStore';
+import { useBotStore } from '../../store/BotStore';
 
 export class Game {
 	private socket: Socket;
@@ -41,13 +43,25 @@ export class Game {
 		this.bindSocketEvents();
 	}
 
+	public disconnect() {
+		this.resetGame();
+		this.socket.disconnect();
+	}
+
 	public startGame() {
-		const gameStartRequest: GameStartRequest = {
-			playerId: this.playerId
-		}
-		if (useGameStore.getState().gameVerboseMode)
-			console.log("[game] Sending game_start_request");
-		this.socket.emit("game_start_request", gameStartRequest);
+		this.socket.emit("game_start_request", (status: StatusTransmit) => {
+			console.log(`[gameSocket] 'game_start_request': ${status.success} | ${status.message}`);
+		});
+	}
+
+	public deleteLobby() {
+		console.log("[gameSocket] emitting 'lobby_delete_request");
+		this.socket.emit("lobby_delete_request", (status: StatusTransmit) => {
+			console.log(`[gameSocket] 'lobby_delete_request': ${status.success} | ${status.message}`);
+			if (status.success === false) {
+				this.disconnect();
+			}
+		});
 	}
 
 	public takeSeat(seatIndex: number) {
@@ -58,22 +72,43 @@ export class Game {
 		this.socket.emit("user_seat_leave");
 	}
 
+	public addBot(seatIndex: number) {
+		console.log(`bot_add: seatIndex: ${seatIndex}`);
+		this.socket.emit("bot_add", seatIndex, (status: StatusTransmit) => {
+			console.log(`[gameSocket] 'bot_add': ${status.success} | ${status.message}`);
+		});
+	}
+
+	public removeBot(botId: string) {
+		this.socket.emit("bot_remove", botId, (status: StatusTransmit) => {
+			console.log(`[gameSocket] 'bot_remove': ${status.success} | ${status.message}`);
+		});
+	}
+
 	private bindSocketEvents() {
+		this.socket.on("connect_error", (error) => {
+			console.log("[gameSocket] 'connect_error': ", error.message);
+			usePartyStore.setState({ partyGameId: null });
+		});
+
 		this.socket.on("connect", () => {
 			useGameStore.setState({ gameSocketId: this.socket.id });
 			if (useGameStore.getState().gameVerboseMode)
 				console.log(`[gameSocket] 'connect' id: ${this.socket.id}`);
 		});
 		this.socket.on("graceful_disconnect", (reason: string) => {
-			if (useGameStore.getState().gameVerboseMode)
-				console.log(`[gameSocket 'graceful_disconnect' reason: ${reason}]`);
+			console.log(`[gameSocket] 'graceful_disconnect' reason: `, reason);
 			this.socket.disconnect();
 		});
 		this.socket.on("disconnect", (reason) => {
-			if (useGameStore.getState().gameVerboseMode)
-				console.log(`[gameSocket] 'disconnect' reason: ${reason}`);
-			useGameStore.setState({ gameSocketId: null });
-			useSceneStore.getState().setCurrentScene("Home");
+			console.log(`[gameSocket] 'disconnect' reason: ${reason}`);
+			const currentScene = useSceneStore.getState().currentScene;
+			if (currentScene === "Lobby" || currentScene === "Game") {
+				useSceneStore.getState().setCurrentScene("Home");
+			}
+			this.resetGame();
+			useGameStore.getState().resetGame();
+			partySocket.refresh();
 		});
 
 		this.socket.on("game_start_request", (status: StatusTransmit) => {
@@ -82,13 +117,14 @@ export class Game {
 		});
 	
 		this.socket.on("game_end", (gameEndStats: GameEndStatsTransmit) => {
+			console.log(`[gameSocket] 'game_end': `, gameEndStats);
 			useResultsStore.getState().setResults(gameEndStats);
 			this.resetGame();
 		});
 	
-		this.socket.on("player_connection_update", (connections: Record<string, boolean>) => {
-			if (useGameStore.getState().gameVerboseMode)
-				console.log(connections);
+		this.socket.on("player_connection_update", (disconnections: Record<string, boolean>) => {
+			useGameStore.setState({ playerDisconnection: disconnections });
+			console.log("[gameSocket] 'player_connection_update': ", disconnections);
 		});
 	
 		// this.socket.on("user_seat_take", (status: StatusTransmit) => {
@@ -103,13 +139,13 @@ export class Game {
 	
 		this.socket.on("user_seat_update", (seatData: SeatOrderTransmit) => {
 			const totalPlayers = useGameStore.getState().totalPlayers;
-			if (useGameStore.getState().gameVerboseMode)
-				console.log(`[gameSocket] 'user_seat_update' | totalSeats: ${seatData.totalSeats} | seatOrder: ${seatData.seatOrder}`);
+			console.log("[gameSocket] 'user_seat_update': ", seatData);
 			if (totalPlayers !== seatData.totalSeats) {
 				useGameStore.setState({totalPlayers: seatData.totalSeats})
 				useGameStore.getState().initSeats();
 			}
 			useGameStore.setState({userSeats: seatData.seatOrder});
+			useBotStore.getState().cacheBotProfile(seatData);
 		});
 
 		this.socket.on("user_seat_change", (status: StatusTransmit) => {
@@ -118,6 +154,7 @@ export class Game {
 		});
 	
 		this.socket.on("user_list_update", (userList: Array<string>) => {
+			console.log("[gameSocket] 'user_list_update': ", userList);
 			const newUserSeats = [...useGameStore.getState().userSeats];
 			for (let i = 0; i < newUserSeats.length; i++) {
 				const userInList = userList.find((uuid) => uuid === newUserSeats[i]);
@@ -129,14 +166,17 @@ export class Game {
 		})
 
 		this.socket.on("game_settings_update", (gameSettings: GameSettingsTransmit) => {
-			if (useGameStore.getState().gameVerboseMode)
-				console.log(gameSettings);
+			console.log("[gameSocket] 'game_settings_update': ", gameSettings);
 		});
 	
 		this.socket.on("game_state", (gameState: GameStateTransmit) => {
-			if (useGameStore.getState().gameVerboseMode)
-				console.log("[gameSocket] Received game_state");
+			console.log("[gameSocket] 'game_state': ", gameState);
+			this.resetGame();
 			this.initGame(gameState);
+		});
+
+		this.socket.on("player_unlock_achievement", (achievementTransmit: AchievementUnlockTransmit) => {
+			console.log("[gameSocket] 'player_unlock_achievement': ", achievementTransmit);
 		});
 	}
 
@@ -159,6 +199,7 @@ export class Game {
 	private resetGame() {
 		this.cardHeap.reset();
 		for (let i = 0; i < this.participants.length; i++) {
+			this.participants[i].reset();
 			this.participants[i].cardManager.reset();
 		}
 		this.playerRef = null;

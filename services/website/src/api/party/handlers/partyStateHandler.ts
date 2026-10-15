@@ -3,7 +3,7 @@ import { useAuthStore } from "../../../store/AuthStore";
 import { useNotificationStore, NOTIFICATION_TYPE } from "../../../store/NotificationStore";
 import { usePartyStore } from "../../../store/PartyStore";
 import { useProfileStore } from "../../../store/ProfileStore";
-import { joinGameLobby } from "../../game/src/main";
+import { joinGameLobby } from "../../game/main";
 import { chatSocket } from "../../chat/chatSocket";
 import { useChatStore } from "../../../store/ChatStore";
 

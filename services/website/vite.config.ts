@@ -36,16 +36,6 @@ export default defineConfig({
 			clientPort: process.env.DOMAIN_PORT ? Number(process.env.DOMAIN_PORT) : 80,
 		},
 		allowedHosts: true,
-		// allowedHosts: [
-		// 	"website"
-		// ],
-		// proxy: {
-		// 	"/api": {
-		// 		target: "http://localhost:3000",
-		// 		changeOrigin: true,
-		// 		rewrite: (path) => path.replace(/^\/api/, ""),
-		// 	}
-		// }
 	},
 	plugins: [
 		react(),
@@ -56,7 +46,7 @@ export default defineConfig({
 		rolldownOptions: {
 			output: {
 				manualChunks(id) {
-					if (id.includes('node_modules/three') || id.includes('node_modules/@react-three')) {
+					if (id.includes('node_modules/three')) {
 						return '3d-vendor';
 					}
 					if (id.includes('node_modules')) {

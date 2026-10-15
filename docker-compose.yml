@@ -13,6 +13,7 @@ networks:
     name: ${DB_NETWORK:?}
     driver: bridge # no ingress (Incoming traffic or data is completely blocked from entering this network)
     internal: true # no egress (Outgoing traffic or data is completely blocked from leaving this network)
+  game-bot-network:
 
 
 volumes: # industry standard => name volumes => more secure oppose to anyone ever can adjust volumes (data's disk) on host if volumes are bind mounted
@@ -285,6 +286,7 @@ services:
       PORT: ${PARTY_SERVICE_PORT:?}
       AUTH_SERVICE_URL: ${AUTH_SERVICE_URL:?}
       GAME_SERVER_SERVICE_URL: ${GAME_SERVER_SERVICE_URL:?}
+      GAME_SERVICE_URL: ${GAME_SERVER_SERVICE_URL:?} # temporarily until party fixes its env config
     secrets:
       - db-party-password
     networks:
@@ -399,38 +401,29 @@ services:
     pull_policy: never
     restart: unless-stopped
     environment:
-      AUTH_SERVICE_URL: ${AUTH_SERVICE_URL:?}
+      AUTH_SERVICE_URL: ${AUTH_SERVICE_URL}
+      GAME_BOT_SERVICE_URL: ${GAME_BOT_SERVICE_URL}
+      GAME_STATS_SERVICE_URL: ${GAME_STATS_SERVICE_URL}
+      PORT: ${GAME_SERVER_SERVICE_PORT}
+      LOBBY_LIMIT: ${GAME_SERVER_SERVICE_LOBBY_LIMIT}
+      LOBBY_USER_LIMIT: ${GAME_SERVER_SERVICE_LOBBY_USER_LIMIT}
+      LOBBY_DELETE_TIMEOUT_MS: ${GAME_SERVER_SERVICE_LOBBY_DELETE_TIMEOUT_MS}
     networks:
       - transcendence
+      - game-bot-network
 
-
-  # #     BACKEND MICORSERVICE
-  # game-bot:
-  #   container_name: game-bot
-  #   build: 
-  #     context: ./services/game-bot
-  #     additional_contexts:
-  #       root: .
-  #   image: game-bot:services
-  #   pull_policy: never
-  #   restart: unless-stopped
-  #   networks:
-  #     - transcendence
-
-
-  # # #     BACKEND MICORSERVICE
-  # game-stats:
-  #   container_name: game-stats
-  #   image: game-stats:services
-  #   environment:
-  #     PGUSER: ${PGUSER_GAME_STATS:?}
-  #     PGPASSWORD_FILE: /run/secrets/db-game-stats-password
-  #     PGPORT: ${PGPORT:?}
-  #     PGHOST: ${PGHOST:?}
-  #     PGDATABASE: ${PGDATABASE:?}
-      # PG_POOL_MAX: ${PG_POOL_MAX:?}
-  #   secrets:
-  #     - db-game-stats-password
-  #   depends_on:
-  #     migrator:
-  #       condition: service_completed_successfully  # Waits for migrator to finish and exit with code 0
+  game-bot:
+    container_name: game-bot
+    build:
+      context: ./services/game-bot
+      dockerfile: Dockerfile
+      additional_contexts:
+        root: .
+        game-types: ./packages/types/game-types
+    image: game-bot:test
+    restart: unless-stopped
+    environment:
+      PORT: ${GAME_BOT_SERVICE_PORT}
+      GAME_SERVICE_URL: ${GAME_SERVER_SERVICE_URL}
+    networks:
+      - game-bot-network

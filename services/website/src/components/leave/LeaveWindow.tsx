@@ -13,7 +13,7 @@ export const LeaveWindow = () => {
 		if (currentScene === "Home")
 			handleSignOut();
 		else
-			useGameStore.getState().endGame();
+			useGameStore.getState().leaveGame();
 	}
 
 	return (

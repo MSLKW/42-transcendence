@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { gameInstance } from "../../../api/game/src/main";
+import { gameInstance } from "../../../api/game/main";
 import { useGameStore } from "../../../store/GameStore";
 import { Tooltip } from "../../../utilities/react/Tooltip";
 
@@ -17,7 +17,7 @@ export const SortButton = ({ call, sortType, type, tip }: SortButtonProps) => {
 				onClick={call}
 				className={`
 					btn-text bg-dark-semi
-					h-2.5rem
+					w-full h-2.5rem
 					text-n6 text-1.25rem
 					focus:outline-double
 					${sortType === type ? "outline-2" : "outline-none"}

@@ -21,7 +21,7 @@ const defaultFriends = [
 export const useFriendsStore = create<FriendState>() (
 	persist(
 		(set, get) => ({
-			friendsVerboseMode: false;
+			friendsVerboseMode: false,
 			cachedFriends: [...defaultFriends],
 
 			toggleFriend: (uuid) => {

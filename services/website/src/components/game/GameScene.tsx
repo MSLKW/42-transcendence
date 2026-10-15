@@ -1,9 +1,6 @@
-// import { useEffect } from "react";
 import { useGameStore } from "../../store/GameStore";
 import { useProfileStore } from "../../store/ProfileStore";
-// import { useResultsStore } from "../../store/ResultsStore";
-// import { useSceneStore } from "../../store/SceneStore";
-// import { useAutoPass } from "../../utilities/react/useAutoPass";
+import { useAuthStore } from "../../store/AuthStore";
 import { HeaderModule } from "../header/HeaderModule";
 import { AvatarModule } from "../avatar/AvatarModule";
 import { RankCallButton } from "./rank/RankCallButton";
@@ -19,18 +16,9 @@ export const GameScene = () => {
 	const activeSeat = useGameStore((store) => store.activeSeat);
 	const gameStarted = useGameStore((store) => store.gameStarted);
 	const cachedData = useProfileStore((store) => store.cachedData);
-	// const setResults = useResultsStore((store) => store.setResults);
-	// const setCurrentScene = useSceneStore((store) => store.setCurrentScene);
-	// const setShowWindow = useSceneStore((store) => store.setShowWindow);
+	const clientUuid = useAuthStore((store) => store.clientUuid);
 
-	// useAutoPass();
-	// useEffect(() => {
-	// 	if (cardsLeft.includes(0)) {
-	// 		setResults();
-	// 		setCurrentScene("Lobby");
-	// 		setShowWindow("results", true);
-	// 	}
-	// }, [cardsLeft]);
+	const clientSeat = gameSeats.indexOf(clientUuid);
 
 	return (
 		<>
@@ -115,12 +103,20 @@ export const GameScene = () => {
 				<div className="absolute left-1/2 top-[24%] -translate-x-1/2">
 					<RankCallButton />
 				</div>
-				<div className="
-					absolute left-1/2 top-[64%] -translate-x-1/2
-					flex gap-2rem
-				">
-					<GamePassButton />
-					<GamePlayButton />
+				<div
+					className="
+						absolute left-1/2 top-[64%] -translate-x-1/2
+						flex gap-2rem
+					"
+				>
+					{
+						activeSeat === clientSeat && (
+							<>
+								<GamePassButton />
+								<GamePlayButton />
+							</>
+						)
+					}
 				</div>
 			</main>
 			<footer className="flex place-content-between place-items-center">

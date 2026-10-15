@@ -5,7 +5,7 @@ import { type MEDAL_TYPE } from "./ProfileStore";
 import { usePartyStore } from "./PartyStore";
 import { useResultsStore } from "./ResultsStore";
 import { useSceneStore } from "./SceneStore";
-import { gameInstance } from '../api/game/src/main';
+import { gameInstance } from '../api/game/main';
 import { partySocket } from "../api/party/partySocket";
 import { HandType, PentupleType } from "@big2/game-types";
 
@@ -53,7 +53,7 @@ interface GameState extends GameValues {
 	leaveSeat: () => void;
 	autoSetSeats: () => void;
 
-	setSeatRef: () => void;
+	setSeatRef: (seats: (string | null)[]) => void;
 	setCardsLeft: (playerCardsAmount: Record<string, number>) => void;
 	reduceCardsLeft: (uuid: string, cardsAmount: number) => void;
 	setCurrentHand: (handType: HandType, pentupleType: PentupleType) => void;
@@ -61,7 +61,7 @@ interface GameState extends GameValues {
 	startGame: () => void;
 	skipTurn: () => void;
 
-	endGame: () => void;
+	leaveGame: () => void;
 	incTotalWin: (uuid: string) => void;
 	incTotalLoss: (uuid: string) => void;
 	unlockMedal: (uuid: string, type: MEDAL_TYPE) => void;
@@ -172,6 +172,7 @@ export const useGameStore = create<GameState>() (
 					totalPlayers: 0,
 					userSeats: [],
 					gameSeats: [],
+					playerDisconnection: {},
 					gameStarted: false,
 					cardsLeft: [],
 					currentHand: "None",
@@ -184,10 +185,16 @@ export const useGameStore = create<GameState>() (
 				useSceneStore.getState().setShowWindow("results", false);
 			},
 
-			endGame: () => {
+			leaveGame: () => {
 				get().resetGame();
-				useSceneStore.getState().setCurrentScene("Home");
-				partySocket.leaveParty();
+				if (useAuthStore.getState().clientUuid === usePartyStore.getState().hostUuid) {
+					gameInstance?.deleteLobby();
+					partySocket.refresh();
+				}
+				else {
+					partySocket.leaveParty();
+					gameInstance?.disconnect();
+				}
 			},
 			incTotalWin: (uuid) => {
 				// const profileStore = useProfileStore.getState();

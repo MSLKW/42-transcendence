@@ -1,7 +1,7 @@
 import * as THREE from 'three';
-import { GameStateTransmit, CardRank } from '@big2/game-types';
-import { Card } from './Card.ts';
-import { gsap, shuffle } from 'gsap';
+import { type GameStateTransmit, CardRank } from '@big2/game-types';
+import { Card } from './Card';
+import { gsap } from 'gsap';
 
 export class Deck {
 	private cards: Array<Card>;
@@ -28,14 +28,14 @@ export class Deck {
 
 	public initCards(gameState: GameStateTransmit, playerId: string) {
 		for (let i = 0; i < gameState.playerCards.length; i++) {
-			let playerCard = new Card(gameState.playerCards[i].rank, gameState.playerCards[i].suit);
+			const playerCard = new Card(gameState.playerCards[i].rank, gameState.playerCards[i].suit);
 			this.receiveCard(playerCard);
 		}
 		this.playerCardsAmount = gameState.playerCards.length;
 		for (const [uuid, cardsAmount] of Object.entries(gameState.playerCardsAmount)) {
 			if (uuid !== playerId) {
 				for (let i = 0; i < cardsAmount; i++) {
-					let opponentCard = new Card(CardRank.Unknown, 0);
+					const opponentCard = new Card(CardRank.Unknown, 0);
 					this.receiveCard(opponentCard);
 				}
 				this.opponentCardsAmount += cardsAmount;

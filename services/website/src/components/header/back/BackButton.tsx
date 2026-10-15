@@ -6,7 +6,7 @@ import { useSceneStore } from "../../../store/SceneStore";
 import { BackIcon } from "./BackIcon";
 
 export const BackButton = () => {
-	const endGame = useGameStore((store) => store.endGame);
+	const leaveGame = useGameStore((store) => store.leaveGame);
 	const currentScene = useSceneStore((store) => store.currentScene);
 	const setShowWindow = useSceneStore((store) => store.setShowWindow);
 	const members = usePartyStore((store) => store.members);
@@ -21,7 +21,7 @@ export const BackButton = () => {
 			setShowWindow("leave", true);
 			return;
 		}
-		endGame();
+		leaveGame();
 	};
 
 	return (

@@ -20,7 +20,7 @@ export const HomeScene = () => {
 	
 	//remove bots
 	useEffect(() => {
-		removeBots();
+		// removeBots();
 		if (members.length <= 0) {
 			usePartyStore.setState({
 				members: [ clientUuid ],

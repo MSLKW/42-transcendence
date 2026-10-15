@@ -1,7 +1,7 @@
 // import { useGameStore, HAND_VALUES } from "../../../store/GameStore";
 import { useGameStore } from "../../../store/GameStore";
 import { useAuthStore } from "../../../store/AuthStore";
-import { gameInstance } from "../../../api/game/src/main";
+import { gameInstance } from "../../../api/game/main";
 
 export const GamePlayButton = () => {
 	// const currentHand = useGameStore((store) => store.currentHand);

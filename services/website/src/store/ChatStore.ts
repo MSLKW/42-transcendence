@@ -36,7 +36,7 @@ interface ChatState extends ChatValues {
 
 export const useChatStore = create<ChatState>() (
 	persist(
-		(set, _get) => ({
+		(set) => ({
 			chatVerboseMode: false,
 			isChatSubscribed: false,
 			chatSocketId: null,
