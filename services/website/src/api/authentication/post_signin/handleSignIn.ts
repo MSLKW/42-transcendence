@@ -4,8 +4,6 @@ import { useNotificationStore, NOTIFICATION_TYPE } from "../../../store/Notifica
 import { useSceneStore } from "../../../store/SceneStore";
 
 export const handleSignIn = async (email: string, password: string) => {
-	const showNotification = useNotificationStore.getState().showNotification;
-
 	try {
 		const response = await fetchSignIn(email, password);
 
@@ -19,11 +17,12 @@ export const handleSignIn = async (email: string, password: string) => {
 		useSceneStore.getState().setShowWindow("signIn", false);
 		useSceneStore.getState().setCurrentScene("Home");
 
-		showNotification("Signed in successfully", NOTIFICATION_TYPE.message);
+		useNotificationStore.getState().showNotification("Signed in successfully", NOTIFICATION_TYPE.message);
+		useNotificationStore.setState({ isNotifFiltered: false });
 	} catch (err) {
 		const error = err instanceof Error ? err.message : "Something went wrong. Please try again";
 
-		showNotification(error, NOTIFICATION_TYPE.error);
+		useNotificationStore.getState().showNotification(error, NOTIFICATION_TYPE.error);
 
 		useAuthStore.setState({
 			isAuthenticated: false,

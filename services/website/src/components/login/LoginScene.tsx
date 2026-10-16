@@ -16,6 +16,7 @@ import { CreateAccountButton } from "./create_account/CreateAccountButton";
 import { SignInButton } from "./sign_in/SignInButton";
 import { useSettingsStore } from "../../store/SettingsStore";
 import { useTypingStore } from "../../store/TypingStore";
+import { useNotificationStore } from "../../store/NotificationStore";
 
 export const LoginScene = () => {
 	useEffect(() => {
@@ -26,6 +27,7 @@ export const LoginScene = () => {
 		useChatStore.getState().resetValues();
 		useFriendsStore.getState().resetValues();
 		useGameStore.getState().resetValues();
+		useNotificationStore.getState().resetValues();
 		usePartyStore.getState().resetValues();
 		useProfileStore.getState().resetValues();
 		useResultsStore.getState().resetValues();
