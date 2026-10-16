@@ -6,4 +6,12 @@ function requireEnv(name: string): string
 	return value;
 }
 
+function requireEnvNum(name: string): number
+{
+	const value = Number(requireEnv(name));
+	if (!Number.isInteger(value) || value < 0)
+		throw new Error(`[Error] ${name} must be a non-negative integer`);
+	return value;
+}
+
 export const AUTH_SERVICE_URL	= requireEnv("AUTH_SERVICE_URL");
