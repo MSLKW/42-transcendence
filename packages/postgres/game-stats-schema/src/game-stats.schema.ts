@@ -81,3 +81,11 @@ export const playerBadges = gameStatsSchema.table("player_badges", {
 	primaryKey({ columns: [table.playerId, table.badge] }),
 	check("valid_badges", sql`${table.badge} IN (${sqlList(BADGE_LABELS)})`),
 ]);
+
+export const processedRounds = gameStatsSchema.table("processed_rounds", {
+	roundId: uuid("round_id")
+		.primaryKey(),
+	processedAt: timestamp("processed_at", { withTimezone: true })
+		.defaultNow()
+		.notNull(),
+});
