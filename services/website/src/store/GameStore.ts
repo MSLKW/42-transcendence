@@ -46,6 +46,7 @@ interface GameValues {
 	isActiveSeatSkippable: boolean;
 	sortType: string;
 	playerPassed: string[];
+	playerTimer: number;
 }
 
 interface GameState extends GameValues {
@@ -88,6 +89,7 @@ export const useGameStore = create<GameState>() (
 			isActiveSeatSkippable: false,
 			sortType: "Flex",
 			playerPassed: [],
+			playerTimer: 0,
 
 			initSeats: () => {
 				const totalPlayers = get().totalPlayers;
@@ -183,6 +185,7 @@ export const useGameStore = create<GameState>() (
 					seatRef: [],
 					activeSeat: 0,
 					playerPassed: [],
+					playerTimer: 0,
 				});
 				useResultsStore.getState().resetResults();
 				useSceneStore.getState().setShowWindow("results", false);

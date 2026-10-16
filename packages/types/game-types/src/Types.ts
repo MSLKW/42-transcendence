@@ -50,7 +50,7 @@ export type AchievementUnlockTransmit = {
 	unlockedAt: string,
 }
 
-// Assumption of what the transmit game-stat will send me
+// Assumption of what the transmit game-stat will send me | will change to aisyah
 export type PlayerStatsTransmit = {
 	totalPlayed: number,
 	totalWins: number,
@@ -60,6 +60,9 @@ export type PlayerStatsTransmit = {
 	xp: number,
 	level: number,
 }
+
+// ACHIEVEMENT IDS
+
 
 export type CardTransmit = z.infer<typeof s.CardTransmitSchema>;
 export type CardHandTransmit = z.infer<typeof s.CardHandTransmitSchema>;

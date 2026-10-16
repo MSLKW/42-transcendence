@@ -147,12 +147,7 @@ export class Lobby {
 		});
 
 		user.socket.on("game_settings_set", (gameSettings: GameSettingsTransmit, statusCallback) => {
-			const status = this.GameSetSettings(user, gameSettings);
-			user.socket.emit("game_settings_set", status);
-			if (status.success === true) {
-				this.emit("game_settings_update", this.game.settings);
-			}
-			statusCallback(status);
+			statusCallback(this.GameSetSettings(user, gameSettings));
 		});
 
 		user.socket.on("lobby_delete_request", (statusCallback) => {
@@ -241,7 +236,14 @@ export class Lobby {
 			status.message = "Not the host";
 			return (status);
 		}
-		this.game.settings = settings;
+		if (this.game.isGameStarted === true) {
+			status.message = "Game has started";
+			return (status);
+		}
+		this.game.settings.allow3OfAKind = settings.allow3OfAKind;
+		this.game.settings.allow2OfSpadesEnd = settings.allow2OfSpadesEnd;
+		this.game.settings.autoPassInMilliseconds = settings.autoPassInMilliseconds;
+		this.emit("game_settings_update", this.game.settings);
 		status.success = true;
 		status.message = "Successfully set game settings";
 		return (status);

@@ -16,10 +16,12 @@ export const HostSettings = () => {
 	const allow2OfSpadesEnd = useSettingsStore((store) => store.allow2OfSpadesEnd);
 
 	const settingsFetched = useRef(false);
+	const settingsLock = useRef(false);
 	useEffect(() => {
 		if (!hostUuid || settingsFetched.current)
 			return;
 		settingsFetched.current = true;
+		settingsLock.current = true;
 
 		try {
 			const fetchGetSettings = async () => {
@@ -30,10 +32,12 @@ export const HostSettings = () => {
 					autoPassIndex: response.autoPassIndex,
 				});
 			}
+			console.log("Fetching settings of host");
 			fetchGetSettings();
 		} catch(error) {
 			console.error("Failed to fetch host settings:", error);
 		}
+		settingsLock.current = false;
 	}, [hostUuid]);
 
 	return (
@@ -54,7 +58,10 @@ export const HostSettings = () => {
 					<div className="flex place-content-start place-items-start w-full gap-1rem">
 						<ToggleButton
 							checked={allow3OfAKind}
-							onChange={() => useSettingsStore.setState({ allow3OfAKind: !allow3OfAKind })}
+							onChange={() => {
+								useSettingsStore.setState({ allow3OfAKind: !allow3OfAKind });
+								useSettingsStore.getState().save();
+							}}
 							disabled={clientUuid !== hostUuid}
 						/>
 						<h3 className="text-a4 text-left">
@@ -67,7 +74,10 @@ export const HostSettings = () => {
 					<div className="flex place-content-start place-items-start w-full gap-1rem">
 						<ToggleButton
 							checked={allow2OfSpadesEnd}
-							onChange={() => useSettingsStore.setState({ allow2OfSpadesEnd: !allow2OfSpadesEnd })}
+							onChange={() => {
+								useSettingsStore.setState({ allow2OfSpadesEnd: !allow2OfSpadesEnd }); 
+								useSettingsStore.getState().save();
+							}}
 							disabled={clientUuid !== hostUuid}
 						/>
 						<h3 className="text-a4 text-left">
@@ -92,6 +102,7 @@ export const HostSettings = () => {
 						onChange={ (e) => {
 							const index = parseInt(e.target.value, 10);
 							useSettingsStore.setState({ autoPassIndex: index });
+							useSettingsStore.getState().save();
 						}}
 						className="accent-b5 cursor-pointer"
 					/>

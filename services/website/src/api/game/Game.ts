@@ -15,6 +15,7 @@ import { useSceneStore } from "../../store/SceneStore";
 import { threejsManager } from '../../App';
 import { useResultsStore } from '../../store/ResultsStore';
 import { useBotStore } from '../../store/BotStore';
+import { useSettingsStore } from '../../store/SettingsStore';
 
 export class Game {
 	private socket: Socket;
@@ -91,6 +92,12 @@ export class Game {
 		});
 	}
 
+	public setGameSettings(gameSettings: GameSettingsTransmit) {
+		this.socket.emit("game_settings_set", gameSettings, (status: StatusTransmit) => {
+			console.log(`[gameSocket] 'game_settings_set': `, status);
+		});
+	}
+
 	private bindSocketEvents() {
 		this.socket.on("connect_error", (error) => {
 			console.log("[gameSocket] 'connect_error': ", error.message);
@@ -157,6 +164,7 @@ export class Game {
 
 		this.socket.on("game_settings_update", (gameSettings: GameSettingsTransmit) => {
 			console.log("[gameSocket] 'game_settings_update': ", gameSettings);
+			useSettingsStore.getState().update(gameSettings);
 		});
 	
 		this.socket.on("game_state", (gameState: GameStateTransmit) => {
