@@ -14,8 +14,7 @@ export class CardHand {
 
 	public receiveCard(card: Card): boolean {
 		if (this.cards.length >= 5) {
-			if (useGameStore.getState().gameVerboseMode)
-				console.log('CardHand is full');
+			console.log('CardHand is full');
 			return (false);
 		}
 		this.cards.push(card);

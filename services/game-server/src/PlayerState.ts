@@ -39,8 +39,8 @@ export class PlayerState {
 			statusCallback(this.playCardHand(cardHandTransmit));
 		});
 
-		this.socket.on("player_skip_turn_request", () => {
-			this.socket.emit("player_skip_turn_request", this.skipTurnRequest());
+		this.socket.on("player_skip_turn_request", (statusCallback) => {
+			statusCallback(this.skipTurnRequest());
 		})
 	}
 

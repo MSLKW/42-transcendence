@@ -36,6 +36,7 @@ interface GameValues {
 	totalPlayers: number;
 	gameSeats: (string | null)[];
 	userSeats: (string | null)[];
+	playerDisconnection: Record<string, boolean>;
 	gameStarted: boolean;
 	cardsLeft: number[];
 	currentHand: string;
@@ -77,6 +78,7 @@ export const useGameStore = create<GameState>() (
 			totalPlayers: 0,
 			userSeats: [],
 			gameSeats: [],
+			playerDisconnection: {},
 			gameStarted: false,
 			cardsLeft: [],
 			currentHand: "None",
@@ -104,8 +106,7 @@ export const useGameStore = create<GameState>() (
 				set({ userSeats: newSeats });
 			},
 
-			setSeatRef: () => {
-				const seats = get().userSeats;
+			setSeatRef: (seats: (string | null)[]) => {
 				const clientUuid = useAuthStore.getState().clientUuid;
 				const totalPlayers = get().totalPlayers;
 				const clientIndex = seats.indexOf(clientUuid);
@@ -120,7 +121,9 @@ export const useGameStore = create<GameState>() (
 				const newSeatRef = Array.from({ length: totalPlayers }, (_, i) => {
 					return (i + clientIndex) % totalPlayers;
 				});
-				set({ seatRef: newSeatRef });
+				set({
+					seatRef: newSeatRef,
+				});
 			},
 			setCardsLeft: (playerCardsAmount: Record<string, number>) => {
 				const newCardsLeft: number[] = []
