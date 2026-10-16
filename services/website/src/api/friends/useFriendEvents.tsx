@@ -25,11 +25,13 @@ export function useFriendEvents(clientUuid: string | null, onFriendUpdate?: () =
 		};
 
 		eventSource.addEventListener("connected", (event) => {
-			console.log("[friends > connected] event.data:", event.data);
+			if (useFriendsStore.getState().friendsVerboseMode)
+				console.log("[friends > connected] event.data:", event.data);
 		});
 
 		eventSource.addEventListener("replaced", (event) => {
-			console.warn("Connection replaced by another tab/device:", event.data);
+			if (useFriendsStore.getState().friendsVerboseMode)
+				console.warn("[friends > replaced] Connection replaced by another tab/device:", event.data);
 			eventSource.close();
 			setIsConnected(false);
 		});
@@ -38,7 +40,7 @@ export function useFriendEvents(clientUuid: string | null, onFriendUpdate?: () =
 			const data = JSON.parse(event.data);
 			void handleGetProfile(data.senderId).then((profile) => {
 				if (useFriendsStore.getState().friendsVerboseMode)
-					console.warn("New friend request received:", data);
+					console.warn("[friends > friend_request_received] New friend request received:", data);
 
 				useNotificationStore.getState().showNotification(
 					`${profile?.username} wants to be friends with you`,
@@ -55,6 +57,10 @@ export function useFriendEvents(clientUuid: string | null, onFriendUpdate?: () =
 				if (useFriendsStore.getState().friendsVerboseMode)
 					console.warn("Friend request accepted:", data);
 
+				const friendRequestSent = useFriendsStore.getState().friendRequestSent;
+				const newFriendRequestSent = friendRequestSent.filter((req) => !req.includes(data.by));
+				useFriendsStore.setState({ friendRequestSent: newFriendRequestSent });
+
 				useNotificationStore.getState().showNotification(
 					`${profile?.username} accepted your friend request`,
 					NOTIFICATION_TYPE.message
@@ -66,7 +72,11 @@ export function useFriendEvents(clientUuid: string | null, onFriendUpdate?: () =
 			const data = JSON.parse(event.data);
 			void handleGetProfile(data.by).then((profile) => {
 				if (useFriendsStore.getState().friendsVerboseMode)
-					console.warn("Friend request rejected:", data);
+					console.warn("[friends > friend_request_rejected] Friend request rejected:", data);
+
+				const friendRequestSent = useFriendsStore.getState().friendRequestSent;
+				const newFriendRequestSent = friendRequestSent.filter((req) => !req.includes(data.by));
+				useFriendsStore.setState({ friendRequestSent: newFriendRequestSent });
 
 				useNotificationStore.getState().showNotification(
 					`${profile?.username} rejected your friend request`,
@@ -76,20 +86,23 @@ export function useFriendEvents(clientUuid: string | null, onFriendUpdate?: () =
 		});
 
 		eventSource.addEventListener("friends_list_updated", (event) => {
-			console.log("Friends list change hinted:", JSON.parse(event.data));
+			if (useFriendsStore.getState().friendsVerboseMode)
+				console.log("[friends > friends_list_updated] Friends list change hinted:", JSON.parse(event.data));
 			if (onFriendUpdate)
 				onFriendUpdate();
 		});
 
 		eventSource.onerror = (error) => {
-			console.error("SSE Error / Disconnected:", error);
+			if (useFriendsStore.getState().friendsVerboseMode)
+				console.error("[friends > onerror] SSE Error / Disconnected:", error);
 			setIsConnected(false);
 		}
 
 		return () => {
 			eventSource.close();
 			setIsConnected(false);
-			console.log("[friends > return] eventSource.close()");
+			if (useFriendsStore.getState().friendsVerboseMode)
+				console.log("[friends > return] eventSource.close()");
 		};
 	}, [clientUuid, onFriendUpdate]);
 

@@ -2,7 +2,12 @@ import { useNotificationStore, NOTIFICATION_TYPE } from "../../../store/Notifica
 import { fetchFriendRequests } from "./fetchFriendRequests";
 import { useFriendsStore } from "../../../store/FriendsStore";
 
-export const handleFriendRequests = async (senderId: string, receiverId: string, name: string) => {
+export const handleFriendRequests = async (senderId: string | null, receiverId: string | null, name: string) => {
+	if (!senderId || !receiverId) {
+		console.warn(`[friends > 'DELETE' friend-requests] missing senderId / receiverId`);
+		return;
+	}
+
 	try {
 		const response = await fetchFriendRequests(senderId, receiverId);
 

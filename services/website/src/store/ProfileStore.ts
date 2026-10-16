@@ -97,7 +97,7 @@ export const useProfileStore = create<ProfileState>() (
 			cachedData: {},
 			avatarVersions: {},
 
-			getProfileData: (uuid) => {
+			getProfileData: (_uuid) => {
 				// if (!uuid)
 				// 	return undefined;
 				// const profilesInDb = get().profilesInDb;

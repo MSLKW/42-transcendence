@@ -1,4 +1,4 @@
-import { AvatarImage } from "../avatar/image/AvatarImage";
+// import { AvatarImage } from "../avatar/image/AvatarImage";
 
 interface ChatProps {
 	senderId?: number;
@@ -15,11 +15,11 @@ export const ChatBubble = ({ senderId, senderName, message }: ChatProps) => {
 						<p className="text-b5 font-bold">{senderName}</p>
 						<p>{message}</p>
 					</div>
-					<AvatarImage />
+					{/* <AvatarImage /> */}
 				</div>
 			) : (
 				<div className="flex place-content-start place-items-start gap-5">
-					<AvatarImage />
+					{/* <AvatarImage /> */}
 					<div className="flex flex-col gap-1 text-left bg-a3 border border-a4 rounded-xl px-5 py-3">
 						<p className="text-b5 font-bold">{senderName}</p>
 						<p>{message}</p>

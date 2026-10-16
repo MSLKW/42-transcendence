@@ -85,7 +85,9 @@ export const StatsWindow: React.FC = () => {
 					gap-1rem
 				">
 					{ members && statsFetched.current && members.includes(statsFetched.current) && <KickPlayerButton playerUuid={statsFetched.current}/>}
-					<FriendToggleButton uuid={statsFetched.current!} name={name ?? "Player"}/>
+					{statsFetched.current &&
+						<FriendToggleButton uuid={statsFetched.current!} name={name ?? "Player"}/>
+					}
 				</div>
 			</div>
 		</Window>

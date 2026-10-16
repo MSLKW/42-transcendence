@@ -164,7 +164,7 @@ export class ThreeJsManager {
 		this.container.removeChild(this.renderer.domElement);
 	}
 
-	private handleResize = (event: UIEvent): void => {
+	private handleResize = (_event: UIEvent): void => {
 		const rect = this.container.getBoundingClientRect();
 		this.resolution.x = rect.width;
 		this.resolution.y = rect.height;

@@ -25,6 +25,7 @@ export default function Dev() {
 	const chatRoomId = useChatStore((store) => store.chatRoomId);
 	const friendsVerboseMode = useFriendsStore((store) => store.friendsVerboseMode);
 	const cachedFriends = useFriendsStore((store) => store.cachedFriends);
+	const friendRequestSent = useFriendsStore((store) => store.friendRequestSent);
 	const gameVerboseMode = useGameStore((store) => store.gameVerboseMode);
 	const gameSocketId = useGameStore((store) => store.gameSocketId);
 	// const playerPassed = useGameStore((store) => store.playerPassed);
@@ -206,7 +207,8 @@ export default function Dev() {
 				</ul>
 			{/* friends */}
 				<ul className="flex place-content-between">
-					<DevButton label={`cachedFriends: ${cachedFriends.length}`} call={() => console.log("cachedFriends: ", cachedFriends)} />
+					<DevButton label={`cachedFriends: ${cachedFriends ? cachedFriends.length : 0}`} call={() => console.log("cachedFriends: ", cachedFriends)} />
+					<DevButton label={`friendRequestSent: ${friendRequestSent ? friendRequestSent.length : 0}`} call={() => console.log("friendRequestSent: ", friendRequestSent)} />
 					<DevButton
 						label={`friendsVerboseMode: ${friendsVerboseMode}`}
 						call={() => useFriendsStore.setState({ friendsVerboseMode: !friendsVerboseMode })}

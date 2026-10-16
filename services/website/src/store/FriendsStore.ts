@@ -4,6 +4,7 @@ import { persist } from "zustand/middleware";
 interface FriendValues {
 	friendsVerboseMode: boolean;
 	cachedFriends: string[];
+	friendRequestSent: string[];
 }
 
 interface FriendState extends FriendValues {
@@ -15,9 +16,13 @@ export const useFriendsStore = create<FriendState>() (
 		(set, _get) => ({
 			friendsVerboseMode: false,
 			cachedFriends: [],
+			friendRequestSent: [],
 
 			resetValues: () => {
-				set({ cachedFriends: [] });
+				set({
+					cachedFriends: [],
+					friendRequestSent: [],
+				});
 			}
 		}),
 		{

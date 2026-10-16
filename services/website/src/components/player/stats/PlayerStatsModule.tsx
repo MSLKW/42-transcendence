@@ -1,8 +1,8 @@
 interface PlayerStatsModuleProps {
-	uuid: string | null;
+	uuid?: string | null;
 }
 
-export const PlayerStatsModule = ({ uuid }: PlayerStatsModuleProps) => {
+export const PlayerStatsModule = (_: PlayerStatsModuleProps) => {
 	return (
 		<div className="
 			flex

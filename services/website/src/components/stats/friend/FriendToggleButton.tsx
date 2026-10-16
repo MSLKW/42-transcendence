@@ -1,8 +1,12 @@
+import { useState, useEffect } from "react";
 import { useFriendsStore } from "../../../store/FriendsStore";
 import { UnfriendIcon } from "./UnfriendIcon";
 import { AddFriendIcon } from "./AddFriendIcon";
 import { handleFriendRequests } from "../../../api/friends/post_friend-requests/handleFriendRequests";
 import { useAuthStore } from "../../../store/AuthStore";
+import { handleDeleteFriendships } from "../../../api/friends/delete_friendships/handleDeleteFriendships";
+
+type FRIEND_STATUS = "STRANGER" | "PENDING" | "FRIEND";
 
 interface FriendToggleButtonProps {
 	uuid: string;
@@ -11,11 +15,33 @@ interface FriendToggleButtonProps {
 
 export const FriendToggleButton = ({ uuid, name }: FriendToggleButtonProps) => {	
 	const cachedFriends = useFriendsStore((store) => store.cachedFriends);
+	const friendRequestSent = useFriendsStore((store) => store.friendRequestSent);
 	const clientUuid = useAuthStore((store) => store.clientUuid);
+
+	const [isFriend, setIsFriend] = useState<FRIEND_STATUS>("STRANGER");
+	
+	useEffect(() => {
+		if (cachedFriends?.includes(uuid))
+			setIsFriend("FRIEND");
+		else if (friendRequestSent.includes(uuid))
+			setIsFriend("PENDING");
+		else
+			setIsFriend("STRANGER");
+	}, [cachedFriends, friendRequestSent]);
+
+	const handleButtonClick = () => {
+		if (isFriend === "FRIEND") {
+			handleDeleteFriendships(clientUuid, uuid)
+			setIsFriend("STRANGER");
+		} else if (isFriend === "STRANGER") {
+			handleFriendRequests(clientUuid, uuid, name);
+			setIsFriend("PENDING");
+		}
+	};
 
 	return (
 		<button
-			onClick={() => handleFriendRequests(clientUuid!, uuid, name)}
+			onClick={handleButtonClick}
 			className="
 				h-4rem aspect-5/1
 				btn-text bg-light
@@ -23,7 +49,7 @@ export const FriendToggleButton = ({ uuid, name }: FriendToggleButtonProps) => {
 				flex place-content-center place-items-center
 				gap-0.5rem
 		">
-			{ cachedFriends.includes(uuid) ? (
+			{ isFriend === "FRIEND" ? (
 				<>
 					<UnfriendIcon />
 					<h3>Unfriend</h3>
@@ -31,7 +57,9 @@ export const FriendToggleButton = ({ uuid, name }: FriendToggleButtonProps) => {
 			) : (
 				<>
 					<AddFriendIcon />
-					<h3>Add Friend</h3>
+					<h3>
+						{isFriend === "STRANGER" ? "Add Friend" : "Pending Friend Request"}
+					</h3>
 				</>
 			)}
 		</button>

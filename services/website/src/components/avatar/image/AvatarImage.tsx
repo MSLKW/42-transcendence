@@ -1,7 +1,7 @@
 import { useAuthStore } from "../../../store/AuthStore";
 import { useGameStore } from "../../../store/GameStore";
 import { useProfileStore } from "../../../store/ProfileStore";
-import { useSettingsStore } from "../../../store/SettingsStore";
+// import { useSettingsStore } from "../../../store/SettingsStore";
 
 interface AvatarProps {
 	uuid: string | undefined;

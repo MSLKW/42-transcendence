@@ -46,6 +46,7 @@ interface GameValues {
 	isActiveSeatSkippable: boolean;
 	sortType: string;
 	playerPassed: string[];
+	playerTimer: number;
 }
 
 interface GameState extends GameValues {
@@ -88,6 +89,7 @@ export const useGameStore = create<GameState>() (
 			isActiveSeatSkippable: false,
 			sortType: "Flex",
 			playerPassed: [],
+			playerTimer: 0,
 
 			initSeats: () => {
 				const totalPlayers = get().totalPlayers;
@@ -199,7 +201,7 @@ export const useGameStore = create<GameState>() (
 					gameInstance?.disconnect();
 				}
 			},
-			incTotalWin: (uuid) => {
+			incTotalWin: (_uuid) => {
 				// const profileStore = useProfileStore.getState();
 				// const data = profileStore.getProfileData(uuid);
 				// if (!data)
@@ -225,7 +227,7 @@ export const useGameStore = create<GameState>() (
 				// 	),
 				// });
 			},
-			incTotalLoss: (uuid) => {
+			incTotalLoss: (_uuid) => {
 				// const profileStore = useProfileStore.getState();
 				// const data = profileStore.getProfileData(uuid);
 				// if (!data)
@@ -252,7 +254,7 @@ export const useGameStore = create<GameState>() (
 				// 	),
 				// });
 			},
-			unlockMedal: (uuid, type) => {
+			unlockMedal: (_uuid, _type) => {
 				// const profileStore = useProfileStore.getState();
 				// const data = profileStore.getProfileData(uuid);
 				// if (!data || data.medals[type] !== null)
