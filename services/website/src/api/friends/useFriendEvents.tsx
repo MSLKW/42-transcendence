@@ -1,5 +1,9 @@
 import { useState, useEffect } from "react";
+import { handleGetProfile } from "../profile/get_profile/handleGetProfile";
 import { useNotificationStore, NOTIFICATION_TYPE } from "../../store/NotificationStore";
+import { useFriendsStore } from "../../store/FriendsStore";
+import { handleFriendRequestsAccept } from "./post_friend-requests_accept/handleFriendRequestsAccept";
+import { handleFriendRequestsReject } from "./post_friend-requests_reject/handleFriendRequestsReject";
 
 const friendsUrl = import.meta.env.VITE_API_FRIENDS_PATH;
 
@@ -32,20 +36,43 @@ export function useFriendEvents(clientUuid: string | null, onFriendUpdate?: () =
 
 		eventSource.addEventListener("friend_request_received", (event) => {
 			const data = JSON.parse(event.data);
-			console.warn("New friend request received:", data);
-			useNotificationStore.getState().showNotification("New friend request received", NOTIFICATION_TYPE.invite);
+			void handleGetProfile(data.senderId).then((profile) => {
+				if (useFriendsStore.getState().friendsVerboseMode)
+					console.warn("New friend request received:", data);
+
+				useNotificationStore.getState().showNotification(
+					`${profile?.username} wants to be friends with you`,
+					NOTIFICATION_TYPE.invite,
+					() => handleFriendRequestsAccept(data.id, profile?.username ?? "Player"),
+					() => handleFriendRequestsReject(data.id, profile?.username ?? "Player")
+				);
+			});
 		});
 
 		eventSource.addEventListener("friend_request_accepted", (event) => {
 			const data = JSON.parse(event.data);
-			console.warn("Friend request accepted:", data);
-			useNotificationStore.getState().showNotification("Friend request accepted", NOTIFICATION_TYPE.message);
+			void handleGetProfile(data.by).then((profile) => {
+				if (useFriendsStore.getState().friendsVerboseMode)
+					console.warn("Friend request accepted:", data);
+
+				useNotificationStore.getState().showNotification(
+					`${profile?.username} accepted your friend request`,
+					NOTIFICATION_TYPE.message
+				);
+			});
 		});
 
 		eventSource.addEventListener("friend_request_rejected", (event) => {
 			const data = JSON.parse(event.data);
-			console.warn("Friend request rejected:", data);
-			useNotificationStore.getState().showNotification("Friend request rejected", NOTIFICATION_TYPE.message);
+			void handleGetProfile(data.by).then((profile) => {
+				if (useFriendsStore.getState().friendsVerboseMode)
+					console.warn("Friend request rejected:", data);
+
+				useNotificationStore.getState().showNotification(
+					`${profile?.username} rejected your friend request`,
+					NOTIFICATION_TYPE.message
+				);
+			});
 		});
 
 		eventSource.addEventListener("friends_list_updated", (event) => {

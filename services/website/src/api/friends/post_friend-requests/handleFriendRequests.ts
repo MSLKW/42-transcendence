@@ -2,14 +2,14 @@ import { useNotificationStore, NOTIFICATION_TYPE } from "../../../store/Notifica
 import { fetchFriendRequests } from "./fetchFriendRequests";
 import { useFriendsStore } from "../../../store/FriendsStore";
 
-export const handleFriendRequests = async (senderId: string, receiverId: string) => {
+export const handleFriendRequests = async (senderId: string, receiverId: string, name: string) => {
 	try {
 		const response = await fetchFriendRequests(senderId, receiverId);
 
 		if (useFriendsStore.getState().friendsVerboseMode)
 			console.log("[friends > 'POST' friend-requests] response:", response);
 
-		useNotificationStore.getState().showNotification("Friend request sent", NOTIFICATION_TYPE.message);
+		useNotificationStore.getState().showNotification(`Friend request sent to ${name}`, NOTIFICATION_TYPE.message);
 	} catch (err) {
 		const error = err instanceof Error ? err.message : "Something went wrong. Please try again";
 

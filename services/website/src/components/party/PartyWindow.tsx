@@ -1,19 +1,28 @@
 import { useState, useRef, useEffect } from "react";
+import { handleFriendships } from "../../api/friends/get_friendships/handleFriendships";
 import { handleGetSearch } from "../../api/profile/get_search/handleGetSearch";
-// import { useFriendsStore } from "../../store/FriendStore";
 import { Window } from "../window/Window";
 import { SearchModule } from "./search/SearchModule";
+import { useAuthStore } from "../../store/AuthStore";
+import { useFriendsStore } from "../../store/FriendsStore";
 import { PartyPlayerModule } from "./player/PartyPlayerModule";
 import { usePartyStore } from "../../store/PartyStore";
 
 export const PartyWindow = () => {
-	// const cachedFriends = useFriendsStore((store) => store.cachedFriends);
+	const cachedFriends = useFriendsStore((store) => store.cachedFriends);
+	const clientUuid = useAuthStore((store) => store.clientUuid);
 
 	const [searchQuery, setSearchQuery] = useState<string>("");
 	const [filteredResults, setFilteredResults] = useState<string[]>([]);
 	const [isSearching, setIsSearching] = useState(false);
 	
 	const searchRequestId = useRef(0);
+
+	useEffect(() => {
+		void handleFriendships(clientUuid!).then((friends) => {
+			useFriendsStore.setState({ cachedFriends: friends });
+		})
+	}, [clientUuid]);
 
 	const searchFunction = async () => {
 		const query = searchQuery.trim();
@@ -80,11 +89,16 @@ export const PartyWindow = () => {
 				">
 					{searchQuery.trim() === "" ? (
 						<>
-							<h3 className="text-n6/50">Friends and search results appear here</h3>
-							{/* <h2>Friends List</h2> */}
-							{/* {cachedFriends.map((f) => (
-								<PartyPlayerModule uuid={f}/>
-							))} */}
+							{cachedFriends.length === 0 ?
+								<h3 className="text-n6/50">Friends and search results appear here</h3>
+							:
+								<>
+									<h2>Friends List</h2>
+									{cachedFriends.map((f) => (
+										<PartyPlayerModule uuid={f}/>
+									))}
+								</>
+							}
 						</>
 					) : (
 						<>

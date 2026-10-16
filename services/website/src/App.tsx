@@ -6,9 +6,11 @@ import { subscribeToUserJoined } from "./api/chat/subscribe/subscribeToUserJoine
 import { subscribeToUserLeft } from "./api/chat/subscribe/subscribeToUserLeft";
 import { subscribeToUserTyping } from "./api/chat/subscribe/subscribeToUserTyping";
 import { subscribeToRateLimited } from "./api/chat/subscribe/subscribeToRateLimited";
+import { handleFriendships } from "./api/friends/get_friendships/handleFriendships";
 import { useFriendEvents } from "./api/friends/useFriendEvents";
 import { useAuthStore } from "./store/AuthStore";
 import { useDevStore } from "./store/DevStore";
+import { useFriendsStore } from "./store/FriendsStore";
 import { useProfileStore } from "./store/ProfileStore";
 import { useSceneStore } from "./store/SceneStore";
 import { useScrollToTop } from "./utilities/react/useScrollToTop";
@@ -79,8 +81,9 @@ export default function App() {
 
 	//friends connection
 	const handleFriendUpdate = useCallback(() => {
-		//fetch GET /friendships/:ownerUuid
-		console.log("Re-fetching friends list due to SSE hint...");
+		void handleFriendships(clientUuid!).then((friends) => {
+			useFriendsStore.setState({ cachedFriends: friends });
+		})
 	}, []);
 	useFriendEvents(clientUuid, handleFriendUpdate);
 

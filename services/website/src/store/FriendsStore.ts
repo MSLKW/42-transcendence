@@ -7,35 +7,17 @@ interface FriendValues {
 }
 
 interface FriendState extends FriendValues {
-	toggleFriend: (uuid: string) => void;
 	resetValues: () => void;
 }
 
-const defaultFriends = [
-	"12345678-abcd-efgh-dev0-azrul0000000",
-	"12345678-abcd-efgh-dev0-max000000000",
-	"12345678-abcd-efgh-dev0-jeremy000000",
-	"12345678-abcd-efgh-dev0-aisyah000000",
-] as const;
-
 export const useFriendsStore = create<FriendState>() (
 	persist(
-		(set, get) => ({
+		(set, _get) => ({
 			friendsVerboseMode: false,
-			cachedFriends: [...defaultFriends],
-
-			toggleFriend: (uuid) => {
-				const cachedFriends = get().cachedFriends;
-				if (cachedFriends.includes(uuid))
-					set({ cachedFriends: cachedFriends.filter((id) => id !== uuid) });
-				else
-					set({ cachedFriends: [...cachedFriends, uuid] });
-			},
+			cachedFriends: [],
 
 			resetValues: () => {
-				set({
-					cachedFriends: [...defaultFriends]
-				});
+				set({ cachedFriends: [] });
 			}
 		}),
 		{

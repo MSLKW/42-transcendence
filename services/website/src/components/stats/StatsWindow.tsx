@@ -68,24 +68,24 @@ export const StatsWindow: React.FC = () => {
 				divide-y divide-n2/40
 			">
 				<div className="flex">
-					<AvatarMemberModule uuid={statsUuid} name={name ?? "-"} image={avatar} />
+					<AvatarMemberModule uuid={statsFetched.current} name={name ?? "-"} image={avatar} />
 					<PlayerDataModule
-						uuid={statsUuid}
+						uuid={statsFetched.current!}
 						badge={badge}
 						availability={availability}
 						lastOnline={lastOnline}
 						createdAt={createdAt}
 					/>
 				</div>
-				<MedalsModule uuid={statsUuid}/>
-				<PlayerStatsModule uuid={statsUuid} />
+				<MedalsModule uuid={statsFetched.current}/>
+				<PlayerStatsModule uuid={statsFetched.current} />
 				<div className="
 					flex place-content-evenly place-items-center
 					py-2rem px-2rem
 					gap-1rem
 				">
-					{ members && statsUuid && members.includes(statsUuid) && <KickPlayerButton playerUuid={statsUuid}/>}
-					<FriendToggleButton uuid={statsUuid!}/>
+					{ members && statsFetched.current && members.includes(statsFetched.current) && <KickPlayerButton playerUuid={statsFetched.current}/>}
+					<FriendToggleButton uuid={statsFetched.current!} name={name ?? "Player"}/>
 				</div>
 			</div>
 		</Window>

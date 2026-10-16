@@ -9,11 +9,11 @@ createRoot(document.getElementById('root')!).render(
 	</StrictMode>,
 )
 
-if (import.meta.hot) {
-	import.meta.hot.on('vite:beforeUpdate', () => {
-		window.location.reload();
-	});
-}
+// if (import.meta.hot) {
+// 	import.meta.hot.on('vite:beforeUpdate', () => {
+// 		window.location.reload();
+// 	});
+// }
 
 
 // TODO (signal handler): uncomment this when need to implement the signal handler
