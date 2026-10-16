@@ -29,6 +29,13 @@
       "when": 1791989346489,
       "tag": "0003_feat_displayed_badge_in_game_stats_schema",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1792086180915,
+      "tag": "0004_feat_checks_for_types_in_game_stats_schema",
+      "breakpoints": true
     }
   ]
 }

@@ -1,7 +1,9 @@
 import { sql } from "drizzle-orm";
 import { users } from "@big2/auth-schema";
-import type { AchievementLabel, BadgeLabel } from "@big2/game-stats-types";
+import { type AchievementLabel, type BadgeLabel, BADGE_LABELS, ACHIEVEMENT_LABELS } from "@big2/game-stats-types";
 import { pgSchema, uuid, text, integer, timestamp, check, primaryKey } from "drizzle-orm/pg-core";
+import { sqlList } from "./utils";
+
 
 export const gameStatsSchema = pgSchema("game_stats_schema");
 
@@ -40,6 +42,7 @@ export const playerStats = gameStatsSchema.table("player_stats", {
 		check("win_streak_non_negative", sql`${table.winStreak} >= 0`),
 		check("wins_not_above_played", sql`${table.totalWins} <= ${table.totalPlayed}`),
 		check("win_streak_not_above_wins", sql`${table.winStreak} <= ${table.totalWins}`),
+		check("valid_displayed_badge", sql`${table.displayedBadge} IN (${sqlList(BADGE_LABELS)})`),
 	]
 );
 
@@ -58,6 +61,7 @@ export const playerAchievements = gameStatsSchema.table("player_achievements", {
 		.notNull(),
 }, (table) => [
 	primaryKey({ columns: [table.playerId, table.achievement] }),
+	check("valid_achievements", sql`${table.achievement} IN (${sqlList(ACHIEVEMENT_LABELS)})`),
 ]);
 
 export const playerBadges = gameStatsSchema.table("player_badges", {
@@ -74,5 +78,6 @@ export const playerBadges = gameStatsSchema.table("player_badges", {
 		.defaultNow()
 		.notNull(),
 }, (table) => [
-	primaryKey({ columns: [table.playerId, table.badge] })
+	primaryKey({ columns: [table.playerId, table.badge] }),
+	check("valid_badges", sql`${table.badge} IN (${sqlList(BADGE_LABELS)})`),
 ]);
