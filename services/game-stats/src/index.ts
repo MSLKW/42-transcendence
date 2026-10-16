@@ -1,12 +1,12 @@
 import express from "express";
 import cors from "cors";
 import { gameStatsRouter } from "./routes/game-stats.routes";
-
+import { PORT } from "./config/env";
 
 const app = express();
-app.use(express.json);
+app.use(express.json());
 
-app.use(cors);
+app.use(cors());
 // TODO: restrict to actual frontend origin before production, examples like below:
 // app.use(cors({ 
 // 	origin: ["http://localhost:5173", "https://your-real-domain.com"], 

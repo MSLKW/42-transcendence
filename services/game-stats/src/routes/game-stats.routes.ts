@@ -3,9 +3,10 @@ import { gameEndStats } from "../handlers/gameEndStats";
 import { achievementUnlocked } from "../handlers/achievementUnlocked";
 import { badgeUnlocked } from "../handlers/badgeUnlocked";
 import { displayedBadge } from "../handlers/displayedBadge";
-import { otherPlayerGameData} from "../handlers/otherPlayerGameData";
+import { publicPlayerGameData } from "../handlers/publicPlayerGameData";
 import { healthCheck } from "../handlers/healthCheck";
 import { ownPlayerGameData } from "../handlers/ownPlayerGameData";
+import { requireUser } from "../middleware/requireUser";
 
 
 // important endpoint designs: 
@@ -16,18 +17,18 @@ import { ownPlayerGameData } from "../handlers/ownPlayerGameData";
 export const gameStatsRouter = Router();
 
 // game-server & other microservices(badges-unlocked only), no
-gameStatsRouter.post("/game-end", gameEndStats);							// when?: after each game round ends 
+gameStatsRouter.post("/game-end-stats", gameEndStats);							// when?: after each game round ends 
 gameStatsRouter.post("/achievement-unlocked", achievementUnlocked); 		// when?: on realtime update during in game playtime
 gameStatsRouter.post("/badge-unlocked", badgeUnlocked); 					// when?: on realtime update (only for the polished badges that has various kind of rules, not just upon minLevels) 
 
 // website, yes
 // to determine this is really requested by the client themselves
-gameStatsRouter.put("/displayed-badge", displayedBadge);					// when?: user change displayed badge
-gameStatsRouter.get("/own-player-game-data", ownPlayerGameData);			// what?: player's own all 3 accumulated data (stats + all achievements + all badges)
+gameStatsRouter.put("/displayed-badge", requireUser, displayedBadge);					// when?: user change displayed badge
+gameStatsRouter.get("/own-player-game-data", requireUser, ownPlayerGameData);			// what?: player's own all 3 accumulated data (stats + all achievements + all badges)
 
 // website, no 
 // coz requested by other clients 
-gameStatsRouter.get("/other-player-game-data/:uuid", otherPlayerGameData);	// what?: other client looked up people's profile page, see all except all unlocked badges
+gameStatsRouter.get("/public-player-game-data/:uuid", publicPlayerGameData);	// what?: other client looked up people's profile page, see all except all unlocked badges
 
 // docker, no
 gameStatsRouter.get("/health", healthCheck);
