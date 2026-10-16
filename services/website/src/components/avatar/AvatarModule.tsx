@@ -12,6 +12,7 @@ interface AvatarModuleProps {
 	image: string | undefined;
 	cornerButton?: string | number;
 	isActive?: boolean;
+	isDisconnected?: boolean;
 	showName?: boolean;
 }
 
@@ -20,6 +21,7 @@ export const AvatarModule = ({
 	image,
 	cornerButton = "",
 	isActive = false,
+	isDisconnected = false,
 	showName = true,
 }: AvatarModuleProps) => {
 	const cachedData = useProfileStore((store) => store.cachedData);
@@ -59,6 +61,7 @@ export const AvatarModule = ({
 						uuid={uuid}
 						image={image ?? undefined}
 						isActive={isActive}
+						isDisconnected={isDisconnected}
 					/>
 				</Tooltip>
 				<AvatarCornerButton cornerButton={cornerButton} />
