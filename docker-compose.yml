@@ -6,7 +6,7 @@ name: ${PROJECT_NAME:?}
 
 # Docker bridge networks are IPv4-only by default.
 networks:
-  transcendence: # internet-facing , 
+  transcendence: # internet-facing
     name: ${MAIN_NETWORK:?}
     driver: bridge # no ingress (Incoming traffic or data is completely blocked from entering this network)
   database: # securing of anything database related from being expose to those not talking to database
@@ -90,15 +90,15 @@ services:
     pull_policy: missing # to stick to the current version used, previously by default used missing too anyway.
     restart: unless-stopped
     ports:
-      - "${LOCALHOST:?}:${DRIZZLE_GATEWAY_PORT:?}:${DRIZZLE_GATEWAY_PORT:?}"
-    environment: # DB_* / PG_* - not recognized as per DG documentation, better use PG* 
+      - "${LOCALHOST:?}:${DRIZZLE_GATEWAY_PORT:?}:${DRIZZLE_GATEWAY_PORT:?}" # localhost at most front = reachable only from your own machine
+    environment:
       PORT: ${DRIZZLE_GATEWAY_PORT:?}
       PGPORT: ${PGPORT:?}
       PGHOST: ${PGHOST:?}
       PGDATABASE: ${PGDATABASE:?}
       PGUSER: ${PGUSER:?}
     volumes:
-      - dg-data:/app # Required by Drizzle-Gateway;s documentation: persistent volume mounting to /app
+      - dg-data:/app # Required by Drizzle-Gateway's documentation: persistent volume mounting to /app
     networks:
       - transcendence # must need this, to enable opening this GUI dev tool at browser
       - database
@@ -117,7 +117,7 @@ services:
       additional_contexts:
         root: .
     pull_policy: never
-    restart: "no" # one-shot container = It runs psql + migrations only, then, the end (exit 0)! that's the sole purpose of this container's existance. 
+    restart: "no" # one-shot container = It runs psql + migrations only, then successfully exit 0. thats all. that's the sole purpose of this container's existance. 
     environment:
       PGPASSWORD_FILE: /run/secrets/db-admin-password
       PGPORT: ${PGPORT:?}
@@ -394,8 +394,9 @@ services:
     build: 
       context: ./services/game-server
       additional_contexts:
-        root: .
-        game-types: ./packages/types/game-types
+        root:             .
+        game-types:       ./packages/types/game-types
+        game-stats-types: ./packages/types/game-stats-types
     pull_policy: never
     restart: unless-stopped
     environment:
@@ -442,6 +443,7 @@ services:
       PGDATABASE: ${PGDATABASE:?}
       PG_POOL_MAX: ${PG_POOL_MAX:?}
       PORT: ${GAME_STATS_SERVICE_PORT:?}
+      AUTH_SERVICE_URL: ${AUTH_SERVICE_URL:?}
     secrets:
       - db-game-stats-password
     networks:
