@@ -1,8 +1,12 @@
 import "dotenv/config";
 
+export const BOT_LOG_DIR = process.env.BOT_LOG_DIR as string;
+if (!BOT_LOG_DIR)
+	throw new Error("BOT_LOG_DIR not set");
 export const BOT_LOG_LEVEL = process.env.BOT_LOG_LEVEL as string;
 if (!BOT_LOG_LEVEL)
 	throw new Error("BOT_LOG_LEVEL not set")
+
 
 export interface AppConfig {
 	serverUrl: string;

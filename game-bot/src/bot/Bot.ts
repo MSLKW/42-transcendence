@@ -2,7 +2,7 @@ import { io, Socket } from "socket.io-client";
 import { setTimeout } from "timers/promises";
 import { GameState } from "../game/GameState.js";
 import { AAIController } from "../ai/AAIController.js";
-import { logger } from "../utils/logger.js";
+import { Logger } from "../utils/logger.js";
 import { CardHandTransmit as CardHand, GameEndStatsTransmit } from "@big2/game-types";
 
 import {
@@ -32,28 +32,32 @@ function connectSocket(serverUrl: string, lobbyId: string, botSessionToken: stri
 
 export class Bot
 {
-	constructor(private id: string, private ai: AAIController) {}
+	constructor(private id: string, private ai: AAIController)
+	{
+		this.logger = new Logger(this.id);
+	}
 
 	private state:	GameState = new GameState();
 	private socket:	Socket | null = null;
+	private logger: Logger;
 
 	async start(serverUrl: string, lobbyId: string, seatIndex: number, botSessionToken: string): Promise<boolean>
 	{
 		for (let attempt = 0; attempt < CONNECTION_MAX_ATTEMPTS && this.socket == null; ++attempt)
 		{
 			await setTimeout(CONNECTION_RETRY_DELAY_MS * attempt)
-			logger.verbose(this.id, `connecting socket to ${serverUrl} (attempt ${attempt})`);
+			this.logger.verbose(this.id, `connecting socket to ${serverUrl} (attempt ${attempt})`);
 			this.socket = await connectSocket(serverUrl, lobbyId, botSessionToken);
 		}
 		if (!this.socket)
 		{
-			logger.error(this.id, `failed to connect to ${serverUrl}`);
+			this.logger.error(this.id, `failed to connect to ${serverUrl}`);
 			return false;
 		}
-		logger.info(this.id, `connected to ${serverUrl}`);
+		this.logger.info(this.id, `connected to ${serverUrl}`);
 		if (!(await this.socket.emitWithAck("user_seat_take", seatIndex)).success)
 		{
-			logger.error(this.id, "failed to take seat");
+			this.logger.error(this.id, "failed to take seat");
 			return false;
 		}
 		this.setupSocketEvents();
@@ -86,19 +90,18 @@ export class Bot
 	private initGameState = (stateTransmit: GameStateTransmit) =>
 	{
 		this.state = new GameState(this.id, stateTransmit);
-		logger.verbose(this.id, this.state.ownCards);
-		logger.verbose(this.id, "single count: ", this.state.possibleCardHands["single"].length);
+		this.logger.verbose(this.id, this.state.ownCards);
 	}
 		
 	private checkTurn = (playerTurn: PlayerTurnTransmit) =>
 	{
 		if (playerTurn.playerId == this.id)
 		{
-			logger.info(this.id, "my turn");
+			this.logger.info(this.id, "my turn");
 			this.playCardHand(playerTurn.skippable);
 		}
 		else
-			logger.info(this.id, `${playerTurn.playerId}'s turn`);
+			this.logger.info(this.id, `${playerTurn.playerId}'s turn`);
 	}
 
 	private playCardHand = async (skippable: boolean) =>
@@ -107,23 +110,20 @@ export class Bot
 
 		if (cardHand == null)
 		{
+			this.logger.verbose(this.id, "skipping turn");
 			const status: StatusTransmit = await this.socket?.emitWithAck("player_skip_turn_request");
-			if (status.success)
-				logger.verbose(this.id, "skipping turn");
-			else
-				logger.error(this.id, `failed to skip turn: ${status.message}`);
+			if (!status.success)
+				this.logger.error(this.id, `failed to skip turn: ${status.message}`);
 		}
 		else
 		{
 			cardHand.playerId = this.id;
 			this.state.setLastCardHand(cardHand);
 			this.state.removeCards(cardHand);
-			logger.verbose(this.id, "attempting to play", cardHand);
+			this.logger.verbose(this.id, "playing hand:", cardHand);
 			const status: StatusTransmit = await this.socket?.emitWithAck("player_play_card_hand_request", cardHand);
-			if (status.success)
-				logger.verbose(this.id, "played hand");
-			else
-				logger.error(this.id, `failed to play card hand: ${status.message}`);
+			if (!status.success)
+				this.logger.error(this.id, `failed to play card hand: ${status.message}`);
 		}
 	}
 
@@ -131,30 +131,32 @@ export class Bot
 	{
 		if (opponentMove.playerId != this.id)
 		{
-			logger.verbose(opponentMove.playerId, "played:", opponentMove);
+			this.logger.verbose(opponentMove.playerId, "played:", opponentMove);
 			this.state.setLastCardHand(opponentMove);
 		}
 	}
 
 	private registerOpponentSkip = (opponentSkip: SkipTurnTransmit) =>
 	{
-		logger.info(this.id, `player<${opponentSkip.playerId}> skipped their turn`);
+		if (opponentSkip.playerId != this.id);
+			this.logger.info(this.id, `player<${opponentSkip.playerId}> skipped their turn`);
 	}
 
 	private	gameEnd = (stats: GameEndStatsTransmit) =>
 	{
 		if (stats.winnerPlayerUuid == this.id)
-			logger.info(this.id, "I won");
+			this.logger.info(this.id, "I won");
 		else
 		{
-			logger.info(this.id, "I lost");
-			logger.verbose(`(${stats.playerFinalCardAmounts[this.id]} cards remaining and ${stats.playerPenaltyPoints} penalty points)`);
+			this.logger.info(this.id, "I lost");
+			this.logger.verbose(`(${stats.playerFinalCardAmounts[this.id]} cards remaining and ${stats.playerPenaltyPoints[this.id]} penalty points)`);
 		}
 	}
 	
 	private disconnect = (reason: string) =>
 	{
-		logger.info(this.id, "disconnected:", reason);
+		this.logger.info(this.id, "disconnected:", reason);
+		this.logger.close();
 		this.socket?.disconnect();
 		this.socket = null;
 	}

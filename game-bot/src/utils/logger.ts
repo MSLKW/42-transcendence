@@ -1,5 +1,10 @@
 import { inspect } from 'util';
-import { BOT_LOG_LEVEL } from '../config.js';
+import { BOT_LOG_DIR, BOT_LOG_LEVEL } from '../config.js';
+import path from 'path';
+import fs from "fs";
+
+if (!fs.existsSync(BOT_LOG_DIR))
+	fs.mkdirSync(BOT_LOG_DIR, { recursive: true });
 
 enum LogLevel {
 	VERBOSE,
@@ -19,30 +24,63 @@ const CURRENT_LEVEL = loglevelMap[BOT_LOG_LEVEL]
 if (CURRENT_LEVEL == undefined)
 	throw new Error('BOT_LOG_LEVEL must be "verbose", "info", "warn" or "error"');
 
-function format(args: unknown[]): string {
+const RED = '\x1b[31m';
+const YELLOW = '\x1b[33m';
+const RESET = '\x1b[0m';
+
+function format(args: unknown[]): string
+{
 	return args
 		.map((arg) => (typeof arg === 'string' ? arg : inspect(arg, { depth: null, colors: true })))
 		.join(' ');
 }
 
-export const logger = {
-	verbose(id: string, ...args: unknown[]) {
+export class Logger
+{
+	private ostream:			fs.WriteStream;
+	private readonly filepath:	string;
+
+	constructor(filename: string)
+	{
+		this.filepath = path.join(BOT_LOG_DIR, `${filename}.log`);
+		this.ostream = fs.createWriteStream(this.filepath);
+	}
+
+	verbose(id: string, ...args: unknown[])
+	{
+		if (this.ostream.closed)
+			return ;
 		if (CURRENT_LEVEL <= LogLevel.VERBOSE)
-			console.log(`[${id}]`, format(args));
-	},
+			this.ostream.write(`[${id}] ${format(args)}\n`);
+	}
 
-	info(id: string, ...args: unknown[]) {
+	info(id: string, ...args: unknown[])
+	{
+		if (this.ostream.closed)
+			return ;
 		if (CURRENT_LEVEL <= LogLevel.INFO)
-			console.log(`[${id}]`, format(args));
-	},
+			this.ostream.write(`[${id}] ${format(args)}\n`);
+	}
 
-	warn(id: string, ...args: unknown[]) {
+	warn(id: string, ...args: unknown[])
+	{
+		if (this.ostream.closed)
+			return ;
 		if (CURRENT_LEVEL <= LogLevel.WARN)
-			console.warn(`[WARNING][${id}]`, format(args));
-	},
+			this.ostream.write(`${YELLOW}[Warning]${RESET}[${id}] ${format(args)}\n`);
+	}
 
-	error(id: string, ...args: unknown[]) {
+	error(id: string, ...args: unknown[])
+	{
+		if (this.ostream.closed)
+			return ;
 		if (CURRENT_LEVEL <= LogLevel.ERROR)
-			console.error(`[ERROR][${id}]`, format(args));
-	},
+			this.ostream.write(`${RED}[Error]${RESET}[${id}] ${format(args)}\n`);
+	}
+
+	close()
+	{
+		this.ostream.close();
+		fs.rmSync(this.filepath);
+	}
 };

@@ -2,7 +2,6 @@ import { CardTransmit, CardHandTransmit, HandType, CardRank, CardSuit } from "@b
 import { GameState, HandTypeKey } from "../game/GameState.js";
 import { upperBound } from "../utils/upperBound.js";
 import { cardHandComp } from "../utils/cardHandComp.js";
-import { logger } from "../utils/logger.js";
 
 type Card = CardTransmit;
 type CardHand = CardHandTransmit;
@@ -45,7 +44,6 @@ export abstract class AAIController
 	{
 		let cardHands: CardHand[] = [];
 
-		logger.verbose(botId, "last move:", state.lastCardHand);
 		switch (state.lastCardHand!.handType)
 		{
 			case HandType.Single:
