@@ -128,7 +128,7 @@ export class Player extends Participant {
 			console.log(`[gameSocket] 'player_play_card_hand_request': `, status);
 			if (status.success === true) {
 				const cardHand = this.cardManager.sendSelectedCards();
-				this.cardHeapRef.receiveCardHand(cardHand);
+				this.cardHeapRef.cardHandQueue.add(this.cardHeapRef.receiveCardHand(cardHand));
 				useGameStore.getState().reduceCardsLeft(this.uuid, cardHand.cards.length);
 			}
 		});

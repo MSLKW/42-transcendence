@@ -16,6 +16,7 @@ export class Opponent extends Participant {
 
 	private	bindListeners() {
 		this.socket.on("player_play_card_hand", (cardHandTransmit: CardHandTransmit) => {
+			console.log(`[gameSocket] <${this.uuid}> 'player_play_card_hand': `, cardHandTransmit);
 			if (cardHandTransmit.playerId === this.uuid) {
 				const cardHand = new CardHand(this.uuid);
 				for (let i = 0; i < cardHandTransmit.cards.length; i++) {
@@ -25,7 +26,7 @@ export class Opponent extends Participant {
 						cardHand.receiveCard(card);
 					}
 					if (animation !== undefined) {
-						this.cardHeapRef.cardHandQueue.add(animation);
+						this.cardHeapRef.cardHandQueue.add(animation, i > 0 ? "<" : null);
 					} 
 				}
 				this.cardHeapRef.cardHandQueue.add(this.cardHeapRef.receiveCardHand(cardHand));

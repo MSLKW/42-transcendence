@@ -127,12 +127,14 @@ export class Game {
 	
 		this.socket.on("game_end", (gameEndStats: GameEndStatsTransmit) => {
 			console.log(`[gameSocket] 'game_end': `, gameEndStats);
-			useResultsStore.getState().setResults(gameEndStats);
-			this.resetGame();
-			useGameStore.getState().resetGame();
-			useGameStore.setState({ round: gameEndStats.temporaryRoundsPlayed });
-			useSceneStore.getState().setShowWindow("results", true);
-			useSceneStore.getState().setCurrentScene("Lobby");
+			this.cardHeap.cardHandQueue.add(() => {
+				useResultsStore.getState().setResults(gameEndStats);
+				useGameStore.setState({ round: gameEndStats.temporaryRoundsPlayed });
+				useSceneStore.getState().setCurrentScene("Lobby");
+				useSceneStore.getState().setShowWindow("results", true); // doesn't work when setCurrnetScene set to Lobby?
+				this.resetGame();
+				useGameStore.getState().resetGame();
+			}, "+=1");
 		});
 	
 		this.socket.on("player_connection_update", (disconnections: Record<string, boolean>) => {
