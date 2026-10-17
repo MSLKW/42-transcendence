@@ -49,12 +49,12 @@ export const AvatarModule = ({
 					else
 						setShowWindow("stats", true, uuid);
 				}}
-				// animate-glow
 				className={`
 					rounded-sm
 					${ currentScene !== "Game" && "hover:not-disabled:scale-105 active:hover:not-disabled:scale-100 focus-visible:outline-2 cursor-pointer" }
 					outline-b5
 					relative h-min
+					${ currentScene === "Game" && isActive === true && "animate-glow"}
 					`}>
 				<Tooltip text={relation === "Self" ? "Edit Profile" : "View Profile"}>
 					<AvatarImage

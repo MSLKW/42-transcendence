@@ -214,7 +214,7 @@ export class Game {
 		const relativeSeatOrder = Object.entries(seatOrder).sort(([, indexA], [, indexB]) => {
 			const distanceA = (indexA - playerSeatIndex + totalSeats) % totalSeats;
 			const distanceB = (indexB - playerSeatIndex + totalSeats) % totalSeats;
-			return distanceA - distanceB;
+			return (distanceA - distanceB);
 		}).map(([id]) => id);
 		
 		for (let i = 0; i < relativeSeatOrder.length; i++) {
