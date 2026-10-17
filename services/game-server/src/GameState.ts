@@ -189,6 +189,7 @@ export class GameState {
 		console.log(`Game<${this.gameRoomId}> has ended | Winner is Player<${winner.uuid}>`);
 		this.trackTemporaryStats(winner);
 		const gameEndStats: GameEndStatsTransmit = {
+			uuid: crypto.randomUUID(),
 			winnerPlayerUuid: winner.uuid,
 			playerFinalCardAmounts: this.getPlayerCardsAmount(),
 			playerPenaltyPoints: this.getPlayerPenaltyPoints(),

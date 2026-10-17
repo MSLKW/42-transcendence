@@ -130,8 +130,8 @@ export class Game {
 			useResultsStore.getState().setResults(gameEndStats);
 			useGameStore.setState({ round: gameEndStats.temporaryRoundsPlayed });
 			this.resetGame();
-			useSceneStore.getState().setCurrentScene("Lobby");
 			useSceneStore.getState().setShowWindow("results", true);
+			useSceneStore.getState().setCurrentScene("Lobby");
 		});
 	
 		this.socket.on("player_connection_update", (disconnections: Record<string, boolean>) => {

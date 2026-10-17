@@ -34,6 +34,7 @@ export const GameSettingsTransmitSchema = z.object({
 });
 
 export const GameEndStatsTransmitSchema = z.object({
+	uuid: z.uuid(),
 	winnerPlayerUuid: z.string(),
 	playerFinalCardAmounts: z.record(z.string(), z.int().nonnegative()),
 	playerPenaltyPoints: z.record(z.string(), z.int().nonnegative()),
