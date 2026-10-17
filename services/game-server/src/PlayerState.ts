@@ -109,7 +109,7 @@ export class PlayerState {
 		if (this.isMyTurn === true) {
 			if (this.cardHeapRef.isPlayerLeading(this.uuid))
 				this.cardHeapRef.resetPlayerLeading();
-			this.cardHeapRef.requiresThreeDiamonds = false;
+			this.cardHeapRef.requiresLowestCard = false;
 			const playerSkipTurn: SkipTurnTransmit = {
 				playerId: this.uuid
 			}
@@ -142,8 +142,8 @@ export class PlayerState {
 				return (status); 
 			}
 		}
-		if (this.cardHeapRef.requiresThreeDiamonds === true && PlayerState.hasCard(cardHand.cards, CardRank.Three, CardSuit.Diamond) === false) {
-			status.message = "first cardhand played must contain three of diamonds";
+		if (this.cardHeapRef.checkLowestCardRequirement(cardHand)) {
+			status.message = "first cardhand played must contain your lowest card";
 			return (status);
 		}
 		if (this.cardHeapRef.isCardHandPlayable(cardHand) == false) {

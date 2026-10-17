@@ -1,4 +1,4 @@
-import { CardHandTransmit, GameSettingsTransmit, HandType, PentupleType } from '@big2/game-types';
+import { CardRank, CardSuit, CardHandTransmit, GameSettingsTransmit, HandType, PentupleType } from '@big2/game-types';
 import { PlayerState } from "./PlayerState.js";
 import { CardHandState } from "./CardHandState.js";
 import { io } from "./server.js";
@@ -6,20 +6,24 @@ import { io } from "./server.js";
 export class CardHeapState {
 	private cardHands: Array<CardHandState>;
 	private	leadingPlayerId: string;
-	public	requiresThreeDiamonds: boolean;
+	public	requiresLowestCard: boolean;
+	private lowestCardRank: CardRank;
+	private lowestCardSuit: CardSuit;
 	private	gameSettingsRef: GameSettingsTransmit
 
 	constructor(gameSettingsRef: GameSettingsTransmit) {
 		this.cardHands = [];
 		this.leadingPlayerId = "";
-		this.requiresThreeDiamonds = true;
+		this.requiresLowestCard = true;
 		this.gameSettingsRef = gameSettingsRef;
+		this.lowestCardRank = CardRank.Three;
+		this.lowestCardSuit = CardSuit.Diamond;
 	}
 
 	public receiveCardHand(cardHand: CardHandState) {
 		this.cardHands.push(cardHand);
 		this.leadingPlayerId = cardHand.playerId;
-		this.requiresThreeDiamonds = false;
+		this.requiresLowestCard = false;
 	}
 
 	public cardHandsAmount() {
@@ -77,10 +81,21 @@ export class CardHeapState {
 		return (false);
 	}
 
+	public checkLowestCardRequirement(cardhand: CardHandState) {
+		return (this.requiresLowestCard === true && PlayerState.hasCard(cardhand.cards, this.lowestCardRank, this.lowestCardSuit) === false);
+	}
+
+	public setLowestCard(rank: CardRank, suit: CardSuit) {
+		this.lowestCardRank = rank;
+		this.lowestCardSuit = suit;
+	}
+
 	public reset() {
 		this.cardHands.length = 0;
 		this.leadingPlayerId = "";
-		this.requiresThreeDiamonds = true;
+		this.requiresLowestCard = true;
+		this.lowestCardRank = CardRank.Three;
+		this.lowestCardSuit = CardSuit.Diamond;
 	}
 
 	public transmit(): Array<CardHandTransmit> {

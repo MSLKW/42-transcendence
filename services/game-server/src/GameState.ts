@@ -131,27 +131,29 @@ export class GameState {
 			status.message = "Game has already started"
 			return (status);
 		}
-		for (let i = 0; i < this.players.length; i++) {
-			this.players[i].collectCards(this.cardDeck.dealCards(Math.floor(this.cardDeck.size / this.players.length)));
+		if (this.players.length === 2) {
+			this.players[0].collectCards(this.cardDeck.dealCards(17));
+			this.players[1].collectCards(this.cardDeck.dealCards(17));
 		}
-		for (let i = 0; i < this.players.length; i++) {
-			if (PlayerState.hasCard(this.players[i].cards, CardRank.Three, CardSuit.Diamond)) {
-				this.playerTurnIndex = i;
-				if (this.players.length === 3) { 
-					this.players[i].collectCards(this.cardDeck.dealCards(1));
-				}
-			}
-		}
-		// If last card is three of diamonds, then give it to three of clubs holder
-		const cardsLeft = this.cardDeck.dealCards(1);
-		if (cardsLeft.length === 1) {
+		else {
 			for (let i = 0; i < this.players.length; i++) {
-				if (PlayerState.hasCard(this.players[i].cards, CardRank.Three, CardSuit.Club)) {
-					this.players[i].collectCards(cardsLeft)
-					this.playerTurnIndex = i;
-				}
+				this.players[i].collectCards(this.cardDeck.dealCards(Math.floor(this.cardDeck.size / this.players.length)));
 			}
 		}
+		// determine who is first and who gets the cards
+		const lowest = this.getLowestPlayerCard();
+		if (lowest === undefined) {
+			status.message = "Couldn't find lowest player card";
+			return (status);
+		}
+		const [lowestPlayer, lowestCardRank, lowestCardSuit] = lowest;
+		if (this.players.length === 3 && this.cardDeck.size === 1) {
+			lowestPlayer.collectCards(this.cardDeck.dealCards(1));
+		}
+		if (this.players.length === 2) {
+			this.cardHeap.setLowestCard(lowestCardRank, lowestCardSuit);
+		}
+		this.playerTurnIndex = this.players.findIndex((player) => player === lowestPlayer);
 		if (this.playerTurnIndex === -1)
 			this.playerTurnIndex = 0;
 		this.togglePlayerTurnFlag();
@@ -168,6 +170,19 @@ export class GameState {
 		status.success = true;
 		status.message = "Game has successfully started";
 		return (status);
+	}
+
+	private getLowestPlayerCard(): [PlayerState, CardRank, CardSuit] | undefined {
+		for (let rank = CardRank.Three; rank <= CardRank.Two; rank++) {
+			for (let suit = CardSuit.Diamond; suit <= CardSuit.Spade; suit++) {
+				for (let i = 0; i < this.players.length; i++) {
+					if (PlayerState.hasCard(this.players[i].cards, rank, suit)) {
+						return ([this.players[i], rank, suit]);
+					}
+				}
+			}
+		}
+		return (undefined);
 	}
 
 	public endGame(winner: PlayerState) {
