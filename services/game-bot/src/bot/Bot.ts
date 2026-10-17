@@ -4,6 +4,7 @@ import { GameState } from "../game/GameState.js";
 import { AAIController } from "../ai/AAIController.js";
 import { Logger } from "../utils/logger.js";
 import { CardHandTransmit as CardHand, GameEndStatsTransmit } from "@big2/game-types";
+import { BOT_MOVE_DELAY_MIN, BOT_MOVE_DELAY_MAX } from "../config.js";
 
 import {
 	GameStateTransmit,
@@ -98,15 +99,22 @@ export class Bot
 		if (playerTurn.playerId == this.id)
 		{
 			this.logger.info(this.id, "my turn");
-			this.playCardHand(playerTurn.skippable);
+			this.playCardHand(playerTurn.timer, playerTurn.skippable);
 		}
 		else
 			this.logger.info(this.id, `${playerTurn.playerId}'s turn`);
 	}
 
-	private playCardHand = async (skippable: boolean) =>
+	private playCardHand = async (timerMs: number, skippable: boolean) =>
 	{
+		const moveDelayMs = (Math.random()	* (BOT_MOVE_DELAY_MAX - BOT_MOVE_DELAY_MIN) + BOT_MOVE_DELAY_MIN) * timerMs;
+		const deadline = Date.now() + moveDelayMs;
+
 		const cardHand = this.ai.decide(this.id, this.state, skippable);
+
+		const delayRemainingMs = deadline - Date.now();
+		if (delayRemainingMs > 0)
+			await setTimeout(delayRemainingMs);
 
 		if (cardHand == null)
 		{
