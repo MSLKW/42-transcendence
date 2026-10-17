@@ -138,8 +138,8 @@ export class Bot
 
 	private registerOpponentSkip = (opponentSkip: SkipTurnTransmit) =>
 	{
-		if (opponentSkip.playerId != this.id);
-			this.logger.info(this.id, `player<${opponentSkip.playerId}> skipped their turn`);
+		if (opponentSkip.playerId != this.id)
+			this.logger.info(this.id, `${opponentSkip.playerId} skipped their turn`);
 	}
 
 	private	gameEnd = (stats: GameEndStatsTransmit) =>
@@ -149,7 +149,7 @@ export class Bot
 		else
 		{
 			this.logger.info(this.id, "I lost");
-			this.logger.verbose(`(${stats.playerFinalCardAmounts[this.id]} cards remaining and ${stats.playerPenaltyPoints[this.id]} penalty points)`);
+			this.logger.verbose(this.id, `(${stats.playerFinalCardAmounts[this.id]} cards remaining and ${stats.playerPenaltyPoints[this.id]} penalty points)`);
 		}
 	}
 	

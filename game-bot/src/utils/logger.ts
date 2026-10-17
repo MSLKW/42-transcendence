@@ -48,7 +48,7 @@ export class Logger
 
 	verbose(id: string, ...args: unknown[])
 	{
-		if (this.ostream.closed)
+		if (!this.ostream.writable)
 			return ;
 		if (CURRENT_LEVEL <= LogLevel.VERBOSE)
 			this.ostream.write(`[${id}] ${format(args)}\n`);
@@ -56,7 +56,7 @@ export class Logger
 
 	info(id: string, ...args: unknown[])
 	{
-		if (this.ostream.closed)
+		if (!this.ostream.writable)
 			return ;
 		if (CURRENT_LEVEL <= LogLevel.INFO)
 			this.ostream.write(`[${id}] ${format(args)}\n`);
@@ -64,7 +64,7 @@ export class Logger
 
 	warn(id: string, ...args: unknown[])
 	{
-		if (this.ostream.closed)
+		if (!this.ostream.writable)
 			return ;
 		if (CURRENT_LEVEL <= LogLevel.WARN)
 			this.ostream.write(`${YELLOW}[Warning]${RESET}[${id}] ${format(args)}\n`);
@@ -72,7 +72,7 @@ export class Logger
 
 	error(id: string, ...args: unknown[])
 	{
-		if (this.ostream.closed)
+		if (!this.ostream.writable)
 			return ;
 		if (CURRENT_LEVEL <= LogLevel.ERROR)
 			this.ostream.write(`${RED}[Error]${RESET}[${id}] ${format(args)}\n`);
@@ -80,7 +80,7 @@ export class Logger
 
 	close()
 	{
-		this.ostream.close();
-		fs.rmSync(this.filepath);
+		this.ostream.end();
+		fs.promises.rm(this.filepath);
 	}
 };
