@@ -112,13 +112,10 @@ export default function App() {
 				console.error("Sent requests failed:", error);
 			});
 
-		console.log("a");
 		void handleFriendRequestsReceived(clientUuid)
 			.then(async (requests) => {
-				console.log("b");
 				await Promise.all(
 					requests.map(async (req: any) => {
-						console.log("c", req);
 						const profile = await handleGetProfile(req.senderId);
 
 						useNotificationStore.getState().showNotification(
