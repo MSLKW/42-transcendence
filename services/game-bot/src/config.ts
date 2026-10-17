@@ -5,7 +5,7 @@ export const GAME_SERVICE_URL = process.env.GAME_SERVICE_URL as string;
 export const BOT_LOG_DIR = process.env.BOT_LOG_DIR as string;
 export const BOT_LOG_LEVEL = process.env.BOT_LOG_LEVEL as string;
 export const BOT_MOVE_DELAY_MIN = Number(process.env.BOT_MOVE_DELAY_MIN) || 0.1;
-export const BOT_MOVE_DELAY_MAX = Number(process.env.BOT_MOVE_DELAY_MAX) || 0.8;
+export const BOT_MOVE_DELAY_MAX = Number(process.env.BOT_MOVE_DELAY_MAX) || 0.375;
 
 if (!PORT)
 	throw new Error("PORT not set"); 

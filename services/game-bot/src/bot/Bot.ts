@@ -107,15 +107,13 @@ export class Bot
 
 	private playCardHand = async (timerMs: number, skippable: boolean) =>
 	{
+		if (timerMs == 0)
+			timerMs = 5000;
 		const moveDelayMs = (Math.random()	* (BOT_MOVE_DELAY_MAX - BOT_MOVE_DELAY_MIN) + BOT_MOVE_DELAY_MIN) * timerMs;
 		const deadline = Date.now() + moveDelayMs;
 
 		const cardHand = this.ai.decide(this.id, this.state, skippable);
-
-		const delayRemainingMs = deadline - Date.now();
-		if (delayRemainingMs > 0)
-			await setTimeout(delayRemainingMs);
-
+		
 		if (cardHand == null)
 		{
 			this.logger.verbose(this.id, "skipping turn");
@@ -125,6 +123,10 @@ export class Bot
 		}
 		else
 		{
+			const delayRemainingMs = deadline - Date.now();
+			if (delayRemainingMs > 0)
+				await setTimeout(delayRemainingMs);
+
 			cardHand.playerId = this.id;
 			this.state.setLastCardHand(cardHand);
 			this.state.removeCards(cardHand);
