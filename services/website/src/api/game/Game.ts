@@ -226,7 +226,7 @@ export class Game {
 			}
 			else if (id !== this.playerId) {
 				const opponent = new Opponent(this.socket, id, this.cardHeap);
-				const [pos, rot] = this.tablePosition(i);
+				const [pos, rot] = this.tablePosition(i, totalSeats);
 				opponent.cardManager.updateManager(pos, rot);
 				this.participants.push(opponent);
 			}
@@ -303,19 +303,45 @@ export class Game {
 		});
 	}
 
-	private tablePosition(seatIndex: number): [THREE.Vector3, THREE.Quaternion] {
-		const positions: Array<THREE.Vector3> = [
-			new THREE.Vector3(0, 2, 4),
-			new THREE.Vector3(0, 1.5, -4),
-			new THREE.Vector3(-4, 1.5, 0),
-			new THREE.Vector3(4, 1.5, 0),
-		];
-		const rotations: Array<THREE.Euler> = [
-			new THREE.Euler(-Math.PI / 8, 0, 0),
-			new THREE.Euler(0, -Math.PI, 0),
-			new THREE.Euler(0, -Math.PI / 2, 0),
-			new THREE.Euler(0, Math.PI / 2, 0)
-		]
+	private tablePosition(seatIndex: number, totalPlayers: number): [THREE.Vector3, THREE.Quaternion] {
+		let positions: Array<THREE.Vector3> = [];
+		let rotations: Array<THREE.Euler> = [];
+		if (totalPlayers === 4) {
+			positions = [
+				new THREE.Vector3(0, 2, 4),
+				new THREE.Vector3(-4, 1.5, 0),
+				new THREE.Vector3(0, 1.5, -4),
+				new THREE.Vector3(4, 1.5, 0),
+			];
+			rotations = [
+				new THREE.Euler(-Math.PI / 8, 0, 0),
+				new THREE.Euler(0, -Math.PI / 2, 0),
+				new THREE.Euler(0, -Math.PI, 0),
+				new THREE.Euler(0, Math.PI / 2, 0)
+			];
+		}
+		else if (totalPlayers === 3) {
+			positions = [
+				new THREE.Vector3(0, 1.5, 4),
+				new THREE.Vector3(3.5, 1.5, -2.5),
+				new THREE.Vector3(-3.5, 1.5, -2.5)
+			];
+			rotations = [
+				new THREE.Euler(-Math.PI / 8, 0, 0),
+				new THREE.Euler(0, Math.PI / 1.5, 0),
+				new THREE.Euler(0, -Math.PI / 1.5, 0),
+			]
+		}
+		else if (totalPlayers === 2) {
+			positions = [
+				new THREE.Vector3(0, 2, 4),
+				new THREE.Vector3(0, 1.5, -4),
+			]
+			rotations = [
+				new THREE.Euler(-Math.PI / 8, 0, 0),
+				new THREE.Euler(0, -Math.PI, 0),
+			]
+		}
 		return ([positions[seatIndex], new THREE.Quaternion().setFromEuler(rotations[seatIndex])]);
 	}
 }
