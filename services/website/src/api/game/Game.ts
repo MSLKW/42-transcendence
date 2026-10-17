@@ -121,15 +121,16 @@ export class Game {
 				useSceneStore.getState().setCurrentScene("Home");
 			}
 			this.resetGame();
-			useGameStore.getState().resetGame();
+			useGameStore.getState().resetLobby();
 			partySocket.refresh();
 		});
 	
 		this.socket.on("game_end", (gameEndStats: GameEndStatsTransmit) => {
 			console.log(`[gameSocket] 'game_end': `, gameEndStats);
 			useResultsStore.getState().setResults(gameEndStats);
-			useGameStore.setState({ round: gameEndStats.temporaryRoundsPlayed });
 			this.resetGame();
+			useGameStore.getState().resetGame();
+			useGameStore.setState({ round: gameEndStats.temporaryRoundsPlayed });
 			useSceneStore.getState().setShowWindow("results", true);
 			useSceneStore.getState().setCurrentScene("Lobby");
 		});

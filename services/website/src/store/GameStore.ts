@@ -59,6 +59,7 @@ interface GameState extends GameValues {
 	setCardsLeft: (playerCardsAmount: Record<string, number>) => void;
 	reduceCardsLeft: (uuid: string, cardsAmount: number) => void;
 	setCurrentHand: (handType: HandType, pentupleType: PentupleType) => void;
+	resetLobby: () => void;
 	resetGame: () => void;
 	startGame: () => void;
 	skipTurn: () => void;
@@ -172,27 +173,33 @@ export const useGameStore = create<GameState>() (
 				gameInstance?.playerRef?.skipTurnButtonHandler();
 			},
 
-			resetGame: () => {
+			resetLobby: () => {
 				set({
 					totalPlayers: 0,
 					userSeats: [],
-					gameSeats: [],
 					playerDisconnection: {},
-					gameStarted: false,
-					cardsLeft: [],
-					currentHand: "None",
 					round: 0,
 					seatRef: [],
-					activeSeat: 0,
-					playerPassed: [],
-					playerTimer: 0,
 				});
+				get().resetGame();
 				useResultsStore.getState().resetResults();
 				useSceneStore.getState().setShowWindow("results", false);
 			},
 
+			resetGame: () => {
+				set({
+					gameSeats: [],
+					gameStarted: false,
+					cardsLeft: [],
+					currentHand: "None",
+					activeSeat: 0,
+					playerPassed: [],
+					playerTimer: 0,
+				});
+			},
+
 			leaveGame: () => {
-				get().resetGame();
+				get().resetLobby();
 				if (useAuthStore.getState().clientUuid === usePartyStore.getState().hostUuid) {
 					gameInstance?.deleteLobby();
 					partySocket.refresh();

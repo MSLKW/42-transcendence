@@ -32,7 +32,12 @@ export class Player extends Participant {
 	private bindListeners() {
 		this.socket.on("player_turn", (playerTurn: PlayerTurnTransmit) => {
 			console.log("[gameSocket] 'player_turn': ", playerTurn);
-			console.log("player_turn listeners amount: ", this.socket.listeners("player_turn").length);
+			const newPlayerPassed = [...useGameStore.getState().playerPassed];
+			const index = newPlayerPassed.findIndex((skippedUuid) => skippedUuid === playerTurn.playerId);
+			if (index !== -1) {
+				newPlayerPassed.splice(index, 1);
+				useGameStore.setState({ playerPassed: newPlayerPassed });
+			}
 			const activeSeat = useGameStore.getState().gameSeats.findIndex((uuid) => uuid === playerTurn.playerId);
 			useGameStore.setState({
 				activeSeat: activeSeat, 
@@ -50,6 +55,11 @@ export class Player extends Participant {
 
 		this.socket.on("player_skip_turn", (skipTurn: SkipTurnTransmit) => {
 			console.log("[gameSocket] 'player_skip_turn': ", skipTurn);
+			const newPlayerPassed = [...useGameStore.getState().playerPassed];
+			if (newPlayerPassed.find((skippedUuid) => skippedUuid === skipTurn.playerId) === undefined) {
+				newPlayerPassed.push(skipTurn.playerId);
+				useGameStore.setState({ playerPassed: newPlayerPassed });
+			}
 		});
 
 		threejsManager.renderer.domElement.addEventListener('pointerdown', (event) => {
