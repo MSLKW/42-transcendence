@@ -31,6 +31,34 @@ export const HomeScene = () => {
 		initSeats();
 	}, [members]);
 
+	//fetch friend requests sent + received
+	// const friendsFetched = useRef(false);
+	// useEffect(() => {
+	// 	if (!clientUuid)
+	// 		return;
+	// 	if (friendsFetched.current)
+	// 		return;
+	// 	friendsFetched.current = true;
+
+	// 	void handleFriendRequestsSent(clientUuid!).then((requests) => {
+	// 		useFriendsStore.setState({ friendRequestSent: requests });
+	// 	});
+	// 	console.log("a");
+	// 	void handleFriendRequestsReceived(clientUuid!).then((requests) => {
+	// 		console.log("b");
+	// 		requests.forEach(async (req: any) => {
+	// 			console.log("c", req);
+	// 			const profile = await handleGetProfile(req.senderId);
+	// 			useNotificationStore.getState().showNotification(
+	// 				`${profile?.username} wants to be friends with you`,
+	// 				NOTIFICATION_TYPE.invite,
+	// 				() => handleFriendRequestsAccept(req.id, profile?.username ?? "Player"),
+	// 				() => handleFriendRequestsReject(req.id, profile?.username ?? "Player")
+	// 			);
+	// 		});
+	// 	});
+	// }, [clientUuid]);
+
 	return (
 		<>
 			<HeaderModule back="Login" />

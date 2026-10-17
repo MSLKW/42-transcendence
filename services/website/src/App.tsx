@@ -53,7 +53,7 @@ export default function App() {
 
 	//party socket connection
 	useEffect(() => {
-		if (!clientUuid)
+		if (!clientUuid || currentScene === "Login")
 			return;
 
 		partySocket.connect();
@@ -61,11 +61,11 @@ export default function App() {
 		// return () => {
 		// 	partySocket.disconnect();
 		// };
-	}, [clientUuid]);
+	}, [clientUuid, currentScene]);
 
 	//chat socket connection + subscriptions
 	useEffect(() => {
-		if (!clientUuid)
+		if (!clientUuid || currentScene === "Login")
 			return;
 
 		chatSocket.connect();
@@ -90,7 +90,7 @@ export default function App() {
 		// 	unsubscribeFromRateLimited();
 		// 	chatSocket.disconnect();
 		// };
-	}, [clientUuid]);
+	}, [clientUuid, currentScene]);
 
 	//friends connection
 	const handleFriendUpdate = useCallback(() => {
@@ -100,29 +100,39 @@ export default function App() {
 	}, []);
 	useFriendEvents(clientUuid, handleFriendUpdate);
 
-	const friendsFetched = useRef(false);
+	//friend requests sent + received
 	useEffect(() => {
-		if (!clientUuid)
+		if (!clientUuid || currentScene === "Login")
 			return;
-		if (friendsFetched.current)
-			return;
-		friendsFetched.current = true;
 
-		void handleFriendRequestsSent(clientUuid!).then((requests) => {
-			useFriendsStore.setState({ friendRequestSent: requests });
-		});
-		void handleFriendRequestsReceived(clientUuid!).then((requests) => {
-			requests.forEach(async (req: any) => {
-				const profile = await handleGetProfile(req.senderId);
-				useNotificationStore.getState().showNotification(
-					`${profile?.username} wants to be friends with you`,
-					NOTIFICATION_TYPE.invite,
-					() => handleFriendRequestsAccept(req.id, profile?.username ?? "Player"),
-					() => handleFriendRequestsReject(req.id, profile?.username ?? "Player")
-				);
+		void handleFriendRequestsSent(clientUuid)
+			.then((requests) => {
+				useFriendsStore.setState({ friendRequestSent: requests });
+			}).catch((error) => {
+				console.error("Sent requests failed:", error);
 			});
-		});
-	}, []);
+
+		console.log("a");
+		void handleFriendRequestsReceived(clientUuid)
+			.then(async (requests) => {
+				console.log("b");
+				await Promise.all(
+					requests.map(async (req: any) => {
+						console.log("c", req);
+						const profile = await handleGetProfile(req.senderId);
+
+						useNotificationStore.getState().showNotification(
+							`${profile?.username} wants to be friends with you`,
+							NOTIFICATION_TYPE.invite,
+							() => handleFriendRequestsAccept(req.id, profile?.username ?? "Player"),
+							() => handleFriendRequestsReject(req.id, profile?.username ?? "Player")
+						);
+					})
+				);
+			}).catch((error) => {
+				console.error("Failed to process friend requests:", error);
+			});
+	}, [clientUuid, currentScene]);
 
 	//three js manager
 	const containerRef = useRef<HTMLDivElement>(null);
