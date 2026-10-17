@@ -1,11 +1,10 @@
 import "dotenv/config";
 import express from "express";
+import { PORT } from "./config.js";
 
 import { BotManager } from "./bot/BotManager.js";
 import { healthCheck } from "./handlers/healthCheck.js";
 import { newBotHandler } from "./handlers/newBotHandler.js";
-
-const PORT = Number(process.env.PORT) || 3000;
 
 const manager = new BotManager();
 

@@ -1,11 +1,7 @@
+import { GAME_SERVICE_URL } from "../config.js";
 import { Request, Response } from "express";
 import { BotManager } from "../bot/BotManager.js";
 import { RandomController } from "../ai/RandomController.js";
-
-const GAME_SERVICE_URL = process.env.GAME_SERVICE_URL as string;
-
-if (!GAME_SERVICE_URL)
-	throw Error("GAME_SERVICE_URL not set");
 
 type ReqBody = {
 	lobbyId:			string,
