@@ -2,6 +2,8 @@
 FROM node:20-alpine AS builder
 WORKDIR /app
 
+# TODO : after game-stats completion, recheck & remove game-types everywhere within game-stats if not needed
+# TODO (where remove game-types?): package.json, tsconfig's references, dockerfile, imports, etc. might not even need game-types for game-stats, cant ask request to refer their req types, its like ask req to blindly trust what you assign to them when req can be recieved by anyone in any shape
 COPY --from=postgres-client     package.json    ./packages/postgres/postgres-client/
 COPY --from=auth-schema         package.json    ./packages/postgres/auth-schema/
 COPY --from=game-stats-schema   package.json    ./packages/postgres/game-stats-schema/
@@ -40,7 +42,7 @@ COPY --from=builder /app/services/game-stats/dist                   ./services/g
 
 ENV PORT=3000
 # ^ default fallback only, in case someone runs this image standalone without Compose.
-# Compose's `environment: PORT=${FRIENDS_SERVICE_PORT}` overrides this ENV at runtime.
+# Compose's `environment: PORT=${GAME_STATS_SERVICE_PORT}` overrides this ENV at runtime.
 
 EXPOSE ${PORT}
 
