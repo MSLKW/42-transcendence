@@ -7,6 +7,7 @@ import { publicPlayerGameData } from "../handlers/publicPlayerGameData";
 import { healthCheck } from "../handlers/healthCheck";
 import { ownPlayerGameData } from "../handlers/ownPlayerGameData";
 import { requireUser } from "../middleware/requireUser";
+import { easterEggFound } from "../handlers/easterEggFound";
 
 
 // important endpoint designs: 
@@ -16,15 +17,17 @@ import { requireUser } from "../middleware/requireUser";
 
 export const gameStatsRouter = Router();
 
-// game-server & other microservices(badges-unlocked only), no
-gameStatsRouter.post("/game-end-stats", gameEndStats);							// when?: after each game round ends 
+// game-server & other microservices except website(badges-unlocked only), no
+gameStatsRouter.post("/game-end-stats", gameEndStats);						// when?: after each game round ends + update new badges too to game-server after the updated stats
 gameStatsRouter.post("/achievement-unlocked", achievementUnlocked); 		// when?: on realtime update during in game playtime
-gameStatsRouter.post("/badge-unlocked", badgeUnlocked); 					// when?: on realtime update (only for the polished badges that has various kind of rules, not just upon minLevels) 
+gameStatsRouter.post("/badge-unlocked", badgeUnlocked); 					// when?: on realtime update (only for the polished badges)  
 
 // website, yes
 // to determine this is really requested by the client themselves
 gameStatsRouter.put("/displayed-badge", requireUser, displayedBadge);					// when?: user change displayed badge
 gameStatsRouter.get("/own-player-game-data", requireUser, ownPlayerGameData);			// what?: player's own all 3 accumulated data (stats + all achievements + all badges)
+// TODO (polish): do this later only after current badges are complete and working
+gameStatsRouter.post("/easter-egg-found", requireUser, easterEggFound);					// what?: award user easter egg badges
 
 // website, no 
 // coz requested by other clients 

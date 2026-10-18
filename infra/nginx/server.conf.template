@@ -8,9 +8,10 @@ map $http_upgrade $connection_upgrade {
 # nginx variable names should use underscores only. nginx -t would complain about an unknown variable.
 map $uri $game_stats_allowlist {
 	default 0;
-	"~^${API_GAME_STATS_PATH}/displayed-badge$"							1;
+	"~^${API_GAME_STATS_PATH}/displayed-badge$"								1;
 	"~^${API_GAME_STATS_PATH}/own-player-game-data$"						1;
 	"~^${API_GAME_STATS_PATH}/public-player-game-data/[0-9a-fA-F-]{36}$"	1;
+	"~^${API_GAME_STATS_PATH}/easter-egg-found$"							1;
 }
 
 
