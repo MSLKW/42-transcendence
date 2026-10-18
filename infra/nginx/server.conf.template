@@ -88,11 +88,16 @@ server {
 		proxy_pass $upstream;
 	}
 
-	#TO BE MERGED LATER, not completed yet
-	location ${API_GAME_STATS_PATH}/ {
+	# the only game-stats routes the internet can reach
+	location ~ "^${API_GAME_STATS_PATH}/(own-player-game-data|displayed-badge|public-player-game-data/[0-9a-fA-F-]{36})$" {
 		set $upstream ${GAME_STATS_SERVICE_URL};
         rewrite ^${API_GAME_STATS_PATH}/(.*)$ /$1 break;
 		proxy_pass $upstream;
+	}
+
+	# everything else under /api/game-stats/ (game-end, achievement-unlocked, ...) ends here
+	location ${API_GAME_STATS_PATH}/ {
+		return 404;
 	}
 
 	#TO BE MERGED LATER, not completed yet
