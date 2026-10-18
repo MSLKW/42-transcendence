@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { handleSignOut } from "./api/authentication/delete_logout/handleLogout";
+import { handleLogout } from "./api/authentication/delete_logout/handleLogout";
 import { useChatStore } from "./store/ChatStore";
 import { chatSocket } from "./api/chat/chatSocket";
 import { partySocket } from "./api/party/partySocket";
@@ -50,7 +50,7 @@ export default function Dev() {
 
 	const handleResetAll = async () => {
 		useProfileStore.getState().resetProfilesInDb();
-		await handleSignOut();
+		await handleLogout();
 		useSceneStore.getState().setCurrentScene("Login");
 		useSceneStore.setState({ showWindow: defaultShowWindow });
 		useChatStore.setState({ cachedChat: [] });

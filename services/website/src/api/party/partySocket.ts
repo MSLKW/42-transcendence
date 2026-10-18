@@ -28,8 +28,11 @@ export type AcceptInviteResponse = {
 
 class PartySocketService {
 	private socket: Socket | null = null;
+	private intentionalDisconnect = false;
 
 	public connect() {
+		this.intentionalDisconnect = false;
+
 		if (this.socket) {
 			if (!this.socket.connected)
 				this.socket.connect();
@@ -58,7 +61,8 @@ class PartySocketService {
 	public disconnect() {
 		if (!this.socket)
 			return;
-
+		
+		this.intentionalDisconnect = true;
 		this.socket.disconnect();
 		this.socket = null;
 
@@ -84,6 +88,9 @@ class PartySocketService {
 	}
 	public getSocket() {
 		return this.socket;
+	}
+	public isIntentionalDisconnect(): boolean {
+		return this.intentionalDisconnect;
 	}
 
 	public sendInvite(recipientUuid: string, recipientName: string) {

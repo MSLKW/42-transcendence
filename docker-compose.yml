@@ -192,6 +192,7 @@ services:
   website:
     container_name: website
     image: website:services
+    init: true
     build:
       context: ./services/website
       additional_contexts:

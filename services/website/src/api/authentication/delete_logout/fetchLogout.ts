@@ -1,6 +1,6 @@
 const authUrl = import.meta.env.VITE_API_AUTH_PATH;
 
-export const fetchSignOut = async () => {
+export const fetchLogout = async () => {
 	const response = await fetch(`${authUrl}/logout`, {
 		method: "DELETE",
 		credentials: "include",

@@ -53,51 +53,52 @@ export default function App() {
 
 	//party socket connection
 	useEffect(() => {
-		if (!clientUuid || currentScene === "Login")
+		if (!clientUuid)
 			return;
 
 		partySocket.connect();
 
-		// return () => {
-		// 	partySocket.disconnect();
-		// };
-	}, [clientUuid, currentScene]);
+		return () => {
+			partySocket.disconnect();
+		};
+	}, [clientUuid]);
 
 	//chat socket connection + subscriptions
 	useEffect(() => {
-		if (!clientUuid || currentScene === "Login")
+		if (!clientUuid)
 			return;
 
 		chatSocket.connect();
 
-		subscribeToMessages();
-		subscribeToUserJoined();
-		subscribeToUserLeft();
-		subscribeToUserTyping();
-		subscribeToRateLimited();
+		const unsubscribeFromMessages = subscribeToMessages();
+		const unsubscribeFromUserJoined = subscribeToUserJoined();
+		const unsubscribeFromUserLeft = subscribeToUserLeft();
+		const unsubscribeFromUserTyping = subscribeToUserTyping();
+		const unsubscribeFromRateLimited = subscribeToRateLimited();
 
-		// const unsubscribeFromMessages = subscribeToMessages();
-		// const unsubscribeFromUserJoined = subscribeToUserJoined();
-		// const unsubscribeFromUserLeft = subscribeToUserLeft();
-		// const unsubscribeFromUserTyping = subscribeToUserTyping();
-		// const unsubscribeFromRateLimited = subscribeToRateLimited();
-
-		// return () => {
-		// 	unsubscribeFromMessages();
-		// 	unsubscribeFromUserJoined();
-		// 	unsubscribeFromUserLeft();
-		// 	unsubscribeFromUserTyping();
-		// 	unsubscribeFromRateLimited();
-		// 	chatSocket.disconnect();
-		// };
-	}, [clientUuid, currentScene]);
+		return () => {
+			unsubscribeFromMessages();
+			unsubscribeFromUserJoined();
+			unsubscribeFromUserLeft();
+			unsubscribeFromUserTyping();
+			unsubscribeFromRateLimited();
+			chatSocket.disconnect();
+		};
+	}, [clientUuid]);
 
 	//friends connection
 	const handleFriendUpdate = useCallback(() => {
-		void handleFriendships(clientUuid!).then((friends) => {
-			useFriendsStore.setState({ cachedFriends: friends });
-		});
-	}, []);
+		if (!clientUuid)
+			return;
+
+		void handleFriendships(clientUuid!)
+			.then((friends) => {
+				useFriendsStore.setState({ cachedFriends: friends });
+			})
+			.catch((error) => {
+				console.error("Failed to refresh friendships:", error);
+			});
+	}, [clientUuid]);
 	useFriendEvents(clientUuid, handleFriendUpdate);
 
 	//friend requests sent + received
@@ -148,6 +149,9 @@ export default function App() {
 
 	//three js scene handler
 	useEffect(() => {
+		if (!threejsManager)
+			return;
+
 		const currentSceneLowered = currentScene.toLowerCase();
 		if (threejsManager.getSceneId() !== currentSceneLowered) {
 			threejsManager.changeScene(currentSceneLowered);
