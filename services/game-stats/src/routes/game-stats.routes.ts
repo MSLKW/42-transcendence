@@ -31,7 +31,7 @@ gameStatsRouter.post("/easter-egg-found", requireUser, easterEggFound);					// w
 
 // website, no 
 // coz requested by other clients 
-gameStatsRouter.get("/public-player-game-data/:uuid", publicPlayerGameData);	// what?: other client looked up people's profile page, see all except all unlocked badges
+gameStatsRouter.get("/public-player-game-data/:playerUuid", publicPlayerGameData);	// what?: other client looked up people's profile page, see all except all unlocked badges
 
 // docker, no
 gameStatsRouter.get("/health", healthCheck);
