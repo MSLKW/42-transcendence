@@ -39,17 +39,17 @@ export type OwnPlayerGameDataResponse = z.infer<typeof OwnPlayerGameDataResponse
 // 		POST /game-end-stats
 // * request types	= game-server make within game-types (GameEndStatsTransmit)
 // * response types	= plain types
-export const PlayerGameEndResultSchema = z.object({
+export const PlayerGameEndStatsResultSchema = z.object({
 	stats:			PlayerStatsDataSchema,
 	previousLevel:	z.int().nonnegative(),
 	leveledUp:		z.boolean(),
 	newBadges:		z.array(z.enum(BADGE_LABELS)), // only on badges that depends on stats
 });
-export type PlayerGameEndResult = z.infer<typeof PlayerGameEndResultSchema>;
+export type PlayerGameEndResult = z.infer<typeof PlayerGameEndStatsResultSchema>;
 
-export const GameEndResponseSchema = z.object({
+export const GameEndStatsResponseSchema = z.object({
 	roundId:		z.uuid(),
-	playersStats:	z.record(z.uuid(), PlayerGameEndResultSchema),
+	playersStats:	z.record(z.uuid(), PlayerGameEndStatsResultSchema),
 });
-export type GameEndResponse = z.infer<typeof GameEndResponseSchema>;
+export type GameEndStatsResponse = z.infer<typeof GameEndStatsResponseSchema>;
 
