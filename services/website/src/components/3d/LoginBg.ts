@@ -45,6 +45,10 @@ export class LoginScene extends SceneContainer {
 		ctx.renderer.render(this.scene, ctx.camera);
 	}
 
+	public handleResize(ctx: ThreeJsManager): void {
+		
+	}
+
 	public dispose(): void {
 		this.scene.clear();
 		this.ambientLight.dispose();

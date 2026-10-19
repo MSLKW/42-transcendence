@@ -19,7 +19,6 @@ import { UnseatButton } from "./unseat/UnseatButton";
 export const LobbyScene = () => {
 	const clientUuid = useAuthStore((store) => store.clientUuid);
 	// const fillSeatsWithBots = useBotStore((store) => store.fillSeatsWithBots);
-	const removeBots = useBotStore((store) => store.removeBots);
 	const totalPlayers = useGameStore((store) => store.totalPlayers);
 	const userSeats = useGameStore((store) => store.userSeats);
 	const startGame = useGameStore((store) => store.startGame);
@@ -27,18 +26,12 @@ export const LobbyScene = () => {
 	const members = usePartyStore((store) => store.members);
 	const hostUuid = usePartyStore((store) => store.hostUuid);
 	const cachedData = useProfileStore((store) => store.cachedData);
-	const resetResults = useResultsStore((store) => store.resetResults);
 
 	useEffect(() => {
 		const humansSeated = userSeats.filter((seat): seat is string => seat !== null && !seat.includes("bot")).length;
 		if (humansSeated === members.length) {
 			// fillSeatsWithBots();
 			return;
-		}
-
-		if (userSeats.includes(null)) {
-			resetResults();
-			removeBots();
 		}
 	}, [members, userSeats]);
 

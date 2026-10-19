@@ -194,7 +194,9 @@ export class Game {
 		useGameStore.getState().setCardsLeft(gameState.playerCardsAmount);
 		useGameStore.getState().setSeatRef(useGameStore.getState().gameSeats);
 		useSceneStore.getState().setCurrentScene("Game");
-		this.moveCamera();
+		if (this.playerRef !== null) {
+			this.moveCamera();
+		}
 		this.initDeckDealing(gameState);
 	}
 
@@ -310,13 +312,13 @@ export class Game {
 		let rotations: Array<THREE.Euler> = [];
 		if (totalPlayers === 4) {
 			positions = [
-				new THREE.Vector3(0, 2, 4),
+				new THREE.Vector3(0, 1.5, 4),
 				new THREE.Vector3(-4, 1.5, 0),
 				new THREE.Vector3(0, 1.5, -4),
 				new THREE.Vector3(4, 1.5, 0),
 			];
 			rotations = [
-				new THREE.Euler(-Math.PI / 8, 0, 0),
+				new THREE.Euler(0, 0, 0),
 				new THREE.Euler(0, -Math.PI / 2, 0),
 				new THREE.Euler(0, -Math.PI, 0),
 				new THREE.Euler(0, Math.PI / 2, 0)
@@ -329,18 +331,18 @@ export class Game {
 				new THREE.Vector3(-3.5, 1.5, -2.5)
 			];
 			rotations = [
-				new THREE.Euler(-Math.PI / 8, 0, 0),
+				new THREE.Euler(0, 0, 0),
 				new THREE.Euler(0, Math.PI / 1.5, 0),
 				new THREE.Euler(0, -Math.PI / 1.5, 0),
 			]
 		}
 		else if (totalPlayers === 2) {
 			positions = [
-				new THREE.Vector3(0, 2, 4),
+				new THREE.Vector3(0, 1.5, 4),
 				new THREE.Vector3(0, 1.5, -4),
 			]
 			rotations = [
-				new THREE.Euler(-Math.PI / 8, 0, 0),
+				new THREE.Euler(0, 0, 0),
 				new THREE.Euler(0, -Math.PI, 0),
 			]
 		}

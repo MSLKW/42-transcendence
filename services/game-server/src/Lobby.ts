@@ -176,7 +176,7 @@ export class Lobby {
 		});
 
 		user.socket.on("bot_remove", (botId: string, statusCallback) => {
-			statusCallback(this.removeBot(botId));
+			statusCallback(this.removeBot(botId, user.uuid));
 		});
 	}
 
@@ -313,10 +313,15 @@ export class Lobby {
 		}
 	}
 
-	private removeBot(botId: string): StatusTransmit {
+	private removeBot(botId: string, userUuid: string): StatusTransmit {
 		const status: StatusTransmit = {
 			success: false,
 			message: ""
+		}
+
+		if (userUuid !== this.hostUuid) {
+			status.message = "You are not the host";
+			return (status);
 		}
 		const botUser = this.users.find((userUuid) => userUuid.uuid === botId);
 		if (botUser === undefined) {

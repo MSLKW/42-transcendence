@@ -179,5 +179,6 @@ export class ThreeJsManager {
 		const pixelRatio = Math.min(window.devicePixelRatio, 2);
 		this.renderer.setPixelRatio(pixelRatio);
 		this.effectComposer.setPixelRatio(pixelRatio);
+		this.scenes[this.currentSceneId]?.handleResize(this);
 	}
 }

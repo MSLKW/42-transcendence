@@ -120,12 +120,10 @@ export class PlayerState {
 			message: ""
 		};
 		if (this.isMyTurn === false) {
-			console.log(`IT IS NOT PLAYER<${this.uuid}>'s TURN isMyTurn:${this.isMyTurn}`);
 			status.message = "Not your turn";
 			statusCallback(status);
 			return ;
 		}
-		console.log(`${this.uuid} is still able to play a cardhand`);
 		const cardHand = new CardHandState(cardHandTransmit.cards, cardHandTransmit.playerId);
 		if (cardHand.compareTypes(cardHandTransmit) === false) {
 			status.message = "handtype or pentuple type send by client is inaccurate";

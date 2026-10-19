@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import { SceneContainer } from '../../components/3d/SceneContainer';
 import { ThreeJsManager } from '../../components/3d/ThreeJsManager';
+import { gameInstance } from './main';
 
 export class GameScene extends SceneContainer {
 	public tableGeometry: THREE.CylinderGeometry;
@@ -61,6 +62,10 @@ export class GameScene extends SceneContainer {
 		ctx.orbitControls.enableZoom = true;
 		ctx.camera.updateProjectionMatrix();
 		ctx.orbitControls.update();
+	}
+
+	public handleResize(ctx: ThreeJsManager): void {
+		gameInstance?.playerRef?.cardManager.resizeBoundSpaceLimits();
 	}
 
 	public dispose() {

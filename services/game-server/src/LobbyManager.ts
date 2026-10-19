@@ -41,7 +41,6 @@ export class LobbyManager {
 				}
 				socket.data.uuid = botId;
 			}
-			console.log(`checking socket.data.uuid: ${socket.data.uuid}`);
 			const uuid = socket.data.uuid;
 			if (uuid === undefined || uuid === null) {
 				next(new Error("Authentication failed and uuid could not be retrieved"));

@@ -130,7 +130,31 @@ export class CardManager {
 		return (timeline);
 	}
 
-	// Revamp so that it is bundled up together instead of separated when on low cards
+	public updateBoundSpaceLimits(newBoundSpaceLimit: number | undefined, newSelectedBoundSpaceLimit: number | undefined): gsap.core.Timeline | undefined {
+		if (this.isLocked === true) {
+			return (undefined);
+		}
+		const timeline =  gsap.timeline();
+		if (newBoundSpaceLimit !== undefined) {
+			this.boundSpaceLimit = newBoundSpaceLimit;
+		}
+		if (newSelectedBoundSpaceLimit !== undefined) {
+			this.selectedBoundSpaceLimit = newSelectedBoundSpaceLimit;
+		}
+		this.slots = this.calculateSlots(this.cards, this.boundSpaceLimit);
+		this.initHitBoxes(this.cards, this.slots);
+		timeline.add(this.updateCardObjects(this.cards, this.slots), 0);
+		this.selectedSlots = this.calculateSlots(this.selectedCards.cards, this.selectedBoundSpaceLimit, this.selectedOffset);
+		timeline.add(this.updateCardObjects(this.selectedCards.cards, this.selectedSlots), 0);
+		return (timeline);
+	}
+
+	public resizeBoundSpaceLimits() {
+		const rendererSize = new THREE.Vector2();
+		threejsManager.renderer.getSize(rendererSize);
+		this.updateBoundSpaceLimits(rendererSize.x / 500, undefined);
+	}
+	
 	private	calculateSlots(cards: Array<Card>, boundSpaceLimit: number, offset?: THREE.Vector3): Array<THREE.Vector3> {
 		if (offset === undefined)
 			offset = new THREE.Vector3(0, 0, 0);

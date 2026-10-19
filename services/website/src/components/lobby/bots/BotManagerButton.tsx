@@ -1,5 +1,7 @@
+import { useAuthStore } from "../../../store/AuthStore";
 import { useBotStore } from "../../../store/BotStore";
-import { useGameStore } from "../../../store/GameStore";
+// import { useGameStore } from "../../../store/GameStore";
+import { usePartyStore } from "../../../store/PartyStore";
 import { Tooltip } from "../../../utilities/react/Tooltip";
 import { AvatarName } from "../../avatar/name/AvatarName";
 import { AddBotsIcon } from "./AddBotsIcon";
@@ -9,7 +11,9 @@ export const BotManagerButton = () => {
 	const fillSeatsWithBots = useBotStore((store) => store.fillSeatsWithBots);
 	const removeBots = useBotStore((store) => store.removeBots);
 	const botCount = useBotStore((store) => store.botCount);
-	const seats = useGameStore((store) => store.userSeats);
+	// const seats = useGameStore((store) => store.userSeats);
+	const clientUuid = useAuthStore((store) => store.clientUuid);
+	const hostUuid = usePartyStore((store) => store.hostUuid);
 
 	const handleBotCount = (e?: React.MouseEvent<HTMLButtonElement>) => {
 		if (e)
@@ -19,7 +23,7 @@ export const BotManagerButton = () => {
 		else
 			removeBots();
 	}
-	const humansSeated = seats.filter((seat): seat is string => seat !== null && !seat.includes("bot")).length;
+	// const humansSeated = seats.filter((seat): seat is string => seat !== null && !seat.includes("bot")).length;
 
 	return (
 		<div className="
@@ -28,7 +32,7 @@ export const BotManagerButton = () => {
 		">
 			<Tooltip text={botCount === 0 ? "Fill With Bots" : "Remove All Bots"}>
 				<button 
-					disabled={humansSeated <= 0}
+					disabled={clientUuid !== hostUuid}
 					onClick={(e) => {handleBotCount(e)}}
 					className="
 						h-6rem aspect-square

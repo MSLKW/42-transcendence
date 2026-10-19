@@ -17,6 +17,9 @@ export class Player extends Participant {
 		this.raycaster = new THREE.Raycaster();
 		this.startClick = new THREE.Vector2();
 		this.isDragging = false;
+		this.cardManager.isLocked = false;
+		this.cardManager.resizeBoundSpaceLimits();
+		this.cardManager.isLocked = true;
 
 		this.bindListeners();
 	}
