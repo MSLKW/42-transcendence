@@ -1,8 +1,10 @@
 import express from "express";
 import cors from "cors";
-import { gameStatsRouter } from "./routes/game-stats.routes";
 import { PORT } from "./config/env";
 import { isDbDown, closePostgresClientPool } from "@big2/postgres-client";
+import { DrizzleGameStatsRepository } from "./repositories/drizzle/DrizzleGameStatsRepository";
+import { createBrowserFacingRouter } from "./routes/browser-facing.routes";
+import { createInternalRouter } from "./routes/internal.routes";
 
 
 const app = express();
@@ -24,7 +26,10 @@ app.use(cors());
 // credentials: true => tells browser & server to allow sensitive auth data (cookies, HTTP authorization headers, TLS client cert) sent across different origins.
 // Must specify exact origin to use credentials: true, wildcards (*) are strictly forbidden.
 
-app.use(gameStatsRouter);
+const repository = new DrizzleGameStatsRepository();
+app.use(createBrowserFacingRouter(repository));
+app.use(createInternalRouter(repository));
+
 
 // Central error handler (register AFTER all routes). 
 // DB down -> 503 + 
@@ -44,9 +49,11 @@ app.use((err: unknown, req: express.Request, res: express.Response, next: expres
 	return res.status(500).json({ error: "internal_error" });
 });
 
+
 const server = app.listen(PORT, () => {
 	console.log(`Game-Stats Server is running on http://localhost:${PORT}`);
 });
+
 
 // Graceful shutdown on Ctrl+C / `docker compose down` & `docker compose stop` (both stop containers the same way). 
 // Stop taking new requests, close the DB
