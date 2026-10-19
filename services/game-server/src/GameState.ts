@@ -156,7 +156,7 @@ export class GameState {
 		this.playerTurnIndex = this.players.findIndex((player) => player === lowestPlayer);
 		if (this.playerTurnIndex === -1)
 			this.playerTurnIndex = 0;
-		this.togglePlayerTurnFlag();
+		this.togglePlayerTurnFlag(this.players[this.playerTurnIndex]);
 		for (let i = 0; i < this.players.length; i++) {
 			this.players[i].socket.emit("game_state", this.transmit(this.players[i]));
 		}
@@ -283,7 +283,7 @@ export class GameState {
 			this.nextPlayerTurn();
 			return ;
 		}
-		this.togglePlayerTurnFlag();
+		this.togglePlayerTurnFlag(player);
 		const isPlayerLeading = this.cardHeap.isPlayerLeading(player.uuid);
 		if (isPlayerLeading === true) {
 			const topCardHand = this.cardHeap.getTopCardHand();
@@ -315,8 +315,7 @@ export class GameState {
 		this.playerTurnEvent();
 	}
 	
-	private	togglePlayerTurnFlag() {
-		const player = this.players.at(this.playerTurnIndex);
+	private	togglePlayerTurnFlag(player: PlayerState) {
 		if (player === undefined) {
 			return ;
 		}
@@ -324,9 +323,6 @@ export class GameState {
 			this.players[i].isMyTurn = false;
 		}
 		player.isMyTurn = true;
-		// for(let i = 0; i < this.players.length; i++) {
-		// 	console.log(`${this.players[i].uuid} isMyTurn: ${this.players[i].isMyTurn}`);
-		// }
 	}
 
 	private getPlayerCardsAmount() {

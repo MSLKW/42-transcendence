@@ -34,14 +34,8 @@ export class PlayerState {
 	}
 
 	public setupSocketListeners() {
-
-		this.socket.on("player_play_card_hand_request", (cardHandTransmit: CardHandTransmit, statusCallback) => {
-			statusCallback(this.playCardHand(cardHandTransmit));
-		});
-
-		this.socket.on("player_skip_turn_request", (statusCallback) => {
-			statusCallback(this.skipTurnRequest());
-		})
+		this.socket.on("player_play_card_hand_request", this.playCardHandRequest);
+		this.socket.on("player_skip_turn_request", this.skipTurnRequest);
 	}
 
 	public disconnect(gameRef: GameState) {
@@ -87,22 +81,24 @@ export class PlayerState {
 		}
 	}
 
-	public skipTurnRequest(): StatusTransmit {
+	public skipTurnRequest = (statusCallback: (status: StatusTransmit) => void) => {
 		const status: StatusTransmit = {
 			success: false,
 			message: "It's not the player's turn"
 		}
 		if (this.isMyTurn === false) {
-			return (status);
+			statusCallback(status);
+			return ;
 		}
 		if (this.cardHeapRef.isPlayerLeading(this.uuid)) {
-			status.message = "Player is already leading"
-			return (status);
+			status.message = "Player is already leading";
+			statusCallback(status);
+			return ;
 		}
 		this.skipTurn();
 		status.success = true;
 		status.message = "Player has successfully skipped their turn";
-		return (status);
+		statusCallback(status);
 	}
 
 	public skipTurn() {
@@ -118,45 +114,53 @@ export class PlayerState {
 	}
 
 	// Returns if player has finished all his cards
-	private playCardHand(cardHandTransmit: CardHandTransmit): StatusTransmit {
+	public playCardHandRequest = (cardHandTransmit: CardHandTransmit, statusCallback: (status: StatusTransmit) => void) => {
 		const status: StatusTransmit = {
 			success: false,
 			message: ""
 		};
 		if (this.isMyTurn === false) {
+			console.log(`IT IS NOT PLAYER<${this.uuid}>'s TURN isMyTurn:${this.isMyTurn}`);
 			status.message = "Not your turn";
-			return (status);
+			statusCallback(status);
+			return ;
 		}
+		console.log(`${this.uuid} is still able to play a cardhand`);
 		const cardHand = new CardHandState(cardHandTransmit.cards, cardHandTransmit.playerId);
 		if (cardHand.compareTypes(cardHandTransmit) === false) {
 			status.message = "handtype or pentuple type send by client is inaccurate";
-			return (status);
+			statusCallback(status);
+			return ;
 		}
 		if (cardHand.handType === HandType.None || (cardHand.handType === HandType.Pentuple && cardHand.pentupleType === PentupleType.None)) {
 			status.message = "cardhand is not even a thing";
-			return (status);
+			statusCallback(status);
+			return ;
 		}
 		for (let i = 0; i < cardHand.cards.length; i++) {
 			if (this.cards.findIndex((card: CardTransmit) => card.rank === cardHand.cards[i].rank && card.suit === cardHand.cards[i].suit ) == -1) {
 				status.message = "cardhand cards not in playerState cards";
-				return (status); 
+				statusCallback(status);
+				return ;
 			}
 		}
 		if (this.cardHeapRef.checkLowestCardRequirement(cardHand)) {
 			status.message = "first cardhand played must contain your lowest card";
-			return (status);
+			statusCallback(status);
+			return ;
 		}
 		if (this.cardHeapRef.isCardHandPlayable(cardHand) == false) {
 			status.message = "cardhand is not playable";
-			return (status);
+			statusCallback(status);
+			return ;
 		}
 		this.cardHeapRef.receiveCardHand(cardHand);
 		this.removeCards(cardHand.cards);
-		this.gameEvents.emit("player:play_card_hand", cardHand.transmit());
-
+		
 		status.success = true;
 		status.message = "Successfully played a card hand";
-		return (status);
+		statusCallback(status);
+		this.gameEvents.emit("player:play_card_hand", cardHand.transmit());
 	}
 
 	public calculatePenaltyPoints(): number {
@@ -184,5 +188,7 @@ export class PlayerState {
 		// this.isDisconnected = false;
 		this.isMyTurn = false;
 		this.playedTwoSpadesLast = false;
+		this.socket.off("player_play_card_hand_request", this.playCardHandRequest);
+		this.socket.off("player_skip_turn_request", this.skipTurnRequest);
 	}
 }
