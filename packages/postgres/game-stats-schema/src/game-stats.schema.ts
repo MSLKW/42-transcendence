@@ -1,8 +1,14 @@
 import { sql } from "drizzle-orm";
 import { users } from "@big2/auth-schema";
-import { type AchievementLabel, type BadgeLabel, BADGE_LABELS, ACHIEVEMENT_LABELS } from "@big2/game-stats-types";
+import { 
+	type AchievementLabel, 
+	type BadgeLabel, 
+	BADGE_LABELS, 
+	ACHIEVEMENT_LABELS, 
+	type GameEndStatsResponse } from "@big2/game-stats-types";
 import { pgSchema, uuid, text, integer, timestamp, check, primaryKey } from "drizzle-orm/pg-core";
 import { sqlList } from "./utils";
+import { jsonb } from "drizzle-orm/pg-core";
 
 
 export const gameStatsSchema = pgSchema("game_stats_schema");
@@ -85,6 +91,8 @@ export const playerBadges = gameStatsSchema.table("player_badges", {
 export const processedRounds = gameStatsSchema.table("processed_rounds", {
 	roundId: uuid("round_id")
 		.primaryKey(),
+	responseBody: jsonb("response_body")							// null temporarily after 1st time insert roundId, while in the middle of forming the responseBody
+		.$type<GameEndStatsResponse>(),
 	processedAt: timestamp("processed_at", { withTimezone: true })
 		.defaultNow()
 		.notNull(),
