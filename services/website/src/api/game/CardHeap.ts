@@ -24,14 +24,17 @@ export class CardHeap {
 	}
 
 	public receiveCardHand(cardHand: CardHand): gsap.core.Timeline {
-		if (this.cardHands.length > 0) {
-			const cards = this.cardHands[this.cardHands.length - 1].cards;
-			for (let i = 0; i < cards.length; i++) {
-				cards[i].dim();
-			}
-		}
+		const previousHand = this.cardHands[this.cardHands.length - 1];
 		this.cardHands.push(cardHand);
 		const timeline = this.updateCardHandObjects(cardHand);
+		timeline.add(() => {
+			if (previousHand !== undefined) {
+				const cards = previousHand.cards;
+				for (let i = 0; i < cards.length; i++) {
+					cards[i].dim();
+				}
+			}
+		}, ">");
 		this.position.y += 0.02;
 		this.position.x = this.getRandomRange(-0.3, 0.3);
 		this.position.z = this.getRandomRange(-0.3, 0.3);

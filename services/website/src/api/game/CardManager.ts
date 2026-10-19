@@ -101,7 +101,7 @@ export class CardManager {
 	}
 
 	private sortCards() {
-		if (this.sortFunction !== undefined) {
+		if (this.sortFunction !== undefined && this.isLocked === false) {
 			this.cards.sort(this.sortFunction);
 			this.initHitBoxes(this.cards, this.slots);
 			this.updateCardObjects(this.cards, this.slots);
