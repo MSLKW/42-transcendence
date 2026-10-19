@@ -50,6 +50,13 @@
       "when": 1792440539005,
       "tag": "0006_feat_response_body_column_for_processed_rounds_table_in_game_stats_schema",
       "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "7",
+      "when": 1792442175807,
+      "tag": "0007_feat_updated_at_column_for_processed_rounds_table_in_game_stats_schema",
+      "breakpoints": true
     }
   ]
 }

@@ -96,4 +96,7 @@ export const processedRounds = gameStatsSchema.table("processed_rounds", {
 	processedAt: timestamp("processed_at", { withTimezone: true })
 		.defaultNow()
 		.notNull(),
+	updatedAt: timestamp("updated_at", { withTimezone: true })
+		.defaultNow()
+		.notNull(),
 });
