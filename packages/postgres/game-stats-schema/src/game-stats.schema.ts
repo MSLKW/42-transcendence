@@ -8,7 +8,7 @@ import { sqlList } from "./utils";
 export const gameStatsSchema = pgSchema("game_stats_schema");
 
 export const playerStats = gameStatsSchema.table("player_stats", {
-	id: uuid("id")
+	playerUuid: uuid("id")
 		.primaryKey()
 		.references(() => users.id, { onDelete: "cascade" }),
 	level: integer("level")
@@ -49,7 +49,7 @@ export const playerStats = gameStatsSchema.table("player_stats", {
 export const playerAchievements = gameStatsSchema.table("player_achievements", {
 	playerId: uuid("player_id")
 		.notNull()
-		.references(() => playerStats.id, { onDelete: "cascade" }),
+		.references(() => playerStats.playerUuid, { onDelete: "cascade" }),
 	achievement: text("achievement")
 		.$type<AchievementLabel>()
 		.notNull(),
@@ -67,7 +67,7 @@ export const playerAchievements = gameStatsSchema.table("player_achievements", {
 export const playerBadges = gameStatsSchema.table("player_badges", {
 	playerId: uuid("player_id")
 		.notNull()
-		.references(() => playerStats.id, { onDelete: "cascade" }),
+		.references(() => playerStats.playerUuid, { onDelete: "cascade" }),
 	badge: text("badge")
 		.$type<BadgeLabel>()
 		.notNull(),
