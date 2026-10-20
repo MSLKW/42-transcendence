@@ -32,8 +32,17 @@ const userStore = new FileUserStore;
 
 const app = express();
 app.use(express.json());
+
 app.get("/health", healthCheck());
 app.get("/online/:uuid", checkUuidOnline(userStore, clientManager));
+
+app.use((err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {
+	if (err.type === "entity.parse.failed") {
+		return res.status(400).json({ error: "Malformed JSON in request body." });
+	}
+	console.error("Unhandled error:", err);
+	return res.status(500).json({ error: "Something went wrong." });
+});
 
 const httpServer = createServer(app);
 
