@@ -16,6 +16,7 @@ import { threejsManager } from '../../App';
 import { useResultsStore } from '../../store/ResultsStore';
 import { useBotStore } from '../../store/BotStore';
 import { useSettingsStore } from '../../store/SettingsStore';
+import { useNotificationStore, NOTIFICATION_TYPE } from '../../store/NotificationStore';
 
 export class Game {
 	private socket: Socket;
@@ -25,6 +26,9 @@ export class Game {
 	private participants: Array<Participant>;
 	public	playerRef: Player | null;
 
+	private motionCurve: THREE.CatmullRomCurve3;
+	private finalCameraPosition: THREE.Vector3;
+
 	constructor(sessionId: string, playerId: string) {
 		this.playerId = playerId;
 		this.socket = io({
@@ -32,7 +36,9 @@ export class Game {
 			auth: {
 				lobbyId: sessionId,
 				uuid: playerId
-			}
+			},
+			reconnection: true,
+			reconnectionAttempts: 3,
 		})
 		if (this.playerId === usePartyStore.getState().hostUuid) {
 			this.socket.emit("user_seat_change", useGameStore.getState().totalPlayers, (status: StatusTransmit) => {
@@ -42,6 +48,15 @@ export class Game {
 
 		this.participants = [];
 		this.playerRef = null;
+		this.finalCameraPosition = new THREE.Vector3(0, 4.5, 4.5);
+		this.motionCurve = new THREE.CatmullRomCurve3([
+			new THREE.Vector3(0, 8, 0),
+			new THREE.Vector3(0, 7.75, 1),
+			new THREE.Vector3(0, 7.20, 2),
+			new THREE.Vector3(0, 6.34, 3),
+			new THREE.Vector3(0, 5.19, 4),
+			this.finalCameraPosition,
+		]);
 
 		this.bindSocketEvents();
 	}
@@ -102,6 +117,7 @@ export class Game {
 		this.socket.on("connect_error", (error) => {
 			console.log("[gameSocket] 'connect_error': ", error.message);
 			usePartyStore.setState({ partyGameId: null });
+			this.socket.disconnect();
 		});
 
 		this.socket.on("connect", () => {
@@ -178,6 +194,7 @@ export class Game {
 
 		this.socket.on("player_unlock_achievement", (achievementTransmit: AchievementUnlockTransmit) => {
 			console.log("[gameSocket] 'player_unlock_achievement': ", achievementTransmit);
+			useNotificationStore.getState().showNotification(`You've unlocked: ${achievementTransmit.achievementId}`, NOTIFICATION_TYPE.message)
 		});
 	}
 
@@ -284,11 +301,23 @@ export class Game {
 	}
 
 	private moveCamera() {
-		threejsManager.camera.position.copy(new THREE.Vector3(0, 4.5, 4.5));
-		threejsManager.camera.lookAt(this.cardHeap.originalPosition);
-		const offset = new THREE.Vector3(0, -2, -3);
-		gameScene.cameraLight.position.copy(threejsManager.camera.position);
-		this.playerRef?.cardManager.updateManager(offset.clone().applyQuaternion(threejsManager.camera.quaternion.clone()).add(threejsManager.camera.position), threejsManager.camera.quaternion.clone());
+		const pathProgress = { progress: 0 };
+		gsap.to(pathProgress, {
+			progress: 1,
+			duration: 3,
+			ease: "power2.inOut",
+			onUpdate: () => {
+				this.motionCurve.getPointAt(pathProgress.progress, threejsManager.camera.position);
+				threejsManager.camera.lookAt(this.cardHeap.originalPosition);
+			},
+		})
+		// const offset = new THREE.Vector3(0, -2, -3);
+		gameScene.cameraLight.position.copy(this.finalCameraPosition);
+		this.playerRef?.cardManager.updateManager(
+			new THREE.Vector3(0, 1, 4), 
+			new THREE.Quaternion().setFromEuler(new THREE.Euler(-Math.PI / 4, 0, 0))
+		);
+		// offset.clone().applyQuaternion(threejsManager.camera.quaternion.clone()).add(threejsManager.camera.position)
 	}
 
 	public move(object: THREE.Object3D, position: THREE.Vector3, rotation: THREE.Quaternion) {
