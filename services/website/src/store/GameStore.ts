@@ -200,7 +200,7 @@ export const useGameStore = create<GameState>() (
 
 			leaveGame: () => {
 				get().resetLobby();
-				if (useAuthStore.getState().clientUuid === usePartyStore.getState().hostUuid) {
+				if (useAuthStore.getState().clientUuid === usePartyStore.getState().hostUuid && useGameStore.getState().gameStarted === true) {
 					gameInstance?.deleteLobby();
 					partySocket.refresh();
 				}

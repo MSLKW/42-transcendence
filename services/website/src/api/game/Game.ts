@@ -95,7 +95,6 @@ export class Game {
 	}
 
 	public addBot(seatIndex: number) {
-		console.log(`bot_add: seatIndex: ${seatIndex}`);
 		this.socket.emit("bot_add", seatIndex, (status: StatusTransmit) => {
 			console.log(`[gameSocket] 'bot_add': ${status.success} | ${status.message}`);
 		});
@@ -206,8 +205,11 @@ export class Game {
 			.sort((a, b) => a[1] - b[1])
 			.map(([key]) => key);
 		console.log(seats);
-		useGameStore.setState({ gameSeats: seats });
-		useGameStore.setState({ totalPlayers: this.participants.length });
+		useGameStore.setState({ 
+			gameSeats: seats,
+			totalPlayers: this.participants.length,
+			// activeSeat: 
+		});
 		useGameStore.getState().setCardsLeft(gameState.playerCardsAmount);
 		useGameStore.getState().setSeatRef(useGameStore.getState().gameSeats);
 		useSceneStore.getState().setCurrentScene("Game");
@@ -215,6 +217,7 @@ export class Game {
 			this.moveCamera();
 		}
 		this.initDeckDealing(gameState);
+		useGameStore.setState({ gameStarted: true });
 	}
 
 	public resetGame() {
