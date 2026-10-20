@@ -11,6 +11,8 @@ import { registerEventHandlers } from "./client/event_handlers";
 import { UserStore } from "./store/UserStore";
 import { FileUserStore } from "./store/FileUserStore";
 
+import { closeDb } from "./db/closeDb";
+
 const PORT = Number(process.env.PORT) || 3000;
 const AUTH_SERVICE_URL = process.env.AUTH_SERVICE_URL;
 const RECONNECT_GRACE_PERIOD_MS = Number(process.env.DISCONNECT_GRACE_PERIOD_MS) || 15_000;
@@ -28,7 +30,7 @@ const INTENTIONAL_DISCONNECT_REASONS = new Set([
 
 const pendingRemovals = new Map<string, NodeJS.Timeout>();
 
-const userStore = new FileUserStore;
+const userStore: UserStore = new FileUserStore;
 
 const app = express();
 app.use(express.json());
@@ -165,10 +167,17 @@ httpServer.listen(PORT, () => {
 	console.log(`Socket.IO server listening on port ${PORT}`);
 });
 
+let shuttingDown = false;
 async function shutdown()
 {
+	if (shuttingDown)
+		return ;
+	shuttingDown = true;
 	await io.close();
+	for (const timer of pendingRemovals.values())
+		clearTimeout(timer);
 	httpServer.close();
+	await closeDb();
 	process.exit();
 }
 
