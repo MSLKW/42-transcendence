@@ -155,3 +155,13 @@ function finalizeRemoval(uuid: string, reason: string)
 httpServer.listen(PORT, () => {
 	console.log(`Socket.IO server listening on port ${PORT}`);
 });
+
+async function shutdown()
+{
+	await io.close();
+	httpServer.close();
+	process.exit();
+}
+
+process.on("SIGINT", shutdown);
+process.on("SIGTERM", shutdown);
