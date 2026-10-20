@@ -53,7 +53,7 @@ export const playerStats = gameStatsSchema.table("player_stats", {
 );
 
 export const playerAchievements = gameStatsSchema.table("player_achievements", {
-	playerId: uuid("player_id")
+	playerUuid: uuid("player_id")
 		.notNull()
 		.references(() => playerStats.playerUuid, { onDelete: "cascade" }),
 	achievement: text("achievement")
@@ -66,12 +66,12 @@ export const playerAchievements = gameStatsSchema.table("player_achievements", {
 		.defaultNow()
 		.notNull(),
 }, (table) => [
-	primaryKey({ columns: [table.playerId, table.achievement] }),
+	primaryKey({ columns: [table.playerUuid, table.achievement] }),
 	check("valid_achievements", sql`${table.achievement} IN (${sqlList(ACHIEVEMENT_LABELS)})`),
 ]);
 
 export const playerBadges = gameStatsSchema.table("player_badges", {
-	playerId: uuid("player_id")
+	playerUuid: uuid("player_id")
 		.notNull()
 		.references(() => playerStats.playerUuid, { onDelete: "cascade" }),
 	badge: text("badge")
@@ -84,7 +84,7 @@ export const playerBadges = gameStatsSchema.table("player_badges", {
 		.defaultNow()
 		.notNull(),
 }, (table) => [
-	primaryKey({ columns: [table.playerId, table.badge] }),
+	primaryKey({ columns: [table.playerUuid, table.badge] }),
 	check("valid_badges", sql`${table.badge} IN (${sqlList(BADGE_LABELS)})`),
 ]);
 

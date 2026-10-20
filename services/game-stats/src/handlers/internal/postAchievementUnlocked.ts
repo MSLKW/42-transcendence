@@ -12,7 +12,7 @@ export function postAchievementUnlocked(repository: GameStatsRepository)
 		{
 			console.error(z.prettifyError(parsed.error));
 			return (res.status(400).json({
-				error: "Invalid request body",
+				error: "invalid_request_body",
 				message: z.prettifyError(parsed.error),
 			}));
 		}

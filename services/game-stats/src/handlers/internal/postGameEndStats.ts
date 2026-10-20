@@ -27,7 +27,7 @@ export function postGameEndStats(repository: GameStatsRepository)
 		const playersUpdatedStats = await repository.applyGameEndStats(input);
 		const cleanData = GameEndStatsResponseSchema.parse(playersUpdatedStats);
 		
-		return(res.status(200).json({cleanData}));
+		return(res.json(cleanData));
 	};
 }
 

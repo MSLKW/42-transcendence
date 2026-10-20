@@ -20,14 +20,14 @@ export function putDisplayedBadge(repository: GameStatsRepository)
 			}));
 		}
 
-		const ok = await repository.updateDisplayedBadge(playerUuid, parsed.data);
+		const ok = await repository.setDisplayedBadge(playerUuid, parsed.data);
 		if (!ok)
 		{
-			return (res.status(404).json({ 
+			return (res.status(403).json({ 				// 403 Forbidden
 				error: "badge_not_unlocked", 
-				message: `cannot display chosen badge, it's still unlocked`
+				message: `cannot display chosen badge "${parsed.data.badge}", it's still locked`
 			}));
 		}
-		return (res.status(204).end);
+		return (res.status(204).end());
 	};
 }

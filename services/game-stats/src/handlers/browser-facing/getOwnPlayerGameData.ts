@@ -11,6 +11,6 @@ export function getOwnPlayerGameData(repository: GameStatsRepository)
 
 		const playerData = await repository.getOwnPlayerGameData(playerUuid);
 		const cleanPlayerData = OwnPlayerGameDataResponseSchema.parse(playerData); // strip off updatedAt
-		return (res.json({cleanPlayerData}));
+		return (res.json(cleanPlayerData));
 	};
 }
