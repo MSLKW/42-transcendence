@@ -199,8 +199,7 @@ export const useGameStore = create<GameState>() (
 			},
 
 			leaveGame: () => {
-				get().resetLobby();
-				if (useAuthStore.getState().clientUuid === usePartyStore.getState().hostUuid && useGameStore.getState().gameStarted === true) {
+				if (useAuthStore.getState().clientUuid === usePartyStore.getState().hostUuid && useGameStore.getState().gameStarted === false) {
 					gameInstance?.deleteLobby();
 					partySocket.refresh();
 				}
@@ -208,6 +207,7 @@ export const useGameStore = create<GameState>() (
 					partySocket.leaveParty();
 					gameInstance?.disconnect();
 				}
+				get().resetLobby();
 			},
 			incTotalWin: (uuid) => {
 				// const profileStore = useProfileStore.getState();

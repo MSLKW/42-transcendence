@@ -3,7 +3,7 @@ import { useAuthStore } from "../../../store/AuthStore";
 import { useNotificationStore, NOTIFICATION_TYPE } from "../../../store/NotificationStore";
 import { usePartyStore } from "../../../store/PartyStore";
 import { useProfileStore } from "../../../store/ProfileStore";
-import { joinGameLobby } from "../../game/main";
+import { clearGameInstance, gameInstance, joinGameLobby } from "../../game/main";
 import { chatSocket } from "../../chat/chatSocket";
 import { useChatStore } from "../../../store/ChatStore";
 
@@ -21,7 +21,10 @@ export function partyStateHandler(socket: Socket) {
 			hostUuid: partyData.hostUuid,
 			partyGameId: partyData.gameId,
 		});
-		if (partyData.gameId && partyData.gameId !== previousGameId && clientUuid)
+		if (partyData.gameId === null && gameInstance !== null) {
+			clearGameInstance();
+		}
+		else if (partyData.gameId && partyData.gameId !== previousGameId && clientUuid)
 			joinGameLobby(partyData.gameId, clientUuid);
 		else if (usePartyStore.getState().partyVerboseMode)
 			console.log("[party > 'on' party_state] Blocked from joining game lobby w/ gameId:", partyData.gameId);
