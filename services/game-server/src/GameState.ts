@@ -60,7 +60,7 @@ export class GameState {
 		io.to(this.gameRoomId).emit(event, payload);
 	}
 
-	public emitPlayerList() {
+	public emitPlayerConnectionUpdate() {
 		const playerConnections: Record<string, boolean> = {};
 		for (let i = 0; i < this.players.length; i++) {
 			playerConnections[this.players[i].uuid] = this.players[i].isDisconnected;
@@ -97,7 +97,8 @@ export class GameState {
 	}
 
 	public addPlayer(user: UserState) {
-		const player = new PlayerState(user.uuid, user.socket, this.events, this.gameRoomId, this.cardHeap);
+		const player = new PlayerState(user.uuid, user.socket, this.events, this.cardHeap);
+		player.socket.join(this.gameRoomId);
 		this.players.push(player);
 	}
 
@@ -265,7 +266,8 @@ export class GameState {
 			return ;
 		}
 		player.reconnect(user, this);
-		this.emitPlayerList();
+		player.socket.join(this.gameRoomId);
+		this.emitPlayerConnectionUpdate();
 	}
 
 	public playerDisconnect(user: UserState) {
@@ -274,7 +276,7 @@ export class GameState {
 			return ;
 		}
 		player.disconnect(this);
-		this.emitPlayerList();
+		this.emitPlayerConnectionUpdate();
 	}
 
 	private playerTurnEvent() {
@@ -376,7 +378,8 @@ export class GameState {
 			playerCardsAmount: this.getPlayerCardsAmount(),
 			playerSeatOrder: this.getSeatOrder(),
 			playerCards: [],
-			isPlayerTurn: false
+			isPlayerTurn: false,
+			initialize: !this.isGameStarted,
 		}
 		if (player !== undefined) {
 			transmitObject.playerCards = player.cards;

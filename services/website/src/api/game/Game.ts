@@ -214,7 +214,12 @@ export class Game {
 		useGameStore.getState().setSeatRef(useGameStore.getState().gameSeats);
 		useSceneStore.getState().setCurrentScene("Game");
 		if (this.playerRef !== null) {
-			this.moveCamera();
+			this.moveCamera(gameState.initialize);
+			gameScene.cameraLight.position.copy(this.finalCameraPosition);
+			this.playerRef?.cardManager.updateManager(
+				new THREE.Vector3(0, 1, 4), 
+				new THREE.Quaternion().setFromEuler(new THREE.Euler(-Math.PI / 4, 0, 0))
+			);
 		}
 		this.initDeckDealing(gameState);
 		useGameStore.setState({ gameStarted: true });
@@ -260,12 +265,11 @@ export class Game {
 	private initDeckDealing(gameState: GameStateTransmit) {
 		const deck = new Deck(this.centerPosition);
 		const universalTimeline = gsap.timeline();
-		if (gameState.cardHeap.length === 0) {
+		if (gameState.initialize === true) {
 			deck.initCards(gameState, this.playerId);
 			universalTimeline.add(deck.shuffleAnimation(3));
 		}
 		else {
-			// resynchronize so that the player card hands are immediately in, skip the deck init stuff
 			this.cardHeap.sync(gameState.cardHeap);
 			for (let i = 0; i < this.participants.length; i++) {
 				this.participants[i].sync(gameState);
@@ -303,24 +307,23 @@ export class Game {
 		})
 	}
 
-	private moveCamera() {
-		const pathProgress = { progress: 0 };
-		gsap.to(pathProgress, {
-			progress: 1,
-			duration: 3,
-			ease: "power2.inOut",
-			onUpdate: () => {
-				this.motionCurve.getPointAt(pathProgress.progress, threejsManager.camera.position);
-				threejsManager.camera.lookAt(this.cardHeap.originalPosition);
-			},
-		})
-		// const offset = new THREE.Vector3(0, -2, -3);
-		gameScene.cameraLight.position.copy(this.finalCameraPosition);
-		this.playerRef?.cardManager.updateManager(
-			new THREE.Vector3(0, 1, 4), 
-			new THREE.Quaternion().setFromEuler(new THREE.Euler(-Math.PI / 4, 0, 0))
-		);
-		// offset.clone().applyQuaternion(threejsManager.camera.quaternion.clone()).add(threejsManager.camera.position)
+	private moveCamera(initialize: boolean) {
+		if (initialize === true) {
+			const pathProgress = { progress: 0 };
+			gsap.to(pathProgress, {
+				progress: 1,
+				duration: 3,
+				ease: "power2.inOut",
+				onUpdate: () => {
+					this.motionCurve.getPointAt(pathProgress.progress, threejsManager.camera.position);
+					threejsManager.camera.lookAt(this.cardHeap.originalPosition);
+				},
+			})
+		}
+		else {
+			threejsManager.camera.position.copy(this.finalCameraPosition);
+			threejsManager.camera.lookAt(this.cardHeap.originalPosition);
+		}
 	}
 
 	public move(object: THREE.Object3D, position: THREE.Vector3, rotation: THREE.Quaternion) {
@@ -353,19 +356,19 @@ export class Game {
 				new THREE.Euler(0, 0, 0),
 				new THREE.Euler(0, -Math.PI / 2, 0),
 				new THREE.Euler(0, -Math.PI, 0),
-				new THREE.Euler(0, Math.PI / 2, 0)
+				new THREE.Euler(0, Math.PI / 2, 0),
 			];
 		}
 		else if (totalPlayers === 3) {
 			positions = [
 				new THREE.Vector3(0, 1.5, 4),
+				new THREE.Vector3(-3.5, 1.5, -2.5),
 				new THREE.Vector3(3.5, 1.5, -2.5),
-				new THREE.Vector3(-3.5, 1.5, -2.5)
 			];
 			rotations = [
 				new THREE.Euler(0, 0, 0),
-				new THREE.Euler(0, Math.PI / 1.5, 0),
 				new THREE.Euler(0, -Math.PI / 1.5, 0),
+				new THREE.Euler(0, Math.PI / 1.5, 0),
 			]
 		}
 		else if (totalPlayers === 2) {

@@ -19,7 +19,7 @@ export class PlayerState {
 	public	playedTwoSpadesLast: boolean;
 
 	// inject gameRoomId
-	constructor(uuid: string, socket: Socket, gameEvents: EventEmitter, gameRoomId: string, cardHeap: CardHeapState) {
+	constructor(uuid: string, socket: Socket, gameEvents: EventEmitter, cardHeap: CardHeapState) {
 		this.uuid = uuid;
 		this.cards = [];
 		this.socket = socket;
@@ -29,7 +29,6 @@ export class PlayerState {
 		this.isMyTurn = false;
 		this.playedTwoSpadesLast = false;
 
-		this.socket.join(gameRoomId);
 		this.setupSocketListeners()
 	}
 

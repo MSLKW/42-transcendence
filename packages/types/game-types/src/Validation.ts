@@ -24,7 +24,8 @@ export const GameStateTransmitSchema = z.object({
 	playerCardsAmount: z.record(z.string(), z.number()),
 	playerSeatOrder: z.record(z.string(), z.number()),
 	playerCards: z.array(CardTransmitSchema),
-	isPlayerTurn: z.boolean()
+	isPlayerTurn: z.boolean(),
+	initialize: z.boolean()
 });
 
 export const GameSettingsTransmitSchema = z.object({
