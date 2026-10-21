@@ -86,9 +86,9 @@ export const useBotStore = create<BotState>() (
 		},
 
 		cacheBotProfile: (seatData: SeatOrderTransmit) => {
-			const cached = useProfileStore.getState().cachedData;
-			const cachedUuids = Object.keys(cached);
 			for (let i = 0; i < seatData.seatOrder.length; i++) {
+				const cached = useProfileStore.getState().cachedData;
+				const cachedUuids = Object.keys(cached);
 				const seatUuid: string = seatData.seatOrder[i] ?? "";
 				if (seatUuid.length === 0)
 					continue ;
