@@ -21,6 +21,8 @@ export function registerEventHandlers(socket: Socket, client: Client)
 			return callback({ success: false, reason: "user is offline" });
 		if (client.party == null)
 			client.party = new Party(client);
+		if (client.party.hasUser(recipient.uuid))
+			return callback({ success: false, reason: "user is already in the party" });
 		if (recipient.invites.includes(client.uuid))
 			return callback({ success: false, reason: "user is already invited" });
 		recipient.invites.push(client.uuid);

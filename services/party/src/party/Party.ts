@@ -59,6 +59,11 @@ export class Party
 		this.sendUpdates();			
 	}
 
+	hasUser(uuid: string): boolean
+	{
+		return this.members.has(uuid);
+	}
+
 	async startGameSession()
 	{
 		try
