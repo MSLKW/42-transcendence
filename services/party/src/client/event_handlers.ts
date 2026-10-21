@@ -21,7 +21,10 @@ export function registerEventHandlers(socket: Socket, client: Client)
 			return callback({ success: false, reason: "user is offline" });
 		if (client.party == null)
 			client.party = new Party(client);
-		client.party.addInvite(recipient);
+		if (recipient.invites.includes(client.uuid))
+			return callback({ success: false, reason: "user is already invited" });
+		recipient.invites.push(client.uuid);
+		client.party.addInvite(recipient)
 		recipient.emit("invite_received", {hostUuid: client.uuid});
 		return callback({ success: true });
 	});
@@ -46,6 +49,7 @@ export function registerEventHandlers(socket: Socket, client: Client)
 			return (callback({success: false, reason: "party is invalid or no longer exists"}));
 		if (!party.addUser(client.uuid))
 			return (callback({success: false, reason: "you are not invited to this party"}));
+		client.invites = client.invites.filter(uuid => uuid != payload.hostUuid);
 		return (callback({success: true}));
 	});
 

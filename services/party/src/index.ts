@@ -133,6 +133,7 @@ io.on("connection", (socket: Socket) =>
 
 		if (!client)
 			return ;
+		client.invites = [];
 		if (INTENTIONAL_DISCONNECT_REASONS.has(reason))
 			finalizeRemoval(uuid, reason);
 		else
