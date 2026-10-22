@@ -216,6 +216,7 @@ export class GameState {
 			this.players[i].reset();
 		}
 		this.players.length = 0;
+		this.spectators.length = 0;
 		this.playerTurnAutoPassTimer?.clear();
 		this.playerTurnAutoPassTimer = undefined;
 		this.playerTurnIndex = -1;
