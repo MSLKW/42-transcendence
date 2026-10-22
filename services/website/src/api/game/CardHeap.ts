@@ -24,15 +24,12 @@ export class CardHeap {
 	}
 
 	public receiveCardHand(cardHand: CardHand): gsap.core.Timeline {
-		const previousHand = this.cardHands[this.cardHands.length - 1];
+		const previousHand = this.getTopCards();
 		this.cardHands.push(cardHand);
 		const timeline = this.updateCardHandObjects(cardHand);
 		timeline.add(() => {
 			if (previousHand !== undefined) {
-				const cards = previousHand.cards;
-				for (let i = 0; i < cards.length; i++) {
-					cards[i].dim();
-				}
+				this.dimCards(previousHand);
 			}
 		}, ">");
 		this.position.y += 0.02;
@@ -40,6 +37,24 @@ export class CardHeap {
 		this.position.z = this.getRandomRange(-0.3, 0.3);
 		this.rotation.z = this.getRandomRange(-0.3, 0.3);
 		return (timeline);
+	}
+
+	public signalLeadingPlayer() {
+		const topCards = this.getTopCards();
+		if (topCards !== undefined) {
+			this.dimCards(topCards);
+		}
+	}
+
+	private getTopCards() {
+		return (this.cardHands[this.cardHands.length - 1]);
+	}
+
+	private dimCards(cardHand: CardHand) {
+		const cards = cardHand.cards;
+		for (let i = 0; i < cards.length; i++) {
+			cards[i].dim();
+		}
 	}
 
 	// copied logic from CardManager.ts

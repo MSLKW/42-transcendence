@@ -66,6 +66,7 @@ interface GameState extends GameValues {
 
 	leaveGame: () => void;
 
+	clearPassedPlayer: (playerUuid: string) => void;
 	resetValues: () => void;
 }
 
@@ -207,6 +208,15 @@ export const useGameStore = create<GameState>() (
 					gameInstance?.disconnect();
 				}
 				get().resetLobby();
+			},
+
+			clearPassedPlayer: (playerUuid: string) => {
+				const newPlayerPassed = [...get().playerPassed];
+				const index = newPlayerPassed.findIndex((skippedUuid) => skippedUuid === playerUuid);
+				if (index !== -1) {
+					newPlayerPassed.splice(index, 1);
+					set({ playerPassed: newPlayerPassed });
+				}
 			},
 
 			resetValues: () => {

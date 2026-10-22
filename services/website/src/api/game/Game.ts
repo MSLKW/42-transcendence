@@ -193,12 +193,7 @@ export class Game {
 
 		this.socket.on("player_turn", (playerTurn: PlayerTurnTransmit) => {
 			console.log("[gameSocket] 'player_turn': ", playerTurn);
-			const newPlayerPassed = [...useGameStore.getState().playerPassed];
-			const index = newPlayerPassed.findIndex((skippedUuid) => skippedUuid === playerTurn.playerId);
-			if (index !== -1) {
-				newPlayerPassed.splice(index, 1);
-				useGameStore.setState({ playerPassed: newPlayerPassed });
-			}
+			useGameStore.getState().clearPassedPlayer(playerTurn.playerId);
 			const activeSeat = useGameStore.getState().gameSeats.findIndex((uuid) => uuid === playerTurn.playerId);
 			useGameStore.setState({
 				activeSeat: activeSeat, 
@@ -206,6 +201,9 @@ export class Game {
 				playerTimer: playerTurn.timer,
 				playerRemainingTimer: playerTurn.remainingTimer
 			});
+			if (playerTurn.skippable === false) {
+				this.cardHeap.signalLeadingPlayer();
+			}
 		});
 
 		this.socket.on("player_skip_turn", (skipTurn: SkipTurnTransmit) => {

@@ -16,12 +16,10 @@ export const HostSettings = () => {
 	const allow2OfSpadesEnd = useSettingsStore((store) => store.allow2OfSpadesEnd);
 
 	const settingsFetched = useRef(false);
-	const settingsLock = useRef(false);
 	useEffect(() => {
 		if (!hostUuid || settingsFetched.current)
 			return;
 		settingsFetched.current = true;
-		settingsLock.current = true;
 
 		try {
 			const fetchGetSettings = async () => {
@@ -37,7 +35,6 @@ export const HostSettings = () => {
 		} catch(error) {
 			console.error("Failed to fetch host settings:", error);
 		}
-		settingsLock.current = false;
 	}, [hostUuid]);
 
 	return (
