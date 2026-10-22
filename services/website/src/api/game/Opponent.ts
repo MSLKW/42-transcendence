@@ -5,6 +5,7 @@ import { CardRank, type CardHandTransmit, type GameStateTransmit } from '@big2/g
 import { CardHand } from './CardHand';
 import { Participant } from './Participant';
 import { useGameStore } from '../../store/GameStore';
+import { gameLog } from './main';
 
 export class Opponent extends Participant {
 
@@ -16,7 +17,7 @@ export class Opponent extends Participant {
 
 	private	bindListeners() {
 		this.socket.on("player_play_card_hand", (cardHandTransmit: CardHandTransmit) => {
-			console.log(`[gameSocket] <${this.uuid}> 'player_play_card_hand': `, cardHandTransmit);
+			gameLog(`[gameSocket] <${this.uuid}> 'player_play_card_hand': `, cardHandTransmit);
 			if (cardHandTransmit.playerId === this.uuid) {
 				const cardHand = new CardHand(this.uuid);
 				for (let i = 0; i < cardHandTransmit.cards.length; i++) {

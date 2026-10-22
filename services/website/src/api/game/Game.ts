@@ -17,6 +17,7 @@ import { useResultsStore } from '../../store/ResultsStore';
 import { useBotStore } from '../../store/BotStore';
 import { useSettingsStore } from '../../store/SettingsStore';
 import { useNotificationStore, NOTIFICATION_TYPE } from '../../store/NotificationStore';
+import { gameLog } from './main';
 
 export class Game {
 	private socket: Socket;
@@ -42,7 +43,7 @@ export class Game {
 		})
 		if (this.playerId === usePartyStore.getState().hostUuid) {
 			this.socket.emit("user_seat_change", useGameStore.getState().totalPlayers, (status: StatusTransmit) => {
-				console.log("[gameSocket] user_seat_change: ", status);
+				gameLog("[gameSocket] user_seat_change: ", status);
 			});
 		}
 
@@ -68,14 +69,14 @@ export class Game {
 
 	public startGame() {
 		this.socket.emit("game_start_request", (status: StatusTransmit) => {
-			console.log(`[gameSocket] 'game_start_request': ${status.success} | ${status.message}`);
+			gameLog(`[gameSocket] 'game_start_request': ${status.success} | ${status.message}`);
 		});
 	}
 
 	public deleteLobby() {
-		console.log("[gameSocket] emitting 'lobby_delete_request");
+		gameLog("[gameSocket] emitting 'lobby_delete_request");
 		this.socket.emit("lobby_delete_request", (status: StatusTransmit) => {
-			console.log(`[gameSocket] 'lobby_delete_request': ${status.success} | ${status.message}`);
+			gameLog(`[gameSocket] 'lobby_delete_request': ${status.success} | ${status.message}`);
 			if (status.success === false) {
 				this.disconnect();
 			}
@@ -84,53 +85,53 @@ export class Game {
 
 	public takeSeat(seatIndex: number) {
 		this.socket.emit("user_seat_take", seatIndex, (status: StatusTransmit) => {
-			console.log(`[gameSocket] user_seat_take: ${status.success} | ${status.message}`);
+			gameLog(`[gameSocket] user_seat_take: ${status.success} | ${status.message}`);
 		});
 	}
 
 	public leaveSeat() {
 		this.socket.emit("user_seat_leave", (status: StatusTransmit) => {
-			console.log(`[gameSocket] user_seat_leave: ${status.success} | ${status.message}`);
+			gameLog(`[gameSocket] user_seat_leave: ${status.success} | ${status.message}`);
 		});
 	}
 
 	public addBot(seatIndex: number) {
 		this.socket.emit("bot_add", seatIndex, (status: StatusTransmit) => {
-			console.log(`[gameSocket] 'bot_add': ${status.success} | ${status.message}`);
+			gameLog(`[gameSocket] 'bot_add': ${status.success} | ${status.message}`);
 		});
 	}
 
 	public removeBot(botId: string) {
 		this.socket.emit("bot_remove", botId, (status: StatusTransmit) => {
-			console.log(`[gameSocket] 'bot_remove': ${status.success} | ${status.message}`);
+			gameLog(`[gameSocket] 'bot_remove': ${status.success} | ${status.message}`);
 		});
 	}
 
 	public setGameSettings(gameSettings: GameSettingsTransmit) {
 		this.socket.emit("game_settings_set", gameSettings, (status: StatusTransmit) => {
-			console.log(`[gameSocket] 'game_settings_set': `, status);
+			gameLog(`[gameSocket] 'game_settings_set': `, status);
 		});
 	}
 
 	private bindSocketEvents() {
 		this.socket.on("connect_error", (error) => {
-			console.log("[gameSocket] 'connect_error': ", error.message);
+			gameLog("[gameSocket] 'connect_error': ", error.message);
 			usePartyStore.setState({ partyGameId: null });
 			this.socket.disconnect();
 		});
 
 		this.socket.on("connect", () => {
-			console.log(`[gameSocket] 'connect' id: ${this.socket.id}`);
+			gameLog(`[gameSocket] 'connect' id: ${this.socket.id}`);
 			useSceneStore.getState().setCurrentScene("Lobby");
 		});
 
 		this.socket.on("graceful_disconnect", (reason: string) => {
-			console.log(`[gameSocket] 'graceful_disconnect' reason: `, reason);
+			gameLog(`[gameSocket] 'graceful_disconnect' reason: `, reason);
 			this.socket.disconnect();
 		});
 
 		this.socket.on("disconnect", (reason) => {
-			console.log(`[gameSocket] 'disconnect' reason: ${reason}`);
+			gameLog(`[gameSocket] 'disconnect' reason: ${reason}`);
 			const currentScene = useSceneStore.getState().currentScene;
 			if (currentScene === "Lobby" || currentScene === "Game") {
 				useSceneStore.getState().setCurrentScene("Home");
@@ -141,7 +142,7 @@ export class Game {
 		});
 	
 		this.socket.on("game_end", (gameEndStats: GameEndStatsTransmit) => {
-			console.log(`[gameSocket] 'game_end': `, gameEndStats);
+			gameLog(`[gameSocket] 'game_end': `, gameEndStats);
 			this.cardHeap.cardHandQueue.add(() => {
 				useResultsStore.getState().setResults(gameEndStats);
 				useGameStore.setState({ round: gameEndStats.temporaryRoundsPlayed });
@@ -154,12 +155,12 @@ export class Game {
 	
 		this.socket.on("player_connection_update", (disconnections: Record<string, boolean>) => {
 			useGameStore.setState({ playerDisconnection: disconnections });
-			console.log("[gameSocket] 'player_connection_update': ", disconnections);
+			gameLog("[gameSocket] 'player_connection_update': ", disconnections);
 		});
 	
 		this.socket.on("user_seat_update", (seatData: SeatOrderTransmit) => {
 			const totalPlayers = useGameStore.getState().totalPlayers;
-			console.log("[gameSocket] 'user_seat_update': ", seatData);
+			gameLog("[gameSocket] 'user_seat_update': ", seatData);
 			if (totalPlayers !== seatData.totalSeats) {
 				useGameStore.setState({totalPlayers: seatData.totalSeats})
 				useGameStore.getState().initSeats();
@@ -169,7 +170,7 @@ export class Game {
 		});
 	
 		this.socket.on("user_list_update", (userList: Array<string>) => {
-			console.log("[gameSocket] 'user_list_update': ", userList);
+			gameLog("[gameSocket] 'user_list_update': ", userList);
 			const newUserSeats = [...useGameStore.getState().userSeats];
 			for (let i = 0; i < newUserSeats.length; i++) {
 				const userInList = userList.find((uuid) => uuid === newUserSeats[i]);
@@ -181,18 +182,18 @@ export class Game {
 		})
 
 		this.socket.on("game_settings_update", (gameSettings: GameSettingsTransmit) => {
-			console.log("[gameSocket] 'game_settings_update': ", gameSettings);
+			gameLog("[gameSocket] 'game_settings_update': ", gameSettings);
 			useSettingsStore.getState().update(gameSettings);
 		});
 	
 		this.socket.on("game_state", (gameState: GameStateTransmit) => {
-			console.log("[gameSocket] 'game_state': ", gameState);
+			gameLog("[gameSocket] 'game_state': ", gameState);
 			this.resetGame();
 			this.initGame(gameState);
 		});
 
 		this.socket.on("player_turn", (playerTurn: PlayerTurnTransmit) => {
-			console.log("[gameSocket] 'player_turn': ", playerTurn);
+			gameLog("[gameSocket] 'player_turn': ", playerTurn);
 			useGameStore.getState().clearPassedPlayer(playerTurn.playerId);
 			const activeSeat = useGameStore.getState().gameSeats.findIndex((uuid) => uuid === playerTurn.playerId);
 			useGameStore.setState({
@@ -207,7 +208,7 @@ export class Game {
 		});
 
 		this.socket.on("player_skip_turn", (skipTurn: SkipTurnTransmit) => {
-			console.log("[gameSocket] 'player_skip_turn': ", skipTurn);
+			gameLog("[gameSocket] 'player_skip_turn': ", skipTurn);
 			const newPlayerPassed = [...useGameStore.getState().playerPassed];
 			if (newPlayerPassed.find((skippedUuid) => skippedUuid === skipTurn.playerId) === undefined) {
 				newPlayerPassed.push(skipTurn.playerId);
@@ -216,7 +217,7 @@ export class Game {
 		});
 
 		this.socket.on("player_unlock_achievement", (achievementTransmit: AchievementUnlockTransmit) => {
-			console.log("[gameSocket] 'player_unlock_achievement': ", achievementTransmit);
+			gameLog("[gameSocket] 'player_unlock_achievement': ", achievementTransmit);
 			useNotificationStore.getState().showNotification(`You've unlocked: ${achievementTransmit.achievementId}`, NOTIFICATION_TYPE.message)
 		});
 	}
@@ -229,11 +230,9 @@ export class Game {
 	private initGame(gameState: GameStateTransmit) {
 		useSceneStore.getState().setShowWindow("results", false);
 		this.initParticipants(gameState);
-		console.log(gameState.playerSeatOrder);
 		const seats: string[] = Object.entries(gameState.playerSeatOrder)
 			.sort((a, b) => a[1] - b[1])
 			.map(([key]) => key);
-		console.log(seats);
 		useGameStore.setState({ 
 			gameSeats: seats,
 			totalPlayers: this.participants.length,

@@ -6,6 +6,7 @@ import { CardHeap } from './CardHeap';
 import { threejsManager } from '../../App';
 import { Participant } from './Participant';
 import { useGameStore } from '../../store/GameStore';
+import { gameLog } from './main';
 
 export class Player extends Participant {
 	private raycaster: THREE.Raycaster;
@@ -94,7 +95,7 @@ export class Player extends Participant {
 	public sendCardsButtonHandler() {
 		const cardHandTransmit = this.cardManager.selectedCards.transmit();
 		this.socket.emit("player_play_card_hand_request", cardHandTransmit, (status: StatusTransmit) => {
-			console.log(`[gameSocket] 'player_play_card_hand_request': `, status);
+			gameLog(`[gameSocket] 'player_play_card_hand_request': `, status);
 			if (status.success === true) {
 				const cardHand = this.cardManager.sendSelectedCards();
 				this.cardHeapRef.cardHandQueue.add(this.cardHeapRef.receiveCardHand(cardHand));
@@ -105,7 +106,7 @@ export class Player extends Participant {
 
 	public skipTurnButtonHandler() {
 		this.socket.emit("player_skip_turn_request", (status: StatusTransmit) => {
-			console.log("[gameSocket] 'player_skip_turn_request': ", status);
+			gameLog("[gameSocket] 'player_skip_turn_request': ", status);
 		});
 	}
 
