@@ -57,7 +57,8 @@ export const StatusTransmitSchema = z.object({
 export const PlayerTurnTransmitSchema = z.object({
 	playerId: z.string(),
 	skippable: z.boolean(),
-	timer: z.number()
+	timer: z.number(),
+	remainingTimer: z.number()
 });
 
 export const SkipTurnTransmit = z.object({

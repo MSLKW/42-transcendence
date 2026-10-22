@@ -1,6 +1,6 @@
 import { Socket } from 'socket.io-client';
 import * as THREE from 'three';
-import { type CardTransmit, type GameStateTransmit, type PlayerTurnTransmit, type StatusTransmit, type SkipTurnTransmit } from '@big2/game-types';
+import { type CardTransmit, type GameStateTransmit, type StatusTransmit } from '@big2/game-types';
 import { Card } from './Card';
 import { CardHeap } from './CardHeap';
 import { threejsManager } from '../../App';
@@ -33,38 +33,6 @@ export class Player extends Participant {
 	}
 
 	private bindListeners() {
-		this.socket.on("player_turn", (playerTurn: PlayerTurnTransmit) => {
-			console.log("[gameSocket] 'player_turn': ", playerTurn);
-			const newPlayerPassed = [...useGameStore.getState().playerPassed];
-			const index = newPlayerPassed.findIndex((skippedUuid) => skippedUuid === playerTurn.playerId);
-			if (index !== -1) {
-				newPlayerPassed.splice(index, 1);
-				useGameStore.setState({ playerPassed: newPlayerPassed });
-			}
-			const activeSeat = useGameStore.getState().gameSeats.findIndex((uuid) => uuid === playerTurn.playerId);
-			useGameStore.setState({
-				activeSeat: activeSeat, 
-				isActiveSeatSkippable: playerTurn.skippable,
-				playerTimer: playerTurn.timer,
-			});
-		});
-
-		this.socket.on("player_skip_turn_request", (status: StatusTransmit) => {
-			if (status.success === false) {
-				if (useGameStore.getState().gameVerboseMode)
-					console.log(`player_skip_turn_request message: ${status.message}`);
-			}
-		})
-
-		this.socket.on("player_skip_turn", (skipTurn: SkipTurnTransmit) => {
-			console.log("[gameSocket] 'player_skip_turn': ", skipTurn);
-			const newPlayerPassed = [...useGameStore.getState().playerPassed];
-			if (newPlayerPassed.find((skippedUuid) => skippedUuid === skipTurn.playerId) === undefined) {
-				newPlayerPassed.push(skipTurn.playerId);
-				useGameStore.setState({ playerPassed: newPlayerPassed });
-			}
-		});
-
 		threejsManager.renderer.domElement.addEventListener('pointerdown', (event) => {
 			this.startClick.x = event.clientX;
 			this.startClick.y = event.clientY;
@@ -120,8 +88,6 @@ export class Player extends Participant {
 	}
 
 	public unbindListeners() {
-		this.socket.off("player_turn");
-		this.socket.off("player_skip_turn");
 		// threejsManager.renderer.domElement.removeEventListener('pointerdown');
 	}
 

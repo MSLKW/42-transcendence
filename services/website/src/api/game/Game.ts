@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import { io, Socket } from 'socket.io-client';
-import { type GameStateTransmit, type StatusTransmit, type SeatOrderTransmit, type GameSettingsTransmit, type GameEndStatsTransmit, type AchievementUnlockTransmit } from '@big2/game-types';
+import { type GameStateTransmit, type StatusTransmit, type SeatOrderTransmit, type GameSettingsTransmit, type GameEndStatsTransmit, type AchievementUnlockTransmit, type PlayerTurnTransmit, type SkipTurnTransmit } from '@big2/game-types';
 import { CardHeap } from './CardHeap';
 import { Player } from './Player';
 import { Opponent } from './Opponent';
@@ -191,11 +191,42 @@ export class Game {
 			this.initGame(gameState);
 		});
 
+		this.socket.on("player_turn", (playerTurn: PlayerTurnTransmit) => {
+			console.log("[gameSocket] 'player_turn': ", playerTurn);
+			const newPlayerPassed = [...useGameStore.getState().playerPassed];
+			const index = newPlayerPassed.findIndex((skippedUuid) => skippedUuid === playerTurn.playerId);
+			if (index !== -1) {
+				newPlayerPassed.splice(index, 1);
+				useGameStore.setState({ playerPassed: newPlayerPassed });
+			}
+			const activeSeat = useGameStore.getState().gameSeats.findIndex((uuid) => uuid === playerTurn.playerId);
+			useGameStore.setState({
+				activeSeat: activeSeat, 
+				isActiveSeatSkippable: playerTurn.skippable,
+				playerTimer: playerTurn.timer,
+				playerRemainingTimer: playerTurn.remainingTimer
+			});
+		});
+
+		this.socket.on("player_skip_turn", (skipTurn: SkipTurnTransmit) => {
+			console.log("[gameSocket] 'player_skip_turn': ", skipTurn);
+			const newPlayerPassed = [...useGameStore.getState().playerPassed];
+			if (newPlayerPassed.find((skippedUuid) => skippedUuid === skipTurn.playerId) === undefined) {
+				newPlayerPassed.push(skipTurn.playerId);
+				useGameStore.setState({ playerPassed: newPlayerPassed });
+			}
+		});
+
 		this.socket.on("player_unlock_achievement", (achievementTransmit: AchievementUnlockTransmit) => {
 			console.log("[gameSocket] 'player_unlock_achievement': ", achievementTransmit);
 			useNotificationStore.getState().showNotification(`You've unlocked: ${achievementTransmit.achievementId}`, NOTIFICATION_TYPE.message)
 		});
 	}
+
+	// private unbindSocketEvents() {
+	// 	this.socket.off("player_turn");
+	// 	this.socket.off("player_skip_turn");
+	// }
 
 	private initGame(gameState: GameStateTransmit) {
 		useSceneStore.getState().setShowWindow("results", false);

@@ -7,6 +7,7 @@ import { CardRank, CardSuit, GameStateTransmit, GameEndStatsTransmit, StatusTran
 import { UserState } from './UserState.js';
 import { EventEmitter } from 'node:events';
 import { StatisticsTracker } from './StatisticsTracker.js';
+import { AutoPassTimer } from './AutoPassTimer.js';
 
 export class GameState {
 	private players: Array<PlayerState>;
@@ -15,7 +16,7 @@ export class GameState {
 	public	cardHeap: CardHeapState;
 	public	isGameStarted: boolean;
 	private	playerTurnIndex: number;
-	private playerTurnTimeoutId: NodeJS.Timeout | undefined;
+	private playerTurnAutoPassTimer: AutoPassTimer | undefined;
 	public	gameRoomId: string;
 	private	events: EventEmitter;
 	private statistics: StatisticsTracker;
@@ -46,7 +47,7 @@ export class GameState {
 		this.statistics = new StatisticsTracker(this.events);
 		this.isGameStarted = false;
 		this.playerTurnIndex = -1;
-		this.playerTurnTimeoutId = undefined;
+		this.playerTurnAutoPassTimer = undefined;
 		this.gameRoomId = "game" + sessionId;
 		this.previousSeatOrder = [];
 		this.temporaryWinStreakWinnerUuid = "";
@@ -113,6 +114,10 @@ export class GameState {
 		});
 		if (this.isGameStarted === true) {
 			user.socket.emit("game_state", this.transmit(undefined));
+			const playerTurnTransmit = this.getPlayerTurnTransmit();
+			if (playerTurnTransmit !== undefined) {
+				user.socket.emit("player_turn", playerTurnTransmit);
+			}
 		}
 	}
 	
@@ -165,7 +170,7 @@ export class GameState {
 			this.spectators[i].socket.emit("game_state", this.transmit(undefined));
 		}
 		this.statistics.setupPlayerTracker(this.players);
-		this.playerTurnEvent();
+		this.startPlayerTurn();
 		this.isGameStarted = true;
 		console.log(`Game<${this.gameRoomId}> has started`);
 		status.success = true;
@@ -211,8 +216,8 @@ export class GameState {
 			this.players[i].reset();
 		}
 		this.players.length = 0;
-		clearTimeout(this.playerTurnTimeoutId);
-		this.playerTurnTimeoutId = undefined;
+		this.playerTurnAutoPassTimer?.clear();
+		this.playerTurnAutoPassTimer = undefined;
 		this.playerTurnIndex = -1;
 	}
 
@@ -279,34 +284,44 @@ export class GameState {
 		this.emitPlayerConnectionUpdate();
 	}
 
-	private playerTurnEvent() {
+	private startPlayerTurn() {
 		const player = this.players.at(this.playerTurnIndex);
 		if (player === undefined || player.isDisconnected === true) {
 			this.nextPlayerTurn();
 			return ;
 		}
 		this.togglePlayerTurnFlag(player);
-		const isPlayerLeading = this.cardHeap.isPlayerLeading(player.uuid);
-		if (isPlayerLeading === true) {
+		if (this.cardHeap.isPlayerLeading(player.uuid) === true) {
 			const topCardHand = this.cardHeap.getTopCardHand();
 			if (topCardHand !== undefined && topCardHand.playerId === player.uuid) {
 				this.events.emit("player:bested", topCardHand.transmit());
 			}
 		}
+		if (this.settings.autoPassInMilliseconds > 0) {
+			this.playerTurnAutoPassTimer = new AutoPassTimer(() => {player.skipTurn()}, this.settings.autoPassInMilliseconds);
+		}
+		const playerTurnTransmit = this.getPlayerTurnTransmit();
+		if (playerTurnTransmit !== undefined) {
+			this.emit("player_turn", playerTurnTransmit);
+		}
+	}
+
+	public getPlayerTurnTransmit(): PlayerTurnTransmit | undefined {
+		const player = this.players.at(this.playerTurnIndex);
+		if (player === undefined)
+			return (undefined);
 		const playerTurnTransmit: PlayerTurnTransmit = {
 			playerId: player.uuid,
-			skippable: !isPlayerLeading,
-			timer: this.settings.autoPassInMilliseconds
+			skippable: !this.cardHeap.isPlayerLeading(player.uuid),
+			timer: this.settings.autoPassInMilliseconds,
+			remainingTimer: this.playerTurnAutoPassTimer?.getRemainingTime() ?? 0
 		}
-		if (this.settings.autoPassInMilliseconds > 0) {
-			this.playerTurnTimeoutId = setTimeout(() => {player.skipTurn()}, this.settings.autoPassInMilliseconds);
-		}
-		this.emit("player_turn", playerTurnTransmit);
+		return (playerTurnTransmit);
 	}
 	
 	public nextPlayerTurn() {
-		clearTimeout(this.playerTurnTimeoutId);
-		this.playerTurnTimeoutId = undefined;
+		this.playerTurnAutoPassTimer?.clear();
+		this.playerTurnAutoPassTimer = undefined;
 		const availablePlayer = this.players.find((player) => player.isDisconnected === false)
 		if (availablePlayer === undefined) {
 			return ;
@@ -314,7 +329,7 @@ export class GameState {
 		this.playerTurnIndex++;
 		if (this.playerTurnIndex >= this.players.length)
 			this.playerTurnIndex = 0;
-		this.playerTurnEvent();
+		this.startPlayerTurn();
 	}
 	
 	private	togglePlayerTurnFlag(player: PlayerState) {

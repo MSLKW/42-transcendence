@@ -49,6 +49,10 @@ export class PlayerState {
 		this.isDisconnected = false;
 		this.setupSocketListeners();
 		this.socket.emit("game_state", gameRef.transmit(this));
+		const playerTurnTransmit = gameRef.getPlayerTurnTransmit();
+		if (playerTurnTransmit !== undefined) {
+			this.socket.emit("player_turn", playerTurnTransmit);
+		}
 		console.log(`Player<${user.uuid}> has reconnected`);
 	}
 

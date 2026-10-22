@@ -1,7 +1,6 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import { useAuthStore } from "./AuthStore";
-import { type MEDAL_TYPE } from "./ProfileStore";
 import { usePartyStore } from "./PartyStore";
 import { useResultsStore } from "./ResultsStore";
 import { useSceneStore } from "./SceneStore";
@@ -47,6 +46,7 @@ interface GameValues {
 	sortType: string;
 	playerPassed: string[];
 	playerTimer: number;
+	playerRemainingTimer: number;
 }
 
 interface GameState extends GameValues {
@@ -65,9 +65,6 @@ interface GameState extends GameValues {
 	skipTurn: () => void;
 
 	leaveGame: () => void;
-	incTotalWin: (uuid: string) => void;
-	incTotalLoss: (uuid: string) => void;
-	unlockMedal: (uuid: string, type: MEDAL_TYPE) => void;
 
 	resetValues: () => void;
 }
@@ -91,6 +88,7 @@ export const useGameStore = create<GameState>() (
 			sortType: "Flex",
 			playerPassed: [],
 			playerTimer: 0,
+			playerRemainingTimer: 0,
 
 			initSeats: () => {
 				const totalPlayers = get().totalPlayers;
@@ -195,6 +193,7 @@ export const useGameStore = create<GameState>() (
 					activeSeat: 0,
 					playerPassed: [],
 					playerTimer: 0,
+					playerRemainingTimer: 0,
 				});
 			},
 
@@ -208,79 +207,6 @@ export const useGameStore = create<GameState>() (
 					gameInstance?.disconnect();
 				}
 				get().resetLobby();
-			},
-			incTotalWin: (uuid) => {
-				// const profileStore = useProfileStore.getState();
-				// const data = profileStore.getProfileData(uuid);
-				// if (!data)
-				// 	return;
-
-				// const newXp = data.xp + 420;
-				// const newTotalWins = data.totalWins + 1;
-				// const newTotalPlayed = data.totalPlayed + 1;
-				// const newWinStreak = data.winStreak + 1;
-				// const newLevel = Math.floor(newXp / 1000) + 1;
-
-				// useProfileStore.setState({
-				// 	profilesInDb: profileStore.profilesInDb.map((p) => p.uuid === uuid
-				// 		? {
-				// 			...p,
-				// 			xp: newXp,
-				// 			totalWins: newTotalWins,
-				// 			totalPlayed: newTotalPlayed,
-				// 			winStreak: newWinStreak,
-				// 			level: newLevel,
-				// 		}
-				// 		: p
-				// 	),
-				// });
-			},
-			incTotalLoss: (uuid) => {
-				// const profileStore = useProfileStore.getState();
-				// const data = profileStore.getProfileData(uuid);
-				// if (!data)
-				// 	return;
-
-				// const newXp = data.xp + 67;
-				// const newTotalPlayed = data.totalPlayed + 1;
-				// const newTotalLoss = data.totalLoss + 1;
-				// const newWinStreak = 0;
-				// const newLevel = Math.floor(newXp / 1000) + 1;
-
-				// useProfileStore.setState({
-				// 	profilesInDb: profileStore.profilesInDb.map((p) =>
-				// 		p.uuid === uuid
-				// 			? {
-				// 				...p,
-				// 				xp: newXp,
-				// 				totalLoss: newTotalLoss,
-				// 				totalPlayed: newTotalPlayed,
-				// 				winStreak: newWinStreak,
-				// 				level: newLevel,
-				// 			}
-				// 			: p
-				// 	),
-				// });
-			},
-			unlockMedal: (uuid, type) => {
-				// const profileStore = useProfileStore.getState();
-				// const data = profileStore.getProfileData(uuid);
-				// if (!data || data.medals[type] !== null)
-				// 	return;
-
-				// useProfileStore.setState({
-				// 	profilesInDb: profileStore.profilesInDb.map((p) => 
-				// 		p.uuid === uuid
-				// 			? {
-				// 				...p,
-				// 				medals: {
-				// 					...p.medals,
-				// 					[type]: new Date,
-				// 				},
-				// 			}
-				// 			: p
-				// 	)
-				// });
 			},
 
 			resetValues: () => {

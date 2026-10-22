@@ -1,7 +1,6 @@
 import { useAuthStore } from "../../../store/AuthStore";
 import { useGameStore } from "../../../store/GameStore";
 import { useProfileStore } from "../../../store/ProfileStore";
-import { useSettingsStore } from "../../../store/SettingsStore";
 
 interface AvatarProps {
 	uuid: string | undefined;
@@ -13,11 +12,9 @@ interface AvatarProps {
 
 export const AvatarImage = ({ uuid, image, isActive, isDisconnected, isChat = false, }: AvatarProps) => {
 	const clientUuid = useAuthStore.getState().clientUuid;
-	// const autoPassIndex = useSettingsStore.getState().autoPassIndex;
-	// const autoPassOptions = [1, 3, 5, 10, 15, 30, 42, 60, 120, -1];
-	// const autoPassDuration = autoPassOptions[autoPassIndex];
 	const avatarVersion = useProfileStore((store) => store.avatarVersions[uuid ?? ""] ?? 0);
-	const autoPassDuration = useGameStore.getState().playerTimer;
+	const playerTimer = useGameStore.getState().playerTimer;
+	const playerRemainingTimer = useGameStore.getState().playerRemainingTimer;
 	const imageSrc = image ? `${image}${image.includes("?") ? "&" : "?"}v=${avatarVersion}` : undefined;
 
 	return (
@@ -35,9 +32,12 @@ export const AvatarImage = ({ uuid, image, isActive, isDisconnected, isChat = fa
 					className="h-full w-full rounded-sm"
 				/>
 			}
-			{ isActive && autoPassDuration != 0 &&
+			{ isActive && playerTimer != 0 &&
 				<div
-					style={{ ["--wipe-duration" as any]: `${autoPassDuration / 1000}s` }}
+					style={{ 
+						["--wipe-duration" as any]: `${playerTimer / 1000}s`,
+						["--wipe-elapsed" as any]: `${(playerTimer - playerRemainingTimer) / 1000}s`
+					}}
 					className="w-full h-full bg-b5 opacity-50 animate-turn-wipe absolute"
 				/>
 			}
