@@ -3,7 +3,7 @@ import { PlayerState } from "./PlayerState.js";
 import { CardHeapState } from "./CardHeapState.js";
 import { GameState } from "./GameState.js";
 import { GAME_STATS_SERVICE_URL } from './env.js';
-import { CardHandTransmit, GameEndStatsTransmit, HandType, CardRank, CardSuit, PentupleType, SkipTurnTransmit, PlayerStatsTransmit, AchievementUnlockTransmit } from "@big2/game-types";
+import { CardHandTransmit, GameEndStatsTransmit, HandType, CardRank, CardSuit, PentupleType, SkipTurnTransmit, PlayerStatsTransmit, AchievementUnlockTransmit, AchievementId } from "@big2/game-types";
 
 type PlayerTracker = {
 	uuid: string,
@@ -144,7 +144,7 @@ export class StatisticsTracker {
 		return (playerStats);
 	}
 
-	private unlockAchievement(playerUuid: string, achievementId: string) {
+	private unlockAchievement(playerUuid: string, achievementId: AchievementId) {
 		const playerTracker = this.playerTrackers[playerUuid];
 
 		if (playerTracker === undefined || playerTracker.stats === undefined) {

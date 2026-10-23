@@ -62,6 +62,21 @@ export type PlayerStatsTransmit = {
 }
 
 // ACHIEVEMENT IDS
+export const ACHIEVEMENT_ID = [
+	"best_single",
+	"best_double",
+	"best_triple",
+	"best_straight",
+	"best_flush",
+	"best_full_house",
+	"best_four_of_a_kind",
+	"best_straight_flush",
+	"play_three_diamonds",
+	"play_two_spades",
+	"win_no_pass",
+	"first_win",
+] as const;
+export type AchievementId = typeof ACHIEVEMENT_ID[number];
 
 
 export type CardTransmit = z.infer<typeof s.CardTransmitSchema>;
