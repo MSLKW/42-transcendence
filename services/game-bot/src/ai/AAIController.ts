@@ -1,19 +1,19 @@
+import { CardTransmit, CardHandTransmit, HandType, CardRank, CardSuit } from "@big2/game-types";
 import { GameState, HandTypeKey } from "../game/GameState.js";
-import { CardTransmit, CardHandTransmit, HandType, PentupleType } from "@big2/game-types";
 import { upperBound } from "../utils/upperBound.js";
 import { cardHandComp } from "../utils/cardHandComp.js";
-import { logger } from "../utils/logger.js";
 
 type Card = CardTransmit;
 type CardHand = CardHandTransmit;
 
 export abstract class AAIController
 {
-	public decide(botId: string, state: GameState): CardHand | null
+	public decide(botId: string, state: GameState, skippable: boolean): CardHand | null
 	{
-		if (state.moveHistory.length == 0)
+		const lowestCard = state.possibleCardHands["single"][0].cards[0];
+		if (lowestCard.rank == 0 && lowestCard.suit == 0)
 			return (this.playLead(state, true));
-		else if (state.lastCardHand.playerId == botId || state.cardHandsPlayed == 0)
+		else if (skippable == false)
 			return (this.playLead(state, false));
 		else
 			return (this.playFollow(botId, state));
@@ -44,8 +44,7 @@ export abstract class AAIController
 	{
 		let cardHands: CardHand[] = [];
 
-		logger.verbose(botId, "last move:", state.lastCardHand);
-		switch (state.lastCardHand.handType)
+		switch (state.lastCardHand!.handType)
 		{
 			case HandType.Single:
 				cardHands = state.possibleCardHands["single"];
@@ -68,7 +67,7 @@ export abstract class AAIController
 		}
 		const i = upperBound(
 			cardHands,
-			state.lastCardHand,
+			state.lastCardHand!,
 			cardHandComp
 		);
 		if (i == cardHands.length)

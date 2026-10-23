@@ -1,3 +1,4 @@
+# builder
 FROM node:20-alpine AS builder
 WORKDIR /app
 
@@ -12,17 +13,16 @@ RUN npm install
 
 RUN cd ./services/game-bot && npm run build
 
-# -----
 
+# runner
 FROM node:20-alpine AS runner
 WORKDIR /app
 
 COPY package*.json ./services/game-bot/.
-COPY --from=game-types . ./packages/types/game-types/.
+COPY --from=builder /app/packages/types/game-types . ./packages/types/game-types
 COPY --from=root package*.json .
 
 RUN npm install --workspace=@big2/game-types
-RUN cd ./packages/types/game-types && npm run build:docker
 
 RUN npm ci --omit=dev
 

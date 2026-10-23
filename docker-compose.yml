@@ -427,5 +427,10 @@ services:
     environment:
       PORT: ${GAME_BOT_SERVICE_PORT}
       GAME_SERVICE_URL: ${GAME_SERVER_SERVICE_URL}
+      BOT_LOG_LEVEL: ${GAME_BOT_LOG_LEVEL}
+      BOT_LOG_DIR: ${GAME_BOT_LOG_DIR}
+      BOT_MOVE_DELAY_MIN: ${GAME_BOT_MOVE_DELAY_MIN}
+      BOT_MOVE_DELAY_MAX: ${GAME_BOT_MOVE_DELAY_MAX}
+
     networks:
       - game-bot-network
