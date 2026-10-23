@@ -10,7 +10,7 @@ export class BotManager
 	{
 		const id = `${name}-${randomUUID()}`;
 		
-		this.bots.set(id, new Bot(id, ai));
+		this.bots.set(id, new Bot(id, ai, this));
 		return id;
 	}
 
