@@ -363,7 +363,7 @@ export class CardManager {
 			card.isHover = false;
 			this.selectedSlots = this.calculateSlots(this.selectedCards.cards, this.selectedBoundSpaceLimit, this.selectedOffset);
 			this.updateCardObjects(this.selectedCards.cards, this.selectedSlots);
-			useGameStore.getState().setCurrentHand(this.selectedCards.handType, this.selectedCards.pentupleType);
+			useGameStore.getState().setSelectedCards(this.selectedCards.transmit());
 		}
 		return (selected);
 	}
@@ -376,7 +376,7 @@ export class CardManager {
 			card.isHover = false;
 			this.selectedSlots = this.calculateSlots(this.selectedCards.cards, this.selectedBoundSpaceLimit, this.selectedOffset);
 			this.updateCardObjects(this.selectedCards.cards, this.selectedSlots);
-			useGameStore.getState().setCurrentHand(this.selectedCards.handType, this.selectedCards.pentupleType);
+			useGameStore.getState().setSelectedCards(this.selectedCards.transmit());
 		}
 	}
 

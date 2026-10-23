@@ -1,5 +1,6 @@
 import { Card } from './Card';
 import { HandType, PentupleType, CardRank, type CardHandTransmit} from '@big2/game-types';
+import { gameLog } from './main';
 
 export class CardHand {
 	public readonly	cards: Array<Card>;
@@ -14,7 +15,7 @@ export class CardHand {
 
 	public receiveCard(card: Card): boolean {
 		if (this.cards.length >= 5) {
-			console.log('CardHand is full');
+			gameLog("[game] Cardhand is full");
 			return (false);
 		}
 		this.cards.push(card);

@@ -3,7 +3,7 @@ import { io } from './server.js';
 import { PlayerState } from './PlayerState.js';
 import { CardDeckState } from './CardDeckState.js'
 import { CardHeapState } from './CardHeapState.js'
-import { CardRank, CardSuit, GameStateTransmit, GameEndStatsTransmit, StatusTransmit, PlayerTurnTransmit, SkipTurnTransmit, GameSettingsTransmit, CardHandTransmit, AchievementUnlockTransmit } from '@big2/game-types';
+import { CardRank, CardSuit, GameStateTransmit, GameEndStatsTransmit, StatusTransmit, PlayerTurnTransmit, SkipTurnTransmit, GameSettingsTransmit, CardHandTransmit, AchievementUnlockTransmit, CardTransmit } from '@big2/game-types';
 import { UserState } from './UserState.js';
 import { EventEmitter } from 'node:events';
 import { StatisticsTracker } from './StatisticsTracker.js';
@@ -314,6 +314,7 @@ export class GameState {
 		const playerTurnTransmit: PlayerTurnTransmit = {
 			playerId: player.uuid,
 			skippable: !this.cardHeap.isPlayerLeading(player.uuid),
+			lowestCardRequired: this.cardHeap.getLowestCard(),
 			timer: this.settings.autoPassInMilliseconds,
 			remainingTimer: this.playerTurnAutoPassTimer?.getRemainingTime() ?? 0
 		}

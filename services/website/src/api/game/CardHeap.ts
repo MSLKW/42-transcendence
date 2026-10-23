@@ -3,6 +3,7 @@ import { gsap } from 'gsap';
 import { CardHand } from './CardHand';
 import { type CardHandTransmit } from '@big2/game-types';
 import { Card } from './Card';
+import { useGameStore } from '../../store/GameStore';
 
 export class CardHeap {
 	public	cardHandQueue: gsap.core.Timeline;
@@ -26,6 +27,7 @@ export class CardHeap {
 	public receiveCardHand(cardHand: CardHand): gsap.core.Timeline {
 		const previousHand = this.getTopCards();
 		this.cardHands.push(cardHand);
+		useGameStore.setState({ cardHeapTopCards: cardHand.transmit()});
 		const timeline = this.updateCardHandObjects(cardHand);
 		timeline.add(() => {
 			if (previousHand !== undefined) {

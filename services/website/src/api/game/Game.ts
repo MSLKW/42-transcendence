@@ -117,7 +117,7 @@ export class Game {
 		this.socket.on("connect_error", (error) => {
 			gameLog("[gameSocket] 'connect_error': ", error.message);
 			usePartyStore.setState({ partyGameId: null });
-			this.socket.disconnect();
+			this.disconnect();
 		});
 
 		this.socket.on("connect", () => {
@@ -127,7 +127,7 @@ export class Game {
 
 		this.socket.on("graceful_disconnect", (reason: string) => {
 			gameLog(`[gameSocket] 'graceful_disconnect' reason: `, reason);
-			this.socket.disconnect();
+			this.disconnect();
 		});
 
 		this.socket.on("disconnect", (reason) => {
@@ -197,14 +197,19 @@ export class Game {
 			useGameStore.getState().clearPassedPlayer(playerTurn.playerId);
 			const activeSeat = useGameStore.getState().gameSeats.findIndex((uuid) => uuid === playerTurn.playerId);
 			useGameStore.setState({
-				activeSeat: activeSeat, 
+				activeSeat: activeSeat,
 				isActiveSeatSkippable: playerTurn.skippable,
+				lowestCardRequired: playerTurn.lowestCardRequired,
 				playerTimer: playerTurn.timer,
 				playerRemainingTimer: playerTurn.remainingTimer
 			});
 			if (playerTurn.skippable === false) {
 				this.cardHeap.signalLeadingPlayer();
 			}
+			if (this.playerRef) {
+				useGameStore.getState().setSelectedCards(this.playerRef.cardManager.selectedCards.transmit());
+			}
+			useGameStore.getState().setCardHandPlayable();
 		});
 
 		this.socket.on("player_skip_turn", (skipTurn: SkipTurnTransmit) => {

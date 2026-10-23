@@ -57,6 +57,7 @@ export const StatusTransmitSchema = z.object({
 export const PlayerTurnTransmitSchema = z.object({
 	playerId: z.string(),
 	skippable: z.boolean(),
+	lowestCardRequired: CardTransmitSchema.or(z.undefined()),
 	timer: z.number(),
 	remainingTimer: z.number()
 });

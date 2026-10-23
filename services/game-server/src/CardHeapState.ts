@@ -1,4 +1,4 @@
-import { CardRank, CardSuit, CardHandTransmit, GameSettingsTransmit, HandType, PentupleType } from '@big2/game-types';
+import { CardRank, CardSuit, CardHandTransmit, CardTransmit, GameSettingsTransmit, HandType, PentupleType } from '@big2/game-types';
 import { PlayerState } from "./PlayerState.js";
 import { CardHandState } from "./CardHandState.js";
 import { io } from "./server.js";
@@ -88,6 +88,17 @@ export class CardHeapState {
 	public setLowestCard(rank: CardRank, suit: CardSuit) {
 		this.lowestCardRank = rank;
 		this.lowestCardSuit = suit;
+	}
+
+	public getLowestCard(): CardTransmit | undefined {
+		if (this.requiresLowestCard === false) {
+			return (undefined);
+		}
+		const cardTransmit: CardTransmit = {
+			rank: this.lowestCardRank,
+			suit: this.lowestCardSuit
+		}
+		return (cardTransmit);
 	}
 
 	public reset() {

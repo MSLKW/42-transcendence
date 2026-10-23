@@ -6,7 +6,8 @@ import { useResultsStore } from "./ResultsStore";
 import { useSceneStore } from "./SceneStore";
 import { gameInstance } from '../api/game/main';
 import { partySocket } from "../api/party/partySocket";
-import { HandType, PentupleType } from "@big2/game-types";
+import { HandType, PentupleType, type CardHandTransmit, type CardTransmit } from "@big2/game-types";
+import { useSettingsStore } from "./SettingsStore";
 
 export const GAMEMODE_LABEL = [
 	"4 Players",
@@ -38,11 +39,15 @@ interface GameValues {
 	playerDisconnection: Record<string, boolean>;
 	gameStarted: boolean;
 	cardsLeft: number[];
-	currentHand: string;
+	currentHand: HAND_TYPE;
+	selectedCards: CardHandTransmit | undefined;
+	cardHeapTopCards: CardHandTransmit | undefined;
+	lowestCardRequired: CardTransmit | undefined;
 	round: number;
 	seatRef: number[];
 	activeSeat: number;
 	isActiveSeatSkippable: boolean;
+	isCardHandPlayable: boolean;
 	sortType: string;
 	playerPassed: string[];
 	playerTimer: number;
@@ -58,7 +63,9 @@ interface GameState extends GameValues {
 	setSeatRef: (seats: (string | null)[]) => void;
 	setCardsLeft: (playerCardsAmount: Record<string, number>) => void;
 	reduceCardsLeft: (uuid: string, cardsAmount: number) => void;
+	setSelectedCards: (cardHand: CardHandTransmit) => void;
 	setCurrentHand: (handType: HandType, pentupleType: PentupleType) => void;
+	setCardHandPlayable: () => void;
 	resetLobby: () => void;
 	resetGame: () => void;
 	startGame: () => void;
@@ -82,10 +89,14 @@ export const useGameStore = create<GameState>() (
 			gameStarted: false,
 			cardsLeft: [],
 			currentHand: "None",
+			selectedCards: undefined,
+			cardHeapTopCards: undefined,
+			lowestCardRequired: undefined,
 			round: 0,
 			seatRef: [],
 			activeSeat: 0,
 			isActiveSeatSkippable: false,
+			isCardHandPlayable: false,
 			sortType: "Flex",
 			playerPassed: [],
 			playerTimer: 0,
@@ -144,6 +155,24 @@ export const useGameStore = create<GameState>() (
 				cardsLeft[seatIndex] = cardsLeft[seatIndex] - cardsAmount;
 				set({ cardsLeft: cardsLeft });
 			},
+			setCardHeapTopCards: (cardHand: CardHandTransmit) => {
+				if (cardHand.cards.length !== 0) {
+					set({ cardHeapTopCards: cardHand });
+				}
+				else {
+					set({ cardHeapTopCards: undefined });
+				}
+			},
+			setSelectedCards: (cardHand: CardHandTransmit) => {
+				if (cardHand.cards.length !== 0) {
+					set({ selectedCards: cardHand });
+				}
+				else {
+					set({ selectedCards: undefined });
+				}
+				get().setCurrentHand(cardHand.handType, cardHand.pentupleType);
+				get().setCardHandPlayable();
+			},
 			setCurrentHand: (handType: HandType, pentupleType: PentupleType) => {
 				let newCurrentHand: HAND_TYPE = "None";
 				if (handType === HandType.Pentuple) {
@@ -164,6 +193,54 @@ export const useGameStore = create<GameState>() (
 					}
 				}
 				set({ currentHand: newCurrentHand });
+			},
+			setCardHandPlayable: () => {
+				// Copied & edited from CardHeapState.ts
+				const checkPlayable = () => {
+					const topCardHand = get().cardHeapTopCards;
+					const selectedCards = get().selectedCards;
+					if (selectedCards === undefined)
+						return (false);
+					if (selectedCards.handType === HandType.None || (selectedCards.handType === HandType.Pentuple && selectedCards.pentupleType === PentupleType.None))
+						return (false);
+					if (useSettingsStore.getState().allow3OfAKind === false && selectedCards.handType === HandType.Triple)
+						return (false);
+					const lowestCard = get().lowestCardRequired;
+					if (lowestCard !== undefined && selectedCards.cards.find((card) => card.rank === lowestCard.rank && card.suit === lowestCard.suit) === undefined)
+						return (false);
+					if (topCardHand === undefined)
+						return (true);
+					if (get().isActiveSeatSkippable === false)
+						return (true);
+					if (selectedCards.handType !== topCardHand.handType)
+						return (false);
+					// Comparing
+					if (selectedCards.handType === HandType.Single || selectedCards.handType === HandType.Double || selectedCards.handType === HandType.Triple) {
+						if (selectedCards.cards[0].rank > topCardHand.cards[0].rank)
+							return (true);
+						else if (selectedCards.cards[0].rank === topCardHand.cards[0].rank && selectedCards.cards[0].suit > topCardHand.cards[0].suit)
+							return (true);
+					}
+					else if (selectedCards.handType === HandType.Pentuple) {
+						if (selectedCards.pentupleType > topCardHand.pentupleType)
+							return (true);
+						else if (selectedCards.pentupleType < topCardHand.pentupleType)
+							return (false);
+						if (selectedCards.pentupleType === PentupleType.Straight || selectedCards.pentupleType === PentupleType.Flush || selectedCards.pentupleType === PentupleType.StraightFlush) {
+							if (selectedCards.cards[0].rank > topCardHand.cards[0].rank)
+								return (true);
+							else if (selectedCards.cards[0].rank === topCardHand.cards[0].rank && selectedCards.cards[0].suit > topCardHand.cards[0].suit)
+								return (true);
+						}
+						else if (selectedCards.pentupleType === PentupleType.FullHouse || selectedCards.pentupleType === PentupleType.FourOfAKind) {
+							if (selectedCards.cards[2].rank > topCardHand.cards[2].rank) {
+								return (true);
+							}
+						}
+					}
+					return (false);
+				}
+				set({ isCardHandPlayable: checkPlayable()});
 			},
 			startGame: () => {
 				gameInstance?.startGame();
@@ -191,10 +268,15 @@ export const useGameStore = create<GameState>() (
 					gameStarted: false,
 					cardsLeft: [],
 					currentHand: "None",
+					selectedCards: undefined,
+					cardHeapTopCards: undefined,
+					lowestCardRequired: undefined,
 					activeSeat: 0,
 					playerPassed: [],
 					playerTimer: 0,
 					playerRemainingTimer: 0,
+					isActiveSeatSkippable: false,
+					isCardHandPlayable: false,
 				});
 			},
 
@@ -225,14 +307,22 @@ export const useGameStore = create<GameState>() (
 					totalPlayers: 0,
 					userSeats: [],
 					gameSeats: [],
+					playerDisconnection: {},
 					gameStarted: false,
 					cardsLeft: [],
 					currentHand: "None",
+					selectedCards: undefined,
+					cardHeapTopCards: undefined,
+					lowestCardRequired: undefined,
 					round: 0,
 					seatRef: [],
 					activeSeat: 0,
 					isActiveSeatSkippable: false,
+					isCardHandPlayable: false,
 					sortType: "Flex",
+					playerPassed: [],
+					playerTimer: 0,
+					playerRemainingTimer: 0,
 				});
 			},
 		}),
