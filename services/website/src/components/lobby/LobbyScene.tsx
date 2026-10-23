@@ -198,7 +198,7 @@ export const LobbyScene = () => {
 				</div>
 				<div className="flex gap-2rem pt-2rem">
 					{ userSeats.find((seatUserUuid) => seatUserUuid === clientUuid) !== undefined && <UnseatButton /> }
-					<BotManagerButton />
+					{ hostUuid === clientUuid && <BotManagerButton /> }
 					{ round >= 1 && <ResultsCallButton /> }
 				</div>
 			</footer>
