@@ -63,7 +63,7 @@ export const PartyPlayerModule = ({ uuid }: PartyPlayerModuleProps) => {
 	const effectiveAvailability = availabilityOverride ?? availability;
 
 	const relation = 
-		cachedFriends.includes(uuid) ? "Friend" :
+		cachedFriends?.includes(uuid) ? "Friend" :
 		clientUuid === uuid ? "Self" :
 		"Stranger";
 

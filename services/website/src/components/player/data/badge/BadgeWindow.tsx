@@ -1,5 +1,6 @@
-import { useAuthStore } from "../../../../store/AuthStore";
-import { useProfileStore, BADGE_LABEL, type BADGE_TYPE } from "../../../../store/ProfileStore";
+// import { useAuthStore } from "../../../../store/AuthStore";
+// import { useProfileStore, BADGE_LABEL, type BADGE_TYPE } from "../../../../store/ProfileStore";
+import { BADGE_LABEL, type BADGE_TYPE } from "../../../../store/ProfileStore";
 import { useSceneStore } from "../../../../store/SceneStore";
 import { LightboxButton } from "../../../lightbox/LightboxButton";
 
@@ -10,12 +11,12 @@ interface BadgeWindowProps {
 }
 
 export const BadgeWindow = ({ badge, setBadge, setHasChange }: BadgeWindowProps) => {
-	const clientUuid = useAuthStore((store) => store.clientUuid);
-	const getProfileData = useProfileStore((store) => store.getProfileData);
+	// const clientUuid = useAuthStore((store) => store.clientUuid);
+	// const getProfileData = useProfileStore((store) => store.getProfileData);
 	const showWindow = useSceneStore((store) => store.showWindow);
 	const setShowWindow = useSceneStore((store) => store.setShowWindow);
 
-	const data = getProfileData(clientUuid!);
+	// const data = getProfileData(clientUuid!);
 	// if (!data)
 		// return;
 

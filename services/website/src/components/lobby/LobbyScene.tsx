@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import { useAuthStore } from "../../store/AuthStore";
-import { cachedBotData, useBotStore } from "../../store/BotStore";
+// import { cachedBotData, useBotStore } from "../../store/BotStore";
+import { useBotStore } from "../../store/BotStore";
 import { useGameStore } from "../../store/GameStore"; 
 import { usePartyStore } from "../../store/PartyStore";
 import { useProfileStore } from "../../store/ProfileStore";
@@ -190,7 +191,7 @@ export const LobbyScene = () => {
 				</div>
 				<div className="flex gap-2rem pt-2rem">
 					{ userSeats.find((seatUserUuid) => seatUserUuid === clientUuid) !== undefined && <UnseatButton /> }
-					<BotManagerButton />
+					{ hostUuid === clientUuid && <BotManagerButton /> }
 					{ round >= 1 && <ResultsCallButton /> }
 				</div>
 			</footer>

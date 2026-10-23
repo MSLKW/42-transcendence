@@ -6,8 +6,6 @@ import { useNotificationStore, NOTIFICATION_TYPE } from "../../../store/Notifica
 import { useSceneStore } from "../../../store/SceneStore";
 
 export const handleSignUp = async (email: string, password: string, setIsLoading: Dispatch<SetStateAction<boolean>>) => {
-	const showNotification = useNotificationStore.getState().showNotification;
-
 	try {
 		setIsLoading(true);
 		await fetchSignUp(email, password);
@@ -23,11 +21,11 @@ export const handleSignUp = async (email: string, password: string, setIsLoading
 		useSceneStore.getState().setShowWindow("createAccount", false);
 		useSceneStore.getState().setCurrentScene("Home");
 
-		showNotification("Account created successfully", NOTIFICATION_TYPE.message);
+		useNotificationStore.getState().showNotification("Account created successfully", NOTIFICATION_TYPE.message);
 	} catch (err) {
 		const error = err instanceof Error ? err.message : "Something went wrong. Please try again";
 
-		showNotification(error, NOTIFICATION_TYPE.error);
+		useNotificationStore.getState().showNotification(error, NOTIFICATION_TYPE.error);
 		useAuthStore.setState({
 			isAuthenticated: false,
 			clientUuid: null,

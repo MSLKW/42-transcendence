@@ -192,11 +192,13 @@ services:
   website:
     container_name: website
     image: website:services
+    init: true
     build:
       context: ./services/website
       additional_contexts:
         root: .
         game-types: ./packages/types/game-types
+        friends-types: ./packages/types/friends-types
     pull_policy: never
     restart: unless-stopped
     volumes: # temporary for vite hmr in development stage

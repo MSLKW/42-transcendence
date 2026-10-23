@@ -40,7 +40,12 @@ const partyManager = new PartyManager(io);
 
 type ChatSocket = Socket<ClientToServerEvents, ServerToClientEvents>;
 
+let isShuttingDown = false;
+
 io.use(async (socket, next) => {
+	if (isShuttingDown)
+		return next(new Error("SERVICE_SHUTTING_DOWN"));
+
 	const token = getSessionToken(socket);
 	if (!token)
 		return next(new Error("UNAUTHORIZED: no session token provided"));
@@ -53,6 +58,8 @@ io.use(async (socket, next) => {
 			},
 			signal: AbortSignal.timeout(5000)
 		});
+		if (isShuttingDown)
+			return next(new Error("SERVICE_SHUTTING_DOWN"));
 		if (!response.ok)
 			return next(new Error("UNAUTHORIZED: invalid or expired session"));
 
@@ -70,6 +77,11 @@ io.use(async (socket, next) => {
 });
 
 io.on("connection", (socket: ChatSocket) => {
+	if (isShuttingDown) {
+		socket.disconnect(true);
+		return;
+	}
+
 	const uuid = socket.data.uuid;
 	if (!uuid) {
 		socket.disconnect(true);
@@ -105,6 +117,9 @@ io.on("connection", (socket: ChatSocket) => {
 	}
 
 	socket.on("disconnect", (reason: DisconnectReason) => {
+		if (isShuttingDown)
+			return;
+
 		const client = clientManager.getBySocketId(socket.id);
 		if (!client || client.socket.id !== socket.id)
 			return ;
@@ -156,6 +171,11 @@ function finalizeRemoval(uuid: string, reason: string): void {
 }
 
 async function handleHttpRequest(req: IncomingMessage, res: ServerResponse): Promise<void> {
+	if (isShuttingDown) {
+		sendJson(res, 503, { error: "Service is shutting down" });
+		return;
+	}
+
 	try {
 		const method = req.method || "GET";
 		const url = new URL(
@@ -321,15 +341,27 @@ httpServer.listen(PORT, () => {
 	console.log(`Chat Socket.IO server listening on port ${PORT}`);
 });
 
-// TODO (signal handler): uncomment this when need to implement the signal handler
-// // Graceful shutdown on Ctrl+C / `docker compose down` & `docker compose stop` (both stop containers the same way). 
-// // Stop taking new requests, close the DB
-// // pool cleanly, then exit, well inside Docker's 10s SIGKILL deadline.
-// function shutdown() {
-//   server.close();					// 1. stop accepting new work
-//   									// 2. service-specific cleanup
-//   									// 3. close DB pool (DB services only, this chat service no need)
-//   process.exit(0);					// 4. end the process, exit code 0 = clean shutdown
-// }
-// process.on('SIGINT', shutdown);		// Ctrl+C
-// process.on('SIGTERM', shutdown);	// `docker compose down` & `docker compose stop` (both stop containers the same way)
+function shutdown(signal: NodeJS.Signals): void {
+	if (isShuttingDown)
+		return;
+
+	isShuttingDown = true;
+	console.log(`Received ${signal}. Shutting down chat service...`);
+
+	clientManager.clearAllPendingRemovals();
+
+	const forceExitTimer = setTimeout(() => {
+		console.error("Graceful shutdown timed out. Forcing exit");
+		process.exit(1);
+	}, 8_000);
+
+	forceExitTimer.unref();
+
+	io.close(() => {
+		clearTimeout(forceExitTimer);
+		console.log("Chat service shut down successfully");
+		process.exitCode = 0;
+	});
+}
+process.on("SIGINT", () => shutdown("SIGINT"));
+process.on("SIGTERM", () => shutdown("SIGTERM"));

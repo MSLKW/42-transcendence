@@ -6,7 +6,6 @@ import { Window } from "../../window/Window";
 import { FormInputModule } from "../form/FormInputModule";
 
 export const CreateAccountWindow = () => {
-	const showNotification = useNotificationStore((store) => store.showNotification);
 	const authValidation = useAuthStore((store) => store.authValidation);
 
 	const [email, setEmail] = useState("");
@@ -19,20 +18,20 @@ export const CreateAccountWindow = () => {
 
 		if (authValidation) {
 			if (!email || !password || !confirmPassword) {
-				showNotification("All fields are required", NOTIFICATION_TYPE.error);
+				useNotificationStore.getState().showNotification("All fields are required", NOTIFICATION_TYPE.error);
 				return;
 			}
 			const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 			if (!emailRegex.test(email)) {
-				showNotification("Please enter a valid email address", NOTIFICATION_TYPE.error);
+				useNotificationStore.getState().showNotification("Please enter a valid email address", NOTIFICATION_TYPE.error);
 				return;
 			}
 			if (password.length < 8) {
-				showNotification("Password must be at least 8 characters", NOTIFICATION_TYPE.error);
+				useNotificationStore.getState().showNotification("Password must be at least 8 characters", NOTIFICATION_TYPE.error);
 				return;
 			}
 			if (password !== confirmPassword) {
-				showNotification("Passwords do not match", NOTIFICATION_TYPE.error);
+				useNotificationStore.getState().showNotification("Passwords do not match", NOTIFICATION_TYPE.error);
 				return;
 			}
 		}

@@ -407,7 +407,7 @@ export class CardManager {
 		this.draggedCard.object.quaternion.copy(this.rotation);
 	}
 
-	public dropDraggedCard(raycaster: THREE.Raycaster) {
+	public dropDraggedCard(_raycaster: THREE.Raycaster) {
 		if (this.draggedCard === undefined)
 			return ;
 		if (this.localizePosition(this.draggedCard.object.position).y > this.dropThresholdY && this.selectCard(this.draggedCard) === true) {

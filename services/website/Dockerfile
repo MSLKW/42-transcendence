@@ -35,17 +35,20 @@
 FROM node:24
 WORKDIR /app
 
-COPY --from=game-types	package.json	./packages/types/game-types/
-COPY 					package.json	./services/website/
-COPY --from=root 		package*.json	./
+COPY --from=game-types		package.json	./packages/types/game-types/
+# COPY --from=friends-types	package.json	./packages/types/friends-types/
+COPY 						package.json	./services/website/
+COPY --from=root 			package*.json	./
 
 RUN npm i
 # RUN npm ci # better option, but can keep npm i in dev
 
-COPY --from=game-types	. ./packages/types/game-types/
-COPY 					. ./services/website/
+COPY --from=game-types		. ./packages/types/game-types/
+# COPY --from=friends-types	. ./packages/types/friends-types/
+COPY 						. ./services/website/
 
 RUN npm run build	-w @big2/game-types
+# RUN npm run build	-w @big2/friends-types
 # # use build only after they have put in types in imports, coz now recieve error below:
 # # error TS2307: Cannot find module '@big2/game-types' or its corresponding type declarations.
 # RUN npm run build -w website

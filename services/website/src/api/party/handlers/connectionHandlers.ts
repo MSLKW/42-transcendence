@@ -2,6 +2,7 @@ import { Socket } from "socket.io-client";
 import { usePartyStore } from "../../../store/PartyStore";
 import { useSceneStore } from "../../../store/SceneStore";
 import { handleValidate } from "../../authentication/get_validate/handleValidate";
+import { partySocket } from "../partySocket";
 
 export function connectionHandlers(socket: Socket) {
 	socket.on("connect", () => {
@@ -20,10 +21,17 @@ export function connectionHandlers(socket: Socket) {
 			hostUuid: null,
 		});
 
+		if (partySocket.isIntentionalDisconnect())
+			return;
+
 		if (useSceneStore.getState().currentScene !== "Login") {
-			handleValidate().then(() => {
-				useSceneStore.getState().setShowWindow("stale", true);
-			})
+			void handleValidate()
+				.then(() => {
+					useSceneStore.getState().setShowWindow("stale", true);
+				})
+				.catch((error) => {
+					console.error("Session validation after disconnect failed:", error);
+				})
 		}
 	});
 

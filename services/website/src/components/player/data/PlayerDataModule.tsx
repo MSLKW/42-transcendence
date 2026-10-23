@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from "react";
+// import { useState, useRef, useEffect } from "react";
 // import { handleCreatedAt } from "../../../api/authentication/created_at/handleCreatedAt";
 // import { handleGetOnline } from "../../../api/party/get_online/handleGetOnline";
 import { useAuthStore } from "../../../store/AuthStore";
@@ -31,7 +31,8 @@ export const PlayerDataModule = ({
 	const showWindow = useSceneStore((store) => store.showWindow);
 	const setShowWindow = useSceneStore((store) => store.setShowWindow);
 
-	const [xpProgress, setXPProgress] = useState(0);
+	// const [xpProgress, setXPProgress] = useState(0);
+	const xpProgress = 0;
 
 	return (
 		<div className="

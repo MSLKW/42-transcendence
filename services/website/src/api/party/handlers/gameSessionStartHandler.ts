@@ -1,7 +1,7 @@
 import { Socket } from "socket.io-client";
-import { useProfileStore } from "../../../store/ProfileStore";
+// import { useProfileStore } from "../../../store/ProfileStore";
 
-export function gameSessionStartHandler(socket: Socket) {
+export function gameSessionStartHandler(_socket: Socket) {
 	// socket.on("game_session_start", (payload: {gameId: string}) => {
 		// const clientUuid = useProfileStore.getState().clientUuid;
 		// if (clientUuid === null) {

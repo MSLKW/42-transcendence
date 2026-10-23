@@ -1,7 +1,12 @@
 import { useFriendsStore } from "../../../store/FriendsStore";
 import { fetchDeleteFriendships } from "./fetchDeleteFriendships";
 
-export const handleDeleteFriendships = async (ownerUuid: string, friendUuid: string) => {
+export const handleDeleteFriendships = async (ownerUuid: string | null, friendUuid: string | null) => {
+	if (!ownerUuid || !friendUuid) {
+		console.warn(`[friends > 'DELETE' friendships/${ownerUuid}/${friendUuid}] missing ownerUuid / friendUuid`);
+		return;
+	}
+
 	try {
 		const response = await fetchDeleteFriendships(ownerUuid, friendUuid);
 

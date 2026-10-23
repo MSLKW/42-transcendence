@@ -6,9 +6,17 @@ import { subscribeToUserJoined } from "./api/chat/subscribe/subscribeToUserJoine
 import { subscribeToUserLeft } from "./api/chat/subscribe/subscribeToUserLeft";
 import { subscribeToUserTyping } from "./api/chat/subscribe/subscribeToUserTyping";
 import { subscribeToRateLimited } from "./api/chat/subscribe/subscribeToRateLimited";
+import { handleFriendships } from "./api/friends/get_friendships/handleFriendships";
+import { handleFriendRequestsSent } from "./api/friends/get_friend-requests_sent/handleFriendRequestsSent";
+import { handleFriendRequestsReceived } from "./api/friends/get_friend-requests_received/handleFriendRequestsReceived";
+import { handleFriendRequestsAccept } from "./api/friends/post_friend-requests_accept/handleFriendRequestsAccept";
+import { handleFriendRequestsReject } from "./api/friends/post_friend-requests_reject/handleFriendRequestsReject";
 import { useFriendEvents } from "./api/friends/useFriendEvents";
+import { handleGetProfile } from "./api/profile/get_profile/handleGetProfile";
 import { useAuthStore } from "./store/AuthStore";
 import { useDevStore } from "./store/DevStore";
+import { useFriendsStore } from "./store/FriendsStore";
+import { useNotificationStore, NOTIFICATION_TYPE } from "./store/NotificationStore";
 import { useProfileStore } from "./store/ProfileStore";
 import { useSceneStore } from "./store/SceneStore";
 import { useScrollToTop } from "./utilities/react/useScrollToTop";
@@ -61,6 +69,7 @@ export default function App() {
 			return;
 
 		chatSocket.connect();
+
 		const unsubscribeFromMessages = subscribeToMessages();
 		const unsubscribeFromUserJoined = subscribeToUserJoined();
 		const unsubscribeFromUserLeft = subscribeToUserLeft();
@@ -79,10 +88,50 @@ export default function App() {
 
 	//friends connection
 	const handleFriendUpdate = useCallback(() => {
-		//fetch GET /friendships/:ownerUuid
-		console.log("Re-fetching friends list due to SSE hint...");
-	}, []);
+		if (!clientUuid)
+			return;
+
+		void handleFriendships(clientUuid!)
+			.then((friends) => {
+				useFriendsStore.setState({ cachedFriends: friends });
+			})
+			.catch((error) => {
+				console.error("Failed to refresh friendships:", error);
+			});
+	}, [clientUuid]);
 	useFriendEvents(clientUuid, handleFriendUpdate);
+
+	//friend requests sent + received
+	useEffect(() => {
+		if (!clientUuid || currentScene === "Login")
+			return;
+
+		void handleFriendRequestsSent(clientUuid)
+			.then((requests) => {
+				useFriendsStore.setState({ friendRequestSent: requests });
+			}).catch((error) => {
+				console.error("Sent requests failed:", error);
+			});
+
+		void handleFriendRequestsReceived(clientUuid)
+			.then(async (requests) => {
+				await Promise.all(
+					requests.map(async (req: any) => {
+						const profile = await handleGetProfile(req.senderId);
+
+						useNotificationStore.getState().showNotification(
+							`${profile?.username} wants to be friends with you`,
+							NOTIFICATION_TYPE.invite,
+							req.id,
+							() => handleFriendRequestsAccept(req.id, profile?.username ?? "Player"),
+							() => handleFriendRequestsReject(req.id, profile?.username ?? "Player")
+						);
+					})
+				);
+			}).catch((error) => {
+				console.error("Failed to process friend requests:", error);
+			});
+	}, [clientUuid, currentScene]);
 
 	//three js manager
 	const containerRef = useRef<HTMLDivElement>(null);
@@ -101,6 +150,9 @@ export default function App() {
 
 	//three js scene handler
 	useEffect(() => {
+		if (!threejsManager)
+			return;
+
 		const currentSceneLowered = currentScene.toLowerCase();
 		if (threejsManager.getSceneId() !== currentSceneLowered) {
 			threejsManager.changeScene(currentSceneLowered);

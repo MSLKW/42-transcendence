@@ -65,6 +65,13 @@ export class ClientManager {
 		this.pendingRemovals.delete(uuid);
 	}
 
+	clearAllPendingRemovals(): void {
+		for (const timer of this.pendingRemovals.values())
+			clearTimeout(timer);
+
+		this.pendingRemovals.clear();
+	}
+
 	removeByUuid(uuid: string): Client | undefined {
 		const client = this.byUuid.get(uuid);
 		if (!client)

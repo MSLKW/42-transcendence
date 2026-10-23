@@ -1,4 +1,4 @@
-import { handleSignOut } from "../../api/authentication/delete_logout/handleLogout";
+import { handleLogout } from "../../api/authentication/delete_logout/handleLogout";
 import { useGameStore } from "../../store/GameStore";
 import { usePartyStore } from "../../store/PartyStore";
 import { useSceneStore } from "../../store/SceneStore";
@@ -11,7 +11,7 @@ export const LeaveWindow = () => {
 	const handleLeaveClick = () => {
 		useSceneStore.getState().setShowWindow("leave", false);
 		if (currentScene === "Home")
-			handleSignOut();
+			handleLogout();
 		else
 			useGameStore.getState().leaveGame();
 	}

@@ -1,11 +1,11 @@
 import { useAuthStore } from "../../../store/AuthStore";
 import { useNotificationStore, NOTIFICATION_TYPE } from "../../../store/NotificationStore"; 
 import { useSceneStore } from "../../../store/SceneStore";
-import { fetchSignOut } from "./fetchLogout";
+import { fetchLogout } from "./fetchLogout";
 
-export const handleSignOut = async () => {
+export const handleLogout = async () => {
 	try {
-		await fetchSignOut();
+		await fetchLogout();
 
 		if (useAuthStore.getState().authVerboseMode)
 			console.log("[authentication > 'DELETE' logout]");

@@ -42,21 +42,26 @@ export const AvatarModule = ({
 				onClick={(e) => {
 					e.currentTarget.blur();
 
-					if (relation === "Self" && currentScene !== "Game")
+					if (currentScene === "Game" || relation === "Bot")
+						return;
+
+					if (relation === "Self")
 						setShowWindow("profile", true);
-					else if (relation === "Bot")
-						setShowWindow("bots", true);
 					else
 						setShowWindow("stats", true, uuid);
 				}}
 				className={`
 					rounded-sm
-					${ currentScene !== "Game" && "hover:not-disabled:scale-105 active:hover:not-disabled:scale-100 focus-visible:outline-2 cursor-pointer" }
+					${ (currentScene !== "Game" && relation !== "Bot") && "hover:not-disabled:scale-105 active:hover:not-disabled:scale-100 focus-visible:outline-2 cursor-pointer" }
 					outline-b5
 					relative h-min
 					${ currentScene === "Game" && isActive === true && "animate-glow"}
-					`}>
-				<Tooltip text={relation === "Self" ? "Edit Profile" : "View Profile"}>
+				`}>
+				<Tooltip text={
+					relation === "Self" ? "Edit Profile" :
+					relation === "Bot" ? "Bot" : 
+					"View Profile"
+				}>
 					<AvatarImage
 						uuid={uuid}
 						image={image ?? undefined}
