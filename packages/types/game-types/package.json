@@ -4,7 +4,7 @@
 	"private": true,
 	"dependencies": {
 		"typescript": "^6.0.3",
-		"zod": "^4.6.5"
+		"zod": "^4.6.7"
 	},
 	"main": "./dist/Types.js",
 	"types": "./dist/types/Types.d.ts",
@@ -19,6 +19,7 @@
 		}
 	},
 	"scripts": {
+		"build": "tsc",
 		"build:docker": "tsc -b"
 	}
 }
