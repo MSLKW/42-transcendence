@@ -116,6 +116,10 @@ export class Bot
 		
 		if (cardHand == null)
 		{
+			const delayRemainingMs = (deadline - Date.now()) / 2;
+			if (delayRemainingMs > 0)
+				await setTimeout(delayRemainingMs);
+
 			this.logger.verbose(this.id, "skipping turn");
 			const status: StatusTransmit = await this.socket?.emitWithAck("player_skip_turn_request");
 			if (!status.success)
