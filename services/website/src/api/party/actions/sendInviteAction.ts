@@ -15,7 +15,6 @@ function emitSendInvite(socket: Socket, recipientUuid: string): Promise<SendInvi
 }
 
 export async function sendInviteAction(socket: Socket | null, recipientUuid: string, recipientName: string) {
-	const showNotification = useNotificationStore.getState().showNotification;
 	const setAvailability = usePartyStore.getState().setAvailability;
 	const availabilityOverrides = usePartyStore.getState().availabilityOverrides;
 
@@ -27,7 +26,7 @@ export async function sendInviteAction(socket: Socket | null, recipientUuid: str
 
 		const response = await emitSendInvite(socket, recipientUuid);
 		if (!response.success) {
-			showNotification(
+			useNotificationStore.getState().showNotification(
 				"Cannot invite player: Player is offline",
 				NOTIFICATION_TYPE.error
 			);
@@ -41,7 +40,7 @@ export async function sendInviteAction(socket: Socket | null, recipientUuid: str
 		if (!availabilityOverrides[recipientUuid] || availabilityOverrides[recipientUuid] === "Offline")
 			setAvailability(recipientUuid, "Online");
 
-		showNotification(
+		useNotificationStore.getState().showNotification(
 			`Invitation sent to ${recipientName}`,
 			NOTIFICATION_TYPE.message
 		);
@@ -49,7 +48,7 @@ export async function sendInviteAction(socket: Socket | null, recipientUuid: str
 		if (usePartyStore.getState().partyVerboseMode)
 			console.log("[party > 'emit' send_invite] recipientUuid:", recipientUuid, " recipientName:", recipientName);
 	} catch (error) {
-		showNotification(
+		useNotificationStore.getState().showNotification(
 			"Unable to connect to party socket",
 			NOTIFICATION_TYPE.error
 		);

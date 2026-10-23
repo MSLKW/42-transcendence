@@ -12,6 +12,7 @@ export function inviteReceivedHandler(socket: Socket) {
 			useNotificationStore.getState().showNotification(
 				`${hostData?.username ?? "A player"} invited you to their party!`,
 				NOTIFICATION_TYPE.invite,
+				null,
 				() => partySocket.acceptInvite(payload.hostUuid),
 				() => partySocket.rejectInvite(payload.hostUuid)
 			);

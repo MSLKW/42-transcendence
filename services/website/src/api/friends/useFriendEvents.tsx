@@ -45,6 +45,7 @@ export function useFriendEvents(clientUuid: string | null, onFriendUpdate?: () =
 				useNotificationStore.getState().showNotification(
 					`${profile?.username} wants to be friends with you`,
 					NOTIFICATION_TYPE.invite,
+					data.id,
 					() => handleFriendRequestsAccept(data.id, profile?.username ?? "Player"),
 					() => handleFriendRequestsReject(data.id, profile?.username ?? "Player")
 				);

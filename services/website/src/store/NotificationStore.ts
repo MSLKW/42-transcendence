@@ -25,18 +25,24 @@ interface NotificationValues {
 }
 
 interface NotificationState extends NotificationValues {
-	showNotification: (msg: string, type: number, btn1?: () => void, btn2?: () => void) => void;
+	showNotification: (msg: string, type: number, id?: string | null, btn1?: () => void, btn2?: () => void) => void;
 	removeNotification: (id: string) => void;
-	setIsValid: (id: string, valid: boolean) => void;
 	resetValues: () => void;
 }
 
 export const useNotificationStore = create<NotificationState>()(
-	(set) => ({
+	(set, get) => ({
 		notifications: [],
 		isNotifFiltered: false,
 
-		showNotification: (msg, type, btn1, btn2) => {
+		showNotification: (msg, type, id = null, btn1, btn2) => {
+			if (!id)
+				id = msg;
+
+			const notifExist = get().notifications.some((n) => n.id === id);
+			if (notifExist)
+				return;
+
 			let isError = false;
 			let isTimed = false;
 			let numOfButtons = 0;
@@ -56,12 +62,12 @@ export const useNotificationStore = create<NotificationState>()(
 			}
 
 			const newNotification: NotificationItem = {
-				id: crypto.randomUUID(),
-				type: type,
+				id,
+				type,
 				message: msg,
-				isError: isError,
-				isTimed: isTimed,
-				numOfButtons: numOfButtons,
+				isError,
+				isTimed,
+				numOfButtons,
 				onButton1Click: btn1,
 				onButton2Click: btn2,
 			};
@@ -81,13 +87,6 @@ export const useNotificationStore = create<NotificationState>()(
 				return { notifications: updated };
 			});
 		},
-
-		setIsValid: (id, valid) => set((state) => ({
-			notifications: state.notifications.map((n) => n.id === id
-				? { ...n, isValid: valid }
-				: n
-			),
-		})),
 
 		resetValues: () => {
 			set({ isNotifFiltered: true });

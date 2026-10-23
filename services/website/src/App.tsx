@@ -122,6 +122,7 @@ export default function App() {
 						useNotificationStore.getState().showNotification(
 							`${profile?.username} wants to be friends with you`,
 							NOTIFICATION_TYPE.invite,
+							req.id,
 							() => handleFriendRequestsAccept(req.id, profile?.username ?? "Player"),
 							() => handleFriendRequestsReject(req.id, profile?.username ?? "Player")
 						);
