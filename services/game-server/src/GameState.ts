@@ -397,6 +397,7 @@ export class GameState {
 			playerCards: [],
 			isPlayerTurn: false,
 			initialize: !this.isGameStarted,
+			gameSettings: this.settings
 		}
 		if (player !== undefined) {
 			transmitObject.playerCards = player.cards;

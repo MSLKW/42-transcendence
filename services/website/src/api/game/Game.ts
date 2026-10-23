@@ -189,6 +189,7 @@ export class Game {
 		this.socket.on("game_state", (gameState: GameStateTransmit) => {
 			gameLog("[gameSocket] 'game_state': ", gameState);
 			this.resetGame();
+			useSettingsStore.getState().update(gameState.gameSettings);
 			this.initGame(gameState);
 		});
 
