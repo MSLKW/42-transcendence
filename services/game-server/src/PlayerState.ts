@@ -178,7 +178,7 @@ export class PlayerState {
 		else if (cardAmount > 9 && cardAmount < 13) {
 			penaltyPoints = cardAmount * 2;
 		}
-		else if (cardAmount > 13) {
+		else if (cardAmount >= 13) {
 			penaltyPoints = cardAmount * 3;
 		}
 		return (penaltyPoints);
