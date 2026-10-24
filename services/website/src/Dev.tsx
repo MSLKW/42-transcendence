@@ -28,7 +28,6 @@ export default function Dev() {
 	const friendRequestSent = useFriendsStore((store) => store.friendRequestSent);
 	const gameVerboseMode = useGameStore((store) => store.gameVerboseMode);
 	const gameSocketId = useGameStore((store) => store.gameSocketId);
-	// const playerPassed = useGameStore((store) => store.playerPassed);
 	const userSeats = useGameStore((store) => store.userSeats);
 	const totalPlayers = useGameStore((store) => store.totalPlayers);
 	const notifications = useNotificationStore((store) => store.notifications);
