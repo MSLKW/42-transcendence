@@ -1,7 +1,7 @@
 import { GAME_SERVICE_URL } from "../config.js";
 import { Request, Response } from "express";
 import { BotManager } from "../bot/BotManager.js";
-import { RandomController } from "../ai/RandomController.js";
+import { PassiveRandomController } from "../ai/PassiveRandomController.js";
 
 type ReqBody = {
 	lobbyId:			string,
@@ -23,7 +23,7 @@ export function newBotHandler(manager: BotManager)
 		if (seatIndex < 0 || seatIndex >= 4)
 			return res.status(400).json({ error: "Seat must be between 0-3" });
 	
-		const botId = manager.addBot("bot", GAME_SERVICE_URL, new RandomController);
+		const botId = manager.addBot("bot", GAME_SERVICE_URL, new PassiveRandomController);
 		res.status(200).json({ botId: botId });
 		
 		if (!await manager.getBot(botId)!.start(GAME_SERVICE_URL, lobbyId, seatIndex, botSessionToken))

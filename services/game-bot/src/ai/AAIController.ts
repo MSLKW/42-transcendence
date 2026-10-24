@@ -1,27 +1,26 @@
-import { CardTransmit, CardHandTransmit, HandType, CardRank, CardSuit } from "@big2/game-types";
+import {
+	CardTransmit as Card,
+	CardHandTransmit as CardHand,
+	HandType,
+	CardRank, CardSuit
+} from "@big2/game-types";
 import { GameState, HandTypeKey } from "../game/GameState.js";
 import { upperBound } from "../utils/upperBound.js";
 import { cardHandComp } from "../utils/cardHandComp.js";
 
-type Card = CardTransmit;
-type CardHand = CardHandTransmit;
-
 export abstract class AAIController
 {
-	public decide(botId: string, state: GameState, skippable: boolean): CardHand | null
+	public decide(botId: string, state: GameState, skippable: boolean, lowestCardRequired?: Card): CardHand | null
 	{
-		const lowestCard = state.possibleCardHands["single"][0].cards[0];
-		if (lowestCard.rank == 0 && lowestCard.suit == 0)
-			return (this.playLead(state, true));
-		else if (skippable == false)
-			return (this.playLead(state, false));
+		if (skippable == false)
+			return (this.playLead(state, lowestCardRequired));
 		else
 			return (this.playFollow(botId, state));
 	}
 
 	protected abstract think(options: CardHand[]): CardHand;
 
-	private playLead(state: GameState, isFirstHand: boolean): CardHand
+	private playLead(state: GameState, lowestCardRequired?: Card): CardHand
 	{
 		const allCardHands: CardHand[] = [];
 		
@@ -30,11 +29,11 @@ export abstract class AAIController
 			const handTypeKey = key as HandTypeKey;
 			allCardHands.push(...state.possibleCardHands[handTypeKey]);
 		}
-		if (!isFirstHand)
+		if (lowestCardRequired == undefined)
 			return (this.think(allCardHands));
 		for (let i = allCardHands.length - 1; i >= 0; i--)
 		{
-			if (!allCardHands[i].cards.some(card => card.rank == 0 && card.suit == 0))
+			if (!allCardHands[i].cards.some(card => card.rank == lowestCardRequired.rank && card.suit == lowestCardRequired.suit))
 				allCardHands.splice(i, 1);
 		}
 		return (this.think(allCardHands));

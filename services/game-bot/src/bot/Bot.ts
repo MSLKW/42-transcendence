@@ -1,5 +1,6 @@
 import { io, Socket } from "socket.io-client";
 import { setTimeout } from "timers/promises";
+import { BotManager } from "./BotManager.js";
 import { GameState } from "../game/GameState.js";
 import { AAIController } from "../ai/AAIController.js";
 import { Logger } from "../utils/logger.js";
@@ -33,7 +34,7 @@ function connectSocket(serverUrl: string, lobbyId: string, botSessionToken: stri
 
 export class Bot
 {
-	constructor(private id: string, private ai: AAIController)
+	constructor(private id: string, private ai: AAIController, private manager: BotManager)
 	{
 		this.logger = new Logger(this.id);
 	}
@@ -116,6 +117,10 @@ export class Bot
 		
 		if (cardHand == null)
 		{
+			const delayRemainingMs = (deadline - Date.now()) / 2;
+			if (delayRemainingMs > 0)
+				await setTimeout(delayRemainingMs);
+
 			this.logger.verbose(this.id, "skipping turn");
 			const status: StatusTransmit = await this.socket?.emitWithAck("player_skip_turn_request");
 			if (!status.success)
@@ -169,5 +174,6 @@ export class Bot
 		this.logger.close();
 		this.socket?.disconnect();
 		this.socket = null;
+		this.manager.removeBot(this.id);
 	}
 }

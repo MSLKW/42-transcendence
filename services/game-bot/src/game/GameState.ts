@@ -1,7 +1,8 @@
 import {
 	CardTransmit as Card,
 	CardHandTransmit as CardHand,
-	GameStateTransmit
+	GameStateTransmit,
+	GameSettingsTransmit as GameSettings
 } from "@big2/game-types";
 
 import { rankComp, suitComp, cardHandComp } from "../utils/cardHandComp.js";
@@ -32,11 +33,13 @@ function createEmptyPossibleCardHands(): Record<HandTypeKey, CardHand[]>
 export class GameState
 {
 	readonly botId:			string = "";
-	readonly playerSeats:	Record<string, number> = {};	
+	readonly playerSeats:	Record<string, number> = {};
+	readonly gameSettings?:	GameSettings;
 	ownCards:				Card[] = [];
 	
 	possibleCardHands:		Record<HandTypeKey, CardHand[]> = createEmptyPossibleCardHands();
 	lastCardHand:			CardHand | null = null;
+
 
 	constructor(botId: string | void, stateTransmit: GameStateTransmit | void)
 	{
@@ -45,6 +48,7 @@ export class GameState
 
 		this.botId = botId;
 		this.playerSeats = stateTransmit.playerSeatOrder;
+		this.gameSettings = stateTransmit.gameSettings;
 		this.ownCards = [...stateTransmit.playerCards];
 		
 		this.ownCards.sort(suitComp);
@@ -53,6 +57,8 @@ export class GameState
 		this.ownCards.sort(rankComp);
 		initSingles(this);
 		initMatchingHands(this); //doubles, triples, four of a kinds
+		if (this.gameSettings.allow3OfAKind)
+			this.possibleCardHands["triple"] = [];
 		initFullHouses(this);
 		initStraights(this); //straights and straight flushes
 				
