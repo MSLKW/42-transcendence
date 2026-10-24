@@ -176,9 +176,9 @@ export default function App() {
 	}, [currentScene, clientUuid, cachedData, isProfileLoaded]);
 
 	//close window on scene change
-	useEffect(() => {
-		useSceneStore.getState().resetWindows();
-	}, [currentScene]);
+	// useEffect(() => {
+	// 	useSceneStore.getState().resetWindows();
+	// }, [currentScene]);
 
 	return (
 		<>
