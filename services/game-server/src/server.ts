@@ -19,7 +19,7 @@ export const io = new Server(httpServer);
 const lobbyManager = new LobbyManager();
 
 const lobbyRequestSchema = z.object({
-	hostUuid: z.string().min(1), // will be replaced with z.uuid
+	hostUuid: z.string().min(1),
 	playerUuids: z.array(z.string()).transform((uuids) => [... new Set(uuids)])
 });
 

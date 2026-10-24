@@ -34,7 +34,7 @@ export class LobbyManager {
 				return ;
 			}
 			if (botSessionToken !== undefined) {
-				const botId = lobby.botSessions[botSessionToken]; // if fail to find it in bot session, then connect_error or kick socket?
+				const botId = lobby.botSessions[botSessionToken];
 				if (botId === undefined) {
 					next(new Error("Identified connection as Bot however could not get the relevant bot id"));
 					return ;

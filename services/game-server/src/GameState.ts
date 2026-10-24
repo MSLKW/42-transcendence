@@ -37,7 +37,7 @@ export class GameState {
 		this.players = [];
 		this.spectators = [];
 		this.settings = {
-			allow3OfAKind: false,
+			allow3OfAKind: true,
 			allow2OfSpadesEnd: false,
 			autoPassInMilliseconds: 60000,
 		};
