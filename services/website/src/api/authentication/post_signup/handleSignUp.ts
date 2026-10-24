@@ -22,6 +22,7 @@ export const handleSignUp = async (email: string, password: string, setIsLoading
 		useSceneStore.getState().setCurrentScene("Home");
 
 		useNotificationStore.getState().showNotification("Account created successfully", NOTIFICATION_TYPE.message);
+		useNotificationStore.setState({ isNotifFiltered: false });
 	} catch (err) {
 		const error = err instanceof Error ? err.message : "Something went wrong. Please try again";
 
