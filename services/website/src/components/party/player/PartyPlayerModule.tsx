@@ -73,6 +73,12 @@ export const PartyPlayerModule = ({ uuid }: PartyPlayerModuleProps) => {
 	if (!playerData)
 		return (<p>Unable to load player</p>);
 
+	const handleSendInvite = () => {
+		if (relation === "Self")
+			return;
+		partySocket.sendInvite(uuid, playerData?.username ?? "Player");
+	}
+
 	return (
 		<div className="
 			flex place-content-center place-items-stretch
@@ -83,10 +89,14 @@ export const PartyPlayerModule = ({ uuid }: PartyPlayerModuleProps) => {
 				image={playerData.avatarPath ?? undefined}
 				showName={false}
 			/>
-			<Tooltip text={hostUuid === clientUuid ? "Send invite" : "Only host can invite"}>
+			<Tooltip text={
+				relation === "Self" ? null :
+				hostUuid === clientUuid ? "Send invite" :
+				"Only host can invite"
+			}>
 				<button
 					disabled={hostUuid !== clientUuid}
-					onClick={() => partySocket.sendInvite(uuid, playerData?.username ?? "Player")}
+					onClick={handleSendInvite}
 					className={`
 						h-auto min-w-60
 						py-0.5rem px-1.5rem

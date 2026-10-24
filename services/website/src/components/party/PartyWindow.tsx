@@ -8,7 +8,6 @@ import { useAuthStore } from "../../store/AuthStore";
 import { useFriendsStore } from "../../store/FriendsStore";
 import { PartyPlayerModule } from "./player/PartyPlayerModule";
 import { usePartyStore } from "../../store/PartyStore";
-// import { FRIEND_REQUEST_STATUSES } from "@big2/friends-types";
 
 export const PartyWindow = () => {
 	const cachedFriends = useFriendsStore((store) => store.cachedFriends);
