@@ -1,17 +1,22 @@
+//defines a request limit and its time window
 interface RateLimitConfig {
 	maxRequests: number;
 	windowMs: number;
 }
 
+//stores request timestamps for one client
 interface ClientRateData {
 	timestamps: number[];
 }
 
+//applies a rolling-window request limit per client
 export class RateLimiter {
 	private clients = new Map<string, ClientRateData>();
 
+	//creates a limiter with the given request window
 	constructor(private config: RateLimitConfig) {}
 
+	//returns whether the client may make another request
 	public allow(clientId: string): boolean {
 		const now = Date.now();
 		const data = this.clients.get(clientId);
@@ -33,6 +38,7 @@ export class RateLimiter {
 		return true;
 	}
 
+	//removes a client's recorded request history
 	public remove(clientId: string): void {
 		this.clients.delete(clientId);
 	}

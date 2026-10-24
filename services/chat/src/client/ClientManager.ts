@@ -2,26 +2,32 @@ import { Socket } from "socket.io";
 import { Client } from "./Client";
 import { ClientToServerEvents, ServerToClientEvents } from "../events";
 
+//socket type used by the client registry
 type ChatSocket = Socket<ClientToServerEvents, ServerToClientEvents>;
 
+//tracks active clients and delayed disconnect cleanup
 export class ClientManager {
 	private readonly byUuid	= new Map<string, Client>();
 	private readonly bySocketId = new Map<string, Client>();
 	private readonly pendingRemovals = new Map<string, NodeJS.Timeout>();
 
+	//adds a connected client to both indexes
 	add(client: Client): void {
 		this.byUuid.set(client.uuid, client);
 		this.bySocketId.set(client.socket.id, client);
 	}
 
+	//finds a client by user UUID
 	getByUuid(uuid: string): Client | undefined {
 		return (this.byUuid.get(uuid));
 	}
 
+	//finds a client by socket ID
 	getBySocketId(socketId: string): Client | undefined {
 		return (this.bySocketId.get(socketId));
 	}
 
+	//replaces a client's socket and returns the old one
 	rebindSocket(client: Client, socket: ChatSocket): ChatSocket {
 		const oldSocket = client.socket;
 		this.bySocketId.delete(oldSocket.id);
@@ -32,6 +38,7 @@ export class ClientManager {
 		return oldSocket;
 	}
 
+	//schedules cleanup if the client does not reconnect in time
 	scheduleRemoval(uuid: string, delayMs: number, onRemove: (client: Client) => void): void {
 		this.cancelRemoval(uuid);
 
@@ -56,6 +63,7 @@ export class ClientManager {
 		this.pendingRemovals.set(uuid, timer);
 	}
 
+	//cancels a pending cleanup for a user
 	cancelRemoval(uuid: string): void {
 		const timer = this.pendingRemovals.get(uuid);
 		if (!timer)
@@ -65,6 +73,7 @@ export class ClientManager {
 		this.pendingRemovals.delete(uuid);
 	}
 
+	//cancels every pending cleanup timer
 	clearAllPendingRemovals(): void {
 		for (const timer of this.pendingRemovals.values())
 			clearTimeout(timer);
@@ -72,6 +81,7 @@ export class ClientManager {
 		this.pendingRemovals.clear();
 	}
 
+	//removes a client from both indexes
 	removeByUuid(uuid: string): Client | undefined {
 		const client = this.byUuid.get(uuid);
 		if (!client)
@@ -85,4 +95,5 @@ export class ClientManager {
 	}
 }
 
+//shared registry of connected chat clients
 export const clientManager = new ClientManager();

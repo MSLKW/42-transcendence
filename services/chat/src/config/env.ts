@@ -1,3 +1,4 @@
+//reads a required non-empty environment variable
 function requireEnv(name: string): string
 {
 	const value = process.env[name];
@@ -6,6 +7,7 @@ function requireEnv(name: string): string
 	return value;
 }
 
+//reads a required non-negative integer environment variable
 function requireEnvNum(name: string): number
 {
 	const value = Number(requireEnv(name));
