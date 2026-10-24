@@ -15,8 +15,8 @@ export async function requireUser(req: Request, res: Response, next: NextFunctio
 	{
 		// fetch returns a Promise. 
 		// When the request fails, the Promise is rejected, 
-		// and await turns a rejected Promise into a thrown exception right at that line,
-		// jumps straight to your catch
+		// and await turns a rejected Promise into a thrown exception,
+		// jumps straight to catch block
 		const authRes = await fetch(`${AUTH_SERVICE_URL}/validate`, 
 		{
 			headers: { cookie },
@@ -35,12 +35,12 @@ export async function requireUser(req: Request, res: Response, next: NextFunctio
 		const parsed = ValidateAuthResponseSchema.safeParse(body);  // reuses the same ValidateAuthResponseSchema object , throws SyntaxError if body is empty/invalid JSON
 		if (!parsed.success) 
 		{
-			console.error("requireUser: auth replied with an unexpected body\n" + z.prettifyError(parsed.error));
+			console.error("requireUser: auth replied with an unexpected body:\n" + z.prettifyError(parsed.error));
 			return (res.status(502).end());
 		}
 
-		res.locals.playerUuid = parsed.data.uuid;		// hand it to the handler
-		next();											// continue to the handler
+		res.locals.playerUuid = parsed.data.uuid;		// middlerware hand it to the handler
+		next();											// continue to the handler (implemented so handler get it from helper function getPlayerUuid below)
 	} 
 	catch (err)
 	{
@@ -50,7 +50,11 @@ export async function requireUser(req: Request, res: Response, next: NextFunctio
 
 }
 
-// res.locals.playerUuid is typed any
+// in the middleware above, uuid from authRes
+// "res.locals.XX" make XX typed as any
+// coz res.local. could store various of kinds of property types
+// therefore uuid converted into any once handed into res.locals., 
+// so typeof is both ==> verifying the type + then, make it return to its original type as per verified)
 export function getPlayerUuid(res: Response): string 
 {
 	const playerUuid = res.locals.playerUuid;
@@ -80,4 +84,4 @@ export function getPlayerUuid(res: Response): string
 
 // zodSchemaX.safeParse(data) 
 // safeParse returns:
-// { success: true, data } or { success: false, error }
+// 		{ success: true, data } or { success: false, error }

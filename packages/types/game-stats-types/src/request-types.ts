@@ -1,45 +1,43 @@
-import { ACHIEVEMENT_LABELS } from "./achievements";
-import { BADGE_LABELS } from "./badges";
-import { z } from "zod";
+import { ACHIEVEMENT_IDS } from "./achievements";
+import { BADGE_IDS } from "./badges";
+import z from "zod";
 
-// 		POST /badge-unlocked
-// * request types	= body is zod validated
-// * response types	= 204 OK or specific error message
-export const BadgeUnlockedRequestSchema = z.object({
-	playerUuid:	z.uuid(),
-	badge:		z.enum(BADGE_LABELS),
-	unlockedAt:	z.iso.datetime(),
+
+// 		POST /easter-egg-found
+// * request types	= EasterEggRequest; playerUuid comes from the validated cookie
+// * response types	= EasterEggResponse or 404 (unknown egg or not earned, deliberately the same)
+export const EasterEggRequestSchema = z.object({
+	eggId:	z.string(),								// not an enum, so the egg list stays out of the shared package to not get exposed to clients in browser
 });
-export type BadgeUnlockedRequest = z.infer<typeof BadgeUnlockedRequestSchema>;
-
-
-// 		POST /achievement-unlocked
-// * request types	= body is zod validated
-// * response types	= 204 or specific error message
-export const AchievementUnlockedRequestSchema = z.object({
-	playerUuid:		z.uuid(),
-	achievement:	z.enum(ACHIEVEMENT_LABELS),
-	unlockedAt:		z.iso.datetime(),
-});
-export type AchievementUnlockedRequest = z.infer<typeof AchievementUnlockedRequestSchema>;
+export type EasterEggRequest = z.infer<typeof EasterEggRequestSchema>;
 
 
 // 		PUT /displayed-badge
-// * request types	= body is zod validated + playerUuid comes from after validating the recieved cookie to auth, not the body
-// * response types	= 204 or specific error message
+// * request types	= DisplayedBadgeRequest; playerUuid comes from the validated cookie
+// * response types	= 204(harmless to still choose the same previous displayed badge) or 403(badge is still locked)
 export const DisplayedBadgeRequestSchema = z.object({
-	badge:	z.enum(BADGE_LABELS),
+	badgeId:	z.enum(BADGE_IDS),
 });
 export type DisplayedBadgeRequest = z.infer<typeof DisplayedBadgeRequestSchema>;
 
 
+// 		POST /achievement-unlocked
+// * request types	= AchievementUnlockedRequest (requested by game-server)
+// * response types	= AchievementUnlockedResponse or 404(invalid playerUuid recieved from body)
+export const AchievementUnlockedRequestSchema = z.object({
+	playerUuid:		z.uuid(),
+	achievementId:	z.enum(ACHIEVEMENT_IDS),
+});
+export type AchievementUnlockedRequest = z.infer<typeof AchievementUnlockedRequestSchema>;
+
+
 // 		POST /game-end-stats
-// * request types				= game-types's GameEndStatsTransmit
-// * extracted request input	= input is zod validated as below
+// * request types				= game-types's GameEndStatsTransmit (requested by game-server)
+// * extracted request input	= GameEndStatsInput (to store humans' details only, filter out bots)
 // * response types				= game-stats-types's GameEndStatsResponse
 export const GameEndStatsInputSchema = z.object({
-	roundId:			z.uuid(),										// uuid
-	winnerPlayerUuid:	z.string(),										// may be a bot id, so its a string, not uuid
-	playerXpGains:		z.record(z.string(), z.int().nonnegative()),	// for each players/bots in the round -> non-negative integers: guaranteed by game-types's GameEndStatsTransmitSchema
+	roundId:			z.uuid(),
+	winnerHumanUuid:	z.uuid().nullable(),						// null when a bot won
+	humanXpGains:		z.record(z.uuid(), z.int().nonnegative()),
 });
 export type GameEndStatsInput = z.infer<typeof GameEndStatsInputSchema>;

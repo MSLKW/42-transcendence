@@ -1,13 +1,19 @@
 import { Request, Response } from "express";
-import { GameStatsRepository } from "../../repositories/interfaces/GameStatsRepository";
+import { GameStatsRepository } from "../../repositories/GameStatsRepository";
 import { GameEndStatsTransmitSchema } from "@big2/game-types/validation";
-import { GameEndStatsResponseSchema, type GameEndStatsInput } from "@big2/game-stats-types";
+import { 
+	GameEndStatsInputSchema,
+	GameEndStatsResponseSchema, 
+	type GameEndStatsInput 
+} from "@big2/game-stats-types";
 import z from "zod";
+import { isBotUuid } from "../../utils/botIdentifier";
 
 export function postGameEndStats(repository: GameStatsRepository)
 {
 	return async (req: Request, res: Response) =>
 	{
+		// 1. correct request shape
 		const parsed = GameEndStatsTransmitSchema.safeParse(req.body);
 		if (!parsed.success)
 		{
@@ -18,27 +24,71 @@ export function postGameEndStats(repository: GameStatsRepository)
 			}));
 		}
 
-		const input: GameEndStatsInput = {
-			roundId:			parsed.data.uuid,
-			winnerPlayerUuid:	parsed.data.winnerPlayerUuid,
-			playerXpGains:		parsed.data.playerXpGains,
-		};
-		
-		const playersUpdatedStats = await repository.applyGameEndStats(input);
-		const cleanData = GameEndStatsResponseSchema.parse(playersUpdatedStats);
-		
-		return(res.json(cleanData));
+		// 2. valid all player uuid entries
+		// 2.1 check game-server's request body of:
+		// 		is the winner among the players playing in this round ?
+		if (!Object.hasOwn(parsed.data.playerXpGains, parsed.data.winnerPlayerUuid))
+			return (res.status(400).json({ error: "winner_is_not_among_players" }));
+
+		// 2.2 extract human stats only (winner & each player)
+		// filter away any bots' stats
+		const winnerHumanUuid = (
+			isBotUuid(parsed.data.winnerPlayerUuid))
+			? null : parsed.data.winnerPlayerUuid;
+
+		const humanXpGains: Record<string, number> = {};
+		for (const [uuid, xpGained] of Object.entries(parsed.data.playerXpGains))
+		{
+			if (!isBotUuid(uuid))
+				humanXpGains[uuid] = xpGained;
+		}
+
+		// save the stats inputs excluding bots.
+		const parsedInput = GameEndStatsInputSchema.safeParse({
+			roundId:	parsed.data.uuid,
+			winnerHumanUuid,	// TS shorthand - same as winnerHumanUuid: winnerHumanUuid
+			humanXpGains,		// TS shorthand - same as humanXpGains: humanXpGains
+		});
+
+		// all extracted players must be valid uuid (humans) | null (bots)
+		if (!parsedInput.success) 
+		{
+			console.error("Invalid playerUuid for humans" + z.prettifyError(parsedInput.error));
+			return (res.status(404).json({ 
+				error: "invalid_player_uuid_for_humans",
+				message: "Invalid playerUuid for humans" + z.prettifyError(parsedInput.error),
+			}));
+		}		
+		const input: GameEndStatsInput = parsedInput.data;
+
+		try
+		{
+			// 4. return drizzle query's result
+			// updated & accumulated stats
+			const playersUpdatedStats = await repository.applyGameEndStats(input);
+
+			// 5. valid response shape
+			// strip off updatedAt column - z.object in zod schema drops unknown keys by default
+			const cleanData = GameEndStatsResponseSchema.parse(playersUpdatedStats);
+			return(res.json(cleanData));
+		} 
+		catch (error: any)
+		{
+			// if (error.code === "23503") // foreign_key_violation
+			// {
+			// 	console.error("Invalid playerUuid", error);
+			// 	return (res.status(404).json({ 
+			// 		error: "invalid_player_uuid",
+			// 		message: "Invalid playerUuid"
+			// 	}));
+			// }
+			// console.error("gameEndStats: something went wrong");
+			// throw error;
+			
+			// bad	= non-exist playerUuid, thrown postgres error foreign_key_violation
+			if (isForeignKeyViolation(error))
+				return (res.status(404).json({ error: "invalid_player_uuid", message: "Invalid playerUuid" }));
+			throw error;		
+		}
 	};
 }
-
-// 2. Validating a single uuid without a schema object
-
-// In zod 4, z.uuid() is itself a schema, so you can call safeParse on it directly:
-
-// ts
-// const parsed = z.uuid().safeParse(req.params.playerUuid);
-// if (!parsed.success)
-// 	return (res.status(400).json({ error: "invalid_uuid" }));
-// const playerUuid = parsed.data;		// typed string
-
-// z.uuid() is strict about the RFC format. If your auth service generates UUIDs that don’t pass (for example a nil or hand-made one), use z.guid(), which only checks the 8-4-4-4-12 shape.

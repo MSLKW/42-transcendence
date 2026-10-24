@@ -1,12 +1,14 @@
 import { Request, Response } from "express";
-import { GameStatsRepository } from "../../repositories/interfaces/GameStatsRepository";
-import { AchievementUnlockedRequestSchema } from "@big2/game-stats-types";
+import { GameStatsRepository } from "../../repositories/GameStatsRepository";
+import { AchievementUnlockedRequestSchema, AchievementUnlockedResponseSchema } from "@big2/game-stats-types";
 import z from "zod";
 
 export function postAchievementUnlocked(repository: GameStatsRepository)
 {
 	return async (req: Request, res: Response) =>
 	{
+		// 1. correct request shape
+		// block invalid achievements that isnt as per types 
 		const parsed = AchievementUnlockedRequestSchema.safeParse(req.body);
 		if (!parsed.success)
 		{
@@ -16,16 +18,43 @@ export function postAchievementUnlocked(repository: GameStatsRepository)
 				message: z.prettifyError(parsed.error),
 			}));
 		}
-
-		const ok = await repository.grantAchievement(parsed.data);
-		if (!ok)
+		
+		try
 		{
-			console.error("Invalid playerUuid");
-			return (res.status(404).json({ 
-				error: "invalid_player_uuid",
-				message: "Invalid playerUuid"
-			}));
+			// 2. return drizzle query's result:
+			// 		isNewlyGrantedAchievement: true (1st time) / false (previously granted already)
+			// 		newlyGrantedBadgeIdForAchievement: badgeId (upon certain newly granted achievements) / null (previously granted already)
+			// 		etc (just for other microservices' infos, not decision maker)
+			// only game-server knows the rules on giving achievements, 
+			// so game-stats only control statuses (already granted or not) for realtime notifications
+			// thus only game-server can reach this endpoint via token
+			const result = await repository.grantAchievement(parsed.data);
+
+			// 3. valid response shape
+			// safety net to ensure its in the right shape, updatedAt is stripped off in drizzle query already
+			const cleanResult = AchievementUnlockedResponseSchema.parse(result); 
+			return (res.json(cleanResult));
 		}
-		return (res.status(204).end());
+		catch (error: any)
+		{
+			// // if (error.code === "23503") // foreign_key_violation
+			// // {
+			// // 	console.error("Invalid playerUuid");
+			// // 	return (res.status(404).json({ 
+			// // 		error: "invalid_player_uuid",
+			// // 		message: "Invalid playerUuid"
+			// // 	}));
+			// // }
+			if (isForeignKeyViolation(error))
+			{
+				console.error("Invalid playerUuid");
+				return (res.status(404).json({ 
+					error: "invalid_player_uuid", 
+					message: "Invalid playerUuid" 
+				}));
+			}
+			// console.error("achievementUnlocked: something went wrong"); //? whould this be here? wont users sees it in browser?
+			throw error;		
+		}
 	};
 }

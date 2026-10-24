@@ -41,6 +41,8 @@ secrets: # auto make all secret files just read only mode
     file: ./secrets/database-passwords/db-friends-password.txt
   db-game-stats-password:
     file: ./secrets/database-passwords/db-game-stats-password.txt
+  statistics-token:
+    file: ./secrets/tokens/statistics-token.txt
 
 
 services:
@@ -196,6 +198,7 @@ services:
       additional_contexts:
         root: .
         game-types: ./packages/types/game-types
+        game-stats-types: ./packages/types/game-stats-types
     pull_policy: never
     restart: unless-stopped
     volumes: # temporary for vite hmr in development stage
@@ -400,7 +403,11 @@ services:
     pull_policy: never
     restart: unless-stopped
     environment:
+      STATISTICS_TOKEN_FILE: /run/secrets/statistics-token
       AUTH_SERVICE_URL: ${AUTH_SERVICE_URL:?}
+      GAME_STATS_SERVICE_URL: ${GAME_STATS_SERVICE_URL:?}
+    secrets:
+      - statistics-token
     networks:
       - transcendence
 
@@ -437,6 +444,7 @@ services:
         game-stats-schema:  ./packages/postgres/game-stats-schema
     environment:
       PGPASSWORD_FILE: /run/secrets/db-game-stats-password
+      STATISTICS_TOKEN_FILE: /run/secrets/statistics-token
       PGUSER: ${PGUSER_GAME_STATS:?}
       PGPORT: ${PGPORT:?}
       PGHOST: ${PGHOST:?}
@@ -444,8 +452,11 @@ services:
       PG_POOL_MAX: ${PG_POOL_MAX:?}
       PORT: ${GAME_STATS_SERVICE_PORT:?}
       AUTH_SERVICE_URL: ${AUTH_SERVICE_URL:?}
+      PROFILE_SERVICE_URL: ${PROFILE_SERVICE_URL:?}
+      FRIENDS_SERVICE_URL: ${FRIENDS_SERVICE_URL:?}
     secrets:
       - db-game-stats-password
+      - statistics-token
     networks:
       - transcendence
       - database

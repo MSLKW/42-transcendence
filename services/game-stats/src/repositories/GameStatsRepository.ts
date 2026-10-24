@@ -1,11 +1,12 @@
 import { 
 	AchievementUnlockedRequest,
-	BadgeUnlockedRequest,
+	AchievementUnlockedResponse,
+	BadgeId,
 	DisplayedBadgeRequest,
+	EasterEggResponse,
 	GameEndStatsInput,
 	GameEndStatsResponse, 
 	OwnPlayerGameDataResponse, 
-	PlayerStatsData, 
 	PublicPlayerGameDataResponse } from "@big2/game-stats-types";
 
 
@@ -19,28 +20,15 @@ import {
 // 		grant	give something once (idempotent)
 // 		apply	work out and save the result of an event
 
-export interface GameStatsRepository {
+export interface GameStatsRepository { // only list publics, no private properties / methods
 
-	// --- private ---
-	// create
-	createPlayerStats(playerUuid: string): Promise<PlayerStatsData>;
-
-	// --- public ---	
-	// get
+	// requested by website
 	getOwnPlayerGameData(playerUuid: string): Promise<OwnPlayerGameDataResponse>;
-	getPublicPlayerGameData(playerUuid: string): Promise<PublicPlayerGameDataResponse>;
+	getPublicPlayerGameData(playerUuid: string): Promise<PublicPlayerGameDataResponse>;			// throw for an unknown uuid
+	setDisplayedBadge(playerUuid: string, input: DisplayedBadgeRequest): Promise<boolean>;
+	grantEasterEggBadge(playerUuid: string, badgeId: BadgeId): Promise<EasterEggResponse>;		// throw if invalid secret badge
 
-	// update
-	// false, reason: badge is locked
-	updateDisplayedBadge(input: DisplayedBadgeRequest): Promise<boolean>;
-
-	// grant 
-	// false, reason: invalid player uuid
-	// false, reason: badge is not worthy to be unlocked
-	// false, reason: achievement is not from trusted source
-	grantAchievement(input: AchievementUnlockedRequest): Promise<boolean>;
-	grantBadge(input: BadgeUnlockedRequest): Promise<boolean>;				// this is for easter egg too later
-
-	// apply
+	// requested by game-server
+	grantAchievement(input: AchievementUnlockedRequest): Promise<AchievementUnlockedResponse>;	// throw for an unknown player
 	applyGameEndStats(input: GameEndStatsInput): Promise<GameEndStatsResponse>;						
 }

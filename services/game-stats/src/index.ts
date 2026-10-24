@@ -2,8 +2,8 @@ import express from "express";
 import cors from "cors";
 import { PORT } from "./config/env";
 import { isDbDown, closePostgresClientPool } from "@big2/postgres-client";
-import { DrizzleGameStatsRepository } from "./repositories/drizzle/DrizzleGameStatsRepository";
-import { createBrowserFacingRouter } from "./routes/browser-facing.routes";
+import { DrizzleGameStatsRepository } from "./repositories/DrizzleGameStatsRepository";
+import { createBrowserFacingRouter } from "./routes/browserFacing.routes";
 import { createInternalRouter } from "./routes/internal.routes";
 
 
