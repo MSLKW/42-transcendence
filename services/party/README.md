@@ -5,6 +5,7 @@
 | Method | Path | Purpose |
 |:---:|---|---|
 | GET | [`/online/:uuid`](#get-onlineuuid) | get a user's online status |
+| GET | [`/members/:hostUuid`](#get-membershostuuid) | get a host user's members for whitelisting purposes |
 
 ### GET /online/:uuid
 #### Responses
@@ -14,6 +15,14 @@
 	inParty:	boolean
 	lastOnline:	Date | null 
 }
+```
+<br><br>
+
+### GET /members/:hostUuid
+#### Responses
+```
+- 200: { members: string[] }
+- 404: { error: string } (user not found or is not found to be a host)
 ```
 
 
