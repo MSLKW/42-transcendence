@@ -8,13 +8,13 @@ import { Client } from "./client/Client";
 import { clientManager } from "./client/ClientManager";
 import { registerEventHandlers } from "./client/event_handlers";
 
+import { PORT, AUTH_SERVICE_URL } from "./config/env";
 import { UserStore } from "./store/UserStore";
 import { FileUserStore } from "./store/FileUserStore";
 
 import { closeDb } from "./db/closeDb";
 
-const PORT = Number(process.env.PORT) || 3000;
-const AUTH_SERVICE_URL = process.env.AUTH_SERVICE_URL;
+
 const RECONNECT_GRACE_PERIOD_MS = Number(process.env.DISCONNECT_GRACE_PERIOD_MS) || 15_000;
 
 if (!AUTH_SERVICE_URL)

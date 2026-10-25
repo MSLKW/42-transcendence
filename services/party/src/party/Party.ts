@@ -1,9 +1,6 @@
 import { Client } from "../client/Client";
 import { PartyState } from "../PartyTransmitTypes";
-
-const GAME_SERVICE_URL = process.env.GAME_SERVICE_URL;
-if (!GAME_SERVICE_URL)
-	throw new Error("GAME_SERVICE_URL is not set");
+import { GAME_SERVER_SERVICE_URL, CHAT_SERVICE_URL } from "../config/env";
 
 export class Party
 {
@@ -68,7 +65,7 @@ export class Party
 	{
 		try
 		{
-			const response = await fetch(`${GAME_SERVICE_URL}/lobby`, {
+			const response = await fetch(`${GAME_SERVER_SERVICE_URL}/lobby`, {
 				method: "POST",
 				headers: {
 					"Content-Type": "application/json"
@@ -107,7 +104,7 @@ export class Party
 	{
 		try
 		{
-			const response = await fetch(`${GAME_SERVICE_URL}/lobby/${this.gameId}`, {
+			const response = await fetch(`${GAME_SERVER_SERVICE_URL}/lobby/${this.gameId}`, {
 				method: "PUT",
 				headers: {
 					"Content-Type": "application/json"
