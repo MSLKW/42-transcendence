@@ -6,6 +6,7 @@ export class Client
 	public readonly uuid: string;
 	public socket: Socket;
 	public party: Party;
+	public invites: string[] = [];
 
 	constructor(uuid: string, socket: Socket)
 	{

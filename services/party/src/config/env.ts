@@ -2,7 +2,7 @@ function requireEnv(name: string): string
 {
 	const value = process.env[name];
 	if (!value)
-		throw new Error(`[Error] ${name} not set`);
+		throw new Error(`\x1b[31m${name} not set\x1b[0m`);
 	return value;
 }
 
@@ -17,3 +17,4 @@ function requireEnvNum(name: string): number
 export const PORT						= requireEnvNum("PORT");
 export const AUTH_SERVICE_URL			= requireEnv("AUTH_SERVICE_URL");
 export const GAME_SERVER_SERVICE_URL	= requireEnv("GAME_SERVER_SERVICE_URL");
+export const CHAT_SERVICE_URL			= requireEnv("CHAT_SERVICE_URL") 

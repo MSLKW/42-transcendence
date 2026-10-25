@@ -1,6 +1,6 @@
 import "dotenv/config";
-import express from "express";
-import { healthCheck } from "./handlers/healthCheck";
+import express from "express"
+import { healthCheck } from "./handlers/healthCheck"
 import { checkUuidOnline } from "./handlers/CheckUuidOnline";
 import { createServer } from "http";
 import { DisconnectReason, Server, Socket } from "socket.io";
@@ -8,19 +8,15 @@ import { Client } from "./client/Client";
 import { clientManager } from "./client/ClientManager";
 import { registerEventHandlers } from "./client/event_handlers";
 
+import { PORT, AUTH_SERVICE_URL } from "./config/env";
 import { UserStore } from "./store/UserStore";
-// import { FileUserStore } from "./store/FileUserStore";
-import { DrizzleUserStore } from "./store/DrizzleUserStore";
+import { FileUserStore } from "./store/FileUserStore";
 
-// TODO (signal handler): uncomment this when need to implement the signal handler
-// import { isDbDown, closePostgresClientPool } from "@big2/postgres-client";
+import { closeDb } from "./db/closeDb";
+import { getPartyMembers } from "./handlers/GetPartyMembers";
 
-const PORT = Number(process.env.PORT) || 3000;
-const AUTH_SERVICE_URL = process.env.AUTH_SERVICE_URL;
+
 const RECONNECT_GRACE_PERIOD_MS = Number(process.env.DISCONNECT_GRACE_PERIOD_MS) || 15_000;
-
-if (!AUTH_SERVICE_URL)
-	throw new Error("AUTH_SERVICE_URL is not set");
 
 const INTENTIONAL_DISCONNECT_REASONS = new Set([
 	"server namespace disconnect", // kicked
@@ -32,23 +28,23 @@ const INTENTIONAL_DISCONNECT_REASONS = new Set([
 
 const pendingRemovals = new Map<string, NodeJS.Timeout>();
 
-// const userStore = new FileUserStore;
-const userStore = new DrizzleUserStore;
+const userStore: UserStore = new FileUserStore;
 
 const app = express();
 app.use(express.json());
+
 app.get("/health", healthCheck());
 app.get("/online/:uuid", checkUuidOnline(userStore, clientManager));
+app.get("/members/:hostUuid", getPartyMembers(clientManager));
 
-// TODO (signal handler): uncomment this when need to implement the signal handler
-// // Central error handler (register AFTER all routes). 
-// // DB down -> 503 + Retry-After so callers know to retry; anything else is a real bug -> 500.
-// app.use((err: unknown, req: express.Request, res: express.Response, next: express.NextFunction) => {
-// 	if (isDbDown(err))
-// 		return res.status(503).set("Retry-After", "2").json({ error: "database_unavailable" });
-// 	console.error("Unhandled error:", err);
-// 	return res.status(500).json({ error: "Something went wrong." });
-// });
+
+app.use((err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {
+	if (err.type === "entity.parse.failed") {
+		return res.status(400).json({ error: "Malformed JSON in request body." });
+	}
+	console.error("Unhandled error:", err);
+	return res.status(500).json({ error: "Something went wrong." });
+});
 
 const httpServer = createServer(app);
 
@@ -79,7 +75,7 @@ io.use(async (socket, next) => {
 		});
 
 		if (!response.ok)
-			return next(new Error("UNAUTHORIZED: invalid or expired session"));
+return next(new Error("UNAUTHORIZED: invalid or expired session"));
 
 		const data = await response.json();
 
@@ -137,6 +133,7 @@ io.on("connection", (socket: Socket) =>
 
 		if (!client)
 			return ;
+		client.invites = [];
 		if (INTENTIONAL_DISCONNECT_REASONS.has(reason))
 			finalizeRemoval(uuid, reason);
 		else
@@ -148,14 +145,14 @@ io.on("connection", (socket: Socket) =>
 			}, RECONNECT_GRACE_PERIOD_MS);
 
 			pendingRemovals.set(uuid, timer);
-			console.log(`User<${uuid}> disconnected unintentionally. Waiting for reconnection`);
+			console.log(`User<${uuid}> disconnected unintentionally. Waiting for reconnection`)
 		}
 	});
 });
 
-async function finalizeRemoval(uuid: string, reason: string)
+function finalizeRemoval(uuid: string, reason: string)
 {
-	await userStore.setUser({
+	userStore.setUser({
 		uuid: uuid,
 		lastOnline: new Date	
 	});
@@ -168,22 +165,19 @@ httpServer.listen(PORT, () => {
 	console.log(`Socket.IO server listening on port ${PORT}`);
 });
 
-// TODO (signal handler): uncomment this when need to implement the signal handler
-// // Graceful shutdown on Ctrl+C / `docker compose down` & `docker compose stop` (both stop containers the same way).
-// // Close sockets, close the DB pool, then exit, well inside Docker's 10s SIGKILL.
-// let shuttingDown = false; 
-// async function shutdown() {
-// 	if (shuttingDown)
-// 		return;
-// 	shuttingDown = true;
-// 	setTimeout(() => process.exit(1), 8000).unref();	// failsafe: force exit if cleanup hangs
+let shuttingDown = false;
+async function shutdown()
+{
+	if (shuttingDown)
+		return ;
+	shuttingDown = true;
+	await io.close();
+	for (const timer of pendingRemovals.values())
+		clearTimeout(timer);
+	httpServer.close();
+	await closeDb();
+	process.exit(0);
+}
 
-// 	await io.close();										// 1. stop accepting new work
-// 	for (const timer of pendingRemovals.values())
-// 		clearTimeout(timer);						// 2. service-specific cleanup (cancel pending grace-period timers)
-// 	await closePostgresClientPool();				// 3. close DB pool (DB services only)
-// 	process.exit(0);								// 4. end the process, exit code 0 = clean shutdown
-// }
-// process.on('SIGINT', shutdown);		// Ctrl+C
-// process.on('SIGTERM', shutdown);	// `docker compose down` & `docker compose stop` (both stop containers the same way)
-
+process.on("SIGINT", shutdown);
+process.on("SIGTERM", shutdown);

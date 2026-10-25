@@ -287,6 +287,7 @@ services:
       PG_POOL_MAX: ${PG_POOL_MAX:?}
       PORT: ${PARTY_SERVICE_PORT:?}
       AUTH_SERVICE_URL: ${AUTH_SERVICE_URL:?}
+      CHAT_SERVICE_URL: ${CHAT_SERVICE_URL:?}
       GAME_SERVER_SERVICE_URL: ${GAME_SERVER_SERVICE_URL:?}
       GAME_SERVICE_URL: ${GAME_SERVER_SERVICE_URL:?} # temporarily until party fixes its env config
     secrets:

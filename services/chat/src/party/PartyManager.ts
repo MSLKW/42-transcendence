@@ -2,8 +2,10 @@ import { Server } from "socket.io";
 import { Client } from "../client/Client";
 import { clientManager } from "../client/ClientManager";
 import { ClientToServerEvents, ServerToClientEvents } from "../events";
-import { PartyConflictError, PartyNotFoundError } from "./errors";
+import { PartyConflictError, PartyNotFoundError, ValidationError } from "./errors";
 import { normalizePartyPayload } from "./validation";
+
+export { PartyConflictError, PartyNotFoundError, ValidationError } from "./errors";
 
 /** Server type used for party room broadcasts */
 type ChatServer = Server<ClientToServerEvents, ServerToClientEvents>;
