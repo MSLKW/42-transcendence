@@ -13,12 +13,10 @@ import { UserStore } from "./store/UserStore";
 import { FileUserStore } from "./store/FileUserStore";
 
 import { closeDb } from "./db/closeDb";
+import { getPartyMembers } from "./handlers/GetPartyMembers";
 
 
 const RECONNECT_GRACE_PERIOD_MS = Number(process.env.DISCONNECT_GRACE_PERIOD_MS) || 15_000;
-
-if (!AUTH_SERVICE_URL)
-	throw new Error("AUTH_SERVICE_URL is not set");
 
 const INTENTIONAL_DISCONNECT_REASONS = new Set([
 	"server namespace disconnect", // kicked
@@ -37,6 +35,8 @@ app.use(express.json());
 
 app.get("/health", healthCheck());
 app.get("/online/:uuid", checkUuidOnline(userStore, clientManager));
+app.get("/members/:hostUuid", getPartyMembers(clientManager));
+
 
 app.use((err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {
 	if (err.type === "entity.parse.failed") {
