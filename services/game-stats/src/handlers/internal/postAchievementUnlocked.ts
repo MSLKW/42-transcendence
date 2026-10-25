@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import { GameStatsRepository } from "../../repositories/GameStatsRepository";
 import { AchievementUnlockedRequestSchema, AchievementUnlockedResponseSchema } from "@big2/game-stats-types";
 import z from "zod";
+import { isForeignKeyViolation } from "@big2/postgres-client";
 
 export function postAchievementUnlocked(repository: GameStatsRepository)
 {
@@ -37,22 +38,9 @@ export function postAchievementUnlocked(repository: GameStatsRepository)
 		}
 		catch (error: any)
 		{
-			// // if (error.code === "23503") // foreign_key_violation
-			// // {
-			// // 	console.error("Invalid playerUuid");
-			// // 	return (res.status(404).json({ 
-			// // 		error: "invalid_player_uuid",
-			// // 		message: "Invalid playerUuid"
-			// // 	}));
-			// // }
+			// non-exist playerUuid, thrown postgres error foreign_key_violation
 			if (isForeignKeyViolation(error))
-			{
-				console.error("Invalid playerUuid");
-				return (res.status(404).json({ 
-					error: "invalid_player_uuid", 
-					message: "Invalid playerUuid" 
-				}));
-			}
+				return (res.status(404).json({ error: "invalid_player_uuid", message: "Invalid playerUuid" }));
 			// console.error("achievementUnlocked: something went wrong"); //? whould this be here? wont users sees it in browser?
 			throw error;		
 		}

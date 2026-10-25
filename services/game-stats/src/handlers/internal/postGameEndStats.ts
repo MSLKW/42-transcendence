@@ -8,6 +8,7 @@ import {
 } from "@big2/game-stats-types";
 import z from "zod";
 import { isBotUuid } from "../../utils/botIdentifier";
+import { isForeignKeyViolation } from "@big2/postgres-client";
 
 export function postGameEndStats(repository: GameStatsRepository)
 {
@@ -74,18 +75,7 @@ export function postGameEndStats(repository: GameStatsRepository)
 		} 
 		catch (error: any)
 		{
-			// if (error.code === "23503") // foreign_key_violation
-			// {
-			// 	console.error("Invalid playerUuid", error);
-			// 	return (res.status(404).json({ 
-			// 		error: "invalid_player_uuid",
-			// 		message: "Invalid playerUuid"
-			// 	}));
-			// }
-			// console.error("gameEndStats: something went wrong");
-			// throw error;
-			
-			// bad	= non-exist playerUuid, thrown postgres error foreign_key_violation
+			// non-exist playerUuid, thrown postgres error foreign_key_violation
 			if (isForeignKeyViolation(error))
 				return (res.status(404).json({ error: "invalid_player_uuid", message: "Invalid playerUuid" }));
 			throw error;		
