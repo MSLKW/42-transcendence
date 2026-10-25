@@ -83,11 +83,6 @@ export const PartyPlayerModule = ({ uuid }: PartyPlayerModuleProps) => {
 			flex place-content-center place-items-stretch
 			gap-1rem
 		">
-			{/* <AvatarModule
-				uuid={uuid}
-				image={playerData.avatarPath ?? undefined}
-				showName={false}
-			/> */}
 			<Tooltip text={
 				relation === "Self" ? "Edit Profile" :
 				"View Profile"
