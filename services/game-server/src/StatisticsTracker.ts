@@ -163,6 +163,7 @@ export class StatisticsTracker {
 		};
 
 		// send to game stats and website
+		playerTracker.stats.unlockedAchievements.push(achievementUnlockTransmit);
 		this.gameEvents.emit("player:unlock_achievement", achievementUnlockTransmit);
 		this.transmitAchievementUnlock(achievementUnlockTransmit);
 	}

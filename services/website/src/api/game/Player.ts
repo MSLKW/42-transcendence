@@ -76,12 +76,8 @@ export class Player extends Participant {
 					card.dispose();
 				}
 			}
-			else if (event.code === "Equal") {
-				this.cardManager.receiveCard(new Card(0, 0));
-			}
 			else if (event.code === "Backquote") {
-				if (useGameStore.getState().gameVerboseMode)
-					console.log("enabling or disabling orbit controls");
+				gameLog("[game] Enabling or disabling orbit controls");
 				threejsManager.orbitControls.enabled = !threejsManager.orbitControls.enabled;
 				threejsManager.orbitControls.update();
 			}

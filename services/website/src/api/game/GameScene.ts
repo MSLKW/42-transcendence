@@ -57,9 +57,10 @@ export class GameScene extends SceneContainer {
 		ctx.camera.fov = 75;
 		ctx.camera.near = 0.1;
 		ctx.camera.far = 100;
-		ctx.camera.position.set(0, 10, 0);
+		ctx.camera.position.set(0, 8, 0);
 		ctx.orbitControls.enableDamping = false;
 		ctx.orbitControls.enableZoom = true;
+		ctx.orbitControls.enabled = false;
 		ctx.camera.updateProjectionMatrix();
 		ctx.orbitControls.update();
 	}
