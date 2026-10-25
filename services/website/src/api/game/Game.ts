@@ -147,7 +147,7 @@ export class Game {
 				useResultsStore.getState().setResults(gameEndStats);
 				useGameStore.setState({ round: gameEndStats.temporaryRoundsPlayed });
 				useSceneStore.getState().setCurrentScene("Lobby");
-				useSceneStore.getState().setShowWindow("results", true); // doesn't work when setCurrnetScene set to Lobby?
+				useSceneStore.getState().setShowWindow("results", true);
 				this.resetGame();
 				useGameStore.getState().resetGame();
 			}, "+=1");
@@ -396,8 +396,8 @@ export class Game {
 		else if (totalPlayers === 3) {
 			positions = [
 				new THREE.Vector3(0, 1.5, 4),
-				new THREE.Vector3(-3.5, 1.5, -2.5),
-				new THREE.Vector3(3.5, 1.5, -2.5),
+				new THREE.Vector3(-3.5, 1.5, -2),
+				new THREE.Vector3(3.5, 1.5, -2),
 			];
 			rotations = [
 				new THREE.Euler(0, 0, 0),
