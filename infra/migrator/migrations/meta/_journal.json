@@ -57,6 +57,13 @@
       "when": 1792442175807,
       "tag": "0007_feat_updated_at_column_for_processed_rounds_table_in_game_stats_schema",
       "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "7",
+      "when": 1792953806121,
+      "tag": "0008_refactor_game_stats_schema_nearing_completion_of_this_service",
+      "breakpoints": true
     }
   ]
 }
