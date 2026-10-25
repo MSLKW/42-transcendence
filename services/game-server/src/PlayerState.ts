@@ -5,58 +5,54 @@ import { CardHeapState } from './CardHeapState.js';
 import { io } from './server.js';
 import { CardHandState } from './CardHandState.js';
 import { UserState } from './UserState.js';
+import { EventEmitter } from 'node:stream';
 
 export class PlayerState {
 	public	socket: Socket;
 	public	uuid: string;
 	public	cards: Array<CardTransmit>;
-	private gameStateRef: GameState;
+	private gameEvents: EventEmitter;
 	private cardHeapRef: CardHeapState;
 	public	isDisconnected: boolean;
 
-	constructor(uuid: string, socket: Socket, gameState: GameState) {
+	public	isMyTurn: boolean;
+	public	playedTwoSpadesLast: boolean;
+
+	// inject gameRoomId
+	constructor(uuid: string, socket: Socket, gameEvents: EventEmitter, cardHeap: CardHeapState) {
 		this.uuid = uuid;
 		this.cards = [];
 		this.socket = socket;
-		this.gameStateRef = gameState;
-		this.cardHeapRef = gameState.cardHeap;
+		this.gameEvents = gameEvents;
+		this.cardHeapRef = cardHeap;
 		this.isDisconnected = false;
+		this.isMyTurn = false;
+		this.playedTwoSpadesLast = false;
 
 		this.setupSocketListeners()
 	}
 
 	public setupSocketListeners() {
-		this.socket.join(this.gameStateRef.gameRoomId);
-
-		this.socket.on("player_play_card_hand_request", (cardHandTransmit: CardHandTransmit) => {
-			const status: StatusTransmit = this.playCardHand(cardHandTransmit);
-			this.socket.emit("player_play_card_hand_request", status);
-			if (status.success === true) {
-				if (this.cards.length === 0) {
-					this.gameStateRef.endGame(this)
-					return ;
-				}
-				this.gameStateRef.nextPlayerTurn();
-			}
-		});
-
-		this.socket.on("player_skip_turn_request", () => {
-			this.socket.emit("player_skip_turn_request", this.skipTurnRequest());
-		})
+		this.socket.on("player_play_card_hand_request", this.playCardHandRequest);
+		this.socket.on("player_skip_turn_request", this.skipTurnRequest);
 	}
 
-	public disconnect() {
+	public disconnect(gameRef: GameState) {
 		this.isDisconnected = true;
-		if (this.gameStateRef.settings.autoPassInMilliseconds === 0)
+		if (gameRef.settings.autoPassInMilliseconds === 0)
 			this.skipTurn();
 		console.log(`Player<${this.uuid}> has disconnected`)
 	}
 
-	public reconnect(user: UserState) {
+	public reconnect(user: UserState, gameRef: GameState) {
 		this.socket = user.socket;
 		this.isDisconnected = false;
 		this.setupSocketListeners();
-		this.socket.emit("game_state", this.gameStateRef.transmit(this));
+		this.socket.emit("game_state", gameRef.transmit(this));
+		const playerTurnTransmit = gameRef.getPlayerTurnTransmit();
+		if (playerTurnTransmit !== undefined) {
+			this.socket.emit("player_turn", playerTurnTransmit);
+		}
 		console.log(`Player<${user.uuid}> has reconnected`);
 	}
 
@@ -88,90 +84,101 @@ export class PlayerState {
 		}
 	}
 
-	public skipTurnRequest(): StatusTransmit {
+	public skipTurnRequest = (statusCallback: (status: StatusTransmit) => void) => {
 		const status: StatusTransmit = {
 			success: false,
 			message: "It's not the player's turn"
 		}
-		if (this.gameStateRef.isPlayerTurn(this) === false) {
-			return (status);
+		if (this.isMyTurn === false) {
+			statusCallback(status);
+			return ;
 		}
 		if (this.cardHeapRef.isPlayerLeading(this.uuid)) {
-			status.message = "Player is already leading"
-			return (status);
+			status.message = "Player is already leading";
+			statusCallback(status);
+			return ;
 		}
 		this.skipTurn();
 		status.success = true;
 		status.message = "Player has successfully skipped their turn";
-		return (status);
+		statusCallback(status);
 	}
 
 	public skipTurn() {
-		if (this.gameStateRef.isPlayerTurn(this) === true) {
+		if (this.isMyTurn === true) {
 			if (this.cardHeapRef.isPlayerLeading(this.uuid))
 				this.cardHeapRef.resetPlayerLeading();
-			this.cardHeapRef.requiresThreeDiamonds = false;
+			this.cardHeapRef.requiresLowestCard = false;
 			const playerSkipTurn: SkipTurnTransmit = {
 				playerId: this.uuid
 			}
-			this.gameStateRef.emit("player_skip_turn", playerSkipTurn);
-			this.gameStateRef.nextPlayerTurn();
+			this.gameEvents.emit("player:skip_turn", playerSkipTurn);
 		}
 	}
 
 	// Returns if player has finished all his cards
-	private playCardHand(cardHandTransmit: CardHandTransmit): StatusTransmit {
+	public playCardHandRequest = (cardHandTransmit: CardHandTransmit, statusCallback: (status: StatusTransmit) => void) => {
 		const status: StatusTransmit = {
 			success: false,
 			message: ""
 		};
-		if (this.gameStateRef.isPlayerTurn(this) === false) {
+		if (this.isMyTurn === false) {
 			status.message = "Not your turn";
-			return (status);
+			statusCallback(status);
+			return ;
 		}
 		const cardHand = new CardHandState(cardHandTransmit.cards, cardHandTransmit.playerId);
 		if (cardHand.compareTypes(cardHandTransmit) === false) {
 			status.message = "handtype or pentuple type send by client is inaccurate";
-			return (status);
+			statusCallback(status);
+			return ;
 		}
 		if (cardHand.handType === HandType.None || (cardHand.handType === HandType.Pentuple && cardHand.pentupleType === PentupleType.None)) {
 			status.message = "cardhand is not even a thing";
-			return (status);
+			statusCallback(status);
+			return ;
 		}
 		for (let i = 0; i < cardHand.cards.length; i++) {
 			if (this.cards.findIndex((card: CardTransmit) => card.rank === cardHand.cards[i].rank && card.suit === cardHand.cards[i].suit ) == -1) {
 				status.message = "cardhand cards not in playerState cards";
-				return (status);
+				statusCallback(status);
+				return ;
 			}
 		}
-		if (this.cardHeapRef.requiresThreeDiamonds === true && PlayerState.hasCard(cardHand.cards, CardRank.Three, CardSuit.Diamond) === false) {
-			status.message = "first cardhand played must contain three of diamonds";
-			return (status);
+		if (this.cardHeapRef.checkLowestCardRequirement(cardHand)) {
+			status.message = "first cardhand played must contain your lowest card";
+			statusCallback(status);
+			return ;
 		}
 		if (this.cardHeapRef.isCardHandPlayable(cardHand) == false) {
 			status.message = "cardhand is not playable";
-			return (status);
+			statusCallback(status);
+			return ;
 		}
 		this.cardHeapRef.receiveCardHand(cardHand);
-		this.gameStateRef.emit("player_play_card_hand", cardHand.transmit());
 		this.removeCards(cardHand.cards);
-
+		
 		status.success = true;
 		status.message = "Successfully played a card hand";
-		return (status);
+		statusCallback(status);
+		this.gameEvents.emit("player:play_card_hand", cardHand.transmit());
 	}
 
 	public calculatePenaltyPoints(): number {
 		let penaltyPoints: number = 0;
 		const cardAmount = this.cards.length;
-
+		
+		if (this.playedTwoSpadesLast === true) {
+			penaltyPoints = 99;
+			return (penaltyPoints);
+		}
 		if (cardAmount <= 9) {
 			penaltyPoints = cardAmount;
 		}
 		else if (cardAmount > 9 && cardAmount < 13) {
 			penaltyPoints = cardAmount * 2;
 		}
-		else if (cardAmount > 13) {
+		else if (cardAmount >= 13) {
 			penaltyPoints = cardAmount * 3;
 		}
 		return (penaltyPoints);
@@ -179,5 +186,10 @@ export class PlayerState {
 
 	public reset() {
 		this.cards.length = 0;
+		// this.isDisconnected = false;
+		this.isMyTurn = false;
+		this.playedTwoSpadesLast = false;
+		this.socket.off("player_play_card_hand_request", this.playCardHandRequest);
+		this.socket.off("player_skip_turn_request", this.skipTurnRequest);
 	}
 }

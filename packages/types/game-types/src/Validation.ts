@@ -19,18 +19,20 @@ export const CardHandTransmitSchema = z.object({
 	playerId: z.string()
 });
 
+export const GameSettingsTransmitSchema = z.object({
+	allow3OfAKind: z.boolean(),
+	allow2OfSpadesEnd: z.boolean(),
+	autoPassInMilliseconds: z.number(),
+});
+
 export const GameStateTransmitSchema = z.object({
 	cardHeap: z.array(CardHandTransmitSchema),
 	playerCardsAmount: z.record(z.string(), z.number()),
 	playerSeatOrder: z.record(z.string(), z.number()),
 	playerCards: z.array(CardTransmitSchema),
-	isPlayerTurn: z.boolean()
-});
-
-export const GameSettingsTransmitSchema = z.object({
-	allow3OfAKind: z.boolean(),
-	allow2OfSpadesEnd: z.boolean(),
-	autoPassInMilliseconds: z.number(),
+	isPlayerTurn: z.boolean(),
+	initialize: z.boolean(),
+	gameSettings: GameSettingsTransmitSchema
 });
 
 export const GameEndStatsTransmitSchema = z.object({
@@ -56,7 +58,9 @@ export const StatusTransmitSchema = z.object({
 export const PlayerTurnTransmitSchema = z.object({
 	playerId: z.string(),
 	skippable: z.boolean(),
-	timer: z.number()
+	lowestCardRequired: CardTransmitSchema.or(z.undefined()),
+	timer: z.number(),
+	remainingTimer: z.number()
 });
 
 export const SkipTurnTransmit = z.object({
