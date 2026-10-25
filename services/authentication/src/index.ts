@@ -7,7 +7,7 @@ import { DrizzleUserStore } from "./store/drizzleUserStore";
 import { DrizzleSessionStore } from "./store/drizzleSessionStore";
 
 // TODO (signal handler): uncomment this when need to implement the signal handler
-// import { isDbDown, closePostgresClientPool } from "@big2/postgres-client";
+// import { isPostgresDown, closePostgresClientPool } from "@big2/postgres-client";
 
 import { signupHandler } from "./handlers/signup";
 import { signinHandler } from "./handlers/signin";
@@ -45,7 +45,7 @@ app.use((err: any, req: express.Request, res: express.Response, next: express.Ne
 	}
 
 	// TODO (signal handler): uncomment this when need to implement the signal handler
-	// if (isDbDown(err)) {
+	// if (isPostgresDown(err)) {
 	// 	return res.status(503).set("Retry-After", "2").json({ error: "database_unavailable" });
 	// }
 

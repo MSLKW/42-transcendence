@@ -13,7 +13,7 @@ import { UserStore } from "./store/UserStore";
 import { DrizzleUserStore } from "./store/DrizzleUserStore";
 
 // TODO (signal handler): uncomment this when need to implement the signal handler
-// import { isDbDown, closePostgresClientPool } from "@big2/postgres-client";
+// import { isPostgresDown, closePostgresClientPool } from "@big2/postgres-client";
 
 const PORT = Number(process.env.PORT) || 3000;
 const AUTH_SERVICE_URL = process.env.AUTH_SERVICE_URL;
@@ -44,7 +44,7 @@ app.get("/online/:uuid", checkUuidOnline(userStore, clientManager));
 // // Central error handler (register AFTER all routes). 
 // // DB down -> 503 + Retry-After so callers know to retry; anything else is a real bug -> 500.
 // app.use((err: unknown, req: express.Request, res: express.Response, next: express.NextFunction) => {
-// 	if (isDbDown(err))
+// 	if (isPostgresDown(err))
 // 		return res.status(503).set("Retry-After", "2").json({ error: "database_unavailable" });
 // 	console.error("Unhandled error:", err);
 // 	return res.status(500).json({ error: "Something went wrong." });

@@ -1,7 +1,7 @@
 import express from "express";
 import cors from "cors";
 import { PORT } from "./config/env";
-import { isDbDown, closePostgresClientPool } from "@big2/postgres-client";
+import { isPostgresDown, closePostgresClientPool } from "@big2/postgres-client";
 import { DrizzleGameStatsRepository } from "./repositories/DrizzleGameStatsRepository";
 import { createBrowserFacingRouter } from "./routes/browserFacing.routes";
 import { createInternalRouter } from "./routes/internal.routes";
@@ -40,7 +40,7 @@ app.use(createInternalRouter(repository));
 // which you don’t want a client to see.
 // set("Retry-After", "2") adds an HTTP response header. The line means: “I’m unavailable right now, so try again after 2 seconds.”
 app.use((err: unknown, req: express.Request, res: express.Response, next: express.NextFunction) => {
-	if (isDbDown(err))
+	if (isPostgresDown(err))
 	{
 		console.error("Database unavailable:", err);
 		return res.status(503).set("Retry-After", "2").json({ error: "database_unavailable" });
