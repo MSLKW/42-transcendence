@@ -5,10 +5,10 @@ import { clientManager } from "./ClientManager";
 import { RateLimiter } from "../utils/RateLimiter";
 import { PartyManager } from "../party/PartyManager";
 
-//socket type used by chat activity handlers
+/** Socket type used by chat activity handlers */
 type ChatSocket = Socket<ClientToServerEvents, ServerToClientEvents>;
 
-//server type used to broadcast chat activity
+/** Server type used to broadcast chat activity */
 type ChatServer = Server<ClientToServerEvents, ServerToClientEvents>;
 
 const maxMessageLength = 500;
@@ -18,7 +18,7 @@ const messageLimiter = new RateLimiter({ maxRequests: 5, windowMs: 5000 });
 const emoteLimiter = new RateLimiter({ maxRequests: 3, windowMs: 2000 });
 const typingLimiter = new RateLimiter({ maxRequests: 20, windowMs: 5000 });
 
-//registers typing and message events with their rate limits
+/** Registers typing and message events with their rate limits */
 export function registerChatActivityEvents(
 	io: ChatServer,
 	socket: ChatSocket,
@@ -92,7 +92,7 @@ export function registerChatActivityEvents(
 	});
 }
 
-//clears a user's chat rate limit history
+/** Clears a user's chat rate limit history */
 export function removeRateLimiters(uuid: string): void {
 	messageLimiter.remove(uuid);
 	emoteLimiter.remove(uuid);

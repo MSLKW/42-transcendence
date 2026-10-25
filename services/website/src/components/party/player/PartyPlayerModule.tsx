@@ -20,10 +20,8 @@ export const PartyPlayerModule = ({ uuid }: PartyPlayerModuleProps) => {
 	const clientUuid = useAuthStore((store) => store.clientUuid);
 	const hostUuid = usePartyStore((store) => store.hostUuid);
 	const cachedFriends = useFriendsStore((store) => store.cachedFriends);
-	// const members = usePartyStore((store) => store.members);
 	const availabilityOverride = usePartyStore((store) => store.availabilityOverrides[uuid]);
 
-	//get profile
 	const [isLoading, setIsLoading] = useState<boolean>(true);
 	const [availability, setAvailability] = useState<AVAILABILITY_TYPE | null>(null);
 	const [lastOnline, setLastOnline] = useState<Date | null>(null);

@@ -24,7 +24,7 @@ export const PartyWindow = () => {
 			useFriendsStore.setState({ cachedFriends: friends });
 		});
 		void handleFriendRequestsSent(clientUuid!).then((requests) => {
-			const pending = requests.filter((r) => r.status === "Pending");
+			const pending = requests.filter((r: any) => r.status === "Pending");
 			const newFriendRequestSent = pending.map((p: { receiverId: string }) => p.receiverId);
 			useFriendsStore.setState({ friendRequestSent: newFriendRequestSent });
 		});

@@ -3,10 +3,10 @@ import { Client } from "./Client";
 import { ClientToServerEvents, ServerToClientEvents } from "../events";
 import { PartyManager } from "../party/PartyManager";
 
-//socket type used by room event handlers
+/** Socket type used by room event handlers */
 type ChatSocket = Socket<ClientToServerEvents, ServerToClientEvents>;
 
-//registers room join and leave behavior
+/** Registers room join and leave behavior */
 export function registerRoomEvents(socket: ChatSocket, client: Client, partyManager: PartyManager): void {
 	socket.on("chat_join_room", (payload) => {
 		if (!payload || typeof payload.roomId !== "string")

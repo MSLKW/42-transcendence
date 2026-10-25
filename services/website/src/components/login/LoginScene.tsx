@@ -20,7 +20,7 @@ import { useNotificationStore } from "../../store/NotificationStore";
 
 export const LoginScene = () => {
 	useEffect(() => {
-		//reset values
+		/** reset values */
 		useAuthStore.getState().resetValues();
 		useBotStore.getState().resetValues();
 		useBubbleStore.getState().clearAllBubbles();
@@ -35,7 +35,7 @@ export const LoginScene = () => {
 		useSettingsStore.getState().resetValues();
 		useTypingStore.getState().resetValues();
 
-		//disconnect sockets
+		/** disconnect sockets */
 		chatSocket.disconnect();
 		partySocket.disconnect();
 	}, []);

@@ -21,12 +21,12 @@ export const ChatWindow = () => {
 	const focusRef = useRef<HTMLInputElement | null>(null);
 	const scrollContainerRef = useRef<HTMLDivElement | null>(null);
 
-	//focus
+	/** focus */
 	useEffect(() => {
 		focusRef.current?.focus();
 	}, []);
 
-	//scroll
+	/** scroll */
 	useEffect(() => {
 		if (scrollContainerRef.current) {
 			scrollContainerRef.current.scrollTo({

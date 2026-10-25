@@ -27,36 +27,36 @@ export class PartyManager {
 	private readonly parties = new Map<string, PartyState>();
 	private readonly playerToHost = new Map<string, string>();
 
-	//creates a manager that can notify connected clients
+	/** Creates a manager that can notify connected clients */
 	constructor(private readonly io: ChatServer) {}
 
-	//checks whether a party exists for the host
+	/** Checks whether a party exists for the host */
 	hasParty(hostUuid: string): boolean {
 		return this.parties.has(hostUuid);
 	}
 
-	//returns a party by its host UUID
+	/** Returns a party by its host UUID */
 	getParty(hostUuid: string): PartyState | undefined {
 		return this.parties.get(hostUuid);
 	}
 
-	//returns the host UUID assigned to a player
+	/** Returns the host UUID assigned to a player */
 	getHostForPlayer(playerUuid: string): string | undefined {
 		return this.playerToHost.get(playerUuid);
 	}
 
-	//checks whether a player belongs to a party
+	/** Checks whether a player belongs to a party */
 	isPlayerWhitelisted(hostUuid: string, playerUuid: string): boolean {
 		const party = this.parties.get(hostUuid);
 		return party?.playerUuids.has(playerUuid) ?? false;
 	}
 
-	//gets the player's current party or solo room ID
+	/** Gets the player's current party or solo room ID */
 	getRoomForPlayer(playerUuid: string): string {
 		return this.playerToHost.get(playerUuid) ?? playerUuid;
 	}
 
-	//creates a party and moves connected members into its room
+	/** Creates a party and moves connected members into its room */
 	createParty(payload: PartyPayload): void {
 		const normalized = normalizePartyPayload(payload);
 		if (this.parties.has(normalized.hostUuid))
@@ -76,7 +76,7 @@ export class PartyManager {
 		this.reconcileConnectedPlayers(party.playerUuids);
 	}
 
-	//replaces a party's host or membership and updates rooms
+	/** Replaces a party's host or membership and updates rooms */
 	updateParty(currentHostUuid: string, payload: PartyPayload): void {
 		const existingParty = this.parties.get(currentHostUuid);
 		if (!existingParty)
@@ -116,7 +116,7 @@ export class PartyManager {
 		);
 	}
 
-	//deletes a party and returns connected members to solo rooms
+	/** Deletes a party and returns connected members to solo rooms */
 	deleteParty(hostUuid: string): void {
 		const party = this.parties.get(hostUuid);
 		if (!party)
@@ -131,7 +131,7 @@ export class PartyManager {
 		}
 	}
 
-	//moves connected members into their currently assigned rooms
+	/** Moves connected members into their currently assigned rooms */
 	private reconcileConnectedPlayers(playerUuids: Set<string>): void {
 		for (const playerUuid of playerUuids) {
 			const client = clientManager.getByUuid(playerUuid);
@@ -144,7 +144,7 @@ export class PartyManager {
 		}
 	}
 
-	//assigns a player to a party and updates their room
+	/** Assigns a player to a party and updates their room */
 	private assignPlayerToParty(playerUuid: string, hostUuid: string): void {
 		const previousHostUuid = this.playerToHost.get(playerUuid);
 		if (previousHostUuid && previousHostUuid !== hostUuid) {
@@ -164,7 +164,7 @@ export class PartyManager {
 		this.moveClientToRoom(client, hostUuid);
 	}
 
-	//returns a connected player to their solo room
+	/** Returns a connected player to their solo room */
 	private movePlayerToSoloRoom(playerUuid: string): void {
 		const client = clientManager.getByUuid(playerUuid);
 		if (!client)
@@ -173,7 +173,7 @@ export class PartyManager {
 		this.moveClientToRoom(client, playerUuid);
 	}
 
-	//moves a client between Socket.IO rooms and emits presence events
+	/** Moves a client between Socket.IO rooms and emits presence events */
 	private moveClientToRoom(client: Client, newRoomId: string): void {
 		const previousRoomId = client.roomId;
 		if (previousRoomId === newRoomId) {
@@ -201,7 +201,7 @@ export class PartyManager {
 		console.log(`User<${client.uuid}> moved chat room to ${newRoomId}`);
 	}
 
-	//rejects a host who already belongs to another party
+	/** Rejects a host who already belongs to another party */
 	private assertHostIsNotAlreadyInAnotherParty(hostUuid: string): void {
 		const existingHost = this.playerToHost.get(hostUuid);
 		if (existingHost)

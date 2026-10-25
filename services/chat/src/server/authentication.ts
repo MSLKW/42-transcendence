@@ -1,10 +1,10 @@
 import { Socket } from "socket.io";
 import { ClientToServerEvents, ServerToClientEvents } from "../events";
 
-//socket type used during chat authentication
+/** Socket type used during chat authentication */
 type ChatSocket = Socket<ClientToServerEvents, ServerToClientEvents>;
 
-//creates middleware that validates a socket's session
+/** Creates middleware that validates a socket's session */
 export function createSocketAuthentication(authServiceUrl: string, isShuttingDown: () => boolean) {
 	return async (socket: ChatSocket, next: (error?: Error) => void): Promise<void> => {
 		if (isShuttingDown())
@@ -41,7 +41,7 @@ export function createSocketAuthentication(authServiceUrl: string, isShuttingDow
 	};
 }
 
-//reads the session token from the cookie or socket auth data
+/** Reads the session token from the cookie or socket auth data */
 function getSessionToken(socket: ChatSocket): string | undefined {
 	const cookie = socket.handshake.headers.cookie;
 	const sessionToken = cookie

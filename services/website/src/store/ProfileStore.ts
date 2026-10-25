@@ -79,7 +79,7 @@ interface ProfileValues {
 };
 
 interface ProfileState extends ProfileValues {
-	getProfileData: (uuid: string | null) => ProfileData | undefined,
+	// getProfileData: (uuid: string | null) => ProfileData | undefined,
 	resetProfilesInDb: () => void,
 	setCachedData: () => Promise<void>,
 	removeCachedData: (uuid: string | null) => void;
@@ -97,18 +97,16 @@ export const useProfileStore = create<ProfileState>() (
 			cachedData: {},
 			avatarVersions: {},
 
-			getProfileData: (_uuid) => {
+			// getProfileData: (_uuid) => {
 				// if (!uuid)
 				// 	return undefined;
 				// const profilesInDb = get().profilesInDb;
 				// return profilesInDb.find(p => p.uuid === uuid);
-				return undefined;
-			},
+				// return undefined;
+			// },
 
 			resetProfilesInDb: () => {
-				set({
-					cachedData: {},
-				});
+				set({ cachedData: {} });
 			},
 
 			setCachedData: async () => {

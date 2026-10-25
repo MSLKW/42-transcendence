@@ -64,7 +64,7 @@ export class GameScene extends SceneContainer {
 		ctx.orbitControls.update();
 	}
 
-	public handleResize(ctx: ThreeJsManager): void {
+	public handleResize(_ctx: ThreeJsManager): void {
 		gameInstance?.playerRef?.cardManager.resizeBoundSpaceLimits();
 	}
 

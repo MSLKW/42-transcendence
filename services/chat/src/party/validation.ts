@@ -1,7 +1,7 @@
 import type { PartyPayload } from "./PartyManager";
 import { ValidationError } from "./errors";
 
-//validates and normalizes a party's host and member IDs
+/** Validates and normalizes a party's host and member IDs */
 export function normalizePartyPayload(payload: PartyPayload): PartyPayload {
 	if (!payload || typeof payload !== "object")
 		throw new ValidationError("Request body must be an object");

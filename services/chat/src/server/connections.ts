@@ -5,10 +5,10 @@ import { registerEventHandlers, removeRateLimiters } from "../client/event_handl
 import { ClientToServerEvents, ServerToClientEvents } from "../events";
 import { PartyManager } from "../party/PartyManager";
 
-//socket type used by connection lifecycle handlers
+/** Socket type used by connection lifecycle handlers */
 type ChatSocket = Socket<ClientToServerEvents, ServerToClientEvents>;
 
-//server type used by connection lifecycle handlers
+/** Server type used by connection lifecycle handlers */
 type ChatServer = Server<ClientToServerEvents, ServerToClientEvents>;
 
 const reconnectGracePeriodMs = Number(process.env.DISCONNECT_GRACE_PERIOD_MS) || 15_000;
@@ -17,7 +17,7 @@ const permanentDisconnectReasons = new Set([
 	"client namespace disconnect",
 ]);
 
-//registers connection, reconnection, and disconnect behavior
+/** Registers connection, reconnection, and disconnect behavior */
 export function registerConnections(
 	io: ChatServer,
 	partyManager: PartyManager,
@@ -80,7 +80,7 @@ export function registerConnections(
 	});
 }
 
-//removes a disconnected client and notifies its room
+/** Removes a disconnected client and notifies its room */
 function finalizeRemoval(io: ChatServer, uuid: string, reason: string): void {
 	const client = clientManager.removeByUuid(uuid);
 	if (!client)

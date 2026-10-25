@@ -11,7 +11,7 @@ export function joinGameLobby(gameSessionId: string, playerId: string) {
 }
 
 export function clearGameInstance() {
-	gameInstance.disconnect();
+	gameInstance?.disconnect();
 	gameInstance = null;
 }
 

@@ -1,4 +1,4 @@
-//creates a validation error for invalid requests or party payload
+/** Extends a validation error for invalid requests or party payload */
 export class ValidationError extends Error {
 	constructor(message: string) {
 		super(message);
@@ -6,7 +6,7 @@ export class ValidationError extends Error {
 	}
 }
 
-//creates a not-found error for requests for a party that does not exist
+/** Extends a not-found error for requests for a party that does not exist */
 export class PartyNotFoundError extends Error {
 	constructor(message: string) {
 		super(message);
@@ -14,7 +14,7 @@ export class PartyNotFoundError extends Error {
 	}
 }
 
-//creates a conflict error for conflicts with the current party state
+/** Extends a conflict error for conflicts with the current party state */
 export class PartyConflictError extends Error {
 	constructor(message: string) {
 		super(message);

@@ -1,4 +1,3 @@
-// import { useGameStore, HAND_VALUES } from "../../../store/GameStore";
 import { useGameStore } from "../../../store/GameStore";
 import { useAuthStore } from "../../../store/AuthStore";
 import { gameInstance } from "../../../api/game/main";
@@ -22,8 +21,7 @@ export const GamePlayButton = () => {
 			className="
 				btn-text bg-light
 				h-3rem aspect-5/1
-			"
-		>
+		">
 			PLAY
 		</button>
 	);

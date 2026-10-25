@@ -7,7 +7,7 @@ import {
 } from "../party/PartyManager";
 import { ValidationError } from "../party/errors";
 
-//creates the HTTP handler for health checks and party routes
+/** Creates the HTTP handler for health checks and party routes */
 export function createHttpRequestHandler(
 	partyManager: PartyManager,
 	isShuttingDown: () => boolean,
@@ -72,7 +72,7 @@ export function createHttpRequestHandler(
 	};
 }
 
-//checks the shape of a party request body
+/** Checks the shape of a party request body */
 function validatePartyPayload(body: unknown): PartyPayload {
 	if (!body || typeof body !== "object")
 		throw new ValidationError("Request body must be an object");
@@ -89,7 +89,7 @@ function validatePartyPayload(body: unknown): PartyPayload {
 	};
 }
 
-//reads and parses a bounded JSON request body
+/** Reads and parses a bounded JSON request body */
 async function readJsonBody(req: IncomingMessage): Promise<unknown> {
 	const chunks: Buffer[] = [];
 	let size = 0;
@@ -113,14 +113,14 @@ async function readJsonBody(req: IncomingMessage): Promise<unknown> {
 	}
 }
 
-//sends a JSON response with the given status
+/** Sends a JSON response with the given status */
 function sendJson(res: ServerResponse, statusCode: number, body: unknown): void {
 	res.statusCode = statusCode;
 	res.setHeader("Content-Type", "application/json");
 	res.end(JSON.stringify(body));
 }
 
-//converts known request errors into HTTP responses
+/** Converts known request errors into HTTP responses */
 function handleHttpError(res: ServerResponse, error: unknown): void {
 	if (error instanceof ValidationError) {
 		sendJson(res, 400, { error: error.message });
