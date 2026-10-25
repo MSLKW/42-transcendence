@@ -7,7 +7,7 @@ import { requireStatisticsToken } from "../middleware/requireStatisticsToken";
 
 
 // important endpoint designs: 
-	// 1. is it a browser-facing or internal route?
+	// 1. is it a browserFacing or internal route?
 	// 2. who fetches these endpoints?
 	// 3. requires cookie?
 

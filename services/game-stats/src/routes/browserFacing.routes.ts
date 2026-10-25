@@ -1,14 +1,14 @@
 import { Router } from "express";
-import { getOwnPlayerGameData } from "../handlers/browser-facing/getOwnPlayerGameData";
-import { getPublicPlayerGameData } from "../handlers/browser-facing/getPublicPlayerGameData";
-import { putDisplayedBadge } from "../handlers/browser-facing/putDisplayedBadge";
-import { postEasterEggFound } from "../handlers/browser-facing/postEasterEggFound";
+import { getOwnPlayerGameData } from "../handlers/browserFacing/getOwnPlayerGameData";
+import { getPublicPlayerGameData } from "../handlers/browserFacing/getPublicPlayerGameData";
+import { putDisplayedBadge } from "../handlers/browserFacing/putDisplayedBadge";
+import { postEasterEggFound } from "../handlers/browserFacing/postEasterEggFound";
 import { requireUser } from "../middleware/requireUser";
 import { GameStatsRepository } from "../repositories/GameStatsRepository";
 
 
 // important endpoint designs: 
-	// 1. is it a browser-facing or internal route?
+	// 1. is it a browserFacing or internal route?
 	// 2. who fetches these endpoints?
 	// 3. requires cookie?
 	

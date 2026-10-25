@@ -1,9 +1,9 @@
 import { Router } from "express";
-import { sendFriendRequest } from "../handlers/friend-requests/sendFriendRequest";
-import { acceptFriendRequest } from "../handlers/friend-requests/acceptFriendRequest";
-import { rejectFriendRequest } from "../handlers/friend-requests/rejectFriendRequest";
-import { listReceivedRequests } from "../handlers/friend-requests/listReceivedRequests";
-import { listSentRequests } from "../handlers/friend-requests/listSentRequests";
+import { sendFriendRequest } from "../handlers/friendRequests/sendFriendRequest";
+import { acceptFriendRequest } from "../handlers/friendRequests/acceptFriendRequest";
+import { rejectFriendRequest } from "../handlers/friendRequests/rejectFriendRequest";
+import { listReceivedRequests } from "../handlers/friendRequests/listReceivedRequests";
+import { listSentRequests } from "../handlers/friendRequests/listSentRequests";
 
 export const friendRequestsRouter = Router();
 

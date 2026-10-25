@@ -4,7 +4,7 @@ import { PORT } from "./config/env";
 import { healthRouter } from "./routes/health.routes";
 import { eventsRouter } from "./routes/events.routes";
 import { friendshipsRouter } from "./routes/friendships.routes";
-import { friendRequestsRouter } from "./routes/friend-requests.routes";
+import { friendRequestsRouter } from "./routes/friendRequests.routes";
 
 // TODO (signal handler): uncomment this when need to implement the signal handler
 // import { isDbDown, closePostgresClientPool } from "@big2/postgres-client";

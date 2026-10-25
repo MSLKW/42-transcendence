@@ -9,7 +9,7 @@ export function getPublicPlayerGameData(repository: GameStatsRepository)
 	{
 		// 1. valid uuid shape only, not uuid existance
 		// error if its not the valid uuid shape of 8-4-4-8
-		// the only handler of all browser-facing routes to recieve uuid from URL, not directly from auth service
+		// the only handler of all browserFacing routes to recieve uuid from URL, not directly from auth service
 		const parsed = z.uuid().safeParse(req.params.playerUuid);
 		if (!parsed.success)
 		{
