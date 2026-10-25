@@ -176,7 +176,7 @@ async function shutdown()
 		clearTimeout(timer);
 	httpServer.close();
 	await closeDb();
-	process.exit();
+	process.exit(0);
 }
 
 process.on("SIGINT", shutdown);

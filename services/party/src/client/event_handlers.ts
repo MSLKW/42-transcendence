@@ -2,10 +2,7 @@ import { Socket } from "socket.io";
 import { Client } from "./Client";
 import { Party } from "../party/Party";
 import { clientManager } from "./ClientManager";
-
-const GAME_SERVICE_URL = process.env.GAME_SERVICE_URL;
-if (!GAME_SERVICE_URL)
-	throw new Error("GAME_SERVICE_URL is not set");
+import { GAME_SERVER_SERVICE_URL } from "../config/env";
 
 export function registerEventHandlers(socket: Socket, client: Client)
 {
@@ -86,7 +83,7 @@ export function registerEventHandlers(socket: Socket, client: Client)
 		{
 			try
 			{
-				const res = await fetch(`${GAME_SERVICE_URL}/lobby/${client.party.gameId}`);
+				const res = await fetch(`${GAME_SERVER_SERVICE_URL}/lobby/${client.party.gameId}`);
 				if (res.status == 404)
 					client.party.gameId = null;	
 			}

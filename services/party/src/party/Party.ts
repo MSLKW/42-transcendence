@@ -1,6 +1,7 @@
 import { Client } from "../client/Client";
 import { PartyState } from "../PartyTransmitTypes";
-import { GAME_SERVER_SERVICE_URL, CHAT_SERVICE_URL } from "../config/env";
+import { GAME_SERVER_SERVICE_URL } from "../config/env";
+import { postChatWhitelist, putChatWhitelist, deleteChatWhitelist } from "./ChatWHitelist";
 
 export class Party
 {
@@ -15,6 +16,7 @@ export class Party
 		host.party = this;
 		this.hostId = host.uuid;
 		this.members.set(this.hostId, host);
+		postChatWhitelist(this.hostId, []);
 	}
 
 	addInvite(user: Client)
@@ -37,9 +39,11 @@ export class Party
 		this.emitToAll("player_joined", { uuid: userId });
 		user.party.removeUser(userId);
 		user.party = this;
+		deleteChatWhitelist(userId);
 		this.members.set(userId, user);
 		this.invites.delete(userId);
 		this.sendUpdates();
+		putChatWhitelist(this.hostId, this.hostId, [...this.members.keys()]);
 		return (true);
 	}
 
@@ -50,10 +54,12 @@ export class Party
 			return ;
 		user.party = new Party(user);
 		this.members.delete(uuid);
+		const oldHostUuid = this.hostId;
 		if (uuid == this.hostId)
 			[this.hostId] = this.members.keys();
 		this.emitToAll("player_left", { uuid: uuid });
-		this.sendUpdates();			
+		this.sendUpdates();	
+		putChatWhitelist(oldHostUuid, this.hostId, [...this.members.keys()]);
 	}
 
 	hasUser(uuid: string): boolean
