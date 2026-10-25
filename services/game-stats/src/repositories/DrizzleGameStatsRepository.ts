@@ -36,8 +36,6 @@ export class DrizzleGameStatsRepository implements GameStatsRepository {
 
 	private async getPlayerStats(playerUuid: string): Promise<PlayerStatsData> 
 	{
-		await this.ensurePlayerExists(playerUuid);
-
 		const [player] = await this.pgClient
 			.select()
 			.from(playerStats)
@@ -52,8 +50,6 @@ export class DrizzleGameStatsRepository implements GameStatsRepository {
 
 	private async getAllAchievements(playerUuid: string): Promise<AchievementUnlockStatus> 
 	{
-		await this.ensurePlayerExists(playerUuid);
-
 		const rows = await this.pgClient
 			.select({ 
 				achievementId: 	playerAchievements.achievementId,
@@ -74,8 +70,6 @@ export class DrizzleGameStatsRepository implements GameStatsRepository {
 
 	private async getAllBadges(playerUuid: string): Promise<BadgeUnlockStatus>
 	{
-		await this.ensurePlayerExists(playerUuid);
-
 		const rows = await this.pgClient
 			.select({ badgeId: playerBadges.badgeId })
 			.from(playerBadges)
@@ -97,8 +91,6 @@ export class DrizzleGameStatsRepository implements GameStatsRepository {
 
 	private async isBadgeUnlocked(playerUuid: string, badgeId: BadgeId): Promise<boolean>
 	{
-		await this.ensurePlayerExists(playerUuid);
-
 		const row = await this.pgClient
 			.select()
 			.from(playerBadges)
@@ -114,6 +106,7 @@ export class DrizzleGameStatsRepository implements GameStatsRepository {
 
 	
 	// ----- public methods & properties -----
+	// ===== requested by website =====
 
 	async getOwnPlayerGameData(playerUuid: string): Promise<OwnPlayerGameDataResponse> 
 	{
@@ -159,6 +152,22 @@ export class DrizzleGameStatsRepository implements GameStatsRepository {
 			.where(eq(playerStats.playerUuid, playerUuid));
 		return true;
 	}
+
+	async grantEasterEggBadge(playerUuid: string, badgeId: BadgeId): Promise<EasterEggResponse> 
+	{
+		await this.ensurePlayerExists(playerUuid);
+
+		const grantedEasterEgg = await this.pgClient
+			.insert(playerBadges)
+			.values({ playerUuid, badgeId })
+			.onConflictDoNothing()
+			.returning({ badgeId: playerBadges.badgeId });
+
+		const isNewlyGranted: boolean = (grantedEasterEgg.length > 0); 
+		return ({ newBadgeId: isNewlyGranted ? badgeId : null });
+	}
+
+	// ===== requested by gmae-server =====
 
 	async grantAchievement(input: AchievementUnlockedRequest): Promise<AchievementUnlockedResponse> 
 	{
@@ -327,19 +336,5 @@ export class DrizzleGameStatsRepository implements GameStatsRepository {
 				.where(eq(processedRounds.roundId, input.roundId));
 			return (response);		
 		});
-	}
-
-	async grantEasterEggBadge(playerUuid: string, badgeId: BadgeId): Promise<EasterEggResponse> 
-	{
-		await this.ensurePlayerExists(playerUuid);
-
-		const grantedEasterEgg = await this.pgClient
-			.insert(playerBadges)
-			.values({ playerUuid, badgeId })
-			.onConflictDoNothing()
-			.returning({ badgeId: playerBadges.badgeId });
-
-		const isNewlyGranted: boolean = (grantedEasterEgg.length > 0); 
-		return ({ newBadgeId: isNewlyGranted ? badgeId : null });
 	}
 }
