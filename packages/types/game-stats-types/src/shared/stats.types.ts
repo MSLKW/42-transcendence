@@ -19,6 +19,6 @@ export const LevelProgressSchema = z.object({
 	currentLevel:					z.int().nonnegative(),			// first level is 0
 	currentLevelXpEarned:			z.int().nonnegative(),
 	currentLevelXpThreshold:		z.int().positive().nullable(),	// total XP size of the current level. nullable if reach MAX_LEVEL, positive coz even BASE_XP_LEVEL_0 is 100. 
-	currentLevelProgressPercentage:	z.int().min(0).max(100),		// TODO (website): frontend shows `${progressPercentage}%`, need to manually add '%' if want to present in percentage over the visual bar
+	currentLevelProgressPercentage:	z.int().min(0).max(100),		// TODO (website): frontend shows `${progressPercentage}%`, need to manually add '%' if want to present in percentage instead of the visual bar
 });
 export type LevelProgress = z.infer<typeof LevelProgressSchema>;

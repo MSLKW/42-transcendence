@@ -1,5 +1,4 @@
-// src/shared/badges/badges.public.types.ts: safe to ship to the browser.
-
+// safe to ship to the browser.
 export const PUBLIC_BADGE_IDS = [
 	"fresh_deal",
 	"beginners_luck",
