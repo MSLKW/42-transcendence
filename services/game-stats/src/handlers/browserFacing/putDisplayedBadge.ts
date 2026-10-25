@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import { GameStatsRepository } from "../../repositories/GameStatsRepository";
 import { getPlayerUuid } from "../../middleware/requireUser";
-import { DisplayedBadgeRequestSchema } from "@big2/game-stats-types";
+import { DisplayedBadgeRequestSchema } from "@big2/game-stats-types/game-stats";
 import z from "zod";
 
 

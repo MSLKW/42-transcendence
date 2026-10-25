@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { GameStatsRepository } from "../../repositories/GameStatsRepository";
-import { PublicPlayerGameDataResponseSchema } from "@big2/game-stats-types";
+import { PublicPlayerGameDataResponseSchema } from "@big2/game-stats-types/game-stats";
 import z from "zod";
 import { isForeignKeyViolation } from "@big2/postgres-client";
 
@@ -30,7 +30,7 @@ export function getPublicPlayerGameData(repository: GameStatsRepository)
 			// 3. valid response shape
 			// safety net to ensure its in the right shape, updatedAt is stripped off in drizzle query already
 			const cleanPlayerData = PublicPlayerGameDataResponseSchema.parse(playerData); 
-			return (res.json(cleanPlayerData));
+			return (res.json( cleanPlayerData ));
 		}
 		catch (error: unknown)
 		{

@@ -6,7 +6,7 @@ import {
 	BADGE_IDS, 
 	ACHIEVEMENT_IDS, 
 	type GameEndStatsResponse 
-} from "@big2/game-stats-types";
+} from "@big2/game-stats-types/game-stats";
 import { pgSchema, uuid, text, integer, timestamp, check, primaryKey, jsonb } from "drizzle-orm/pg-core";
 import { sqlList } from "./utils";
 

@@ -4,10 +4,10 @@ import {
 	BadgeId,
 	DisplayedBadgeRequest,
 	EasterEggResponse,
-	GameEndStatsInput,
 	GameEndStatsResponse, 
 	OwnPlayerGameDataResponse, 
-	PublicPlayerGameDataResponse } from "@big2/game-stats-types";
+	PublicPlayerGameDataResponse } from "@big2/game-stats-types/game-stats";
+import { GameEndStatsInput } from "../types/GameEndStatsInput";
 
 
 // game-end-stats: use apply, not update or add. 

@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { GameStatsRepository } from "../../repositories/GameStatsRepository";
-import { AchievementUnlockedRequestSchema, AchievementUnlockedResponseSchema } from "@big2/game-stats-types";
+import { AchievementUnlockedRequestSchema, AchievementUnlockedResponseSchema } from "@big2/game-stats-types/game-stats";
 import z from "zod";
 import { isForeignKeyViolation } from "@big2/postgres-client";
 
@@ -34,7 +34,7 @@ export function postAchievementUnlocked(repository: GameStatsRepository)
 			// 3. valid response shape
 			// safety net to ensure its in the right shape, updatedAt is stripped off in drizzle query already
 			const cleanResult = AchievementUnlockedResponseSchema.parse(result); 
-			return (res.json(cleanResult));
+			return (res.json( cleanResult ));
 		}
 		catch (error: any)
 		{

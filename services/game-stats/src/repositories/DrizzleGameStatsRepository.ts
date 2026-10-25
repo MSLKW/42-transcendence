@@ -1,11 +1,13 @@
-import { ACHIEVEMENT_IDS, AchievementId, AchievementUnlockedRequest, AchievementUnlockedResponse, AchievementUnlockedResponseSchema, AchievementUnlockStatus, BADGE_IDS, BadgeId, BadgeUnlockStatus, DisplayedBadgeRequest, EasterEggRequest, EasterEggResponse, GameEndStatsResponse, OwnPlayerGameDataResponse, PlayerGameEndStatsResult, PlayerStatsData, PlayerStatsDataSchema, PublicPlayerGameDataResponse, SECRET_BADGE_IDS } from "@big2/game-stats-types";
+import { ACHIEVEMENT_IDS, AchievementUnlockedRequest, AchievementUnlockedResponse, AchievementUnlockStatus, BADGE_IDS, BadgeId, BadgeUnlockStatus, DisplayedBadgeRequest, EasterEggResponse, GameEndStatsResponse, OwnPlayerGameDataResponse, PlayerGameEndStatsResult, PlayerStatsData, PlayerStatsDataSchema, PublicPlayerGameDataResponse } from "@big2/game-stats-types/game-stats";
 import { postgresClient } from "../config/postgresClient";
 import { GameStatsRepository } from "./GameStatsRepository";
 import { playerAchievements, playerBadges, playerStats, processedRounds } from "@big2/game-stats-schema";
-import { GameEndStatsInput } from "@big2/game-stats-types";
+import { GameEndStatsInput } from "../types/GameEndStatsInput";
 import { and, eq, inArray } from "drizzle-orm";
-import { getBadgeForAchievement, getEarnedStatsBadges } from "../rules/badge.rules";
+import { getEarnedStatsBadges } from "../rules/statsBadge.rules";
 import { levelForXp, levelProgressForXp } from "../rules/levels.rules";
+import { isSecretBadgeId } from "../rules/easterEgg/isSecretBadgeId";
+import { getBadgeForAchievement } from "../rules/achievementBadge.rules";
 
 
 export class DrizzleGameStatsRepository implements GameStatsRepository {
@@ -82,7 +84,7 @@ export class DrizzleGameStatsRepository implements GameStatsRepository {
 		for (const id of BADGE_IDS)
 		{
 			const isUnlocked: boolean = unlockedBadgeIdSet.has(id);
-			if (SECRET_BADGE_IDS.includes(id) && !isUnlocked)
+			if (!isUnlocked && isSecretBadgeId(id))
 				continue;
 			badgeStatus[id] = isUnlocked;
 		}
@@ -164,7 +166,7 @@ export class DrizzleGameStatsRepository implements GameStatsRepository {
 			.returning({ badgeId: playerBadges.badgeId });
 
 		const isNewlyGranted: boolean = (grantedEasterEgg.length > 0); 
-		return ({ newBadgeId: isNewlyGranted ? badgeId : null });
+		return ({ newlyGrantedBadgeIdForEasterEgg: isNewlyGranted ? badgeId : null });
 	}
 
 	// ===== requested by gmae-server =====
@@ -308,7 +310,7 @@ export class DrizzleGameStatsRepository implements GameStatsRepository {
 				// every badge the player qualifies for with these stats...
 				const earnedBadgeIds = getEarnedStatsBadges(cleanPlayerStatsData);
 				// ...insert them, and ask for back only the rows that were really new
-				let newBadgeIds: BadgeId[] = [];
+				let newlyGrantedBadgeIdsForStats: BadgeId[] = [];
 				if (earnedBadgeIds.length > 0)
 				{
 					const insertedBadges = await tx
@@ -316,15 +318,15 @@ export class DrizzleGameStatsRepository implements GameStatsRepository {
 						.values(earnedBadgeIds.map((badgeId) => ({ playerUuid, badgeId })))
 						.onConflictDoNothing()
 						.returning({ badgeId: playerBadges.badgeId });
-					newBadgeIds = insertedBadges.map((badge) => badge.badgeId);
+					newlyGrantedBadgeIdsForStats = insertedBadges.map((badge) => badge.badgeId);
 				}
 
 				playerAccumulatedStats[playerUuid] = {
-					stats:			cleanPlayerStatsData,
-					previousLevel:	lockedRowByUuid.level,
-					isLeveledUp:	newLevel > lockedRowByUuid.level,
-					levelProgress:	levelProgressForXp(newXp),
-					newBadgeIds,
+					stats:							cleanPlayerStatsData,
+					previousLevel:					lockedRowByUuid.level,
+					isLeveledUp:					newLevel > lockedRowByUuid.level,
+					levelProgress:					levelProgressForXp(newXp),
+					newlyGrantedBadgeIdsForStats,
 				};
 			}
 

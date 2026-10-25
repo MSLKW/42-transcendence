@@ -1,14 +1,11 @@
 import { Request, Response } from "express";
 import { GameStatsRepository } from "../../repositories/GameStatsRepository";
 import { GameEndStatsTransmitSchema } from "@big2/game-types/validation";
-import { 
-	GameEndStatsInputSchema,
-	GameEndStatsResponseSchema, 
-	type GameEndStatsInput 
-} from "@big2/game-stats-types";
-import z from "zod";
+import { GameEndStatsResponseSchema } from "@big2/game-stats-types/game-stats";
 import { isBotUuid } from "../../utils/botIdentifier";
 import { isForeignKeyViolation } from "@big2/postgres-client";
+import { GameEndStatsInput, GameEndStatsInputSchema } from "../../types/GameEndStatsInput";
+import z from "zod";
 
 export function postGameEndStats(repository: GameStatsRepository)
 {
@@ -71,7 +68,7 @@ export function postGameEndStats(repository: GameStatsRepository)
 			// 5. valid response shape
 			// strip off updatedAt column - z.object in zod schema drops unknown keys by default
 			const cleanData = GameEndStatsResponseSchema.parse(playersUpdatedStats);
-			return(res.json(cleanData));
+			return(res.json( cleanData ));
 		} 
 		catch (error: any)
 		{

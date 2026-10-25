@@ -1,7 +1,8 @@
 import { Request, Response } from "express";
 import { GameStatsRepository } from "../../repositories/GameStatsRepository";
 import { getPlayerUuid } from "../../middleware/requireUser";
-import { OwnPlayerGameDataResponseSchema } from "@big2/game-stats-types";
+import { OwnPlayerGameDataResponseSchema } from "@big2/game-stats-types/game-stats";
+
 
 export function getOwnPlayerGameData(repository: GameStatsRepository)
 {
@@ -18,6 +19,6 @@ export function getOwnPlayerGameData(repository: GameStatsRepository)
 		// 3. valid response shape
 		// safety net to ensure its in the right shape, updatedAt is stripped off in drizzle query already
 		const cleanPlayerData = OwnPlayerGameDataResponseSchema.parse(playerData); 
-		return (res.json(cleanPlayerData));
+		return (res.json( cleanPlayerData ));
 	};
 }
