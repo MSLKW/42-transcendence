@@ -13,7 +13,7 @@ export function requireStatisticsToken(req: Request, res: Response, next: NextFu
 }
 
 
-
+// timingSafeEqual => check similarities of both lengths and content (check per byte)
 // * Do you need timingSafeEqual?
 // 
 // Not strictly, but better to keep it. 

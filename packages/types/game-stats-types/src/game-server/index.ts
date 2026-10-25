@@ -1,5 +1,6 @@
-export type * from "../shared/achievements.types";
-export type * from "../shared/stats.types";
-export type * from "../shared/badges/badges.types";
-export type * from "./game-server.request.types";
-export type * from "./game-server.response.types";
+export * from "../shared/achievements.types";
+export * from "../shared/stats.types";
+export * from "../shared/badges/badges.types";
+export * from "../shared/shared.response.types";
+export * from "./game-server.request.types";
+export * from "./game-server.response.types";

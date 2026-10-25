@@ -1,19 +1,6 @@
-import { AchievementUnlockStatusSchema } from "../shared/achievements.types";
 import { BADGE_IDS, BadgeUnlockStatusSchema } from "../shared/badges/badges.types";
-import { LevelProgressSchema, PlayerStatsDataSchema } from "../shared/stats.types";
+import { PublicPlayerGameDataResponseSchema } from "../shared/shared.response.types";
 import z from "zod";
-
-
-// 		GET /public-player-game-data/:playerUuid
-// * request types	= GET has no body
-// * response types	= plain types
-export const PublicPlayerGameDataResponseSchema = z.object({
-	stats:			PlayerStatsDataSchema,
-	levelProgress:	LevelProgressSchema,
-	achievements:	AchievementUnlockStatusSchema,
-});
-export type PublicPlayerGameDataResponse = z.infer<typeof PublicPlayerGameDataResponseSchema>;
-
 
 
 // 		GET /own-player-game-data

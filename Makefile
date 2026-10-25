@@ -141,9 +141,13 @@ help:
 	@awk '/^## /{desc=substr($$0,4); next} \
 	/^[a-zA-Z_-]+:/{split($$1,a,":"); if(desc) \
 	printf "  \033[36m%-20s\033[0m %s\n", a[1], desc; desc=""}' $(MAKEFILE_LIST)
- 
- 
-.PHONY: all down up stop restart clean fclean re logs nuclear purge progress config ls help shell-
+
+## Check both game-server & website individually imports their own allocated version of game-stats-types
+check-imports:
+	@! grep -rnE "game-stats-types/(website|game-stats)" services/game-server/src && echo "ok: game-server imports only its own entry"
+	@! grep -rnE "game-stats-types/(game-server|game-stats)" services/website/src && echo "ok: website imports only its own entry"
+
+.PHONY: all down up stop restart clean fclean re logs nuclear purge progress config ls help shell- check-imports
 
 
 # --- as learning references only, not to be run via makefile commands. must be in these sequence ----------------------------------------------
