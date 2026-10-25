@@ -18,10 +18,10 @@ export async function joinRoomAction(socket: Socket | null, roomId: string) {
 			socket.emit("chat_join_room", { roomId: roomId }, resolve);
 		})
 		if (!response.success) {
-			useNotificationStore.getState().showNotification(
-				response.reason ?? "Unable to join chat room",
-				NOTIFICATION_TYPE.error
-			);
+			// useNotificationStore.getState().showNotification(
+			// 	response.reason ?? "Unable to join chat room",
+			// 	NOTIFICATION_TYPE.error
+			// );
 			return;
 		}
 

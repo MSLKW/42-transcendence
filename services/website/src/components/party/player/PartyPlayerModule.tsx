@@ -9,7 +9,8 @@ import { usePartyStore, type AVAILABILITY_TYPE } from "../../../store/PartyStore
 import type { UserData } from "../../../store/ProfileStore";
 import { Tooltip } from "../../../utilities/react/Tooltip";
 import { PlayerStatusModule } from "../../player/status/PlayerStatusModule";
-import { AvatarModule } from "../../avatar/AvatarModule";
+// import { AvatarModule } from "../../avatar/AvatarModule";
+import { AvatarImage } from "../../avatar/image/AvatarImage";
 import { InviteIcon } from "../invite/InviteIcon";
 
 interface PartyPlayerModuleProps {
@@ -82,11 +83,20 @@ export const PartyPlayerModule = ({ uuid }: PartyPlayerModuleProps) => {
 			flex place-content-center place-items-stretch
 			gap-1rem
 		">
-			<AvatarModule
+			{/* <AvatarModule
 				uuid={uuid}
 				image={playerData.avatarPath ?? undefined}
 				showName={false}
-			/>
+			/> */}
+			<Tooltip text={
+				relation === "Self" ? "Edit Profile" :
+				"View Profile"
+			}>
+				<AvatarImage
+					uuid={uuid}
+					image={playerData.avatarPath ?? undefined}
+				/>
+			</Tooltip>
 			<Tooltip text={
 				relation === "Self" ? null :
 				hostUuid === clientUuid ? "Send invite" :

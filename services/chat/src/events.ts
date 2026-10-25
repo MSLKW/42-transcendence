@@ -35,7 +35,10 @@ export interface ChatRateLimitedPayload {
 
 /** Events emitted by chat clients */
 export interface ClientToServerEvents {
-	chat_join_room: (payload: { roomId: string }) => void;
+	chat_join_room: (
+		payload: { roomId: string },
+		callback: (response: { success: boolean; roomId?: string; reason?: string }) => void
+	) => void;
 	chat_typing: (payload: { isTyping: boolean }) => void;
 	chat_message: (payload: {
 		type: ChatType;
