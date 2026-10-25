@@ -1,6 +1,7 @@
 {
 	"name": "@big2/game-stats-types",
 	"private": true,
+	"version": "1.0.0",
 	"sideEffects": false,
 	"exports": {
 		"./game-stats": {
