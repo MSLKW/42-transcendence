@@ -2,29 +2,27 @@ import { Server } from "socket.io";
 import { Client } from "../client/Client";
 import { clientManager } from "../client/ClientManager";
 import { ClientToServerEvents, ServerToClientEvents } from "../events";
-import { PartyConflictError, PartyNotFoundError, ValidationError } from "./errors";
+import { PartyConflictError, PartyNotFoundError } from "./errors";
 import { normalizePartyPayload } from "./validation";
 
-export { PartyConflictError, PartyNotFoundError, ValidationError } from "./errors";
-
-//server type used for party room broadcasts
+/** Server type used for party room broadcasts */
 type ChatServer = Server<ClientToServerEvents, ServerToClientEvents>;
 
-//stores a party host and its members
-export interface Party {
+/** Stores a party host and its members */
+export interface PartyState {
 	hostUuid: string;
 	playerUuids: Set<string>;
 }
 
-//describes a party received from an API request
+/** Describes a party received from an API request */
 export interface PartyPayload {
 	hostUuid: string;
 	playerUuids: string[];
 }
 
-//manages party membership and connected players' rooms
+/** Manages party membership and connected players' rooms */
 export class PartyManager {
-	private readonly parties = new Map<string, Party>();
+	private readonly parties = new Map<string, PartyState>();
 	private readonly playerToHost = new Map<string, string>();
 
 	//creates a manager that can notify connected clients
@@ -36,7 +34,7 @@ export class PartyManager {
 	}
 
 	//returns a party by its host UUID
-	getParty(hostUuid: string): Party | undefined {
+	getParty(hostUuid: string): PartyState | undefined {
 		return this.parties.get(hostUuid);
 	}
 
@@ -64,7 +62,7 @@ export class PartyManager {
 
 		this.assertHostIsNotAlreadyInAnotherParty(normalized.hostUuid);
 
-		const party: Party = {
+		const party: PartyState = {
 			hostUuid: normalized.hostUuid,
 			playerUuids: new Set(normalized.playerUuids),
 		};
@@ -94,7 +92,7 @@ export class PartyManager {
 				this.playerToHost.delete(playerUuid);
 		}
 
-		const updatedParty: Party = {
+		const updatedParty: PartyState = {
 			hostUuid: newHostUuid,
 			playerUuids: new Set(normalized.playerUuids),
 		};

@@ -7,6 +7,7 @@ import { createSocketAuthentication } from "./server/authentication";
 import { registerConnections } from "./server/connections";
 import { clientManager } from "./client/ClientManager";
 
+//environment config
 const PORT = Number(process.env.PORT) || 3000;
 const AUTH_SERVICE_URL = process.env.AUTH_SERVICE_URL;
 if (!AUTH_SERVICE_URL)
@@ -15,19 +16,23 @@ const SOCKET_CHAT_PATH = process.env.SOCKET_CHAT_PATH;
 if (!SOCKET_CHAT_PATH)
 	throw new Error("SOCKET_CHAT_PATH is not set");
 
-let isShuttingDown = false;
+//create socket.io server + initialize party manager class
 const io = new Server<ClientToServerEvents, ServerToClientEvents>({
 	cors: { origin: "*" },
-	path: SOCKET_CHAT_PATH, // Engine.IO normalizes a trailing slash on the path.
+	path: SOCKET_CHAT_PATH,
 });
-
 const partyManager = new PartyManager(io);
+let isShuttingDown = false;
+
+//create http server + bind with socket.io server
 const httpServer = createServer(createHttpRequestHandler(partyManager, () => isShuttingDown));
 io.attach(httpServer);
 
+//auth validation middleware + set up event listeners
 io.use(createSocketAuthentication(AUTH_SERVICE_URL, () => isShuttingDown));
 registerConnections(io, partyManager, () => isShuttingDown);
 
+//server starts listening for incoming traffic on port
 httpServer.listen(PORT, () => {
 	console.log(`Chat Socket.IO server listening on port ${PORT}`);
 });
@@ -53,6 +58,5 @@ function shutdown(signal: NodeJS.Signals): void {
 		process.exitCode = 0;
 	});
 }
-
 process.on("SIGINT", () => shutdown("SIGINT"));
 process.on("SIGTERM", () => shutdown("SIGTERM"));
