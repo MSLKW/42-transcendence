@@ -19,10 +19,6 @@ export function createInternalRouter(repository: GameStatsRepository): Router
 	internalRouter.get("/health", getHealthCheck);
 	internalRouter.post("/game-end-stats", requireStatisticsToken, postGameEndStats(repository));							// when?: after each game round ends + update new badges too to game-server after the updated stats
 	internalRouter.post("/achievement-unlocked", requireStatisticsToken, postAchievementUnlocked(repository)); 	// when?: on realtime update during in game playtime
-	
-	// ! this is not needed, badges is separated & updated into /easter-egg-found, /achievement-unlocked & /game-end-stats
-	// // internalRouter.post("/badge-unlocked", requireStatisticsToken, postBadgeUnlocked(repository)); 				// when?: on realtime update (only for the polished badges)  
-
 	return internalRouter;
 }
 

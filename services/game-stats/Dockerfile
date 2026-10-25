@@ -12,7 +12,12 @@ COPY --from=root                package*.json   ./
 
 RUN npm ci
 
-COPY . .
+COPY --from=postgres-client     . ./packages/postgres/postgres-client/
+COPY --from=auth-schema         . ./packages/postgres/auth-schema/
+COPY --from=game-stats-schema   . ./packages/postgres/game-stats-schema/
+COPY --from=game-stats-types    . ./packages/types/game-stats-types/
+COPY --from=game-types    		. ./packages/types/game-types/
+COPY                            . ./services/game-stats/
 
 RUN npm run build:docker -w game-stats
 

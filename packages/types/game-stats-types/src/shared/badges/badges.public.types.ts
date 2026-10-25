@@ -33,13 +33,13 @@ export type PublicBadgeId = (typeof PUBLIC_BADGE_IDS)[number];
 //
 // * have all of these listed at own player profile view
 // export const BADGE_HINTS: Record<PublicBadgeId, string> = {
-// 	fresh_deal:			"Fresh start!",
+// 	fresh_deal:			"Fresh start at Level 0!",
 // 	beginners_luck:		"Reach Level 1",
 // 	worthy_opponent:	"Reach Level 5",
 // 	enthusiast:			"Reach Level 10",
 // 	risk_taker:			"Reach Level 20",
-// 	the_strategist:		"Reach Level 35",
-// 	big_2_champion:		"Reach Level 50",
+// 	the_strategist:		"Reach Level 50",
+// 	big_2_champion:		"Reach Level 100",
 // 	double_digits:		"Win 10 games",
 // 	century_club:		"Played 100 games",
 // 	hot_hand:			"Win streak 5",

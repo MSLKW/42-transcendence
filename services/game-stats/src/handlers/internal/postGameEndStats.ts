@@ -51,10 +51,10 @@ export function postGameEndStats(repository: GameStatsRepository)
 		// all extracted players must be valid uuid (humans) | null (bots)
 		if (!parsedInput.success) 
 		{
-			console.error("Invalid playerUuid for humans" + z.prettifyError(parsedInput.error));
-			return (res.status(404).json({ 
-				error: "invalid_player_uuid_for_humans",
-				message: "Invalid playerUuid for humans" + z.prettifyError(parsedInput.error),
+			console.error("Invalid uuid for humans players and/or game-round:\n" + z.prettifyError(parsedInput.error));
+			return (res.status(400).json({ // 400 instead of 404, coz invalid req body
+				error: "invalid_uuid_for_humans_players_and_or_game_round",
+				message: "Invalid uuid for human players and/or game-round:\n" + z.prettifyError(parsedInput.error),
 			}));
 		}		
 		const input: GameEndStatsInput = parsedInput.data;

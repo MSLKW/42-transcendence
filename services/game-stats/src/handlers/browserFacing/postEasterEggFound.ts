@@ -54,7 +54,7 @@ export function postEasterEggFound(repository: GameStatsRepository)
 		// return drizzle query's result => 
 		// 		granted(easter egg's badgeId itself), or
 		// 		not granted(null) = ineligible / previously granted already
-		const result = repository.grantEasterEggBadge(playerUuid, egg.badgeId);
+		const result = await repository.grantEasterEggBadge(playerUuid, egg.badgeId);
 
 		// 3. valid response shape
 		// safety net to ensure its in the right shape, updatedAt is stripped off in drizzle query already

@@ -84,7 +84,7 @@ COPY --from=root				package*.json	./
 
 RUN npm ci
 
-COPY --from=game-stats-types	. ./packages/types/game-types/
+COPY --from=game-stats-types	. ./packages/types/game-stats-types/
 COPY --from=game-types			. ./packages/types/game-types/
 COPY 							. ./services/game-server/
 
@@ -105,7 +105,7 @@ COPY --from=root				package*.json	./
 
 RUN npm ci --omit=dev
 
-COPY --from=builder /app/packages/types/game-stats-types/dist	./packages/types/game-types/dist
+COPY --from=builder /app/packages/types/game-stats-types/dist	./packages/types/game-stats-types/dist
 COPY --from=builder /app/packages/types/game-types/dist			./packages/types/game-types/dist
 COPY --from=builder /app/services/game-server/server_build		./services/game-server/server_build
 

@@ -110,7 +110,7 @@ nuclear:
 # -f: Forces removal without prompting.
  
 
-## Remove everything belong to this specific stack/project
+## Remove everything belong to this (specific stack/project ... or within the whole host? )
 purge:
 	@echo "$(PURPLE)docker stop $$(docker ps -aq) 2>/dev/null || true$(RESET)"
 	@docker stop $$(docker ps -aq) 2>/dev/null || true

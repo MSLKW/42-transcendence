@@ -26,4 +26,4 @@ export const FRIENDS_SERVICE_URL	= requireEnv("FRIENDS_SERVICE_URL");
 export const STATISTICS_TOKEN_FILE	= requireEnv("STATISTICS_TOKEN_FILE");
 export const STATISTICS_TOKEN	= fs.readFileSync(STATISTICS_TOKEN_FILE, 'utf-8').trim();	// readFileSync throws ENOENT and names the path, if doesn't exist
 if (!STATISTICS_TOKEN)
-  throw new Error(`[Error] password file ${STATISTICS_TOKEN} is empty`); 					// throw if empty or only whitespace
+  throw new Error(`[Error] password file ${STATISTICS_TOKEN_FILE} is empty`); 					// throw if empty or only whitespace

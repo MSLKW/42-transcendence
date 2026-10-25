@@ -29,7 +29,7 @@ app.use(cors());
 const repository = new DrizzleGameStatsRepository();
 app.use(createBrowserFacingRouter(repository));
 app.use(createInternalRouter(repository));
-
+app.use((req, res) => res.status(404).json({ error: "not_found" })); // to handle 404 error on nginx location upon game-stats (usually do HTML page like in webserv)
 
 // Central error handler (register AFTER all routes). 
 // DB down -> 503 + 
@@ -39,7 +39,12 @@ app.use(createInternalRouter(repository));
 // It replies with status 500 too, but outside production it includes the stack trace in the response body, 
 // which you don’t want a client to see.
 // set("Retry-After", "2") adds an HTTP response header. The line means: “I’m unavailable right now, so try again after 2 seconds.”
-app.use((err: unknown, req: express.Request, res: express.Response, next: express.NextFunction) => {
+app.use((err: unknown, req: express.Request, res: express.Response, next: express.NextFunction) => 
+{
+	const status = (err as any)?.status;
+	if (status === 400 || status === 413) // someone sends broken JSON , app.use(express.json()) runs before any handler, central error handler handle that faulty request. 
+		return res.status(status).json({ error: "invalid_request_body" });
+
 	if (isPostgresDown(err))
 	{
 		console.error("Database unavailable:", err);

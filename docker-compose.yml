@@ -390,26 +390,26 @@ services:
         condition: service_started
 
 
-  #     BACKEND MICORSERVICE
-  game-server:
-    container_name: game-server
-    image: game-server:services
-    build: 
-      context: ./services/game-server
-      additional_contexts:
-        root:             .
-        game-types:       ./packages/types/game-types
-        game-stats-types: ./packages/types/game-stats-types
-    pull_policy: never
-    restart: unless-stopped
-    environment:
-      STATISTICS_TOKEN_FILE: /run/secrets/statistics-token
-      AUTH_SERVICE_URL: ${AUTH_SERVICE_URL:?}
-      GAME_STATS_SERVICE_URL: ${GAME_STATS_SERVICE_URL:?}
-    secrets:
-      - statistics-token
-    networks:
-      - transcendence
+  # #     BACKEND MICORSERVICE
+  # game-server:
+  #   container_name: game-server
+  #   image: game-server:services
+  #   build: 
+  #     context: ./services/game-server
+  #     additional_contexts:
+  #       root:             .
+  #       game-types:       ./packages/types/game-types
+  #       game-stats-types: ./packages/types/game-stats-types
+  #   pull_policy: never
+  #   restart: unless-stopped
+  #   environment:
+  #     STATISTICS_TOKEN_FILE: /run/secrets/statistics-token
+  #     AUTH_SERVICE_URL: ${AUTH_SERVICE_URL:?}
+  #     GAME_STATS_SERVICE_URL: ${GAME_STATS_SERVICE_URL:?}
+  #   secrets:
+  #     - statistics-token
+  #   networks:
+  #     - transcendence
 
 
   # #    BACKEND MICORSERVICE
@@ -442,6 +442,8 @@ services:
         auth-schema:        ./packages/postgres/auth-schema
         postgres-client:    ./packages/postgres/postgres-client
         game-stats-schema:  ./packages/postgres/game-stats-schema
+    pull_policy: never
+    restart: unless-stopped
     environment:
       PGPASSWORD_FILE: /run/secrets/db-game-stats-password
       STATISTICS_TOKEN_FILE: /run/secrets/statistics-token

@@ -1,3 +1,9 @@
+#!/bin/sh
+
+# (shebang): The OS reads the first two bytes of a file (#!) to choose who runs it. 
+# Comments above push the line down, so it’s just a comment and the OS picks no interpreter.
+
+
 # ==========================================================================================
 # --		ESTABLISHEMENT OF PRIVATE SCHEMAS TO BE MICROSERVICES' "LOSSELY-COUPLED SERVICES"	
 # ==========================================================================================
@@ -34,7 +40,6 @@
 # 	psql -v ON_ERROR_STOP=1 --host=/var/run/postgresql --username "${PGUSER}" --dbname "${PGDATABASE}" <<-EOSQL 
 
 
-#!/bin/sh
 set -e
 
 export PGPASSWORD="$(cat "${PGPASSWORD_FILE}")"
@@ -78,12 +83,12 @@ psql -v ON_ERROR_STOP=1 <<-EOSQL
 		GRANT ALL PRIVILEGES ON SEQUENCES TO "${PGUSER_FRIENDS}";
 
 	-- ---- (5) game_stats_schema
-	-- GRANT USAGE ON SCHEMA game_stats_schema TO "${PGUSER_GAME_STATS}";
-	-- GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA game_stats_schema TO "${PGUSER_GAME_STATS}";
-	-- GRANT ALL PRIVILEGES ON ALL SEQUENCES IN SCHEMA game_stats_schema TO "${PGUSER_GAME_STATS}";
-	-- ALTER DEFAULT PRIVILEGES FOR ROLE "${PGUSER}" IN SCHEMA game_stats_schema
-	-- 	GRANT ALL PRIVILEGES ON TABLES TO "${PGUSER_GAME_STATS}";
-	-- ALTER DEFAULT PRIVILEGES FOR ROLE "${PGUSER}" IN SCHEMA game_stats_schema
-	-- 	GRANT ALL PRIVILEGES ON SEQUENCES TO "${PGUSER_GAME_STATS}";
+	GRANT USAGE ON SCHEMA game_stats_schema TO "${PGUSER_GAME_STATS}";
+	GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA game_stats_schema TO "${PGUSER_GAME_STATS}";
+	GRANT ALL PRIVILEGES ON ALL SEQUENCES IN SCHEMA game_stats_schema TO "${PGUSER_GAME_STATS}";
+	ALTER DEFAULT PRIVILEGES FOR ROLE "${PGUSER}" IN SCHEMA game_stats_schema
+		GRANT ALL PRIVILEGES ON TABLES TO "${PGUSER_GAME_STATS}";
+	ALTER DEFAULT PRIVILEGES FOR ROLE "${PGUSER}" IN SCHEMA game_stats_schema
+		GRANT ALL PRIVILEGES ON SEQUENCES TO "${PGUSER_GAME_STATS}";
 
 EOSQL
