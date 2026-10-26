@@ -14,5 +14,9 @@
 		"strict": true,
 		"skipLibCheck": true,
 	},
-	"include": ["src/**/*", "src_shared/**/*"]
+	"include": ["src/**/*", "src_shared/**/*"],
+	"references": [
+		{ "path": "../../packages/types/game-types"},
+		{ "path": "../../packages/types/game-stats-types"},
+	]
 }

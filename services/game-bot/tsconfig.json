@@ -13,5 +13,8 @@
 		"incremental": true,
 		"tsBuildInfoFile": "./.tsbuildinfo"
 	},
-	"include": ["src/**/*.ts"]
+	"include": ["src/**/*.ts"],
+	"references": [
+		{ "path": "../../packages/types/game-types"},
+	]
 }
