@@ -2,6 +2,8 @@
 FROM node:20-alpine AS builder
 WORKDIR /app
 
+#fixed typo
+
 COPY --from=postgres-client package.json    ./packages/postgres/postgres-client/
 COPY --from=auth-schema     package.json    ./packages/postgres/auth-schema/
 COPY                        package.json    ./services/authentication/
