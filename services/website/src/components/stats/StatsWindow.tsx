@@ -12,6 +12,7 @@ import { PlayerDataModule } from "../player/data/PlayerDataModule";
 import { PlayerStatsModule } from "../player/stats/PlayerStatsModule";
 import { FriendToggleButton } from "./friend/FriendToggleButton";
 import { KickPlayerButton } from "./kick/KickPlayerButton";
+import { handlePublicPlayerGameData } from "../../api/stats/get_public-player-game-data/handlePublicPlayerGameData";
 
 export const StatsWindow: React.FC = () => {
 	const statsUuid = useSceneStore((store) => store.statsUuid!);
@@ -23,6 +24,10 @@ export const StatsWindow: React.FC = () => {
 	const [createdAt, setCreatedAt] = useState<Date | null>(null);
 	const [availability, setAvailability] = useState<AVAILABILITY_TYPE | null>(null);
 	const [lastOnline, setLastOnline] = useState<Date | null>(null);
+	const [currentLevel, setCurrentLevel] = useState(0);
+	const [currentLevelXpEarned, setCurrentLevelXpEarned] = useState(0);
+	const [currentLevelXpThreshold, setCurrentLevelXpThreshold] = useState(0);
+	const [currentLevelProgressPercentage, setCurrentLevelProgressPercentage] = useState(0);
 
 	const statsFetched = useRef<string | null>(null);
 	useEffect(() => {
@@ -32,10 +37,11 @@ export const StatsWindow: React.FC = () => {
 
 		const fetchPlayerData = async () => {
 			try {
-				const [profile, createdAt, online] = await Promise.all([
+				const [profile, createdAt, online, stats] = await Promise.all([
 					handleGetProfile(statsUuid),
 					handleCreatedAt(statsUuid),
 					handleGetOnline(statsUuid),
+					handlePublicPlayerGameData(statsUuid),
 				]);
 
 				setName(profile?.username ?? null);
@@ -43,6 +49,11 @@ export const StatsWindow: React.FC = () => {
 				setBadge(profile?.badge ?? null);
 
 				setCreatedAt(createdAt ?? null);
+
+				setCurrentLevel(stats.levelProgress.currentLevel);
+				setCurrentLevelXpEarned(stats.levelProgress.currentLevelXpEarned);
+				setCurrentLevelXpThreshold(stats.levelProgress.currentLevelXpThreshold);
+				setCurrentLevelProgressPercentage(stats.levelProgress.currentLevelProgressPercentage);
 
 				if (online?.isOnline)
 					setAvailability(online.inParty ? "Busy" : "Online");
@@ -75,6 +86,10 @@ export const StatsWindow: React.FC = () => {
 						availability={availability}
 						lastOnline={lastOnline}
 						createdAt={createdAt}
+						currentLevel={currentLevel}
+						currentLevelXpEarned={currentLevelXpEarned}
+						currentLevelXpThreshold={currentLevelXpThreshold}
+						currentLevelProgressPercentage={currentLevelProgressPercentage}
 					/>
 				</div>
 				<MedalsModule uuid={statsFetched.current}/>

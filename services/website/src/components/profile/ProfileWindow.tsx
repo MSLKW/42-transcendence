@@ -2,6 +2,7 @@ import { useState, useRef, useEffect } from "react";
 import { partySocket } from "../../api/party/partySocket";
 import { handleCreatedAt } from "../../api/authentication/get_created-at/handleCreatedAt";
 import { handlePutProfile } from "../../api/profile/put_profile/handlePutProfile";
+import { handleOwnPlayerGameData } from "../../api/stats/get_own-player-game-data/handleOwnPlayerGameData";
 import { useAuthStore } from "../../store/AuthStore";
 import { useNotificationStore, NOTIFICATION_TYPE } from "../../store/NotificationStore";
 import { usePartyStore } from "../../store/PartyStore";
@@ -29,6 +30,10 @@ export const ProfileWindow = () => {
 	const [badge, setBadge] = useState<BADGE_TYPE>(profile?.badge ?? "Newcomer");
 	const [hasChange, setHasChange] = useState(false);
 	const [createdAt, setCreatedAt] = useState<Date | null>(null);
+	const [currentLevel, setCurrentLevel] = useState(0);
+	const [currentLevelXpEarned, setCurrentLevelXpEarned] = useState(0);
+	const [currentLevelXpThreshold, setCurrentLevelXpThreshold] = useState(0);
+	const [currentLevelProgressPercentage, setCurrentLevelProgressPercentage] = useState(0);
 
 	const createdAtFetched = useRef<string | null>(null);
 	useEffect(() => {
@@ -36,15 +41,24 @@ export const ProfileWindow = () => {
 			return;
 		createdAtFetched.current = clientUuid;
 
-		const fetchCreatedAt = async () => {
+		const fetchPlayerData = async () => {
 			try {
-				const createdAt = await handleCreatedAt(clientUuid);
+				const [createdAt, stats] = await Promise.all([
+					handleCreatedAt(clientUuid),
+					handleOwnPlayerGameData(),
+				]);
+				
 				setCreatedAt(createdAt ?? null);
+
+				setCurrentLevel(stats.levelProgress.currentLevel);
+				setCurrentLevelXpEarned(stats.levelProgress.currentLevelXpEarned);
+				setCurrentLevelXpThreshold(stats.levelProgress.currentLevelXpThreshold);
+				setCurrentLevelProgressPercentage(stats.levelProgress.currentLevelProgressPercentage);
 			} catch (error) {
 				console.error("Failed to fetch player data:", error);
 			}
-		};
-		fetchCreatedAt();
+		}
+		fetchPlayerData();
 	}, [clientUuid]);
 
 	const isNameValid = checkNameValidity(name?.trim());
@@ -95,6 +109,10 @@ export const ProfileWindow = () => {
 						createdAt={createdAt}
 						setBadge={setBadge}
 						setHasChange={setHasChange}
+						currentLevel={currentLevel}
+						currentLevelXpEarned={currentLevelXpEarned}
+						currentLevelXpThreshold={currentLevelXpThreshold}
+						currentLevelProgressPercentage={currentLevelProgressPercentage}
 					/>
 				</div>
 				{profileValidation && !isNameValid &&

@@ -1,6 +1,6 @@
 import { fetchOwnPlayerGameData } from "./fetchOwnPlayerGameData";
 
-export const handleOwnPlayerData = async () => {
+export const handleOwnPlayerGameData = async () => {
 	try {
 		const response = await fetchOwnPlayerGameData();
 		if (!response)
