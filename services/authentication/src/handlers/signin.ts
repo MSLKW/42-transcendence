@@ -1,19 +1,16 @@
-import { Request, response, Response } from "express";
+import { Request, Response } from "express";
 import { User } from "../models/user";
 import { UserStore } from "../store/userStore";
 import { Session } from "../models/session";
 import { SessionStore } from "../store/sessionStore";
 import { verifyPassword, hashToken } from "../auth/hash";
 import { validateEmail } from "../auth/validation";
-import { SESSION_DURATION_MS } from "../config/sessionConfig";
 import { randomBytes } from "crypto";
+import { SESSION_DURATION_MS } from "../config/env";
+import { PROFILE_SERVICE_URL } from "../config/env";
 
 const MAX_FAILED_ATTEMPTS = 5;
 const LOCKOUT_DURATION_MS = 15 * 60 * 1000; // 15 minutes
-const PROFILE_SERVICE_URL = process.env.PROFILE_SERVICE_URL;
-
-if (!PROFILE_SERVICE_URL)
-	console.warn("[Warning] PROFILE_SERVICE_URL not set. Logins with username will not work");
 
 export function signinHandler(userStore: UserStore, sessionStore: SessionStore)
 {

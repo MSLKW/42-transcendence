@@ -1,6 +1,6 @@
 import { SessionStore } from "../store/sessionStore";
 import { Session } from "../models/session";
-import { SESSION_DURATION_MS } from "../config/sessionConfig";
+import { SESSION_DURATION_MS } from "../config/env";
 import { hashToken } from "./hash";
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;

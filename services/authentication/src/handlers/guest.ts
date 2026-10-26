@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import { SessionStore } from "../store/sessionStore";
 import { randomUUID } from "crypto";
-import { SESSION_DURATION_MS } from "../config/sessionConfig";
+import { SESSION_DURATION_MS } from "../config/env";
 
 export function guestHandler(sessionStore: SessionStore)
 {

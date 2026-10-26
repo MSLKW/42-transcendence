@@ -1,4 +1,5 @@
 import "dotenv/config";
+import { PORT } from "./config/env";
 import express from "express";
 import cookieParser from "cookie-parser";
 import { FileUserStore } from "./store/fileUserStore";
@@ -38,7 +39,6 @@ app.use((err: any, req: express.Request, res: express.Response, next: express.Ne
 	return res.status(500).json({ error: "Something went wrong." });
 });
 
-const PORT = Number(process.env.PORT) || 3000;
 const ERROR_MESSAGES: Record<string, string> = {
 	EADDRINUSE: `Port ${PORT} is already in use.`,
 	EACCES: `Insufficient permissions to bind to port ${PORT}.`,
