@@ -12,8 +12,7 @@ export const fetchPutAvatar = async (avatar: File) => {
 	if (!response.ok) {
 		if (response.status === 400)
 			throw new Error("Invalid syntax or malformed request");
-		else
-			throw new Error(`Failed to upload avatar (${response.status} ${response.statusText})`);
+		throw new Error(`Failed to upload avatar (${response.status} ${response.statusText})`);
 	}
 
 	return response;
