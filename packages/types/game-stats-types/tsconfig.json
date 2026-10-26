@@ -19,5 +19,5 @@
 		"declarationMap": true,
 		"sourceMap": true,
 	},
-	"include": ["src/**/*.ts", "src/game-stats/index.ts"]
+	"include": ["src/**/*.ts"]
 }
