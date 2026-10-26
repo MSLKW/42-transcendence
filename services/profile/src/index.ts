@@ -13,6 +13,8 @@ import { setUserProfile } from "./handlers/setUserProfile";
 import { setUserSettings } from "./handlers/setUserSettings";
 import { uploadAvatar } from "./handlers/uploadAvatar";
 
+import { closeDb } from "./db/closeDb";
+
 const PORT = process.env.PORT || 3000;
 const ERROR_MESSAGES: Record<string, string> = {
 	EADDRINUSE: `Port ${PORT} is already in use.`,
@@ -57,3 +59,17 @@ server.on("error", (err: NodeJS.ErrnoException) =>
 	);
 	process.exit(1);
 });
+
+let shuttingDown = false;
+async function shutdown()
+{
+	if (shuttingDown)
+		return ;
+	shuttingDown = true;
+	server.close();
+	await closeDb();
+	process.exit(0);
+}
+
+process.on("SIGINT", shutdown);
+process.on("SIGTERM", shutdown);
