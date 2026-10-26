@@ -112,3 +112,6 @@ For each team member mentioned at the top of the README.md, you must provide:
 
 ` openssl req -x509 -newkey rsa:4096 -keyout transcendence.key -out transcendence.crt -sha256 -days 365
  -nodes `
+
+Place the transcendence.key file to secrets/ssl/transcendence.key
+Place the transcendence.crt file to secrets/ssl/transcendence.crt
