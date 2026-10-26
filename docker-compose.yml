@@ -13,6 +13,7 @@ networks:
     name: ${DB_NETWORK:?}
     driver: bridge # no ingress (Incoming traffic or data is completely blocked from entering this network)
     internal: true # no egress (Outgoing traffic or data is completely blocked from leaving this network)
+  game-bot-network:
 
 
 volumes: # industry standard => name volumes => more secure oppose to anyone ever can adjust volumes (data's disk) on host if volumes are bind mounted
@@ -193,11 +194,13 @@ services:
   website:
     container_name: website
     image: website:services
+    init: true
     build:
       context: ./services/website
       additional_contexts:
-        root: .
-        game-types: ./packages/types/game-types
+        root:             .
+        game-types:       ./packages/types/game-types
+        friends-types:    ./packages/types/friends-types
         game-stats-types: ./packages/types/game-stats-types
     pull_policy: never
     restart: unless-stopped
@@ -288,6 +291,7 @@ services:
       PORT: ${PARTY_SERVICE_PORT:?}
       AUTH_SERVICE_URL: ${AUTH_SERVICE_URL:?}
       GAME_SERVER_SERVICE_URL: ${GAME_SERVER_SERVICE_URL:?}
+      GAME_SERVICE_URL: ${GAME_SERVER_SERVICE_URL:?} # temporarily until party fixes its env config
     secrets:
       - db-party-password
     networks:
@@ -390,43 +394,55 @@ services:
         condition: service_started
 
 
-  # #     BACKEND MICORSERVICE
-  # game-server:
-  #   container_name: game-server
-  #   image: game-server:services
-  #   build: 
-  #     context: ./services/game-server
-  #     additional_contexts:
-  #       root:             .
-  #       game-types:       ./packages/types/game-types
-  #       game-stats-types: ./packages/types/game-stats-types
-  #   pull_policy: never
-  #   restart: unless-stopped
-  #   environment:
-  #     STATISTICS_TOKEN_FILE: /run/secrets/statistics-token
-  #     AUTH_SERVICE_URL: ${AUTH_SERVICE_URL:?}
-  #     GAME_STATS_SERVICE_URL: ${GAME_STATS_SERVICE_URL:?}
-  #   secrets:
-  #     - statistics-token
-  #   networks:
-  #     - transcendence
+  #     BACKEND MICORSERVICE
+  game-server:
+    container_name: game-server
+    image: game-server:services
+    build: 
+      context: ./services/game-server
+      additional_contexts:
+        root:             .
+        game-types:       ./packages/types/game-types
+        game-stats-types: ./packages/types/game-stats-types
+    pull_policy: never
+    restart: unless-stopped
+    environment:
+      STATISTICS_TOKEN_FILE: /run/secrets/statistics-token
+      AUTH_SERVICE_URL: ${AUTH_SERVICE_URL}
+      PROFILE_SERVICE_URL: ${PROFILE_SERVICE_URL}
+      GAME_BOT_SERVICE_URL: ${GAME_BOT_SERVICE_URL}
+      GAME_STATS_SERVICE_URL: ${GAME_STATS_SERVICE_URL}
+      PORT: ${GAME_SERVER_SERVICE_PORT}
+      LOBBY_LIMIT: ${GAME_SERVER_SERVICE_LOBBY_LIMIT}
+      LOBBY_USER_LIMIT: ${GAME_SERVER_SERVICE_LOBBY_USER_LIMIT}
+      LOBBY_DELETE_TIMEOUT_MS: ${GAME_SERVER_SERVICE_LOBBY_DELETE_TIMEOUT_MS}
+    networks:
+      - transcendence
+      - game-bot-network
+    secrets:
+      - statistics-token
 
 
-  # #    BACKEND MICORSERVICE
-  # game-bot:
-  #   container_name: game-bot
-  #   image: game-bot:services
-  #   build: 
-  #     context: ./services/game-bot
-  #     additional_contexts:
-  #       root: .
-  #       game-types: ./packages/types/game-types
-  #   pull_policy: never
-  #   restart: unless-stopped
-  #   environment:
-  #     PORT: ${GAME_BOT_SERVICE_PORT:?}
-  #   networks:
-  #     - transcendence
+  #     BACKEND MICORSERVICE
+  game-bot:
+    container_name: game-bot
+    image: game-bot:services
+    build:
+      context: ./services/game-bot
+      additional_contexts:
+        root:       .
+        game-types: ./packages/types/game-types
+    pull_policy: never
+    restart: unless-stopped
+    environment:
+      PORT: ${GAME_BOT_SERVICE_PORT}
+      GAME_SERVICE_URL: ${GAME_SERVER_SERVICE_URL}
+      BOT_LOG_LEVEL: ${GAME_BOT_LOG_LEVEL}
+      BOT_LOG_DIR: ${GAME_BOT_LOG_DIR}
+      BOT_MOVE_DELAY_MIN: ${GAME_BOT_MOVE_DELAY_MIN}
+      BOT_MOVE_DELAY_MAX: ${GAME_BOT_MOVE_DELAY_MAX}
+    networks:
+      - game-bot-network
 
 
   #     BACKEND MICORSERVICE
