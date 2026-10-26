@@ -3,7 +3,7 @@ import { z } from "zod";
 import { AUTH_SERVICE_URL } from "../config/env";
 
 
-const ValidateAuthResponseSchema = z.object({ uuid: z.uuid() });	// zod making sure its a uuid string. ValidateAuthResponseSchema object is built once
+const ValidateAuthResponseSchema = z.object({ userId: z.uuid() });	// zod making sure its a uuid string. ValidateAuthResponseSchema object is built once
 
 export async function requireUser(req: Request, res: Response, next: NextFunction) 
 {
@@ -39,7 +39,7 @@ export async function requireUser(req: Request, res: Response, next: NextFunctio
 			return (res.status(502).end());
 		}
 
-		res.locals.playerUuid = parsed.data.uuid;		// middlerware hand it to the handler
+		res.locals.playerUuid = parsed.data.userId;		// middlerware hand it to the handler
 		next();											// continue to the handler (implemented so handler get it from helper function getPlayerUuid below)
 	} 
 	catch (err)

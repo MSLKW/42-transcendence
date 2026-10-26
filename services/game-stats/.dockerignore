@@ -1,6 +1,6 @@
 dist/
 node_modules/
-test/
+# test/
 .dockerignore
 .gitignore
 Dockerfile

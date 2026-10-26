@@ -460,6 +460,7 @@ services:
         game-stats-schema:  ./packages/postgres/game-stats-schema
     pull_policy: never
     restart: unless-stopped
+    ports: ["127.0.0.1:3002:3000"] # for tester only
     environment:
       PGPASSWORD_FILE: /run/secrets/db-game-stats-password
       STATISTICS_TOKEN_FILE: /run/secrets/statistics-token
