@@ -1,7 +1,7 @@
 import { Client } from "../client/Client";
 import { PartyState } from "../PartyTransmitTypes";
 import { GAME_SERVER_SERVICE_URL } from "../config/env";
-import { postChatWhitelist, putChatWhitelist, deleteChatWhitelist } from "./ChatWHitelist";
+import { postChatWhitelist, putChatWhitelist, deleteChatWhitelist } from "./ChatWhitelist";
 
 export class Party
 {
