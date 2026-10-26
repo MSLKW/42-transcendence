@@ -128,7 +128,6 @@ export const LobbyScene = () => {
 								disabled={!(seatsFilled && clientUuid === hostUuid)}
 								onClick={() => {
 									startGame();
-									useSceneStore.getState().setCurrentScene("Game"); // can remove this in theory, cuz already set to game scene when actually connected
 								}}
 								className="
 									btn-text bg-light

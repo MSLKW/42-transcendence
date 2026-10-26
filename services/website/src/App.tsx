@@ -39,7 +39,9 @@ import { SetupWindow } from "./components/setup/SetupWindow";
 import { StaleWindow } from "./components/stale/StaleWindow";
 import { StatsWindow } from "./components/stats/StatsWindow";
 import { ThreeJsManager } from './components/3d/ThreeJsManager';
+import { gameInstance, joinGameLobby, clearGameInstance } from "./api/game/main";
 import Dev from "./Dev";
+import { usePartyStore } from "./store/PartyStore";
 
 export let threejsManager: ThreeJsManager;
 
@@ -50,6 +52,7 @@ export default function App() {
 	const currentScene = useSceneStore((store) => store.currentScene);
 	const showWindow = useSceneStore((store) => store.showWindow);
 	const showDevSection = useDevStore((store) => store.showDevSection);
+	const partyGameId = usePartyStore((store) => store.partyGameId);
 
 	//party socket connection
 	useEffect(() => {
@@ -179,6 +182,17 @@ export default function App() {
 	// useEffect(() => {
 	// 	useSceneStore.getState().resetWindows();
 	// }, [currentScene]);
+
+	// Connect to game server
+	useEffect(() => {
+		if (partyGameId === null && gameInstance !== null) {
+			clearGameInstance();
+		}
+		else if (partyGameId !== null && clientUuid)
+			joinGameLobby(partyGameId, clientUuid);
+		else if (usePartyStore.getState().partyVerboseMode)
+			console.log("[party > 'on' party_state] Blocked from joining game lobby w/ partyGameId:", partyGameId);
+	}, [partyGameId]);
 
 	return (
 		<>

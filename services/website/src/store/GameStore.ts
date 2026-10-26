@@ -290,6 +290,10 @@ export const useGameStore = create<GameState>() (
 					gameInstance?.disconnect();
 				}
 				get().resetLobby();
+				const currentScene = useSceneStore.getState().currentScene;
+				if (currentScene === "Lobby" || currentScene === "Game") {
+					useSceneStore.getState().setCurrentScene("Home");
+				}
 			},
 
 			clearPassedPlayer: (playerUuid: string) => {

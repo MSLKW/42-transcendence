@@ -10,6 +10,16 @@ export function connectionHandlers(socket: Socket) {
 			console.log("[party > 'on' connect] id:", socket?.id);
 
 		usePartyStore.setState({ partySocketId: socket?.id });
+
+		if (useSceneStore.getState().currentScene !== "Login") {
+			void handleValidate()
+				.then(() => {
+					useSceneStore.getState().setShowWindow("stale", false);
+				})
+				.catch((error) => {
+					console.error("Session validation after disconnect failed:", error);
+				})
+		}
 	});
 
 	socket.on("disconnect", (reason) => {

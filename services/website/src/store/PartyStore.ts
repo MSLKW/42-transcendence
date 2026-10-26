@@ -20,7 +20,7 @@ interface PartyState extends PartyValues {
 }
 
 export const usePartyStore = create<PartyState>() (
-	// persist(
+	persist(
 		(set, get) => ({
 			partyVerboseMode: false,
 			partySocketId: null,
@@ -61,8 +61,8 @@ export const usePartyStore = create<PartyState>() (
 				});
 			}
 		}),
-		// {
-		// 	name: 'party-storage',
-		// }
-	// )
+		{
+			name: 'party-storage',
+		}
+	)
 );

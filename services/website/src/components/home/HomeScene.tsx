@@ -19,17 +19,17 @@ export const HomeScene = () => {
 	const cachedData = useProfileStore((store) => store.cachedData);
 	
 	//remove bots
-	useEffect(() => {
-		// removeBots();
-		if (members.length <= 0) {
-			usePartyStore.setState({
-				members: [ clientUuid ],
-				hostUuid: clientUuid,
-			});
-		}
-		useGameStore.setState({ totalPlayers: 0 });
-		initSeats();
-	}, [members]);
+	// useEffect(() => {
+	// 	removeBots();
+	// 	if (members.length <= 0) {
+	// 		usePartyStore.setState({
+	// 			members: [ clientUuid ],
+	// 			hostUuid: clientUuid,
+	// 		});
+	// 	}
+	// 	useGameStore.setState({ totalPlayers: 0 });
+	// 	initSeats();
+	// }, [members]);
 
 	return (
 		<>

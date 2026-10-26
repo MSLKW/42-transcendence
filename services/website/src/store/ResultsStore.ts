@@ -94,14 +94,6 @@ export const useResultsStore = create<ResultsState>() (
 
 			resetResults: () => {
 				get().resetValues();
-				useGameStore.setState({
-					gameStarted: false,
-					cardsLeft: [],
-					currentHand: "None",
-					round: 0,
-					seatRef: [],
-					activeSeat: 0,
-				});
 			},
 
 			getLeaderboard: () => {

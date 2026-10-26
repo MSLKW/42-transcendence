@@ -17,7 +17,7 @@ import { useResultsStore } from '../../store/ResultsStore';
 import { useBotStore } from '../../store/BotStore';
 import { useSettingsStore } from '../../store/SettingsStore';
 import { useNotificationStore, NOTIFICATION_TYPE } from '../../store/NotificationStore';
-import { gameLog } from './main';
+import { clearGameInstance, gameLog } from './main';
 
 export class Game {
 	private socket: Socket;
@@ -121,20 +121,22 @@ export class Game {
 
 		this.socket.on("connect", () => {
 			gameLog(`[gameSocket] 'connect' id: ${this.socket.id}`);
-			useSceneStore.getState().setCurrentScene("Lobby");
+			// console.log(useSceneStore.getState().currentScene, useGameStore.getState().gameStarted);
+			// if (useSceneStore.getState().currentScene !== "Game" || useGameStore.getState().gameStarted === false)
+				useSceneStore.getState().setCurrentScene("Lobby"); // figure this out
 		});
 
 		this.socket.on("graceful_disconnect", (reason: string) => {
 			gameLog(`[gameSocket] 'graceful_disconnect' reason: `, reason);
+			const currentScene = useSceneStore.getState().currentScene;
+			if (currentScene === "Lobby" || currentScene === "Game") {
+				useSceneStore.getState().setCurrentScene("Home");
+			}
 			this.disconnect();
 		});
 
 		this.socket.on("disconnect", (reason) => {
 			gameLog(`[gameSocket] 'disconnect' reason: ${reason}`);
-			const currentScene = useSceneStore.getState().currentScene;
-			if (currentScene === "Lobby" || currentScene === "Game") {
-				useSceneStore.getState().setCurrentScene("Home");
-			}
 			this.resetGame();
 			useGameStore.getState().resetLobby();
 			partySocket.refresh();
@@ -241,7 +243,6 @@ export class Game {
 		useGameStore.setState({ 
 			gameSeats: seats,
 			totalPlayers: this.participants.length,
-			// activeSeat: 
 		});
 		useGameStore.getState().setCardsLeft(gameState.playerCardsAmount);
 		useGameStore.getState().setSeatRef(useGameStore.getState().gameSeats);
