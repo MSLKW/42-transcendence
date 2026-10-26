@@ -1,0 +1,165 @@
+# --- Colours  --------------------------------------------------------------
+GREEN = \033[0;32m
+BLUE = \033[0;34m
+PURPLE = \033[1;35m
+PURPLE_BG_WHITE_TEXT = \033[37;45m			# Standard white text on a purple background
+BRIGHT_WHITE_PURPLE_BG = \033[1;37;45m		# Bright/Bold white text on a purple background (usually looks cleaner)
+RESET = \033[0K\033[0m  					#\033[0K for reset background colour
+
+
+# --- Put this at the very top of your file, before the "all:" target -------
+include .env
+export
+
+
+# --- Compose ---------------------------------------------------------------
+# Single compose file for now (no dev override yet).
+COMPOSE				=	docker compose -f ./docker-compose.yml
+SHELLABLE_SERVICES	:=	website authentication party profile friends chat game-server game-bot game-stats \
+               			postgresql nginx 
+# drizzle-gateway migrator redis
+
+
+# --- Makefile Commands -----------------------------------------------------
+## Build (cached) and start all services; recreates upon new changes
+all: 
+	@echo "$(PURPLE)\n🛠️  Building and launching full Docker environment from scratch... \n$(RESET)"
+	@$(COMPOSE) up --build 
+#-d
+ 
+
+## Stop and remove containers + network (keeps images & volumes)
+down: 
+	@echo "$(PURPLE) Stopping running containers & removing all containers & networks on Docker (keep images & volumes)...\n$(RESET)" 
+	@$(COMPOSE) down
+ 
+
+## Start existing containers, no rebuild (ignoring changes)
+up: 
+	@echo "$(PURPLE) Starting/Resuming services after down/stop, ignoring changes on Docker...\n$(RESET)"
+	@$(COMPOSE) up 
+#-d
+ 
+
+## Down + Up (removes containers & networks, keeps images & volumes)
+restart: down up
+
+
+## Stop all running containers. Remove nothing
+stop:
+	@echo "$(PURPLE) Stopping all running containers (remove nothing)...\n$(RESET)"
+	@$(COMPOSE) stop
+
+
+## Remove containers, networks, and images (keeps volumes)
+clean: 
+	@echo "$(PURPLE)\n🗑️  Removing all containers, network and images including public base images (keeping volumes)...\n$(RESET)"
+	@$(COMPOSE) down --rmi all
+	@echo "$(PURPLE)\n🗑️  Done cleaning all containers, networks and images! \n$(RESET)"
+
+
+## Clean + wipe volumes
+fclean: clean 
+	@echo "$(PURPLE)\n🗑️🚨 Removing this project's Docker volumes...\n$(RESET)"
+	@$(COMPOSE) down -v
+	@echo "$(PURPLE)\n🗑️💥 Done, Absolutely everything are removed now!\n$(RESET)"
+
+
+## Full rebuild from scratch
+re: fclean all 
+ 
+
+## Stream logs from all running services
+logs:
+	@if [ $$($(COMPOSE) ls | wc -l) -eq 1 ]; then \
+		echo "No services running"; \
+	else \
+		$(COMPOSE) logs -f; \
+	fi;
+
+
+## Open a shell in a service (e.g. make shell-website)
+shell-:
+	@printf 'Usage: make shell-<%s>\n' "$(shell echo $(SERVICES) | tr ' ' '|')"
+define SHELL_TEMPLATE
+shell-$(1):
+	@$(COMPOSE) exec $(1) sh
+endef
+$(foreach service,$(SHELLABLE_SERVICES),$(eval $(call SHELL_TEMPLATE,$(service)))) 
+
+## List containers, networks, images, volumes
+ls:
+# 	@echo "$(PURPLE)Project Containers: $(COMPOSE) ps -a$(RESET)"
+# 	@$(COMPOSE) ps -a
+	@echo "$(PURPLE)All Containers within host: docker ps -a$(RESET)"
+	@docker ps -a
+	@echo "$(PURPLE)\ndocker network ls$(RESET)"
+	@docker network ls
+	@echo "$(PURPLE)\ndocker image ls$(RESET)"
+	@docker image ls
+	@echo "$(PURPLE)\ndocker volume ls$(RESET)"
+	@docker volume ls
+
+
+## Destructive! Total system wipe out across entire machine.
+nuclear:
+	@echo "$(PURPLE)docker system prune -a --volumes -f$(RESET)"
+	@docker system prune -a --volumes -f
+# -a: Removes all unused images, not just dangling ones.
+# --volumes: Removes all unused volumes.
+# -f: Forces removal without prompting.
+ 
+
+## Remove everything belong to this (specific stack/project ... or within the whole host? )
+purge:
+	@echo "$(PURPLE)docker stop $$(docker ps -aq) 2>/dev/null || true$(RESET)"
+	@docker stop $$(docker ps -aq) 2>/dev/null || true
+	@echo "$(PURPLE)docker rm $$(docker ps -aq) 2>/dev/null || true$(RESET)"
+	@docker rm $$(docker ps -aq) 2>/dev/null || true
+	@echo "$(PURPLE)docker rmi $$(docker images -q) 2>/dev/null || true$(RESET)"
+	@docker rmi $$(docker images -q) 2>/dev/null || true
+	@echo "$(PURPLE)docker volume prune -f$(RESET)"
+	@docker volume prune -f
+	@echo "$(PURPLE)docker network prune -f$(RESET)"
+	@docker network prune -f
+
+
+## Build images with plain text output including exact error messages for debugging 
+progress: 
+	@echo "$(PURPLE)$(COMPOSE) build --progress=plain$(RESET)"
+	@$(COMPOSE) build --progress=plain
+ 
+
+## See what Docker reads from docker compose
+config: 
+	@echo "$(PURPLE)$(COMPOSE) config$(RESET)"
+	@$(COMPOSE) config 
+ 
+ 
+## Show available Makefile commands
+help: 
+	@awk '/^## /{desc=substr($$0,4); next} \
+	/^[a-zA-Z_-]+:/{split($$1,a,":"); if(desc) \
+	printf "  \033[36m%-20s\033[0m %s\n", a[1], desc; desc=""}' $(MAKEFILE_LIST)
+
+## Check both game-server & website individually imports their own allocated version of game-stats-types
+check-imports:
+	@! grep -rnE "game-stats-types/(website|game-stats)" services/game-server/src && echo "ok: game-server imports only its own entry"
+	@! grep -rnE "game-stats-types/(game-server|game-stats)" services/website/src && echo "ok: website imports only its own entry"
+
+.PHONY: all down up stop restart clean fclean re logs nuclear purge progress config ls help shell- check-imports
+
+
+# --- as learning references only, not to be run via makefile commands. must be in these sequence ----------------------------------------------
+#	# Step-by-step full teardown of THIS project only (stop, rm containers, rm images, rm volumes, rm networks)
+# 	@echo "$(PURPLE)Stopping all running containers for this project...$(RESET)"
+# 	@$(COMPOSE) stop
+# 	@echo "$(PURPLE)Removing all containers for this project...$(RESET)"
+# 	@$(COMPOSE) rm -f
+# 	@echo "$(PURPLE)Removing all images built for this project...$(RESET)"
+# 	@$(COMPOSE) down --rmi all
+# 	@echo "$(PURPLE)Removing all volumes for this project...$(RESET)"
+# 	@$(COMPOSE) down --volumes
+# 	@echo "$(PURPLE)Removing this project's network...$(RESET)"
+# 	@$(COMPOSE) down
+# 	@echo "$(PURPLE)Done — this project's containers, images, volumes and networks are gone.$(RESET)"

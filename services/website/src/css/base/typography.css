@@ -1,0 +1,28 @@
+h1 {
+	@apply
+		text-1.75rem
+		font-semibold
+		tracking-widest
+		;
+}
+h2 {
+	@apply
+		text-1.5rem
+		font-medium
+		tracking-wide
+		;
+}
+h3 {
+	@apply
+		text-1.25rem
+		font-normal
+		tracking-wide
+		;
+}
+p {
+	@apply
+		text-1rem
+		font-normal
+		tracking-wider
+		;
+}

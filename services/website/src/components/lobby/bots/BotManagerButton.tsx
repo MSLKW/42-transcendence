@@ -1,0 +1,45 @@
+import { useAuthStore } from "../../../store/AuthStore";
+import { useBotStore } from "../../../store/BotStore";
+import { usePartyStore } from "../../../store/PartyStore";
+import { Tooltip } from "../../../utilities/react/Tooltip";
+import { AvatarName } from "../../avatar/name/AvatarName";
+import { AddBotsIcon } from "./AddBotsIcon";
+import { RemoveBotsIcon } from "./RemoveBotsIcon";
+
+export const BotManagerButton = () => {
+	const fillSeatsWithBots = useBotStore((store) => store.fillSeatsWithBots);
+	const removeBots = useBotStore((store) => store.removeBots);
+	const botCount = useBotStore((store) => store.botCount);
+	const clientUuid = useAuthStore((store) => store.clientUuid);
+	const hostUuid = usePartyStore((store) => store.hostUuid);
+
+	const handleBotCount = (e?: React.MouseEvent<HTMLButtonElement>) => {
+		if (e)
+			e.currentTarget.blur();
+		if (botCount === 0)
+			fillSeatsWithBots();
+		else
+			removeBots();
+	}
+
+	return (
+		<div className="
+			flex flex-col place-content-center place-items-center
+			gap-0.75rem
+		">
+			<Tooltip text={botCount === 0 ? "Fill With Bots" : "Remove All Bots"}>
+				<button 
+					disabled={clientUuid !== hostUuid}
+					onClick={(e) => {handleBotCount(e)}}
+					className="
+						h-6rem aspect-square
+						bg-dark-semi btn-icon rounded-sm
+						flex place-content-center place-items-center
+				">
+					{ botCount === 0 ? <AddBotsIcon /> : <RemoveBotsIcon /> }
+				</button>
+			</Tooltip>
+			<AvatarName name="Bots"/>
+		</div>
+	);
+}

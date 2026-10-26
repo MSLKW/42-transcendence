@@ -1,0 +1,9 @@
+Dockerfile
+.dockerignore
+
+node_modules/
+README.md
+dist
+server_build
+.tsbuildinfo
+.gitignore

@@ -1,0 +1,26 @@
+{
+	"compilerOptions": {
+		"target": "ES2022",
+		"module": "NodeNext",
+		"moduleResolution": "NodeNext",
+		"strict": true,
+		"esModuleInterop": true,
+		"skipLibCheck": true,
+		"forceConsistentCasingInFileNames": true,
+		"types": ["node"],
+		"isolatedModules": true,
+		"moduleDetection": "force",
+		// "verbatimModuleSyntax": true,
+		"noUncheckedSideEffectImports": true,
+		"outDir": "./dist",
+		"rootDir": "./src",
+		"incremental": true,
+		"tsBuildInfoFile": "./.tsbuildinfo"
+	},
+	"include": ["src/**/*.ts"],
+	"references": [
+		{ "path": "../../packages/types/friends-types"},
+		{ "path": "../../packages/postgres/friends-schema"},
+		{ "path": "../../packages/postgres/postgres-client"}
+	 ]
+}

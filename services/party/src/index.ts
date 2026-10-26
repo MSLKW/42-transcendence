@@ -1,0 +1,185 @@
+import "dotenv/config";
+import express from "express"
+import { healthCheck } from "./handlers/healthCheck"
+import { checkUuidOnline } from "./handlers/CheckUuidOnline";
+import { createServer } from "http";
+import { DisconnectReason, Server, Socket } from "socket.io";
+import { Client } from "./client/Client";
+import { clientManager } from "./client/ClientManager";
+import { registerEventHandlers } from "./client/event_handlers";
+
+import { PORT, AUTH_SERVICE_URL } from "./config/env";
+import { UserStore } from "./store/UserStore";
+import { FileUserStore } from "./store/FileUserStore";
+
+import { closeDb } from "./db/closeDb";
+import { getPartyMembers } from "./handlers/GetPartyMembers";
+
+// TODO (signal handler): uncomment this when need to implement the signal handler
+// import { isPostgresDown, closePostgresClientPool } from "@big2/postgres-client";
+
+const RECONNECT_GRACE_PERIOD_MS = Number(process.env.DISCONNECT_GRACE_PERIOD_MS) || 15_000;
+
+const INTENTIONAL_DISCONNECT_REASONS = new Set([
+	"server namespace disconnect", // kicked
+	"client namespace disconnect", // client intentionally disconnected
+	"forced close",
+	"parse error",
+	"forced server close",
+]);
+
+const pendingRemovals = new Map<string, NodeJS.Timeout>();
+
+const userStore: UserStore = new FileUserStore;
+
+const app = express();
+app.use(express.json());
+
+app.get("/health", healthCheck());
+app.get("/online/:uuid", checkUuidOnline(userStore, clientManager));
+app.get("/members/:hostUuid", getPartyMembers(clientManager));
+
+//check with jeremy
+app.use((err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {
+	if (err.type === "entity.parse.failed") {
+		return res.status(400).json({ error: "Malformed JSON in request body." });
+	}
+	console.error("Unhandled error:", err);
+	return res.status(500).json({ error: "Something went wrong." });
+});
+
+const httpServer = createServer(app);
+
+const io = new Server(httpServer, {
+	cors: {
+		origin: "*", // TODO: restrict to actual frontend origin before prod
+	},
+});
+
+io.use(async (socket, next) => {
+	const sessionToken = socket.handshake.headers.cookie
+		?.split("; ")
+		.find(c => c.startsWith("session_token="))
+		?.split("=")[1];	
+	const token = sessionToken || socket.handshake.auth?.token;
+
+	if (!token || typeof token !== "string")
+		return next(new Error("UNAUTHORIZED: no session token provided"));
+
+	try
+	{
+		const response = await fetch(`${AUTH_SERVICE_URL}/validate`, {
+			headers: {
+				Cookie: socket.handshake.headers.cookie || "",
+				Authorization: `Bearer ${token}`
+			},
+			signal: AbortSignal.timeout(5000)
+		});
+
+		if (!response.ok)
+return next(new Error("UNAUTHORIZED: invalid or expired session"));
+
+		const data = await response.json();
+
+		if (!data.userId || typeof data.userId !== "string")
+		{
+			console.error("Auth service returned an OK response with no valid uuid");
+			return next(new Error("UNAUTHORIZED: malformed validation response"));
+		}
+
+		socket.data.uuid = data.userId;
+		next();
+	}
+	catch (err)
+	{
+		console.error("Auth validation failed:", err);
+		return next(new Error("UNAUTHORIZED: could not validate session"));
+	}
+});
+
+io.on("connection", (socket: Socket) =>
+{
+	const uuid = socket.data.uuid;
+	
+	const pendingTimer = pendingRemovals.get(uuid);
+	if (pendingTimer)
+	{
+		clearTimeout(pendingTimer);
+		pendingRemovals.delete(uuid);
+		console.log(`User<${uuid}> reconnected`);
+	}
+	
+	const existing = clientManager.getByUuid(uuid);
+	if (existing)
+	{
+		const oldSocket = existing.socket;
+		clientManager.rebindSocket(oldSocket.id, socket.id);
+		existing.socket = socket;
+		registerEventHandlers(socket, existing);
+		existing.emitState();
+		oldSocket.emit("disconnect_with_reason", {reason: "you have connected somewhere else"});
+		oldSocket.disconnect(true);
+		console.log(`User<${uuid}> switched sockets: ${oldSocket.id} -> ${socket.id}`);
+	}
+	else
+	{
+		const client = new Client(uuid, socket);
+		clientManager.add(client);
+		registerEventHandlers(socket, client);
+		console.log(`User<${uuid}> connected on socket ${socket.id}`);
+	}
+	
+	socket.on("disconnect", (reason: DisconnectReason) =>
+	{
+		const client = clientManager.getBySocketId(socket.id);
+
+		if (!client)
+			return ;
+		client.invites = [];
+		if (INTENTIONAL_DISCONNECT_REASONS.has(reason))
+			finalizeRemoval(uuid, reason);
+		else
+		{
+			const timer = setTimeout(() =>
+			{
+				finalizeRemoval(uuid, "reconnection grace period ended");
+				pendingRemovals.delete(uuid);
+			}, RECONNECT_GRACE_PERIOD_MS);
+
+			pendingRemovals.set(uuid, timer);
+			console.log(`User<${uuid}> disconnected unintentionally. Waiting for reconnection`)
+		}
+	});
+});
+
+function finalizeRemoval(uuid: string, reason: string)
+{
+	userStore.setUser({
+		uuid: uuid,
+		lastOnline: new Date	
+	});
+	
+	clientManager.removeByUuid(uuid);
+	console.log(`User<${uuid}> disconnected - ${reason}`);
+}
+
+httpServer.listen(PORT, () => {
+	console.log(`Socket.IO server listening on port ${PORT}`);
+});
+
+let shuttingDown = false;
+async function shutdown()
+{
+	if (shuttingDown)
+		return ;
+	shuttingDown = true;
+	await io.close();
+	for (const timer of pendingRemovals.values())
+		clearTimeout(timer);
+	httpServer.close();
+	await closeDb();
+	process.exit(0);
+}
+
+process.on("SIGINT", shutdown);
+process.on("SIGTERM", shutdown);

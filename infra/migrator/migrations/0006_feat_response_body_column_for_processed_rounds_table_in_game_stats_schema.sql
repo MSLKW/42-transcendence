@@ -1,0 +1,1 @@
+ALTER TABLE "game_stats_schema"."processed_rounds" ADD COLUMN "response_body" jsonb;

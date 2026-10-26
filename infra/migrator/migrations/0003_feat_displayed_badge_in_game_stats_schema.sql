@@ -1,0 +1,1 @@
+ALTER TABLE "game_stats_schema"."player_stats" ADD COLUMN "displayed_badge" text DEFAULT 'Newcomer' NOT NULL;

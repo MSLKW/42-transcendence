@@ -1,0 +1,4 @@
+const SESSION_DURATION_MS_STRING = process.env.SESSION_DURATION_MS
+	|| "24 * 60 * 60 * 1000"
+
+export const SESSION_DURATION_MS = Number(eval(SESSION_DURATION_MS_STRING));

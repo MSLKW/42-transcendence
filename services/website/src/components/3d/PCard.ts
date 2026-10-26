@@ -1,0 +1,37 @@
+import * as THREE from 'three'
+
+const createCardShape = (width: number, height: number, radius: number): THREE.Shape => {
+	const shape = new THREE.Shape();
+	const x = -width / 2;
+	const y = -height / 2;
+	shape.moveTo(x, y + radius);
+	shape.lineTo(x, y + height - radius);
+	shape.quadraticCurveTo(x, y + height, x + radius, y + height);
+	shape.lineTo(x + width - radius, y + height);
+	shape.quadraticCurveTo(x + width, y + height, x + width, y + height - radius);
+	shape.lineTo(x + width, y + radius);
+	shape.quadraticCurveTo(x + width, y, x + width - radius, y);
+	shape.lineTo(x + radius, y);
+	shape.quadraticCurveTo(x, y, x, y + radius);
+	return shape;
+}
+const borderGeometry = new THREE.ExtrudeGeometry(createCardShape(1, 1.5, 0.15), {
+	depth: 0.005,
+	bevelEnabled: false,
+});
+// const faceGeometry = new THREE.ExtrudeGeometry(createCardShape(0.92, 1.32, 0.04), {
+// 	depth: 0.005,
+// 	bevelEnabled: false,
+// });
+
+export function Card(position: THREE.Vector3 = new THREE.Vector3(), rotation: THREE.Euler = new THREE.Euler(), color = "gold"): THREE.Mesh {
+	const cardMaterial = new THREE.MeshStandardMaterial({
+		color: color,
+		roughness: 0.2,
+		metalness: 0.2
+	})
+	const mesh = new THREE.Mesh(borderGeometry, cardMaterial);
+	mesh.position.copy(position);
+	mesh.rotation.copy(rotation);
+	return (mesh);
+}
