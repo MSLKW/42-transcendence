@@ -15,6 +15,55 @@
       "when": 1790745637300,
       "tag": "0001_party_schema_revamp_feat_last_online",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1791943059979,
+      "tag": "0002_feat_game_stats_schema",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1791989346489,
+      "tag": "0003_feat_displayed_badge_in_game_stats_schema",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1792086180915,
+      "tag": "0004_feat_checks_for_types_in_game_stats_schema",
+      "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1792155989912,
+      "tag": "0005_feat_processed_rounds_table_in_game_stats_schema",
+      "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1792440539005,
+      "tag": "0006_feat_response_body_column_for_processed_rounds_table_in_game_stats_schema",
+      "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "7",
+      "when": 1792442175807,
+      "tag": "0007_feat_updated_at_column_for_processed_rounds_table_in_game_stats_schema",
+      "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "7",
+      "when": 1792953806121,
+      "tag": "0008_refactor_game_stats_schema_nearing_completion_of_this_service",
+      "breakpoints": true
     }
   ]
 }

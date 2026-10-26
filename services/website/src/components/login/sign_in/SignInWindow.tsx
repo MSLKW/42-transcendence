@@ -12,15 +12,18 @@ export const SignInWindow = () => {
 	const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
 
-		setIsLoading(true);
 		if (!email || !password) {
 			useNotificationStore.getState().showNotification("All fields are required", NOTIFICATION_TYPE.error);
 			return;
 		}
 
-		await handleSignIn(email, password);
-		setIsLoading(false);
-	}
+		setIsLoading(true);
+		try {
+			await handleSignIn(email, password);
+		} finally {
+			setIsLoading(false);
+		}
+	};
 
 	return (
 		<Window

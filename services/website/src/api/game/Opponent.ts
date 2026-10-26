@@ -27,7 +27,7 @@ export class Opponent extends Participant {
 						cardHand.receiveCard(card);
 					}
 					if (animation !== undefined) {
-						this.cardHeapRef.cardHandQueue.add(animation, i > 0 ? "<" : null);
+						this.cardHeapRef.cardHandQueue.add(animation, i > 0 ? "<" : undefined);
 					} 
 				}
 				this.cardHeapRef.cardHandQueue.add(this.cardHeapRef.receiveCardHand(cardHand));

@@ -18,5 +18,13 @@ export default defineConfig([
     languageOptions: {
       globals: globals.browser,
     },
+    rules: {
+      'no-restricted-imports': ['error', {
+        patterns: [{
+          group: ['@big2/game-stats-types/game-stats', '@big2/game-stats-types/game-server'],
+          message: 'The website may only import @big2/game-stats-types/website',
+        }],
+      }],
+    },
   },
 ])

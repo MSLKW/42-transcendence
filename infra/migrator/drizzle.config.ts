@@ -1,3 +1,4 @@
+// 1. Node types: lets TypeScript understand `process` in this standalone config file
 /// <reference types="node" />
 // needed because your file is likely a standalone script or a config file (like drizzle.config.ts) that TypeScript is evaluating outside your main project context.Without that line, TypeScript does not automatically load the global types for Node.js, making it completely unaware of what process even is.
 // Global Isolation: TypeScript treats files as isolated modules unless told otherwise. If a file is not explicitly included in your tsconfig.json files array, it won't inherit your project's global type configurations.
@@ -6,11 +7,13 @@
 
 
 import fs from "fs";
-import 'dotenv/config'; 
+// import 'dotenv/config';  (this make db:generate, that runs locally, thinks .env located at infra/migrator/.env, even tho its at the repo root. fix 2 lines below:)
+import { config } from "dotenv";
+config({ path: "../../.env" });   // relative to infra/migrator, where npm runs the script
 import { defineConfig } from "drizzle-kit";
 
 
-// 1. Check the environment vars are properly loaded
+// 2. Load the .env file and check the environment vars are properly set
 function requireEnv(name: string): string
 {
 	const value = process.env[name];
@@ -42,7 +45,7 @@ const PGPASSWORD = fs.readFileSync(PGPASSWORD_FILE, 'utf-8').trim();    // readF
 if (!PGPASSWORD)
   throw new Error(`[Error] password file ${PGPASSWORD_FILE} is empty`); // throw if empty or only whitespace
 
-// 3. Define the main guidance of how Drizzle do its work
+// 3. Define the main guidance of how Drizzle does its work
 // 		defineConfig function = acts as the central control center for Drizzle Kit (your migration tool)
 // 		"configuration schema" that tells Drizzle exactly how to talk to your database and where to find your code.
 export default defineConfig({

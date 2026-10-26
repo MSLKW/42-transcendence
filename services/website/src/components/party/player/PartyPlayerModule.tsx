@@ -9,7 +9,8 @@ import { usePartyStore, type AVAILABILITY_TYPE } from "../../../store/PartyStore
 import type { UserData } from "../../../store/ProfileStore";
 import { Tooltip } from "../../../utilities/react/Tooltip";
 import { PlayerStatusModule } from "../../player/status/PlayerStatusModule";
-import { AvatarModule } from "../../avatar/AvatarModule";
+// import { AvatarModule } from "../../avatar/AvatarModule";
+import { AvatarImage } from "../../avatar/image/AvatarImage";
 import { InviteIcon } from "../invite/InviteIcon";
 
 interface PartyPlayerModuleProps {
@@ -20,10 +21,8 @@ export const PartyPlayerModule = ({ uuid }: PartyPlayerModuleProps) => {
 	const clientUuid = useAuthStore((store) => store.clientUuid);
 	const hostUuid = usePartyStore((store) => store.hostUuid);
 	const cachedFriends = useFriendsStore((store) => store.cachedFriends);
-	// const members = usePartyStore((store) => store.members);
 	const availabilityOverride = usePartyStore((store) => store.availabilityOverrides[uuid]);
 
-	//get profile
 	const [isLoading, setIsLoading] = useState<boolean>(true);
 	const [availability, setAvailability] = useState<AVAILABILITY_TYPE | null>(null);
 	const [lastOnline, setLastOnline] = useState<Date | null>(null);
@@ -73,20 +72,34 @@ export const PartyPlayerModule = ({ uuid }: PartyPlayerModuleProps) => {
 	if (!playerData)
 		return (<p>Unable to load player</p>);
 
+	const handleSendInvite = () => {
+		if (relation === "Self")
+			return;
+		partySocket.sendInvite(uuid, playerData?.username ?? "Player");
+	}
+
 	return (
 		<div className="
 			flex place-content-center place-items-stretch
 			gap-1rem
 		">
-			<AvatarModule
-				uuid={uuid}
-				image={playerData.avatarPath ?? undefined}
-				showName={false}
-			/>
-			<Tooltip text={hostUuid === clientUuid ? "Send invite" : "Only host can invite"}>
+			<Tooltip text={
+				relation === "Self" ? "Edit Profile" :
+				"View Profile"
+			}>
+				<AvatarImage
+					uuid={uuid}
+					image={playerData.avatarPath ?? undefined}
+				/>
+			</Tooltip>
+			<Tooltip text={
+				relation === "Self" ? null :
+				hostUuid === clientUuid ? "Send invite" :
+				"Only host can invite"
+			}>
 				<button
 					disabled={hostUuid !== clientUuid}
-					onClick={() => partySocket.sendInvite(uuid, playerData?.username ?? "Player")}
+					onClick={handleSendInvite}
 					className={`
 						h-auto min-w-60
 						py-0.5rem px-1.5rem

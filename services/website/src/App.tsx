@@ -54,7 +54,7 @@ export default function App() {
 	const showDevSection = useDevStore((store) => store.showDevSection);
 	const partyGameId = usePartyStore((store) => store.partyGameId);
 
-	//party socket connection
+	/** Party socket connection */
 	useEffect(() => {
 		if (!clientUuid)
 			return;
@@ -66,7 +66,7 @@ export default function App() {
 		};
 	}, [clientUuid]);
 
-	//chat socket connection + subscriptions
+	/** Chat socket connection + subscriptions */
 	useEffect(() => {
 		if (!clientUuid)
 			return;
@@ -89,7 +89,7 @@ export default function App() {
 		};
 	}, [clientUuid]);
 
-	//friends connection
+	/** Friends connection */
 	const handleFriendUpdate = useCallback(() => {
 		if (!clientUuid)
 			return;
@@ -104,7 +104,7 @@ export default function App() {
 	}, [clientUuid]);
 	useFriendEvents(clientUuid, handleFriendUpdate);
 
-	//friend requests sent + received
+	/** Friend requests sent + received */
 	useEffect(() => {
 		if (!clientUuid || currentScene === "Login")
 			return;
@@ -136,7 +136,7 @@ export default function App() {
 			});
 	}, [clientUuid, currentScene]);
 
-	//three js manager
+	/** Three js manager */
 	const containerRef = useRef<HTMLDivElement>(null);
 	useEffect(() => {
 		if (!containerRef.current) {
@@ -151,7 +151,7 @@ export default function App() {
 		}
 	}, []);
 
-	//three js scene handler
+	/** Three js scene handler */
 	useEffect(() => {
 		if (!threejsManager)
 			return;
@@ -162,12 +162,12 @@ export default function App() {
 		}
 	}, [currentScene]);
 
-	//scroll to top
+	/** Scroll to top */
 	useEffect(() => {
 		useScrollToTop();
 	}, [currentScene]);
 
-	//inital profile setup
+	/** Inital profile setup */
 	useEffect(() => {
 		if (currentScene === "Login" || !clientUuid || !isProfileLoaded)
 			return;
@@ -177,11 +177,6 @@ export default function App() {
 		else
 			useSceneStore.getState().setShowWindow("setup", false);
 	}, [currentScene, clientUuid, cachedData, isProfileLoaded]);
-
-	//close window on scene change
-	// useEffect(() => {
-	// 	useSceneStore.getState().resetWindows();
-	// }, [currentScene]);
 
 	// Connect to game server
 	useEffect(() => {

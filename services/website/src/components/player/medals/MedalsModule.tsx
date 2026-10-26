@@ -1,4 +1,4 @@
-import { useProfileStore } from "../../../store/ProfileStore";
+// import { useProfileStore } from "../../../store/ProfileStore";
 import { MedalImage } from "./MedalImage";
 import { MedalHighIcon } from "./icons/MedalHighIcon";
 import { MedalDoubleIcon } from "./icons/MedalDoubleIcon";
@@ -17,9 +17,11 @@ interface MedalsModuleProps {
 	uuid: string | null;
 }
 export const MedalsModule = ({ uuid }: MedalsModuleProps) => {
-	const getProfileData = useProfileStore((store) => store.getProfileData);
+	// const getProfileData = useProfileStore((store) => store.getProfileData);
 
-	const medals = getProfileData(uuid)?.medals;
+	// const medals = getProfileData(uuid)?.medals;
+	const medals = undefined;
+	uuid; //tbd
 
 	return (
 		<div

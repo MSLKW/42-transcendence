@@ -1,13 +1,16 @@
 import { Socket } from "socket.io";
 import { ClientToServerEvents, ServerToClientEvents } from "../events";
 
+/** Socket type used by chat clients */
 type ChatSocket = Socket<ClientToServerEvents, ServerToClientEvents>
 
+/** Stores a user's active socket and room */
 export class Client {
 	public readonly uuid: string;
 	public socket: ChatSocket;
 	public roomId: string;
 
+	/** Creates a connected chat client */
 	constructor(
 		socket: ChatSocket,
 		uuid: string,

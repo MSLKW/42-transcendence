@@ -1,11 +1,9 @@
 import { useEffect } from "react";
 import { useAuthStore } from "../../store/AuthStore";
-// import { cachedBotData, useBotStore } from "../../store/BotStore";
 import { useBotStore } from "../../store/BotStore";
 import { useGameStore } from "../../store/GameStore"; 
 import { usePartyStore } from "../../store/PartyStore";
 import { useProfileStore } from "../../store/ProfileStore";
-import { useResultsStore } from "../../store/ResultsStore";
 import { useSceneStore } from "../../store/SceneStore";
 import { Tooltip } from "../../utilities/react/Tooltip";
 import { HeaderModule } from "../header/HeaderModule";
@@ -19,7 +17,6 @@ import { UnseatButton } from "./unseat/UnseatButton";
 
 export const LobbyScene = () => {
 	const clientUuid = useAuthStore((store) => store.clientUuid);
-	// const fillSeatsWithBots = useBotStore((store) => store.fillSeatsWithBots);
 	const totalPlayers = useGameStore((store) => store.totalPlayers);
 	const userSeats = useGameStore((store) => store.userSeats);
 	const startGame = useGameStore((store) => store.startGame);
@@ -31,12 +28,11 @@ export const LobbyScene = () => {
 	useEffect(() => {
 		const humansSeated = userSeats.filter((seat): seat is string => seat !== null && !seat.includes("bot")).length;
 		if (humansSeated === members.length) {
-			// fillSeatsWithBots();
 			return;
 		}
 	}, [members, userSeats]);
 
-	// To detect bot count
+	/** To detect bot count */
 	useEffect(() => {
 		useBotStore.getState().countSeatedBots();
 	}, [userSeats])
@@ -99,7 +95,6 @@ export const LobbyScene = () => {
 										key={userSeats[1]}
 										uuid={userSeats[1]}
 										image={cachedData[userSeats[1]]?.avatar ?? undefined}
-										// image={cachedBotData[1].avatar}
 										cornerButton={userSeats[1] === hostUuid ? "host" : ""}
 									/>
 								: <TakeSeatButton seatNumber={1}/>

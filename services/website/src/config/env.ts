@@ -8,6 +8,14 @@ function requireEnv(name: string, value: string | undefined): string
 	return value;
 }
 
+function requireEnvNum(name: string): number
+{
+	const value = Number(requireEnv(name));
+	if (!Number.isInteger(value) || value < 0)
+		throw new Error(`[Error] ${name} must be a non-negative integer`);
+	return value;
+}
+
 export const VITE_API_AUTH_PATH 			= requireEnv("VITE_API_AUTH_PATH", import.meta.env.VITE_API_AUTH_PATH);
 export const VITE_API_PROFILE_PATH 			= requireEnv("VITE_API_PROFILE_PATH", import.meta.env.VITE_API_PROFILE_PATH);
 export const VITE_API_PARTY_PATH 			= requireEnv("VITE_API_PARTY_PATH", import.meta.env.VITE_API_PARTY_PATH);

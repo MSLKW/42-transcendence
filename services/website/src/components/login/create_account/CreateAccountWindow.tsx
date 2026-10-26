@@ -35,9 +35,15 @@ export const CreateAccountWindow = () => {
 				return;
 			}
 		}
-		handleSignUp(email, password, setIsLoading);
+
+		setIsLoading(true);
+		try {
+			await handleSignUp(email, password, setIsLoading);
+		} finally {
+			setIsLoading(false);
+		}
 	}
-	
+
 	return (
 		<Window
 			title="Create Account"

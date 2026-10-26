@@ -1,6 +1,5 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-import { useGameStore } from "./GameStore";
 import type { BADGE_TYPE } from "./ProfileStore";
 import { threejsManager } from "../App";
 
@@ -71,7 +70,6 @@ export const useSceneStore = create<SceneState>() (
 					showWindow: {
 						...defaultShowWindow,
 						notification: showWindow.notification,
-						chat: showWindow.chat,
 					}
 				});
 			},

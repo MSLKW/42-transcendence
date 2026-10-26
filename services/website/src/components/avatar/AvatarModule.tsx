@@ -59,7 +59,7 @@ export const AvatarModule = ({
 				`}>
 				<Tooltip text={
 					relation === "Self" ? "Edit Profile" :
-					relation === "Bot" ? "Bot" : 
+					relation === "Bot" ? null : 
 					"View Profile"
 				}>
 					<AvatarImage

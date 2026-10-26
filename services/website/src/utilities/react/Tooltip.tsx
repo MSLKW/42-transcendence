@@ -3,7 +3,7 @@ import { createPortal } from "react-dom";
 import { useSceneStore } from "../../store/SceneStore";
 
 type TooltipProps = {
-	text: string;
+	text: string | null;
 	position?: string;
 	children: React.ReactNode;
 };
@@ -15,7 +15,7 @@ export function Tooltip({ text, position = "top", children }: TooltipProps) {
 	const [pos, setPos] = useState({ top: 0, left: 0 });
 
 	const showTooltip = (e: React.MouseEvent<HTMLDivElement>) => {
-		if (currentScene === "Game" || text === "Bot")
+		if (currentScene === "Game" || !text)
 			return;
 
 		const rect = e.currentTarget.getBoundingClientRect();

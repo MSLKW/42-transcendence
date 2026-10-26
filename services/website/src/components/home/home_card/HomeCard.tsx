@@ -3,7 +3,6 @@ import { handleValidate } from "../../../api/authentication/get_validate/handleV
 import { useGameStore, type GAMEMODE_TYPE } from "../../../store/GameStore";
 import { usePartyStore } from "../../../store/PartyStore";
 import { useAuthStore } from "../../../store/AuthStore";
-// import { useSceneStore } from "../../../store/SceneStore";
 import { PersonIcon } from "./person/PersonIcon";
 
 interface HomeProps {

@@ -1,6 +1,5 @@
 import { useAuthStore } from "../../../store/AuthStore";
 import { useBotStore } from "../../../store/BotStore";
-// import { useGameStore } from "../../../store/GameStore";
 import { usePartyStore } from "../../../store/PartyStore";
 import { Tooltip } from "../../../utilities/react/Tooltip";
 import { AvatarName } from "../../avatar/name/AvatarName";
@@ -11,7 +10,6 @@ export const BotManagerButton = () => {
 	const fillSeatsWithBots = useBotStore((store) => store.fillSeatsWithBots);
 	const removeBots = useBotStore((store) => store.removeBots);
 	const botCount = useBotStore((store) => store.botCount);
-	// const seats = useGameStore((store) => store.userSeats);
 	const clientUuid = useAuthStore((store) => store.clientUuid);
 	const hostUuid = usePartyStore((store) => store.hostUuid);
 
@@ -23,7 +21,6 @@ export const BotManagerButton = () => {
 		else
 			removeBots();
 	}
-	// const humansSeated = seats.filter((seat): seat is string => seat !== null && !seat.includes("bot")).length;
 
 	return (
 		<div className="

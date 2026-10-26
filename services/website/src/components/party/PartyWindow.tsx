@@ -8,7 +8,6 @@ import { useAuthStore } from "../../store/AuthStore";
 import { useFriendsStore } from "../../store/FriendsStore";
 import { PartyPlayerModule } from "./player/PartyPlayerModule";
 import { usePartyStore } from "../../store/PartyStore";
-// import { FRIEND_REQUEST_STATUSES } from "@big2/friends-types";
 
 export const PartyWindow = () => {
 	const cachedFriends = useFriendsStore((store) => store.cachedFriends);
@@ -25,7 +24,7 @@ export const PartyWindow = () => {
 			useFriendsStore.setState({ cachedFriends: friends });
 		});
 		void handleFriendRequestsSent(clientUuid!).then((requests) => {
-			const pending = requests.filter((r) => r.status === "Pending");
+			const pending = requests.filter((r: any) => r.status === "Pending");
 			const newFriendRequestSent = pending.map((p: { receiverId: string }) => p.receiverId);
 			useFriendsStore.setState({ friendRequestSent: newFriendRequestSent });
 		});

@@ -1,6 +1,3 @@
-// import { useState, useRef, useEffect } from "react";
-// import { handleCreatedAt } from "../../../api/authentication/created_at/handleCreatedAt";
-// import { handleGetOnline } from "../../../api/party/get_online/handleGetOnline";
 import { useAuthStore } from "../../../store/AuthStore";
 import type { AVAILABILITY_TYPE } from "../../../store/PartyStore";
 import type { BADGE_TYPE } from "../../../store/ProfileStore";
@@ -16,6 +13,10 @@ interface PlayerDataModuleProps {
 	createdAt: Date | null;
 	setBadge?: (badge: BADGE_TYPE) => void;
 	setHasChange?: (change: boolean) => void;
+	currentLevel: number;
+	currentLevelXpEarned: number;
+	currentLevelXpThreshold: number;
+	currentLevelProgressPercentage: number;
 }
 
 export const PlayerDataModule = ({
@@ -26,13 +27,14 @@ export const PlayerDataModule = ({
 	createdAt,
 	setBadge,
 	setHasChange,
+	currentLevel,
+	currentLevelXpEarned,
+	currentLevelXpThreshold,
+	currentLevelProgressPercentage,
 }: PlayerDataModuleProps) => {
 	const clientUuid = useAuthStore((store) => store.clientUuid);
 	const showWindow = useSceneStore((store) => store.showWindow);
 	const setShowWindow = useSceneStore((store) => store.setShowWindow);
-
-	// const [xpProgress, setXPProgress] = useState(0);
-	const xpProgress = 0;
 
 	return (
 		<div className="
@@ -47,12 +49,10 @@ export const PlayerDataModule = ({
 				place-items-center
 				leading-tight
 			">
-				{/* <h2>Level {profile ? profile.level : "n/a"}</h2> */}
-				<h2>Level n/a</h2>
+				<h2>Level {currentLevel}</h2>
 				<div className="w-full">
 					<p className="text-center">
-						{/* XP: {profile ? profile.xp : "n/a"} / {profile ? profile.level * 1000 : "n/a"} */}
-						XP: n/a / n/a
+						XP: {currentLevelXpEarned} / {currentLevelXpThreshold}
 					</p>
 					<div className="
 						h-2
@@ -62,7 +62,7 @@ export const PlayerDataModule = ({
 						mt-1
 					">
 						<div 
-							style={{ width: `${xpProgress}%` }}
+							style={{ width: `${currentLevelProgressPercentage}%` }}
 							className="
 								bg-b5 
 								h-full rounded-full

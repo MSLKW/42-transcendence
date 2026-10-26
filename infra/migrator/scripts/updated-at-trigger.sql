@@ -59,6 +59,18 @@ CREATE OR REPLACE TRIGGER trg_updated_at
 BEFORE UPDATE ON friends_schema.friend_requests
 FOR EACH ROW EXECUTE FUNCTION set_updated_at();
 
--- CREATE OR REPLACE TRIGGER trg_updated_at
--- BEFORE UPDATE ON game_stats_schema.player_stats
--- FOR EACH ROW EXECUTE FUNCTION set_updated_at();
+CREATE OR REPLACE TRIGGER trg_updated_at
+BEFORE UPDATE ON game_stats_schema.player_stats
+FOR EACH ROW EXECUTE FUNCTION set_updated_at();
+
+CREATE OR REPLACE TRIGGER trg_updated_at
+BEFORE UPDATE ON game_stats_schema.player_achievements
+FOR EACH ROW EXECUTE FUNCTION set_updated_at();
+
+CREATE OR REPLACE TRIGGER trg_updated_at
+BEFORE UPDATE ON game_stats_schema.player_badges
+FOR EACH ROW EXECUTE FUNCTION set_updated_at();
+
+CREATE OR REPLACE TRIGGER trg_updated_at
+BEFORE UPDATE ON game_stats_schema.processed_rounds
+FOR EACH ROW EXECUTE FUNCTION set_updated_at();

@@ -15,7 +15,6 @@ export const LeaveWindow = () => {
 		<Window
 			title="WARNING!"
 			dismissKey="leave"
-			// hasPinButton={false}
 			headerType="Warning"
 		>
 			<div
