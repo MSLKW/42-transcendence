@@ -128,10 +128,10 @@ export class Game {
 
 		this.socket.on("graceful_disconnect", (reason: string) => {
 			gameLog(`[gameSocket] 'graceful_disconnect' reason: `, reason);
-			const currentScene = useSceneStore.getState().currentScene;
-			if (currentScene === "Lobby" || currentScene === "Game") {
-				useSceneStore.getState().setCurrentScene("Home");
-			}
+			// const currentScene = useSceneStore.getState().currentScene;
+			// if (currentScene === "Lobby" || currentScene === "Game") {
+			// 	useSceneStore.getState().setCurrentScene("Home");
+			// }
 			this.disconnect();
 		});
 
@@ -139,6 +139,10 @@ export class Game {
 			gameLog(`[gameSocket] 'disconnect' reason: ${reason}`);
 			this.resetGame();
 			useGameStore.getState().resetLobby();
+			const currentScene = useSceneStore.getState().currentScene;
+			if (currentScene === "Lobby" || currentScene === "Game") {
+				useSceneStore.getState().setCurrentScene("Home");
+			}
 			partySocket.refresh();
 		});
 	
