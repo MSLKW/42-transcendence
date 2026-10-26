@@ -15,7 +15,7 @@ import { uploadAvatar } from "./handlers/uploadAvatar";
 
 import { closeDb } from "./db/closeDb";
 
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT;
 const ERROR_MESSAGES: Record<string, string> = {
 	EADDRINUSE: `Port ${PORT} is already in use.`,
 	EACCES: `Insufficient permissions to bind to port ${PORT}.`,
