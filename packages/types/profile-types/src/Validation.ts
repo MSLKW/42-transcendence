@@ -12,7 +12,7 @@ export const UserDataSchema = z.object({
 	oneFieldMinimumFailed
 );
 
-export const UserGameSettingsSchema = z.object({
+export const UserSettingsSchema = z.object({
 	allow3OfAKind:		z.boolean().optional(),
 	allow2OfSpadesEnd:	z.boolean().optional(),
 	autoPassTimerMs:	z.number().int().min(0).max(0).optional(),
