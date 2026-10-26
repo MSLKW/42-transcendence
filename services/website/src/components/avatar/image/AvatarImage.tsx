@@ -13,8 +13,8 @@ interface AvatarProps {
 export const AvatarImage = ({ uuid, image, isActive = false, isDisconnected = false, isChat = false, }: AvatarProps) => {
 	const clientUuid = useAuthStore.getState().clientUuid;
 	const avatarVersion = useProfileStore((store) => store.avatarVersions[uuid ?? ""] ?? 0);
-	const playerTimer = useGameStore.getState().playerTimer;
-	const playerRemainingTimer = useGameStore.getState().playerRemainingTimer;
+	const playerTimer = useGameStore((store) => store.playerTimer);
+	const playerRemainingTimer = useGameStore((store) => store.playerRemainingTimer);
 	const imageSrc = image ? `${image}${image.includes("?") ? "&" : "?"}v=${avatarVersion}` : undefined;
 
 	return (

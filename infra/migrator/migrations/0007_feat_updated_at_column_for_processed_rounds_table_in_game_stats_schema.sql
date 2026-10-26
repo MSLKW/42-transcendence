@@ -1,0 +1,1 @@
+ALTER TABLE "game_stats_schema"."processed_rounds" ADD COLUMN "updated_at" timestamp with time zone DEFAULT now() NOT NULL;

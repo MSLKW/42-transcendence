@@ -50,6 +50,7 @@ export const useSceneStore = create<SceneState>() (
 			setCurrentScene: (scene) => {
 				set({ currentScene: scene });
 				threejsManager?.changeScene(scene.toLowerCase());
+				useSceneStore.getState().resetWindows();
 			},
 
 			setShowWindow: (window, show, uuid) => {

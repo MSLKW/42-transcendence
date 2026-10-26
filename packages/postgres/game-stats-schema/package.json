@@ -19,6 +19,7 @@
   },
   "dependencies": {
     "@big2/auth-schema": "*",
+    "@big2/game-stats-types": "*",
     "dotenv": "^17.4.2",
     "drizzle-orm": "^0.45.2"
   },

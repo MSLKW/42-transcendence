@@ -57,18 +57,6 @@ export class ThreeJsManager {
 
 		this.effectComposer.setPixelRatio(this.pixelRatio);
 		this.effectComposer.setSize(this.resolution.x, this.resolution.y);
-
-		// // 1. Create a 4D Vector to store the result (X, Y, Width, Height)
-		// const viewportRect = new THREE.Vector4();
-
-		// // 2. Query the renderer
-		// this.renderer.getCurrentViewport(viewportRect);
-
-		// // 3. Read the bounds
-		// console.log("Viewport X offset:", viewportRect.x);
-		// console.log("Viewport Y offset:", viewportRect.y);
-		// console.log("Viewport Width:",    viewportRect.z); // .z maps to width
-		// console.log("Viewport Height:",   viewportRect.w); // .w maps to height
 		
 		this.outlinePass.visibleEdgeColor.set("#ffffff");
 		this.outlinePass.hiddenEdgeColor.set("#ffffff");

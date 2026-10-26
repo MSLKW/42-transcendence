@@ -9,6 +9,7 @@
   ],
   "scripts": {
     "db:generate":    "npm run db:generate    -w migrator --",
+    "db:drop":        "npm run db:drop        -w migrator",
     "db:migrate":     "npm run db:migrate     -w migrator",
     "db:push":        "npm run db:push        -w migrator",
     "test:signup":    "npm run test:signup    -w authentication",

@@ -37,6 +37,7 @@ COPY --from=builder /app/packages/postgres/postgres-client/dist	./packages/postg
 COPY --from=builder /app/packages/types/profile-types/dist		./packages/types/profile-types/dist
 COPY --from=builder /app/packages/postgres/auth-schema/dist		./packages/postgres/auth-schema/dist
 COPY --from=builder /app/packages/postgres/profile-schema/dist	./packages/postgres/profile-schema/dist
+# TODO: remove COPY profile/test in production 
 COPY --from=builder /app/services/profile/test					./services/profile/test
 COPY --from=builder /app/services/profile/dist					./services/profile/dist
 

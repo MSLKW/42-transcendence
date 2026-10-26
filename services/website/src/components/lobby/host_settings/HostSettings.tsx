@@ -1,11 +1,10 @@
-import { useRef, useEffect } from "react";
-import { handleGetSettings } from "../../../api/profile/get_settings/handleGetSettings";
 import { useAuthStore } from "../../../store/AuthStore";
 import { useGameStore } from "../../../store/GameStore";
 import { usePartyStore } from "../../../store/PartyStore";
-import { autoPassKeys, useSettingsStore } from "../../../store/SettingsStore";
+import { useSettingsStore } from "../../../store/SettingsStore";
 import { Tooltip } from "../../../utilities/react/Tooltip";
 import { ToggleButton } from "../toggle/ToggleButton";
+import { autoPassKeys } from "@big2/game-types";
 
 export const HostSettings = () => {
 	const gameStarted = useGameStore((store) => store.gameStarted);
@@ -14,28 +13,6 @@ export const HostSettings = () => {
 	const autoPassIndex = useSettingsStore((store) => store.autoPassIndex);
 	const allow3OfAKind = useSettingsStore((store) => store.allow3OfAKind);
 	const allow2OfSpadesEnd = useSettingsStore((store) => store.allow2OfSpadesEnd);
-
-	const settingsFetched = useRef(false);
-	useEffect(() => {
-		if (!hostUuid || settingsFetched.current)
-			return;
-		settingsFetched.current = true;
-
-		try {
-			const fetchGetSettings = async () => {
-				const response = await handleGetSettings(hostUuid);
-				useSettingsStore.setState({
-					allow3OfAKind: response.allow3OfAKind,
-					allow2OfSpadesEnd: response.allow2OfSpadesEnd,
-					autoPassIndex: response.autoPassIndex,
-				});
-			}
-			console.log("Fetching settings of host");
-			fetchGetSettings();
-		} catch(error) {
-			console.error("Failed to fetch host settings:", error);
-		}
-	}, [hostUuid]);
 
 	return (
 		<Tooltip text="Rules set by host">

@@ -2,10 +2,11 @@ import { Socket } from 'socket.io';
 import { io, kickSocket, LobbyRequest } from './server.js';
 import { UserState } from './UserState.js';
 import { GameState } from './GameState.js';
-import { GameSettingsTransmit, SeatOrderTransmit, StatusTransmit } from '@big2/game-types';
+import { GameSettingsTransmit, SeatOrderTransmit, StatusTransmit, autoPassValues } from '@big2/game-types';
 import { EventEmitter } from 'node:events';
 import { randomBytes } from 'crypto';
-import { GAME_BOT_SERVICE_URL, LOBBY_DELETE_TIMEOUT_MS, LOBBY_USER_LIMIT } from './env.js';
+import { GAME_BOT_SERVICE_URL, LOBBY_DELETE_TIMEOUT_MS, LOBBY_USER_LIMIT, PROFILE_SERVICE_URL } from './env.js';
+import { profile } from 'node:console';
 
 export class Lobby {
 	private hostUuid: string;
@@ -40,6 +41,7 @@ export class Lobby {
 		this.lobbyTimeoutId = undefined;
 		this.botSessions = {}
 		this.initSeats(this.totalSeats, this.hostUuid);
+		this.fetchHostSettings(this.hostUuid);
 	}
 
 	/* Public Getters */
@@ -93,21 +95,10 @@ export class Lobby {
 	}
 
 	public connectUser(socket: Socket, uuid: string) {
-		console.log("whitelist: ", this.whitelist);
 		if (this.whitelist.indexOf(uuid) === -1 || 
 			this.users.length >= this.totalUsersLimit || 
 			(this.game.uuidInGame(uuid) === false && this.users.length >= this.totalUsersLimit - this.game.getDisconnectedPlayers())) {
-			let reason = `User<${uuid}> is not allowed to connect`;
-			if (this.whitelist.indexOf(uuid) === -1) {
-				reason = `${uuid} is not in whitelist`;
-			}
-			else if (this.users.length >= this.totalUsersLimit) {
-				reason = `total users is more than total user limit`;
-			}
-			else if (this.game.uuidInGame(uuid) === false && this.users.length >= this.totalUsersLimit - this.game.getDisconnectedPlayers()) {
-				reason = "user is not in game and the user length >= totalUesrslimit - disconnected players";
-			}
-			kickSocket(socket, reason);
+			kickSocket(socket, `Lobby<${this.sessionId}>: User<${uuid}> is not allowed to connect`);
 			return ;
 		}
 		
@@ -123,6 +114,7 @@ export class Lobby {
 		clearTimeout(this.lobbyTimeoutId);
 		this.emitUserList();
 		user.socket.emit("user_seat_update", this.getSeatData());
+		user.socket.emit("game_settings_update", this.game.settings);
 
 		if (this.game.uuidInGame(user.uuid) === true) {
 			this.game.playerReconnect(user);
@@ -147,7 +139,7 @@ export class Lobby {
 		});
 
 		user.socket.on("game_settings_set", (gameSettings: GameSettingsTransmit, statusCallback) => {
-			statusCallback(this.GameSetSettings(user, gameSettings));
+			statusCallback(this.GameSetSettings(user.uuid, gameSettings));
 		});
 
 		user.socket.on("lobby_delete_request", (statusCallback) => {
@@ -227,12 +219,12 @@ export class Lobby {
 		return (this.game.startGame());
 	}
 
-	public GameSetSettings(user: UserState, settings: GameSettingsTransmit): StatusTransmit {
+	public GameSetSettings(userUuid: string, settings: GameSettingsTransmit): StatusTransmit {
 		const status: StatusTransmit = {
 			success: false,
 			message: ""
 		}
-		if (this.hostUuid !== user.uuid) {
+		if (this.hostUuid !== userUuid) {
 			status.message = "Not the host";
 			return (status);
 		}
@@ -247,6 +239,26 @@ export class Lobby {
 		status.success = true;
 		status.message = "Successfully set game settings";
 		return (status);
+	}
+
+	private async fetchHostSettings(hostUuid: string): Promise<void> {
+		try {
+			const response = await fetch(`${PROFILE_SERVICE_URL}/settings/${hostUuid}`);
+			if (!response.ok) {
+				console.log(`${PROFILE_SERVICE_URL}/settings/${hostUuid} response is ${response.status}`);
+				return ;
+			}
+			const profileResponse = await response.json();
+			const settings: GameSettingsTransmit = {
+				allow3OfAKind: profileResponse.allow3OfAKind,
+				allow2OfSpadesEnd: profileResponse.allow2OfSpadesEnd,
+				autoPassInMilliseconds: autoPassValues[profileResponse.autoPassIndex],
+			}
+			this.GameSetSettings(hostUuid, settings);
+		}
+		catch (err) {
+			console.log(`[Warning] Couldn't get host settings`);
+		}
 	}
 
 	private async AddBot(user: UserState, seatIndex: number): Promise<StatusTransmit> {

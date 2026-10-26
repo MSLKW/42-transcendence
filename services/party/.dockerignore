@@ -1,7 +1,9 @@
-Dockerfile
-.dockerignore
-
+dist/
 node_modules/
-README.md
-dist
+test/
+.dockerignore
+.gitignore
+Dockerfile
 .tsbuildinfo
+package-lock.json
+README.md

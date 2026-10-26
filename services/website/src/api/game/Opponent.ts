@@ -17,7 +17,7 @@ export class Opponent extends Participant {
 
 	private	bindListeners() {
 		this.socket.on("player_play_card_hand", (cardHandTransmit: CardHandTransmit) => {
-			gameLog(`[gameSocket] <${this.uuid}> 'player_play_card_hand': `, cardHandTransmit);
+			gameLog(`[gameSocket] 'player_play_card_hand': `, cardHandTransmit);
 			if (cardHandTransmit.playerId === this.uuid) {
 				const cardHand = new CardHand(this.uuid);
 				for (let i = 0; i < cardHandTransmit.cards.length; i++) {

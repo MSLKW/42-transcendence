@@ -1,35 +1,43 @@
 FROM node:20-alpine AS builder
 WORKDIR /app
 
-COPY . ./services/game-server/.
-COPY --from=game-types . ./packages/types/game-types/.
-COPY --from=root package*.json ./
+COPY --from=game-stats-types	package.json	./packages/types/game-stats-types/
+COPY --from=game-types			package.json	./packages/types/game-types/
+COPY 							package.json	./services/game-server/
+COPY --from=root				package*.json	./
 
-RUN npm install --workspace=@big2/game-types
-RUN cd ./packages/types/game-types && npm run build:docker
+RUN npm ci
 
-RUN npm install
+COPY --from=game-stats-types	. ./packages/types/game-stats-types/
+COPY --from=game-types			. ./packages/types/game-types/
+COPY 							. ./services/game-server/
 
-RUN cd ./services/game-server && npm run build:docker
+# RUN npm run build -w @big2/game-stats-types
+# RUN npm run build -w @big2/game-types
+# RUN npm run build -w game-server
+# # apply below (build:docker) only after they have put in types in imports, now still recieve error below:
+# # error TS2307: Cannot find module '@big2/game-types' or its corresponding type declarations.
+RUN npm run build:docker -w game-server
 
 # -----
 
 FROM node:20-alpine AS runner
 WORKDIR /app
 
-COPY package*.json ./services/game-server/.
-COPY --from=game-types . ./packages/types/game-types/.
-COPY --from=root package*.json .
-
-RUN npm install --workspace=@big2/game-types
-RUN cd ./packages/types/game-types && npm run build:docker
+COPY --from=game-stats-types	package.json	./packages/types/game-stats-types/
+COPY --from=game-types			package.json	./packages/types/game-types/
+COPY 							package.json	./services/game-server/
+COPY --from=root				package*.json	./
 
 RUN npm ci --omit=dev
 
-COPY --from=builder /app/services/game-server/server_build ./services/game-server/server_build
+COPY --from=builder /app/packages/types/game-stats-types/dist	./packages/types/game-stats-types/dist
+COPY --from=builder /app/packages/types/game-types/dist			./packages/types/game-types/dist
+COPY --from=builder /app/services/game-server/server_build		./services/game-server/server_build
 
 EXPOSE 3000
 
 WORKDIR /app/services/game-server
 
 CMD ["node", "server_build/src/server.js"]
+# CMD ["npm", "run", "server"]

@@ -1,0 +1,29 @@
+{
+	"name": "@big2/game-stats-types",
+	"private": true,
+	"version": "1.0.0",
+	"sideEffects": false,
+	"exports": {
+		"./game-stats": {
+			"types": "./dist/game-stats/index.d.ts",
+			"default": "./dist/game-stats/index.js"
+		},		
+		"./website": {
+			"types": "./dist/website/index.d.ts",
+			"default": "./dist/website/index.js"
+		},
+		"./game-server": {
+			"types": "./dist/game-server/index.d.ts",
+			"default": "./dist/game-server/index.js"
+		}
+	},
+	"scripts": {
+		"build": "tsc"
+	},
+	"devDependencies": {
+		"typescript": "^5.9.3"
+	},
+	"dependencies": {
+		"zod": "^4.6.7"
+	}
+}

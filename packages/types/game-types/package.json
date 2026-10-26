@@ -1,6 +1,7 @@
 {
 	"name": "@big2/game-types",
 	"type": "module",
+	"version": "1.0.0",
 	"private": true,
 	"dependencies": {
 		"typescript": "^6.0.3",
@@ -11,11 +12,11 @@
 	"exports": {
 		".": {
 			"types": "./dist/types/Types.d.ts",
-			"import": "./dist/Types.js"
+			"default": "./dist/Types.js"
 		},
 		"./validation": {
 			"types": "./dist/types/Validation.d.ts",
-			"import": "./dist/Validation.js"
+			"default": "./dist/Validation.js"
 		}
 	},
 	"scripts": {

@@ -6,7 +6,7 @@ name: ${PROJECT_NAME:?}
 
 # Docker bridge networks are IPv4-only by default.
 networks:
-  transcendence: # internet-facing , 
+  transcendence: # internet-facing
     name: ${MAIN_NETWORK:?}
     driver: bridge # no ingress (Incoming traffic or data is completely blocked from entering this network)
   database: # securing of anything database related from being expose to those not talking to database
@@ -42,6 +42,8 @@ secrets: # auto make all secret files just read only mode
     file: ./secrets/database-passwords/db-friends-password.txt
   db-game-stats-password:
     file: ./secrets/database-passwords/db-game-stats-password.txt
+  statistics-token:
+    file: ./secrets/tokens/statistics-token.txt
 
 
 services:
@@ -91,15 +93,15 @@ services:
     pull_policy: missing # to stick to the current version used, previously by default used missing too anyway.
     restart: unless-stopped
     ports:
-      - "${LOCALHOST:?}:${DRIZZLE_GATEWAY_PORT:?}:${DRIZZLE_GATEWAY_PORT:?}"
-    environment: # DB_* / PG_* - not recognized as per DG documentation, better use PG* 
+      - "${LOCALHOST:?}:${DRIZZLE_GATEWAY_PORT:?}:${DRIZZLE_GATEWAY_PORT:?}" # localhost at most front = reachable only from your own machine
+    environment:
       PORT: ${DRIZZLE_GATEWAY_PORT:?}
       PGPORT: ${PGPORT:?}
       PGHOST: ${PGHOST:?}
       PGDATABASE: ${PGDATABASE:?}
       PGUSER: ${PGUSER:?}
     volumes:
-      - dg-data:/app # Required by Drizzle-Gateway;s documentation: persistent volume mounting to /app
+      - dg-data:/app # Required by Drizzle-Gateway's documentation: persistent volume mounting to /app
     networks:
       - transcendence # must need this, to enable opening this GUI dev tool at browser
       - database
@@ -118,7 +120,7 @@ services:
       additional_contexts:
         root: .
     pull_policy: never
-    restart: "no" # one-shot container = It runs psql + migrations only, then, the end (exit 0)! that's the sole purpose of this container's existance. 
+    restart: "no" # one-shot container = It runs psql + migrations only, then successfully exit 0. thats all. that's the sole purpose of this container's existance. 
     environment:
       PGPASSWORD_FILE: /run/secrets/db-admin-password
       PGPORT: ${PGPORT:?}
@@ -196,9 +198,10 @@ services:
     build:
       context: ./services/website
       additional_contexts:
-        root: .
-        game-types: ./packages/types/game-types
-        friends-types: ./packages/types/friends-types
+        root:             .
+        game-types:       ./packages/types/game-types
+        friends-types:    ./packages/types/friends-types
+        game-stats-types: ./packages/types/game-stats-types
     pull_policy: never
     restart: unless-stopped
     volumes: # temporary for vite hmr in development stage
@@ -239,9 +242,9 @@ services:
     build:
       context: ./services/authentication
       additional_contexts:
-        root: .
-        auth-schema: ./packages/postgres/auth-schema
-        postgres-client: ./packages/postgres/postgres-client
+        root:             .
+        auth-schema:      ./packages/postgres/auth-schema
+        postgres-client:  ./packages/postgres/postgres-client
     pull_policy: never
     restart: unless-stopped
     environment:
@@ -272,10 +275,10 @@ services:
     build:
       context: ./services/party
       additional_contexts:
-        root: .
-        auth-schema: ./packages/postgres/auth-schema
-        party-schema: ./packages/postgres/party-schema
-        postgres-client: ./packages/postgres/postgres-client
+        root:             .
+        auth-schema:      ./packages/postgres/auth-schema
+        party-schema:     ./packages/postgres/party-schema
+        postgres-client:  ./packages/postgres/postgres-client
     pull_policy: never
     restart: unless-stopped
     environment:
@@ -307,11 +310,11 @@ services:
     build:
       context: ./services/profile
       additional_contexts:
-        root: .
-        auth-schema: ./packages/postgres/auth-schema
-        profile-types: ./packages/types/profile-types
-        profile-schema: ./packages/postgres/profile-schema
-        postgres-client: ./packages/postgres/postgres-client
+        root:             .
+        profile-types:    ./packages/types/profile-types
+        auth-schema:      ./packages/postgres/auth-schema
+        profile-schema:   ./packages/postgres/profile-schema
+        postgres-client:  ./packages/postgres/postgres-client
     pull_policy: never
     restart: unless-stopped
     environment:
@@ -343,11 +346,11 @@ services:
     build:
       context: ./services/friends
       additional_contexts:
-        root: .
-        auth-schema: ./packages/postgres/auth-schema
-        friends-types: ./packages/types/friends-types 
-        friends-schema: ./packages/postgres/friends-schema
-        postgres-client: ./packages/postgres/postgres-client
+        root:             .
+        friends-types:    ./packages/types/friends-types 
+        auth-schema:      ./packages/postgres/auth-schema
+        friends-schema:   ./packages/postgres/friends-schema
+        postgres-client:  ./packages/postgres/postgres-client
     pull_policy: never
     restart: unless-stopped
     environment:
@@ -395,16 +398,19 @@ services:
   #     BACKEND MICORSERVICE
   game-server:
     container_name: game-server
+    image: game-server:services
     build: 
       context: ./services/game-server
       additional_contexts:
-        root: .
-        game-types: ./packages/types/game-types
-    image: game-server:services
+        root:             .
+        game-types:       ./packages/types/game-types
+        game-stats-types: ./packages/types/game-stats-types
     pull_policy: never
     restart: unless-stopped
     environment:
+      STATISTICS_TOKEN_FILE: /run/secrets/statistics-token
       AUTH_SERVICE_URL: ${AUTH_SERVICE_URL}
+      PROFILE_SERVICE_URL: ${PROFILE_SERVICE_URL}
       GAME_BOT_SERVICE_URL: ${GAME_BOT_SERVICE_URL}
       GAME_STATS_SERVICE_URL: ${GAME_STATS_SERVICE_URL}
       PORT: ${GAME_SERVER_SERVICE_PORT}
@@ -414,16 +420,20 @@ services:
     networks:
       - transcendence
       - game-bot-network
+    secrets:
+      - statistics-token
 
+
+  #     BACKEND MICORSERVICE
   game-bot:
     container_name: game-bot
+    image: game-bot:services
     build:
       context: ./services/game-bot
-      dockerfile: Dockerfile
       additional_contexts:
-        root: .
+        root:       .
         game-types: ./packages/types/game-types
-    image: game-bot:test
+    pull_policy: never
     restart: unless-stopped
     environment:
       PORT: ${GAME_BOT_SERVICE_PORT}
@@ -432,6 +442,44 @@ services:
       BOT_LOG_DIR: ${GAME_BOT_LOG_DIR}
       BOT_MOVE_DELAY_MIN: ${GAME_BOT_MOVE_DELAY_MIN}
       BOT_MOVE_DELAY_MAX: ${GAME_BOT_MOVE_DELAY_MAX}
-
     networks:
       - game-bot-network
+
+
+  #     BACKEND MICORSERVICE
+  game-stats:
+    container_name: game-stats
+    image: game-stats:services
+    build:
+      context: ./services/game-stats
+      additional_contexts:
+        root:               .
+        game-types:         ./packages/types/game-types
+        game-stats-types:   ./packages/types/game-stats-types
+        auth-schema:        ./packages/postgres/auth-schema
+        postgres-client:    ./packages/postgres/postgres-client
+        game-stats-schema:  ./packages/postgres/game-stats-schema
+    pull_policy: never
+    restart: unless-stopped
+    ports: ["127.0.0.1:3002:3000"] # for tester only
+    environment:
+      PGPASSWORD_FILE: /run/secrets/db-game-stats-password
+      STATISTICS_TOKEN_FILE: /run/secrets/statistics-token
+      PGUSER: ${PGUSER_GAME_STATS:?}
+      PGPORT: ${PGPORT:?}
+      PGHOST: ${PGHOST:?}
+      PGDATABASE: ${PGDATABASE:?}
+      PG_POOL_MAX: ${PG_POOL_MAX:?}
+      PORT: ${GAME_STATS_SERVICE_PORT:?}
+      AUTH_SERVICE_URL: ${AUTH_SERVICE_URL:?}
+      PROFILE_SERVICE_URL: ${PROFILE_SERVICE_URL:?}
+      FRIENDS_SERVICE_URL: ${FRIENDS_SERVICE_URL:?}
+    secrets:
+      - db-game-stats-password
+      - statistics-token
+    networks:
+      - transcendence
+      - database
+    depends_on:
+      migrator:
+        condition: service_completed_successfully  # Waits for migrator to finish and exit with code 0

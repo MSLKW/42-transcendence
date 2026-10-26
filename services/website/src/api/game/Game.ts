@@ -74,7 +74,6 @@ export class Game {
 	}
 
 	public deleteLobby() {
-		gameLog("[gameSocket] emitting 'lobby_delete_request");
 		this.socket.emit("lobby_delete_request", (status: StatusTransmit) => {
 			gameLog(`[gameSocket] 'lobby_delete_request': ${status.success} | ${status.message}`);
 			if (status.success === false) {
@@ -85,13 +84,13 @@ export class Game {
 
 	public takeSeat(seatIndex: number) {
 		this.socket.emit("user_seat_take", seatIndex, (status: StatusTransmit) => {
-			gameLog(`[gameSocket] user_seat_take: ${status.success} | ${status.message}`);
+			gameLog(`[gameSocket] 'user_seat_take': ${status.success} | ${status.message}`);
 		});
 	}
 
 	public leaveSeat() {
 		this.socket.emit("user_seat_leave", (status: StatusTransmit) => {
-			gameLog(`[gameSocket] user_seat_leave: ${status.success} | ${status.message}`);
+			gameLog(`[gameSocket] 'user_seat_leave': ${status.success} | ${status.message}`);
 		});
 	}
 
@@ -147,7 +146,7 @@ export class Game {
 				useResultsStore.getState().setResults(gameEndStats);
 				useGameStore.setState({ round: gameEndStats.temporaryRoundsPlayed });
 				useSceneStore.getState().setCurrentScene("Lobby");
-				useSceneStore.getState().setShowWindow("results", true); // doesn't work when setCurrnetScene set to Lobby?
+				useSceneStore.getState().setShowWindow("results", true);
 				this.resetGame();
 				useGameStore.getState().resetGame();
 			}, "+=1");
@@ -396,8 +395,8 @@ export class Game {
 		else if (totalPlayers === 3) {
 			positions = [
 				new THREE.Vector3(0, 1.5, 4),
-				new THREE.Vector3(-3.5, 1.5, -2.5),
-				new THREE.Vector3(3.5, 1.5, -2.5),
+				new THREE.Vector3(-3.5, 1.5, -2),
+				new THREE.Vector3(3.5, 1.5, -2),
 			];
 			rotations = [
 				new THREE.Euler(0, 0, 0),
