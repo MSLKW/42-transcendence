@@ -47,6 +47,8 @@ class ChatSocketService {
 		this.socket = io(chatSocketUrl, {
 			path: "/socket/chat",
 			transports: ["websocket", "polling"],
+			secure: true,
+  			rejectUnauthorized: false,
 			autoConnect: false,
 			reconnection: true,
 			reconnectionAttempts: Infinity,

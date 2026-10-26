@@ -107,3 +107,8 @@ For each team member mentioned at the top of the README.md, you must provide:
 ◦ Specific features, modules, or components implemented by each person.
 
 ◦ Any challenges faced and how they were overcome.
+
+# CERTIFICATE PRODUCTION
+
+` openssl req -x509 -newkey rsa:4096 -keyout transcendence.key -out transcendence.crt -sha256 -days 365
+ -nodes `

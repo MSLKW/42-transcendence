@@ -44,6 +44,11 @@ secrets: # auto make all secret files just read only mode
     file: ./secrets/database-passwords/db-game-stats-password.txt
   statistics-token:
     file: ./secrets/tokens/statistics-token.txt
+  ssl-cert:
+    file: ./secrets/ssl/transcendence.crt
+  ssl-key:
+    file: ./secrets/ssl/transcendence.key
+
 
 
 services:
@@ -151,8 +156,10 @@ services:
     ports:
       - "${DOMAIN_PORT:?}:${DOMAIN_PORT:?}"
     environment:
+      SSL_CERT_FILE: /run/secrets/ssl-cert
+      SSL_KEY_FILE: /run/secrets/ssl-key
       DOMAIN_PORT: ${DOMAIN_PORT:?}
-      NGINX_ENVSUBST_FILTER: ^(DOMAIN_PORT|.*_SERVICE_URL|PROFILE_SERVICE_AVATAR_DIR|API_.*_PATH|SOCKET_.*_PATH)$
+      NGINX_ENVSUBST_FILTER: ^(DOMAIN_PORT|.*_SERVICE_URL|PROFILE_SERVICE_AVATAR_DIR|API_.*_PATH|SOCKET_.*_PATH|SSL_.*)$
       WEBSITE_SERVICE_URL: ${WEBSITE_SERVICE_URL:?}
       AUTH_SERVICE_URL: ${AUTH_SERVICE_URL:?}
       PARTY_SERVICE_URL: ${PARTY_SERVICE_URL:?}
@@ -172,6 +179,9 @@ services:
       SOCKET_PARTY_PATH: ${SOCKET_PARTY_PATH:?}
       SOCKET_GAME_SERVER_PATH: ${SOCKET_GAME_SERVER_PATH:?}
       SOCKET_GAME_BOT_PATH: ${SOCKET_GAME_BOT_PATH:?}
+    secrets:
+      - ssl-cert
+      - ssl-key
     networks:
       - transcendence
     volumes:

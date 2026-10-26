@@ -25,14 +25,14 @@ if (missing.length)
 export default defineConfig({
 	server: {
 		host: true,
-		port: 5173,
+		port: 5173, // 5173
 		strictPort: true,
 		watch: {
 			usePolling: true,
 		},
 		ws: {
 			host: 'localhost',
-			port: 5173,
+			port: 5173, // 5173
 			clientPort: process.env.DOMAIN_PORT ? Number(process.env.DOMAIN_PORT) : 80,
 		},
 		allowedHosts: true,

@@ -42,6 +42,8 @@ class PartySocketService {
 		this.socket = io(partySocketUrl, {
 			path: "/socket/party",
 			transports: ["websocket", "polling"],
+			secure: true,
+  			rejectUnauthorized: false,
 			autoConnect: false,
 			reconnection: true,
 			reconnectionAttempts: Infinity,

@@ -38,6 +38,8 @@ export class Game {
 				lobbyId: sessionId,
 				uuid: playerId
 			},
+			secure: true,
+  			rejectUnauthorized: false,
 			reconnection: true,
 			reconnectionAttempts: 3,
 		})
