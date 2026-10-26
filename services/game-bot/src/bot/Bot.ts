@@ -100,20 +100,20 @@ export class Bot
 		if (playerTurn.playerId == this.id)
 		{
 			this.logger.info(this.id, "my turn");
-			this.playCardHand(playerTurn.timer, playerTurn.skippable);
+			this.playCardHand(playerTurn.timer, playerTurn);
 		}
 		else
 			this.logger.info(this.id, `${playerTurn.playerId}'s turn`);
 	}
 
-	private playCardHand = async (timerMs: number, skippable: boolean) =>
+	private playCardHand = async (timerMs: number, playerTurn: PlayerTurnTransmit) =>
 	{
 		if (timerMs == 0)
 			timerMs = 5000;
 		const moveDelayMs = (Math.random()	* (BOT_MOVE_DELAY_MAX - BOT_MOVE_DELAY_MIN) + BOT_MOVE_DELAY_MIN) * timerMs;
 		const deadline = Date.now() + moveDelayMs;
 
-		const cardHand = this.ai.decide(this.id, this.state, skippable);
+		const cardHand = this.ai.decide(this.id, this.state, playerTurn.skippable, playerTurn.lowestCardRequired);
 		
 		if (cardHand == null)
 		{
