@@ -1,5 +1,5 @@
 import { UserStore } from "./UserStore";
-import { UserData, UserSettings, NULL_ACHIEVEMENTS } from "../types";
+import { UserData, UserSettings } from "@big2/profile-types";
 import fs from "fs";
 import path from "path";
 
@@ -18,7 +18,6 @@ export class FileUserStore implements UserStore
 			const userData: UserData = {
 				username:		raw.username,
 				avatarPath:		raw.avatarPath,
-				badge:			raw.badge,
 			};
 			return (userData);
 		}
@@ -38,11 +37,9 @@ export class FileUserStore implements UserStore
 			const userSettings: UserSettings = {
 				allow3OfAKind:		raw.allow3OfAKind,
 				allow2OfSpadesEnd:	raw.allow2OfSpadesEnd,
-				autoPassIndex:		raw.autoPassIndex,
-				endGameCondition:	raw.endGameCondition,
-				scoreCalculation:	raw.scoreCalculation,
+				autoPassTimerMs:	raw.autoPassTimerMs,
 				cardStyle:			raw.cardStyle,
-				uiColor:			raw.uiColor,
+				uiColour:			raw.uiColour,
 				fxLevel:			raw.fxLevel,
 				mxLevel:			raw.mxLevel
 			};
@@ -109,17 +106,14 @@ export class FileUserStore implements UserStore
 		const userData: UserData = {
 			username:		null,
 			avatarPath:		null,
-			badge:			"Beginner's Luck",
 		};
 		
 		const userSettings: UserSettings = {
 			allow3OfAKind:		true,
 			allow2OfSpadesEnd:	true,
-			autoPassIndex:		0,
-			endGameCondition:	0,
-			scoreCalculation:	0,
+			autoPassTimerMs:	0,
 			cardStyle:			0,
-			uiColor:			0,
+			uiColour:			0,
 			fxLevel:			0,
 			mxLevel:			0
 			};

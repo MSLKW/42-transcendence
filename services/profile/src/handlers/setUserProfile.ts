@@ -1,6 +1,6 @@
 import { Request, Response } from "express"
 import { UserStore } from "../store/UserStore";
-import { UserData } from "../types";
+import { UserData } from "@big2/profile-types";
 import { authenticate } from "../utils/authenticate";
 
 const USERNAME_REGEX = /^[A-Za-z0-9_-]{3,20}$/;
@@ -27,8 +27,6 @@ export function setUserProfile(store: UserStore)
 			}
 			if (typeof(req.body.avatarPath) === "string")
 				partial.avatarPath = req.body.avatarPath;
-			if (typeof(req.body.badgeLabel) === "string")
-				partial.badge = req.body.badgeLabel;
 
 			await store.updateUserProfile(uuid, partial);
 			return res.status(200).json({ message: "profile successfully updated" });
