@@ -32,6 +32,7 @@ export class LoginScene extends SceneContainer {
 		ctx.orbitControls.enableZoom = false;
 		ctx.orbitControls.enableDamping = true;
 		ctx.orbitControls.dampingFactor = 0.05;
+		ctx.orbitControls.enabled = true;
 		ctx.camera.updateProjectionMatrix();
 	}
 
@@ -40,9 +41,12 @@ export class LoginScene extends SceneContainer {
 		this.timer.update();
 		this.sphere.rotation.y += 0.025 * delta;
 		this.sphere.rotation.x += 0.0125 * delta;
-		// this.scene.traverse((object) => {console.log(object)});
 		ctx.orbitControls.update();
 		ctx.renderer.render(this.scene, ctx.camera);
+	}
+
+	public handleResize(ctx: ThreeJsManager): void {
+		
 	}
 
 	public dispose(): void {

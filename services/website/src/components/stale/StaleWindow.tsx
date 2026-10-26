@@ -31,31 +31,33 @@ export const StaleWindow = () => {
 						gap-1rem
 						text-n6
 					">
-						<h2>{ isAuthenticated ? "You're logged in another tab" : "You're logged in another browser" }</h2>
+						<h2>{ isAuthenticated ? "You're logged from another tab" : "You're logged from another browser" }</h2>
 					</div>
 					<div className="
 						flex place-content-center
 						gap-1rem
 					">
-						<button
-							onClick={() => useSceneStore.getState().setCurrentScene("Login")}
-							className="
-								h-3rem aspect-5/1
-								btn-text bg-r2
-								text-n6
-						">
-							Back to login
-						</button>
-						{ isAuthenticated &&
-							<button
-								onClick={() => window.location.reload()}
-								className="
-									h-3rem aspect-5/1
-									btn-text bg-r2
-									text-n6
-							">
-								Refresh
-							</button>
+						{ isAuthenticated
+							?
+								<button
+									onClick={() => window.location.reload()}
+									className="
+										h-3rem aspect-5/1
+										btn-text bg-r2
+										text-n6
+								">
+									Refresh
+								</button>
+							:
+								<button
+									onClick={() => useSceneStore.getState().setCurrentScene("Login")}
+									className="
+										h-3rem aspect-5/1
+										btn-text bg-r2
+										text-n6
+								">
+									Back to login
+								</button>
 						}
 					</div>
 				</div>

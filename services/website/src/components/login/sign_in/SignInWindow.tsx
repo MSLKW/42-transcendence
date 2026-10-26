@@ -2,11 +2,9 @@ import { useState } from "react";
 import { useNotificationStore, NOTIFICATION_TYPE } from "../../../store/NotificationStore";
 import { Window } from "../../window/Window";
 import { FormInputModule } from "../form/FormInputModule";
-import { handleSignIn } from "../../../api/authentication/sign_in/handleSignIn";
+import { handleSignIn } from "../../../api/authentication/post_signin/handleSignIn";
 
 export const SignInWindow = () => {
-	const showNotification = useNotificationStore((store) => store.showNotification);
-
 	const [email, setEmail] = useState("");
 	const [password, setPassword] = useState("");
 	const [isLoading, setIsLoading] = useState(false);
@@ -16,7 +14,7 @@ export const SignInWindow = () => {
 
 		setIsLoading(true);
 		if (!email || !password) {
-			showNotification("All fields are required", NOTIFICATION_TYPE.error);
+			useNotificationStore.getState().showNotification("All fields are required", NOTIFICATION_TYPE.error);
 			return;
 		}
 

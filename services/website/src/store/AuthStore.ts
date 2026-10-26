@@ -16,7 +16,7 @@ interface AuthState extends AuthValues {
 
 export const useAuthStore = create<AuthState>() (
 	persist(
-		(set, _get) => ({
+		(set) => ({
 			authVerboseMode: true,
 			authValidation: false,
 			isAuthenticated: false,

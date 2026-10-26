@@ -98,7 +98,7 @@ export const MedalsModule = ({ uuid }: MedalsModuleProps) => {
 			<MedalImage
 				icon={<MedalNoPassIcon />}
 				title="'I'LL PASS... WAIT, NO I WON'T'"
-				description="End a game without passing"
+				description="Win a game without passing"
 				date={medals?.["No Pass"] ?? undefined}
 			/>
 		</div>

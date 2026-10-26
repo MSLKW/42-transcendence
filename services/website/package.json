@@ -11,8 +11,7 @@
   },
   "dependencies": {
     "@big2/game-types": "*",
-    "@react-three/drei": "^10.7.7",
-    "@react-three/fiber": "^9.6.1",
+    "@big2/friends-types": "*",
     "@tailwindcss/vite": "^4.3.1",
     "gsap": "^3.15.0",
     "motion": "^13.1.0",

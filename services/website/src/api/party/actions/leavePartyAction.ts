@@ -9,8 +9,6 @@ import { useSceneStore } from "../../../store/SceneStore";
 
 export async function leavePartyAction(socket: Socket | null) {
 	const clientUuid = useAuthStore.getState().clientUuid ?? "";
-	const addToCachedChat = useChatStore.getState().addToCachedChat;
-	const showNotification = useNotificationStore.getState().showNotification;
 	const cachedData = useProfileStore.getState().cachedData;
 	const hostUuid = usePartyStore.getState().hostUuid;
 
@@ -26,7 +24,7 @@ export async function leavePartyAction(socket: Socket | null) {
 
 		useSceneStore.getState().setShowWindow("profile", false);
 
-		addToCachedChat(
+		useChatStore.getState().addToCachedChat(
 			"REPORT",
 			"server",
 			"",
@@ -37,7 +35,7 @@ export async function leavePartyAction(socket: Socket | null) {
 			} chat`,
 		)
 
-		showNotification(
+		useNotificationStore.getState().showNotification(
 			clientUuid === hostUuid ? "You left the party" : `You left ${cachedData[hostUuid ?? ""]?.name}'s party`,
 			NOTIFICATION_TYPE.message
 		);
@@ -45,7 +43,7 @@ export async function leavePartyAction(socket: Socket | null) {
 		if (usePartyStore.getState().partyVerboseMode)
 			console.log("[party > 'emit' leave_party]");
 	} catch (error) {
-		showNotification(
+		useNotificationStore.getState().showNotification(
 			"Unable to connect to party socket",
 			NOTIFICATION_TYPE.error
 		);

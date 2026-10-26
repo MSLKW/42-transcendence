@@ -1,7 +1,7 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import { useAuthStore } from "./AuthStore";
-import { useFriendStore } from "./FriendStore";
+import { useFriendsStore } from "./FriendsStore";
 import { usePartyStore, type AVAILABILITY_TYPE } from "./PartyStore";
 import { handleGetProfile } from "../api/profile/get_profile/handleGetProfile";
 
@@ -97,7 +97,7 @@ export const useProfileStore = create<ProfileState>() (
 			cachedData: {},
 			avatarVersions: {},
 
-			getProfileData: (uuid) => {
+			getProfileData: (_uuid) => {
 				// if (!uuid)
 				// 	return undefined;
 				// const profilesInDb = get().profilesInDb;
@@ -114,7 +114,7 @@ export const useProfileStore = create<ProfileState>() (
 			setCachedData: async () => {
 				const clientUuid = useAuthStore.getState().clientUuid;
 				const members = usePartyStore.getState().members;
-				const cachedFriends = useFriendStore.getState().cachedFriends;
+				const cachedFriends = useFriendsStore.getState().cachedFriends;
 
 				const allUuids = Array.from(
 					new Set([

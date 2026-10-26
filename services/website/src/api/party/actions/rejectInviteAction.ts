@@ -4,8 +4,6 @@ import { useNotificationStore, NOTIFICATION_TYPE } from "../../../store/Notifica
 import { usePartyStore } from "../../../store/PartyStore";
 
 export async function rejectInviteAction(socket: Socket | null, hostUuid: string) {
-	const { showNotification } = useNotificationStore.getState();
-
 	if (!socket)
 		return;
 
@@ -14,7 +12,7 @@ export async function rejectInviteAction(socket: Socket | null, hostUuid: string
 
 		socket?.emit("reject_invite", { hostUuid });
 
-		showNotification(
+		useNotificationStore.getState().showNotification(
 			"Invitation rejected",
 			NOTIFICATION_TYPE.message
 		);
@@ -22,7 +20,7 @@ export async function rejectInviteAction(socket: Socket | null, hostUuid: string
 		if (usePartyStore.getState().partyVerboseMode)
 			console.log("[party > 'emit' reject_invite] hostUuid:", hostUuid);
 	} catch (error) {
-		showNotification(
+		useNotificationStore.getState().showNotification(
 			"Unable to connect to party socket",
 			NOTIFICATION_TYPE.error
 		);

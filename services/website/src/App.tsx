@@ -1,22 +1,29 @@
-import { useRef, useEffect } from "react";
+import { useRef, useEffect, useCallback } from "react";
 import { chatSocket } from "./api/chat/chatSocket";
 import { partySocket } from "./api/party/partySocket";
-import { useAuthStore } from "./store/AuthStore";
-import { useDevStore } from "./store/DevStore";
-import { useProfileStore } from "./store/ProfileStore";
-import { useSceneStore } from "./store/SceneStore";
-import { handleValidate } from "./api/authentication/validate/handleValidate";
 import { subscribeToMessages } from "./api/chat/subscribe/subscribeToMessages";
 import { subscribeToUserJoined } from "./api/chat/subscribe/subscribeToUserJoined";
 import { subscribeToUserLeft } from "./api/chat/subscribe/subscribeToUserLeft";
 import { subscribeToUserTyping } from "./api/chat/subscribe/subscribeToUserTyping";
 import { subscribeToRateLimited } from "./api/chat/subscribe/subscribeToRateLimited";
+import { handleFriendships } from "./api/friends/get_friendships/handleFriendships";
+import { handleFriendRequestsSent } from "./api/friends/get_friend-requests_sent/handleFriendRequestsSent";
+import { handleFriendRequestsReceived } from "./api/friends/get_friend-requests_received/handleFriendRequestsReceived";
+import { handleFriendRequestsAccept } from "./api/friends/post_friend-requests_accept/handleFriendRequestsAccept";
+import { handleFriendRequestsReject } from "./api/friends/post_friend-requests_reject/handleFriendRequestsReject";
+import { useFriendEvents } from "./api/friends/useFriendEvents";
+import { handleGetProfile } from "./api/profile/get_profile/handleGetProfile";
+import { useAuthStore } from "./store/AuthStore";
+import { useDevStore } from "./store/DevStore";
+import { useFriendsStore } from "./store/FriendsStore";
+import { useNotificationStore, NOTIFICATION_TYPE } from "./store/NotificationStore";
+import { useProfileStore } from "./store/ProfileStore";
+import { useSceneStore } from "./store/SceneStore";
 import { useScrollToTop } from "./utilities/react/useScrollToTop";
 import { StripeBg } from "./components/bg/Stripe";
 import { LoginScene } from "./components/login/LoginScene";
 import { HomeScene } from "./components/home/HomeScene";
 import { LobbyScene } from "./components/lobby/LobbyScene";
-import { TestScene } from "./components/test/TestScene";
 import { GameScene } from "./components/game/GameScene";
 import { ChatWindow } from "./components/chat/ChatWindow";
 import { CreateAccountWindow } from "./components/login/create_account/CreateAccountWindow";
@@ -62,6 +69,7 @@ export default function App() {
 			return;
 
 		chatSocket.connect();
+
 		const unsubscribeFromMessages = subscribeToMessages();
 		const unsubscribeFromUserJoined = subscribeToUserJoined();
 		const unsubscribeFromUserLeft = subscribeToUserLeft();
@@ -77,6 +85,53 @@ export default function App() {
 			chatSocket.disconnect();
 		};
 	}, [clientUuid]);
+
+	//friends connection
+	const handleFriendUpdate = useCallback(() => {
+		if (!clientUuid)
+			return;
+
+		void handleFriendships(clientUuid!)
+			.then((friends) => {
+				useFriendsStore.setState({ cachedFriends: friends });
+			})
+			.catch((error) => {
+				console.error("Failed to refresh friendships:", error);
+			});
+	}, [clientUuid]);
+	useFriendEvents(clientUuid, handleFriendUpdate);
+
+	//friend requests sent + received
+	useEffect(() => {
+		if (!clientUuid || currentScene === "Login")
+			return;
+
+		void handleFriendRequestsSent(clientUuid)
+			.then((requests) => {
+				useFriendsStore.setState({ friendRequestSent: requests });
+			}).catch((error) => {
+				console.error("Sent requests failed:", error);
+			});
+
+		void handleFriendRequestsReceived(clientUuid)
+			.then(async (requests) => {
+				await Promise.all(
+					requests.map(async (req: any) => {
+						const profile = await handleGetProfile(req.senderId);
+
+						useNotificationStore.getState().showNotification(
+							`${profile?.username} wants to be friends with you`,
+							NOTIFICATION_TYPE.invite,
+							req.id,
+							() => handleFriendRequestsAccept(req.id, profile?.username ?? "Player"),
+							() => handleFriendRequestsReject(req.id, profile?.username ?? "Player")
+						);
+					})
+				);
+			}).catch((error) => {
+				console.error("Failed to process friend requests:", error);
+			});
+	}, [clientUuid, currentScene]);
 
 	//three js manager
 	const containerRef = useRef<HTMLDivElement>(null);
@@ -95,6 +150,9 @@ export default function App() {
 
 	//three js scene handler
 	useEffect(() => {
+		if (!threejsManager)
+			return;
+
 		const currentSceneLowered = currentScene.toLowerCase();
 		if (threejsManager.getSceneId() !== currentSceneLowered) {
 			threejsManager.changeScene(currentSceneLowered);
@@ -118,9 +176,9 @@ export default function App() {
 	}, [currentScene, clientUuid, cachedData, isProfileLoaded]);
 
 	//close window on scene change
-	useEffect(() => {
-		useSceneStore.getState().resetWindows();
-	}, [currentScene]);
+	// useEffect(() => {
+	// 	useSceneStore.getState().resetWindows();
+	// }, [currentScene]);
 
 	return (
 		<>
@@ -143,7 +201,6 @@ export default function App() {
 				{ currentScene === "Login" && <LoginScene /> }
 				{ currentScene === "Home" && <HomeScene /> }
 				{ currentScene === "Lobby" && <LobbyScene /> }
-				{ currentScene === "Test" && <TestScene /> }
 				{ currentScene === "Game" && <GameScene /> }
 				{ showWindow["chat"] && <ChatWindow /> }
 				{ showWindow["createAccount"] && <CreateAccountWindow /> }

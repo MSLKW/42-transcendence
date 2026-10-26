@@ -17,9 +17,6 @@ function emitAcceptInvite(socket: Socket, hostUuid: string): Promise<AcceptInvit
 }
 
 export async function acceptInviteAction(socket: Socket | null, hostUuid: string) {
-	const addToCachedChat = useChatStore.getState().addToCachedChat;
-	const showNotification = useNotificationStore.getState().showNotification;
-
 	if (!socket)
 		return;
 
@@ -28,19 +25,19 @@ export async function acceptInviteAction(socket: Socket | null, hostUuid: string
 
 		const response = await emitAcceptInvite(socket, hostUuid);
 		if (!response.success) {
-			showNotification(response.reason ?? "Failed to join party", NOTIFICATION_TYPE.error);
+			useNotificationStore.getState().showNotification(response.reason ?? "Failed to join party", NOTIFICATION_TYPE.error);
 			console.warn("[party > 'emit' accept_invite] reason:Failed to join party");
 			return;
 		}
 
 		const hostData = await handleGetProfile(hostUuid);
 
-		showNotification(
+		useNotificationStore.getState().showNotification(
 			`You just joined ${hostData?.username ?? "a player"}'s party!`,
 			NOTIFICATION_TYPE.message
 		);
 
-		addToCachedChat(
+		useChatStore.getState().addToCachedChat(
 			"REPORT",
 			"server",
 			"",
@@ -51,7 +48,7 @@ export async function acceptInviteAction(socket: Socket | null, hostUuid: string
 		if (usePartyStore.getState().partyVerboseMode)
 			console.log("[party > 'emit' accept_invite] hostUuid:", hostUuid);
 	} catch (error) {
-		showNotification(
+		useNotificationStore.getState().showNotification(
 			"Unable to connect to party socket",
 			NOTIFICATION_TYPE.error
 		);

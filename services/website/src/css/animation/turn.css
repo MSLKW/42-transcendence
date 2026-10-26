@@ -13,4 +13,5 @@
 	mask-image: conic-gradient(transparent var(--wipe-angle), black var(--wipe-angle));
 	-webkit-mask-image: conic-gradient(transparent var(--wipe-angle), black var(--wipe-angle));
 	animation: radialWipe var(--wipe-duration, 1s) linear infinite;
+	animation-delay: calc(var(--wipe-elapsed, 0s) * -1);
 }

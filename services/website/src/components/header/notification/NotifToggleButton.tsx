@@ -13,12 +13,12 @@ export const NotifToggleButton = () => {
 			className="btn-icon relative"
 		>
 			<Tooltip
-				text={isNotifFiltered ? "All notifications shown" : "Invite notifications hidden"}
+				text={isNotifFiltered ? "Invite notifications hidden" : "All notifications shown"}
 				position="bottom"
 			>
 				{ isNotifFiltered
-					? <NotifShowAllIcon />
-					: <NotifFilteredIcon />
+					? <NotifFilteredIcon />
+					: <NotifShowAllIcon />
 				}
 			</Tooltip>
 			<div className="

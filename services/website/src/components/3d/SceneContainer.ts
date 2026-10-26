@@ -10,6 +10,7 @@ export abstract class SceneContainer {
 
 	public abstract animate(ctx: ThreeJsManager): void;
 	public abstract setupCamera(ctx: ThreeJsManager): void;
+	public abstract	handleResize(ctx: ThreeJsManager): void;
 
 	public dispose() {
 		this.scene.clear();

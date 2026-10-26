@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { useAuthStore } from "../../store/AuthStore";
-import { useBotStore } from "../../store/BotStore";
+// import { useBotStore } from "../../store/BotStore";
 import { useGameStore } from "../../store/GameStore";
 import { usePartyStore } from "../../store/PartyStore";
 import { useProfileStore } from "../../store/ProfileStore";
@@ -12,7 +12,7 @@ import { SmallLogo } from "./logo/SmallLogo";
 
 export const HomeScene = () => {
 	const clientUuid = useAuthStore((store) => store.clientUuid);
-	const removeBots = useBotStore((store) => store.removeBots);
+	// const removeBots = useBotStore((store) => store.removeBots);
 	const initSeats = useGameStore((store) => store.initSeats);
 	const hostUuid = usePartyStore((store) => store.hostUuid);
 	const members = usePartyStore((store) => store.members);
@@ -20,7 +20,7 @@ export const HomeScene = () => {
 	
 	//remove bots
 	useEffect(() => {
-		removeBots();
+		// removeBots();
 		if (members.length <= 0) {
 			usePartyStore.setState({
 				members: [ clientUuid ],
@@ -77,8 +77,7 @@ export const HomeScene = () => {
 						flex
 						gap-2rem pt-2rem
 						sm:overflow-x-visible overflow-x-auto
-					"
-				>
+				">
 					<PartyCallButton />
 					{clientUuid &&
 						<AvatarModule 

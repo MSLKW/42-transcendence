@@ -1,13 +1,13 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import { useAuthStore } from "./AuthStore";
-import { type MEDAL_TYPE } from "./ProfileStore";
 import { usePartyStore } from "./PartyStore";
 import { useResultsStore } from "./ResultsStore";
 import { useSceneStore } from "./SceneStore";
-import { gameInstance } from '../api/game/src/main';
+import { gameInstance } from '../api/game/main';
 import { partySocket } from "../api/party/partySocket";
-import { HandType, PentupleType } from "@big2/game-types";
+import { HandType, PentupleType, type CardHandTransmit, type CardTransmit } from "@big2/game-types";
+import { useSettingsStore } from "./SettingsStore";
 
 export const GAMEMODE_LABEL = [
 	"4 Players",
@@ -36,14 +36,22 @@ interface GameValues {
 	totalPlayers: number;
 	gameSeats: (string | null)[];
 	userSeats: (string | null)[];
+	playerDisconnection: Record<string, boolean>;
 	gameStarted: boolean;
 	cardsLeft: number[];
-	currentHand: string;
+	currentHand: HAND_TYPE;
+	selectedCards: CardHandTransmit | undefined;
+	cardHeapTopCards: CardHandTransmit | undefined;
+	lowestCardRequired: CardTransmit | undefined;
 	round: number;
 	seatRef: number[];
 	activeSeat: number;
 	isActiveSeatSkippable: boolean;
+	isCardHandPlayable: boolean;
 	sortType: string;
+	playerPassed: string[];
+	playerTimer: number;
+	playerRemainingTimer: number;
 }
 
 interface GameState extends GameValues {
@@ -52,19 +60,20 @@ interface GameState extends GameValues {
 	leaveSeat: () => void;
 	autoSetSeats: () => void;
 
-	setSeatRef: () => void;
+	setSeatRef: (seats: (string | null)[]) => void;
 	setCardsLeft: (playerCardsAmount: Record<string, number>) => void;
 	reduceCardsLeft: (uuid: string, cardsAmount: number) => void;
+	setSelectedCards: (cardHand: CardHandTransmit) => void;
 	setCurrentHand: (handType: HandType, pentupleType: PentupleType) => void;
+	setCardHandPlayable: () => void;
+	resetLobby: () => void;
 	resetGame: () => void;
 	startGame: () => void;
 	skipTurn: () => void;
 
-	endGame: () => void;
-	incTotalWin: (uuid: string) => void;
-	incTotalLoss: (uuid: string) => void;
-	unlockMedal: (uuid: string, type: MEDAL_TYPE) => void;
+	leaveGame: () => void;
 
+	clearPassedPlayer: (playerUuid: string) => void;
 	resetValues: () => void;
 }
 
@@ -76,14 +85,22 @@ export const useGameStore = create<GameState>() (
 			totalPlayers: 0,
 			userSeats: [],
 			gameSeats: [],
+			playerDisconnection: {},
 			gameStarted: false,
 			cardsLeft: [],
 			currentHand: "None",
+			selectedCards: undefined,
+			cardHeapTopCards: undefined,
+			lowestCardRequired: undefined,
 			round: 0,
 			seatRef: [],
 			activeSeat: 0,
 			isActiveSeatSkippable: false,
+			isCardHandPlayable: false,
 			sortType: "Flex",
+			playerPassed: [],
+			playerTimer: 0,
+			playerRemainingTimer: 0,
 
 			initSeats: () => {
 				const totalPlayers = get().totalPlayers;
@@ -102,8 +119,7 @@ export const useGameStore = create<GameState>() (
 				set({ userSeats: newSeats });
 			},
 
-			setSeatRef: () => {
-				const seats = get().userSeats;
+			setSeatRef: (seats: (string | null)[]) => {
 				const clientUuid = useAuthStore.getState().clientUuid;
 				const totalPlayers = get().totalPlayers;
 				const clientIndex = seats.indexOf(clientUuid);
@@ -139,6 +155,24 @@ export const useGameStore = create<GameState>() (
 				cardsLeft[seatIndex] = cardsLeft[seatIndex] - cardsAmount;
 				set({ cardsLeft: cardsLeft });
 			},
+			setCardHeapTopCards: (cardHand: CardHandTransmit) => {
+				if (cardHand.cards.length !== 0) {
+					set({ cardHeapTopCards: cardHand });
+				}
+				else {
+					set({ cardHeapTopCards: undefined });
+				}
+			},
+			setSelectedCards: (cardHand: CardHandTransmit) => {
+				if (cardHand.cards.length !== 0) {
+					set({ selectedCards: cardHand });
+				}
+				else {
+					set({ selectedCards: undefined });
+				}
+				get().setCurrentHand(cardHand.handType, cardHand.pentupleType);
+				get().setCardHandPlayable();
+			},
 			setCurrentHand: (handType: HandType, pentupleType: PentupleType) => {
 				let newCurrentHand: HAND_TYPE = "None";
 				if (handType === HandType.Pentuple) {
@@ -160,6 +194,54 @@ export const useGameStore = create<GameState>() (
 				}
 				set({ currentHand: newCurrentHand });
 			},
+			setCardHandPlayable: () => {
+				// Copied & edited from CardHeapState.ts
+				const checkPlayable = () => {
+					const topCardHand = get().cardHeapTopCards;
+					const selectedCards = get().selectedCards;
+					if (selectedCards === undefined)
+						return (false);
+					if (selectedCards.handType === HandType.None || (selectedCards.handType === HandType.Pentuple && selectedCards.pentupleType === PentupleType.None))
+						return (false);
+					if (useSettingsStore.getState().allow3OfAKind === false && selectedCards.handType === HandType.Triple)
+						return (false);
+					const lowestCard = get().lowestCardRequired;
+					if (lowestCard !== undefined && selectedCards.cards.find((card) => card.rank === lowestCard.rank && card.suit === lowestCard.suit) === undefined)
+						return (false);
+					if (topCardHand === undefined)
+						return (true);
+					if (get().isActiveSeatSkippable === false)
+						return (true);
+					if (selectedCards.handType !== topCardHand.handType)
+						return (false);
+					// Comparing
+					if (selectedCards.handType === HandType.Single || selectedCards.handType === HandType.Double || selectedCards.handType === HandType.Triple) {
+						if (selectedCards.cards[0].rank > topCardHand.cards[0].rank)
+							return (true);
+						else if (selectedCards.cards[0].rank === topCardHand.cards[0].rank && selectedCards.cards[0].suit > topCardHand.cards[0].suit)
+							return (true);
+					}
+					else if (selectedCards.handType === HandType.Pentuple) {
+						if (selectedCards.pentupleType > topCardHand.pentupleType)
+							return (true);
+						else if (selectedCards.pentupleType < topCardHand.pentupleType)
+							return (false);
+						if (selectedCards.pentupleType === PentupleType.Straight || selectedCards.pentupleType === PentupleType.Flush || selectedCards.pentupleType === PentupleType.StraightFlush) {
+							if (selectedCards.cards[0].rank > topCardHand.cards[0].rank)
+								return (true);
+							else if (selectedCards.cards[0].rank === topCardHand.cards[0].rank && selectedCards.cards[0].suit > topCardHand.cards[0].suit)
+								return (true);
+						}
+						else if (selectedCards.pentupleType === PentupleType.FullHouse || selectedCards.pentupleType === PentupleType.FourOfAKind) {
+							if (selectedCards.cards[2].rank > topCardHand.cards[2].rank) {
+								return (true);
+							}
+						}
+					}
+					return (false);
+				}
+				set({ isCardHandPlayable: checkPlayable()});
+			},
 			startGame: () => {
 				gameInstance?.startGame();
 			},
@@ -167,99 +249,56 @@ export const useGameStore = create<GameState>() (
 				gameInstance?.playerRef?.skipTurnButtonHandler();
 			},
 
-			resetGame: () => {
+			resetLobby: () => {
 				set({
 					totalPlayers: 0,
 					userSeats: [],
-					gameSeats: [],
-					gameStarted: false,
-					cardsLeft: [],
-					currentHand: "None",
+					playerDisconnection: {},
 					round: 0,
 					seatRef: [],
-					activeSeat: 0,
 				});
+				get().resetGame();
 				useResultsStore.getState().resetResults();
 				useSceneStore.getState().setShowWindow("results", false);
 			},
 
-			endGame: () => {
-				get().resetGame();
-				useSceneStore.getState().setCurrentScene("Home");
-				partySocket.leaveParty();
+			resetGame: () => {
+				set({
+					gameSeats: [],
+					gameStarted: false,
+					cardsLeft: [],
+					currentHand: "None",
+					selectedCards: undefined,
+					cardHeapTopCards: undefined,
+					lowestCardRequired: undefined,
+					activeSeat: 0,
+					playerPassed: [],
+					playerTimer: 0,
+					playerRemainingTimer: 0,
+					isActiveSeatSkippable: false,
+					isCardHandPlayable: false,
+				});
 			},
-			incTotalWin: (uuid) => {
-				// const profileStore = useProfileStore.getState();
-				// const data = profileStore.getProfileData(uuid);
-				// if (!data)
-				// 	return;
 
-				// const newXp = data.xp + 420;
-				// const newTotalWins = data.totalWins + 1;
-				// const newTotalPlayed = data.totalPlayed + 1;
-				// const newWinStreak = data.winStreak + 1;
-				// const newLevel = Math.floor(newXp / 1000) + 1;
-
-				// useProfileStore.setState({
-				// 	profilesInDb: profileStore.profilesInDb.map((p) => p.uuid === uuid
-				// 		? {
-				// 			...p,
-				// 			xp: newXp,
-				// 			totalWins: newTotalWins,
-				// 			totalPlayed: newTotalPlayed,
-				// 			winStreak: newWinStreak,
-				// 			level: newLevel,
-				// 		}
-				// 		: p
-				// 	),
-				// });
+			leaveGame: () => {
+				if (useAuthStore.getState().clientUuid === usePartyStore.getState().hostUuid && useGameStore.getState().gameStarted === false) {
+					gameInstance?.deleteLobby();
+					partySocket.refresh();
+				}
+				else {
+					partySocket.leaveParty();
+					gameInstance?.disconnect();
+				}
+				get().resetLobby();
 			},
-			incTotalLoss: (uuid) => {
-				// const profileStore = useProfileStore.getState();
-				// const data = profileStore.getProfileData(uuid);
-				// if (!data)
-				// 	return;
 
-				// const newXp = data.xp + 67;
-				// const newTotalPlayed = data.totalPlayed + 1;
-				// const newTotalLoss = data.totalLoss + 1;
-				// const newWinStreak = 0;
-				// const newLevel = Math.floor(newXp / 1000) + 1;
-
-				// useProfileStore.setState({
-				// 	profilesInDb: profileStore.profilesInDb.map((p) =>
-				// 		p.uuid === uuid
-				// 			? {
-				// 				...p,
-				// 				xp: newXp,
-				// 				totalLoss: newTotalLoss,
-				// 				totalPlayed: newTotalPlayed,
-				// 				winStreak: newWinStreak,
-				// 				level: newLevel,
-				// 			}
-				// 			: p
-				// 	),
-				// });
-			},
-			unlockMedal: (uuid, type) => {
-				// const profileStore = useProfileStore.getState();
-				// const data = profileStore.getProfileData(uuid);
-				// if (!data || data.medals[type] !== null)
-				// 	return;
-
-				// useProfileStore.setState({
-				// 	profilesInDb: profileStore.profilesInDb.map((p) => 
-				// 		p.uuid === uuid
-				// 			? {
-				// 				...p,
-				// 				medals: {
-				// 					...p.medals,
-				// 					[type]: new Date,
-				// 				},
-				// 			}
-				// 			: p
-				// 	)
-				// });
+			clearPassedPlayer: (playerUuid: string) => {
+				const newPlayerPassed = [...get().playerPassed];
+				const index = newPlayerPassed.findIndex((skippedUuid) => skippedUuid === playerUuid);
+				if (index !== -1) {
+					newPlayerPassed.splice(index, 1);
+					set({ playerPassed: newPlayerPassed });
+				}
 			},
 
 			resetValues: () => {
@@ -268,14 +307,22 @@ export const useGameStore = create<GameState>() (
 					totalPlayers: 0,
 					userSeats: [],
 					gameSeats: [],
+					playerDisconnection: {},
 					gameStarted: false,
 					cardsLeft: [],
 					currentHand: "None",
+					selectedCards: undefined,
+					cardHeapTopCards: undefined,
+					lowestCardRequired: undefined,
 					round: 0,
 					seatRef: [],
 					activeSeat: 0,
 					isActiveSeatSkippable: false,
+					isCardHandPlayable: false,
 					sortType: "Flex",
+					playerPassed: [],
+					playerTimer: 0,
+					playerRemainingTimer: 0,
 				});
 			},
 		}),

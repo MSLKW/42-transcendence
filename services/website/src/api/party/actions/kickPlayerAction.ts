@@ -6,8 +6,6 @@ import { useSceneStore } from "../../../store/SceneStore";
 import { usePartyStore } from "../../../store/PartyStore";
 
 export async function kickPlayerAction(socket: Socket | null, recipientUuid: string) {
-	const { showNotification } = useNotificationStore.getState();
-
 	if (!socket)
 		return;
 
@@ -23,7 +21,7 @@ export async function kickPlayerAction(socket: Socket | null, recipientUuid: str
 		if (usePartyStore.getState().partyVerboseMode)
 			console.log("[party > 'emit' kick_player] recipientUuid:", recipientUuid);
 	} catch (error) {
-		showNotification(
+		useNotificationStore.getState().showNotification(
 			"Unable to connect to party socket",
 			NOTIFICATION_TYPE.error
 		);

@@ -1,12 +1,12 @@
 import { useState } from "react";
-import { handleSignOut } from "./api/authentication/sign_out/handleSignOut";
+import { handleLogout } from "./api/authentication/delete_logout/handleLogout";
 import { useChatStore } from "./store/ChatStore";
 import { chatSocket } from "./api/chat/chatSocket";
 import { partySocket } from "./api/party/partySocket";
 import { useAuthStore } from "./store/AuthStore";
 import { useBotStore } from "./store/BotStore";
 import { useDevStore } from "./store/DevStore";
-import { useFriendStore } from "./store/FriendStore";
+import { useFriendsStore } from "./store/FriendsStore";
 import { useGameStore } from "./store/GameStore";
 import { useNotificationStore, NOTIFICATION_TYPE } from "./store/NotificationStore";
 import { usePartyStore } from "./store/PartyStore";
@@ -23,9 +23,12 @@ export default function Dev() {
 	const chatVerboseMode = useChatStore((store) => store.chatVerboseMode);
 	const chatSocketId = useChatStore((store) => store.chatSocketId);
 	const chatRoomId = useChatStore((store) => store.chatRoomId);
-	const cachedFriends = useFriendStore((store) => store.cachedFriends);
+	const friendsVerboseMode = useFriendsStore((store) => store.friendsVerboseMode);
+	const cachedFriends = useFriendsStore((store) => store.cachedFriends);
+	const friendRequestSent = useFriendsStore((store) => store.friendRequestSent);
 	const gameVerboseMode = useGameStore((store) => store.gameVerboseMode);
 	const gameSocketId = useGameStore((store) => store.gameSocketId);
+	// const playerPassed = useGameStore((store) => store.playerPassed);
 	const userSeats = useGameStore((store) => store.userSeats);
 	const totalPlayers = useGameStore((store) => store.totalPlayers);
 	const notifications = useNotificationStore((store) => store.notifications);
@@ -47,7 +50,7 @@ export default function Dev() {
 
 	const handleResetAll = async () => {
 		useProfileStore.getState().resetProfilesInDb();
-		await handleSignOut();
+		await handleLogout();
 		useSceneStore.getState().setCurrentScene("Login");
 		useSceneStore.setState({ showWindow: defaultShowWindow });
 		useChatStore.setState({ cachedChat: [] });
@@ -204,7 +207,12 @@ export default function Dev() {
 				</ul>
 			{/* friends */}
 				<ul className="flex place-content-between">
-					<DevButton label={`cachedFriends: ${cachedFriends.length}`} call={() => console.log("cachedFriends: ", cachedFriends)} />
+					<DevButton label={`cachedFriends: ${cachedFriends ? cachedFriends.length : 0}`} call={() => console.log("cachedFriends: ", cachedFriends)} />
+					<DevButton label={`friendRequestSent: ${friendRequestSent ? friendRequestSent.length : 0}`} call={() => console.log("friendRequestSent: ", friendRequestSent)} />
+					<DevButton
+						label={`friendsVerboseMode: ${friendsVerboseMode}`}
+						call={() => useFriendsStore.setState({ friendsVerboseMode: !friendsVerboseMode })}
+					/>
 				</ul>
 			{/* seats */}
 				{ currentScene === "Game" && clientUuid === hostUuid &&

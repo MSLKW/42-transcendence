@@ -1,5 +1,5 @@
 import { partySocket } from "../../../api/party/partySocket";
-import { handleValidate } from "../../../api/authentication/validate/handleValidate";
+import { handleValidate } from "../../../api/authentication/get_validate/handleValidate";
 import { useGameStore, type GAMEMODE_TYPE } from "../../../store/GameStore";
 import { usePartyStore } from "../../../store/PartyStore";
 import { useAuthStore } from "../../../store/AuthStore";
