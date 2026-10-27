@@ -19,6 +19,8 @@ import { useSettingsStore } from '../../store/SettingsStore';
 import { useNotificationStore, NOTIFICATION_TYPE } from '../../store/NotificationStore';
 import { clearGameInstance, gameLog } from './main';
 
+const gameSocketUrl = window.location.origin;
+
 export class Game {
 	private socket: Socket;
 	private centerPosition: THREE.Vector3 = new THREE.Vector3(0, 0.6, 0);
@@ -32,14 +34,12 @@ export class Game {
 
 	constructor(sessionId: string, playerId: string) {
 		this.playerId = playerId;
-		this.socket = io({
+		this.socket = io(gameSocketUrl, {
 			path: "/socket/game/",
 			auth: {
 				lobbyId: sessionId,
 				uuid: playerId
 			},
-			secure: true,
-  			rejectUnauthorized: false,
 			reconnection: true,
 			reconnectionAttempts: 3,
 		})
