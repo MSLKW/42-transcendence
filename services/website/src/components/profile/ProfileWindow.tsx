@@ -47,7 +47,7 @@ export const ProfileWindow = () => {
 					handleCreatedAt(clientUuid),
 					handleOwnPlayerGameData(),
 				]);
-				
+
 				setCreatedAt(createdAt ?? null);
 
 				setCurrentLevel(stats.levelProgress.currentLevel);
@@ -69,8 +69,10 @@ export const ProfileWindow = () => {
 		if (profileValidation && !isValid)
 			return;
 
-		if (!hasChange)
+		if (!hasChange) {
 			setShowWindow("profile", false);
+			return;
+		}
 
 		void handlePutProfile(name, avatar!, badge)
 			.then(() => {
