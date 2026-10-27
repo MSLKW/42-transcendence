@@ -1,5 +1,4 @@
 import { users } from "@big2/auth-schema";
-import { type BadgeLabel } from "@big2/profile-types";
 import { pgSchema, uuid, text, integer, boolean, timestamp } from "drizzle-orm/pg-core";
 
 
@@ -15,11 +14,11 @@ export const userData = profileSchema.table("user_data", {
 	username: text("username")
 		.unique(),
 	avatarPath: text("avatar_path"),
-	badge: text("badge") // TODO: will need to fix this later after game-stats is done. (profile: handles what is on display, game-stats: handles what is unlocked)
+	//badge: text("badge") // TODO: will need to fix this later after game-stats is done. (profile: handles what is on display, game-stats: handles what is unlocked)
 	// selectedBadge: text("selected_badge") // TODO: replace this over the top later
-		.$type<BadgeLabel>()
-		.default("Newcomer")
-		.notNull(),
+		// .$type<BadgeLabel>()
+		// .default("Newcomer")
+		// .notNull(),
 	updatedAt: timestamp("updated_at", { withTimezone: true })
 		.defaultNow()
 		.notNull(),

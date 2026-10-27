@@ -22,7 +22,6 @@ export class DrizzleUserStore implements UserStore
 			return {
 				username: user.username,
 				avatarPath: user.avatarPath,
-				badge: user.badge, //TODO: Adjust naming after game-stats service is complete
 			};
 		} 
 		catch (err: any) 
@@ -66,11 +65,8 @@ export class DrizzleUserStore implements UserStore
 			return {
 				allow3OfAKind: 		settings.allow3OfAKind,
 				allow2OfSpadesEnd: 	settings.allow2OfSpadesEnd,
-				autoPassIndex: 		settings.autoPassIndex,
-				endGameCondition: 	settings.endGameCondition,
-				scoreCalculation: 	settings.scoreCalculation,
 				cardStyle: 			settings.cardStyle,
-				uiColor: 			settings.uiColor,
+				uiColour: 			settings.uiColor,
 				fxLevel: 			settings.fxLevel,
 				mxLevel: 			settings.mxLevel,
 			};
