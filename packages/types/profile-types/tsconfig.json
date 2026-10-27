@@ -7,7 +7,6 @@
 		"esModuleInterop": true,
 		"skipLibCheck": true,
 		"forceConsistentCasingInFileNames": true,
-		"types": ["node"],
 		"isolatedModules": true,
 		"moduleDetection": "force",
 		// "verbatimModuleSyntax": true,
@@ -17,7 +16,7 @@
 		"composite": true,
 		"declaration": true,
 		"declarationMap": true,
-		"sourceMap": true,
+		"sourceMap": true
 	},
 	"include": ["src/**/*.ts"]
 }

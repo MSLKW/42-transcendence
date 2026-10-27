@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import { UserStore } from "../store/UserStore";
+import { UserData, UserSettings } from "@big2/profile-types";
 
 export function getUserSettings(store: UserStore)
 {

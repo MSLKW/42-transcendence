@@ -1,11 +1,8 @@
 import "dotenv/config";
 import express from "express";
 import { UserStore } from "./store/UserStore";
-// import { FileUserStore } from "./store/FileUserStore";
+import { FileUserStore } from "./store/FileUserStore";
 import { DrizzleUserStore } from "./store/DrizzleUserStore";
-
-// TODO (signal handler): uncomment this when need to implement the signal handler
-// import { isPostgresDown, closePostgresClientPool } from "@big2/postgres-client";
 
 import { healthCheck } from "./handlers/healthCheck";
 import { userSearch, userSearchExact } from "./handlers/userSearch";
@@ -16,8 +13,9 @@ import { getUserSettings } from "./handlers/getUserSettings";
 import { setUserProfile } from "./handlers/setUserProfile";
 import { setUserSettings } from "./handlers/setUserSettings";
 import { uploadAvatar } from "./handlers/uploadAvatar";
+import { PORT } from "./config/env";
+import { closeDb } from "./db/closeDb";
 
-const PORT = process.env.PORT || 3000;
 const ERROR_MESSAGES: Record<string, string> = {
 	EADDRINUSE: `Port ${PORT} is already in use.`,
 	EACCES: `Insufficient permissions to bind to port ${PORT}.`,
@@ -42,15 +40,12 @@ app.put("/profile", setUserProfile(userStore));
 app.put("/settings", setUserSettings(userStore));
 app.put("/avatar", uploadAvatar());
 
-// TODO (signal handler): uncomment this when need to implement the signal handler
-// // // Central error handler (register AFTER all routes). 
-// // DB down -> 503 + Retry-After so callers know to retry; anything else is a real bug -> 500.
-// app.use((err: unknown, req: express.Request, res: express.Response, next: express.NextFunction) => {
-// 	if (isPostgresDown(err))
-//     	return res.status(503).set("Retry-After", "2").json({ error: "database_unavailable" });
-// 	console.error("Unhandled error:", err);
-// 	return res.status(500).json({ error: "Something went wrong." });
-// });
+app.use((err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {
+	if (err.type === "entity.parse.failed")
+		return res.status(400).json({ error: "Malformed JSON in request body." });
+	console.error("Unhandled error", err);
+	return res.status(500).json({ error: "Something went wrong" });
+});
 
 const server = app.listen(PORT, () =>
 {
@@ -66,22 +61,16 @@ server.on("error", (err: NodeJS.ErrnoException) =>
 	process.exit(1);
 });
 
-// TODO (signal handler): uncomment this when need to implement the signal handler
-// // Graceful shutdown on Ctrl+C / `docker compose down` & `docker compose stop` (both stop containers the same way). 
-// // Stop new work, close the DB pool, then exit, well inside Docker's 10s SIGKILL.
-// let shuttingDown = false;
-// async function shutdown()
-// {
-// 	if (shuttingDown)
-// 		return;
-// 	shuttingDown = true;
-// 	setTimeout(() => process.exit(1), 8000).unref();	// failsafe: force exit if cleanup hangs
+let shuttingDown = false;
+async function shutdown()
+{
+	if (shuttingDown)
+		return ;
+	shuttingDown = true;
+	server.close();
+	await closeDb();
+	process.exit(0);
+}
 
-// 	server.close();						// 1. stop accepting new work
-// 										// 2. service-specific cleanup (none for profile)
-// 	await closePostgresClientPool();	// 3. close DB pool (DB services only)
-// 	process.exit(0);					// 4. end the process, exit code 0 = clean shutdown
-// }
-
-// process.on('SIGINT', shutdown);		// Ctrl+C
-// process.on('SIGTERM', shutdown);	// `docker compose down` & `docker compose stop` (both stop containers the same way)
+process.on("SIGINT", shutdown);
+process.on("SIGTERM", shutdown);

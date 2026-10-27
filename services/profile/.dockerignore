@@ -1,9 +1,7 @@
 dist/
 node_modules/
-# test/
 .dockerignore
 .gitignore
 .tsbuildinfo
 Dockerfile
-package-lock.json
 README.md

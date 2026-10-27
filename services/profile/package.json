@@ -14,6 +14,7 @@
 		"clean": "rm -rf ./dist .tsbuildinfo"
 	},
 	"devDependencies": {
+		"@big2/profile-types": "*",
 		"@types/cookie-parser": "^1.4.10",
 		"@types/express": "^5.0.6",
 		"@types/multer": "^2.2.0",
@@ -29,6 +30,6 @@
 		"drizzle-orm": "^0.45.2",
 		"express": "^5.2.1",
 		"multer": "^2.2.0",
-		"sharp": "^0.35.4"
+		"sharp": "^0.35.5"
 	}
 }

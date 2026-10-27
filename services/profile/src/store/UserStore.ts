@@ -1,4 +1,4 @@
-import { type UserData, type UserSettings } from "@big2/profile-types";
+import { UserData, UserSettings } from "@big2/profile-types";
 
 export interface UserStore
 {
