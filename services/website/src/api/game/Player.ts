@@ -34,14 +34,16 @@ export class Player extends Participant {
 	}
 
 	private bindListeners() {
-		threejsManager.renderer.domElement.addEventListener('pointerdown', (event) => {
+		const rendererElement = threejsManager.renderer.domElement;
+		rendererElement.addEventListener('pointerdown', (event) => {
+			rendererElement.setPointerCapture(event.pointerId);
 			this.startClick.x = event.clientX;
 			this.startClick.y = event.clientY;
 			this.isDragging = false;
 			this.eventDrag(event);
 		})
 
-		threejsManager.renderer.domElement.addEventListener('pointermove', (event) => {
+		rendererElement.addEventListener('pointermove', (event) => {
 			const xDelta = Math.abs(event.clientX - this.startClick.x);
 			const yDelta = Math.abs(event.clientY - this.startClick.y);
 
@@ -54,7 +56,7 @@ export class Player extends Participant {
 			this.eventHover(event);
 		})
 
-		threejsManager.renderer.domElement.addEventListener('pointerup', (event) => {
+		rendererElement.addEventListener('pointerup', (event) => {
 			if (this.cardManager.draggedCard !== undefined) {
 				if (this.isDragging === true) {
 					this.setSort("Flex");
@@ -66,6 +68,8 @@ export class Player extends Participant {
 				this.eventHover(event);
 			}
 			this.isDragging = false;
+			if (rendererElement.hasPointerCapture(event.pointerId))
+				rendererElement.releasePointerCapture(event.pointerId);
 		})
 
 		// DEBUG
