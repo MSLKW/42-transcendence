@@ -9,6 +9,7 @@ export const EmoteHover = () => {
 
 	return (
 		<button
+			type="button"
 			onClick={(e) => {handleSend(e)}}
 			className="btn-icon"
 		>

@@ -25,57 +25,43 @@ export const ResultsWindow = () => {
 			title={`Results of Round ${round}`}
 			dismissKey="results"
 		>
-			<div
-				className="
-					py-2rem px-3rem
-					max-h-[85vh] overflow-y-scroll pointer-events-auto
-				"
-			>
-				<div
-					className="
-						flex flex-col
-						gap-3rem
-						pb-5
-					"
-				>
+			<div className="py-2rem px-3rem max-h-[85vh] overflow-y-scroll pointer-events-auto">
+				<div className="flex flex-col gap-3rem pb-5">
 					<div
 						className="
 							flex flex-col
 							place-content-center place-items-center
 							gap-1rem
-						"
-					>
+					">
 						<h2 className="text-n6">{winner}</h2>
 						<div className="flex gap-2rem">
 							<button
+								type="button"
 								onClick={leaveGame}
 								className="
 									h-3rem aspect-6/1
 									btn-text bg-light
-								"
-							>
+							">
 								Leave Game
 							</button>
 							<button
+								type="button"
 								onClick={() => useSceneStore.getState().setShowWindow("results", false)}
 								className="
 									h-3rem aspect-6/1
 									btn-text bg-light
-								"
-							>
+							">
 								Play Next Round
 							</button>
 						</div>
 					</div>
 					<ResultsPodiumModule />
 				</div>
-				<div
-					className="
-						grid grid-cols-[6rem_15rem_6rem_6rem] grid-rows-[4rem]
-						text-center text-n6 
-						bg-n0/20 rounded-xl border border-n1/60
-					"
-				>
+				<div className="
+					grid grid-cols-[6rem_15rem_6rem_6rem] grid-rows-[4rem]
+					text-center text-n6 
+					bg-n0/20 rounded-xl border border-n1/60
+				">
 					<ResultsRankModule />
 					<ResultsPlayedModule />
 					<ResultsChangeModule />

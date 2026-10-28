@@ -5,6 +5,7 @@ import { SignOutIcon } from "./SignOutIcon";
 export const SignOutButton = () => {
 	return (
 		<button
+			type="button"
 			onClick={() => useSceneStore.getState().setShowWindow("leave", true)}
 			className="btn-icon"
 		>

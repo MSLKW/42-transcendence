@@ -32,6 +32,7 @@ export const BigLogo = () => {
 			</div>
 			<Tooltip text="Additional Info">
 				<button
+					type="button"
 					onClick={() => useSceneStore.getState().setShowWindow("info", !showWindow.info)}
 					className="
 						btn-text

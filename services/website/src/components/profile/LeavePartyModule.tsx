@@ -9,12 +9,12 @@ export const LeavePartyModule = () => {
 			"
 		>
 			<button
+				type="button"
 				onClick={() => partySocket.leaveParty()}
 				className="
 					btn-text bg-light
 					h-3rem aspect-5/1
-				"
-			>
+			">
 				Leave Party
 			</button>
 		</div>

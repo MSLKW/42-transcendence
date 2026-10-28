@@ -40,6 +40,7 @@ export const StaleWindow = () => {
 						{ isAuthenticated
 							?
 								<button
+									type="button"
 									onClick={() => window.location.reload()}
 									className="
 										h-3rem aspect-5/1
@@ -50,6 +51,7 @@ export const StaleWindow = () => {
 								</button>
 							:
 								<button
+									type="button"
 									onClick={() => useSceneStore.getState().setCurrentScene("Login")}
 									className="
 										h-3rem aspect-5/1

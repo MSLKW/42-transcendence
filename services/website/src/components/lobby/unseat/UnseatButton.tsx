@@ -17,6 +17,7 @@ export const UnseatButton = () => {
 		">
 			<Tooltip text="Sit out from game">
 				<button
+					type="button"
 					disabled={!seats.includes(clientUuid)}
 					onClick={(e) => {
 						e.currentTarget.blur();

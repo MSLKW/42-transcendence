@@ -45,6 +45,7 @@ export const SetupValidationModule = ({ name, avatar }: SetupValidationModulePro
 				}
 			</h3>
 			<button
+				type="button"
 				disabled={!isValid}
 				onClick={handleSetupComplete}
 				className="

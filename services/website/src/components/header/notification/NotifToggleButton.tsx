@@ -9,6 +9,7 @@ export const NotifToggleButton = () => {
 
 	return (
 		<button
+			type="button"
 			onClick={() => useNotificationStore.setState({ isNotifFiltered: !isNotifFiltered })}
 			className="btn-icon relative"
 		>

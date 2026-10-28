@@ -37,23 +37,23 @@ export const LeaveWindow = () => {
 					"
 				>
 					<button
+						type="button"
 						onClick={handleLeaveGame}
 						className="
 							h-3rem aspect-5/1
 							btn-text bg-r2
 							text-n6
-						"
-					>
+					">
 						LEAVE
 					</button>
 					<button
+						type="button"
 						onClick={() => useSceneStore.getState().setShowWindow("leave", false)}
 						className="
 							h-3rem aspect-5/1
 							btn-text bg-light
 							text-n0
-						"
-					>
+					">
 						STAY
 					</button>
 				</div>

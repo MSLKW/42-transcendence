@@ -38,6 +38,7 @@ export const AvatarModule = ({
 		">
 			<ChatBubbles uuid={uuid} />
 			<button
+				type="button"
 				onClick={(e) => {
 					e.currentTarget.blur();
 

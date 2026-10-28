@@ -24,6 +24,7 @@ export const BackButton = () => {
 
 	return (
 		<button
+			type="button"
 			onClick={handleBackClick}
 			className="btn-icon"
 		>

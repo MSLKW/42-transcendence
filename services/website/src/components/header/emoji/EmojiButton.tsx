@@ -7,13 +7,11 @@ export const YeahButton = () => {
 	}
 
 	return (
-		<button data-tip="Yeah!"
+		<button
+			type="button"
+			data-tip="Yeah!"
 			onClick={(e) => {handleSend(e)}}
-			className="
-				btn-icon
-				data-tip-left
-			"
-		>
+			className="btn-icon data-tip-left">
 			<YeahIcon />
 		</button>
 	);
@@ -26,12 +24,11 @@ export const HmmmButton = () => {
 	}
 
 	return (
-		<button data-tip="Hmmm..."
+		<button
+			type="button"
+			data-tip="Hmmm..."
 			onClick={(e) => {handleSend(e)}}
-			className="
-				btn-icon
-				data-tip-left
-			"
+			className="btn-icon data-tip-left"
 		>
 			<HmmmIcon />
 		</button>
@@ -45,13 +42,12 @@ export const WoahButton = () => {
 	}
 
 	return (
-		<button data-tip="~Woah~"
+		<button
+			type="button"
+			data-tip="~Woah~"
 			onClick={(e) => {handleSend(e)}}
-			className="
-				btn-icon
-				data-tip-left
-			"
-		>
+			className="btn-icon data-tip-left
+		">
 			<WoahIcon />
 		</button>
 	);

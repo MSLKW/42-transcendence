@@ -9,6 +9,7 @@ export const RankCallButton = () => {
 	return (
 		<Tooltip text="View Rank List">
 			<button
+				type="button"
 				onClick={() => useSceneStore.getState().setShowWindow("rank", true)}
 				className="
 					btn-text bg-dark-semi

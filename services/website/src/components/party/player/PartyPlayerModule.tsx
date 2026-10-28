@@ -109,6 +109,7 @@ export const PartyPlayerModule = ({ uuid }: PartyPlayerModuleProps) => {
 				"Only host can invite"
 			}>
 				<button
+					type="button"
 					disabled={hostUuid !== clientUuid}
 					onClick={handleSendInvite}
 					className={`

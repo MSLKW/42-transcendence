@@ -8,6 +8,7 @@ interface AvatarSelectButtonProps {
 export const AvatarSelectButton = ({ id, avatar, setAvatar, setHasChange }: AvatarSelectButtonProps) => {
 	return (
 		<button 
+			type="button"
 			onClick={() => {
 				setAvatar(id ?? "");
 				setHasChange(true);

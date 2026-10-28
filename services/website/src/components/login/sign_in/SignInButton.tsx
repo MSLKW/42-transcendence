@@ -5,6 +5,7 @@ export const SignInButton = () => {
 
 	return (
 		<button
+			type="button"
 			onClick={() => useSceneStore.getState().setShowWindow("signIn", !showWindow.signIn)}
 			className="
 				btn-text bg-light

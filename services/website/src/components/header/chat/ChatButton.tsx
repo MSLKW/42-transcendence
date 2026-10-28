@@ -7,6 +7,7 @@ export const ChatButton = () => {
 
 	return (
 		<button
+			type="button"
 			onClick={() => useSceneStore.getState().setShowWindow("chat", !showWindow.chat)}
 			className="btn-icon"
 		>

@@ -13,6 +13,7 @@ export const PartyCallButton = () => {
 		">
 			<Tooltip text="Find Players">
 				<button
+					type="button"
 					onClick={(e) => {
 						e.currentTarget.blur();
 						useSceneStore.getState().setShowWindow("party", !showWindow.party);
@@ -21,8 +22,7 @@ export const PartyCallButton = () => {
 						h-6rem aspect-square
 						bg-dark-semi btn-icon rounded-sm
 						flex place-content-center place-items-center
-					"
-				>
+				">
 					<PartyIcon />
 				</button>
 			</Tooltip>

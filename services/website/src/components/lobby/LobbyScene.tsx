@@ -119,10 +119,9 @@ export const LobbyScene = () => {
 						}
 						<Tooltip text={seatsFilled ? "Let's Play!" : "Waiting for seats to be filled"}>
 							<button
+								type="button"
 								disabled={!(seatsFilled && clientUuid === hostUuid)}
-								onClick={() => {
-									startGame();
-								}}
+								onClick={() => startGame()}
 								className="
 									btn-text bg-light
 									h-3rem aspect-4/1

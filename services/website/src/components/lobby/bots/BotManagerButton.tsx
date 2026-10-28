@@ -29,6 +29,7 @@ export const BotManagerButton = () => {
 		">
 			<Tooltip text={botCount === 0 ? "Fill With Bots" : "Remove All Bots"}>
 				<button 
+					type="button"
 					disabled={clientUuid !== hostUuid}
 					onClick={(e) => {handleBotCount(e)}}
 					className="

@@ -10,7 +10,8 @@ export const ResultsCallButton = () => {
 			gap-0.75rem
 		">
 			<Tooltip text="View Results">
-				<button 
+				<button
+					type="button"
 					onClick={() => useSceneStore.getState().setShowWindow("results", true)}
 					className="
 						h-6rem aspect-square

@@ -5,6 +5,7 @@ export const CreateAccountButton = () => {
 
 	return (
 		<button
+			type="button"
 			onClick={() => useSceneStore.getState().setShowWindow("createAccount", !showWindow.createAccount)}
 			className="
 				btn-text bg-light

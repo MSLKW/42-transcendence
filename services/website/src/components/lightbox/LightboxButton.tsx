@@ -10,6 +10,7 @@ interface LightboxButtonProps {
 export const LightboxButton = ({ dismiss, blur, isDismissable = true, call }: LightboxButtonProps) => {
 	return (
 		<button
+			type="button"
 			tabIndex={-1}
 			onClick={
 				call

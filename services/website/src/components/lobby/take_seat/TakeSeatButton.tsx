@@ -15,6 +15,7 @@ export const TakeSeatButton = ({ seatNumber }: TakeSeatButtonProps ) => {
 		">
 			<Tooltip text="Choose this seat">
 				<button
+					type="button"
 					onClick={(e) => {
 						e.currentTarget.blur();
 						takeSeat(seatNumber);

@@ -4,6 +4,7 @@ import { Tooltip } from "../../../utilities/react/Tooltip";
 export const SmallLogo = () => {
 	return (
 		<button
+			type="button"
 			onClick={() => useSceneStore.getState().setShowWindow("info", true)}
 			className="
 				btn-text rounded-xl
