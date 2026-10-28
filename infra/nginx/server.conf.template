@@ -14,9 +14,8 @@ map $uri $game_stats_allowlist {
 	"~^${API_GAME_STATS_PATH}/easter-egg-found$"							1;
 }
 
-
 server {
-	listen ${DOMAIN_PORT} ssl default_server;
+	listen ${DOMAIN_PORT} ${SSL_ENABLE} default_server;
 
 	# Certificate Paths
 	ssl_certificate ${SSL_CERT_FILE};

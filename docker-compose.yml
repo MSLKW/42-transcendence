@@ -158,6 +158,7 @@ services:
     environment:
       SSL_CERT_FILE: /run/secrets/ssl-cert
       SSL_KEY_FILE: /run/secrets/ssl-key
+      SSL_ENABLE: ${SSL_ENABLE}
       DOMAIN_PORT: ${DOMAIN_PORT:?}
       NGINX_ENVSUBST_FILTER: ^(DOMAIN_PORT|.*_SERVICE_URL|PROFILE_SERVICE_AVATAR_DIR|API_.*_PATH|SOCKET_.*_PATH|SSL_.*)$
       WEBSITE_SERVICE_URL: ${WEBSITE_SERVICE_URL:?}
