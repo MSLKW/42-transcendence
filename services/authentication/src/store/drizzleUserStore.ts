@@ -1,6 +1,8 @@
 import { eq, sql } from "drizzle-orm";
 import { users } from "@big2/auth-schema";
 import { postgresClient } from "../config/postgresClient";
+import { DrizzleQueryError } from "drizzle-orm";
+import { DatabaseError } from "pg";
 import { User } from "../models/user";
 import { UserStore } from "./userStore";
 
@@ -16,8 +18,11 @@ export class DrizzleUserStore implements UserStore {
 		}
 		catch (error: any)
 		{
-			if (error.code === "23505") //Postgres's unique_violation
-				throw new Error("DUPLICATE_EMAIL");
+			if (error instanceof DrizzleQueryError && error.cause instanceof DatabaseError)
+			{
+				if (error.cause.code === "23505") //Postgres's unique_violation
+					throw new Error("DUPLICATE_EMAIL");
+			}
 			console.error("Failed to createUser in database", error);			
 			throw error;
 		}
