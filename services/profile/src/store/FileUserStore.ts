@@ -83,13 +83,23 @@ export class FileUserStore implements UserStore
 		return null;
 	}
 
-	async updateUserProfile(uuid: string, partial: Partial<UserData>): Promise<void>
+	async updateUserProfile(uuid: string, partial: Partial<UserData>): Promise<"SUCCESS" | "USERNAME_TAKEN">
 	{
 		let existing = await this.getUserData(uuid);
 		if (!existing)
 			await this.createUser(uuid);
 		existing = await this.getUserData(uuid);
-		await this.setData(uuid, { ...existing!, ...partial }, (await this.getUserSettings(uuid))!);
+		try
+		{
+			await this.setData(uuid, { ...existing!, ...partial }, (await this.getUserSettings(uuid))!);
+			return "SUCCESS";
+		}
+		catch (err: any)
+		{
+			if (err.message == "DUPLICATE_USERNAME")
+				return "USERNAME_TAKEN";
+			throw err;
+		}
 	}
 
 	async updateUserSettings(uuid: string, partial: Partial<UserSettings>): Promise<void>

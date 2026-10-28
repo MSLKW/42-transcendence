@@ -28,14 +28,12 @@ export function setUserProfile(store: UserStore)
 					return res.status(422).json({ error: "username must only contain alphanumeric characters or -,_ and must be within 3 to 20 characters long" });
 			}
 
-			await store.updateUserProfile(uuid, body);
+			if ((await store.updateUserProfile(uuid, body)) == "USERNAME_TAKEN")
+				return res.status(409).json({ error: "username is taken" });
 			return res.status(200).json({ message: "profile successfully updated" });
 		}
 		catch (err: any)
 		{
-			if (err.message === "DUPLICATE_USERNAME")
-				return res.status(409).json({ error: "username is taken" });
-
 			console.error("setUserProfile error: ", err);
 			return res.status(500).json({ error: "Something went wrong" });
 		}

@@ -1,6 +1,8 @@
 import { type UserData, type UserSettings } from "@big2/profile-types";
 import { userData, userSettings } from "@big2/profile-schema";
 import { eq, ilike, and, isNotNull } from "drizzle-orm";
+import { DrizzleQueryError } from "drizzle-orm";
+import { DatabaseError } from "pg";
 import { postgresClient } from "../config/postgresClient";
 import { UserStore } from "./UserStore";
 
@@ -121,7 +123,7 @@ export class DrizzleUserStore implements UserStore
 	}
 
 
-	async updateUserProfile(uuid: string, partial: Partial<UserData>): Promise<void> // need understand
+	async updateUserProfile(uuid: string, partial: Partial<UserData>): Promise<"SUCCESS" | "USERNAME_TAKEN"> // need understand
 	{
 		try 
 		{
@@ -132,11 +134,17 @@ export class DrizzleUserStore implements UserStore
 					target: userData.id,
 					set: partial,
 				});
+			return "SUCCESS";
 		}
 		catch (err: any) 
 		{
 			if (err.code === "23503") // error code for postgres's ForeignKey violation
 				throw new Error(`updateUserProfile attempting to query for non-existing uuid: ${uuid}`);
+			if (err instanceof DrizzleQueryError && err.cause instanceof DatabaseError)
+			{
+				if (err.cause.code === "23505")
+					return "USERNAME_TAKEN";
+			}
 			throw err;
 		}
 	}
