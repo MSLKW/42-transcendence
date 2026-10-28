@@ -1,7 +1,6 @@
 import { useEffect } from "react";
 import { useGameStore } from "../../store/GameStore";
-import { useSettingsStore } from "../../store/SettingsStore";
-import { autoPassValues } from "@big2/game-types";
+import { useSettingsStore, autoPassValues } from "../../store/SettingsStore";
 
 // DEPRECATED
 

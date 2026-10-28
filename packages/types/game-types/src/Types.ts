@@ -78,22 +78,6 @@ export const ACHIEVEMENT_ID = [
 ] as const;
 export type AchievementId = typeof ACHIEVEMENT_ID[number];
 
-export const AUTO_PASS_RECORD = {
-	"1s": 1000,
-	"3s": 3000,
-	"5s": 5000,
-	"10s": 10000,
-	"15s": 15000,
-	"30s": 30000,
-	"42s": 42000,
-	"1 min": 60000,
-	"2 mins": 120000,
-	"No Limit": 0,
-} as const;
-export const autoPassKeys = Object.keys(AUTO_PASS_RECORD);
-export const autoPassValues = Object.values(AUTO_PASS_RECORD);
-
-
 export type CardTransmit = z.infer<typeof s.CardTransmitSchema>;
 export type CardHandTransmit = z.infer<typeof s.CardHandTransmitSchema>;
 export type GameStateTransmit = z.infer<typeof s.GameStateTransmitSchema>;

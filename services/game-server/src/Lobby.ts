@@ -2,7 +2,7 @@ import { Socket } from 'socket.io';
 import { io, kickSocket, LobbyRequest } from './server.js';
 import { UserState } from './UserState.js';
 import { GameState } from './GameState.js';
-import { GameSettingsTransmit, SeatOrderTransmit, StatusTransmit, autoPassValues } from '@big2/game-types';
+import { GameSettingsTransmit, SeatOrderTransmit, StatusTransmit } from '@big2/game-types';
 import { EventEmitter } from 'node:events';
 import { randomBytes } from 'crypto';
 import { GAME_BOT_SERVICE_URL, LOBBY_DELETE_TIMEOUT_MS, LOBBY_USER_LIMIT, PROFILE_SERVICE_URL } from './env.js';
@@ -249,10 +249,11 @@ export class Lobby {
 				return ;
 			}
 			const profileResponse = await response.json();
+			console.log(profileResponse);
 			const settings: GameSettingsTransmit = {
 				allow3OfAKind: profileResponse.allow3OfAKind,
 				allow2OfSpadesEnd: profileResponse.allow2OfSpadesEnd,
-				autoPassInMilliseconds: autoPassValues[profileResponse.autoPassIndex],
+				autoPassInMilliseconds: profileResponse.autoPassTimerMs,
 			}
 			this.GameSetSettings(hostUuid, settings);
 		}

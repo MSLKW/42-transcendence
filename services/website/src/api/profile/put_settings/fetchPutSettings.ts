@@ -1,8 +1,8 @@
-import type { SettingsValues } from "../../../store/SettingsStore";
+import type { SettingsBackendValues } from "../../../store/SettingsStore";
 
 const profileUrl = import.meta.env.VITE_API_PROFILE_PATH;
 
-export const fetchPutSettings = async (settings: SettingsValues) => {
+export const fetchPutSettings = async (settings: SettingsBackendValues) => {
 	const response = await fetch(`${profileUrl}/settings`, {
 		method: "PUT",
 		headers: { "Content-Type": "application/json" },

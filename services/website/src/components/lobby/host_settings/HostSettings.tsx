@@ -4,7 +4,7 @@ import { usePartyStore } from "../../../store/PartyStore";
 import { useSettingsStore } from "../../../store/SettingsStore";
 import { Tooltip } from "../../../utilities/react/Tooltip";
 import { ToggleButton } from "../toggle/ToggleButton";
-import { autoPassKeys } from "@big2/game-types";
+import { autoPassKeys } from "../../../store/SettingsStore";
 
 export const HostSettings = () => {
 	const gameStarted = useGameStore((store) => store.gameStarted);
