@@ -3,10 +3,10 @@ import { ensureConnected } from "../../../utilities/websockets/ensureConnected";
 import { useAuthStore } from "../../../store/AuthStore";
 import { useChatStore } from "../../../store/ChatStore";
 import { useNotificationStore, NOTIFICATION_TYPE } from "../../../store/NotificationStore";
+import { useGameStatsStore } from "../../../store/GameStatsStore";
 import { usePartyStore } from "../../../store/PartyStore";
 import { useProfileStore } from "../../../store/ProfileStore";
 import { useSceneStore } from "../../../store/SceneStore";
-import { useStatsStore } from "../../../store/StatsStore";
 
 export async function leavePartyAction(socket: Socket | null) {
 	const clientUuid = useAuthStore.getState().clientUuid ?? "";
@@ -22,7 +22,7 @@ export async function leavePartyAction(socket: Socket | null) {
 		socket?.emit("leave_party");
 
 		await useProfileStore.getState().setCachedProfile();
-		await useStatsStore.getState().setCachedStats();
+		await useGameStatsStore.getState().setCachedStats();
 
 		useSceneStore.getState().setShowWindow("profile", false);
 

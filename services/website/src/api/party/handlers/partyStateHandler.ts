@@ -1,10 +1,10 @@
 import { Socket } from "socket.io-client";
 import { useAuthStore } from "../../../store/AuthStore";
 import { useNotificationStore, NOTIFICATION_TYPE } from "../../../store/NotificationStore";
+import { useChatStore } from "../../../store/ChatStore";
+import { useGameStatsStore } from "../../../store/GameStatsStore";
 import { usePartyStore } from "../../../store/PartyStore";
 import { useProfileStore } from "../../../store/ProfileStore";
-import { useChatStore } from "../../../store/ChatStore";
-import { useStatsStore } from "../../../store/StatsStore";
 import { chatSocket } from "../../chat/chatSocket";
 
 export function partyStateHandler(socket: Socket) {
@@ -25,7 +25,7 @@ export function partyStateHandler(socket: Socket) {
 		useChatStore.setState({ chatRoomId: partyData.hostUuid });
 
 		await useProfileStore.getState().setCachedProfile();
-		await useStatsStore.getState().setCachedStats();
+		await useGameStatsStore.getState().setCachedStats();
 
 		if (isClientNewHost)
 			useNotificationStore.getState().showNotification("You are the new host of this party", NOTIFICATION_TYPE.message);

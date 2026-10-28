@@ -120,7 +120,7 @@ interface StatsState extends StatsValues {
 	removeCachedStat: (uuid: string | null) => void;
 };
 
-export const useStatsStore = create<StatsState>() (
+export const useGameStatsStore = create<StatsState>() (
 	persist(
 		(set, _get) => ({
 			statsVerboseMode: false,
@@ -136,7 +136,9 @@ export const useStatsStore = create<StatsState>() (
 				big_2_champion: false,
 				double_digits: false,
 				century_club: false,
-				hot_hand: false
+				hot_hand: false,
+				flush_with_pride: false,
+				never_folds: false,
 			},
 
 			setCachedStats: async () => {

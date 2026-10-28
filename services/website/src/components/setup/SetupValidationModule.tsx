@@ -2,7 +2,7 @@ import { handlePutProfile } from "../../api/profile/put_profile/handlePutProfile
 import { useNotificationStore, NOTIFICATION_TYPE } from "../../store/NotificationStore";
 import { useProfileStore } from "../../store/ProfileStore";
 import { useSceneStore } from "../../store/SceneStore";
-import { useStatsStore } from "../../store/StatsStore";
+import { useGameStatsStore } from "../../store/GameStatsStore";
 import { checkNameValidity } from "../../utilities/react/checkNameValidity";
 
 interface SetupValidationModuleProps {
@@ -22,7 +22,7 @@ export const SetupValidationModule = ({ name, avatar }: SetupValidationModulePro
 		void handlePutProfile(name, avatar, "Newcomer")
 			.then(() => {
 				useProfileStore.getState().setCachedProfile();
-				useStatsStore.getState().setCachedStats();
+				useGameStatsStore.getState().setCachedStats();
 				useNotificationStore.getState().showNotification("Profile created", NOTIFICATION_TYPE.message);
 				useSceneStore.getState().setShowWindow("setup", false);
 			}).catch(() => {});

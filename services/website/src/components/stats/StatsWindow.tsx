@@ -3,7 +3,7 @@ import { handleCreatedAt } from "../../api/authentication/get_created-at/handleC
 import { handleGetOnline } from "../../api/party/get_online/handleGetOnline";
 import { handleGetProfile } from "../../api/profile/get_profile/handleGetProfile";
 import { usePartyStore, type AVAILABILITY_TYPE } from "../../store/PartyStore";
-import { useStatsStore, type AchievementId,type PublicBadgeId } from "../../store/StatsStore";
+import { useGameStatsStore, type AchievementId,type PublicBadgeId } from "../../store/GameStatsStore";
 import { useSceneStore } from "../../store/SceneStore";
 import { Window } from "../window/Window";
 import { AvatarMemberModule } from "../avatar/AvatarMemberModule";
@@ -17,7 +17,7 @@ import { handlePublicPlayerGameData } from "../../api/stats/get_public-player-ga
 export const StatsWindow: React.FC = () => {
 	const statsUuid = useSceneStore((store) => store.statsUuid!);
 	const members = usePartyStore((store) => store.members);
-	const cachedStats = useStatsStore((store) => store.cachedStats);
+	const cachedStats = useGameStatsStore((store) => store.cachedStats);
 	
 	const stats = statsUuid ? cachedStats[statsUuid] : undefined;
 
@@ -90,6 +90,7 @@ export const StatsWindow: React.FC = () => {
 			<div className="
 				px-3rem
 				divide-y divide-n2/40
+				overflow-y-scroll
 			">
 				<div className="flex">
 					<AvatarMemberModule uuid={statsFetched.current} name={name ?? "-"} image={avatar} />

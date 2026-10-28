@@ -1,6 +1,6 @@
 import { useAuthStore } from "../../../store/AuthStore";
 import type { AVAILABILITY_TYPE } from "../../../store/PartyStore";
-import type { PublicBadgeId } from "../../../store/StatsStore";
+import { type PublicBadgeId, BADGE_NAMES } from "../../../store/GameStatsStore";
 import { useSceneStore } from "../../../store/SceneStore";
 import { BadgeWindow } from "./badge/BadgeWindow";
 import { PlayerStatusModule } from "../status/PlayerStatusModule";
@@ -95,14 +95,14 @@ export const PlayerDataModule = ({
 									pl-1 pr-3 py-1
 									flex justify-between items-center
 								">
-									<p className="px-3">{displayedBadgeId}</p>
+									<p className="px-3">{displayedBadgeId ? BADGE_NAMES[displayedBadgeId] : "n/a"}</p>
 									<span className="text-xs">▼</span>
 								</span>
 							</button>
 						:
-							<h2 className="w-full leading-none">
-								<i>{displayedBadgeId ?? "n/a"}</i>
-							</h2>
+							<h3 className="w-full leading-none">
+								<i>{displayedBadgeId ? BADGE_NAMES[displayedBadgeId] : "n/a"}</i>
+							</h3>
 					}
 					{ showWindow["badge"] &&
 						<BadgeWindow

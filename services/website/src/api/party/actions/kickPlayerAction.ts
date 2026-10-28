@@ -4,7 +4,7 @@ import { useNotificationStore, NOTIFICATION_TYPE } from "../../../store/Notifica
 import { useProfileStore } from "../../../store/ProfileStore";
 import { usePartyStore } from "../../../store/PartyStore";
 import { useSceneStore } from "../../../store/SceneStore";
-import { useStatsStore } from "../../../store/StatsStore";
+import { useGameStatsStore } from "../../../store/GameStatsStore";
 
 export async function kickPlayerAction(socket: Socket | null, recipientUuid: string) {
 	if (!socket)
@@ -16,7 +16,7 @@ export async function kickPlayerAction(socket: Socket | null, recipientUuid: str
 		socket?.emit("kick_player", { recipientUuid });
 
 		await useProfileStore.getState().setCachedProfile();
-		await useStatsStore.getState().setCachedStats();
+		await useGameStatsStore.getState().setCachedStats();
 
 		useSceneStore.getState().setShowWindow("stats", false);
 

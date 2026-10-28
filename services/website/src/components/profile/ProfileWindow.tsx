@@ -8,7 +8,7 @@ import { useNotificationStore, NOTIFICATION_TYPE } from "../../store/Notificatio
 import { usePartyStore } from "../../store/PartyStore";
 import { useProfileStore } from "../../store/ProfileStore";
 import { useSceneStore } from "../../store/SceneStore";
-import { useStatsStore, type AchievementId, type PublicBadgeId } from "../../store/StatsStore";
+import { useGameStatsStore, type AchievementId, type PublicBadgeId } from "../../store/GameStatsStore";
 import { checkNameValidity } from "../../utilities/react/checkNameValidity";
 import { Window } from "../window/Window";
 import { AvatarSetNameModule } from "../avatar/name/AvatarSetNameModule";
@@ -23,7 +23,7 @@ export const ProfileWindow = () => {
 	const members = usePartyStore((store) => store.members);
 	const profileValidation = useProfileStore((store) => store.profileValidation);
 	const cachedProfiles = useProfileStore((store) => store.cachedProfiles);
-	const cachedStats = useStatsStore((store) => store.cachedStats);
+	const cachedStats = useGameStatsStore((store) => store.cachedStats);
 
 	const profile = clientUuid ? cachedProfiles[clientUuid] : undefined;
 	const stats = clientUuid ? cachedStats[clientUuid] : undefined;
@@ -109,6 +109,7 @@ export const ProfileWindow = () => {
 			<div className="
 				max-h-[85vh] w-[80vw] max-w-215
 				py-1rem px-3rem
+				divide-y divide-n2/40
 				overflow-y-scroll
 			">
 				<div className="flex">

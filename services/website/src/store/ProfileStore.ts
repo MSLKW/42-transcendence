@@ -4,7 +4,7 @@ import { useAuthStore } from "./AuthStore";
 import { useFriendsStore } from "./FriendsStore";
 import { usePartyStore } from "./PartyStore";
 import { handleGetProfile } from "../api/profile/get_profile/handleGetProfile";
-import type { PublicBadgeId } from "./StatsStore";
+import type { PublicBadgeId } from "./GameStatsStore";
 
 export const RELATION_LABEL = [
 	"Stranger",

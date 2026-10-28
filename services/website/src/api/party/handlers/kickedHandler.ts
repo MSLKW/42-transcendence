@@ -2,14 +2,14 @@ import { Socket } from "socket.io-client";
 import { useAuthStore } from "../../../store/AuthStore";
 import { useChatStore } from "../../../store/ChatStore";
 import { useNotificationStore, NOTIFICATION_TYPE } from "../../../store/NotificationStore";
+import { useGameStatsStore } from "../../../store/GameStatsStore";
 import { usePartyStore } from "../../../store/PartyStore";
 import { useProfileStore } from "../../../store/ProfileStore";
-import { useStatsStore } from "../../../store/StatsStore";
 
 export function kickedHandler(socket: Socket) {
 	socket.on("kicked", async (payload: {message: string}) => {
 		await useProfileStore.getState().setCachedProfile();
-		await useStatsStore.getState().setCachedStats();
+		await useGameStatsStore.getState().setCachedStats();
 
 		const clientUuid = useAuthStore.getState().clientUuid!;
 		usePartyStore.setState({

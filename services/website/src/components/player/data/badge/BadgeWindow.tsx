@@ -1,4 +1,4 @@
-import { type PublicBadgeId, BADGE_NAMES, BADGE_HINTS } from "../../../../store/StatsStore";
+import { type PublicBadgeId, BADGE_NAMES, BADGE_HINTS } from "../../../../store/GameStatsStore";
 import { useSceneStore } from "../../../../store/SceneStore";
 import { Tooltip } from "../../../../utilities/react/Tooltip";
 import { LightboxButton } from "../../../lightbox/LightboxButton";
