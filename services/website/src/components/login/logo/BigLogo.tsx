@@ -3,7 +3,6 @@ import { Tooltip } from "../../../utilities/react/Tooltip";
 
 export const BigLogo = () => {
 	const showWindow = useSceneStore((store) => store.showWindow);
-	const setShowWindow = useSceneStore((store) => store.setShowWindow);
 
 	return (
 		<div className="
@@ -33,7 +32,7 @@ export const BigLogo = () => {
 			</div>
 			<Tooltip text="Additional Info">
 				<button
-					onClick={() => setShowWindow("info", !showWindow.info)}
+					onClick={() => useSceneStore.getState().setShowWindow("info", !showWindow.info)}
 					className="
 						btn-text
 						border border-transparent hover:not-disabled:border-n6

@@ -2,11 +2,9 @@ import { useSceneStore } from "../../../store/SceneStore";
 import { Tooltip } from "../../../utilities/react/Tooltip";
 
 export const SmallLogo = () => {
-	const setShowWindow = useSceneStore((store) => store.setShowWindow);
-
 	return (
 		<button
-			onClick={() => setShowWindow("info", true)}
+			onClick={() => useSceneStore.getState().setShowWindow("info", true)}
 			className="
 				btn-text rounded-xl
 				border border-transparent hover:not-disabled:border-b5

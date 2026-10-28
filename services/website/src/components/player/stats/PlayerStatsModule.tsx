@@ -1,8 +1,10 @@
 interface PlayerStatsModuleProps {
-	uuid?: string | null;
+	totalPlayed: number,
+	totalWins: number,
+	winStreak: number,
 }
 
-export const PlayerStatsModule = (_: PlayerStatsModuleProps) => {
+export const PlayerStatsModule = ({ totalPlayed, totalWins, winStreak }: PlayerStatsModuleProps) => {
 	return (
 		<div className="
 			flex
@@ -15,24 +17,21 @@ export const PlayerStatsModule = (_: PlayerStatsModuleProps) => {
 				p-5
 			">
 				<h2>Total Played</h2>
-				{/* <h3>{profile ? profile.totalPlayed : "n/a"}</h3> */}
-				<h3>n/a</h3>
+				<h3>{totalPlayed}</h3>
 			</div>
 			<div className="
 				w-full h-full
 				p-5
 			">
 				<h2>Total Wins</h2>
-				{/* <h3>{profile ? profile.totalWins : "n/a"}</h3> */}
-				<h3>n/a</h3>
+				<h3>{totalWins}</h3>
 			</div>
 			<div className="
 				w-full h-full
 				p-5
 			">
 				<h2>Win Streak</h2>
-				{/* <h3>{profile ? profile.winStreak : "n/a"}</h3> */}
-				<h3>n/a</h3>
+				<h3>{winStreak}</h3>
 			</div>
 		</div>
 	);

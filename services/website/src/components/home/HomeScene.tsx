@@ -1,6 +1,4 @@
-import { useEffect } from "react";
 import { useAuthStore } from "../../store/AuthStore";
-import { useGameStore } from "../../store/GameStore";
 import { usePartyStore } from "../../store/PartyStore";
 import { useProfileStore } from "../../store/ProfileStore";
 import { HeaderModule } from "../header/HeaderModule";
@@ -13,7 +11,7 @@ export const HomeScene = () => {
 	const clientUuid = useAuthStore((store) => store.clientUuid);
 	const hostUuid = usePartyStore((store) => store.hostUuid);
 	const members = usePartyStore((store) => store.members);
-	const cachedData = useProfileStore((store) => store.cachedData);
+	const cachedProfiles = useProfileStore((store) => store.cachedProfiles);
 
 	return (
 		<>
@@ -36,16 +34,6 @@ export const HomeScene = () => {
 						<HomeCardButton gameMode="4 Players" playerCount={4}/>
 						<HomeCardButton gameMode="3 Players" playerCount={3}/>
 						<HomeCardButton gameMode="2 Players" playerCount={2}/>
-						{/* {clientUuid !== hostUuid &&
-							<div className="
-								absolute -translate-y-10
-								w-full
-								place-content-center place-items-center text-center
-								text-n6
-							">
-								<h2>Waiting for host to start game...</h2>
-							</div>
-						} */}
 					</div>
 				</div>
 			</main>
@@ -67,7 +55,7 @@ export const HomeScene = () => {
 						<AvatarModule 
 							key={clientUuid}
 							uuid={clientUuid}
-							image={cachedData[clientUuid ?? ""]?.avatar ?? undefined}
+							image={cachedProfiles[clientUuid ?? ""]?.avatar ?? undefined}
 							cornerButton={hostUuid === clientUuid ? "host" : ""}
 						/>
 					}
@@ -76,7 +64,7 @@ export const HomeScene = () => {
 							<AvatarModule
 								key={uuid}
 								uuid={uuid}
-								image={cachedData[uuid ?? ""]?.avatar ?? undefined}
+								image={cachedProfiles[uuid ?? ""]?.avatar ?? undefined}
 								cornerButton={hostUuid === uuid ? "host" : ""}
 							/>
 					))}

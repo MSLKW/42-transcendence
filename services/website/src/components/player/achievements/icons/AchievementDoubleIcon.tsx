@@ -1,4 +1,4 @@
-export const MedalDoubleIcon = () => (
+export const AchievementDoubleIcon = () => (
     <svg
 		fill="none"
 		viewBox="0 0 30 30"

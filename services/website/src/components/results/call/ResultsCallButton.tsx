@@ -4,8 +4,6 @@ import { AvatarName } from "../../avatar/name/AvatarName";
 import { ResultsIcon } from "./ResultsIcons";
 
 export const ResultsCallButton = () => {
-	const setShowWindow = useSceneStore((store) => store.setShowWindow);
-
 	return (
 		<div className="
 			flex flex-col place-content-center place-items-center
@@ -13,7 +11,7 @@ export const ResultsCallButton = () => {
 		">
 			<Tooltip text="View Results">
 				<button 
-					onClick={() => setShowWindow("results", true)}
+					onClick={() => useSceneStore.getState().setShowWindow("results", true)}
 					className="
 						h-6rem aspect-square
 						bg-dark btn-icon rounded-sm

@@ -1,4 +1,4 @@
-export const MedalStraightFlushIcon = () => (
+export const AchievementStraightFlushIcon = () => (
     <svg
 		fill="none"
 		viewBox="0 0 30 30"

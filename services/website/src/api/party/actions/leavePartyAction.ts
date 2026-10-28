@@ -6,10 +6,11 @@ import { useNotificationStore, NOTIFICATION_TYPE } from "../../../store/Notifica
 import { usePartyStore } from "../../../store/PartyStore";
 import { useProfileStore } from "../../../store/ProfileStore";
 import { useSceneStore } from "../../../store/SceneStore";
+import { useStatsStore } from "../../../store/StatsStore";
 
 export async function leavePartyAction(socket: Socket | null) {
 	const clientUuid = useAuthStore.getState().clientUuid ?? "";
-	const cachedData = useProfileStore.getState().cachedData;
+	const cachedProfiles = useProfileStore.getState().cachedProfiles;
 	const hostUuid = usePartyStore.getState().hostUuid;
 
 	if (!socket)
@@ -20,7 +21,8 @@ export async function leavePartyAction(socket: Socket | null) {
 
 		socket?.emit("leave_party");
 
-		await useProfileStore.getState().setCachedData();
+		await useProfileStore.getState().setCachedProfile();
+		await useStatsStore.getState().setCachedStats();
 
 		useSceneStore.getState().setShowWindow("profile", false);
 
@@ -30,13 +32,13 @@ export async function leavePartyAction(socket: Socket | null) {
 			"",
 			"",
 			`You left ${
-				(hostUuid != clientUuid && cachedData[hostUuid ?? ""]?.name) ? cachedData[hostUuid ?? ""]?.name + "'s" :
+				(hostUuid != clientUuid && cachedProfiles[hostUuid ?? ""]?.name) ? cachedProfiles[hostUuid ?? ""]?.name + "'s" :
 				"the party"
 			} chat`,
 		)
 
 		useNotificationStore.getState().showNotification(
-			clientUuid === hostUuid ? "You left the party" : `You left ${cachedData[hostUuid ?? ""]?.name}'s party`,
+			clientUuid === hostUuid ? "You left the party" : `You left ${cachedProfiles[hostUuid ?? ""]?.name}'s party`,
 			NOTIFICATION_TYPE.message
 		);
 

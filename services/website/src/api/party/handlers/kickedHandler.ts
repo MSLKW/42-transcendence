@@ -4,10 +4,13 @@ import { useChatStore } from "../../../store/ChatStore";
 import { useNotificationStore, NOTIFICATION_TYPE } from "../../../store/NotificationStore";
 import { usePartyStore } from "../../../store/PartyStore";
 import { useProfileStore } from "../../../store/ProfileStore";
+import { useStatsStore } from "../../../store/StatsStore";
 
 export function kickedHandler(socket: Socket) {
 	socket.on("kicked", async (payload: {message: string}) => {
-		await useProfileStore.getState().setCachedData();
+		await useProfileStore.getState().setCachedProfile();
+		await useStatsStore.getState().setCachedStats();
+
 		const clientUuid = useAuthStore.getState().clientUuid!;
 		usePartyStore.setState({
 			members: [ clientUuid ],

@@ -3,11 +3,11 @@ import { handleCreatedAt } from "../../api/authentication/get_created-at/handleC
 import { handleGetOnline } from "../../api/party/get_online/handleGetOnline";
 import { handleGetProfile } from "../../api/profile/get_profile/handleGetProfile";
 import { usePartyStore, type AVAILABILITY_TYPE } from "../../store/PartyStore";
-import type { BADGE_TYPE } from "../../store/ProfileStore";
+import { useStatsStore, type ACHIEVEMENTS_TYPE,type BADGE_TYPE } from "../../store/StatsStore";
 import { useSceneStore } from "../../store/SceneStore";
 import { Window } from "../window/Window";
 import { AvatarMemberModule } from "../avatar/AvatarMemberModule";
-import { MedalsModule } from "../player/medals/MedalsModule";
+import { AchievementsModule } from "../player/achievements/AchievementsModule";
 import { PlayerDataModule } from "../player/data/PlayerDataModule";
 import { PlayerStatsModule } from "../player/stats/PlayerStatsModule";
 import { FriendToggleButton } from "./friend/FriendToggleButton";
@@ -17,17 +17,24 @@ import { handlePublicPlayerGameData } from "../../api/stats/get_public-player-ga
 export const StatsWindow: React.FC = () => {
 	const statsUuid = useSceneStore((store) => store.statsUuid!);
 	const members = usePartyStore((store) => store.members);
+	const cachedStats = useStatsStore((store) => store.cachedStats);
+	
+	const stats = statsUuid ? cachedStats[statsUuid] : undefined;
 
 	const [name, setName] = useState<string | null>(null);
 	const [avatar, setAvatar] = useState<string | undefined>(undefined);
-	const [badge, setBadge] = useState<BADGE_TYPE | null>(null);
 	const [createdAt, setCreatedAt] = useState<Date | null>(null);
 	const [availability, setAvailability] = useState<AVAILABILITY_TYPE | null>(null);
 	const [lastOnline, setLastOnline] = useState<Date | null>(null);
-	const [currentLevel, setCurrentLevel] = useState(0);
-	const [currentLevelXpEarned, setCurrentLevelXpEarned] = useState(0);
+	const [level, setLevel] = useState(0);
+	const [xp, setXp] = useState(0);
 	const [currentLevelXpThreshold, setCurrentLevelXpThreshold] = useState(0);
 	const [currentLevelProgressPercentage, setCurrentLevelProgressPercentage] = useState(0);
+	const [displayedBadgeId, setDisplayedBadgeId] = useState<BADGE_TYPE>(stats?.displayedBadgeId ?? "fresh_deal");
+	const [totalPlayed, setTotalPlayed] = useState(0);
+	const [totalWins, setTotalWins] = useState(0);
+	const [winStreak, setWinStreak] = useState(0);
+	const [achievements, setAchievements] = useState<Record<ACHIEVEMENTS_TYPE, Date> | undefined>(undefined);
 
 	const statsFetched = useRef<string | null>(null);
 	useEffect(() => {
@@ -37,7 +44,7 @@ export const StatsWindow: React.FC = () => {
 
 		const fetchPlayerData = async () => {
 			try {
-				const [profile, createdAt, online, stats] = await Promise.all([
+				const [profile, createdAt, online, clientStats] = await Promise.all([
 					handleGetProfile(statsUuid),
 					handleCreatedAt(statsUuid),
 					handleGetOnline(statsUuid),
@@ -46,14 +53,20 @@ export const StatsWindow: React.FC = () => {
 
 				setName(profile?.username ?? null);
 				setAvatar(profile?.avatarPath ?? undefined);
-				setBadge(profile?.badge ?? null);
 
 				setCreatedAt(createdAt ?? null);
 
-				setCurrentLevel(stats.levelProgress.currentLevel);
-				setCurrentLevelXpEarned(stats.levelProgress.currentLevelXpEarned);
-				setCurrentLevelXpThreshold(stats.levelProgress.currentLevelXpThreshold);
-				setCurrentLevelProgressPercentage(stats.levelProgress.currentLevelProgressPercentage);
+				setLevel(clientStats.stats.level);
+				setXp(clientStats.stats.xp);
+				setDisplayedBadgeId(clientStats.stats.displayedBadgeId);
+				setTotalPlayed(clientStats.stats.totalPlayed);
+				setTotalWins(clientStats.stats.totalWins);
+				setWinStreak(clientStats.stats.winStreak);
+
+				setCurrentLevelXpThreshold(clientStats.levelProgress.currentLevelXpThreshold);
+				setCurrentLevelProgressPercentage(clientStats.levelProgress.currentLevelProgressPercentage);
+
+				setAchievements(clientStats.achievements);
 
 				if (online?.isOnline)
 					setAvailability(online.inParty ? "Busy" : "Online");
@@ -82,18 +95,22 @@ export const StatsWindow: React.FC = () => {
 					<AvatarMemberModule uuid={statsFetched.current} name={name ?? "-"} image={avatar} />
 					<PlayerDataModule
 						uuid={statsFetched.current!}
-						badge={badge}
 						availability={availability}
 						lastOnline={lastOnline}
 						createdAt={createdAt}
-						currentLevel={currentLevel}
-						currentLevelXpEarned={currentLevelXpEarned}
+						level={level}
+						xp={xp}
 						currentLevelXpThreshold={currentLevelXpThreshold}
 						currentLevelProgressPercentage={currentLevelProgressPercentage}
+						displayedBadgeId={displayedBadgeId}
 					/>
 				</div>
-				<MedalsModule uuid={statsFetched.current}/>
-				<PlayerStatsModule uuid={statsFetched.current} />
+				<AchievementsModule achievements={achievements}/>
+				<PlayerStatsModule
+					totalPlayed={totalPlayed}
+					totalWins={totalWins}
+					winStreak={winStreak}
+				/>
 				<div className="
 					flex place-content-evenly place-items-center
 					py-2rem px-2rem

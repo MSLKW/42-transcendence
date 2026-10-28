@@ -32,8 +32,6 @@ export const Window: React.FC<WindowProps> = ({
 	isDismissable = true,
 	call,
 }) => {
-	const setShowWindow = useSceneStore((store) => store.setShowWindow);
-
 	const { position, handleMouseDown } = useWindowDrag();
 
 	return (
@@ -98,7 +96,7 @@ export const Window: React.FC<WindowProps> = ({
 							<Tooltip text="Close Window">
 								<button
 									disabled={!isDismissable}
-									onClick={call ? call : () => setShowWindow(dismissKey, false)}
+									onClick={call ? call : () => useSceneStore.getState().setShowWindow(dismissKey, false)}
 									className="btn-icon"
 								>
 									<CloseIcon />

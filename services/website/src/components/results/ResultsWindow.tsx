@@ -12,13 +12,12 @@ import { useSceneStore } from "../../store/SceneStore";
 export const ResultsWindow = () => {
 	const round = useGameStore((store) => store.round);
 	const leaveGame = useGameStore((store) => store.leaveGame);
-	const setShowWindow = useSceneStore((store) => store.setShowWindow);
-	const cachedData = useProfileStore((store) => store.cachedData);
+	const cachedProfiles = useProfileStore((store) => store.cachedProfiles);
 	const getLeaderboard = useResultsStore((store) => store.getLeaderboard);
 
 	const leaderboard = getLeaderboard();
 	const topPlayer = leaderboard[0];
-	const playerName = cachedData[topPlayer.uuid ?? ""]?.name;
+	const playerName = cachedProfiles[topPlayer.uuid ?? ""]?.name;
 	const winner = `Congratulations ${playerName ?? "Winner"}!`;
 
 	return (
@@ -58,7 +57,7 @@ export const ResultsWindow = () => {
 								Leave Game
 							</button>
 							<button
-								onClick={() => {setShowWindow("results", false)}}
+								onClick={() => useSceneStore.getState().setShowWindow("results", false)}
 								className="
 									h-3rem aspect-6/1
 									btn-text bg-light

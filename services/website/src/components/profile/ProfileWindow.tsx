@@ -6,13 +6,14 @@ import { handleOwnPlayerGameData } from "../../api/stats/get_own-player-game-dat
 import { useAuthStore } from "../../store/AuthStore";
 import { useNotificationStore, NOTIFICATION_TYPE } from "../../store/NotificationStore";
 import { usePartyStore } from "../../store/PartyStore";
-import { useProfileStore, type BADGE_TYPE } from "../../store/ProfileStore";
+import { useProfileStore } from "../../store/ProfileStore";
 import { useSceneStore } from "../../store/SceneStore";
+import { useStatsStore, type ACHIEVEMENTS_TYPE, type BADGE_TYPE } from "../../store/StatsStore";
 import { checkNameValidity } from "../../utilities/react/checkNameValidity";
 import { Window } from "../window/Window";
 import { AvatarSetNameModule } from "../avatar/name/AvatarSetNameModule";
 import { AvatarSelectModule } from "../avatar/image/AvatarSelectModule";
-import { MedalsModule } from "../player/medals/MedalsModule";
+import { AchievementsModule } from "../player/achievements/AchievementsModule";
 import { PlayerDataModule } from "../player/data/PlayerDataModule";
 import { PlayerStatsModule } from "../player/stats/PlayerStatsModule";
 import { LeavePartyModule } from "./LeavePartyModule";
@@ -21,19 +22,25 @@ export const ProfileWindow = () => {
 	const clientUuid = useAuthStore((store) => store.clientUuid);
 	const members = usePartyStore((store) => store.members);
 	const profileValidation = useProfileStore((store) => store.profileValidation);
-	const cachedData = useProfileStore((store) => store.cachedData);
-	const setShowWindow = useSceneStore((store) => store.setShowWindow);
+	const cachedProfiles = useProfileStore((store) => store.cachedProfiles);
+	const cachedStats = useStatsStore((store) => store.cachedStats);
 
-	const profile = clientUuid ? cachedData[clientUuid] : undefined;
+	const profile = clientUuid ? cachedProfiles[clientUuid] : undefined;
+	const stats = clientUuid ? cachedStats[clientUuid] : undefined;
 	const [name, setName] = useState(profile?.name ?? "n/a");
 	const [avatar, setAvatar] = useState(profile?.avatar ?? undefined);
-	const [badge, setBadge] = useState<BADGE_TYPE>(profile?.badge ?? "Newcomer");
 	const [hasChange, setHasChange] = useState(false);
 	const [createdAt, setCreatedAt] = useState<Date | null>(null);
-	const [currentLevel, setCurrentLevel] = useState(0);
-	const [currentLevelXpEarned, setCurrentLevelXpEarned] = useState(0);
+	const [level, setLevel] = useState(0);
+	const [xp, setXp] = useState(0);
 	const [currentLevelXpThreshold, setCurrentLevelXpThreshold] = useState(0);
 	const [currentLevelProgressPercentage, setCurrentLevelProgressPercentage] = useState(0);
+	const [displayedBadgeId, setDisplayedBadgeId] = useState<BADGE_TYPE>(stats?.displayedBadgeId ?? "fresh_deal");
+	const [totalPlayed, setTotalPlayed] = useState(0);
+	const [totalWins, setTotalWins] = useState(0);
+	const [winStreak, setWinStreak] = useState(0);
+	const [achievements, setAchievements] = useState<Record<ACHIEVEMENTS_TYPE, Date> | undefined>(undefined);
+	const [availableBadges, setAvailableBadges] = useState<Record<BADGE_TYPE, boolean> | undefined>(undefined);
 
 	const createdAtFetched = useRef<string | null>(null);
 	useEffect(() => {
@@ -43,17 +50,26 @@ export const ProfileWindow = () => {
 
 		const fetchPlayerData = async () => {
 			try {
-				const [createdAt, stats] = await Promise.all([
+				const [createdAt, clientStats] = await Promise.all([
 					handleCreatedAt(clientUuid),
 					handleOwnPlayerGameData(),
 				]);
 
 				setCreatedAt(createdAt ?? null);
 
-				setCurrentLevel(stats.levelProgress.currentLevel);
-				setCurrentLevelXpEarned(stats.levelProgress.currentLevelXpEarned);
-				setCurrentLevelXpThreshold(stats.levelProgress.currentLevelXpThreshold);
-				setCurrentLevelProgressPercentage(stats.levelProgress.currentLevelProgressPercentage);
+				setLevel(clientStats.stats.level);
+				setXp(clientStats.stats.xp);
+				setDisplayedBadgeId(clientStats.stats.displayedBadgeId);
+				setTotalPlayed(clientStats.stats.totalPlayed);
+				setTotalWins(clientStats.stats.totalWins);
+				setWinStreak(clientStats.stats.winStreak);
+
+				setCurrentLevelXpThreshold(clientStats.levelProgress.currentLevelXpThreshold);
+				setCurrentLevelProgressPercentage(clientStats.levelProgress.currentLevelProgressPercentage);
+
+				setAchievements(clientStats.achievements);
+
+				setAvailableBadges(clientStats.badges);
 			} catch (error) {
 				console.error("Failed to fetch player data:", error);
 			}
@@ -63,22 +79,22 @@ export const ProfileWindow = () => {
 
 	const isNameValid = checkNameValidity(name?.trim());
 	const isAvatarValid = Boolean(avatar);
-	const isBadgeValid = Boolean(badge);
+	const isBadgeValid = Boolean(displayedBadgeId);
 	const isValid = isNameValid && isAvatarValid && isBadgeValid;
 	const handleProfileUpdate = () => {
 		if (profileValidation && !isValid)
 			return;
 
 		if (!hasChange) {
-			setShowWindow("profile", false);
+			useSceneStore.getState().setShowWindow("profile", false);
 			return;
 		}
 
-		void handlePutProfile(name, avatar!, badge)
+		void handlePutProfile(name, avatar!, displayedBadgeId)
 			.then(() => {
 				partySocket.refresh()
 				useNotificationStore.getState().showNotification("Profile updated", NOTIFICATION_TYPE.message);
-				setShowWindow("profile", false);
+				useSceneStore.getState().setShowWindow("profile", false);
 			}).catch (() => {});
 	}
 
@@ -105,16 +121,17 @@ export const ProfileWindow = () => {
 					/>
 					<PlayerDataModule
 						uuid={clientUuid ?? ""}
-						badge={badge}
 						availability="Online"
 						lastOnline={null}
 						createdAt={createdAt}
-						setBadge={setBadge}
-						setHasChange={setHasChange}
-						currentLevel={currentLevel}
-						currentLevelXpEarned={currentLevelXpEarned}
+						level={level}
+						xp={xp}
 						currentLevelXpThreshold={currentLevelXpThreshold}
 						currentLevelProgressPercentage={currentLevelProgressPercentage}
+						displayedBadgeId={displayedBadgeId}
+						availableBadges={availableBadges}
+						setBadge={setDisplayedBadgeId}
+						setHasChange={setHasChange}
 					/>
 				</div>
 				{profileValidation && !isNameValid &&
@@ -125,8 +142,12 @@ export const ProfileWindow = () => {
 					setAvatar={setAvatar}
 					setHasChange={setHasChange}
 				/>
-				<MedalsModule uuid={clientUuid}/>
-				<PlayerStatsModule uuid={clientUuid} />
+				<AchievementsModule achievements={achievements}/>
+				<PlayerStatsModule
+					totalPlayed={totalPlayed}
+					totalWins={totalWins}
+					winStreak={winStreak}
+				/>
 				{ members.length > 1 && <LeavePartyModule /> }
 			</div>
 		</Window>

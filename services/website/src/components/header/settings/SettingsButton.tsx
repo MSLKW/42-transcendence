@@ -2,11 +2,9 @@ import { useSceneStore } from "../../../store/SceneStore";
 import { SettingsIcon } from "./SettingsIcon";
 
 export const SettingsButton = () => {
-	const setShowWindow = useSceneStore((store) => store.setShowWindow);
-
 	return (
 		<button data-tip="Settings"
-			onClick={() => setShowWindow("settings", true)}
+			onClick={() => useSceneStore.getState().setShowWindow("settings", true)}
 			className="btn-icon data-tip-down"
 		>
 			<SettingsIcon />

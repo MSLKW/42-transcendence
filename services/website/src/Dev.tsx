@@ -38,7 +38,7 @@ export default function Dev() {
 	const hostUuid = usePartyStore((store) => store.hostUuid);
 	const profileValidation = useProfileStore((store) => store.profileValidation);
 	const profileVerboseMode = useProfileStore((store) => store.profileVerboseMode);
-	const cachedData = useProfileStore((store) => store.cachedData);
+	const cachedProfiles = useProfileStore((store) => store.cachedProfiles);
 	const results = useResultsStore((store) => store.results);
 	const sceneVerboseMode = useSceneStore((store) => store.sceneVerboseMode);
 	const showWindow = useSceneStore((store) => store.showWindow);
@@ -48,10 +48,10 @@ export default function Dev() {
 	const [fetchBody, setFetchBody] = useState("");
 
 	const handleResetAll = async () => {
-		useProfileStore.getState().resetProfilesInDb();
 		await handleLogout();
 		useSceneStore.getState().setCurrentScene("Login");
 		useSceneStore.setState({ showWindow: defaultShowWindow });
+		useProfileStore.setState({ cachedProfiles: {} });
 		useChatStore.setState({ cachedChat: [] });
 		console.log("[Dev] Game have been reset");
 	}
@@ -156,9 +156,9 @@ export default function Dev() {
 				</ul>
 			{/* profile */}
 				<ul className="flex place-content-between">
-					<DevButton label={`cachedData: ${Object.keys(cachedData).length}`} call={() => console.log(useProfileStore.getState().cachedData)} />
+					<DevButton label={`cachedProfiles: ${Object.keys(cachedProfiles).length}`} call={() => console.log(useProfileStore.getState().cachedProfiles)} />
 					<DevButton label={`profileValidation: ${profileValidation}`} call={() => useProfileStore.setState({ profileValidation: !profileValidation })}/>
-					<DevButton label="Clear cachedData" call={() => useProfileStore.getState().clearCachedData()} />
+					<DevButton label="Clear cachedProfiles" call={() => useProfileStore.setState({ cachedProfiles: {} })} />
 					<DevButton label={`profileVerboseMode: ${profileVerboseMode}`} call={() => useProfileStore.setState({ profileVerboseMode: !profileVerboseMode })}/>
 				</ul>
 			{/* party */}
@@ -217,10 +217,10 @@ export default function Dev() {
 				{ currentScene === "Game" && clientUuid === hostUuid &&
 					<ul className="flex place-content-between">
 						<>
-							{ userSeats[0] && <DevButton label={`${cachedData[userSeats[0]]?.name ?? "Seat 0 "} Wins`} call={() => playerWins(0)}/> }
-							{ userSeats[1] && <DevButton label={`${cachedData[userSeats[1]]?.name ?? "Seat 1 "} Wins`} call={() => playerWins(1)}/> }
-							{ userSeats[2] && <DevButton label={`${cachedData[userSeats[2]]?.name ?? "Seat 2 "} Wins`} call={() => playerWins(2)}/> }
-							{ userSeats[3] && <DevButton label={`${cachedData[userSeats[3]]?.name ?? "Seat 3 "} Wins`} call={() => playerWins(3)}/> }
+							{ userSeats[0] && <DevButton label={`${cachedProfiles[userSeats[0]]?.name ?? "Seat 0 "} Wins`} call={() => playerWins(0)}/> }
+							{ userSeats[1] && <DevButton label={`${cachedProfiles[userSeats[1]]?.name ?? "Seat 1 "} Wins`} call={() => playerWins(1)}/> }
+							{ userSeats[2] && <DevButton label={`${cachedProfiles[userSeats[2]]?.name ?? "Seat 2 "} Wins`} call={() => playerWins(2)}/> }
+							{ userSeats[3] && <DevButton label={`${cachedProfiles[userSeats[3]]?.name ?? "Seat 3 "} Wins`} call={() => playerWins(3)}/> }
 						</>
 					</ul>
 				}

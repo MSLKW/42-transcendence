@@ -1,4 +1,4 @@
-export const Medal3OfDiamondsIcon = () => (
+export const Achievement3OfDiamondsIcon = () => (
     <svg
 		fill="none"
 		viewBox="0 0 30 30"

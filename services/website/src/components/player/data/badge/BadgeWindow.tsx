@@ -1,20 +1,19 @@
 // import { useAuthStore } from "../../../../store/AuthStore";
-// import { useProfileStore, BADGE_LABEL, type BADGE_TYPE } from "../../../../store/ProfileStore";
-import { BADGE_LABEL, type BADGE_TYPE } from "../../../../store/ProfileStore";
+import { BADGE_LABEL, type BADGE_TYPE } from "../../../../store/StatsStore";
 import { useSceneStore } from "../../../../store/SceneStore";
 import { LightboxButton } from "../../../lightbox/LightboxButton";
 
 interface BadgeWindowProps {
 	badge: BADGE_TYPE;
+	availableBadges: Record<BADGE_TYPE, boolean> | undefined;
 	setBadge: (type: BADGE_TYPE) => void;
 	setHasChange: (change: boolean) => void;
 }
 
-export const BadgeWindow = ({ badge, setBadge, setHasChange }: BadgeWindowProps) => {
+export const BadgeWindow = ({ badge, availableBadges, setBadge, setHasChange }: BadgeWindowProps) => {
 	// const clientUuid = useAuthStore((store) => store.clientUuid);
 	// const getProfileData = useProfileStore((store) => store.getProfileData);
 	const showWindow = useSceneStore((store) => store.showWindow);
-	const setShowWindow = useSceneStore((store) => store.setShowWindow);
 
 	// const data = getProfileData(clientUuid!);
 	// if (!data)
@@ -43,9 +42,8 @@ export const BadgeWindow = ({ badge, setBadge, setHasChange }: BadgeWindowProps)
 								type="button"
 								disabled={isDisabled}
 								onClick={() => {
-									console.log("[Badge Window] badge_label:", badge_label);
 									setBadge(badge_label);
-									setShowWindow("badge", false);
+									useSceneStore.getState().setShowWindow("badge", false);
 									setHasChange(true);
 								}}
 								className={`

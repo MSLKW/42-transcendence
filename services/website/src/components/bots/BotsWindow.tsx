@@ -4,7 +4,6 @@ import { BotSetButton } from "./call/BotCallButton";
 
 export const BotsWindow = () => {
 	const currentScene = useSceneStore((store) => store.currentScene);
-	const setShowWindow = useSceneStore((store) => store.setShowWindow);
 
 	return (
 		<>
@@ -48,7 +47,7 @@ export const BotsWindow = () => {
 							{ currentScene === "Game" ? "You can't change bot difficulty during a match" : "Select bot difficulty..." }
 						</h3>
 						<button
-							onClick={() => setShowWindow("bots", false)}
+							onClick={() => useSceneStore.getState().setShowWindow("bots", false)}
 							className="
 								h-3rem aspect-5/1
 								btn-text bg-light

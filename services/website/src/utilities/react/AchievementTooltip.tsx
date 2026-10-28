@@ -1,14 +1,14 @@
 import { useState } from "react";
 import { createPortal } from "react-dom";
 
-type MedalTooltipProps = {
+type AchievementTooltipProps = {
 	text: string;
 	description: string;
 	date: string;
 	children: React.ReactNode;
 };
 
-export function MedalTooltip({ text, date, description, children }: MedalTooltipProps) {
+export function AchievementTooltip({ text, date, description, children }: AchievementTooltipProps) {
 	const [visible, setVisible] = useState(false);
 	const [pos, setPos] = useState({ top: 0, left: 0 });
 
