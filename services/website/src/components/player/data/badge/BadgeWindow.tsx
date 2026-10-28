@@ -22,7 +22,7 @@ export const BadgeWindow = ({ badge, availableBadges, setBadge, setHasChange }: 
 					<LightboxButton dismiss="badge" blur={false} />
 				</div>
 			}
-			<ul className="
+			<menu className="
 				absolute z-50 top-[110%] w-full
 				bg-dark rounded-md
 				text-n2
@@ -62,7 +62,7 @@ export const BadgeWindow = ({ badge, availableBadges, setBadge, setHasChange }: 
 						)
 					})
 				}
-			</ul>
+			</menu>
 		</>
 	);
 }

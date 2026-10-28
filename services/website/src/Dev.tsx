@@ -135,21 +135,6 @@ export default function Dev() {
 					<DevButton label={`showWindow: ${Object.values(showWindow).filter(Boolean).length}`} call={() => console.log("showWindow:", showWindow)}/>
 					<DevButton label={`sceneVerboseMode: ${sceneVerboseMode}`} call={() => useSceneStore.setState({ sceneVerboseMode: !sceneVerboseMode })}/>
 				</ul>
-			{/* fetch */}
-				<ul className="flex place-content-between gap-1rem">
-					<input
-						id="inviteUuid"
-						onChange={(e) => setFetchUrl(e.target.value)}
-						className="bg-dark-semi w-[70%]"
-					/>
-					<input
-						id="inviteUuid"
-						onChange={(e) => setFetchBody(e.target.value)}
-						className="bg-dark-semi w-[70%]"
-					/>
-					<DevButton label="GET" call={() => fetchGet(fetchUrl)}/>
-					<DevButton label="PUT" call={() => fetchPut(fetchUrl, fetchBody)}/>
-				</ul>
 			{/* authentication */}
 				<ul className="flex place-content-between">
 					<DevButton label={`clientUuid: ${clientUuid}`} call={() => clientUuid && navigator.clipboard.writeText(clientUuid)}/>

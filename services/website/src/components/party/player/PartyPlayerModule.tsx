@@ -7,6 +7,7 @@ import { useAuthStore } from "../../../store/AuthStore";
 import { useFriendsStore } from "../../../store/FriendsStore";
 import { usePartyStore, type AVAILABILITY_TYPE } from "../../../store/PartyStore";
 import type { UserData } from "../../../store/ProfileStore";
+import { useSceneStore } from "../../../store/SceneStore";
 import { Tooltip } from "../../../utilities/react/Tooltip";
 import { PlayerStatusModule } from "../../player/status/PlayerStatusModule";
 import { AvatarImage } from "../../avatar/image/AvatarImage";
@@ -86,10 +87,21 @@ export const PartyPlayerModule = ({ uuid }: PartyPlayerModuleProps) => {
 				relation === "Self" ? "Edit Profile" :
 				"View Profile"
 			}>
-				<AvatarImage
-					uuid={uuid}
-					image={playerData.avatarPath ?? undefined}
-				/>
+				<button
+					type="button"
+					onClick={() => {
+						if (clientUuid === uuid)
+							useSceneStore.getState().setShowWindow("profile", true, uuid);
+						else
+							useSceneStore.getState().setShowWindow("stats", true, uuid);
+					}}
+					className="cursor-pointer hover:scale-105"
+				>
+					<AvatarImage 
+						uuid={uuid}
+						image={playerData.avatarPath ?? undefined}
+					/>
+				</button>
 			</Tooltip>
 			<Tooltip text={
 				relation === "Self" ? null :

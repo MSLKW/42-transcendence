@@ -1,4 +1,4 @@
-import { motion } from "framer-motion";
+import { motion } from "motion/react";
 import { useBubbleStore } from "../../store/BubbleStore";
 
 interface EmoteBubbleProps {
@@ -12,6 +12,7 @@ export const EmoteBubble = ({ message, uuid, id }: EmoteBubbleProps) => {
 
 	return (
 		<motion.button
+			type="button"
 			onClick={() => removeBubble(uuid, id)}
 			animate={{
 				scale: [1, 1.4, 1],
@@ -28,8 +29,7 @@ export const EmoteBubble = ({ message, uuid, id }: EmoteBubbleProps) => {
 				text-center text-3rem
 				hover:scale-105 active:scale-100 transition
 				cursor-pointer pointer-events-auto
-			"
-		>
+		">
 			{message}
 		</motion.button>
 	);

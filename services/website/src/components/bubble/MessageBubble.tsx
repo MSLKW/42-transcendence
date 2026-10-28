@@ -11,6 +11,7 @@ export const MessageBubble = ({ message, uuid, id }: MessageBubbleProps) => {
 
 	return (
 		<button
+			type="button"
 			onClick={() => removeBubble(uuid, id)}
 			className="
 				max-w-48
@@ -19,8 +20,7 @@ export const MessageBubble = ({ message, uuid, id }: MessageBubbleProps) => {
 				text-n6 text-center text-1rem wrap-anywhere
 				hover:scale-105 active:scale-100 transition
 				cursor-pointer pointer-events-auto
-			"
-		>
+		">
 			{message}
 		</button>
 	);

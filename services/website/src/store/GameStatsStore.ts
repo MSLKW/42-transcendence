@@ -17,6 +17,10 @@ export const PUBLIC_BADGE_IDS = [
 	"hot_hand",
 	"flush_with_pride",
 	"never_folds",
+	"curious_cat",
+	"imposter",
+	"social_butterfly",
+	"connoisseur",
 ] as const;
 export type PublicBadgeId = (typeof PUBLIC_BADGE_IDS)[number];
 
@@ -33,6 +37,10 @@ export const BADGE_NAMES: Record<PublicBadgeId, string> = {
 	hot_hand:			"Hot Hand",
 	flush_with_pride:	"Flush With Pride",
 	never_folds:		"Never Folds",
+	curious_cat:		"Curious Cat",
+	imposter:			"Imposter",
+	social_butterfly:	"Social Butterfly",
+	connoisseur:		"Connoisseur",
 };
 
 export const BADGE_HINTS: Record<PublicBadgeId, string> = {
@@ -48,6 +56,10 @@ export const BADGE_HINTS: Record<PublicBadgeId, string> = {
 	hot_hand:			"Win streak 5",
 	flush_with_pride:	"Played with Straight Flush",
 	never_folds:		"Win without skipping",
+	curious_cat:		"Clicked the hidden button in privacy policy",
+	imposter:			"Changed name that starts with 'bot-'",
+	social_butterfly:	"42 or more friends",
+	connoisseur:		"Picked one specific avatar",
 };
 
 export const ACHIEVEMENT_IDS = [

@@ -4,6 +4,7 @@ import { useNotificationStore, NOTIFICATION_TYPE } from "../../store/Notificatio
 import { useFriendsStore } from "../../store/FriendsStore";
 import { handleFriendRequestsAccept } from "./post_friend-requests_accept/handleFriendRequestsAccept";
 import { handleFriendRequestsReject } from "./post_friend-requests_reject/handleFriendRequestsReject";
+import { handleEasterEggFound } from "../gameStats/post_easter-egg-found/handleEasterEggFound";
 
 const friendsUrl = import.meta.env.VITE_API_FRIENDS_PATH;
 
@@ -91,6 +92,12 @@ export function useFriendEvents(clientUuid: string | null, onFriendUpdate?: () =
 				console.log("[friends > friends_list_updated] Friends list change hinted:", JSON.parse(event.data));
 			if (onFriendUpdate)
 				onFriendUpdate();
+			
+			void handleEasterEggFound("egg_0a793011efa2")
+			.then((response: any) => {
+				// if (response["newlyGrantedBadgeIdForEasterEgg"])
+					useNotificationStore.getState().showNotification("'social_butterfly' easter egg found!", NOTIFICATION_TYPE.message);
+			})
 		});
 
 		eventSource.onerror = (error) => {

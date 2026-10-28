@@ -3,6 +3,7 @@ import { partySocket } from "../../api/party/partySocket";
 import { handleCreatedAt } from "../../api/authentication/get_created-at/handleCreatedAt";
 import { handlePutProfile } from "../../api/profile/put_profile/handlePutProfile";
 import { handleOwnPlayerGameData } from "../../api/gameStats/get_own-player-game-data/handleOwnPlayerGameData";
+import { handleEasterEggFound } from "../../api/gameStats/post_easter-egg-found/handleEasterEggFound";
 import { useAuthStore } from "../../store/AuthStore";
 import { useNotificationStore, NOTIFICATION_TYPE } from "../../store/NotificationStore";
 import { usePartyStore } from "../../store/PartyStore";
@@ -91,13 +92,22 @@ export const ProfileWindow = () => {
 		}
 
 		void handlePutProfile(name, avatar!, displayedBadgeId)
-			.then(() => {
+			.then(async () => {
 				partySocket.refresh()
 				useNotificationStore.getState().showNotification("Profile updated", NOTIFICATION_TYPE.message);
 				useSceneStore.getState().setShowWindow("profile", false);
+				if (name.startsWith("bot-")) {
+					const response = await handleEasterEggFound("egg_b31524145402");
+					if (response["newlyGrantedBadgeIdForEasterEgg"])
+						useNotificationStore.getState().showNotification("'imposter' easter egg found!", NOTIFICATION_TYPE.message);
+				}
+				if (avatar === "avatar-animal-9.webp") {
+					const response = await handleEasterEggFound("egg_5640cd1ea99b");
+					if (response["newlyGrantedBadgeIdForEasterEgg"])
+						useNotificationStore.getState().showNotification("'imposter' easter egg found!", NOTIFICATION_TYPE.message);
+				}
 			}).catch (() => {});
 	}
-
 	return (
 		<Window
 			title={`Profile`}

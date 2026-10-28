@@ -1,4 +1,13 @@
+import { handleEasterEggFound } from "../../../api/gameStats/post_easter-egg-found/handleEasterEggFound";
+import { NOTIFICATION_TYPE, useNotificationStore } from "../../../store/NotificationStore";
+
 export const PrivacyPolicyModule = () => {
+	const handleEmailClick = async () => {
+		const response = await handleEasterEggFound("egg_f355a785db3c");
+		if (response["newlyGrantedBadgeIdForEasterEgg"])
+			useNotificationStore.getState().showNotification("'curious_cat' easter egg found!", NOTIFICATION_TYPE.message);
+	}
+
 	return (
 		<div className="
 			flex flex-col gap-2rem
@@ -9,7 +18,7 @@ export const PrivacyPolicyModule = () => {
 				<p>Last Updated: October 6, 2026</p>
 			</div>
 			<div>
-				<h3>Welcome to Big2. We respect your privacy and are committed to protecting your personal data. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you play our online multiplayer web game or visit our website at www.big2.com</h3>
+				<h3>Welcome to Big2 We respect your privacy and are committed to protecting your personal data. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you play our online multiplayer web game or visit our website at www.big2.com</h3>
 			</div>
 			<div>
 				<h2 className="text-a5">Information We Collect</h2>
@@ -42,7 +51,15 @@ export const PrivacyPolicyModule = () => {
 			</div>
 			<div>
 				<h2 className="text-a5">Contact Us</h2>
-				<h3>If you have questions about this Privacy Policy, please contact us at: support@big2.com.</h3>
+				<h3>If you have questions about this Privacy Policy, please contact us at:{" "}
+					<button
+						type="button"
+						onClick={handleEmailClick}
+						className="cursor-pointer text-a5"
+					>
+						support@big2.com
+					</button>
+				</h3>
 			</div>
 		</div>
 	);
