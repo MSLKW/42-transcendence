@@ -15,6 +15,7 @@ export const AchievementsModule = ({ achievements }: AchievementsModuleProps) =>
 			{ACHIEVEMENT_IDS.map((achievement) => {
 				return (
 					<AchievementImage
+						key={achievement}
 						title={ACHIEVEMENT_NAMES[achievement]}
 						description={ACHIEVEMENT_HINTS[achievement]}
 						unlocked={achievements?.[achievement] ?? undefined}

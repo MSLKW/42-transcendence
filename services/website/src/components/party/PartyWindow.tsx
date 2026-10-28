@@ -101,7 +101,7 @@ export const PartyWindow = () => {
 								<>
 									<h2>Friends List</h2>
 									{cachedFriends.map((f) => (
-										<PartyPlayerModule uuid={f}/>
+										<PartyPlayerModule key={f} uuid={f}/>
 									))}
 								</>
 							}
