@@ -8,6 +8,7 @@ import { useBotStore } from "./store/BotStore";
 import { useDevStore } from "./store/DevStore";
 import { useFriendsStore } from "./store/FriendsStore";
 import { useGameStore } from "./store/GameStore";
+import { useGameStatsStore } from "./store/GameStatsStore";
 import { useNotificationStore, NOTIFICATION_TYPE } from "./store/NotificationStore";
 import { usePartyStore } from "./store/PartyStore";
 import { useProfileStore } from "./store/ProfileStore";
@@ -30,6 +31,7 @@ export default function Dev() {
 	const gameSocketId = useGameStore((store) => store.gameSocketId);
 	const userSeats = useGameStore((store) => store.userSeats);
 	const totalPlayers = useGameStore((store) => store.totalPlayers);
+	const gameStatsVerboseMode = useGameStatsStore((store) => store.gameStatsVerboseMode);
 	const notifications = useNotificationStore((store) => store.notifications);
 	const partyVerboseMode = usePartyStore((store) => store.partyVerboseMode);
 	const partySocketId = usePartyStore((store) => store.partySocketId);
@@ -95,7 +97,7 @@ export default function Dev() {
 			const resp_json = await response.json();
 			console.log("[GET ", url, "] status:", response.status, " statusText:", response.statusText, " response:", response, " response.json:", resp_json);
 		} catch (err) {
-			console.error("fetchGet failed");
+			console.warn("fetchGet failed");
 		}
 	}
 
@@ -109,7 +111,7 @@ export default function Dev() {
 			const resp_json = await response?.json();
 			console.log("[PUT ", url, " ", body, "] ", response.status, " ", response.statusText, " - ", resp_json);
 		} catch (err) {
-			console.error("fetchPut failed");
+			console.warn("fetchPut failed");
 		}
 	}
 
@@ -160,6 +162,10 @@ export default function Dev() {
 					<DevButton label={`profileValidation: ${profileValidation}`} call={() => useProfileStore.setState({ profileValidation: !profileValidation })}/>
 					<DevButton label="Clear cachedProfiles" call={() => useProfileStore.setState({ cachedProfiles: {} })} />
 					<DevButton label={`profileVerboseMode: ${profileVerboseMode}`} call={() => useProfileStore.setState({ profileVerboseMode: !profileVerboseMode })}/>
+				</ul>
+			{/* game stats */}
+				<ul className="flex place-content-end">
+					<DevButton label={`gameStatsVerboseMode: ${gameStatsVerboseMode}`} call={() => useGameStatsStore.setState({ gameStatsVerboseMode: !gameStatsVerboseMode })}/>
 				</ul>
 			{/* party */}
 				<ul className="flex place-content-between">

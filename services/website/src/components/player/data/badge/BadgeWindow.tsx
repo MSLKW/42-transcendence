@@ -1,3 +1,5 @@
+import { handlePublicPlayerGameData } from "../../../../api/gameStats/get_public-player-game-data/handlePublicPlayerGameData";
+import { handleDisplayedBadge } from "../../../../api/gameStats/put_displayed-badge/handleDisplayedBadge";
 import { type PublicBadgeId, BADGE_NAMES, BADGE_HINTS } from "../../../../store/GameStatsStore";
 import { useSceneStore } from "../../../../store/SceneStore";
 import { Tooltip } from "../../../../utilities/react/Tooltip";
@@ -40,6 +42,7 @@ export const BadgeWindow = ({ badge, availableBadges, setBadge, setHasChange }: 
 										disabled={!isUnlocked}
 										onClick={() => {
 											setBadge(b as PublicBadgeId);
+											handleDisplayedBadge(b);
 											useSceneStore.getState().setShowWindow("badge", false);
 											setHasChange(true);
 										}}

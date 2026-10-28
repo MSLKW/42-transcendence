@@ -99,7 +99,7 @@ export default function App() {
 				useFriendsStore.setState({ cachedFriends: friends });
 			})
 			.catch((error) => {
-				console.error("Failed to refresh friendships:", error);
+				console.warn("Failed to refresh friendships:", error);
 			});
 	}, [clientUuid]);
 	useFriendEvents(clientUuid, handleFriendUpdate);
@@ -113,7 +113,7 @@ export default function App() {
 			.then((requests) => {
 				useFriendsStore.setState({ friendRequestSent: requests });
 			}).catch((error) => {
-				console.error("Sent requests failed:", error);
+				console.warn("Sent requests failed:", error);
 			});
 
 		void handleFriendRequestsReceived(clientUuid)
@@ -132,7 +132,7 @@ export default function App() {
 					})
 				);
 			}).catch((error) => {
-				console.error("Failed to process friend requests:", error);
+				console.warn("Failed to process friend requests:", error);
 			});
 	}, [clientUuid, currentScene]);
 

@@ -2,7 +2,7 @@ import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import { useAuthStore } from "./AuthStore";
 import { usePartyStore } from "./PartyStore";
-import { handlePublicPlayerGameData } from "../api/stats/get_public-player-game-data/handlePublicPlayerGameData";
+import { handlePublicPlayerGameData } from "../api/gameStats/get_public-player-game-data/handlePublicPlayerGameData";
 
 export const PUBLIC_BADGE_IDS = [
 	"fresh_deal",
@@ -109,8 +109,7 @@ export interface CachedStat {
 }
 
 interface StatsValues {
-	statsVerboseMode: boolean;
-	isStatsLoaded: boolean;
+	gameStatsVerboseMode: boolean;
 	cachedStats: Record<string, CachedStat>;
 	cachedBadges: Record<PublicBadgeId, boolean>;
 };
@@ -123,8 +122,7 @@ interface StatsState extends StatsValues {
 export const useGameStatsStore = create<StatsState>() (
 	persist(
 		(set, _get) => ({
-			statsVerboseMode: false,
-			isStatsLoaded: false,
+			gameStatsVerboseMode: false,
 			cachedStats: {},
 			cachedBadges: {
 				fresh_deal: false,
@@ -186,7 +184,6 @@ export const useGameStatsStore = create<StatsState>() (
 					}
 					return {
 						cachedStats,
-						isStatsLoaded: true,
 					}
 				});
 			},

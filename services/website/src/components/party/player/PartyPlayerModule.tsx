@@ -50,7 +50,7 @@ export const PartyPlayerModule = ({ uuid }: PartyPlayerModuleProps) => {
 					setLastOnline(online?.lastOnline ? new Date(online.lastOnline) : null);
 				}
 			} catch (error) {
-				console.error("Failed to fetch player profile:", error);
+				console.warn("Failed to fetch player profile:", error);
 			} finally {
 				setIsLoading(false);
 			}

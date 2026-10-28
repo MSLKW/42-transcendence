@@ -12,7 +12,7 @@ import { PlayerDataModule } from "../player/data/PlayerDataModule";
 import { PlayerStatsModule } from "../player/stats/PlayerStatsModule";
 import { FriendToggleButton } from "./friend/FriendToggleButton";
 import { KickPlayerButton } from "./kick/KickPlayerButton";
-import { handlePublicPlayerGameData } from "../../api/stats/get_public-player-game-data/handlePublicPlayerGameData";
+import { handlePublicPlayerGameData } from "../../api/gameStats/get_public-player-game-data/handlePublicPlayerGameData";
 
 export const StatsWindow: React.FC = () => {
 	const statsUuid = useSceneStore((store) => store.statsUuid!);
@@ -75,7 +75,7 @@ export const StatsWindow: React.FC = () => {
 					setLastOnline(online?.lastOnline ? new Date(online.lastOnline) : null);
 				}
 			} catch (error) {
-				console.error("Failed to fetch player data:", error);
+				console.warn("Failed to fetch player data:", error);
 			}
 		};
 		fetchPlayerData();

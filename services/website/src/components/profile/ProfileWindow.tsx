@@ -2,7 +2,7 @@ import { useState, useRef, useEffect } from "react";
 import { partySocket } from "../../api/party/partySocket";
 import { handleCreatedAt } from "../../api/authentication/get_created-at/handleCreatedAt";
 import { handlePutProfile } from "../../api/profile/put_profile/handlePutProfile";
-import { handleOwnPlayerGameData } from "../../api/stats/get_own-player-game-data/handleOwnPlayerGameData";
+import { handleOwnPlayerGameData } from "../../api/gameStats/get_own-player-game-data/handleOwnPlayerGameData";
 import { useAuthStore } from "../../store/AuthStore";
 import { useNotificationStore, NOTIFICATION_TYPE } from "../../store/NotificationStore";
 import { usePartyStore } from "../../store/PartyStore";
@@ -71,7 +71,7 @@ export const ProfileWindow = () => {
 
 				setAvailableBadges(clientStats.badges);
 			} catch (error) {
-				console.error("Failed to fetch player data:", error);
+				console.warn("Failed to fetch player data:", error);
 			}
 		}
 		fetchPlayerData();

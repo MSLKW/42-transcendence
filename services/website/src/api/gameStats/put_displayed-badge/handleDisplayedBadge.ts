@@ -1,3 +1,4 @@
+import { useGameStatsStore } from "../../../store/GameStatsStore";
 import { fetchDisplayedBadge } from "./fetchDisplayedBadge";
 
 export const handleDisplayedBadge = async (badgeId: string) => {
@@ -6,9 +7,12 @@ export const handleDisplayedBadge = async (badgeId: string) => {
 		if (!response)
 			return;
 
+		if (useGameStatsStore.getState().gameStatsVerboseMode)
+			console.log("[gameStats > 'PUT' displayed-badge] response:", response);
+
 		return response;
 	} catch(error) {
-		console.warn("[stats > 'POST' displayed-badge] error:", error);
+		console.warn("[gameStats > 'POST' displayed-badge] error:", error);
 
 		return null;
 	}

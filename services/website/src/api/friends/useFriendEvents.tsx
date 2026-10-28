@@ -95,7 +95,7 @@ export function useFriendEvents(clientUuid: string | null, onFriendUpdate?: () =
 
 		eventSource.onerror = (error) => {
 			if (useFriendsStore.getState().friendsVerboseMode)
-				console.error("[friends > onerror] SSE Error / Disconnected:", error);
+				console.warn("[friends > onerror] SSE Error / Disconnected:", error);
 			setIsConnected(false);
 		}
 
