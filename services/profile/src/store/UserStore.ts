@@ -1,4 +1,5 @@
-import { type UserData, type UserSettings } from "@big2/profile-types";
+import { UserData, UserSettings } from "@big2/profile-types";
+
 
 export interface UserStore
 {
@@ -7,6 +8,6 @@ export interface UserStore
 	getUuidsByQuery(query: string):			Promise<string[]>;
 	getUuidByUsername(username: string):	Promise<string | null>;
 	
-	updateUserProfile(uuid: string, partial: Partial<UserData>):		Promise<void>;
+	updateUserProfile(uuid: string, partial: Partial<UserData>):		Promise<"SUCCESS" | "USERNAME_TAKEN">;
 	updateUserSettings(uuid: string, partial: Partial<UserSettings>):	Promise<void>;
 }

@@ -13,45 +13,57 @@
 
 ### GET /profile/:uuid
 #### Responses
-- 200: Response uses `type UserData` as body. See [`src/types.tx`](./src/types.ts)
+```
+- 200: UserData 
 - 404: { error: string }
+```
+Response code 200 uses `type UserData` as body. See [`profile-types`](../../packages/types/profile-types/src/Types.ts)
+
 <br><br>
 
 ### GET /settings/:uuid
 #### Responses
-- 200: Response uses `type UserSettings` as body. See [`src/types.tx`](./src/types.ts)
+```
+- 200: UserSettings
 - 404: { error: string }
+```
+Response code 200 uses `type UserSettings` as body. See [`profile-types`](../../packages/types/profile-types/src/Types.ts)
+
 <br><br>
 
 ### GET /search/:query
 #### Responses
+```
 - 200: { searchResults: string[] } (a list of uuids)
+```
 <br><br>
 
 ### PUT /profile
 #### Body
-```
-{
-	[username:	 string],
-	[badge:		 string],
-	[avatarPath: string]
-}
-```
+Uses `type UserData` as body. See [`profile-types`](../../packages/types/profile-types/src/Types.ts)<br>
 Ommited fields will be unaffected
 
 #### Responses
-- 204
+```
+- 200 { message: string }
+- 400 { error: ZodIssue[] }
+- 422 { error: string } (username invalid)
+- 409 { error: string } (username taken)
 - forwards auth system's /validate responses to client on unsuccessful validation
+```
 <br><br>
 
 ### PUT /settings
 #### Request body
-Uses `type UserSettings` as body. See [`src/types.ts`](./src/types.ts)<br>
+Uses `type UserSettings` as body. See [`profile-types`](../../packages/types/profile-types/src/Types.ts)<br>
 Ommited fields will be unaffected
 
 #### Responses
-- 204
+```
+- 200: { message: string }
+- 400: { error: ZodIssue[] }
 - forwards auth system's /validate responses to client on unsuccessful validation
+```
 <br><br>
 
 ### PUT /avatar
@@ -70,6 +82,8 @@ function uploadFile(file: File)
 }
 ```
 #### Responses
+```
 - 200 { message: string, filename: string }
 - 400 { error: string }
 - forwards auth system's /validate responses to client on unsuccessful validation
+```

@@ -1,13 +1,28 @@
 {
 	"name": "@big2/profile-types",
 	"private": true,
-	"version": "1.0.0",
 	"main": "./dist/types.js",
 	"types": "./dist/types.d.ts",
+	"exports": {
+		".": {
+			"types": "./dist/Types.d.ts",
+			"import": "./dist/Types.js",
+			"default": "./dist/Types.js"
+		},
+		"./validation": {
+			"types": "./dist/Validation.d.ts",
+			"import": "./dist/Validation.js",
+			"default": "./dist/Validation.js"
+		}
+	},
 	"scripts": {
-		"build": "tsc"
+		"build": "tsc",
+		"build:docker": "tsc -b"
 	},
 	"devDependencies": {
 		"typescript": "^5.9.3"
+	},
+	"dependencies": {
+		"zod": "^4.6.7"
 	}
 }
