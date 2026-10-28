@@ -4,7 +4,7 @@ import { useAuthStore } from "./AuthStore";
 import { usePartyStore } from "./PartyStore";
 import { handlePublicPlayerGameData } from "../api/stats/get_public-player-game-data/handlePublicPlayerGameData";
 
-export const BADGE_LABEL = [
+export const PUBLIC_BADGE_IDS = [
 	"fresh_deal",
 	"beginners_luck",
 	"worthy_opponent",
@@ -15,10 +15,42 @@ export const BADGE_LABEL = [
 	"double_digits",
 	"century_club",
 	"hot_hand",
+	"flush_with_pride",
+	"never_folds",
 ] as const;
-export type BADGE_TYPE = typeof BADGE_LABEL[number];
+export type PublicBadgeId = (typeof PUBLIC_BADGE_IDS)[number];
 
-export const ACHIEVEMENTS_LABEL = [
+export const BADGE_NAMES: Record<PublicBadgeId, string> = {
+	fresh_deal:			"Fresh Deal",
+	beginners_luck:		"Beginner's Luck",
+	worthy_opponent:	"Worthy Opponent",
+	enthusiast:			"Enthusiast",
+	risk_taker:			"Risk Taker",
+	the_strategist:		"The Strategist",
+	big_2_champion:		"Big 2 Champion",
+	double_digits:		"Double Digits",
+	century_club:		"Century Club",
+	hot_hand:			"Hot Hand",
+	flush_with_pride:	"Flush With Pride",
+	never_folds:		"Never Folds",
+};
+
+export const BADGE_HINTS: Record<PublicBadgeId, string> = {
+	fresh_deal:			"Fresh start at Level 0!",
+	beginners_luck:		"Reach Level 1",
+	worthy_opponent:	"Reach Level 5",
+	enthusiast:			"Reach Level 10",
+	risk_taker:			"Reach Level 20",
+	the_strategist:		"Reach Level 50",
+	big_2_champion:		"Reach Level 100",
+	double_digits:		"Win 10 games",
+	century_club:		"Played 100 games",
+	hot_hand:			"Win streak 5",
+	flush_with_pride:	"Played with Straight Flush",
+	never_folds:		"Win without skipping",
+};
+
+export const ACHIEVEMENT_IDS = [
 	"best_single",
 	"best_double",
 	"best_triple",
@@ -32,7 +64,37 @@ export const ACHIEVEMENTS_LABEL = [
 	"win_no_pass",
 	"first_win",
 ] as const;
-export type ACHIEVEMENTS_TYPE = typeof ACHIEVEMENTS_LABEL[number];
+export type AchievementId = typeof ACHIEVEMENT_IDS[number];
+
+export const ACHIEVEMENT_NAMES: Record<AchievementId, string> = {
+	best_single:			"High",
+	best_double:			"Double",
+	best_triple:			"Triple",
+	best_straight:			"Straight",
+	best_flush:				"Flush",
+	best_full_house:		"Full House",
+	best_four_of_a_kind:	"4 Of A Kind",
+	best_straight_flush:	"Straight Flush",
+	play_three_diamonds:	"3 Of Diamonds",
+	play_two_spades:		"2 Of Spades",
+	win_no_pass:			"No Pass",
+	first_win:				"First Win",
+};
+
+export const ACHIEVEMENT_HINTS: Record<AchievementId, string> = {
+	best_single:			"Best your opponents with a high card",
+	best_double:			"Best your opponents with a pair",
+	best_triple:			"'Best your opponents with a triple",
+	best_straight:			"Best your opponents with a straight",
+	best_flush:				"Best your opponents with a flush",
+	best_full_house:		"Best your opponents with a full house",
+	best_four_of_a_kind:	"Best your opponents with a 4 of a kind",
+	best_straight_flush:	"Best your opponents with a straight flush",
+	play_three_diamonds:	"Play 3 of diamonds",
+	play_two_spades:		"Play 2 of spades",
+	win_no_pass:			"Win a game without passing",
+	first_win:				"Win a game",
+};
 
 export interface CachedStat {
 	level: number;
@@ -40,17 +102,17 @@ export interface CachedStat {
 	totalPlayed: number;
 	totalWins: number;
 	winStreak: number;
-	displayedBadgeId: BADGE_TYPE;
+	displayedBadgeId: PublicBadgeId;
 	currentLevelXpThreshold: number;
 	currentLevelProgressPercentage: number;
-	achievements: Record<ACHIEVEMENTS_TYPE, Date | null>;
+	achievements: Record<AchievementId, Date | null>;
 }
 
 interface StatsValues {
 	statsVerboseMode: boolean;
 	isStatsLoaded: boolean;
 	cachedStats: Record<string, CachedStat>;
-	cachedBadges: Record<BADGE_TYPE, boolean>;
+	cachedBadges: Record<PublicBadgeId, boolean>;
 };
 
 interface StatsState extends StatsValues {

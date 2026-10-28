@@ -12,7 +12,7 @@ export const AchievementImage = ({ icon, title, description, unlocked }: Achieve
 	const unlockedDate = unlocked ? new Date(unlocked) : null;
 
 	const subtitle = unlockedDate
-		? `Unlocked at:\n${unlockedDate.toString()}`
+		? `Unlocked at:\n${unlockedDate.toLocaleString()}`
 		: "Achievement Locked";
 
 	return (
@@ -22,8 +22,9 @@ export const AchievementImage = ({ icon, title, description, unlocked }: Achieve
 				aria-label={`${title}, ${subtitle}`}
 				className={`
 					h-12.5 aspect-square
-					btn-icon ${unlocked ? "bg-b4 border border-b5" : "bg-dark-semi"} rounded-full
-					cursor-default
+					btn-icon rounded-full bg-radial border
+					${unlocked ? "from-b4 to-b2 border-b5 text-b5" : "from-a4 to-a2 border-a5 opacity-60"}
+					cursor-help
 			`}>
 				{icon}
 			</button>

@@ -3,7 +3,7 @@ import { handleCreatedAt } from "../../api/authentication/get_created-at/handleC
 import { handleGetOnline } from "../../api/party/get_online/handleGetOnline";
 import { handleGetProfile } from "../../api/profile/get_profile/handleGetProfile";
 import { usePartyStore, type AVAILABILITY_TYPE } from "../../store/PartyStore";
-import { useStatsStore, type ACHIEVEMENTS_TYPE,type BADGE_TYPE } from "../../store/StatsStore";
+import { useStatsStore, type AchievementId,type PublicBadgeId } from "../../store/StatsStore";
 import { useSceneStore } from "../../store/SceneStore";
 import { Window } from "../window/Window";
 import { AvatarMemberModule } from "../avatar/AvatarMemberModule";
@@ -30,11 +30,11 @@ export const StatsWindow: React.FC = () => {
 	const [xp, setXp] = useState(0);
 	const [currentLevelXpThreshold, setCurrentLevelXpThreshold] = useState(0);
 	const [currentLevelProgressPercentage, setCurrentLevelProgressPercentage] = useState(0);
-	const [displayedBadgeId, setDisplayedBadgeId] = useState<BADGE_TYPE>(stats?.displayedBadgeId ?? "fresh_deal");
+	const [displayedBadgeId, setDisplayedBadgeId] = useState<PublicBadgeId>(stats?.displayedBadgeId ?? "fresh_deal");
 	const [totalPlayed, setTotalPlayed] = useState(0);
 	const [totalWins, setTotalWins] = useState(0);
 	const [winStreak, setWinStreak] = useState(0);
-	const [achievements, setAchievements] = useState<Record<ACHIEVEMENTS_TYPE, Date> | undefined>(undefined);
+	const [achievements, setAchievements] = useState<Record<AchievementId, Date> | undefined>(undefined);
 
 	const statsFetched = useRef<string | null>(null);
 	useEffect(() => {

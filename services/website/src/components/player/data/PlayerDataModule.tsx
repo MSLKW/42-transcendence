@@ -1,6 +1,6 @@
 import { useAuthStore } from "../../../store/AuthStore";
 import type { AVAILABILITY_TYPE } from "../../../store/PartyStore";
-import type { BADGE_TYPE } from "../../../store/StatsStore";
+import type { PublicBadgeId } from "../../../store/StatsStore";
 import { useSceneStore } from "../../../store/SceneStore";
 import { BadgeWindow } from "./badge/BadgeWindow";
 import { PlayerStatusModule } from "../status/PlayerStatusModule";
@@ -14,9 +14,9 @@ interface PlayerDataModuleProps {
 	level: number;
 	currentLevelXpThreshold: number;
 	currentLevelProgressPercentage: number;
-	displayedBadgeId: BADGE_TYPE | null;
-	availableBadges?: Record<BADGE_TYPE, boolean> | undefined;
-	setBadge?: (badge: BADGE_TYPE) => void;
+	displayedBadgeId: PublicBadgeId | null;
+	availableBadges?: Record<PublicBadgeId, boolean> | undefined;
+	setBadge?: (badge: PublicBadgeId) => void;
 	setHasChange?: (change: boolean) => void;
 }
 

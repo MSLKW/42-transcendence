@@ -1,23 +1,17 @@
-// import { useAuthStore } from "../../../../store/AuthStore";
-import { BADGE_LABEL, type BADGE_TYPE } from "../../../../store/StatsStore";
+import { type PublicBadgeId, BADGE_NAMES, BADGE_HINTS } from "../../../../store/StatsStore";
 import { useSceneStore } from "../../../../store/SceneStore";
+import { Tooltip } from "../../../../utilities/react/Tooltip";
 import { LightboxButton } from "../../../lightbox/LightboxButton";
 
 interface BadgeWindowProps {
-	badge: BADGE_TYPE;
-	availableBadges: Record<BADGE_TYPE, boolean> | undefined;
-	setBadge: (type: BADGE_TYPE) => void;
+	badge: PublicBadgeId;
+	availableBadges: Record<PublicBadgeId, boolean> | undefined;
+	setBadge: (type: PublicBadgeId) => void;
 	setHasChange: (change: boolean) => void;
 }
 
 export const BadgeWindow = ({ badge, availableBadges, setBadge, setHasChange }: BadgeWindowProps) => {
-	// const clientUuid = useAuthStore((store) => store.clientUuid);
-	// const getProfileData = useProfileStore((store) => store.getProfileData);
 	const showWindow = useSceneStore((store) => store.showWindow);
-
-	// const data = getProfileData(clientUuid!);
-	// if (!data)
-		// return;
 
 	return (
 		<>
@@ -33,33 +27,38 @@ export const BadgeWindow = ({ badge, availableBadges, setBadge, setHasChange }: 
 				flex flex-col place-content-center place-items-center
 				py-0.5rem
 			">
-				{BADGE_LABEL.map((badge_label, index) => {
-					// const isDisabled = index > data.level;
-					const isDisabled = index > 1;
-					return (
-						<li key={badge_label}>
-							<button
-								type="button"
-								disabled={isDisabled}
-								onClick={() => {
-									setBadge(badge_label);
-									useSceneStore.getState().setShowWindow("badge", false);
-									setHasChange(true);
-								}}
-								className={`
-									w-full
-									hover:not-disabled:bg-n2
-									rounded-full
-									text-sm
-									${badge === BADGE_LABEL[index] ? "text-b5" : "text-n6"}
-									py-0.5rem px-2rem
-									${isDisabled ? "cursor-default" : "cursor-pointer"}
-							`}>
-								{badge_label}
-							</button>
-						</li>
-					);
-				})}
+				{ availableBadges &&
+					Object.keys(availableBadges).map((b) => {
+						const key = b as keyof typeof availableBadges;
+						const isUnlocked = availableBadges[key];
+
+						return (
+							<li key={b}>
+								<Tooltip text={BADGE_HINTS[key]}>
+									<button
+										type="button"
+										disabled={!isUnlocked}
+										onClick={() => {
+											setBadge(b as PublicBadgeId);
+											useSceneStore.getState().setShowWindow("badge", false);
+											setHasChange(true);
+										}}
+										className={`
+											w-full
+											hover:not-disabled:bg-n2
+											rounded-full
+											text-sm
+											${b === badge ? "text-b5" : "text-n6"}
+											py-0.5rem px-2rem
+											cursor-pointer
+									`}>
+										{BADGE_NAMES[key]}
+									</button>
+								</Tooltip>
+							</li>
+						)
+					})
+				}
 			</ul>
 		</>
 	);

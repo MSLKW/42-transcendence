@@ -2,9 +2,9 @@ import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import { useAuthStore } from "./AuthStore";
 import { useFriendsStore } from "./FriendsStore";
-import { usePartyStore, type AVAILABILITY_TYPE } from "./PartyStore";
+import { usePartyStore } from "./PartyStore";
 import { handleGetProfile } from "../api/profile/get_profile/handleGetProfile";
-import type { BADGE_TYPE } from "./StatsStore";
+import type { PublicBadgeId } from "./StatsStore";
 
 export const RELATION_LABEL = [
 	"Stranger",
@@ -17,14 +17,14 @@ export type RELATION_TYPE = typeof RELATION_LABEL[number];
 export interface CachedProfile {
 	name: string | null;
 	avatar: string | null;
-	badge: BADGE_TYPE;
+	badge: PublicBadgeId;
 	relation: RELATION_TYPE;
 }
 
 export type UserData = {
 	username: string | null,
 	avatarPath: string | null,
-	badge: BADGE_TYPE,
+	badge: PublicBadgeId,
 };
 
 interface ProfileValues {
@@ -36,7 +36,6 @@ interface ProfileValues {
 };
 
 interface ProfileState extends ProfileValues {
-	// getProfileData: (uuid: string | null) => ProfileData | undefined,
 	setCachedProfile: () => Promise<void>,
 	removeCachedProfile: (uuid: string | null) => void;
 	markAvatarUpdated: (uuid: string) => void;
@@ -51,14 +50,6 @@ export const useProfileStore = create<ProfileState>() (
 			isProfileLoaded: false,
 			cachedProfiles: {},
 			avatarVersions: {},
-
-			// getProfileData: (_uuid) => {
-				// if (!uuid)
-				// 	return undefined;
-				// const profilesInDb = get().profilesInDb;
-				// return profilesInDb.find(p => p.uuid === uuid);
-				// return undefined;
-			// },
 
 			setCachedProfile: async () => {
 				const clientUuid = useAuthStore.getState().clientUuid;

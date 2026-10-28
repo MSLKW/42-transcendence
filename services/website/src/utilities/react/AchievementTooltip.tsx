@@ -41,15 +41,15 @@ export function AchievementTooltip({ text, date, description, children }: Achiev
 						fixed z-9999
 						-translate-y-full
 						-translate-x-1/2
-						bg-dark rounded-md px-2rem py-1rem
+						bg-dark rounded-xl px-2rem py-1rem
 						text-1.25rem text-white shadow-lg
 						pointer-events-none
 						whitespace-nowrap
 						flex flex-col place-content-center place-items-center
 						gap-1rem
 				">
-					<div className="flex flex-col place-items-center">
-						<h3>{text}</h3>
+					<div className="flex flex-col place-items-center text-b5">
+						<h3><b>'{text}'</b></h3>
 						<h3>{description}</h3>
 					</div>
 					<p>{date}</p>
