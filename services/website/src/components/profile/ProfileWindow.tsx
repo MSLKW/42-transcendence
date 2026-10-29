@@ -107,7 +107,10 @@ export const ProfileWindow = () => {
 					if (response["newlyGrantedBadgeIdForEasterEgg"])
 						useNotificationStore.getState().showNotification("'Connoisseur' easter egg found!", NOTIFICATION_TYPE.message);
 				}
-			}).catch (() => {});
+			})
+			.catch((error) => {
+				console.warn("Failed to handle update profile:", error);
+			});
 	}
 	return (
 		<Window

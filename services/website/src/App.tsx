@@ -112,7 +112,8 @@ export default function App() {
 		void handleFriendRequestsSent(clientUuid)
 			.then((requests) => {
 				useFriendsStore.setState({ friendRequestSent: requests });
-			}).catch((error) => {
+			})
+			.catch((error) => {
 				console.warn("Sent requests failed:", error);
 			});
 
@@ -131,7 +132,8 @@ export default function App() {
 						);
 					})
 				);
-			}).catch((error) => {
+			})
+			.catch((error) => {
 				console.warn("Failed to process friend requests:", error);
 			});
 	}, [clientUuid, currentScene]);

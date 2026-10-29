@@ -25,7 +25,10 @@ export const SetupValidationModule = ({ name, avatar }: SetupValidationModulePro
 				useGameStatsStore.getState().setCachedStats();
 				useNotificationStore.getState().showNotification("Profile created", NOTIFICATION_TYPE.message);
 				useSceneStore.getState().setShowWindow("setup", false);
-			}).catch(() => {});
+			})
+			.catch((error) => {
+				console.warn("Failed to handle update profile:", error);
+			});
 	};
 
 	return (
