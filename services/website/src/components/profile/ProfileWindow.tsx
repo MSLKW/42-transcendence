@@ -86,6 +86,7 @@ export const ProfileWindow = () => {
 		if (profileValidation && !isValid)
 			return;
 
+		useSceneStore.getState().setShowWindow("badge", false);
 		if (!hasChange) {
 			useSceneStore.getState().setShowWindow("profile", false);
 			return;
