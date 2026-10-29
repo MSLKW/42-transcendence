@@ -16,21 +16,25 @@ export const cachedBotData: Record<number, CachedProfile> = {
 		name: "Norminette",
 		avatar: "avatar-bot-0.webp",
 		relation: "Bot",
+		badge: "fresh_deal"
 	},
 	1: {
 		name: "Moulinette",
 		avatar: "avatar-bot-1.webp",
 		relation: "Bot",
+		badge: "fresh_deal"
 	},
 	2: {
 		name: "Thila-Bot",
 		avatar: "avatar-bot-2.webp",
 		relation: "Bot",
+		badge: "fresh_deal"
 	},
 	3: {
 		name: "Segfault",
 		avatar: "avatar-bot-3.webp",
 		relation: "Bot",
+		badge: "fresh_deal"
 	},
 };
 

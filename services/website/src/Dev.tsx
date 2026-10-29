@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { handleLogout } from "./api/authentication/delete_logout/handleLogout";
 import { useChatStore } from "./store/ChatStore";
 import { chatSocket } from "./api/chat/chatSocket";
@@ -46,9 +45,6 @@ export default function Dev() {
 	const showWindow = useSceneStore((store) => store.showWindow);
 	const currentScene = useSceneStore((store) => store.currentScene);
 
-	const [fetchUrl, setFetchUrl] = useState("");
-	const [fetchBody, setFetchBody] = useState("");
-
 	const handleResetAll = async () => {
 		await handleLogout();
 		useSceneStore.getState().setCurrentScene("Login");
@@ -86,33 +82,6 @@ export default function Dev() {
 			return (Math.abs(totalPlayers - (index - player)) % totalPlayers) * 3;
 		});
 		useGameStore.setState({ cardsLeft: newCardsLeft });
-	}
-
-	const fetchGet = async (url: string) => {
-		try {
-			const response = await fetch(`${url}`, {
-				method: "GET",
-				credentials: "include",
-			});
-			const resp_json = await response.json();
-			console.log("[GET ", url, "] status:", response.status, " statusText:", response.statusText, " response:", response, " response.json:", resp_json);
-		} catch (err) {
-			console.warn("fetchGet failed");
-		}
-	}
-
-	const fetchPut = async (url: string, body: string) => {
-		try {
-			const response = await fetch(`${url}`, {
-				method: "PUT",
-				headers: { "Content-Type": "application/json" },
-				body: JSON.stringify(body),
-			});
-			const resp_json = await response?.json();
-			console.log("[PUT ", url, " ", body, "] ", response.status, " ", response.statusText, " - ", resp_json);
-		} catch (err) {
-			console.warn("fetchPut failed");
-		}
 	}
 
 	return (

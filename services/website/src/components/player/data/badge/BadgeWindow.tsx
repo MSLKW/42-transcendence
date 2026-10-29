@@ -1,4 +1,3 @@
-import { handlePublicPlayerGameData } from "../../../../api/gameStats/get_public-player-game-data/handlePublicPlayerGameData";
 import { handleDisplayedBadge } from "../../../../api/gameStats/put_displayed-badge/handleDisplayedBadge";
 import { type PublicBadgeId, BADGE_NAMES, BADGE_HINTS } from "../../../../store/GameStatsStore";
 import { useSceneStore } from "../../../../store/SceneStore";
@@ -7,7 +6,7 @@ import { LightboxButton } from "../../../lightbox/LightboxButton";
 
 interface BadgeWindowProps {
 	badge: PublicBadgeId;
-	availableBadges: Record<PublicBadgeId, boolean> | undefined;
+	availableBadges: Record<PublicBadgeId, boolean>;
 	setBadge: (type: PublicBadgeId) => void;
 	setHasChange: (change: boolean) => void;
 }
@@ -29,7 +28,7 @@ export const BadgeWindow = ({ badge, availableBadges, setBadge, setHasChange }: 
 				flex flex-col place-content-center place-items-center
 				py-0.5rem
 			">
-				{ availableBadges &&
+				{ 
 					Object.keys(availableBadges).map((b) => {
 						const key = b as keyof typeof availableBadges;
 						const isUnlocked = availableBadges[key];

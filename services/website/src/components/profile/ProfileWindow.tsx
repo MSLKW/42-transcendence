@@ -9,7 +9,7 @@ import { useNotificationStore, NOTIFICATION_TYPE } from "../../store/Notificatio
 import { usePartyStore } from "../../store/PartyStore";
 import { useProfileStore } from "../../store/ProfileStore";
 import { useSceneStore } from "../../store/SceneStore";
-import { useGameStatsStore, type AchievementId, type PublicBadgeId } from "../../store/GameStatsStore";
+import { useGameStatsStore } from "../../store/GameStatsStore";
 import { checkNameValidity } from "../../utilities/react/checkNameValidity";
 import { Window } from "../window/Window";
 import { AvatarSetNameModule } from "../avatar/name/AvatarSetNameModule";
@@ -25,23 +25,25 @@ export const ProfileWindow = () => {
 	const profileValidation = useProfileStore((store) => store.profileValidation);
 	const cachedProfiles = useProfileStore((store) => store.cachedProfiles);
 	const cachedStats = useGameStatsStore((store) => store.cachedStats);
+	const cachedBadges = useGameStatsStore((store) => store.cachedBadges);
 
-	const profile = clientUuid ? cachedProfiles[clientUuid] : undefined;
-	const stats = clientUuid ? cachedStats[clientUuid] : undefined;
-	const [name, setName] = useState(profile?.name ?? "n/a");
-	const [avatar, setAvatar] = useState(profile?.avatar ?? undefined);
+	const cachedProfile = clientUuid && clientUuid in cachedProfiles ? cachedProfiles[clientUuid] : undefined;
+	const cachedStat = clientUuid && clientUuid in cachedStats ? cachedStats[clientUuid] : undefined;
+	
+	const [name, setName] = useState(cachedProfile?.name ?? "n/a");
+	const [avatar, setAvatar] = useState(cachedProfile?.avatar ?? undefined);
 	const [hasChange, setHasChange] = useState(false);
 	const [createdAt, setCreatedAt] = useState<Date | null>(null);
-	const [level, setLevel] = useState(0);
-	const [xp, setXp] = useState(0);
-	const [currentLevelXpThreshold, setCurrentLevelXpThreshold] = useState(0);
-	const [currentLevelProgressPercentage, setCurrentLevelProgressPercentage] = useState(0);
-	const [displayedBadgeId, setDisplayedBadgeId] = useState<PublicBadgeId>(stats?.displayedBadgeId ?? "fresh_deal");
-	const [totalPlayed, setTotalPlayed] = useState(0);
-	const [totalWins, setTotalWins] = useState(0);
-	const [winStreak, setWinStreak] = useState(0);
-	const [achievements, setAchievements] = useState<Record<AchievementId, Date> | undefined>(undefined);
-	const [availableBadges, setAvailableBadges] = useState<Record<PublicBadgeId, boolean> | undefined>(undefined);
+	const [level, setLevel] = useState(cachedStat?.level ?? 0);
+	const [xp, setXp] = useState(cachedStat?.xp ?? 0);
+	const [currentLevelXpThreshold, setCurrentLevelXpThreshold] = useState(cachedStat?.currentLevelXpThreshold ?? 0);
+	const [currentLevelProgressPercentage, setCurrentLevelProgressPercentage] = useState(cachedStat?.currentLevelProgressPercentage ?? 0);
+	const [displayedBadgeId, setDisplayedBadgeId] = useState(cachedStat?.displayedBadgeId ?? "fresh_deal");
+	const [totalPlayed, setTotalPlayed] = useState(cachedStat?.totalPlayed ?? 0);
+	const [totalWins, setTotalWins] = useState(cachedStat?.totalWins ?? 0);
+	const [winStreak, setWinStreak] = useState(cachedStat?.winStreak ?? 0);
+	const [achievements, setAchievements] = useState(cachedStat?.achievements ?? undefined);
+	const [availableBadges, setAvailableBadges] = useState(cachedBadges);
 
 	const createdAtFetched = useRef<string | null>(null);
 	useEffect(() => {

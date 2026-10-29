@@ -2,7 +2,7 @@ import { type AchievementId, ACHIEVEMENT_NAMES, ACHIEVEMENT_HINTS, ACHIEVEMENT_I
 import { AchievementImage } from "./AchievementImage";
 
 interface AchievementsModuleProps {
-	achievements: Record<AchievementId, Date> | undefined;
+	achievements: Record<AchievementId, Date | null> | undefined;
 }
 export const AchievementsModule = ({ achievements }: AchievementsModuleProps) => {
 	return (

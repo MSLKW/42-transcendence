@@ -3,7 +3,8 @@ import { handleCreatedAt } from "../../api/authentication/get_created-at/handleC
 import { handleGetOnline } from "../../api/party/get_online/handleGetOnline";
 import { handleGetProfile } from "../../api/profile/get_profile/handleGetProfile";
 import { usePartyStore, type AVAILABILITY_TYPE } from "../../store/PartyStore";
-import { useGameStatsStore, type AchievementId,type PublicBadgeId } from "../../store/GameStatsStore";
+import { useGameStatsStore } from "../../store/GameStatsStore";
+import { useProfileStore } from "../../store/ProfileStore";
 import { useSceneStore } from "../../store/SceneStore";
 import { Window } from "../window/Window";
 import { AvatarMemberModule } from "../avatar/AvatarMemberModule";
@@ -17,24 +18,26 @@ import { handlePublicPlayerGameData } from "../../api/gameStats/get_public-playe
 export const StatsWindow: React.FC = () => {
 	const statsUuid = useSceneStore((store) => store.statsUuid!);
 	const members = usePartyStore((store) => store.members);
+	const cachedProfiles = useProfileStore((store) => store.cachedProfiles);
 	const cachedStats = useGameStatsStore((store) => store.cachedStats);
 	
-	const stats = statsUuid ? cachedStats[statsUuid] : undefined;
+	const cachedProfile = statsUuid && statsUuid in cachedProfiles ? cachedProfiles[statsUuid] : undefined;
+	const cachedStat = statsUuid && statsUuid in cachedStats ? cachedStats[statsUuid] : undefined;
 
-	const [name, setName] = useState<string | null>(null);
-	const [avatar, setAvatar] = useState<string | undefined>(undefined);
+	const [name, setName] = useState(cachedProfile?.name ?? "n/a");
+	const [avatar, setAvatar] = useState(cachedProfile?.avatar ?? undefined);
 	const [createdAt, setCreatedAt] = useState<Date | null>(null);
 	const [availability, setAvailability] = useState<AVAILABILITY_TYPE | null>(null);
 	const [lastOnline, setLastOnline] = useState<Date | null>(null);
-	const [level, setLevel] = useState(0);
-	const [xp, setXp] = useState(0);
-	const [currentLevelXpThreshold, setCurrentLevelXpThreshold] = useState(0);
-	const [currentLevelProgressPercentage, setCurrentLevelProgressPercentage] = useState(0);
-	const [displayedBadgeId, setDisplayedBadgeId] = useState<PublicBadgeId>(stats?.displayedBadgeId ?? "fresh_deal");
-	const [totalPlayed, setTotalPlayed] = useState(0);
-	const [totalWins, setTotalWins] = useState(0);
-	const [winStreak, setWinStreak] = useState(0);
-	const [achievements, setAchievements] = useState<Record<AchievementId, Date> | undefined>(undefined);
+	const [level, setLevel] = useState(cachedStat?.level ?? 0);
+	const [xp, setXp] = useState(cachedStat?.xp ?? 0);
+	const [currentLevelXpThreshold, setCurrentLevelXpThreshold] = useState(cachedStat?.currentLevelXpThreshold ?? 0);
+	const [currentLevelProgressPercentage, setCurrentLevelProgressPercentage] = useState(cachedStat?.currentLevelProgressPercentage ?? 0);
+	const [displayedBadgeId, setDisplayedBadgeId] = useState(cachedStat?.displayedBadgeId ?? "fresh_deal");
+	const [totalPlayed, setTotalPlayed] = useState(cachedStat?.totalPlayed ?? 0);
+	const [totalWins, setTotalWins] = useState(cachedStat?.totalWins ?? 0);
+	const [winStreak, setWinStreak] = useState(cachedStat?.winStreak ?? 0);
+	const [achievements, setAchievements] = useState(cachedStat?.achievements ?? undefined);
 
 	const statsFetched = useRef<string | null>(null);
 	useEffect(() => {
@@ -51,7 +54,7 @@ export const StatsWindow: React.FC = () => {
 					handlePublicPlayerGameData(statsUuid),
 				]);
 
-				setName(profile?.username ?? null);
+				setName(profile?.username ?? "n/a");
 				setAvatar(profile?.avatarPath ?? undefined);
 
 				setCreatedAt(createdAt ?? null);

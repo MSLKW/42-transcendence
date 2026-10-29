@@ -17,7 +17,8 @@ import { useResultsStore } from '../../store/ResultsStore';
 import { useBotStore } from '../../store/BotStore';
 import { useSettingsStore } from '../../store/SettingsStore';
 import { useNotificationStore, NOTIFICATION_TYPE } from '../../store/NotificationStore';
-import { clearGameInstance, gameLog } from './main';
+// import { clearGameInstance, gameLog } from './main';
+import { gameLog } from './main';
 
 const gameSocketUrl = window.location.origin;
 

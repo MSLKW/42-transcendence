@@ -15,7 +15,7 @@ interface PlayerDataModuleProps {
 	currentLevelXpThreshold: number;
 	currentLevelProgressPercentage: number;
 	displayedBadgeId: PublicBadgeId | null;
-	availableBadges?: Record<PublicBadgeId, boolean> | undefined;
+	availableBadges?: Record<PublicBadgeId, boolean>;
 	setBadge?: (badge: PublicBadgeId) => void;
 	setHasChange?: (change: boolean) => void;
 }
@@ -109,7 +109,7 @@ export const PlayerDataModule = ({
 							badge={displayedBadgeId ?? "fresh_deal"}
 							setBadge={setBadge ?? (() => {})}
 							setHasChange={setHasChange ?? (() => {})}
-							availableBadges={availableBadges}
+							availableBadges={availableBadges ?? ({} as Record<PublicBadgeId, boolean>)}
 						/>
 					}
 				</div>

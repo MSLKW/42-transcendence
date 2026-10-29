@@ -149,6 +149,10 @@ export const useGameStatsStore = create<StatsState>() (
 				hot_hand: false,
 				flush_with_pride: false,
 				never_folds: false,
+				curious_cat: false,
+				imposter: false,
+				social_butterfly: false,
+				connoisseur: false,
 			},
 
 			setCachedStats: async () => {
@@ -181,7 +185,7 @@ export const useGameStatsStore = create<StatsState>() (
 								displayedBadgeId: userStats.stats.displayedBadgeId,
 								currentLevelXpThreshold: userStats.levelProgress.currentLevelXpThreshold,
 								currentLevelProgressPercentage: userStats.levelProgress.currentLevelProgressPercentage,
-								achievements: userStats.badges,
+								achievements: userStats.achievements,
 							},
 						}
 					})
