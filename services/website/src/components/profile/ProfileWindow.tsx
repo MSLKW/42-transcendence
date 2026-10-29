@@ -99,12 +99,12 @@ export const ProfileWindow = () => {
 				if (name.startsWith("bot-")) {
 					const response = await handleEasterEggFound("egg_b31524145402");
 					if (response["newlyGrantedBadgeIdForEasterEgg"])
-						useNotificationStore.getState().showNotification("'imposter' easter egg found!", NOTIFICATION_TYPE.message);
+						useNotificationStore.getState().showNotification("'Imposter' easter egg found!", NOTIFICATION_TYPE.message);
 				}
 				if (avatar === "avatar-animal-9.webp") {
 					const response = await handleEasterEggFound("egg_5640cd1ea99b");
 					if (response["newlyGrantedBadgeIdForEasterEgg"])
-						useNotificationStore.getState().showNotification("'imposter' easter egg found!", NOTIFICATION_TYPE.message);
+						useNotificationStore.getState().showNotification("'Connoisseur' easter egg found!", NOTIFICATION_TYPE.message);
 				}
 			}).catch (() => {});
 	}

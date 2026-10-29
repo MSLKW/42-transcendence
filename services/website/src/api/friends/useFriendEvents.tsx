@@ -96,7 +96,7 @@ export function useFriendEvents(clientUuid: string | null, onFriendUpdate?: () =
 			void handleEasterEggFound("egg_0a793011efa2")
 			.then((response: any) => {
 				// if (response["newlyGrantedBadgeIdForEasterEgg"])
-					useNotificationStore.getState().showNotification("'social_butterfly' easter egg found!", NOTIFICATION_TYPE.message);
+					useNotificationStore.getState().showNotification("'Social Butterfly' easter egg found!", NOTIFICATION_TYPE.message);
 			})
 		});
 

@@ -5,7 +5,7 @@ export const PrivacyPolicyModule = () => {
 	const handleEmailClick = async () => {
 		const response = await handleEasterEggFound("egg_f355a785db3c");
 		if (response["newlyGrantedBadgeIdForEasterEgg"])
-			useNotificationStore.getState().showNotification("'curious_cat' easter egg found!", NOTIFICATION_TYPE.message);
+			useNotificationStore.getState().showNotification("'Curious Cat' easter egg found!", NOTIFICATION_TYPE.message);
 	}
 
 	return (
