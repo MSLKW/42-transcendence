@@ -118,6 +118,7 @@ export class Game {
 		this.socket.on("connect_error", (error) => {
 			gameLog("[gameSocket] 'connect_error': ", error.message);
 			usePartyStore.setState({ partyGameId: null });
+			useSceneStore.getState().setCurrentScene("Home");
 			this.disconnect();
 		});
 
