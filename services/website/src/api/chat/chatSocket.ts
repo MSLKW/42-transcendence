@@ -1,4 +1,5 @@
 import { io, Socket } from "socket.io-client";
+import { VITE_SOCKET_URL, VITE_SOCKET_CHAT_PATH } from "../../config/env";
 import { useChatStore, type CHAT_TYPE } from "../../store/ChatStore";
 import { connectionHandlers } from "./handlers/connectionHandlers";
 import { joinRoomAction } from "./actions/joinRoomAction";
@@ -9,9 +10,6 @@ import { onUserLeftAction } from "./actions/onUserLeftAction";
 import { onUserTypingAction } from "./actions/onUserTypingAction";
 import { sendChatAction } from "./actions/sendChatAction";
 import { sendTypingAction } from "./actions/sendTypingAction";
-
-// const chatSocketUrl = import.meta.env.VITE_SOCKET_URL;
-const chatSocketUrl = window.location.origin;
 
 export type ChatMessage = {
 	type: CHAT_TYPE;
@@ -45,8 +43,8 @@ class ChatSocketService {
 			return;
 		}
 
-		this.socket = io(chatSocketUrl, {
-			path: "/socket/chat",
+		this.socket = io(VITE_SOCKET_URL, {
+			path: VITE_SOCKET_CHAT_PATH,
 			transports: ["websocket", "polling"],
 			autoConnect: false,
 			reconnection: true,
