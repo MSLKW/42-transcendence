@@ -76,7 +76,7 @@ export const ChatWindow = () => {
 			hasClearChatButton={true}
 		>
 			<div className="
-				w-100
+				w-100 h-full max-h-[76vh]
 				flex flex-col place-content-start place-items-center
 				pt-1rem px-1rem gap-0.5rem
 				pointer-events-auto
@@ -85,24 +85,18 @@ export const ChatWindow = () => {
 					ref={scrollContainerRef}
 					tabIndex={-1}
 					className="
-						w-full h-full
+						w-full min-h-0
 						bg-dark rounded-md
 						py-1rem px-1rem
 						overflow-y-auto
-						flex flex-col place-content-center place-items-center
+						flex flex-1 flex-col place-content-start place-items-center
 						gap-1rem
 				">
 					{!cachedChat.length
 						?
 							<h2 className="text-n6/50">Chat messages appear here</h2>
 						:
-							<ul
-								className="
-									w-full
-									flex flex-col
-									text-n6
-								"
-							>
+							<ul className="w-full flex flex-col text-n6">
 								{cachedChat.map((data, index) => {
 									const isFirstFromClient = index === 0 || cachedChat[index - 1].uuid !== data.uuid;
 									const nextMessage = cachedChat[index + 1];
