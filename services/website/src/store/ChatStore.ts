@@ -7,7 +7,7 @@ export interface ChatData {
 	type: CHAT_TYPE,
 	uuid: string,
 	name: string,
-	avatar: string,
+	avatar: string | undefined,
 	msg: string,
 }
 
@@ -45,7 +45,7 @@ export const useChatStore = create<ChatState>() (
 			rateLimited: null,
 
 			addToCachedChat: (type, uuid, name, avatar, msg) => {
-				set((state: { cachedChat: any }) => ({
+				set((state) => ({
 					cachedChat: [
 						...state.cachedChat,
 						{ type, uuid, name, avatar, msg }
@@ -65,6 +65,11 @@ export const useChatStore = create<ChatState>() (
 			},
 
 			resetValues: () => {
+				if (rateLimitTimeout){
+					clearTimeout(rateLimitTimeout);
+					rateLimitTimeout = null;
+				}
+
 				set({
 					isChatSubscribed: false,
 					chatSocketId: null,
@@ -76,6 +81,16 @@ export const useChatStore = create<ChatState>() (
 		}),
 		{
 			name: 'chat-storage',
+			version: 1,
+
+			partialize: (state) => ({
+				chatVerboseMode: state.chatVerboseMode,
+			}),
+
+			migrate: (persistedState) => {
+				const state = persistedState as { chatVerboseMode?: boolean };
+				return { chatVerboseMode: state.chatVerboseMode ?? false};
+			},
 		}
 	)
 );
