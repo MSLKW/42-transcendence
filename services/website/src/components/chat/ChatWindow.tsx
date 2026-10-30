@@ -34,7 +34,7 @@ export const ChatWindow = () => {
 				behavior: "smooth"
 			});
 		}
-	}, [cachedChat.length]);
+	}, [cachedChat]);
 
 	const wasTyping = useRef(false);
 	useEffect(() => {
@@ -76,7 +76,7 @@ export const ChatWindow = () => {
 			hasClearChatButton={true}
 		>
 			<div className="
-				w-100 max-h-75
+				w-100
 				flex flex-col place-content-start place-items-center
 				pt-1rem px-1rem gap-0.5rem
 				pointer-events-auto

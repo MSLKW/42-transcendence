@@ -11,6 +11,8 @@ export interface ChatData {
 	msg: string,
 }
 
+const MAX_CACHED_MESSAGES = 100;
+
 let rateLimitTimeout: ReturnType<typeof setTimeout> | null = null;
 
 interface ChatValues {
@@ -49,7 +51,7 @@ export const useChatStore = create<ChatState>() (
 					cachedChat: [
 						...state.cachedChat,
 						{ type, uuid, name, avatar, msg }
-					]
+					].slice(-MAX_CACHED_MESSAGES)
 				}));
 			},
 

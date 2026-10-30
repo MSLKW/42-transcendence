@@ -43,6 +43,6 @@ export function partyStateHandler(socket: Socket) {
 		await useGameStatsStore.getState().setCachedStats();
 
 		if (isClientNewHost)
-			useNotificationStore.getState().showNotification("You are the new host of this party", NOTIFICATION_TYPE.message);
+			useNotificationStore.getState().showNotification("You are the host of this party", NOTIFICATION_TYPE.message);
 	});
 }
