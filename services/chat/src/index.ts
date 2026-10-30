@@ -20,6 +20,7 @@ if (!SOCKET_CHAT_PATH)
 const io = new Server<ClientToServerEvents, ServerToClientEvents>({
 	cors: { origin: "*" },
 	path: SOCKET_CHAT_PATH,
+	maxHttpBufferSize: 8 * 1024,
 });
 const partyManager = new PartyManager(io);
 let isShuttingDown = false;
