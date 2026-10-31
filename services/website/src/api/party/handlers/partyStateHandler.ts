@@ -5,6 +5,7 @@ import { useChatStore } from "../../../store/ChatStore";
 import { useGameStatsStore } from "../../../store/GameStatsStore";
 import { usePartyStore } from "../../../store/PartyStore";
 import { useProfileStore } from "../../../store/ProfileStore";
+import { useSceneStore } from "../../../store/SceneStore";
 import { chatSocket } from "../../chat/chatSocket";
 
 export function partyStateHandler(socket: Socket) {
@@ -30,7 +31,6 @@ export function partyStateHandler(socket: Socket) {
 
 		const currentChatRoomId = useChatStore.getState().chatRoomId;
 		const newChatRoomId = partyData.hostUuid;
-		console.log("currentChatRoomId:", currentChatRoomId, " newChatRoomId:", newChatRoomId);
 		if (currentChatRoomId !== newChatRoomId) {
 			useChatStore.setState ({
 				chatRoomId: newChatRoomId,
@@ -41,6 +41,8 @@ export function partyStateHandler(socket: Socket) {
 
 		await useProfileStore.getState().setCachedProfile();
 		await useGameStatsStore.getState().setCachedStats();
+
+		useSceneStore.setState({ initialRender: true });
 
 		if (isClientNewHost)
 			useNotificationStore.getState().showNotification("You are the host of this party", NOTIFICATION_TYPE.message);

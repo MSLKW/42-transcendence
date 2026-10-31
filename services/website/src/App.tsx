@@ -42,6 +42,7 @@ import { ThreeJsManager } from './components/3d/ThreeJsManager';
 import { gameInstance, joinGameLobby, clearGameInstance } from "./api/game/main";
 import Dev from "./Dev";
 import { usePartyStore } from "./store/PartyStore";
+import { handleValidate } from "./api/authentication/get_validate/handleValidate";
 
 export let threejsManager: ThreeJsManager;
 
@@ -53,6 +54,7 @@ export default function App() {
 	const showWindow = useSceneStore((store) => store.showWindow);
 	const showDevSection = useDevStore((store) => store.showDevSection);
 	const partyGameId = usePartyStore((store) => store.partyGameId);
+	const initialRender = useSceneStore((store) => store.initialRender);
 
 	/** Party socket connection */
 	useEffect(() => {
@@ -61,8 +63,13 @@ export default function App() {
 
 		partySocket.connect();
 
+		const timerId = setTimeout(() => {
+			useSceneStore.setState({ initialRender: true });
+		}, 1000);
+
 		return () => {
 			partySocket.disconnect();
+			clearTimeout(timerId);
 		};
 	}, [clientUuid]);
 
@@ -141,9 +148,8 @@ export default function App() {
 	/** Three js manager */
 	const containerRef = useRef<HTMLDivElement>(null);
 	useEffect(() => {
-		if (!containerRef.current) {
+		if (!containerRef.current)
 			return ;
-		}
 		threejsManager = new ThreeJsManager(containerRef.current);
 
 		return () => {
@@ -151,7 +157,7 @@ export default function App() {
 				threejsManager.dispose()
 			}
 		}
-	}, []);
+	}, [initialRender]);
 
 	/** Three js scene handler */
 	useEffect(() => {
@@ -162,7 +168,7 @@ export default function App() {
 		if (threejsManager.getSceneId() !== currentSceneLowered) {
 			threejsManager.changeScene(currentSceneLowered);
 		}
-	}, [currentScene]);
+	}, [currentScene, initialRender]);
 
 	/** Scroll to top */
 	useEffect(() => {
@@ -191,9 +197,25 @@ export default function App() {
 			console.log("[party > 'on' party_state] Blocked from joining game lobby w/ partyGameId:", partyGameId);
 	}, [partyGameId]);
 
+	useEffect(() => {
+		void handleValidate()
+			.then((res) => {
+				if (!res)
+					useSceneStore.getState().setCurrentScene("Login");
+			});
+	}, []);
+
+	useEffect(() => {
+		if (currentScene === "Login")
+			useSceneStore.setState({ initialRender: true });
+	}, [currentScene]);
+
+	if (!initialRender)
+		return;
+
 	return (
 		<>
-			{ (currentScene === "Login" || currentScene === "Home") && <StripeBg /> }
+			<StripeBg />
 			<section className="
 				z-0 absolute top-0 left-1/2 -translate-x-1/2
 				h-full min-h-120 max-h-360
