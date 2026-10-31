@@ -29,13 +29,13 @@ export const userSettings = profileSchema.table("user_settings", {
 	id: uuid("id")
 		.primaryKey()
 		.references(() => userData.id, { onDelete: "cascade" }),
-	allow3OfAKind: 		boolean("allow_3_of_a_kind").default(false).notNull(),
+	allow3OfAKind: 		boolean("allow_3_of_a_kind").default(true).notNull(),
 	allow2OfSpadesEnd: 	boolean("allow_2_of_spades_end").default(false).notNull(),
-	autoPassIndex: 		integer("auto_pass_index").default(0).notNull(),
+	autoPassTimerMs: 	integer("auto_pass_timer_ms").default(1000 * 60).notNull(),
 	endGameCondition: 	integer("end_game_condition").default(0).notNull(),
 	scoreCalculation: 	integer("score_calculation").default(0).notNull(),
 	cardStyle: 			integer("card_style").default(0).notNull(),
-	uiColor: 			integer("ui_color").default(0).notNull(),
+	uiColour: 			integer("ui_colour").default(0).notNull(),
 	fxLevel: 			integer("fx_level").default(0).notNull(),
 	mxLevel: 			integer("mx_level").default(0).notNull(),
 	updatedAt: 			timestamp("updated_at", { withTimezone: true }).defaultNow().notNull(),
