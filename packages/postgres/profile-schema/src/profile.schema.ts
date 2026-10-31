@@ -31,7 +31,7 @@ export const userSettings = profileSchema.table("user_settings", {
 		.references(() => userData.id, { onDelete: "cascade" }),
 	allow3OfAKind: 		boolean("allow_3_of_a_kind").default(true).notNull(),
 	allow2OfSpadesEnd: 	boolean("allow_2_of_spades_end").default(false).notNull(),
-	autoPassTimerMs: 	integer("auto_pass_timer_ms").default(60000).notNull(),
+	autoPassTimerMs: 	integer("auto_pass_timer_ms").default(1000 * 60).notNull(),
 	endGameCondition: 	integer("end_game_condition").default(0).notNull(),
 	scoreCalculation: 	integer("score_calculation").default(0).notNull(),
 	cardStyle: 			integer("card_style").default(0).notNull(),

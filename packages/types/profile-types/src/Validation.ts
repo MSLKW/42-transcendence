@@ -15,7 +15,7 @@ export const UserDataSchema = z.object({
 export const UserSettingsSchema = z.object({
 	allow3OfAKind:		z.boolean().optional(),
 	allow2OfSpadesEnd:	z.boolean().optional(),
-	autoPassTimerMs:	z.number().int().min(0).max(0).optional(),
+	autoPassTimerMs:	z.number().int().min(0).max(1000 * 60 * 2).optional(),
 	cardStyle:			z.number().int().min(0).max(0).optional(),
 	uiColour:			z.number().int().min(0).max(0).optional(),
 	fxLevel:			z.number().int().min(0).max(100).optional(),
