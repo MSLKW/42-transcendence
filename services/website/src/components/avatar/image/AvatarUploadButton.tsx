@@ -50,7 +50,7 @@ export const AvatarUploadButton = ({ setAvatar }: AvatarUploadButtonProps) => {
 				className="hidden"
 			/>
 			<button
-				type="button"
+				type="submit"
 				onClick={handleClick}
 				className="
 					hover:not-disabled:scale-105 active:hover:not-disabled:scale-100

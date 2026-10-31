@@ -41,6 +41,7 @@ export const FriendToggleButton = ({ uuid, name }: FriendToggleButtonProps) => {
 
 	return (
 		<button
+			type="button"
 			onClick={handleButtonClick}
 			className="
 				h-4rem aspect-5/1

@@ -4,13 +4,13 @@ import { Tooltip } from "../../../utilities/react/Tooltip";
 import { RankIcon } from "./RankIcon";
 
 export const RankCallButton = () => {
-	const setShowWindow = useSceneStore((store) => store.setShowWindow);
 	const currentHand = useGameStore((store) => store.currentHand);
 
 	return (
 		<Tooltip text="View Rank List">
 			<button
-				onClick={() => setShowWindow("rank", true)}
+				type="button"
+				onClick={() => useSceneStore.getState().setShowWindow("rank", true)}
 				className="
 					btn-text bg-dark-semi
 					h-max w-max

@@ -1,6 +1,6 @@
 import { create } from "zustand";
 import { useGameStore } from "./GameStore";
-import { useProfileStore, type CachedData } from "./ProfileStore";
+import { useProfileStore, type CachedProfile } from "./ProfileStore";
 import { gameInstance } from "../api/game/main";
 import type { SeatOrderTransmit } from "@big2/game-types";
 
@@ -11,30 +11,30 @@ export const INTEL_LABEL = [
  ] as const;
 export type INTEL_TYPE = typeof INTEL_LABEL[number];
 
-export const cachedBotData: Record<number, CachedData> = {
+export const cachedBotData: Record<number, CachedProfile> = {
 	0: {
 		name: "Norminette",
 		avatar: "avatar-bot-0.webp",
 		relation: "Bot",
-		badge: "Newcomer",
+		badge: "fresh_deal"
 	},
 	1: {
 		name: "Moulinette",
 		avatar: "avatar-bot-1.webp",
 		relation: "Bot",
-		badge: "Newcomer",
+		badge: "fresh_deal"
 	},
 	2: {
 		name: "Thila-Bot",
 		avatar: "avatar-bot-2.webp",
 		relation: "Bot",
-		badge: "Newcomer",
+		badge: "fresh_deal"
 	},
 	3: {
 		name: "Segfault",
 		avatar: "avatar-bot-3.webp",
 		relation: "Bot",
-		badge: "Newcomer",
+		badge: "fresh_deal"
 	},
 };
 
@@ -65,8 +65,8 @@ export const useBotStore = create<BotState>() (
 					gameInstance?.removeBot(botId);
 				}
 			}
-			// useProfileStore.getState().clearCachedData();
-			// await useProfileStore.getState().setCachedData();
+			// useProfileStore.setState({ cachedProfiles: {} });
+			// await useProfileStore.getState().setCachedProfile();
 			// Need a way to clear up the bot cached data
 		},
 
@@ -87,7 +87,7 @@ export const useBotStore = create<BotState>() (
 
 		cacheBotProfile: (seatData: SeatOrderTransmit) => {
 			for (let i = 0; i < seatData.seatOrder.length; i++) {
-				const cached = useProfileStore.getState().cachedData;
+				const cached = useProfileStore.getState().cachedProfiles;
 				const cachedUuids = Object.keys(cached);
 				const seatUuid: string = seatData.seatOrder[i] ?? "";
 				if (seatUuid.length === 0)
@@ -95,7 +95,7 @@ export const useBotStore = create<BotState>() (
 				const inCachedUuids = cachedUuids.find((uuid) => uuid === seatUuid);
 				if (inCachedUuids === undefined) {
 					useProfileStore.setState({
-						cachedData: {
+						cachedProfiles: {
 							...cached,
 							[seatUuid]: {
 								name: cachedBotData[i]?.name,

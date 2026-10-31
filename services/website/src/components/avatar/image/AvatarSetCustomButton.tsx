@@ -24,27 +24,26 @@ export const AvatarSetCustomButton = ({ id, avatar, setAvatar, setHasChange }: A
 		return null;
 
 	return (
-		<>
-			<button
-				onClick={() => {
-					setAvatar(imagePath);
-					setHasChange(true);
-				}}
-				className={`
-					hover:not-disabled:scale-105 active:hover:not-disabled:scale-100
-					focus-visible:outline-double hover:not-disabled:outline-double outline-b5
-					${imagePath === avatar ? "outline-2 border-b4 bg-b5/40" : "border-n2 bg-n3/20"}
-					h-6rem aspect-square overflow-hidden
-					border rounded-sm
-					cursor-pointer
-			`}>
-				<img
-					src={imageSrc}
-					alt={`${id}.webp`}
-					onError={() => setImageExists(false)}
-					className="h-full w-full"
-				/>
-			</button>
-		</>
+		<button
+			type="button"
+			onClick={() => {
+				setAvatar(imagePath);
+				setHasChange(true);
+			}}
+			className={`
+				hover:not-disabled:scale-105 active:hover:not-disabled:scale-100
+				focus-visible:outline-double hover:not-disabled:outline-double outline-b5
+				${imagePath === avatar ? "outline-2 border-b4 bg-b5/40" : "border-n2 bg-n3/20"}
+				h-6rem aspect-square overflow-hidden
+				border rounded-sm
+				cursor-pointer
+		`}>
+			<img
+				src={imageSrc}
+				alt={`${id}.webp`}
+				onError={() => setImageExists(false)}
+				className="h-full w-full"
+			/>
+		</button>
 	)
 }

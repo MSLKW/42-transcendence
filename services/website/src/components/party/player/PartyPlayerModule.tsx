@@ -7,9 +7,9 @@ import { useAuthStore } from "../../../store/AuthStore";
 import { useFriendsStore } from "../../../store/FriendsStore";
 import { usePartyStore, type AVAILABILITY_TYPE } from "../../../store/PartyStore";
 import type { UserData } from "../../../store/ProfileStore";
+import { useSceneStore } from "../../../store/SceneStore";
 import { Tooltip } from "../../../utilities/react/Tooltip";
 import { PlayerStatusModule } from "../../player/status/PlayerStatusModule";
-// import { AvatarModule } from "../../avatar/AvatarModule";
 import { AvatarImage } from "../../avatar/image/AvatarImage";
 import { InviteIcon } from "../invite/InviteIcon";
 
@@ -51,7 +51,7 @@ export const PartyPlayerModule = ({ uuid }: PartyPlayerModuleProps) => {
 					setLastOnline(online?.lastOnline ? new Date(online.lastOnline) : null);
 				}
 			} catch (error) {
-				console.error("Failed to fetch player profile:", error);
+				console.warn("Failed to fetch player profile:", error);
 			} finally {
 				setIsLoading(false);
 			}
@@ -87,10 +87,21 @@ export const PartyPlayerModule = ({ uuid }: PartyPlayerModuleProps) => {
 				relation === "Self" ? "Edit Profile" :
 				"View Profile"
 			}>
-				<AvatarImage
-					uuid={uuid}
-					image={playerData.avatarPath ?? undefined}
-				/>
+				<button
+					type="button"
+					onClick={() => {
+						if (clientUuid === uuid)
+							useSceneStore.getState().setShowWindow("profile", true, uuid);
+						else
+							useSceneStore.getState().setShowWindow("stats", true, uuid);
+					}}
+					className="cursor-pointer hover:scale-105"
+				>
+					<AvatarImage 
+						uuid={uuid}
+						image={playerData.avatarPath ?? undefined}
+					/>
+				</button>
 			</Tooltip>
 			<Tooltip text={
 				relation === "Self" ? null :
@@ -98,6 +109,7 @@ export const PartyPlayerModule = ({ uuid }: PartyPlayerModuleProps) => {
 				"Only host can invite"
 			}>
 				<button
+					type="button"
 					disabled={hostUuid !== clientUuid}
 					onClick={handleSendInvite}
 					className={`

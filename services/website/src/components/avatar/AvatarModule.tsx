@@ -24,12 +24,11 @@ export const AvatarModule = ({
 	isDisconnected = false,
 	showName = true,
 }: AvatarModuleProps) => {
-	const cachedData = useProfileStore((store) => store.cachedData);
+	const cachedProfiles = useProfileStore((store) => store.cachedProfiles);
 	const currentScene = useSceneStore((store) => store.currentScene);
-	const setShowWindow = useSceneStore((store) => store.setShowWindow);
 	const playerPassed = useGameStore((store) => store.playerPassed);
 
-	const relation = cachedData[uuid ?? ""]?.relation ?? null;
+	const relation = cachedProfiles[uuid ?? ""]?.relation ?? null;
 
 	return (
 		<div className="
@@ -39,6 +38,7 @@ export const AvatarModule = ({
 		">
 			<ChatBubbles uuid={uuid} />
 			<button
+				type="button"
 				onClick={(e) => {
 					e.currentTarget.blur();
 
@@ -46,9 +46,9 @@ export const AvatarModule = ({
 						return;
 
 					if (relation === "Self")
-						setShowWindow("profile", true);
+						useSceneStore.getState().setShowWindow("profile", true);
 					else
-						setShowWindow("stats", true, uuid);
+						useSceneStore.getState().setShowWindow("stats", true, uuid);
 				}}
 				className={`
 					rounded-sm
@@ -80,7 +80,7 @@ export const AvatarModule = ({
 					</div>
 				}
 			</button>
-			{ showName && <AvatarName name={cachedData[uuid?? ""]?.name ?? "-"} /> }
+			{ showName && <AvatarName name={cachedProfiles[uuid?? ""]?.name ?? "-"} /> }
 		</div>
 	);
 }

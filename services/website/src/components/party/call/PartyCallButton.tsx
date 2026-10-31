@@ -5,7 +5,6 @@ import { AvatarName } from "../../avatar/name/AvatarName";
 
 export const PartyCallButton = () => {
 	const showWindow = useSceneStore((store) => store.showWindow);
-	const setShowWindow = useSceneStore((store) => store.setShowWindow);
 
 	return (
 		<div className="
@@ -14,16 +13,16 @@ export const PartyCallButton = () => {
 		">
 			<Tooltip text="Find Players">
 				<button
+					type="button"
 					onClick={(e) => {
 						e.currentTarget.blur();
-						setShowWindow("party", !showWindow.party);
+						useSceneStore.getState().setShowWindow("party", !showWindow.party);
 					}}
 					className="
 						h-6rem aspect-square
 						bg-dark-semi btn-icon rounded-sm
 						flex place-content-center place-items-center
-					"
-				>
+				">
 					<PartyIcon />
 				</button>
 			</Tooltip>

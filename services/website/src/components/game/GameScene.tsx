@@ -16,7 +16,7 @@ export const GameScene = () => {
 	const activeSeat = useGameStore((store) => store.activeSeat);
 	const gameStarted = useGameStore((store) => store.gameStarted);
 	const playerDisconnection = useGameStore((store) => store.playerDisconnection);
-	const cachedData = useProfileStore((store) => store.cachedData);
+	const cachedProfiles = useProfileStore((store) => store.cachedProfiles);
 	const clientUuid = useAuthStore((store) => store.clientUuid);
 
 	const clientSeat = gameSeats.indexOf(clientUuid);
@@ -32,7 +32,7 @@ export const GameScene = () => {
 								<AvatarModule
 									key={gameSeats[seatRef[1]] ?? ""}
 									uuid={gameSeats[seatRef[1]] ?? ""}
-									image={cachedData[gameSeats[seatRef[1]] ?? ""]?.avatar ?? undefined}
+									image={cachedProfiles[gameSeats[seatRef[1]] ?? ""]?.avatar ?? undefined}
 									cornerButton={cardsLeft[seatRef[1]] ?? -1}
 									isActive={gameStarted && activeSeat === seatRef[1]}
 									isDisconnected={playerDisconnection[gameSeats[seatRef[1]] ?? ""]}
@@ -44,7 +44,7 @@ export const GameScene = () => {
 								<AvatarModule
 									key={gameSeats[seatRef[2]] ?? ""}
 									uuid={gameSeats[seatRef[2]] ?? ""}
-									image={cachedData[gameSeats[seatRef[2]] ?? ""]?.avatar ?? undefined}
+									image={cachedProfiles[gameSeats[seatRef[2]] ?? ""]?.avatar ?? undefined}
 									cornerButton={cardsLeft[seatRef[2]] ?? -1}
 									isActive={gameStarted && activeSeat === seatRef[2]}
 									isDisconnected={playerDisconnection[gameSeats[seatRef[2]] ?? ""]}
@@ -56,7 +56,7 @@ export const GameScene = () => {
 								<AvatarModule
 									key={gameSeats[seatRef[3]] ?? ""}
 									uuid={gameSeats[seatRef[3]] ?? ""}
-									image={cachedData[gameSeats[seatRef[3]] ?? ""]?.avatar ?? undefined}
+									image={cachedProfiles[gameSeats[seatRef[3]] ?? ""]?.avatar ?? undefined}
 									cornerButton={cardsLeft[seatRef[3]] ?? -1}
 									isActive={gameStarted && activeSeat === seatRef[3]}
 									isDisconnected={playerDisconnection[gameSeats[seatRef[3]] ?? ""]}
@@ -72,7 +72,7 @@ export const GameScene = () => {
 								<AvatarModule
 									key={gameSeats[seatRef[1]] ?? ""}
 									uuid={gameSeats[seatRef[1]] ?? ""}
-									image={cachedData[gameSeats[seatRef[1]] ?? ""]?.avatar ?? undefined}
+									image={cachedProfiles[gameSeats[seatRef[1]] ?? ""]?.avatar ?? undefined}
 									cornerButton={cardsLeft[seatRef[1]] ?? -1}
 									isActive={gameStarted && activeSeat === seatRef[1]}
 									isDisconnected={playerDisconnection[gameSeats[seatRef[1]] ?? ""]}
@@ -84,7 +84,7 @@ export const GameScene = () => {
 								<AvatarModule
 									key={gameSeats[seatRef[2]] ?? ""}
 									uuid={gameSeats[seatRef[2]] ?? ""}
-									image={cachedData[gameSeats[seatRef[2]] ?? ""]?.avatar ?? undefined}
+									image={cachedProfiles[gameSeats[seatRef[2]] ?? ""]?.avatar ?? undefined}
 									cornerButton={cardsLeft[seatRef[2]] ?? -1}
 									isActive={gameStarted && activeSeat === seatRef[2]}
 									isDisconnected={playerDisconnection[gameSeats[seatRef[2]] ?? ""]}
@@ -99,7 +99,7 @@ export const GameScene = () => {
 							<AvatarModule
 								key={gameSeats[seatRef[1]] ?? ""}
 								uuid={gameSeats[seatRef[1]] ?? ""}
-								image={cachedData[gameSeats[seatRef[1]] ?? ""]?.avatar ?? undefined}
+								image={cachedProfiles[gameSeats[seatRef[1]] ?? ""]?.avatar ?? undefined}
 								cornerButton={cardsLeft[seatRef[1]] ?? -1}
 								isActive={gameStarted && activeSeat === seatRef[1]}
 								isDisconnected={playerDisconnection[gameSeats[seatRef[1]] ?? ""]}
@@ -131,7 +131,7 @@ export const GameScene = () => {
 					<AvatarModule
 						key={gameSeats[seatRef[0]]}
 						uuid={gameSeats[seatRef[0]] ?? ""}
-						image={cachedData[gameSeats[seatRef[0]] ?? ""]?.avatar ?? undefined}
+						image={cachedProfiles[gameSeats[seatRef[0]] ?? ""]?.avatar ?? undefined}
 						cornerButton={cardsLeft[seatRef[0]]}
 						isActive={gameStarted && activeSeat === seatRef[0]}
 						isDisconnected={playerDisconnection[gameSeats[seatRef[0]] ?? ""]}

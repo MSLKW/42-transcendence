@@ -18,6 +18,7 @@ export const EmoteOptions = ({ emoji, tip }: EmoteOptionsProps) => {
 	return (
 		<Tooltip text={tip}>
 			<button
+				type="button"
 				key={emoji}
 				disabled={rateLimited ? true : false}
 				onClick={handleSend}

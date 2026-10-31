@@ -14,6 +14,7 @@ export const SortButton = ({ call, sortType, type, tip }: SortButtonProps) => {
 	return (
 		<Tooltip text={tip} position="left">
 			<button
+				type="button"
 				onClick={call}
 				className={`
 					btn-text bg-dark-semi

@@ -16,6 +16,7 @@ export const GamePlayButton = () => {
 
 	return (
 		<button
+			type="button"
 			onClick={handlePlay}
 			disabled={!(activeSeat === clientSeat && isCardHandPlayable === true)}
 			className="

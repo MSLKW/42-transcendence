@@ -47,7 +47,7 @@ export let threejsManager: ThreeJsManager;
 
 export default function App() {
 	const clientUuid = useAuthStore((store) => store.clientUuid);
-	const cachedData = useProfileStore((store) => store.cachedData);
+	const cachedProfiles = useProfileStore((store) => store.cachedProfiles);
 	const isProfileLoaded = useProfileStore((store) => store.isProfileLoaded);
 	const currentScene = useSceneStore((store) => store.currentScene);
 	const showWindow = useSceneStore((store) => store.showWindow);
@@ -99,7 +99,7 @@ export default function App() {
 				useFriendsStore.setState({ cachedFriends: friends });
 			})
 			.catch((error) => {
-				console.error("Failed to refresh friendships:", error);
+				console.warn("Failed to refresh friendships:", error);
 			});
 	}, [clientUuid]);
 	useFriendEvents(clientUuid, handleFriendUpdate);
@@ -112,8 +112,9 @@ export default function App() {
 		void handleFriendRequestsSent(clientUuid)
 			.then((requests) => {
 				useFriendsStore.setState({ friendRequestSent: requests });
-			}).catch((error) => {
-				console.error("Sent requests failed:", error);
+			})
+			.catch((error) => {
+				console.warn("Sent requests failed:", error);
 			});
 
 		void handleFriendRequestsReceived(clientUuid)
@@ -131,8 +132,9 @@ export default function App() {
 						);
 					})
 				);
-			}).catch((error) => {
-				console.error("Failed to process friend requests:", error);
+			})
+			.catch((error) => {
+				console.warn("Failed to process friend requests:", error);
 			});
 	}, [clientUuid, currentScene]);
 
@@ -172,11 +174,11 @@ export default function App() {
 		if (currentScene === "Login" || !clientUuid || !isProfileLoaded)
 			return;
 
-		if (!cachedData[clientUuid]?.name || !cachedData[clientUuid]?.avatar)
+		if (!cachedProfiles[clientUuid]?.name || !cachedProfiles[clientUuid]?.avatar)
 			useSceneStore.getState().setShowWindow("setup", true);
 		else
 			useSceneStore.getState().setShowWindow("setup", false);
-	}, [currentScene, clientUuid, cachedData, isProfileLoaded]);
+	}, [currentScene, clientUuid, cachedProfiles, isProfileLoaded]);
 
 	// Connect to game server
 	useEffect(() => {

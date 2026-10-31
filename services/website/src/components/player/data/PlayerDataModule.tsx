@@ -1,40 +1,41 @@
 import { useAuthStore } from "../../../store/AuthStore";
 import type { AVAILABILITY_TYPE } from "../../../store/PartyStore";
-import type { BADGE_TYPE } from "../../../store/ProfileStore";
+import { type PublicBadgeId, BADGE_NAMES } from "../../../store/GameStatsStore";
 import { useSceneStore } from "../../../store/SceneStore";
 import { BadgeWindow } from "./badge/BadgeWindow";
 import { PlayerStatusModule } from "../status/PlayerStatusModule";
 
 interface PlayerDataModuleProps {
 	uuid: string;
-	badge: BADGE_TYPE | null;
 	availability: AVAILABILITY_TYPE | null;
 	lastOnline: Date | null;
 	createdAt: Date | null;
-	setBadge?: (badge: BADGE_TYPE) => void;
-	setHasChange?: (change: boolean) => void;
-	currentLevel: number;
-	currentLevelXpEarned: number;
+	xp: number;
+	level: number;
 	currentLevelXpThreshold: number;
 	currentLevelProgressPercentage: number;
+	displayedBadgeId: PublicBadgeId | null;
+	availableBadges?: Record<PublicBadgeId, boolean>;
+	setBadge?: (badge: PublicBadgeId) => void;
+	setHasChange?: (change: boolean) => void;
 }
 
 export const PlayerDataModule = ({
 	uuid,
-	badge,
 	availability,
 	lastOnline,
 	createdAt,
-	setBadge,
-	setHasChange,
-	currentLevel,
-	currentLevelXpEarned,
+	xp,
+	level,
 	currentLevelXpThreshold,
 	currentLevelProgressPercentage,
+	displayedBadgeId,
+	availableBadges,
+	setBadge,
+	setHasChange,
 }: PlayerDataModuleProps) => {
 	const clientUuid = useAuthStore((store) => store.clientUuid);
 	const showWindow = useSceneStore((store) => store.showWindow);
-	const setShowWindow = useSceneStore((store) => store.setShowWindow);
 
 	return (
 		<div className="
@@ -49,10 +50,10 @@ export const PlayerDataModule = ({
 				place-items-center
 				leading-tight
 			">
-				<h2>Level {currentLevel}</h2>
+				<h2>Level {xp}</h2>
 				<div className="w-full">
 					<p className="text-center">
-						XP: {currentLevelXpEarned} / {currentLevelXpThreshold}
+						XP: {level} / {currentLevelXpThreshold}
 					</p>
 					<div className="
 						h-2
@@ -80,7 +81,7 @@ export const PlayerDataModule = ({
 						?
 							<button
 								type="button"
-								onClick={() => setShowWindow("badge", true)}
+								onClick={() => useSceneStore.getState().setShowWindow("badge", true)}
 								className="
 									w-full
 									bg-n6
@@ -94,20 +95,21 @@ export const PlayerDataModule = ({
 									pl-1 pr-3 py-1
 									flex justify-between items-center
 								">
-									<p className="px-3">{badge}</p>
+									<p className="px-3">{displayedBadgeId ? BADGE_NAMES[displayedBadgeId] : "n/a"}</p>
 									<span className="text-xs">▼</span>
 								</span>
 							</button>
 						:
-							<h2 className="w-full leading-none">
-								<i>{badge ?? "n/a"}</i>
-							</h2>
+							<h3 className="w-full leading-none">
+								<i>{displayedBadgeId ? BADGE_NAMES[displayedBadgeId] : "n/a"}</i>
+							</h3>
 					}
 					{ showWindow["badge"] &&
 						<BadgeWindow
-							badge={badge ?? "Newcomer"}
+							badge={displayedBadgeId ?? "fresh_deal"}
 							setBadge={setBadge ?? (() => {})}
 							setHasChange={setHasChange ?? (() => {})}
+							availableBadges={availableBadges ?? ({} as Record<PublicBadgeId, boolean>)}
 						/>
 					}
 				</div>

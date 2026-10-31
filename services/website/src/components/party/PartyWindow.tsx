@@ -20,14 +20,22 @@ export const PartyWindow = () => {
 	const searchRequestId = useRef(0);
 
 	useEffect(() => {
-		void handleFriendships(clientUuid!).then((friends) => {
-			useFriendsStore.setState({ cachedFriends: friends });
-		});
-		void handleFriendRequestsSent(clientUuid!).then((requests) => {
-			const pending = requests.filter((r: any) => r.status === "Pending");
-			const newFriendRequestSent = pending.map((p: { receiverId: string }) => p.receiverId);
-			useFriendsStore.setState({ friendRequestSent: newFriendRequestSent });
-		});
+		void handleFriendships(clientUuid!)
+			.then((friends) => {
+				useFriendsStore.setState({ cachedFriends: friends });
+			})
+			.catch((error) => {
+				console.warn("Failed to handle get friendships:", error);
+			});
+		void handleFriendRequestsSent(clientUuid!)
+			.then((requests) => {
+				const pending = requests.filter((r: any) => r.status === "Pending");
+				const newFriendRequestSent = pending.map((p: { receiverId: string }) => p.receiverId);
+				useFriendsStore.setState({ friendRequestSent: newFriendRequestSent });
+			})
+			.catch((error) => {
+				console.warn("Failed to handle friend request sent:", error);
+			});
 	}, [clientUuid]);
 
 	const searchFunction = async () => {
@@ -101,7 +109,7 @@ export const PartyWindow = () => {
 								<>
 									<h2>Friends List</h2>
 									{cachedFriends.map((f) => (
-										<PartyPlayerModule uuid={f}/>
+										<PartyPlayerModule key={f} uuid={f}/>
 									))}
 								</>
 							}

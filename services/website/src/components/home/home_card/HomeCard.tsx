@@ -24,6 +24,7 @@ export const HomeCardButton = ({ gameMode, playerCount }: HomeProps) => {
 	return (
 		<>
 			<button
+				type="button"
 				disabled={clientUuid !== hostUuid}
 				onClick={handleCardClick}
 				className={`

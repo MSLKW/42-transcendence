@@ -2,8 +2,9 @@ import { Socket } from "socket.io-client";
 import { ensureConnected } from "../../../utilities/websockets/ensureConnected";
 import { useNotificationStore, NOTIFICATION_TYPE } from "../../../store/NotificationStore";
 import { useProfileStore } from "../../../store/ProfileStore";
-import { useSceneStore } from "../../../store/SceneStore";
 import { usePartyStore } from "../../../store/PartyStore";
+import { useSceneStore } from "../../../store/SceneStore";
+import { useGameStatsStore } from "../../../store/GameStatsStore";
 
 export async function kickPlayerAction(socket: Socket | null, recipientUuid: string) {
 	if (!socket)
@@ -14,7 +15,8 @@ export async function kickPlayerAction(socket: Socket | null, recipientUuid: str
 
 		socket?.emit("kick_player", { recipientUuid });
 
-		await useProfileStore.getState().setCachedData();
+		await useProfileStore.getState().setCachedProfile();
+		await useGameStatsStore.getState().setCachedStats();
 
 		useSceneStore.getState().setShowWindow("stats", false);
 

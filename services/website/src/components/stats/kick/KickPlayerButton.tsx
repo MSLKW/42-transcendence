@@ -19,6 +19,7 @@ export const KickPlayerButton = ({ playerUuid }: KickPlayerButtonProps) => {
 	
 	return (
 		<button
+			type="button"
 			disabled={clientUuid !== hostUuid}
 			onClick={handleKickPlayer}
 			className="

@@ -32,8 +32,6 @@ export const Window: React.FC<WindowProps> = ({
 	isDismissable = true,
 	call,
 }) => {
-	const setShowWindow = useSceneStore((store) => store.setShowWindow);
-
 	const { position, handleMouseDown } = useWindowDrag();
 
 	return (
@@ -88,6 +86,7 @@ export const Window: React.FC<WindowProps> = ({
 							{ hasClearChatButton &&
 								<Tooltip text="Clear Chat">
 									<button
+										type="button"
 										onClick={() => useChatStore.setState({ cachedChat: [] })}
 										className="btn-icon"
 									>
@@ -97,8 +96,9 @@ export const Window: React.FC<WindowProps> = ({
 							}
 							<Tooltip text="Close Window">
 								<button
+									type="button"
 									disabled={!isDismissable}
-									onClick={call ? call : () => setShowWindow(dismissKey, false)}
+									onClick={call ? call : () => useSceneStore.getState().setShowWindow(dismissKey, false)}
 									className="btn-icon"
 								>
 									<CloseIcon />

@@ -17,7 +17,7 @@ export function connectionHandlers(socket: Socket) {
 					useSceneStore.getState().setShowWindow("stale", false);
 				})
 				.catch((error) => {
-					console.error("Session validation after disconnect failed:", error);
+					console.warn("[party > 'on' connect] Session validation after disconnect failed:", error);
 				})
 		}
 	});
@@ -40,7 +40,7 @@ export function connectionHandlers(socket: Socket) {
 					useSceneStore.getState().setShowWindow("stale", true);
 				})
 				.catch((error) => {
-					console.error("Session validation after disconnect failed:", error);
+					console.warn("[party > 'on' disconnect] Session validation after disconnect failed:", error);
 				})
 		}
 	});

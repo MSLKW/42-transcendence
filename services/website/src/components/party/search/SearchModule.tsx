@@ -34,6 +34,7 @@ export const SearchModule = ({ value, onChange, search }: SearchModuleProps) => 
 			/>
 			<Tooltip text="Search">
 				<button
+					type="button"
 					disabled={value ? false : true}
 					className="btn-icon bg-accent"
 					onClick={search}

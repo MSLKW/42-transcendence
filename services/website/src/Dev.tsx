@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { handleLogout } from "./api/authentication/delete_logout/handleLogout";
 import { useChatStore } from "./store/ChatStore";
 import { chatSocket } from "./api/chat/chatSocket";
@@ -8,6 +7,7 @@ import { useBotStore } from "./store/BotStore";
 import { useDevStore } from "./store/DevStore";
 import { useFriendsStore } from "./store/FriendsStore";
 import { useGameStore } from "./store/GameStore";
+import { useGameStatsStore } from "./store/GameStatsStore";
 import { useNotificationStore, NOTIFICATION_TYPE } from "./store/NotificationStore";
 import { usePartyStore } from "./store/PartyStore";
 import { useProfileStore } from "./store/ProfileStore";
@@ -30,6 +30,7 @@ export default function Dev() {
 	const gameSocketId = useGameStore((store) => store.gameSocketId);
 	const userSeats = useGameStore((store) => store.userSeats);
 	const totalPlayers = useGameStore((store) => store.totalPlayers);
+	const gameStatsVerboseMode = useGameStatsStore((store) => store.gameStatsVerboseMode);
 	const notifications = useNotificationStore((store) => store.notifications);
 	const partyVerboseMode = usePartyStore((store) => store.partyVerboseMode);
 	const partySocketId = usePartyStore((store) => store.partySocketId);
@@ -38,20 +39,17 @@ export default function Dev() {
 	const hostUuid = usePartyStore((store) => store.hostUuid);
 	const profileValidation = useProfileStore((store) => store.profileValidation);
 	const profileVerboseMode = useProfileStore((store) => store.profileVerboseMode);
-	const cachedData = useProfileStore((store) => store.cachedData);
+	const cachedProfiles = useProfileStore((store) => store.cachedProfiles);
 	const results = useResultsStore((store) => store.results);
 	const sceneVerboseMode = useSceneStore((store) => store.sceneVerboseMode);
 	const showWindow = useSceneStore((store) => store.showWindow);
 	const currentScene = useSceneStore((store) => store.currentScene);
 
-	const [fetchUrl, setFetchUrl] = useState("");
-	const [fetchBody, setFetchBody] = useState("");
-
 	const handleResetAll = async () => {
-		useProfileStore.getState().resetProfilesInDb();
 		await handleLogout();
 		useSceneStore.getState().setCurrentScene("Login");
 		useSceneStore.setState({ showWindow: defaultShowWindow });
+		useProfileStore.setState({ cachedProfiles: {} });
 		useChatStore.setState({ cachedChat: [] });
 		console.log("[Dev] Game have been reset");
 	}
@@ -86,33 +84,6 @@ export default function Dev() {
 		useGameStore.setState({ cardsLeft: newCardsLeft });
 	}
 
-	const fetchGet = async (url: string) => {
-		try {
-			const response = await fetch(`${url}`, {
-				method: "GET",
-				credentials: "include",
-			});
-			const resp_json = await response.json();
-			console.log("[GET ", url, "] status:", response.status, " statusText:", response.statusText, " response:", response, " response.json:", resp_json);
-		} catch (err) {
-			console.error("fetchGet failed");
-		}
-	}
-
-	const fetchPut = async (url: string, body: string) => {
-		try {
-			const response = await fetch(`${url}`, {
-				method: "PUT",
-				headers: { "Content-Type": "application/json" },
-				body: JSON.stringify(body),
-			});
-			const resp_json = await response?.json();
-			console.log("[PUT ", url, " ", body, "] ", response.status, " ", response.statusText, " - ", resp_json);
-		} catch (err) {
-			console.error("fetchPut failed");
-		}
-	}
-
 	return (
 		<section className="w-full text-b4 py-1rem gap-1rem flex flex-col px-3rem">
 			{/* utilities */}
@@ -133,21 +104,6 @@ export default function Dev() {
 					<DevButton label={`showWindow: ${Object.values(showWindow).filter(Boolean).length}`} call={() => console.log("showWindow:", showWindow)}/>
 					<DevButton label={`sceneVerboseMode: ${sceneVerboseMode}`} call={() => useSceneStore.setState({ sceneVerboseMode: !sceneVerboseMode })}/>
 				</ul>
-			{/* fetch */}
-				<ul className="flex place-content-between gap-1rem">
-					<input
-						id="inviteUuid"
-						onChange={(e) => setFetchUrl(e.target.value)}
-						className="bg-dark-semi w-[70%]"
-					/>
-					<input
-						id="inviteUuid"
-						onChange={(e) => setFetchBody(e.target.value)}
-						className="bg-dark-semi w-[70%]"
-					/>
-					<DevButton label="GET" call={() => fetchGet(fetchUrl)}/>
-					<DevButton label="PUT" call={() => fetchPut(fetchUrl, fetchBody)}/>
-				</ul>
 			{/* authentication */}
 				<ul className="flex place-content-between">
 					<DevButton label={`clientUuid: ${clientUuid}`} call={() => clientUuid && navigator.clipboard.writeText(clientUuid)}/>
@@ -156,10 +112,14 @@ export default function Dev() {
 				</ul>
 			{/* profile */}
 				<ul className="flex place-content-between">
-					<DevButton label={`cachedData: ${Object.keys(cachedData).length}`} call={() => console.log(useProfileStore.getState().cachedData)} />
+					<DevButton label={`cachedProfiles: ${Object.keys(cachedProfiles).length}`} call={() => console.log(useProfileStore.getState().cachedProfiles)} />
 					<DevButton label={`profileValidation: ${profileValidation}`} call={() => useProfileStore.setState({ profileValidation: !profileValidation })}/>
-					<DevButton label="Clear cachedData" call={() => useProfileStore.getState().clearCachedData()} />
+					<DevButton label="Clear cachedProfiles" call={() => useProfileStore.setState({ cachedProfiles: {} })} />
 					<DevButton label={`profileVerboseMode: ${profileVerboseMode}`} call={() => useProfileStore.setState({ profileVerboseMode: !profileVerboseMode })}/>
+				</ul>
+			{/* game stats */}
+				<ul className="flex place-content-end">
+					<DevButton label={`gameStatsVerboseMode: ${gameStatsVerboseMode}`} call={() => useGameStatsStore.setState({ gameStatsVerboseMode: !gameStatsVerboseMode })}/>
 				</ul>
 			{/* party */}
 				<ul className="flex place-content-between">
@@ -217,10 +177,10 @@ export default function Dev() {
 				{ currentScene === "Game" && clientUuid === hostUuid &&
 					<ul className="flex place-content-between">
 						<>
-							{ userSeats[0] && <DevButton label={`${cachedData[userSeats[0]]?.name ?? "Seat 0 "} Wins`} call={() => playerWins(0)}/> }
-							{ userSeats[1] && <DevButton label={`${cachedData[userSeats[1]]?.name ?? "Seat 1 "} Wins`} call={() => playerWins(1)}/> }
-							{ userSeats[2] && <DevButton label={`${cachedData[userSeats[2]]?.name ?? "Seat 2 "} Wins`} call={() => playerWins(2)}/> }
-							{ userSeats[3] && <DevButton label={`${cachedData[userSeats[3]]?.name ?? "Seat 3 "} Wins`} call={() => playerWins(3)}/> }
+							{ userSeats[0] && <DevButton label={`${cachedProfiles[userSeats[0]]?.name ?? "Seat 0 "} Wins`} call={() => playerWins(0)}/> }
+							{ userSeats[1] && <DevButton label={`${cachedProfiles[userSeats[1]]?.name ?? "Seat 1 "} Wins`} call={() => playerWins(1)}/> }
+							{ userSeats[2] && <DevButton label={`${cachedProfiles[userSeats[2]]?.name ?? "Seat 2 "} Wins`} call={() => playerWins(2)}/> }
+							{ userSeats[3] && <DevButton label={`${cachedProfiles[userSeats[3]]?.name ?? "Seat 3 "} Wins`} call={() => playerWins(3)}/> }
 						</>
 					</ul>
 				}

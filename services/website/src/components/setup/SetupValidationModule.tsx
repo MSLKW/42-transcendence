@@ -2,6 +2,7 @@ import { handlePutProfile } from "../../api/profile/put_profile/handlePutProfile
 import { useNotificationStore, NOTIFICATION_TYPE } from "../../store/NotificationStore";
 import { useProfileStore } from "../../store/ProfileStore";
 import { useSceneStore } from "../../store/SceneStore";
+import { useGameStatsStore } from "../../store/GameStatsStore";
 import { checkNameValidity } from "../../utilities/react/checkNameValidity";
 
 interface SetupValidationModuleProps {
@@ -10,8 +11,6 @@ interface SetupValidationModuleProps {
 }
 
 export const SetupValidationModule = ({ name, avatar }: SetupValidationModuleProps) => {
-	const setShowWindow = useSceneStore((store) => store.setShowWindow);
-
 	const isNameValid = checkNameValidity(name);
 	const isAvatarValid = Boolean(avatar);
 	const isValid = isNameValid && isAvatarValid;
@@ -22,10 +21,14 @@ export const SetupValidationModule = ({ name, avatar }: SetupValidationModulePro
 
 		void handlePutProfile(name, avatar, "Newcomer")
 			.then(() => {
-				useProfileStore.getState().setCachedData();
+				useProfileStore.getState().setCachedProfile();
+				useGameStatsStore.getState().setCachedStats();
 				useNotificationStore.getState().showNotification("Profile created", NOTIFICATION_TYPE.message);
-				setShowWindow("setup", false);
-			}).catch(() => {});
+				useSceneStore.getState().setShowWindow("setup", false);
+			})
+			.catch((error) => {
+				console.warn("Failed to handle update profile:", error);
+			});
 	};
 
 	return (
@@ -45,6 +48,7 @@ export const SetupValidationModule = ({ name, avatar }: SetupValidationModulePro
 				}
 			</h3>
 			<button
+				type="button"
 				disabled={!isValid}
 				onClick={handleSetupComplete}
 				className="

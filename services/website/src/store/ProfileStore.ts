@@ -2,35 +2,9 @@ import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import { useAuthStore } from "./AuthStore";
 import { useFriendsStore } from "./FriendsStore";
-import { usePartyStore, type AVAILABILITY_TYPE } from "./PartyStore";
+import { usePartyStore } from "./PartyStore";
 import { handleGetProfile } from "../api/profile/get_profile/handleGetProfile";
-
-export const BADGE_LABEL = [
-	"Newcomer",
-	"Beginner's Luck",
-	"Challenger",
-	"Enthusiast",
-	"Risk Taker",
-	"The Strategist",
-	"Big 2 Champion",
-] as const;
-export type BADGE_TYPE = typeof BADGE_LABEL[number];
-
-export const MEDAL_LABEL = [
-	"High",
-	"Double",
-	"Triple",
-	"Straight",
-	"Flush",
-	"Full House",
-	"4 Of A Kind",
-	"Straight Flush",
-	"First Win",
-	"3 Of Diamonds",
-	"2 Of Spades",
-	"No Pass",
-] as const;
-export type MEDAL_TYPE = typeof MEDAL_LABEL[number];
+import type { PublicBadgeId } from "./GameStatsStore";
 
 export const RELATION_LABEL = [
 	"Stranger",
@@ -40,50 +14,30 @@ export const RELATION_LABEL = [
 ] as const;
 export type RELATION_TYPE = typeof RELATION_LABEL[number];
 
-export interface ProfileData {
-	uuid: string | null;
+export interface CachedProfile {
 	name: string | null;
 	avatar: string | null;
-	badge: BADGE_TYPE;
-	level: number;
-	xp: number;
-	createdAt: Date;
-	lastLogin: Date;
-	totalPlayed: number;
-	totalWins: number;
-	totalLoss: number;
-	winStreak: number;
-	medals: Record<MEDAL_TYPE, Date | null>;
-	availability: AVAILABILITY_TYPE;
-}
-
-export interface CachedData {
-	name: string | null;
-	avatar: string | null;
-	badge: BADGE_TYPE;
+	badge: PublicBadgeId;
 	relation: RELATION_TYPE;
 }
 
 export type UserData = {
 	username: string | null,
 	avatarPath: string | null,
-	badge: BADGE_TYPE,
+	badge: PublicBadgeId,
 };
 
 interface ProfileValues {
 	profileVerboseMode: boolean;
 	profileValidation: boolean;
 	isProfileLoaded: boolean;
-	cachedData: Record<string, CachedData>;
+	cachedProfiles: Record<string, CachedProfile>;
 	avatarVersions: Record<string, number>;
 };
 
 interface ProfileState extends ProfileValues {
-	// getProfileData: (uuid: string | null) => ProfileData | undefined,
-	resetProfilesInDb: () => void,
-	setCachedData: () => Promise<void>,
-	removeCachedData: (uuid: string | null) => void;
-	clearCachedData: () => void;
+	setCachedProfile: () => Promise<void>,
+	removeCachedProfile: (uuid: string | null) => void;
 	markAvatarUpdated: (uuid: string) => void;
 	resetValues: () => void;
 };
@@ -94,22 +48,10 @@ export const useProfileStore = create<ProfileState>() (
 			profileVerboseMode: false,
 			profileValidation: true,
 			isProfileLoaded: false,
-			cachedData: {},
+			cachedProfiles: {},
 			avatarVersions: {},
 
-			// getProfileData: (_uuid) => {
-				// if (!uuid)
-				// 	return undefined;
-				// const profilesInDb = get().profilesInDb;
-				// return profilesInDb.find(p => p.uuid === uuid);
-				// return undefined;
-			// },
-
-			resetProfilesInDb: () => {
-				set({ cachedData: {} });
-			},
-
-			setCachedData: async () => {
+			setCachedProfile: async () => {
 				const clientUuid = useAuthStore.getState().clientUuid;
 				const members = usePartyStore.getState().members;
 				const cachedFriends = useFriendsStore.getState().cachedFriends;
@@ -147,32 +89,28 @@ export const useProfileStore = create<ProfileState>() (
 				);
 
 				set((state) => {
-					const cachedData = { ...state.cachedData };
+					const cachedProfiles = { ...state.cachedProfiles };
 					for (const profile of profiles) {
 						if (!profile)
 							continue;
-						cachedData[profile.uuid] = profile.data;
+						cachedProfiles[profile.uuid] = profile.data;
 					}
 					return {
-						cachedData,
+						cachedProfiles,
 						isProfileLoaded: true,
 					}
 				});
 			},
 
-			removeCachedData: (uuid) => {
+			removeCachedProfile: (uuid) => {
 				if (!uuid)
 					return;
 
 				set((state) => {
-					const cachedData = { ...state.cachedData }
-					delete cachedData[uuid];
-					return { cachedData };
+					const cachedProfiles = { ...state.cachedProfiles }
+					delete cachedProfiles[uuid];
+					return { cachedProfiles };
 				});
-			},
-
-			clearCachedData: () => {
-				set({ cachedData: {} });
 			},
 
 			markAvatarUpdated: (uuid) => {
@@ -187,7 +125,7 @@ export const useProfileStore = create<ProfileState>() (
 			resetValues: () => {
 				set({
 					isProfileLoaded: false,
-					cachedData: {},
+					cachedProfiles: {},
 					avatarVersions: {},
 				});
 			},

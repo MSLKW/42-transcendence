@@ -48,6 +48,7 @@ export const LeaveWindow = () => {
 					gap-1rem
 				">
 					<button
+						type="button"
 						onClick={() => useSceneStore.getState().setShowWindow("leave", false)}
 						className="
 							h-3rem aspect-5/1
@@ -57,6 +58,7 @@ export const LeaveWindow = () => {
 						CANCEL
 					</button>
 					<button
+						type="button"
 						onClick={handleLeaveClick}
 						className="
 							h-3rem aspect-5/1

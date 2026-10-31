@@ -1,4 +1,4 @@
-@utility data-tip-after {
+@utility data-tip-up {
 	content: attr(data-tip);
 	@apply
 		w-max h-max
@@ -66,51 +66,6 @@
     &:hover {
         @apply z-50;
     }
-	&:focus-visible::after,
-	&:hover::after {
-		@apply scale-100 opacity-100;
-	}
-}
-
-@utility data-tip-dual {
-	@apply
-		w-max h-max
-		absolute
-		bg-dark btn-text
-		text-n6 text-1rem leading-normal
-		py-0.5rem px-1.5rem whitespace-pre-line
-		pointer-events-none
-		scale-0 opacity-0
-		;
-}
-
-@utility data-tip-medal {
-	@apply relative;
-	
-	&::before {
-		content: attr(data-tip-title);
-		@apply
-			data-tip-dual origin-bottom
-			bottom-[120%] left-1/2 -translate-x-1/2
-			;
-	}
-
-	&::after {
-		content: attr(data-tip-subtitle);
-		@apply
-			data-tip-dual origin-top
-			top-[120%] left-1/2 -translate-x-1/2
-			italic text-1rem
-			;
-	}
-
-	&:focus-visible,
-    &:hover {
-        @apply z-50;
-    }
-
-	&:focus-visible::before,
-	&:hover::before,
 	&:focus-visible::after,
 	&:hover::after {
 		@apply scale-100 opacity-100;

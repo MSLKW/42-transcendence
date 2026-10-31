@@ -1,6 +1,5 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-import type { BADGE_TYPE } from "./ProfileStore";
 import { threejsManager } from "../App";
 
 export type SCENES = "Badge" | "Login" | "Home" | "Lobby" | "Game";
@@ -14,7 +13,7 @@ interface SceneValues {
 
 interface SceneState extends SceneValues {
 	setCurrentScene: (scene: SCENES) => void;
-	setShowWindow: (window: string, show: boolean, uuid?: string | BADGE_TYPE) => void;
+	setShowWindow: (window: string, show: boolean, uuid?: string) => void;
 	resetWindows: () => void;
 	resetValues: () =>void
 }

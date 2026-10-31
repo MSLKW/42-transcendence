@@ -3,31 +3,41 @@ import { handleCreatedAt } from "../../api/authentication/get_created-at/handleC
 import { handleGetOnline } from "../../api/party/get_online/handleGetOnline";
 import { handleGetProfile } from "../../api/profile/get_profile/handleGetProfile";
 import { usePartyStore, type AVAILABILITY_TYPE } from "../../store/PartyStore";
-import type { BADGE_TYPE } from "../../store/ProfileStore";
+import { useGameStatsStore } from "../../store/GameStatsStore";
+import { useProfileStore } from "../../store/ProfileStore";
 import { useSceneStore } from "../../store/SceneStore";
 import { Window } from "../window/Window";
 import { AvatarMemberModule } from "../avatar/AvatarMemberModule";
-import { MedalsModule } from "../player/medals/MedalsModule";
+import { AchievementsModule } from "../player/achievements/AchievementsModule";
 import { PlayerDataModule } from "../player/data/PlayerDataModule";
 import { PlayerStatsModule } from "../player/stats/PlayerStatsModule";
 import { FriendToggleButton } from "./friend/FriendToggleButton";
 import { KickPlayerButton } from "./kick/KickPlayerButton";
-import { handlePublicPlayerGameData } from "../../api/stats/get_public-player-game-data/handlePublicPlayerGameData";
+import { handlePublicPlayerGameData } from "../../api/gameStats/get_public-player-game-data/handlePublicPlayerGameData";
 
 export const StatsWindow: React.FC = () => {
 	const statsUuid = useSceneStore((store) => store.statsUuid!);
 	const members = usePartyStore((store) => store.members);
+	const cachedProfiles = useProfileStore((store) => store.cachedProfiles);
+	const cachedStats = useGameStatsStore((store) => store.cachedStats);
+	
+	const cachedProfile = statsUuid && statsUuid in cachedProfiles ? cachedProfiles[statsUuid] : undefined;
+	const cachedStat = statsUuid && statsUuid in cachedStats ? cachedStats[statsUuid] : undefined;
 
-	const [name, setName] = useState<string | null>(null);
-	const [avatar, setAvatar] = useState<string | undefined>(undefined);
-	const [badge, setBadge] = useState<BADGE_TYPE | null>(null);
+	const [name, setName] = useState(cachedProfile?.name ?? "n/a");
+	const [avatar, setAvatar] = useState(cachedProfile?.avatar ?? undefined);
 	const [createdAt, setCreatedAt] = useState<Date | null>(null);
 	const [availability, setAvailability] = useState<AVAILABILITY_TYPE | null>(null);
 	const [lastOnline, setLastOnline] = useState<Date | null>(null);
-	const [currentLevel, setCurrentLevel] = useState(0);
-	const [currentLevelXpEarned, setCurrentLevelXpEarned] = useState(0);
-	const [currentLevelXpThreshold, setCurrentLevelXpThreshold] = useState(0);
-	const [currentLevelProgressPercentage, setCurrentLevelProgressPercentage] = useState(0);
+	const [level, setLevel] = useState(cachedStat?.level ?? 0);
+	const [xp, setXp] = useState(cachedStat?.xp ?? 0);
+	const [currentLevelXpThreshold, setCurrentLevelXpThreshold] = useState(cachedStat?.currentLevelXpThreshold ?? 0);
+	const [currentLevelProgressPercentage, setCurrentLevelProgressPercentage] = useState(cachedStat?.currentLevelProgressPercentage ?? 0);
+	const [displayedBadgeId, setDisplayedBadgeId] = useState(cachedStat?.displayedBadgeId ?? "fresh_deal");
+	const [totalPlayed, setTotalPlayed] = useState(cachedStat?.totalPlayed ?? 0);
+	const [totalWins, setTotalWins] = useState(cachedStat?.totalWins ?? 0);
+	const [winStreak, setWinStreak] = useState(cachedStat?.winStreak ?? 0);
+	const [achievements, setAchievements] = useState(cachedStat?.achievements ?? undefined);
 
 	const statsFetched = useRef<string | null>(null);
 	useEffect(() => {
@@ -37,23 +47,29 @@ export const StatsWindow: React.FC = () => {
 
 		const fetchPlayerData = async () => {
 			try {
-				const [profile, createdAt, online, stats] = await Promise.all([
+				const [profile, createdAt, online, clientStats] = await Promise.all([
 					handleGetProfile(statsUuid),
 					handleCreatedAt(statsUuid),
 					handleGetOnline(statsUuid),
 					handlePublicPlayerGameData(statsUuid),
 				]);
 
-				setName(profile?.username ?? null);
+				setName(profile?.username ?? "n/a");
 				setAvatar(profile?.avatarPath ?? undefined);
-				setBadge(profile?.badge ?? null);
 
 				setCreatedAt(createdAt ?? null);
 
-				setCurrentLevel(stats.levelProgress.currentLevel);
-				setCurrentLevelXpEarned(stats.levelProgress.currentLevelXpEarned);
-				setCurrentLevelXpThreshold(stats.levelProgress.currentLevelXpThreshold);
-				setCurrentLevelProgressPercentage(stats.levelProgress.currentLevelProgressPercentage);
+				setLevel(clientStats.stats.level);
+				setXp(clientStats.stats.xp);
+				setDisplayedBadgeId(clientStats.stats.displayedBadgeId);
+				setTotalPlayed(clientStats.stats.totalPlayed);
+				setTotalWins(clientStats.stats.totalWins);
+				setWinStreak(clientStats.stats.winStreak);
+
+				setCurrentLevelXpThreshold(clientStats.levelProgress.currentLevelXpThreshold);
+				setCurrentLevelProgressPercentage(clientStats.levelProgress.currentLevelProgressPercentage);
+
+				setAchievements(clientStats.achievements);
 
 				if (online?.isOnline)
 					setAvailability(online.inParty ? "Busy" : "Online");
@@ -62,7 +78,7 @@ export const StatsWindow: React.FC = () => {
 					setLastOnline(online?.lastOnline ? new Date(online.lastOnline) : null);
 				}
 			} catch (error) {
-				console.error("Failed to fetch player data:", error);
+				console.warn("Failed to fetch player data:", error);
 			}
 		};
 		fetchPlayerData();
@@ -77,23 +93,28 @@ export const StatsWindow: React.FC = () => {
 			<div className="
 				px-3rem
 				divide-y divide-n2/40
+				overflow-y-scroll
 			">
 				<div className="flex">
 					<AvatarMemberModule uuid={statsFetched.current} name={name ?? "-"} image={avatar} />
 					<PlayerDataModule
 						uuid={statsFetched.current!}
-						badge={badge}
 						availability={availability}
 						lastOnline={lastOnline}
 						createdAt={createdAt}
-						currentLevel={currentLevel}
-						currentLevelXpEarned={currentLevelXpEarned}
+						level={level}
+						xp={xp}
 						currentLevelXpThreshold={currentLevelXpThreshold}
 						currentLevelProgressPercentage={currentLevelProgressPercentage}
+						displayedBadgeId={displayedBadgeId}
 					/>
 				</div>
-				<MedalsModule uuid={statsFetched.current}/>
-				<PlayerStatsModule uuid={statsFetched.current} />
+				<AchievementsModule achievements={achievements}/>
+				<PlayerStatsModule
+					totalPlayed={totalPlayed}
+					totalWins={totalWins}
+					winStreak={winStreak}
+				/>
 				<div className="
 					flex place-content-evenly place-items-center
 					py-2rem px-2rem

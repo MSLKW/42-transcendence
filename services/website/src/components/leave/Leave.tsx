@@ -3,12 +3,9 @@ import { useSceneStore } from "../../store/SceneStore";
 import { Window } from "../window/Window";
 
 export const LeaveWindow = () => {
-	const setShowWindow = useSceneStore((store) => store.setShowWindow);
-	const leaveGame = useGameStore((store) => store.leaveGame);
-
 	const handleLeaveGame = () => {
-		setShowWindow("leave", false);
-		leaveGame();
+		useSceneStore.getState().setShowWindow("leave", false);
+		useGameStore.getState().leaveGame();
 	}
 
 	return (
@@ -40,23 +37,23 @@ export const LeaveWindow = () => {
 					"
 				>
 					<button
+						type="button"
 						onClick={handleLeaveGame}
 						className="
 							h-3rem aspect-5/1
 							btn-text bg-r2
 							text-n6
-						"
-					>
+					">
 						LEAVE
 					</button>
 					<button
-						onClick={() => setShowWindow("leave", false)}
+						type="button"
+						onClick={() => useSceneStore.getState().setShowWindow("leave", false)}
 						className="
 							h-3rem aspect-5/1
 							btn-text bg-light
 							text-n0
-						"
-					>
+					">
 						STAY
 					</button>
 				</div>
