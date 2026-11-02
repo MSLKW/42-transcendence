@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import { chatSocket } from "../../api/chat/chatSocket";
-import { useChatStore } from "../../store/ChatStore";
+import { useChatStore, MAX_MESSAGE_LENGTH } from "../../store/ChatStore";
 import { usePartyStore } from "../../store/PartyStore";
 import { useTypingStore } from "../../store/TypingStore";
 import { Window } from "../window/Window";
@@ -57,6 +57,10 @@ export const ChatWindow = () => {
 
 	const handleSend = (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
+
+		const trimmedMessage = message.trim();
+		if (!trimmedMessage || message.length > MAX_MESSAGE_LENGTH || rateLimited)
+			return;
 
 		chatSocket.sendChat("MESSAGE", message);
 		setMessage("");
@@ -131,6 +135,7 @@ export const ChatWindow = () => {
 						ref={focusRef}
 						disabled={rateLimited ? true : false}
 						type="text"
+						maxLength={MAX_MESSAGE_LENGTH}
 						placeholder="Message"
 						value={message}
 						onChange={handleChange}

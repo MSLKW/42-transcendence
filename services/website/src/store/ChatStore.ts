@@ -12,6 +12,7 @@ export interface ChatData {
 }
 
 const MAX_CACHED_MESSAGES = 100;
+export const MAX_MESSAGE_LENGTH = 500;
 
 let rateLimitTimeout: ReturnType<typeof setTimeout> | null = null;
 

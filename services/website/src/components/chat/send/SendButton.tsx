@@ -1,5 +1,6 @@
 import { Tooltip } from "../../../utilities/react/Tooltip";
 import { SendIcon } from "./SendIcon";
+import { MAX_MESSAGE_LENGTH } from "../../../store/ChatStore";
 
 interface SendButtonProps {
     message: string;
@@ -9,7 +10,7 @@ export const SendButton = ({ message }: SendButtonProps) => {
         <Tooltip text="Send Message">
             <button
                 type="submit"
-                disabled={message.length === 0}
+                disabled={!message.trim() || message.length > MAX_MESSAGE_LENGTH}
                 className="btn-icon bg-accent"
             >
                 <SendIcon />
