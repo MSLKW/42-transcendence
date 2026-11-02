@@ -38,9 +38,8 @@ export const PartyWindow = () => {
 			});
 	}, [clientUuid]);
 
-	const searchFunction = async () => {
+	const searchFunction = () => {
 		const query = searchQuery.trim();
-
 		if (query === "") {
 			setFilteredResults([]);
 			setIsSearching(false);
@@ -62,6 +61,9 @@ export const PartyWindow = () => {
 					return;
 
 				setFilteredResults(results);
+			} catch (error) {
+				if (controller.signal.aborted)
+					return;
 			} finally {
 				if (requestId === searchRequestId.current)
 					setIsSearching(false);
@@ -75,7 +77,9 @@ export const PartyWindow = () => {
 	}
 
 	useEffect(() => {
-		searchFunction();
+		const cleanup = searchFunction();
+
+		return cleanup;
 	}, [searchQuery]);
 
 	return (
@@ -129,10 +133,7 @@ export const PartyWindow = () => {
 				<SearchModule 
 					value={searchQuery}
 					onChange={setSearchQuery}
-					search={() => {
-						setFilteredResults([]);
-						searchFunction();
-					}}
+					search={() => setFilteredResults([])}
 				/>
 			</div>
 			<div className="
