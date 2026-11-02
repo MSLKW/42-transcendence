@@ -175,7 +175,7 @@ export default function App() {
 		useScrollToTop();
 	}, [currentScene]);
 
-	/** Inital profile setup */
+	/** Initial profile setup */
 	useEffect(() => {
 		if (currentScene === "Login" || !clientUuid || !isProfileLoaded)
 			return;
@@ -197,25 +197,23 @@ export default function App() {
 			console.log("[party > 'on' party_state] Blocked from joining game lobby w/ partyGameId:", partyGameId);
 	}, [partyGameId]);
 
+	/** Kicks client back to login is invalidated */
 	useEffect(() => {
-		void handleValidate()
-			.then((res) => {
-				if (!res)
-					useSceneStore.getState().setCurrentScene("Login");
-			});
+		void handleValidate().then((res) => {
+			if (!res)
+				useSceneStore.getState().setCurrentScene("Login");
+		});
 	}, []);
 
+	/** Render if current scene is login */
 	useEffect(() => {
 		if (currentScene === "Login")
 			useSceneStore.setState({ initialRender: true });
 	}, [currentScene]);
 
-	if (!initialRender)
-		return;
-
 	return (
 		<>
-			<StripeBg />
+			{initialRender && <StripeBg />}
 			<section className="
 				z-0 absolute top-0 left-1/2 -translate-x-1/2
 				h-full min-h-120 max-h-360
@@ -223,33 +221,37 @@ export default function App() {
 			">
 				{ <div className="w-full h-full" ref={containerRef}/> }
 			</section>
-			<section className="
-				h-full min-h-120 max-h-360
-				w-full min-w-80 max-w-360
-				mx-auto p-[clamp(0.125rem,5vw+0.125rem,3.125rem)]
-				flex flex-col
-				z-1 relative
-				pointer-events-none
-			">
-				{ currentScene === "Login" && <LoginScene /> }
-				{ currentScene === "Home" && <HomeScene /> }
-				{ currentScene === "Lobby" && <LobbyScene /> }
-				{ currentScene === "Game" && <GameScene /> }
-				{ showWindow["chat"] && <ChatWindow /> }
-				{ showWindow["createAccount"] && <CreateAccountWindow /> }
-				{ showWindow["info"] && <InfoWindow /> }
-				{ showWindow["notification"] && <NotificationWindow /> }
-				{ showWindow["leave"] && <LeaveWindow /> }
-				{ showWindow["party"] && <PartyWindow /> }
-				{ showWindow["profile"] && <ProfileWindow /> }
-				{ showWindow["rank"] && <RankWindow /> }
-				{ showWindow["results"] && <ResultsWindow /> }
-				{ showWindow["setup"] && <SetupWindow /> }
-				{ showWindow["signIn"] && <SignInWindow /> }
-				{ showWindow["stale"] && <StaleWindow /> }
-				{ showWindow["stats"] && <StatsWindow /> }
-			</section>
-			{ showDevSection && <Dev /> }
+			{initialRender &&
+				<>
+					<section className="
+						h-full min-h-120 max-h-360
+						w-full min-w-80 max-w-360
+						mx-auto p-[clamp(0.125rem,5vw+0.125rem,3.125rem)]
+						flex flex-col
+						z-1 relative
+						pointer-events-none
+					">
+						{ currentScene === "Login" && <LoginScene /> }
+						{ currentScene === "Home" && <HomeScene /> }
+						{ currentScene === "Lobby" && <LobbyScene /> }
+						{ currentScene === "Game" && <GameScene /> }
+						{ showWindow["chat"] && <ChatWindow /> }
+						{ showWindow["createAccount"] && <CreateAccountWindow /> }
+						{ showWindow["info"] && <InfoWindow /> }
+						{ showWindow["notification"] && <NotificationWindow /> }
+						{ showWindow["leave"] && <LeaveWindow /> }
+						{ showWindow["party"] && <PartyWindow /> }
+						{ showWindow["profile"] && <ProfileWindow /> }
+						{ showWindow["rank"] && <RankWindow /> }
+						{ showWindow["results"] && <ResultsWindow /> }
+						{ showWindow["setup"] && <SetupWindow /> }
+						{ showWindow["signIn"] && <SignInWindow /> }
+						{ showWindow["stale"] && <StaleWindow /> }
+						{ showWindow["stats"] && <StatsWindow /> }
+					</section>
+					{ showDevSection && <Dev /> }
+				</>
+			}
 		</>
 	);
 }

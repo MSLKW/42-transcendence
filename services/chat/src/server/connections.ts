@@ -39,10 +39,8 @@ export function registerConnections(
 		if (existing) {
 			clientManager.cancelRemoval(uuid);
 
-			const expectedRoom = partyManager.getRoomForPlayer(uuid);
-			if (existing.roomId !== expectedRoom)
-				existing.roomId = expectedRoom;
-			socket.join(existing.roomId);
+			partyManager.reconcilePlayer(uuid);
+			socket.join(partyManager.getRoomForPlayer(uuid));
 			registerEventHandlers(io, socket, existing, partyManager);
 
 			const oldSocket = clientManager.rebindSocket(existing, socket);

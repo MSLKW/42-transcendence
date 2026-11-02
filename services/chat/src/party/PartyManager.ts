@@ -131,6 +131,17 @@ export class PartyManager {
 		}
 	}
 
+	/** Moves connected member into their currently assigned room */
+	reconcilePlayer(playerUuid: string): void {
+		const client = clientManager.getByUuid(playerUuid);
+		if (!client)
+			return;
+
+		const expectedRoom = this.getRoomForPlayer(playerUuid);
+		if (client.roomId !== expectedRoom)
+			this.moveClientToRoom(client, expectedRoom);
+	}
+
 	/** Moves connected members into their currently assigned rooms */
 	private reconcileConnectedPlayers(playerUuids: Set<string>): void {
 		for (const playerUuid of playerUuids) {
