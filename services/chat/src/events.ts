@@ -29,7 +29,7 @@ export interface ChatMessagePayload {
 
 /** Payload sent when a client exceeds a message limit */
 export interface ChatRateLimitedPayload {
-	type: "MESSAGE" | "EMOTE";
+	type: ChatType;
 	message: string;
 }
 

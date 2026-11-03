@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useCallback } from "react";
 import { handleFriendships } from "../../api/friends/get_friendships/handleFriendships";
 import { handleFriendRequestsSent } from "../../api/friends/get_friend-requests_sent/handleFriendRequestsSent";
 import { handleGetSearch } from "../../api/profile/get_search/handleGetSearch";
@@ -38,7 +38,7 @@ export const PartyWindow = () => {
 			});
 	}, [clientUuid]);
 
-	const searchFunction = () => {
+	const searchFunction = useCallback(() => {
 		const query = searchQuery.trim();
 		if (query === "") {
 			setFilteredResults([]);
@@ -73,14 +73,14 @@ export const PartyWindow = () => {
 		return () => {
 			clearTimeout(timeoutId);
 			controller.abort();
+			if (requestId === searchRequestId.current)
+				searchRequestId.current++;
 		};
-	}
+	}, [searchQuery]);
 
 	useEffect(() => {
-		const cleanup = searchFunction();
-
-		return cleanup;
-	}, [searchQuery]);
+		return searchFunction();
+	}, [searchFunction]);
 
 	return (
 		<Window

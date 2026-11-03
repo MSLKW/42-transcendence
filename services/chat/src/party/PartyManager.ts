@@ -22,7 +22,7 @@ export interface PartyPayload {
 	playerUuids: string[];
 }
 
-/** Manages party membership and connected players' rooms */
+/** Manages party membership and connected player's rooms */
 export class PartyManager {
 	private readonly parties = new Map<string, PartyState>();
 	private readonly playerToHost = new Map<string, string>();
