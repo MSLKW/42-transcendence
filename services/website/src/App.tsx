@@ -56,16 +56,17 @@ export default function App() {
 	const partyGameId = usePartyStore((store) => store.partyGameId);
 	const initialRender = useSceneStore((store) => store.initialRender);
 
+	/** Render after 1s regardless of initialRender state */
+	const timerId = setTimeout(() => {
+		useSceneStore.setState({ initialRender: true });
+	}, 1000);
+
 	/** Party socket connection */
 	useEffect(() => {
 		if (!clientUuid)
 			return;
 
 		partySocket.connect();
-
-		const timerId = setTimeout(() => {
-			useSceneStore.setState({ initialRender: true });
-		}, 1000);
 
 		return () => {
 			partySocket.disconnect();

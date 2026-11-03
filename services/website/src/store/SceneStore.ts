@@ -16,7 +16,7 @@ interface SceneState extends SceneValues {
 	setCurrentScene: (scene: SCENES) => void;
 	setShowWindow: (window: string, show: boolean, uuid?: string) => void;
 	resetWindows: () => void;
-	resetValues: () =>void
+	resetValues: () => void;
 }
 
 export const defaultShowWindow = {
