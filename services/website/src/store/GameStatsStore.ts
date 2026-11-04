@@ -2,6 +2,7 @@ import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import { usePartyStore } from "./PartyStore";
 import { handlePublicPlayerGameData } from "../api/gameStats/get_public-player-game-data/handlePublicPlayerGameData";
+import { handleOwnPlayerGameData } from "../api/gameStats/get_own-player-game-data/handleOwnPlayerGameData";
 
 export const PUBLIC_BADGE_IDS = [
 	"fresh_deal",
@@ -110,29 +111,29 @@ export const ACHIEVEMENT_HINTS: Record<AchievementId, string> = {
 export interface CachedStat {
 	level: number;
 	xp: number;
+	displayedBadgeId: PublicBadgeId;
 	totalPlayed: number;
 	totalWins: number;
 	winStreak: number;
-	displayedBadgeId: PublicBadgeId;
 	currentLevelXpThreshold: number;
 	currentLevelProgressPercentage: number;
 	achievements: Record<AchievementId, Date | null>;
 }
 
-interface StatsValues {
+interface GameStatsValues {
 	gameStatsVerboseMode: boolean;
 	cachedStats: Record<string, CachedStat>;
 	cachedBadges: Record<PublicBadgeId, boolean>;
 };
 
-interface StatsState extends StatsValues {
+interface GameStatsState extends GameStatsValues {
 	setCachedStats: () => Promise<void>;
-	updatePlayerCachedStat: (uuid: string | null) => Promise<void>;
+	updatePlayerCachedStat: (uuid: string | null, stats: CachedStat) => Promise<void>;
 	removePlayerCachedStat: (uuid: string | null) => void;
 	resetValues: () => void;
 };
 
-export const useGameStatsStore = create<StatsState>() (
+export const useGameStatsStore = create<GameStatsState>() (
 	persist(
 		(set) => ({
 			gameStatsVerboseMode: false,
@@ -188,24 +189,20 @@ export const useGameStatsStore = create<StatsState>() (
 				}));
 			},
 
-			updatePlayerCachedStat: async (uuid) => {
+			updatePlayerCachedStat: async (uuid, stats) => {
 				if (!uuid)
 					return;
 
-				const userStats = await handlePublicPlayerGameData(uuid);
-				if (!userStats)
-					return;
-
 				const playerData = {
-					level: userStats.stats.level,
-					xp: userStats.stats.xp,
-					totalPlayed: userStats.stats.totalPlayed,
-					totalWins: userStats.stats.totalWins,
-					winStreak: userStats.stats.winStreak,
-					displayedBadgeId: userStats.stats.displayedBadgeId,
-					currentLevelXpThreshold: userStats.levelProgress.currentLevelXpThreshold,
-					currentLevelProgressPercentage: userStats.levelProgress.currentLevelProgressPercentage,
-					achievements: userStats.achievements,
+					level: stats.level,
+					xp: stats.xp,
+					totalPlayed: stats.totalPlayed,
+					totalWins: stats.totalWins,
+					winStreak: stats.winStreak,
+					displayedBadgeId: stats.displayedBadgeId,
+					currentLevelXpThreshold: stats.currentLevelXpThreshold,
+					currentLevelProgressPercentage: stats.currentLevelProgressPercentage,
+					achievements: stats.achievements,
 				};
 
 				set((state) => ({
@@ -252,7 +249,7 @@ export const useGameStatsStore = create<StatsState>() (
 			}
 		}),
 		{
-			name: 'stats-storage',
+			name: 'game-stats-storage',
 		}
 	)
 );

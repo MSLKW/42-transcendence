@@ -1,4 +1,3 @@
-import { useAuthStore } from "../../../store/AuthStore";
 import { useGameStatsStore } from "../../../store/GameStatsStore";
 import { fetchOwnPlayerGameData } from "./fetchOwnPlayerGameData";
 
@@ -10,9 +9,6 @@ export const handleOwnPlayerGameData = async () => {
 
 		if (useGameStatsStore.getState().gameStatsVerboseMode)
 			console.log("[gameStats > 'GET' own-player-game-data] response:", response);
-
-		const clientUuid = useAuthStore.getState().clientUuid;
-		useGameStatsStore.getState().updatePlayerCachedStat(clientUuid);
 
 		return response;
 	} catch (error) {

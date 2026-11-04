@@ -61,20 +61,29 @@ export const ProfileWindow = () => {
 				]);
 
 				setCreatedAt(createdAt ?? null);
-
 				setLevel(clientStats.stats.level);
 				setXp(clientStats.stats.xp);
 				setDisplayedBadgeId(clientStats.stats.displayedBadgeId);
 				setTotalPlayed(clientStats.stats.totalPlayed);
 				setTotalWins(clientStats.stats.totalWins);
 				setWinStreak(clientStats.stats.winStreak);
-
 				setCurrentLevelXpThreshold(clientStats.levelProgress.currentLevelXpThreshold);
 				setCurrentLevelProgressPercentage(clientStats.levelProgress.currentLevelProgressPercentage);
-
 				setAchievements(clientStats.achievements);
+				useGameStatsStore.getState().updatePlayerCachedStat(clientUuid, {
+					level: clientStats.stats.level,
+					xp: clientStats.stats.xp,
+					displayedBadgeId: clientStats.stats.displayedBadgeId,
+					totalPlayed: clientStats.stats.totalPlayed,
+					totalWins: clientStats.stats.totalWins,
+					winStreak: clientStats.stats.winStreak,
+					currentLevelXpThreshold: clientStats.levelProgress.currentLevelXpThreshold,
+					currentLevelProgressPercentage: clientStats.levelProgress.currentLevelProgressPercentage,
+					achievements: clientStats.achievements,
+				});
 
 				setAvailableBadges(clientStats.badges);
+				useGameStatsStore.setState({ cachedBadges: clientStats.badges });
 			} catch (error) {
 				console.warn("Failed to fetch player data:", error);
 			}
