@@ -89,7 +89,6 @@ export default function Dev() {
 			{/* utilities */}
 				<ul className="flex place-content-between">
 					<DevButton label="Frame" call={() => useDevStore.setState((store) => ({ showFrame: !store.showFrame }))} />
-					<DevButton label="Stats" call={() => useDevStore.setState((store) => ({ showStats: !store.showStats }))} />
 					<DevButton label="Reset All" call={handleResetAll} />
 				</ul>
 			{/* notification */}
