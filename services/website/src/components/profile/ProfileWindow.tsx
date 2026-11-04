@@ -61,6 +61,7 @@ export const ProfileWindow = () => {
 				]);
 
 				setCreatedAt(createdAt ?? null);
+
 				setLevel(clientStats.stats.level);
 				setXp(clientStats.stats.xp);
 				setDisplayedBadgeId(clientStats.stats.displayedBadgeId);

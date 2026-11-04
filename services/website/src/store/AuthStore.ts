@@ -9,7 +9,6 @@ interface AuthValues {
 	isAuthenticated: boolean;
 	clientUuid: string | null;
 	cachedCreatedAts: Record<string, Date>;
-	lastLogin: Date | null;
 }
 
 interface AuthState extends AuthValues {
@@ -26,7 +25,6 @@ export const useAuthStore = create<AuthState>() (
 			isAuthenticated: false,
 			clientUuid: null,
 			cachedCreatedAts: {},
-			lastLogin: null,
 
 			setCachedCreatedAts: async () => {
 				const members = usePartyStore.getState().members;
@@ -36,13 +34,13 @@ export const useAuthStore = create<AuthState>() (
 				const results = await Promise.all(
 					allUuids.map(async (memberUuid) => {
 						const userCreatedAt = await handleCreatedAt(memberUuid);
-						return userCreatedAt ? ([memberUuid, userCreatedAt] as const): null;
+						return userCreatedAt ? ([memberUuid, userCreatedAt]) : null;
 					})
 				)
 
 				set(() => ({
 					cachedCreatedAts: Object.fromEntries(
-						results.filter((item): item is readonly [string, any] => item !== null)
+						results.filter((item) => item !== null)
 					),
 				}));
 			},
@@ -63,7 +61,6 @@ export const useAuthStore = create<AuthState>() (
 					isAuthenticated: false,
 					clientUuid: null,
 					cachedCreatedAts: {},
-					lastLogin: null,
 				});
 			},
 		}),

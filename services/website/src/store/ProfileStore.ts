@@ -71,14 +71,14 @@ export const useProfileStore = create<ProfileState>() (
 								avatar: userData.avatarPath,
 								badge: userData.badge,
 								relation: humanRelation,
-							}] as const) :
+							}]) :
 							null;
 					})
 				);
 
 				set(() => ({
 					cachedProfiles: Object.fromEntries(
-						results.filter((item): item is readonly [string, any] => item !== null)
+						results.filter((item) => item !== null)
 					),
 				}));
 			},

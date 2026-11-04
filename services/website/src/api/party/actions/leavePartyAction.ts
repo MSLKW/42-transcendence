@@ -21,9 +21,11 @@ export async function leavePartyAction(socket: Socket | null) {
 
 		socket?.emit("leave_party");
 
-		await useProfileStore.getState().setCachedProfile();
-		await useGameStatsStore.getState().setCachedStats();
-		await useAuthStore.getState().setCachedCreatedAts();
+		await Promise.all([
+			useProfileStore.getState().setCachedProfile(),
+			useGameStatsStore.getState().setCachedStats(),
+			useAuthStore.getState().setCachedCreatedAts(),
+		]);
 
 		useSceneStore.getState().setShowWindow("profile", false);
 

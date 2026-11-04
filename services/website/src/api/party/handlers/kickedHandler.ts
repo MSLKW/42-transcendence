@@ -8,14 +8,16 @@ import { useProfileStore } from "../../../store/ProfileStore";
 
 export function kickedHandler(socket: Socket) {
 	socket.on("kicked", async (payload: {message: string}) => {
-		await useProfileStore.getState().setCachedProfile();
-		await useGameStatsStore.getState().setCachedStats();
-		await useAuthStore.getState().setCachedCreatedAts();
+		await Promise.all([
+			useProfileStore.getState().setCachedProfile(),
+			useGameStatsStore.getState().setCachedStats(),
+			useAuthStore.getState().setCachedCreatedAts(),
+		]);
 
 		const clientUuid = useAuthStore.getState().clientUuid!;
 		usePartyStore.setState({
-			members: [ clientUuid ],
 			hostUuid: clientUuid,
+			members: [ clientUuid ],
 		});
 
 		useNotificationStore.getState().showNotification(

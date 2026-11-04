@@ -28,10 +28,10 @@ export default function Dev() {
 	const cachedBadges = useGameStatsStore((store) => store.cachedBadges);
 	const gameStatsVerboseMode = useGameStatsStore((store) => store.gameStatsVerboseMode);
 	const notifications = useNotificationStore((store) => store.notifications);
+	const hostUuid = usePartyStore((store) => store.hostUuid);
 	const partyVerboseMode = usePartyStore((store) => store.partyVerboseMode);
 	const partySocketId = usePartyStore((store) => store.partySocketId);
 	const partyGameId = usePartyStore((store) => store.partyGameId);
-	const hostUuid = usePartyStore((store) => store.hostUuid);
 	const profileValidation = useProfileStore((store) => store.profileValidation);
 	const profileVerboseMode = useProfileStore((store) => store.profileVerboseMode);
 	const cachedProfiles = useProfileStore((store) => store.cachedProfiles);
@@ -103,10 +103,10 @@ export default function Dev() {
 				<div>
 					<h2><b>Cached Datas:</b></h2>
 					<ul className="flex flex-wrap place-content-between gap-x-20">
-						<DevButton label={`cachedCreatedAts: ${Object.keys(cachedCreatedAts).length}`} call={() => console.log("cachedCreatedAts: ", cachedCreatedAts)}/>
 						<DevButton label={`cachedProfiles: ${Object.keys(cachedProfiles).length}`} call={() => console.log("cachedProfiles:", useProfileStore.getState().cachedProfiles)} />
 						<DevButton label={`cachedStats: ${Object.keys(cachedStats).length}`} call={() => console.log("cachedStats:", cachedStats)}/>
 						<DevButton label={`cachedBadges: ${Object.values(cachedBadges).filter(Boolean).length}`} call={() => console.log("cachedBadges:", cachedBadges)}/>
+						<DevButton label={`cachedCreatedAts: ${Object.keys(cachedCreatedAts).length}`} call={() => console.log("cachedCreatedAts: ", cachedCreatedAts)}/>
 						<DevButton label={`cachedFriends: ${cachedFriends ? cachedFriends.length : 0}`} call={() => console.log("cachedFriends: ", cachedFriends)} />
 					</ul>
 				</div>

@@ -39,15 +39,15 @@ export const StatsWindow: React.FC = () => {
 	const [winStreak, setWinStreak] = useState(cachedStat?.winStreak ?? 0);
 	const [achievements, setAchievements] = useState(cachedStat?.achievements ?? undefined);
 
-	const statsFetched = useRef<string | null>(null);
+	const dataFetched = useRef<string | null>(null);
 	useEffect(() => {
-		if (statsFetched.current)
+		if (dataFetched.current)
 			return;
-		statsFetched.current = statsUuid;
+		dataFetched.current = statsUuid;
 
 		const fetchPlayerData = async () => {
 			try {
-				const [profile, createdAt, online, clientStats] = await Promise.all([
+				const [profile, createdAt, online, playerStats] = await Promise.all([
 					handleGetProfile(statsUuid),
 					handleCreatedAt(statsUuid),
 					handleGetOnline(statsUuid),
@@ -59,17 +59,28 @@ export const StatsWindow: React.FC = () => {
 
 				setCreatedAt(createdAt ?? null);
 
-				setLevel(clientStats.stats.level);
-				setXp(clientStats.stats.xp);
-				setDisplayedBadgeId(clientStats.stats.displayedBadgeId);
-				setTotalPlayed(clientStats.stats.totalPlayed);
-				setTotalWins(clientStats.stats.totalWins);
-				setWinStreak(clientStats.stats.winStreak);
-
-				setCurrentLevelXpThreshold(clientStats.levelProgress.currentLevelXpThreshold);
-				setCurrentLevelProgressPercentage(clientStats.levelProgress.currentLevelProgressPercentage);
-
-				setAchievements(clientStats.achievements);
+				setLevel(playerStats.stats.level);
+				setXp(playerStats.stats.xp);
+				setDisplayedBadgeId(playerStats.stats.displayedBadgeId);
+				setTotalPlayed(playerStats.stats.totalPlayed);
+				setTotalWins(playerStats.stats.totalWins);
+				setWinStreak(playerStats.stats.winStreak);
+				setCurrentLevelXpThreshold(playerStats.levelProgress.currentLevelXpThreshold);
+				setCurrentLevelProgressPercentage(playerStats.levelProgress.currentLevelProgressPercentage);
+				setAchievements(playerStats.achievements);
+				if (members && members.includes(statsUuid)) {
+					useGameStatsStore.getState().updatePlayerCachedStat(statsUuid, {
+						level: playerStats.stats.level,
+						xp: playerStats.stats.xp,
+						displayedBadgeId: playerStats.stats.displayedBadgeId,
+						totalPlayed: playerStats.stats.totalPlayed,
+						totalWins: playerStats.stats.totalWins,
+						winStreak: playerStats.stats.winStreak,
+						currentLevelXpThreshold: playerStats.levelProgress.currentLevelXpThreshold,
+						currentLevelProgressPercentage: playerStats.levelProgress.currentLevelProgressPercentage,
+						achievements: playerStats.achievements,
+					});
+				}
 
 				if (online?.isOnline)
 					setAvailability(online.inParty ? "Busy" : "Online");
@@ -96,9 +107,9 @@ export const StatsWindow: React.FC = () => {
 				overflow-y-scroll
 			">
 				<div className="flex">
-					<AvatarMemberModule uuid={statsFetched.current} name={name ?? "-"} image={avatar} />
+					<AvatarMemberModule uuid={statsUuid} name={name ?? "-"} image={avatar} />
 					<PlayerDataModule
-						uuid={statsFetched.current!}
+						uuid={statsUuid}
 						availability={availability}
 						lastOnline={lastOnline}
 						createdAt={createdAt}
@@ -120,10 +131,8 @@ export const StatsWindow: React.FC = () => {
 					py-2rem px-2rem
 					gap-1rem
 				">
-					{ members && statsFetched.current && members.includes(statsFetched.current) && <KickPlayerButton playerUuid={statsFetched.current}/>}
-					{statsFetched.current &&
-						<FriendToggleButton uuid={statsFetched.current!} name={name ?? "Player"}/>
-					}
+					{ members && members.includes(statsUuid) && <KickPlayerButton playerUuid={statsUuid}/>}
+					<FriendToggleButton uuid={statsUuid} name={name ?? "Player"}/>
 				</div>
 			</div>
 		</Window>

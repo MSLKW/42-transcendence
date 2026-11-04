@@ -2,7 +2,6 @@ import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import { usePartyStore } from "./PartyStore";
 import { handlePublicPlayerGameData } from "../api/gameStats/get_public-player-game-data/handlePublicPlayerGameData";
-import { handleOwnPlayerGameData } from "../api/gameStats/get_own-player-game-data/handleOwnPlayerGameData";
 
 export const PUBLIC_BADGE_IDS = [
 	"fresh_deal",
@@ -176,7 +175,7 @@ export const useGameStatsStore = create<GameStatsState>() (
 								currentLevelXpThreshold: userStats.levelProgress.currentLevelXpThreshold,
 								currentLevelProgressPercentage: userStats.levelProgress.currentLevelProgressPercentage,
 								achievements: userStats.achievements,
-							}] as const) :
+							}]) :
 							null;
 						}
 					)
@@ -184,7 +183,7 @@ export const useGameStatsStore = create<GameStatsState>() (
 
 				set(() => ({
 					cachedStats: Object.fromEntries(
-						results.filter((item): item is readonly [string, any] => item !== null)
+						results.filter((item) => item !== null)
 					),
 				}));
 			},

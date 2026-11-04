@@ -39,9 +39,11 @@ export function partyStateHandler(socket: Socket) {
 		}
 		chatSocket.joinRoom(newChatRoomId);
 
-		await useProfileStore.getState().setCachedProfile();
-		await useGameStatsStore.getState().setCachedStats();
-		await useAuthStore.getState().setCachedCreatedAts();
+		await Promise.all([
+			useProfileStore.getState().setCachedProfile(),
+			useGameStatsStore.getState().setCachedStats(),
+			useAuthStore.getState().setCachedCreatedAts(),
+		]);
 
 		useSceneStore.setState({ initialRender: true });
 
