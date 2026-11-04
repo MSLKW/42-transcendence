@@ -14,7 +14,6 @@ import { handleFriendRequestsReject } from "./api/friends/post_friend-requests_r
 import { useFriendEvents } from "./api/friends/useFriendEvents";
 import { handleGetProfile } from "./api/profile/get_profile/handleGetProfile";
 import { useAuthStore } from "./store/AuthStore";
-import { useDevStore } from "./store/DevStore";
 import { useFriendsStore } from "./store/FriendsStore";
 import { useNotificationStore, NOTIFICATION_TYPE } from "./store/NotificationStore";
 import { useProfileStore } from "./store/ProfileStore";
@@ -52,7 +51,7 @@ export default function App() {
 	const isProfileLoaded = useProfileStore((store) => store.isProfileLoaded);
 	const currentScene = useSceneStore((store) => store.currentScene);
 	const showWindow = useSceneStore((store) => store.showWindow);
-	const showDevSection = useDevStore((store) => store.showDevSection);
+	const showDevSection = import.meta.env.SHOW_DEV_SECTION;
 	const partyGameId = usePartyStore((store) => store.partyGameId);
 	const initialRender = useSceneStore((store) => store.initialRender);
 
