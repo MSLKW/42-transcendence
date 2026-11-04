@@ -110,7 +110,6 @@ export default function Dev() {
 						<DevButton label={`cachedFriends: ${cachedFriends ? cachedFriends.length : 0}`} call={() => console.log("cachedFriends: ", cachedFriends)} />
 					</ul>
 				</div>
-			<DevButton label="setCachedCreatesAt" call={() => useAuthStore.getState().setCachedCreatedAts()} />
 		</section>
 	);
 }

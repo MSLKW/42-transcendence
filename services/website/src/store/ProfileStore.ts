@@ -54,45 +54,33 @@ export const useProfileStore = create<ProfileState>() (
 			setCachedProfile: async () => {
 				const clientUuid = useAuthStore.getState().clientUuid;
 				const members = usePartyStore.getState().members;
-				const allUuids = Array.from(new Set([...members]))
+				const allUuids = Array.from(new Set(members))
 					.filter((uuid): uuid is string => uuid !== null);
 				const cachedFriends = useFriendsStore.getState().cachedFriends;
 
-				const profiles = await Promise.all(
+				const results = await Promise.all(
 					allUuids.map(async (memberUuid) => {
 						const userData = await handleGetProfile(memberUuid);
-						if (!userData)
-							return null;
-
 						const humanRelation: RELATION_TYPE = 
 							memberUuid === clientUuid ? "Self" :
 							cachedFriends.includes(memberUuid) ? "Friend" :
 							"Stranger";
-
-						return {
-							uuid: memberUuid,
-							data: {
+						return userData ?
+							([memberUuid, {
 								name: userData.username,
 								avatar: userData.avatarPath,
 								badge: userData.badge,
 								relation: humanRelation,
-							},
-						}
+							}] as const) :
+							null;
 					})
 				);
 
-				set((state) => {
-					const cachedProfiles = { ...state.cachedProfiles };
-					for (const profile of profiles) {
-						if (!profile)
-							continue;
-						cachedProfiles[profile.uuid] = profile.data;
-					}
-					return {
-						cachedProfiles,
-						isProfileLoaded: true,
-					}
-				});
+				set(() => ({
+					cachedProfiles: Object.fromEntries(
+						results.filter((item): item is readonly [string, any] => item !== null)
+					),
+				}));
 			},
 
 			removeCachedProfile: (uuid) => {

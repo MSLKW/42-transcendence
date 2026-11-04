@@ -158,18 +158,14 @@ export const useGameStatsStore = create<StatsState>() (
 
 			setCachedStats: async () => {
 				const members = usePartyStore.getState().members;
-				const allUuids = Array.from(new Set([...members]))
+				const allUuids = Array.from(new Set(members))
 					.filter((uuid): uuid is string => uuid !== null);
 
-				const stats = await Promise.all(
+				const results = await Promise.all(
 					allUuids.map(async (memberUuid) => {
 						const userStats = await handlePublicPlayerGameData(memberUuid);
-						if (!userStats)
-							return null;
-
-						return {
-							uuid: memberUuid,
-							data: {
+						return userStats ?
+							([memberUuid, {
 								level: userStats.stats.level,
 								xp: userStats.stats.xp,
 								totalPlayed: userStats.stats.totalPlayed,
@@ -179,20 +175,17 @@ export const useGameStatsStore = create<StatsState>() (
 								currentLevelXpThreshold: userStats.levelProgress.currentLevelXpThreshold,
 								currentLevelProgressPercentage: userStats.levelProgress.currentLevelProgressPercentage,
 								achievements: userStats.achievements,
-							},
+							}] as const) :
+							null;
 						}
-					})
+					)
 				);
 
-				set((state) => {
-					const cachedStats = { ...state.cachedStats };
-					for (const stat of stats) {
-						if (!stat)
-							continue;
-						cachedStats[stat.uuid] = stat.data;
-					}
-					return { cachedStats };
-				});
+				set(() => ({
+					cachedStats: Object.fromEntries(
+						results.filter((item): item is readonly [string, any] => item !== null)
+					),
+				}));
 			},
 
 			updatePlayerCachedStat: async (uuid) => {
