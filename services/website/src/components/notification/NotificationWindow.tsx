@@ -1,7 +1,6 @@
 import { createPortal } from "react-dom";
 import { motion, AnimatePresence } from "motion/react";
 import { NOTIFICATION_TYPE, useNotificationStore } from "../../store/NotificationStore";
-import { useScrollToTop } from "../../utilities/react/useScrollToTop";
 import { SingleNotification } from "./SingleNotification";
 
 export const NotificationWindow = () => {
@@ -14,7 +13,6 @@ export const NotificationWindow = () => {
 
 	if (notifications.length === 0)
 		return null;
-	useScrollToTop();
 
 	return createPortal(
 		<div className="

@@ -23,6 +23,7 @@ export async function leavePartyAction(socket: Socket | null) {
 
 		await useProfileStore.getState().setCachedProfile();
 		await useGameStatsStore.getState().setCachedStats();
+		await useAuthStore.getState().setCachedCreatedAts();
 
 		useSceneStore.getState().setShowWindow("profile", false);
 

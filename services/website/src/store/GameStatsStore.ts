@@ -1,6 +1,5 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-import { useAuthStore } from "./AuthStore";
 import { usePartyStore } from "./PartyStore";
 import { handlePublicPlayerGameData } from "../api/gameStats/get_public-player-game-data/handlePublicPlayerGameData";
 
@@ -128,12 +127,14 @@ interface StatsValues {
 
 interface StatsState extends StatsValues {
 	setCachedStats: () => Promise<void>;
-	removeCachedStat: (uuid: string | null) => void;
+	updatePlayerCachedStat: (uuid: string | null) => Promise<void>;
+	removePlayerCachedStat: (uuid: string | null) => void;
+	resetValues: () => void;
 };
 
 export const useGameStatsStore = create<StatsState>() (
 	persist(
-		(set, _get) => ({
+		(set) => ({
 			gameStatsVerboseMode: false,
 			cachedStats: {},
 			cachedBadges: {
@@ -156,17 +157,9 @@ export const useGameStatsStore = create<StatsState>() (
 			},
 
 			setCachedStats: async () => {
-				const clientUuid = useAuthStore.getState().clientUuid;
 				const members = usePartyStore.getState().members;
-
-				const allUuids = Array.from(
-					new Set([
-						...members,
-						...(clientUuid ? [clientUuid] : [])
-					])
-				).filter(
-					(uuid): uuid is string => uuid !== null
-				);
+				const allUuids = Array.from(new Set([...members]))
+					.filter((uuid): uuid is string => uuid !== null);
 
 				const stats = await Promise.all(
 					allUuids.map(async (memberUuid) => {
@@ -198,13 +191,39 @@ export const useGameStatsStore = create<StatsState>() (
 							continue;
 						cachedStats[stat.uuid] = stat.data;
 					}
-					return {
-						cachedStats,
-					}
+					return { cachedStats };
 				});
 			},
 
-			removeCachedStat: (uuid) => {
+			updatePlayerCachedStat: async (uuid) => {
+				if (!uuid)
+					return;
+
+				const userStats = await handlePublicPlayerGameData(uuid);
+				if (!userStats)
+					return;
+
+				const playerData = {
+					level: userStats.stats.level,
+					xp: userStats.stats.xp,
+					totalPlayed: userStats.stats.totalPlayed,
+					totalWins: userStats.stats.totalWins,
+					winStreak: userStats.stats.winStreak,
+					displayedBadgeId: userStats.stats.displayedBadgeId,
+					currentLevelXpThreshold: userStats.levelProgress.currentLevelXpThreshold,
+					currentLevelProgressPercentage: userStats.levelProgress.currentLevelProgressPercentage,
+					achievements: userStats.achievements,
+				};
+
+				set((state) => ({
+					cachedStats: {
+						...state.cachedStats,
+						[uuid]: playerData,
+					},
+				}));
+			},
+
+			removePlayerCachedStat: (uuid) => {
 				if (!uuid)
 					return;
 
@@ -214,6 +233,30 @@ export const useGameStatsStore = create<StatsState>() (
 					return { cachedStats };
 				});
 			},
+
+			resetValues: () => {
+				set({
+					cachedStats: {},
+					cachedBadges: {
+						fresh_deal: false,
+						beginners_luck: false,
+						worthy_opponent: false,
+						enthusiast: false,
+						risk_taker: false,
+						the_strategist: false,
+						big_2_champion: false,
+						double_digits: false,
+						century_club: false,
+						hot_hand: false,
+						flush_with_pride: false,
+						never_folds: false,
+						curious_cat: false,
+						imposter: false,
+						social_butterfly: false,
+						connoisseur: false,
+					},
+				});
+			}
 		}),
 		{
 			name: 'stats-storage',

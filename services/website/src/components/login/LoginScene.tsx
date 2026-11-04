@@ -7,16 +7,17 @@ import { useBubbleStore } from "../../store/BubbleStore";
 import { useChatStore } from "../../store/ChatStore";
 import { useFriendsStore } from "../../store/FriendsStore";
 import { useGameStore } from "../../store/GameStore";
+import { useGameStatsStore } from "../../store/GameStatsStore";
+import { useNotificationStore } from "../../store/NotificationStore";
 import { usePartyStore } from "../../store/PartyStore";
 import { useProfileStore } from "../../store/ProfileStore";
 import { useResultsStore } from "../../store/ResultsStore";
 import { useSceneStore } from "../../store/SceneStore";
+import { useSettingsStore } from "../../store/SettingsStore";
+import { useTypingStore } from "../../store/TypingStore";
 import { BigLogo } from "./logo/BigLogo";
 import { CreateAccountButton } from "./create_account/CreateAccountButton";
 import { SignInButton } from "./sign_in/SignInButton";
-import { useSettingsStore } from "../../store/SettingsStore";
-import { useTypingStore } from "../../store/TypingStore";
-import { useNotificationStore } from "../../store/NotificationStore";
 
 export const LoginScene = () => {
 	useEffect(() => {
@@ -27,6 +28,7 @@ export const LoginScene = () => {
 		useChatStore.getState().resetValues();
 		useFriendsStore.getState().resetValues();
 		useGameStore.getState().resetValues();
+		useGameStatsStore.getState().resetValues();
 		useNotificationStore.getState().resetValues();
 		usePartyStore.getState().resetValues();
 		useProfileStore.getState().resetValues();

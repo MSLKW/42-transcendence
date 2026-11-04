@@ -1,9 +1,6 @@
-import { handleLogout } from "./api/authentication/delete_logout/handleLogout";
+import { useRef } from "react";
 import { useChatStore } from "./store/ChatStore";
-import { chatSocket } from "./api/chat/chatSocket";
-import { partySocket } from "./api/party/partySocket";
 import { useAuthStore } from "./store/AuthStore";
-import { useBotStore } from "./store/BotStore";
 import { useDevStore } from "./store/DevStore";
 import { useFriendsStore } from "./store/FriendsStore";
 import { useGameStore } from "./store/GameStore";
@@ -11,8 +8,7 @@ import { useGameStatsStore } from "./store/GameStatsStore";
 import { useNotificationStore, NOTIFICATION_TYPE } from "./store/NotificationStore";
 import { usePartyStore } from "./store/PartyStore";
 import { useProfileStore } from "./store/ProfileStore";
-import { useResultsStore } from "./store/ResultsStore";
-import { defaultShowWindow, useSceneStore } from "./store/SceneStore";
+import { useSceneStore } from "./store/SceneStore";
 import { DevButton } from "./components/dev/DevBtn";
 import { useFrameView } from "./utilities/react/useFrameView";
 
@@ -20,175 +16,101 @@ export default function Dev() {
 	const clientUuid = useAuthStore((store) => store.clientUuid);
 	const authVerboseMode = useAuthStore((store) => store.authVerboseMode);
 	const authValidation = useAuthStore((store) => store.authValidation);
+	const cachedCreatedAts = useAuthStore((store) => store.cachedCreatedAts);
 	const chatVerboseMode = useChatStore((store) => store.chatVerboseMode);
 	const chatSocketId = useChatStore((store) => store.chatSocketId);
 	const chatRoomId = useChatStore((store) => store.chatRoomId);
 	const friendsVerboseMode = useFriendsStore((store) => store.friendsVerboseMode);
 	const cachedFriends = useFriendsStore((store) => store.cachedFriends);
-	const friendRequestSent = useFriendsStore((store) => store.friendRequestSent);
 	const gameVerboseMode = useGameStore((store) => store.gameVerboseMode);
 	const gameSocketId = useGameStore((store) => store.gameSocketId);
-	const userSeats = useGameStore((store) => store.userSeats);
-	const totalPlayers = useGameStore((store) => store.totalPlayers);
+	const cachedStats = useGameStatsStore((store) => store.cachedStats);
+	const cachedBadges = useGameStatsStore((store) => store.cachedBadges);
 	const gameStatsVerboseMode = useGameStatsStore((store) => store.gameStatsVerboseMode);
 	const notifications = useNotificationStore((store) => store.notifications);
 	const partyVerboseMode = usePartyStore((store) => store.partyVerboseMode);
 	const partySocketId = usePartyStore((store) => store.partySocketId);
 	const partyGameId = usePartyStore((store) => store.partyGameId);
-	const members = usePartyStore((store) => store.members);
 	const hostUuid = usePartyStore((store) => store.hostUuid);
 	const profileValidation = useProfileStore((store) => store.profileValidation);
 	const profileVerboseMode = useProfileStore((store) => store.profileVerboseMode);
 	const cachedProfiles = useProfileStore((store) => store.cachedProfiles);
-	const results = useResultsStore((store) => store.results);
 	const sceneVerboseMode = useSceneStore((store) => store.sceneVerboseMode);
-	const showWindow = useSceneStore((store) => store.showWindow);
-	const currentScene = useSceneStore((store) => store.currentScene);
 
-	const handleResetAll = async () => {
-		await handleLogout();
-		useSceneStore.getState().setCurrentScene("Login");
-		useSceneStore.setState({ showWindow: defaultShowWindow });
-		useProfileStore.setState({ cachedProfiles: {} });
-		useChatStore.setState({ cachedChat: [] });
-		console.log("[Dev] Game have been reset");
-	}
-
-	const handlePartyConnection = () => {
-		if (partySocket.isConnected()) {
-			partySocket.disconnect();
-			chatSocket.disconnect();
-		} else {
-			partySocket.connect();
-			chatSocket.connect();
-		}
-	}
-
-	const handleChatConnection = () => {
-		if (chatSocket.isConnected()) {
-			chatSocket.disconnect();
-			return;
-		}
-
-		chatSocket.connect();
-	}
-
-	const seated = userSeats.filter((seat): seat is string => typeof seat === "string").length;
+	const toggleAll = useRef(false);
 
 	useFrameView();
 
-	const playerWins = (player: number) => {
-		const newCardsLeft = Array.from({ length: totalPlayers }, (_, index) => {
-			return (Math.abs(totalPlayers - (index - player)) % totalPlayers) * 3;
-		});
-		useGameStore.setState({ cardsLeft: newCardsLeft });
-	}
-
 	return (
-		<section className="w-full text-b4 py-1rem gap-1rem flex flex-col px-3rem bg-n0">
+		<section className="w-full text-b4 py-1rem gap-1rem flex flex-col px-3rem bg-n0 gap-10">
 			{/* utilities */}
-				<ul className="flex place-content-between">
-					<DevButton label="Frame" call={() => useDevStore.setState((store) => ({ showFrame: !store.showFrame }))} />
-					<DevButton label="Reset All" call={handleResetAll} />
-				</ul>
-			{/* notification */}
-				<ul className="flex place-content-between">
-					<DevButton label="Notify Message" call={() => useNotificationStore.getState().showNotification("This is a message notification", NOTIFICATION_TYPE.message)} />
-					<DevButton label="Notify Invite" call={() => useNotificationStore.getState().showNotification("This is an invite notification", NOTIFICATION_TYPE.invite)} />
-					<DevButton label="Notify Error" call={() => useNotificationStore.getState().showNotification("This is an error notification", NOTIFICATION_TYPE.error)} />
-					<DevButton label={`notifications:${notifications.length}`} call={() => console.log("notifications:", notifications)} />
-				</ul>
-			{/* scene */}
-				<ul className="flex place-content-between">
-					<DevButton label={`showWindow: ${Object.values(showWindow).filter(Boolean).length}`} call={() => console.log("showWindow:", showWindow)}/>
-					<DevButton label={`sceneVerboseMode: ${sceneVerboseMode}`} call={() => useSceneStore.setState({ sceneVerboseMode: !sceneVerboseMode })}/>
-				</ul>
-			{/* authentication */}
-				<ul className="flex place-content-between">
-					<DevButton label={`clientUuid: ${clientUuid}`} call={() => clientUuid && navigator.clipboard.writeText(clientUuid)}/>
-					<DevButton label={`authValidation: ${authValidation}`} call={() => useAuthStore.setState({ authValidation: !authValidation })}/>
-					<DevButton label={`authVerboseMode: ${authVerboseMode}`} call={() => useAuthStore.setState({ authVerboseMode: !authVerboseMode })}/>
-				</ul>
-			{/* profile */}
-				<ul className="flex place-content-between">
-					<DevButton label={`cachedProfiles: ${Object.keys(cachedProfiles).length}`} call={() => console.log(useProfileStore.getState().cachedProfiles)} />
-					<DevButton label={`profileValidation: ${profileValidation}`} call={() => useProfileStore.setState({ profileValidation: !profileValidation })}/>
-					<DevButton label="Clear cachedProfiles" call={() => useProfileStore.setState({ cachedProfiles: {} })} />
-					<DevButton label={`profileVerboseMode: ${profileVerboseMode}`} call={() => useProfileStore.setState({ profileVerboseMode: !profileVerboseMode })}/>
-				</ul>
-			{/* game stats */}
-				<ul className="flex place-content-end">
-					<DevButton label={`gameStatsVerboseMode: ${gameStatsVerboseMode}`} call={() => useGameStatsStore.setState({ gameStatsVerboseMode: !gameStatsVerboseMode })}/>
-				</ul>
-			{/* party */}
-				<ul className="flex place-content-between">
-					<DevButton
-						label={`partySocketId: ${partySocketId}`}
-						call={handlePartyConnection}
-					/>
-					<DevButton label={`partyVerboseMode: ${partyVerboseMode}`} call={() => usePartyStore.setState({ partyVerboseMode: !partyVerboseMode })}/>
-				</ul>
-				<ul className="flex place-content-between">
-					<li>hostUuid: {`${hostUuid}`} </li>
-					<DevButton label={`members: ${members.length}`} call={() => console.log("members: ", members)}/>
-				</ul>
-				<ul className="flex place-content-between">
-					<li>partyGameId: {`${partyGameId}`}</li>
-					<DevButton label={`seats: ${seated} / ${totalPlayers}`} call={() => console.log("seats: ", userSeats)} />
-					<DevButton label="refresh" call={() => partySocket.refresh()}/>
-				</ul>
-			{/* game */}
-				<ul className="flex place-content-between">
-					<li>gameSocketId: {`${gameSocketId}`}</li>
-					<DevButton label={`results: ${ results.length }`} call={() => console.log("results: ", results)}/>
-					<DevButton
-						label={`gameVerboseMode: ${gameVerboseMode}`}
-						call={() => useGameStore.setState({ gameVerboseMode: !gameVerboseMode })}
-					/>
-				</ul>
-			{/* chat */}
-				<ul className="flex place-content-between">
-					<DevButton
-						label={`chatSocketId: ${chatSocketId}`}
-						call={handleChatConnection}
-					/>
-				</ul>
-				<ul className="flex place-content-between">
-					<DevButton
-						label={`chatRoomId: ${chatRoomId}`}
-						call={() => useChatStore.setState({ chatRoomId: hostUuid })}
-					/>
-					<DevButton
-						label={`chatVerboseMode: ${chatVerboseMode}`}
-						call={() => useChatStore.setState({ chatVerboseMode: !chatVerboseMode })}
-					/>
-				</ul>
-			{/* friends */}
-				<ul className="flex place-content-between">
-					<DevButton label={`cachedFriends: ${cachedFriends ? cachedFriends.length : 0}`} call={() => console.log("cachedFriends: ", cachedFriends)} />
-					<DevButton label={`friendRequestSent: ${friendRequestSent ? friendRequestSent.length : 0}`} call={() => console.log("friendRequestSent: ", friendRequestSent)} />
-					<DevButton
-						label={`friendsVerboseMode: ${friendsVerboseMode}`}
-						call={() => useFriendsStore.setState({ friendsVerboseMode: !friendsVerboseMode })}
-					/>
-				</ul>
-			{/* seats */}
-				{ currentScene === "Game" && clientUuid === hostUuid &&
-					<ul className="flex place-content-between">
-						<>
-							{ userSeats[0] && <DevButton label={`${cachedProfiles[userSeats[0]]?.name ?? "Seat 0 "} Wins`} call={() => playerWins(0)}/> }
-							{ userSeats[1] && <DevButton label={`${cachedProfiles[userSeats[1]]?.name ?? "Seat 1 "} Wins`} call={() => playerWins(1)}/> }
-							{ userSeats[2] && <DevButton label={`${cachedProfiles[userSeats[2]]?.name ?? "Seat 2 "} Wins`} call={() => playerWins(2)}/> }
-							{ userSeats[3] && <DevButton label={`${cachedProfiles[userSeats[3]]?.name ?? "Seat 3 "} Wins`} call={() => playerWins(3)}/> }
-						</>
+				<div>
+					<h2><b>Utilities:</b></h2>
+					<ul className="flex flex-wrap place-content-between gap-x-20">
+						<DevButton label="Frame" call={() => useDevStore.setState((store) => ({ showFrame: !store.showFrame }))} />
+						<DevButton label="Notify Message" call={() => useNotificationStore.getState().showNotification("This is a message notification", NOTIFICATION_TYPE.message)} />
+						<DevButton label="Notify Error" call={() => useNotificationStore.getState().showNotification("This is an error notification", NOTIFICATION_TYPE.error)} />
+						<DevButton label={`notifications:${notifications.length}`} call={() => console.log("notifications:", notifications)} />
 					</ul>
-				}
-			{/* bots */}
-				<ul className="flex place-content-between">
-					{currentScene === "Lobby" && <DevButton label="Fill Bots" call={() => useBotStore.getState().fillSeatsWithBots()} />}
-					{currentScene === "Lobby" && <DevButton label="Remove Bots" call={() => useBotStore.getState().removeBots()} />}
-					{currentScene === "Lobby" && <DevButton label="Unseat" call={() => useGameStore.getState().leaveSeat()} />}
-				</ul>
+				</div>
+			{/* verbose mode */}
+				<div>
+					<h2><b>Verbose Modes:</b></h2>
+					<ul className="flex flex-wrap place-content-between gap-x-20">
+						<DevButton label={`toggle all`} call={() => {
+							toggleAll.current = !toggleAll.current;
+							useSceneStore.setState({ sceneVerboseMode: toggleAll.current });
+							useAuthStore.setState({ authVerboseMode: toggleAll.current })
+							useProfileStore.setState({ profileVerboseMode: toggleAll.current })
+							useGameStatsStore.setState({ gameStatsVerboseMode: toggleAll.current })
+							usePartyStore.setState({ partyVerboseMode: toggleAll.current })
+							useGameStore.setState({ gameVerboseMode: toggleAll.current })
+							useChatStore.setState({ chatVerboseMode: toggleAll.current })
+							useFriendsStore.setState({ friendsVerboseMode: toggleAll.current })
+						}}/>
+						<DevButton label={`scene: ${sceneVerboseMode}`} call={() => useSceneStore.setState({ sceneVerboseMode: !sceneVerboseMode })}/>
+						<DevButton label={`auth: ${authVerboseMode}`} call={() => useAuthStore.setState({ authVerboseMode: !authVerboseMode })}/>
+						<DevButton label={`profile: ${profileVerboseMode}`} call={() => useProfileStore.setState({ profileVerboseMode: !profileVerboseMode })}/>
+						<DevButton label={`game-stats: ${gameStatsVerboseMode}`} call={() => useGameStatsStore.setState({ gameStatsVerboseMode: !gameStatsVerboseMode })}/>
+						<DevButton label={`party: ${partyVerboseMode}`} call={() => usePartyStore.setState({ partyVerboseMode: !partyVerboseMode })}/>
+						<DevButton label={`game: ${gameVerboseMode}`} call={() => useGameStore.setState({ gameVerboseMode: !gameVerboseMode })}/>
+						<DevButton label={`chat: ${chatVerboseMode}`} call={() => useChatStore.setState({ chatVerboseMode: !chatVerboseMode })}/>
+						<DevButton label={`friends: ${friendsVerboseMode}`} call={() => useFriendsStore.setState({ friendsVerboseMode: !friendsVerboseMode })}/>
+					</ul>
+				</div>
+			{/* ids */}
+				<div>
+					<h2><b>IDs:</b></h2>
+					<ul className="flex flex-wrap place-content-between gap-x-20">
+						<li>clientUuid: {`${clientUuid}`} </li>
+						<li>hostUuid: {`${hostUuid}`} </li>
+						<li>partySocketId: {`${partySocketId}`} </li>
+						<li>chatSocketId: {`${chatSocketId}`}</li>
+						<li>gameSocketId: {`${gameSocketId}`}</li>
+						<li>partyGameId: {`${partyGameId}`}</li>
+						<li>chatRoomId: {`${chatRoomId}`}</li>
+					</ul>
+				</div>
+			{/* validation */}
+				<div>
+					<h2><b>Validation:</b></h2>
+					<ul className="flex flex-wrap place-content-between gap-x-20">
+						<DevButton label={`authValidation: ${authValidation}`} call={() => useAuthStore.setState({ authValidation: !authValidation })}/>
+						<DevButton label={`profileValidation: ${profileValidation}`} call={() => useProfileStore.setState({ profileValidation: !profileValidation })}/>
+					</ul>
+				</div>
+			{/* data */}
+				<div>
+					<h2><b>Cached Datas:</b></h2>
+					<ul className="flex flex-wrap place-content-between gap-x-20">
+						<DevButton label={`cachedCreatedAts: ${Object.keys(cachedCreatedAts).length}`} call={() => console.log("cachedCreatedAts: ", cachedCreatedAts)}/>
+						<DevButton label={`cachedProfiles: ${Object.keys(cachedProfiles).length}`} call={() => console.log("cachedProfiles:", useProfileStore.getState().cachedProfiles)} />
+						<DevButton label={`cachedStats: ${Object.keys(cachedStats).length}`} call={() => console.log("cachedStats:", cachedStats)}/>
+						<DevButton label={`cachedBadges: ${Object.values(cachedBadges).filter(Boolean).length}`} call={() => console.log("cachedBadges:", cachedBadges)}/>
+						<DevButton label={`cachedFriends: ${cachedFriends ? cachedFriends.length : 0}`} call={() => console.log("cachedFriends: ", cachedFriends)} />
+					</ul>
+				</div>
+			<DevButton label="setCachedCreatesAt" call={() => useAuthStore.getState().setCachedCreatedAts()} />
 		</section>
 	);
 }

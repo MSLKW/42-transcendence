@@ -41,6 +41,7 @@ export function partyStateHandler(socket: Socket) {
 
 		await useProfileStore.getState().setCachedProfile();
 		await useGameStatsStore.getState().setCachedStats();
+		await useAuthStore.getState().setCachedCreatedAts();
 
 		useSceneStore.setState({ initialRender: true });
 

@@ -10,6 +10,7 @@ export function kickedHandler(socket: Socket) {
 	socket.on("kicked", async (payload: {message: string}) => {
 		await useProfileStore.getState().setCachedProfile();
 		await useGameStatsStore.getState().setCachedStats();
+		await useAuthStore.getState().setCachedCreatedAts();
 
 		const clientUuid = useAuthStore.getState().clientUuid!;
 		usePartyStore.setState({

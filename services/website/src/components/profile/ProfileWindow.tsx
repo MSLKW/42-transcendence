@@ -21,6 +21,7 @@ import { LeavePartyModule } from "./LeavePartyModule";
 
 export const ProfileWindow = () => {
 	const clientUuid = useAuthStore((store) => store.clientUuid);
+	const cachedCreatedAts = useAuthStore((store) => store.cachedCreatedAts);
 	const members = usePartyStore((store) => store.members);
 	const profileValidation = useProfileStore((store) => store.profileValidation);
 	const cachedProfiles = useProfileStore((store) => store.cachedProfiles);
@@ -29,11 +30,12 @@ export const ProfileWindow = () => {
 
 	const cachedProfile = clientUuid && clientUuid in cachedProfiles ? cachedProfiles[clientUuid] : undefined;
 	const cachedStat = clientUuid && clientUuid in cachedStats ? cachedStats[clientUuid] : undefined;
+	const cachedCreatedAt = clientUuid && clientUuid in cachedCreatedAts ? cachedCreatedAts[clientUuid] : undefined;
 	
 	const [name, setName] = useState(cachedProfile?.name ?? "n/a");
 	const [avatar, setAvatar] = useState(cachedProfile?.avatar ?? undefined);
 	const [hasChange, setHasChange] = useState(false);
-	const [createdAt, setCreatedAt] = useState<Date | null>(null);
+	const [createdAt, setCreatedAt] = useState(cachedCreatedAt ?? null);
 	const [level, setLevel] = useState(cachedStat?.level ?? 0);
 	const [xp, setXp] = useState(cachedStat?.xp ?? 0);
 	const [currentLevelXpThreshold, setCurrentLevelXpThreshold] = useState(cachedStat?.currentLevelXpThreshold ?? 0);
@@ -45,11 +47,11 @@ export const ProfileWindow = () => {
 	const [achievements, setAchievements] = useState(cachedStat?.achievements ?? undefined);
 	const [availableBadges, setAvailableBadges] = useState(cachedBadges);
 
-	const createdAtFetched = useRef<string | null>(null);
+	const dataFetched = useRef<string | null>(null);
 	useEffect(() => {
-		if (!clientUuid || createdAtFetched.current)
+		if (!clientUuid || dataFetched.current)
 			return;
-		createdAtFetched.current = clientUuid;
+		dataFetched.current = clientUuid;
 
 		const fetchPlayerData = async () => {
 			try {
