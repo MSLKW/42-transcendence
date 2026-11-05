@@ -65,11 +65,6 @@ class ChatSocketService {
 
 		this.socket.disconnect();
 		this.socket = null;
-
-		useChatStore.setState({
-			chatSocketId: null,
-			chatRoomId: null,
-		});
 	}
 	public reconnect() {
 		if (!this.socket) {

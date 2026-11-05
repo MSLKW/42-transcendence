@@ -123,6 +123,8 @@ export class Game {
 
 		this.socket.on("connect", () => {
 			gameLog(`[gameSocket] 'connect' id: ${this.socket.id}`);
+			useGameStore.setState({ gameSocketId: this.socket.id });
+
 			// console.log(useSceneStore.getState().currentScene, useGameStore.getState().gameStarted);
 			// if (useSceneStore.getState().currentScene !== "Game" || useGameStore.getState().gameStarted === false)
 				useSceneStore.getState().setCurrentScene("Lobby"); // figure this out
@@ -139,6 +141,8 @@ export class Game {
 
 		this.socket.on("disconnect", (reason) => {
 			gameLog(`[gameSocket] 'disconnect' reason: ${reason}`);
+			useGameStore.setState({ gameSocketId: null });
+
 			this.resetGame();
 			useGameStore.getState().resetLobby();
 			const currentScene = useSceneStore.getState().currentScene;
