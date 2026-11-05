@@ -1,5 +1,4 @@
 import { fetchValidate } from "./fetchValidate";
-import { NOTIFICATION_TYPE, useNotificationStore } from "../../../store/NotificationStore";
 import { useAuthStore } from "../../../store/AuthStore";
 
 export const handleValidate = async () => {
@@ -22,12 +21,6 @@ export const handleValidate = async () => {
 			isAuthenticated: false,
 			clientUuid: null,
 		});
-
-		useNotificationStore.getState().showNotification(
-			error instanceof Error
-			? error.message
-			: String(error), NOTIFICATION_TYPE.error
-		);
 
 		console.warn("[authentication > 'GET' validate] error:", error);
 

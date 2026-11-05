@@ -88,7 +88,7 @@ export function registerChatActivityEvents(
 			timestamp: new Date().toISOString(),
 		};
 		io.to(roomId).emit("chat_message", msgPayload);
-		console.log(`<chat_message> roomId:${client.roomId} senderUuid:${msgPayload.senderUuid} type:${msgPayload.type} message:${msgPayload.message} timestamp:${msgPayload.timestamp}`);
+		console.log(`<chat_message> roomId:${client.roomId} senderUuid:${msgPayload.senderUuid} type:${msgPayload.type} messageLength:${msgPayload.message.length} timestamp:${msgPayload.timestamp}`);
 	});
 }
 

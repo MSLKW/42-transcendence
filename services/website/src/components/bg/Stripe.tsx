@@ -1,4 +1,11 @@
+import { useSceneStore } from "../../store/SceneStore";
+
 export const StripeBg = () => {
+	const currentScene = useSceneStore((store) => store.currentScene);
+
+	if (currentScene !== "Login" && currentScene !== "Home")
+		return;
+
 	return (
 		<section className="
 			absolute z-[-1]

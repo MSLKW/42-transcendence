@@ -61,7 +61,7 @@ class PartySocketService {
 	public disconnect() {
 		if (!this.socket)
 			return;
-		
+
 		this.intentionalDisconnect = true;
 		this.socket.disconnect();
 		this.socket = null;

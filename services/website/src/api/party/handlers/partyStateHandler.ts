@@ -5,15 +5,23 @@ import { useChatStore } from "../../../store/ChatStore";
 import { useGameStatsStore } from "../../../store/GameStatsStore";
 import { usePartyStore } from "../../../store/PartyStore";
 import { useProfileStore } from "../../../store/ProfileStore";
+import { useSceneStore } from "../../../store/SceneStore";
 import { chatSocket } from "../../chat/chatSocket";
 
 export function partyStateHandler(socket: Socket) {
-	socket.on("party_state", async (partyData: { hostUuid: string; members: string[]; gameId: string | null }) => {
+	socket.on("party_state", async (partyData: {
+		hostUuid: string;
+		members: string[];
+		gameId: string | null
+	}) => {
 		if (usePartyStore.getState().partyVerboseMode)
 			console.log("[party > 'on' party_state] partyData:", partyData);
 
 		const clientUuid = useAuthStore.getState().clientUuid;
-		const isClientNewHost = usePartyStore.getState().hostUuid !== partyData.hostUuid && clientUuid === partyData.hostUuid && partyData.members.length > 1;
+		const isClientNewHost = 
+			usePartyStore.getState().hostUuid !== partyData.hostUuid &&
+			clientUuid === partyData.hostUuid &&
+			partyData.members.length > 1;
 
 		usePartyStore.setState({
 			members: partyData.members,
@@ -21,13 +29,22 @@ export function partyStateHandler(socket: Socket) {
 			partyGameId: partyData.gameId,
 		});
 
-		chatSocket.joinRoom(partyData.hostUuid);
-		useChatStore.setState({ chatRoomId: partyData.hostUuid });
+		const currentChatRoomId = useChatStore.getState().chatRoomId;
+		const newChatRoomId = partyData.hostUuid;
+		if (currentChatRoomId !== newChatRoomId) {
+			useChatStore.setState ({
+				chatRoomId: newChatRoomId,
+				cachedChat: [],
+			})
+		}
+		chatSocket.joinRoom(newChatRoomId);
 
 		await useProfileStore.getState().setCachedProfile();
 		await useGameStatsStore.getState().setCachedStats();
 
+		useSceneStore.setState({ initialRender: true });
+
 		if (isClientNewHost)
-			useNotificationStore.getState().showNotification("You are the new host of this party", NOTIFICATION_TYPE.message);
+			useNotificationStore.getState().showNotification("You are the host of this party", NOTIFICATION_TYPE.message);
 	});
 }

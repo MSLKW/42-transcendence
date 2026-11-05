@@ -85,7 +85,7 @@ export default function Dev() {
 	}
 
 	return (
-		<section className="w-full text-b4 py-1rem gap-1rem flex flex-col px-3rem">
+		<section className="w-full text-b4 py-1rem gap-1rem flex flex-col px-3rem bg-n0">
 			{/* utilities */}
 				<ul className="flex place-content-between">
 					<DevButton label="Frame" call={() => useDevStore.setState((store) => ({ showFrame: !store.showFrame }))} />

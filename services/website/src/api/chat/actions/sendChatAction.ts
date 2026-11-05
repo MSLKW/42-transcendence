@@ -17,7 +17,7 @@ export async function sendChatAction(socket: Socket | null, chatType: string, me
 		socket.emit("chat_message", { type: chatType, message: trimmedMessage } );
 
 		if (useChatStore.getState().chatVerboseMode)
-			console.log("[chat > 'emit' chat_message] type:", chatType, " message:", trimmedMessage);
+			console.log("[chat > 'emit' chat_message] type:", chatType, " message.length:", trimmedMessage.length);
 	} catch (error) {
 		useNotificationStore.getState().showNotification(
 			"Failed to send message",
