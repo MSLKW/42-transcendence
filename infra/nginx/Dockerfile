@@ -1,4 +1,4 @@
-FROM nginx:alpine
+FROM nginx:1.31-alpine
 
 RUN rm /etc/nginx/conf.d/default.conf
 
@@ -24,3 +24,5 @@ HEALTHCHECK --interval=5s --timeout=3s --retries=3 --start-period=2s \
 # shorter start-period = It's not waiting on anything at boot, just needs the process to bind the port
 
 # ENTRYPOINT ["nginx", "-g", "daemon off;"]
+
+# CMD export
