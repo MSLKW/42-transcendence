@@ -121,7 +121,7 @@ export const PlayerDataModule = ({
 			</div>
 			<div className="text-a5">
 				<p>UUID: {uuid}</p>
-				<p>Joined: {createdAt?.toString() ?? "n/a"}</p>
+				<p>Created At: {createdAt?.toLocaleString() ?? "n/a"}</p>
 			</div>
 		</div>
 	);
