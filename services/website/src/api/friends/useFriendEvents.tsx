@@ -53,7 +53,8 @@ export function useFriendEvents(clientUuid: string | null, onFriendUpdate?: () =
 					);
 				})
 				.catch((error) => {
-					console.warn("[friends > friend_request_received] Failed to handle friend request received:", error);
+					if (useFriendsStore.getState().friendsVerboseMode)
+						console.warn("[friends > friend_request_received] Failed to handle friend request received:", error);
 				});
 				;
 		});
@@ -75,7 +76,8 @@ export function useFriendEvents(clientUuid: string | null, onFriendUpdate?: () =
 					);
 				})
 				.catch((error) => {
-					console.warn("[friends > friend_request_accepted] Failed to handle friend request accept:", error);
+					if (useFriendsStore.getState().friendsVerboseMode)
+						console.warn("[friends > friend_request_accepted] Failed to handle friend request accept:", error);
 				});
 		});
 
@@ -96,7 +98,8 @@ export function useFriendEvents(clientUuid: string | null, onFriendUpdate?: () =
 					);
 				})
 				.catch((error) => {
-					console.warn("[friends > friend_request_rejected] Failed to handle friend request rejected:", error);
+					if (useFriendsStore.getState().friendsVerboseMode)
+						console.warn("[friends > friend_request_rejected] Failed to handle friend request rejected:", error);
 				});
 		});
 
@@ -114,7 +117,8 @@ export function useFriendEvents(clientUuid: string | null, onFriendUpdate?: () =
 						useNotificationStore.getState().showNotification("'Social Butterfly' easter egg found!", NOTIFICATION_TYPE.message);
 				})
 				.catch((error) => {
-					console.warn("[friends > friends_list_updated] Failed to handle easter egg:", error);
+					if (useFriendsStore.getState().friendsVerboseMode)
+						console.warn("[friends > friends_list_updated] Failed to handle easter egg:", error);
 				});
 		});
 

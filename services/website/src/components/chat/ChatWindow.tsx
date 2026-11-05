@@ -11,7 +11,7 @@ import { ChatTypingIndicator } from "./ChatTypingIndicator";
 import { ChatRateLimit } from "./ChatRateLimit";
 
 export const ChatWindow = () => {
-	const cachedChat = useChatStore((store) => store.cachedChat);
+	const chatLog = useChatStore((store) => store.chatLog);
 	const rateLimited = useChatStore((store) => store.rateLimited);
 	const members = usePartyStore((store) => store.members);
 	const typingUsers = useTypingStore((store) => store.typingUsers);
@@ -34,7 +34,7 @@ export const ChatWindow = () => {
 				behavior: "smooth"
 			});
 		}
-	}, [cachedChat]);
+	}, [chatLog]);
 
 	const wasTyping = useRef(false);
 	useEffect(() => {
@@ -96,14 +96,14 @@ export const ChatWindow = () => {
 						flex flex-1 flex-col place-content-start place-items-center
 						gap-1rem
 				">
-					{!cachedChat.length
+					{!chatLog.length
 						?
 							<h2 className="text-n6/50">Chat messages appear here</h2>
 						:
 							<ul className="w-full flex flex-col text-n6">
-								{cachedChat.map((data, index) => {
-									const isFirstFromClient = index === 0 || cachedChat[index - 1].uuid !== data.uuid;
-									const nextMessage = cachedChat[index + 1];
+								{chatLog.map((data, index) => {
+									const isFirstFromClient = index === 0 || chatLog[index - 1].uuid !== data.uuid;
+									const nextMessage = chatLog[index + 1];
 									const isLastFromClient = nextMessage && nextMessage?.uuid !== data.uuid;
 
 									return (

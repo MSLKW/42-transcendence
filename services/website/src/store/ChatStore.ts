@@ -21,7 +21,7 @@ interface ChatValues {
 	isChatSubscribed: boolean,
 	chatSocketId: string | null;
 	chatRoomId: string | null;
-	cachedChat: ChatData[];
+	chatLog: ChatData[];
 	rateLimited: string | null;
 }
 
@@ -44,13 +44,13 @@ export const useChatStore = create<ChatState>() (
 			isChatSubscribed: false,
 			chatSocketId: null,
 			chatRoomId: null,
-			cachedChat: [],
+			chatLog: [],
 			rateLimited: null,
 
 			addToCachedChat: (type, uuid, name, avatar, msg) => {
 				set((state) => ({
-					cachedChat: [
-						...state.cachedChat,
+					chatLog: [
+						...state.chatLog,
 						{ type, uuid, name, avatar, msg }
 					].slice(-MAX_CACHED_MESSAGES)
 				}));
@@ -77,7 +77,7 @@ export const useChatStore = create<ChatState>() (
 					isChatSubscribed: false,
 					chatSocketId: null,
 					chatRoomId: null,
-					cachedChat: [],
+					chatLog: [],
 					rateLimited: null,
 				});
 			},

@@ -1,4 +1,3 @@
-// import { useRef, useEffect, useCallback } from "react";
 import { useRef, useEffect } from "react";
 import { handleValidate } from "./api/authentication/get_validate/handleValidate";
 import { chatSocket } from "./api/chat/chatSocket";
@@ -8,12 +7,10 @@ import { subscribeToUserJoined } from "./api/chat/subscribe/subscribeToUserJoine
 import { subscribeToUserLeft } from "./api/chat/subscribe/subscribeToUserLeft";
 import { subscribeToUserTyping } from "./api/chat/subscribe/subscribeToUserTyping";
 import { subscribeToRateLimited } from "./api/chat/subscribe/subscribeToRateLimited";
-// import { handleFriendships } from "./api/friends/get_friendships/handleFriendships";
 import { handleFriendRequestsSent } from "./api/friends/get_friend-requests_sent/handleFriendRequestsSent";
 import { handleFriendRequestsReceived } from "./api/friends/get_friend-requests_received/handleFriendRequestsReceived";
 import { handleFriendRequestsAccept } from "./api/friends/post_friend-requests_accept/handleFriendRequestsAccept";
 import { handleFriendRequestsReject } from "./api/friends/post_friend-requests_reject/handleFriendRequestsReject";
-// import { useFriendEvents } from "./api/friends/useFriendEvents";
 import { handleGetProfile } from "./api/profile/get_profile/handleGetProfile";
 import { useAuthStore } from "./store/AuthStore";
 import { useFriendsStore } from "./store/FriendsStore";
@@ -97,21 +94,6 @@ export default function App() {
 		};
 	}, [clientUuid]);
 
-	// /** Friends connection */
-	// const handleFriendUpdate = useCallback(() => {
-	// 	if (!clientUuid)
-	// 		return;
-
-	// 	void handleFriendships(clientUuid!)
-	// 		.then((friends) => {
-	// 			useFriendsStore.setState({ cachedFriends: friends });
-	// 		})
-	// 		.catch((error) => {
-	// 			console.warn("Failed to refresh friendships:", error);
-	// 		});
-	// }, [clientUuid]);
-	// useFriendEvents(clientUuid, handleFriendUpdate);
-
 	/** Friend requests sent + received */
 	useEffect(() => {
 		if (!clientUuid || currentScene === "Login")
@@ -120,9 +102,6 @@ export default function App() {
 		void handleFriendRequestsSent(clientUuid)
 			.then((requests) => {
 				useFriendsStore.setState({ friendRequestSent: requests });
-			})
-			.catch((error) => {
-				console.warn("Sent requests failed:", error);
 			});
 
 		void handleFriendRequestsReceived(clientUuid)
@@ -140,9 +119,6 @@ export default function App() {
 						);
 					})
 				);
-			})
-			.catch((error) => {
-				console.warn("Failed to process friend requests:", error);
 			});
 	}, [clientUuid, currentScene]);
 

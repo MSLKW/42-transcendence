@@ -12,7 +12,8 @@ export const handleOwnPlayerGameData = async () => {
 
 		return response;
 	} catch (error) {
-		console.warn("[gameStats > 'GET' own-player-game-data] error:", error);
+		if (useGameStatsStore.getState().gameStatsVerboseMode)
+			console.warn("[gameStats > 'GET' own-player-game-data] error:", error);
 
 		return null;
 	}

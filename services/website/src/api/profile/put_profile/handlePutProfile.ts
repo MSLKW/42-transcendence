@@ -18,7 +18,8 @@ export const handlePutProfile = async (username: string, avatarPath: string, bad
 
 		useNotificationStore.getState().showNotification(error, NOTIFICATION_TYPE.error);
 
-		console.warn("[profile > 'PUT' profile] error:", error);
+		if (useProfileStore.getState().profileVerboseMode)
+			console.warn("[profile > 'PUT' profile] error:", error);
 
 		throw err;
 	}

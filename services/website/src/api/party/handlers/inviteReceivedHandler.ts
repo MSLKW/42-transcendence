@@ -20,7 +20,8 @@ export function inviteReceivedHandler(socket: Socket) {
 			if (usePartyStore.getState().partyVerboseMode)
 				console.log("[party > 'on' invite_received] hostUuid:", payload.hostUuid);
 		} catch (error) {
-			console.warn("[party > 'on' invite_received] error:", error);
+			if (usePartyStore.getState().partyVerboseMode)
+				console.warn("[party > 'on' invite_received] error:", error);
 		}
 	});
 }

@@ -42,7 +42,9 @@ export const handleSignUp = async (email: string, password: string, setIsLoading
 			isAuthenticated: false,
 			clientUuid: null,
 		});
-		console.warn("[authentication > 'POST' signup] error:", error);
+
+		if (useAuthStore.getState().authVerboseMode)
+			console.warn("[authentication > 'POST' signup] error:", error);
 	} finally {
 		setIsLoading(false);
 	}

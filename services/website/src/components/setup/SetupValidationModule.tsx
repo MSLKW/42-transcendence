@@ -10,6 +10,8 @@ interface SetupValidationModuleProps {
 }
 
 export const SetupValidationModule = ({ name, avatar }: SetupValidationModuleProps) => {
+	const profileVerboseMode = useProfileStore((store) => store.profileVerboseMode);
+
 	const isNameValid = checkNameValidity(name);
 	const isAvatarValid = Boolean(avatar);
 	const isValid = isNameValid && isAvatarValid;
@@ -25,7 +27,8 @@ export const SetupValidationModule = ({ name, avatar }: SetupValidationModulePro
 				useNotificationStore.getState().showNotification("Profile created", NOTIFICATION_TYPE.message);
 			})
 			.catch((error) => {
-				console.warn("Failed to handle update profile:", error);
+				if (profileVerboseMode)
+					console.warn("Failed to handle update profile:", error);
 			});
 	};
 

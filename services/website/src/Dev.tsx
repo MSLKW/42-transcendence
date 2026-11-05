@@ -17,7 +17,6 @@ export default function Dev() {
 	const authVerboseMode = useAuthStore((store) => store.authVerboseMode);
 	const authValidation = useAuthStore((store) => store.authValidation);
 	const cachedCreatedAts = useAuthStore((store) => store.cachedCreatedAts);
-	const cachedChat = useChatStore((store) => store.cachedChat);
 	const chatVerboseMode = useChatStore((store) => store.chatVerboseMode);
 	const chatSocketId = useChatStore((store) => store.chatSocketId);
 	const chatRoomId = useChatStore((store) => store.chatRoomId);
@@ -69,14 +68,14 @@ export default function Dev() {
 							useChatStore.setState({ chatVerboseMode: toggleAll.current })
 							useFriendsStore.setState({ friendsVerboseMode: toggleAll.current })
 						}}/>
-						<DevButton label={`scene: ${sceneVerboseMode}`} call={() => useSceneStore.setState({ sceneVerboseMode: !sceneVerboseMode })}/>
 						<DevButton label={`auth: ${authVerboseMode}`} call={() => useAuthStore.setState({ authVerboseMode: !authVerboseMode })}/>
-						<DevButton label={`profile: ${profileVerboseMode}`} call={() => useProfileStore.setState({ profileVerboseMode: !profileVerboseMode })}/>
-						<DevButton label={`game-stats: ${gameStatsVerboseMode}`} call={() => useGameStatsStore.setState({ gameStatsVerboseMode: !gameStatsVerboseMode })}/>
-						<DevButton label={`party: ${partyVerboseMode}`} call={() => usePartyStore.setState({ partyVerboseMode: !partyVerboseMode })}/>
-						<DevButton label={`game: ${gameVerboseMode}`} call={() => useGameStore.setState({ gameVerboseMode: !gameVerboseMode })}/>
 						<DevButton label={`chat: ${chatVerboseMode}`} call={() => useChatStore.setState({ chatVerboseMode: !chatVerboseMode })}/>
 						<DevButton label={`friends: ${friendsVerboseMode}`} call={() => useFriendsStore.setState({ friendsVerboseMode: !friendsVerboseMode })}/>
+						<DevButton label={`game: ${gameVerboseMode}`} call={() => useGameStore.setState({ gameVerboseMode: !gameVerboseMode })}/>
+						<DevButton label={`game-stats: ${gameStatsVerboseMode}`} call={() => useGameStatsStore.setState({ gameStatsVerboseMode: !gameStatsVerboseMode })}/>
+						<DevButton label={`party: ${partyVerboseMode}`} call={() => usePartyStore.setState({ partyVerboseMode: !partyVerboseMode })}/>
+						<DevButton label={`profile: ${profileVerboseMode}`} call={() => useProfileStore.setState({ profileVerboseMode: !profileVerboseMode })}/>
+						<DevButton label={`scene: ${sceneVerboseMode}`} call={() => useSceneStore.setState({ sceneVerboseMode: !sceneVerboseMode })}/>
 					</ul>
 				</div>
 			{/* ids */}
@@ -85,11 +84,11 @@ export default function Dev() {
 					<ul className="flex flex-wrap place-content-between gap-x-20">
 						<li>clientUuid: {`${clientUuid}`} </li>
 						<li>hostUuid: {`${hostUuid}`} </li>
-						<li>partySocketId: {`${partySocketId}`} </li>
+						<li>chatRoomId: {`${chatRoomId}`}</li>
 						<li>chatSocketId: {`${chatSocketId}`}</li>
 						<li>gameSocketId: {`${gameSocketId}`}</li>
 						<li>partyGameId: {`${partyGameId}`}</li>
-						<li>chatRoomId: {`${chatRoomId}`}</li>
+						<li>partySocketId: {`${partySocketId}`} </li>
 					</ul>
 				</div>
 			{/* validation */}
@@ -109,7 +108,6 @@ export default function Dev() {
 						<DevButton label={`cachedBadges: ${Object.values(cachedBadges).filter(Boolean).length}`} call={() => console.log("cachedBadges:", cachedBadges)}/>
 						<DevButton label={`cachedCreatedAts: ${Object.keys(cachedCreatedAts).length}`} call={() => console.log("cachedCreatedAts: ", cachedCreatedAts)}/>
 						<DevButton label={`cachedFriends: ${cachedFriends ? cachedFriends.length : 0}`} call={() => console.log("cachedFriends: ", cachedFriends)} />
-						<DevButton label={`cachedChat: ${cachedChat ? cachedChat.length : 0}`} call={() => console.log("cachedChat: ", cachedChat)} />
 					</ul>
 				</div>
 		</section>

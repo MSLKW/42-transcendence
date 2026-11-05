@@ -20,9 +20,12 @@ import { PlayerStatsModule } from "../player/stats/PlayerStatsModule";
 import { LeavePartyModule } from "./LeavePartyModule";
 
 export const ProfileWindow = () => {
+	const authVerboseMode = useAuthStore((store) => store.authVerboseMode);
 	const clientUuid = useAuthStore((store) => store.clientUuid);
 	const cachedCreatedAts = useAuthStore((store) => store.cachedCreatedAts);
+	const gameStatsVerboseMode = useGameStatsStore((store) => store.gameStatsVerboseMode);
 	const members = usePartyStore((store) => store.members);
+	const profileVerboseMode = useProfileStore((store) => store.profileVerboseMode);
 	const profileValidation = useProfileStore((store) => store.profileValidation);
 	const cachedProfiles = useProfileStore((store) => store.cachedProfiles);
 	const cachedStats = useGameStatsStore((store) => store.cachedStats);
@@ -86,7 +89,8 @@ export const ProfileWindow = () => {
 				setAvailableBadges(clientStats.badges);
 				useGameStatsStore.setState({ cachedBadges: clientStats.badges });
 			} catch (error) {
-				console.warn("Failed to fetch player data:", error);
+				if (authVerboseMode || gameStatsVerboseMode)
+					console.warn("Failed to fetch player data:", error);
 			}
 		}
 		fetchPlayerData();
@@ -123,7 +127,8 @@ export const ProfileWindow = () => {
 				}
 			})
 			.catch((error) => {
-				console.warn("Failed to handle update profile:", error);
+				if (profileVerboseMode)
+					console.warn("Failed to handle update profile:", error);
 			});
 	}
 	return (

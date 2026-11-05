@@ -15,6 +15,7 @@ export const handlePutAvatar = async (avatar: File) => {
 
 		useNotificationStore.getState().showNotification(error, NOTIFICATION_TYPE.error);
 
-		console.warn("[profile > 'PUT' avatar] error:", error);
+		if (useProfileStore.getState().profileVerboseMode)
+			console.warn("[profile > 'PUT' avatar] error:", error);
 	}
 }

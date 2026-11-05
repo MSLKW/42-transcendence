@@ -26,7 +26,10 @@ export async function acceptInviteAction(socket: Socket | null, hostUuid: string
 		const response = await emitAcceptInvite(socket, hostUuid);
 		if (!response.success) {
 			useNotificationStore.getState().showNotification(response.reason ?? "Failed to join party", NOTIFICATION_TYPE.error);
-			console.warn("[party > 'emit' accept_invite] reason:Failed to join party");
+
+			if (usePartyStore.getState().partyVerboseMode)
+				console.warn("[party > 'emit' accept_invite] reason:Failed to join party");
+
 			return;
 		}
 
@@ -53,6 +56,7 @@ export async function acceptInviteAction(socket: Socket | null, hostUuid: string
 			NOTIFICATION_TYPE.error
 		);
 
-		console.warn("[party > 'emit' accept_invite] error:", error);
+		if (usePartyStore.getState().partyVerboseMode)
+			console.warn("[party > 'emit' accept_invite] error:", error);
 	}
 }

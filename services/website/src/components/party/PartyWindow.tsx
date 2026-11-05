@@ -11,6 +11,7 @@ import { usePartyStore } from "../../store/PartyStore";
 
 export const PartyWindow = () => {
 	const cachedFriends = useFriendsStore((store) => store.cachedFriends);
+	const friendsVerboseMode = useFriendsStore((store) => store.friendsVerboseMode);
 	const clientUuid = useAuthStore((store) => store.clientUuid);
 
 	const [searchQuery, setSearchQuery] = useState<string>("");
@@ -25,7 +26,8 @@ export const PartyWindow = () => {
 				useFriendsStore.setState({ cachedFriends: friends });
 			})
 			.catch((error) => {
-				console.warn("Failed to handle get friendships:", error);
+				if (friendsVerboseMode)
+					console.warn("Failed to handle get friendships:", error);
 			});
 		void handleFriendRequestsSent(clientUuid!)
 			.then((requests) => {
@@ -34,7 +36,8 @@ export const PartyWindow = () => {
 				useFriendsStore.setState({ friendRequestSent: newFriendRequestSent });
 			})
 			.catch((error) => {
-				console.warn("Failed to handle friend request sent:", error);
+				if (friendsVerboseMode)
+					console.warn("Failed to handle friend request sent:", error);
 			});
 	}, [clientUuid]);
 

@@ -18,6 +18,7 @@ export const handleLogout = async () => {
 
 		useNotificationStore.getState().showNotification(error, NOTIFICATION_TYPE.error);
 
-		console.warn("[authentication > 'DELETE' logout] error:", error)
+		if (useAuthStore.getState().authVerboseMode)
+			console.warn("[authentication > 'DELETE' logout] error:", error);
 	}
 };

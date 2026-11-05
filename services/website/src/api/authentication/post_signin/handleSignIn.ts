@@ -39,6 +39,7 @@ export const handleSignIn = async (email: string, password: string) => {
 			clientUuid: null,
 		});
 
-		console.warn("[handleSignIn] 'POST' error:", error);
+		if (useAuthStore.getState().authVerboseMode)
+			console.warn("[authentication > 'POST' signin] error:", error);
 	}
 }

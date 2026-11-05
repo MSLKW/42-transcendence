@@ -30,6 +30,7 @@ export async function kickPlayerAction(socket: Socket | null, recipientUuid: str
 			NOTIFICATION_TYPE.error
 		);
 
-		console.warn("[party > 'emit' kick_player] error:", error);
+		if (usePartyStore.getState().partyVerboseMode)
+			console.warn("[party > 'emit' kick_player] error:", error);
 	}
 }

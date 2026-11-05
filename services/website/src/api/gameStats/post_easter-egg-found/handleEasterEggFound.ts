@@ -12,7 +12,8 @@ export const handleEasterEggFound = async (eggId: string) => {
 
 		return response;
 	} catch(error) {
-		console.warn("[gameStats > 'POST' easter-egg-found] error:", error);
+		if (useGameStatsStore.getState().gameStatsVerboseMode)
+			console.warn("[gameStats > 'POST' easter-egg-found] error:", error);
 
 		return null;
 	}

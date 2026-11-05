@@ -2,8 +2,6 @@ import { useFriendsStore } from "../../../store/FriendsStore";
 import { fetchFriendships } from "./fetchFriendships";
 
 export const handleFriendships = async (ownerUuid: string | null) => {
-	console.log("ownerUuid:", ownerUuid);
-
 	if (!ownerUuid)
 		return;
 
@@ -17,7 +15,8 @@ export const handleFriendships = async (ownerUuid: string | null) => {
 	} catch (err) {
 		const error = err instanceof Error ? err.message : "Something went wrong. Please try again";
 
-		console.warn(`[friends > 'GET' friendships/${ownerUuid}] error:${error}`);
+		if (useFriendsStore.getState().friendsVerboseMode)
+			console.warn(`[friends > 'GET' friendships/${ownerUuid}] error:${error}`);
 
 		return null;
 	}

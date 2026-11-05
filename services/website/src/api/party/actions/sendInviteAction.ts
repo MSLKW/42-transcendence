@@ -55,6 +55,7 @@ export async function sendInviteAction(socket: Socket | null, recipientUuid: str
 			NOTIFICATION_TYPE.error
 		);
 
-		console.warn("[party > 'emit' send_invite] error:", error);
+		if (usePartyStore.getState().partyVerboseMode)
+			console.warn("[party > 'emit' send_invite] error:", error);
 	}
 }

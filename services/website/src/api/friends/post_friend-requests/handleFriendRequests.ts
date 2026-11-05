@@ -4,7 +4,8 @@ import { useFriendsStore } from "../../../store/FriendsStore";
 
 export const handleFriendRequests = async (senderId: string | null, receiverId: string | null, name: string) => {
 	if (!senderId || !receiverId) {
-		console.warn(`[friends > 'POST' friend-requests] missing senderId / receiverId`);
+		if (useFriendsStore.getState().friendsVerboseMode)
+			console.warn(`[friends > 'POST' friend-requests] missing senderId / receiverId`);
 		return;
 	}
 
@@ -20,6 +21,7 @@ export const handleFriendRequests = async (senderId: string | null, receiverId: 
 
 		useNotificationStore.getState().showNotification(error, NOTIFICATION_TYPE.error);
 
-		console.warn("[friends] > 'POST' friend-requests] error:", error);
+		if (useFriendsStore.getState().friendsVerboseMode)
+			console.warn("[friends] > 'POST' friend-requests] error:", error);
 	}
 }

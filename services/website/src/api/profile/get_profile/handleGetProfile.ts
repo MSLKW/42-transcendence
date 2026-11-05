@@ -12,7 +12,8 @@ export const handleGetProfile = async (uuid: string): Promise<UserData | null> =
 	} catch (err) {
 		const error = err instanceof Error ? err.message : "Something went wrong. Please try again";
 
-		console.warn(`[profile > 'GET' profile/${uuid}] error:${error}`);
+		if (useProfileStore.getState().profileVerboseMode)
+			console.warn(`[profile > 'GET' profile/${uuid}] error:${error}`);
 
 		return null;
 	}

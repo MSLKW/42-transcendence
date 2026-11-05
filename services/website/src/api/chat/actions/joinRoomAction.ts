@@ -18,7 +18,8 @@ export async function joinRoomAction(socket: Socket | null, roomId: string) {
 			socket.emit("chat_join_room", { roomId: roomId }, resolve);
 		})
 		if (!response.success) {
-			console.warn("[chat > 'emit' chat_join_room] reason: ", response.reason ?? "Unable to join chat room");
+			if (useChatStore.getState().chatVerboseMode)
+				console.warn("[chat > 'emit' chat_join_room] reason: ", response.reason ?? "Unable to join chat room");
 			return;
 		}
 
@@ -32,6 +33,7 @@ export async function joinRoomAction(socket: Socket | null, roomId: string) {
 			NOTIFICATION_TYPE.error
 		);
 
-		console.warn("[chat > 'emit' chat_join_room] error:", error);
+		if (useChatStore.getState().chatVerboseMode)
+			console.warn("[chat > 'emit' chat_join_room] error:", error);
 	}
 }

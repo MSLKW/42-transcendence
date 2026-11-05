@@ -18,7 +18,8 @@ export const handleGetSearch = async (query: string, signal?: AbortSignal): Prom
 
 		useNotificationStore.getState().showNotification(error, NOTIFICATION_TYPE.error);
 
-		console.warn(`[profile > 'GET' search/${query}] error:${error}`);
+		if (useProfileStore.getState().profileVerboseMode)
+			console.warn(`[profile > 'GET' search/${query}] error:${error}`);
 
 		return [];
 	}

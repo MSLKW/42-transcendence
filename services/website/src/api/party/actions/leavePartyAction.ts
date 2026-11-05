@@ -53,6 +53,7 @@ export async function leavePartyAction(socket: Socket | null) {
 			NOTIFICATION_TYPE.error
 		);
 
-		console.warn("[party > 'emit' leave_party] error:", error);
+		if (usePartyStore.getState().partyVerboseMode)
+			console.warn("[party > 'emit' leave_party] error:", error);
 	}
 }

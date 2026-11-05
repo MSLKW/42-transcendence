@@ -12,7 +12,8 @@ export const handlePublicPlayerGameData = async (playerUuid: string) => {
 
 		return response;
 	} catch(error) {
-		console.warn("[gameStats > 'GET' public-player-game-data] error:", error);
+		if (useGameStatsStore.getState().gameStatsVerboseMode)
+			console.warn("[gameStats > 'GET' public-player-game-data] error:", error);
 
 		return null;
 	}

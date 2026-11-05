@@ -1,9 +1,11 @@
 import { useState, useRef, useEffect } from "react";
 import { handleCreatedAt } from "../../api/authentication/get_created-at/handleCreatedAt";
+import { handlePublicPlayerGameData } from "../../api/gameStats/get_public-player-game-data/handlePublicPlayerGameData";
 import { handleGetOnline } from "../../api/party/get_online/handleGetOnline";
 import { handleGetProfile } from "../../api/profile/get_profile/handleGetProfile";
-import { usePartyStore, type AVAILABILITY_TYPE } from "../../store/PartyStore";
+import { useAuthStore } from "../../store/AuthStore";
 import { useGameStatsStore } from "../../store/GameStatsStore";
+import { usePartyStore, type AVAILABILITY_TYPE } from "../../store/PartyStore";
 import { useProfileStore } from "../../store/ProfileStore";
 import { useSceneStore } from "../../store/SceneStore";
 import { Window } from "../window/Window";
@@ -13,13 +15,16 @@ import { PlayerDataModule } from "../player/data/PlayerDataModule";
 import { PlayerStatsModule } from "../player/stats/PlayerStatsModule";
 import { FriendToggleButton } from "./friend/FriendToggleButton";
 import { KickPlayerButton } from "./kick/KickPlayerButton";
-import { handlePublicPlayerGameData } from "../../api/gameStats/get_public-player-game-data/handlePublicPlayerGameData";
 
 export const StatsWindow: React.FC = () => {
-	const statsUuid = useSceneStore((store) => store.statsUuid!);
-	const members = usePartyStore((store) => store.members);
-	const cachedProfiles = useProfileStore((store) => store.cachedProfiles);
+	const authVerboseMode = useAuthStore((store) => store.authVerboseMode);
 	const cachedStats = useGameStatsStore((store) => store.cachedStats);
+	const gameStatsVerboseMode = useGameStatsStore((store) => store.gameStatsVerboseMode);
+	const members = usePartyStore((store) => store.members);
+	const partyVerboseMode = usePartyStore((store) => store.partyVerboseMode);
+	const cachedProfiles = useProfileStore((store) => store.cachedProfiles);
+	const profileVerboseMode = useProfileStore((store) => store.profileVerboseMode);
+	const statsUuid = useSceneStore((store) => store.statsUuid!);
 	
 	const cachedProfile = statsUuid && statsUuid in cachedProfiles ? cachedProfiles[statsUuid] : undefined;
 	const cachedStat = statsUuid && statsUuid in cachedStats ? cachedStats[statsUuid] : undefined;
@@ -89,7 +94,8 @@ export const StatsWindow: React.FC = () => {
 					setLastOnline(online?.lastOnline ? new Date(online.lastOnline) : null);
 				}
 			} catch (error) {
-				console.warn("Failed to fetch player data:", error);
+				if (authVerboseMode || gameStatsVerboseMode || partyVerboseMode || profileVerboseMode)
+					console.warn("Failed to fetch player data:", error);
 			}
 		};
 		fetchPlayerData();

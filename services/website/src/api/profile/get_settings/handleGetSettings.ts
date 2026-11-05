@@ -15,7 +15,8 @@ export const handleGetSettings = async (uuid: string) => {
 
 		useNotificationStore.getState().showNotification(error, NOTIFICATION_TYPE.error);
 
-		console.warn(`[profile > 'GET' settings/${uuid}] error:${error}`);
+		if (useProfileStore.getState().profileVerboseMode)
+			console.warn(`[profile > 'GET' settings/${uuid}] error:${error}`);
 
 		return null;
 	}

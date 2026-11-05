@@ -25,6 +25,7 @@ export const handlePutSettings = async (settings: SettingsValues) => {
 
 		useNotificationStore.getState().showNotification(error, NOTIFICATION_TYPE.error);
 
-		console.warn("[profile > 'PUT' settings] error:", error);
+		if (useProfileStore.getState().profileVerboseMode)
+			console.warn("[profile > 'PUT' settings] error:", error);
 	}
 }

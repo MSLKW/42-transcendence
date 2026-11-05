@@ -34,7 +34,7 @@ export function partyStateHandler(socket: Socket) {
 		if (currentChatRoomId !== newChatRoomId) {
 			useChatStore.setState ({
 				chatRoomId: newChatRoomId,
-				cachedChat: [],
+				chatLog: [],
 			})
 		}
 		chatSocket.joinRoom(newChatRoomId);

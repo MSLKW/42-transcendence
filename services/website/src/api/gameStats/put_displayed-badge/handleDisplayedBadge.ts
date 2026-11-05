@@ -12,7 +12,8 @@ export const handleDisplayedBadge = async (badgeId: string) => {
 
 		return response;
 	} catch(error) {
-		console.warn("[gameStats > 'POST' displayed-badge] error:", error);
+		if (useGameStatsStore.getState().gameStatsVerboseMode)
+			console.warn("[gameStats > 'POST' displayed-badge] error:", error);
 
 		return null;
 	}
