@@ -34,7 +34,9 @@ export const useAuthStore = create<AuthState>() (
 				const results = await Promise.all(
 					allUuids.map(async (memberUuid) => {
 						const userCreatedAt = await handleCreatedAt(memberUuid);
-						return userCreatedAt ? ([memberUuid, userCreatedAt]) : null;
+						if (!userCreatedAt)
+							return null;
+						return [memberUuid, userCreatedAt];
 					})
 				)
 

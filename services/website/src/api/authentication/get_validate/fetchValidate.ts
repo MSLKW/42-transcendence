@@ -12,5 +12,8 @@ export const fetchValidate = async () => {
 		throw new Error(`Failed to validate (${response.status} ${response.statusText})`);
 	}
 
-	return await response.json();
+	const text = await response.text();
+	if (!text || text.trim() === "")
+		return [];
+	return JSON.parse(text);
 }

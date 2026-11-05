@@ -1,7 +1,12 @@
 import { useFriendsStore } from "../../../store/FriendsStore";
 import { fetchFriendships } from "./fetchFriendships";
 
-export const handleFriendships = async (ownerUuid: string) => {
+export const handleFriendships = async (ownerUuid: string | null) => {
+	console.log("ownerUuid:", ownerUuid);
+
+	if (!ownerUuid)
+		return;
+
 	try {
 		const response = await fetchFriendships(ownerUuid);
 

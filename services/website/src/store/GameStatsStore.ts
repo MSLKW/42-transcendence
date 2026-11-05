@@ -129,6 +129,7 @@ interface GameStatsState extends GameStatsValues {
 	setCachedStats: () => Promise<void>;
 	updatePlayerCachedStat: (uuid: string | null, stats: CachedStat) => Promise<void>;
 	removePlayerCachedStat: (uuid: string | null) => void;
+
 	resetValues: () => void;
 };
 
@@ -164,8 +165,12 @@ export const useGameStatsStore = create<GameStatsState>() (
 				const results = await Promise.all(
 					allUuids.map(async (memberUuid) => {
 						const userStats = await handlePublicPlayerGameData(memberUuid);
-						return userStats ?
-							([memberUuid, {
+						if (!userStats)
+							return null;
+
+						return [
+							memberUuid,
+							{
 								level: userStats.stats.level,
 								xp: userStats.stats.xp,
 								totalPlayed: userStats.stats.totalPlayed,
@@ -175,10 +180,9 @@ export const useGameStatsStore = create<GameStatsState>() (
 								currentLevelXpThreshold: userStats.levelProgress.currentLevelXpThreshold,
 								currentLevelProgressPercentage: userStats.levelProgress.currentLevelProgressPercentage,
 								achievements: userStats.achievements,
-							}]) :
-							null;
-						}
-					)
+							}
+						];
+					})
 				);
 
 				set(() => ({
@@ -222,6 +226,10 @@ export const useGameStatsStore = create<GameStatsState>() (
 					return { cachedStats };
 				});
 			},
+
+			// setCachedBadges: async () => {
+				
+			// },
 
 			resetValues: () => {
 				set({

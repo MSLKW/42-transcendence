@@ -36,7 +36,7 @@ interface ProfileValues {
 };
 
 interface ProfileState extends ProfileValues {
-	setCachedProfile: () => Promise<void>,
+	setCachedProfile: () => Promise<void>;
 	removeCachedProfile: (uuid: string | null) => void;
 	markAvatarUpdated: (uuid: string) => void;
 	resetValues: () => void;
@@ -61,18 +61,22 @@ export const useProfileStore = create<ProfileState>() (
 				const results = await Promise.all(
 					allUuids.map(async (memberUuid) => {
 						const userData = await handleGetProfile(memberUuid);
+						if (!userData)
+							return null;
+
 						const humanRelation: RELATION_TYPE = 
 							memberUuid === clientUuid ? "Self" :
 							cachedFriends.includes(memberUuid) ? "Friend" :
 							"Stranger";
-						return userData ?
-							([memberUuid, {
+						return [
+							memberUuid,
+							{
 								name: userData.username,
 								avatar: userData.avatarPath,
 								badge: userData.badge,
 								relation: humanRelation,
-							}]) :
-							null;
+							}
+						];
 					})
 				);
 

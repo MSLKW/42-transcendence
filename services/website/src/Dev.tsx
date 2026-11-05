@@ -17,6 +17,7 @@ export default function Dev() {
 	const authVerboseMode = useAuthStore((store) => store.authVerboseMode);
 	const authValidation = useAuthStore((store) => store.authValidation);
 	const cachedCreatedAts = useAuthStore((store) => store.cachedCreatedAts);
+	const cachedChat = useChatStore((store) => store.cachedChat);
 	const chatVerboseMode = useChatStore((store) => store.chatVerboseMode);
 	const chatSocketId = useChatStore((store) => store.chatSocketId);
 	const chatRoomId = useChatStore((store) => store.chatRoomId);
@@ -108,6 +109,7 @@ export default function Dev() {
 						<DevButton label={`cachedBadges: ${Object.values(cachedBadges).filter(Boolean).length}`} call={() => console.log("cachedBadges:", cachedBadges)}/>
 						<DevButton label={`cachedCreatedAts: ${Object.keys(cachedCreatedAts).length}`} call={() => console.log("cachedCreatedAts: ", cachedCreatedAts)}/>
 						<DevButton label={`cachedFriends: ${cachedFriends ? cachedFriends.length : 0}`} call={() => console.log("cachedFriends: ", cachedFriends)} />
+						<DevButton label={`cachedChat: ${cachedChat ? cachedChat.length : 0}`} call={() => console.log("cachedChat: ", cachedChat)} />
 					</ul>
 				</div>
 		</section>

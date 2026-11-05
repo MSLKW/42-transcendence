@@ -22,5 +22,8 @@ export const fetchEasterEggFound = async (eggId: string) => {
 		throw new Error(errorData.message || `Failed to sign in (${response.status} ${response.statusText})`);
 	}
 
-	return await response.json();
+	const text = await response.text();
+	if (!text || text.trim() === "")
+		return [];
+	return JSON.parse(text);
 };

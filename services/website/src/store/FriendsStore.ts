@@ -1,5 +1,6 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
+import { handleFriendships } from "../api/friends/get_friendships/handleFriendships";
 
 interface FriendValues {
 	friendsVerboseMode: boolean;

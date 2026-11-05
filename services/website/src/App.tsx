@@ -1,4 +1,6 @@
-import { useRef, useEffect, useCallback } from "react";
+// import { useRef, useEffect, useCallback } from "react";
+import { useRef, useEffect } from "react";
+import { handleValidate } from "./api/authentication/get_validate/handleValidate";
 import { chatSocket } from "./api/chat/chatSocket";
 import { partySocket } from "./api/party/partySocket";
 import { subscribeToMessages } from "./api/chat/subscribe/subscribeToMessages";
@@ -6,16 +8,17 @@ import { subscribeToUserJoined } from "./api/chat/subscribe/subscribeToUserJoine
 import { subscribeToUserLeft } from "./api/chat/subscribe/subscribeToUserLeft";
 import { subscribeToUserTyping } from "./api/chat/subscribe/subscribeToUserTyping";
 import { subscribeToRateLimited } from "./api/chat/subscribe/subscribeToRateLimited";
-import { handleFriendships } from "./api/friends/get_friendships/handleFriendships";
+// import { handleFriendships } from "./api/friends/get_friendships/handleFriendships";
 import { handleFriendRequestsSent } from "./api/friends/get_friend-requests_sent/handleFriendRequestsSent";
 import { handleFriendRequestsReceived } from "./api/friends/get_friend-requests_received/handleFriendRequestsReceived";
 import { handleFriendRequestsAccept } from "./api/friends/post_friend-requests_accept/handleFriendRequestsAccept";
 import { handleFriendRequestsReject } from "./api/friends/post_friend-requests_reject/handleFriendRequestsReject";
-import { useFriendEvents } from "./api/friends/useFriendEvents";
+// import { useFriendEvents } from "./api/friends/useFriendEvents";
 import { handleGetProfile } from "./api/profile/get_profile/handleGetProfile";
 import { useAuthStore } from "./store/AuthStore";
 import { useFriendsStore } from "./store/FriendsStore";
 import { useNotificationStore, NOTIFICATION_TYPE } from "./store/NotificationStore";
+import { usePartyStore } from "./store/PartyStore";
 import { useProfileStore } from "./store/ProfileStore";
 import { useSceneStore } from "./store/SceneStore";
 import { useScrollToTop } from "./utilities/react/useScrollToTop";
@@ -40,8 +43,6 @@ import { StatsWindow } from "./components/stats/StatsWindow";
 import { ThreeJsManager } from './components/3d/ThreeJsManager';
 import { gameInstance, joinGameLobby, clearGameInstance } from "./api/game/main";
 import Dev from "./Dev";
-import { usePartyStore } from "./store/PartyStore";
-import { handleValidate } from "./api/authentication/get_validate/handleValidate";
 
 export let threejsManager: ThreeJsManager;
 
@@ -96,20 +97,20 @@ export default function App() {
 		};
 	}, [clientUuid]);
 
-	/** Friends connection */
-	const handleFriendUpdate = useCallback(() => {
-		if (!clientUuid)
-			return;
+	// /** Friends connection */
+	// const handleFriendUpdate = useCallback(() => {
+	// 	if (!clientUuid)
+	// 		return;
 
-		void handleFriendships(clientUuid!)
-			.then((friends) => {
-				useFriendsStore.setState({ cachedFriends: friends });
-			})
-			.catch((error) => {
-				console.warn("Failed to refresh friendships:", error);
-			});
-	}, [clientUuid]);
-	useFriendEvents(clientUuid, handleFriendUpdate);
+	// 	void handleFriendships(clientUuid!)
+	// 		.then((friends) => {
+	// 			useFriendsStore.setState({ cachedFriends: friends });
+	// 		})
+	// 		.catch((error) => {
+	// 			console.warn("Failed to refresh friendships:", error);
+	// 		});
+	// }, [clientUuid]);
+	// useFriendEvents(clientUuid, handleFriendUpdate);
 
 	/** Friend requests sent + received */
 	useEffect(() => {
@@ -198,7 +199,12 @@ export default function App() {
 	}, [partyGameId]);
 
 	/** Kicks client back to login is invalidated */
+	const hasValidated = useRef(false);
 	useEffect(() => {
+		if (hasValidated.current)
+			return;
+		hasValidated.current = true;
+
 		void handleValidate().then((res) => {
 			if (!res)
 				useSceneStore.getState().setCurrentScene("Login");

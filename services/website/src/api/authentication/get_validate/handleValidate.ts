@@ -22,7 +22,8 @@ export const handleValidate = async () => {
 			clientUuid: null,
 		});
 
-		console.warn("[authentication > 'GET' validate] error:", error);
+		if (useAuthStore.getState().authVerboseMode)
+			console.warn("[authentication > 'GET' validate] error:", error);
 
 		return null;
 	}
