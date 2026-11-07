@@ -12,7 +12,7 @@ import { ChatRateLimit } from "./ChatRateLimit";
 
 export const ChatWindow = () => {
 	const chatLog = useChatStore((store) => store.chatLog);
-	const rateLimited = useChatStore((store) => store.rateLimited);
+	const isChatRateLimited = useChatStore((store) => store.isChatRateLimited);
 	const members = usePartyStore((store) => store.members);
 	const typingUsers = useTypingStore((store) => store.typingUsers);
 
@@ -59,7 +59,7 @@ export const ChatWindow = () => {
 		e.preventDefault();
 
 		const trimmedMessage = message.trim();
-		if (!trimmedMessage || message.length > MAX_MESSAGE_LENGTH || rateLimited)
+		if (!trimmedMessage || message.length > MAX_MESSAGE_LENGTH || isChatRateLimited)
 			return;
 
 		chatSocket.sendChat("MESSAGE", message);
@@ -133,7 +133,7 @@ export const ChatWindow = () => {
 				">
 					<input
 						ref={focusRef}
-						disabled={rateLimited ? true : false}
+						disabled={isChatRateLimited}
 						type="text"
 						maxLength={MAX_MESSAGE_LENGTH}
 						placeholder="Message"
@@ -150,7 +150,7 @@ export const ChatWindow = () => {
 				text-n6 opacity-60
 			">
 				{ 
-					rateLimited ? <ChatRateLimit /> :
+					isChatRateLimited ? <ChatRateLimit /> :
 					Object.keys(typingUsers).length ? <ChatTypingIndicator /> :
 					<p>{members.length === 1 ? "1 player" : members.length + " players"} in chat</p>
 				}

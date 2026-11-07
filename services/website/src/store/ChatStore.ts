@@ -17,12 +17,12 @@ export const MAX_MESSAGE_LENGTH = 500;
 let rateLimitTimeout: ReturnType<typeof setTimeout> | null = null;
 
 interface ChatValues {
+	chatAPIEnabled: boolean;
 	chatVerboseMode: boolean;
-	isChatSubscribed: boolean,
 	chatSocketId: string | null;
 	chatRoomId: string | null;
 	chatLog: ChatData[];
-	rateLimited: string | null;
+	isChatRateLimited: boolean;
 }
 
 interface ChatState extends ChatValues {
@@ -33,19 +33,19 @@ interface ChatState extends ChatValues {
 		avatar: string | undefined,
 		msg: string
 	) => void;
-	showRateLimited: (message: string) => void;
+	rateLimitedIsTrue: () => void;
 	resetValues: () => void;
 }
 
 export const useChatStore = create<ChatState>() (
 	persist(
 		(set) => ({
+			chatAPIEnabled: true,
 			chatVerboseMode: false,
-			isChatSubscribed: false,
 			chatSocketId: null,
 			chatRoomId: null,
 			chatLog: [],
-			rateLimited: null,
+			isChatRateLimited: false,
 
 			addToCachedChat: (type, uuid, name, avatar, msg) => {
 				set((state) => ({
@@ -56,13 +56,14 @@ export const useChatStore = create<ChatState>() (
 				}));
 			},
 
-			showRateLimited: (message) => {
+			rateLimitedIsTrue: () => {
 				if (rateLimitTimeout)
 					clearTimeout(rateLimitTimeout);
 
-				set({ rateLimited: message });
+				set({ isChatRateLimited: true });
+
 				rateLimitTimeout = setTimeout(() => {
-					set({ rateLimited: null });
+					set({ isChatRateLimited: false });
 					rateLimitTimeout = null;
 				}, 3000);
 			},
@@ -74,11 +75,10 @@ export const useChatStore = create<ChatState>() (
 				}
 
 				set({
-					isChatSubscribed: false,
 					chatSocketId: null,
 					chatRoomId: null,
 					chatLog: [],
-					rateLimited: null,
+					isChatRateLimited: false,
 				});
 			},
 		}),
@@ -87,6 +87,7 @@ export const useChatStore = create<ChatState>() (
 			version: 1,
 
 			partialize: (state) => ({
+				chatAPIEnabled: state.chatAPIEnabled,
 				chatVerboseMode: state.chatVerboseMode,
 			}),
 

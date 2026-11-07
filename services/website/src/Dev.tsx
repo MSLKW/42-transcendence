@@ -20,18 +20,27 @@ export default function Dev() {
 	const cachedCreatedAts = useAuthStore((store) => store.cachedCreatedAts);
 	const clientUuid = useAuthStore((store) => store.clientUuid);
 	const isAuthenticated = useAuthStore((store) => store.isAuthenticated);
+	
 	const bubbles = useBubbleStore((store) => store.bubbles);
-	const chatVerboseMode = useChatStore((store) => store.chatVerboseMode);
-	const chatSocketId = useChatStore((store) => store.chatSocketId);
+	
+	const chatAPIEnabled = useChatStore((store) => store.chatAPIEnabled);
+	const chatLog = useChatStore((store) => store.chatLog);
 	const chatRoomId = useChatStore((store) => store.chatRoomId);
+	const chatSocketId = useChatStore((store) => store.chatSocketId);
+	const chatVerboseMode = useChatStore((store) => store.chatVerboseMode);
+	const isChatRateLimited = useChatStore((store) => store.isChatRateLimited);
+	
 	const friendsVerboseMode = useFriendsStore((store) => store.friendsVerboseMode);
 	const cachedFriends = useFriendsStore((store) => store.cachedFriends);
+	
 	const gameVerboseMode = useGameStore((store) => store.gameVerboseMode);
 	const gameSocketId = useGameStore((store) => store.gameSocketId);
 	const cachedStats = useGameStatsStore((store) => store.cachedStats);
 	const cachedBadges = useGameStatsStore((store) => store.cachedBadges);
 	const gameStatsVerboseMode = useGameStatsStore((store) => store.gameStatsVerboseMode);
+	
 	const notifications = useNotificationStore((store) => store.notifications);
+	
 	const availabilityOverrides = usePartyStore((store) => store.availabilityOverrides);
 	const hostUuid = usePartyStore((store) => store.hostUuid);
 	const members = usePartyStore((store) => store.members);
@@ -39,9 +48,11 @@ export default function Dev() {
 	const partyGameId = usePartyStore((store) => store.partyGameId);
 	const partySocketId = usePartyStore((store) => store.partySocketId);
 	const partyVerboseMode = usePartyStore((store) => store.partyVerboseMode);
+	
 	const profileValidation = useProfileStore((store) => store.profileValidation);
 	const profileVerboseMode = useProfileStore((store) => store.profileVerboseMode);
 	const cachedProfiles = useProfileStore((store) => store.cachedProfiles);
+
 	const sceneVerboseMode = useSceneStore((store) => store.sceneVerboseMode);
 
 	const toggleAllVerbose = useRef(false);
@@ -109,14 +120,16 @@ export default function Dev() {
 				</div>
 			{/* service api */}
 				<div>
-					<h2><b>API Connected:</b></h2>
+					<h2><b>API Enabled:</b></h2>
 					<ul className="flex flex-wrap place-content-between gap-x-20">
 						<DevButton label={`toggle all`} call={() => {
 							toggleAllAPI.current = !toggleAllAPI.current;
 							useAuthStore.setState({ authAPIEnabled: toggleAllAPI.current });
+							useChatStore.setState({ chatAPIEnabled: toggleAllAPI.current });
 							usePartyStore.setState({ partyAPIEnabled: toggleAllAPI.current });
 						}}/>
 						<DevButton label={`auth: ${authAPIEnabled}`} call={() => useAuthStore.setState({ authAPIEnabled: !authAPIEnabled })}/>
+						<DevButton label={`chat: ${chatAPIEnabled}`} call={() => useChatStore.setState({ chatAPIEnabled: !chatAPIEnabled })}/>
 						<DevButton label={`party: ${partyAPIEnabled}`} call={() => usePartyStore.setState({ partyAPIEnabled: !partyAPIEnabled })}/>
 					</ul>
 				</div>
@@ -140,6 +153,8 @@ export default function Dev() {
 						<DevButton label={`availabilityOverrides: ${Object.keys(availabilityOverrides).length}`} call={() => console.log("availabilityOverrides:", availabilityOverrides) }/>
 						<DevButton label={`bubbles: ${Object.values(bubbles).flatMap(b => b).length}`} call={() => console.log("bubbles:", bubbles) }/>
 						<DevButton label={`clearBubbles`} call={() => useBubbleStore.getState().clearBubbles(clientUuid!) }/>
+						<DevButton label={`chatLog: ${Object.values(chatLog).flatMap(b => b).length}`} call={() => console.log("chatLog:", chatLog) }/>
+						<DevButton label={`isChatRateLimited: ${Object.keys(bubbles).length}`} call={() => console.log("isChatRateLimited:", isChatRateLimited) }/>
 					</ul>
 				</div>
 		</section>

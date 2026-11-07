@@ -13,6 +13,7 @@ import { handleFriendRequestsAccept } from "./api/friends/post_friend-requests_a
 import { handleFriendRequestsReject } from "./api/friends/post_friend-requests_reject/handleFriendRequestsReject";
 import { handleGetProfile } from "./api/profile/get_profile/handleGetProfile";
 import { useAuthStore } from "./store/AuthStore";
+import { useChatStore } from "./store/ChatStore";
 import { useFriendsStore } from "./store/FriendsStore";
 import { useNotificationStore, NOTIFICATION_TYPE } from "./store/NotificationStore";
 import { usePartyStore } from "./store/PartyStore";
@@ -45,6 +46,7 @@ export let threejsManager: ThreeJsManager;
 
 export default function App() {
 	const clientUuid = useAuthStore((store) => store.clientUuid);
+	const chatAPIEnabled = useChatStore((store) => store.chatAPIEnabled);
 	const partyAPIEnabled = usePartyStore((store) => store.partyAPIEnabled);
 	const partyGameId = usePartyStore((store) => store.partyGameId);
 	const cachedProfiles = useProfileStore((store) => store.cachedProfiles);
@@ -74,8 +76,12 @@ export default function App() {
 		if (!clientUuid)
 			return;
 
-		chatSocket.connect();
+		if (!chatAPIEnabled) {
+			chatSocket.disconnect();
+			return;
+		}
 
+		chatSocket.connect();
 		const unsubscribeFromMessages = subscribeToMessages();
 		const unsubscribeFromUserJoined = subscribeToUserJoined();
 		const unsubscribeFromUserLeft = subscribeToUserLeft();
@@ -90,7 +96,7 @@ export default function App() {
 			unsubscribeFromRateLimited();
 			chatSocket.disconnect();
 		};
-	}, [clientUuid]);
+	}, [clientUuid, chatAPIEnabled]);
 
 	/** Friend requests sent + received */
 	useEffect(() => {
