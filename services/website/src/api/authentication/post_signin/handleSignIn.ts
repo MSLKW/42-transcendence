@@ -8,6 +8,9 @@ import { useNotificationStore, NOTIFICATION_TYPE } from "../../../store/Notifica
 import { useSceneStore } from "../../../store/SceneStore";
 
 export const handleSignIn = async (email: string, password: string) => {
+	if (!useAuthStore.getState().authAPIEnabled)
+		return;
+
 	try {
 		const response = await fetchSignIn(email, password);
 
@@ -25,20 +28,19 @@ export const handleSignIn = async (email: string, password: string) => {
 		});
 		useFriendsStore.setState({ cachedFriends: clientFriends });
 		useGameStatsStore.setState({ cachedBadges: clientStats.badges });
+
 		useSceneStore.getState().setShowWindow("signIn", false);
 		useSceneStore.getState().setCurrentScene("Home");
 		useNotificationStore.getState().showNotification("Signed in successfully", NOTIFICATION_TYPE.message);
 		useNotificationStore.setState({ isNotifFiltered: false });
 	} catch (err) {
-		const error = err instanceof Error ? err.message : "Something went wrong. Please try again";
-
-		useNotificationStore.getState().showNotification(error, NOTIFICATION_TYPE.error);
-
 		useAuthStore.setState({
 			isAuthenticated: false,
 			clientUuid: null,
 		});
 
+		const error = err instanceof Error ? err.message : "Something went wrong. Please try again";
+		useNotificationStore.getState().showNotification(error, NOTIFICATION_TYPE.error);
 		if (useAuthStore.getState().authVerboseMode)
 			console.warn("[authentication > 'POST' signin] error:", error);
 	}

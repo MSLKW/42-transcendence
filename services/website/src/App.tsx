@@ -45,31 +45,29 @@ export let threejsManager: ThreeJsManager;
 
 export default function App() {
 	const clientUuid = useAuthStore((store) => store.clientUuid);
+	const partyAPIEnabled = usePartyStore((store) => store.partyAPIEnabled);
+	const partyGameId = usePartyStore((store) => store.partyGameId);
 	const cachedProfiles = useProfileStore((store) => store.cachedProfiles);
 	const isProfileLoaded = useProfileStore((store) => store.isProfileLoaded);
 	const currentScene = useSceneStore((store) => store.currentScene);
 	const showWindow = useSceneStore((store) => store.showWindow);
-	const showDevSection = import.meta.env.SHOW_DEV_SECTION;
-	const partyGameId = usePartyStore((store) => store.partyGameId);
-	const initialRender = useSceneStore((store) => store.initialRender);
 
-	/** Render after 1s regardless of initialRender state */
-	const timerId = setTimeout(() => {
-		useSceneStore.setState({ initialRender: true });
-	}, 1000);
+	const showDevSection = import.meta.env.SHOW_DEV_SECTION;
 
 	/** Party socket connection */
 	useEffect(() => {
-		if (!clientUuid)
+		if (!clientUuid || currentScene === "Login")
 			return;
 
-		partySocket.connect();
+		if (partyAPIEnabled)
+			partySocket.connect();
+		else
+			partySocket.disconnect();
 
 		return () => {
 			partySocket.disconnect();
-			clearTimeout(timerId);
 		};
-	}, [clientUuid]);
+	}, [clientUuid, partyAPIEnabled]);
 
 	/** Chat socket connection + subscriptions */
 	useEffect(() => {
@@ -134,7 +132,7 @@ export default function App() {
 				threejsManager.dispose()
 			}
 		}
-	}, [initialRender]);
+	}, []);
 
 	/** Three js scene handler */
 	useEffect(() => {
@@ -145,7 +143,7 @@ export default function App() {
 		if (threejsManager.getSceneId() !== currentSceneLowered) {
 			threejsManager.changeScene(currentSceneLowered);
 		}
-	}, [currentScene, initialRender]);
+	}, [currentScene]);
 
 	/** Scroll to top */
 	useEffect(() => {
@@ -170,14 +168,14 @@ export default function App() {
 		}
 		else if (partyGameId !== null && clientUuid)
 			joinGameLobby(partyGameId, clientUuid);
-		else if (usePartyStore.getState().partyVerboseMode)
-			console.log("[party > 'on' party_state] Blocked from joining game lobby w/ partyGameId:", partyGameId);
+		// else if (usePartyStore.getState().partyVerboseMode)
+			// console.log("[party > 'on' party_state] Blocked from joining game lobby w/ partyGameId:", partyGameId);
 	}, [partyGameId]);
 
 	/** Kicks client back to login is invalidated */
 	const hasValidated = useRef(false);
 	useEffect(() => {
-		if (hasValidated.current)
+		if (hasValidated.current || currentScene === "Login")
 			return;
 		hasValidated.current = true;
 
@@ -187,15 +185,9 @@ export default function App() {
 		});
 	}, []);
 
-	/** Render if current scene is login */
-	useEffect(() => {
-		if (currentScene === "Login")
-			useSceneStore.setState({ initialRender: true });
-	}, [currentScene]);
-
 	return (
 		<>
-			{initialRender && <StripeBg />}
+			<StripeBg />
 			<section className="
 				z-0 absolute top-0 left-1/2 -translate-x-1/2
 				h-full min-h-120 max-h-360
@@ -203,37 +195,33 @@ export default function App() {
 			">
 				{ <div className="w-full h-full" ref={containerRef}/> }
 			</section>
-			{initialRender &&
-				<>
-					<section className="
-						h-full min-h-120 max-h-360
-						w-full min-w-80 max-w-360
-						mx-auto p-[clamp(0.125rem,5vw+0.125rem,3.125rem)]
-						flex flex-col
-						z-1 relative
-						pointer-events-none
-					">
-						{ currentScene === "Login" && <LoginScene /> }
-						{ currentScene === "Home" && <HomeScene /> }
-						{ currentScene === "Lobby" && <LobbyScene /> }
-						{ currentScene === "Game" && <GameScene /> }
-						{ showWindow["chat"] && <ChatWindow /> }
-						{ showWindow["createAccount"] && <CreateAccountWindow /> }
-						{ showWindow["info"] && <InfoWindow /> }
-						{ showWindow["notification"] && <NotificationWindow /> }
-						{ showWindow["leave"] && <LeaveWindow /> }
-						{ showWindow["party"] && <PartyWindow /> }
-						{ showWindow["profile"] && <ProfileWindow /> }
-						{ showWindow["rank"] && <RankWindow /> }
-						{ showWindow["results"] && <ResultsWindow /> }
-						{ showWindow["setup"] && <SetupWindow /> }
-						{ showWindow["signIn"] && <SignInWindow /> }
-						{ showWindow["stale"] && <StaleWindow /> }
-						{ showWindow["stats"] && <StatsWindow /> }
-					</section>
-					{ showDevSection && <Dev /> }
-				</>
-			}
+			<section className="
+				h-full min-h-120 max-h-360
+				w-full min-w-80 max-w-360
+				mx-auto p-[clamp(0.125rem,5vw+0.125rem,3.125rem)]
+				flex flex-col
+				z-1 relative
+				pointer-events-none
+			">
+				{ currentScene === "Login" && <LoginScene /> }
+				{ currentScene === "Home" && <HomeScene /> }
+				{ currentScene === "Lobby" && <LobbyScene /> }
+				{ currentScene === "Game" && <GameScene /> }
+				{ showWindow["chat"] && <ChatWindow /> }
+				{ showWindow["createAccount"] && <CreateAccountWindow /> }
+				{ showWindow["info"] && <InfoWindow /> }
+				{ showWindow["notification"] && <NotificationWindow /> }
+				{ showWindow["leave"] && <LeaveWindow /> }
+				{ showWindow["party"] && <PartyWindow /> }
+				{ showWindow["profile"] && <ProfileWindow /> }
+				{ showWindow["rank"] && <RankWindow /> }
+				{ showWindow["results"] && <ResultsWindow /> }
+				{ showWindow["setup"] && <SetupWindow /> }
+				{ showWindow["signIn"] && <SignInWindow /> }
+				{ showWindow["stale"] && <StaleWindow /> }
+				{ showWindow["stats"] && <StatsWindow /> }
+			</section>
+			{ showDevSection && <Dev /> }
 		</>
 	);
 }

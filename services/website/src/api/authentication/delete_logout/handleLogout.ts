@@ -4,6 +4,9 @@ import { useSceneStore } from "../../../store/SceneStore";
 import { fetchLogout } from "./fetchLogout";
 
 export const handleLogout = async () => {
+	if (!useAuthStore.getState().authAPIEnabled)
+		return;
+
 	try {
 		await fetchLogout();
 

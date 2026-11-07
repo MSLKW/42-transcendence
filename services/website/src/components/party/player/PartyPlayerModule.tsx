@@ -130,7 +130,7 @@ export const PartyPlayerModule = ({ uuid }: PartyPlayerModuleProps) => {
 					<h3>{playerData.username}</h3>
 					<div className={`
 						${
-							((availability === "Online" || availability === "Busy") && relation != "Self")
+							((effectiveAvailability === "Online" || effectiveAvailability === "Busy") && relation != "Self")
 								? "place-content-between"
 								: "place-content-center"
 						}
@@ -139,7 +139,7 @@ export const PartyPlayerModule = ({ uuid }: PartyPlayerModuleProps) => {
 					`}>
 						<PlayerStatusModule
 							uuid={uuid}
-							availability={availability}
+							availability={effectiveAvailability}
 							lastOnline={lastOnline}
 						/>
 						{(effectiveAvailability === "Online" || effectiveAvailability === "Busy") && relation != "Self" &&

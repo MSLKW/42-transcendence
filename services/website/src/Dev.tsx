@@ -11,12 +11,16 @@ import { useProfileStore } from "./store/ProfileStore";
 import { useSceneStore } from "./store/SceneStore";
 import { DevButton } from "./components/dev/DevBtn";
 import { useFrameView } from "./utilities/react/useFrameView";
+import { useBubbleStore } from "./store/BubbleStore";
 
 export default function Dev() {
-	const clientUuid = useAuthStore((store) => store.clientUuid);
-	const authVerboseMode = useAuthStore((store) => store.authVerboseMode);
+	const authAPIEnabled = useAuthStore((store) => store.authAPIEnabled);
 	const authValidation = useAuthStore((store) => store.authValidation);
+	const authVerboseMode = useAuthStore((store) => store.authVerboseMode);
 	const cachedCreatedAts = useAuthStore((store) => store.cachedCreatedAts);
+	const clientUuid = useAuthStore((store) => store.clientUuid);
+	const isAuthenticated = useAuthStore((store) => store.isAuthenticated);
+	const bubbles = useBubbleStore((store) => store.bubbles);
 	const chatVerboseMode = useChatStore((store) => store.chatVerboseMode);
 	const chatSocketId = useChatStore((store) => store.chatSocketId);
 	const chatRoomId = useChatStore((store) => store.chatRoomId);
@@ -28,16 +32,20 @@ export default function Dev() {
 	const cachedBadges = useGameStatsStore((store) => store.cachedBadges);
 	const gameStatsVerboseMode = useGameStatsStore((store) => store.gameStatsVerboseMode);
 	const notifications = useNotificationStore((store) => store.notifications);
+	const availabilityOverrides = usePartyStore((store) => store.availabilityOverrides);
 	const hostUuid = usePartyStore((store) => store.hostUuid);
-	const partyVerboseMode = usePartyStore((store) => store.partyVerboseMode);
-	const partySocketId = usePartyStore((store) => store.partySocketId);
+	const members = usePartyStore((store) => store.members);
+	const partyAPIEnabled = usePartyStore((store) => store.partyAPIEnabled);
 	const partyGameId = usePartyStore((store) => store.partyGameId);
+	const partySocketId = usePartyStore((store) => store.partySocketId);
+	const partyVerboseMode = usePartyStore((store) => store.partyVerboseMode);
 	const profileValidation = useProfileStore((store) => store.profileValidation);
 	const profileVerboseMode = useProfileStore((store) => store.profileVerboseMode);
 	const cachedProfiles = useProfileStore((store) => store.cachedProfiles);
 	const sceneVerboseMode = useSceneStore((store) => store.sceneVerboseMode);
 
-	const toggleAll = useRef(false);
+	const toggleAllVerbose = useRef(false);
+	const toggleAllAPI = useRef(false);
 
 	useFrameView();
 
@@ -58,15 +66,15 @@ export default function Dev() {
 					<h2><b>Verbose Modes:</b></h2>
 					<ul className="flex flex-wrap place-content-between gap-x-20">
 						<DevButton label={`toggle all`} call={() => {
-							toggleAll.current = !toggleAll.current;
-							useSceneStore.setState({ sceneVerboseMode: toggleAll.current });
-							useAuthStore.setState({ authVerboseMode: toggleAll.current })
-							useProfileStore.setState({ profileVerboseMode: toggleAll.current })
-							useGameStatsStore.setState({ gameStatsVerboseMode: toggleAll.current })
-							usePartyStore.setState({ partyVerboseMode: toggleAll.current })
-							useGameStore.setState({ gameVerboseMode: toggleAll.current })
-							useChatStore.setState({ chatVerboseMode: toggleAll.current })
-							useFriendsStore.setState({ friendsVerboseMode: toggleAll.current })
+							toggleAllVerbose.current = !toggleAllVerbose.current;
+							useSceneStore.setState({ sceneVerboseMode: toggleAllVerbose.current });
+							useAuthStore.setState({ authVerboseMode: toggleAllVerbose.current })
+							useProfileStore.setState({ profileVerboseMode: toggleAllVerbose.current })
+							useGameStatsStore.setState({ gameStatsVerboseMode: toggleAllVerbose.current })
+							usePartyStore.setState({ partyVerboseMode: toggleAllVerbose.current })
+							useGameStore.setState({ gameVerboseMode: toggleAllVerbose.current })
+							useChatStore.setState({ chatVerboseMode: toggleAllVerbose.current })
+							useFriendsStore.setState({ friendsVerboseMode: toggleAllVerbose.current })
 						}}/>
 						<DevButton label={`auth: ${authVerboseMode}`} call={() => useAuthStore.setState({ authVerboseMode: !authVerboseMode })}/>
 						<DevButton label={`chat: ${chatVerboseMode}`} call={() => useChatStore.setState({ chatVerboseMode: !chatVerboseMode })}/>
@@ -99,7 +107,20 @@ export default function Dev() {
 						<DevButton label={`profileValidation: ${profileValidation}`} call={() => useProfileStore.setState({ profileValidation: !profileValidation })}/>
 					</ul>
 				</div>
-			{/* data */}
+			{/* service api */}
+				<div>
+					<h2><b>API Connected:</b></h2>
+					<ul className="flex flex-wrap place-content-between gap-x-20">
+						<DevButton label={`toggle all`} call={() => {
+							toggleAllAPI.current = !toggleAllAPI.current;
+							useAuthStore.setState({ authAPIEnabled: toggleAllAPI.current });
+							usePartyStore.setState({ partyAPIEnabled: toggleAllAPI.current });
+						}}/>
+						<DevButton label={`auth: ${authAPIEnabled}`} call={() => useAuthStore.setState({ authAPIEnabled: !authAPIEnabled })}/>
+						<DevButton label={`party: ${partyAPIEnabled}`} call={() => usePartyStore.setState({ partyAPIEnabled: !partyAPIEnabled })}/>
+					</ul>
+				</div>
+			{/* cached datas */}
 				<div>
 					<h2><b>Cached Datas:</b></h2>
 					<ul className="flex flex-wrap place-content-between gap-x-20">
@@ -108,6 +129,17 @@ export default function Dev() {
 						<DevButton label={`cachedBadges: ${Object.values(cachedBadges).filter(Boolean).length}`} call={() => console.log("cachedBadges:", cachedBadges)}/>
 						<DevButton label={`cachedCreatedAts: ${Object.keys(cachedCreatedAts).length}`} call={() => console.log("cachedCreatedAts: ", cachedCreatedAts)}/>
 						<DevButton label={`cachedFriends: ${cachedFriends ? cachedFriends.length : 0}`} call={() => console.log("cachedFriends: ", cachedFriends)} />
+					</ul>
+				</div>
+			{/* additional datas */}
+				<div>
+					<h2><b>Additional Datas:</b></h2>
+					<ul className="flex flex-wrap place-content-between gap-x-20">
+						<li>isAuthenticated: {`${isAuthenticated}`}</li>
+						<DevButton label={`members: ${Object.keys(members).length}`} call={() => console.log("members:", members) }/>
+						<DevButton label={`availabilityOverrides: ${Object.keys(availabilityOverrides).length}`} call={() => console.log("availabilityOverrides:", availabilityOverrides) }/>
+						<DevButton label={`bubbles: ${Object.values(bubbles).flatMap(b => b).length}`} call={() => console.log("bubbles:", bubbles) }/>
+						<DevButton label={`clearBubbles`} call={() => useBubbleStore.getState().clearBubbles(clientUuid!) }/>
 					</ul>
 				</div>
 		</section>

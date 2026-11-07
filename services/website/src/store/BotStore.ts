@@ -4,13 +4,6 @@ import { useProfileStore, type CachedProfile } from "./ProfileStore";
 import { gameInstance } from "../api/game/main";
 import type { SeatOrderTransmit } from "@big2/game-types";
 
-export const INTEL_LABEL = [
-	"Easy",
-	"Medium",
-	"Hard",
- ] as const;
-export type INTEL_TYPE = typeof INTEL_LABEL[number];
-
 export const cachedBotData: Record<number, CachedProfile> = {
 	0: {
 		name: "Norminette",
@@ -39,7 +32,6 @@ export const cachedBotData: Record<number, CachedProfile> = {
 };
 
 interface BotValues {
-	currentIntel: INTEL_TYPE;
 	botCount: number;
 }
 
@@ -53,7 +45,6 @@ interface BotState extends BotValues {
 
 export const useBotStore = create<BotState>() (
 	(set) => ({
-		currentIntel: "Medium",
 		botCount: 0,
 
 		removeBots: async () => {
@@ -110,9 +101,7 @@ export const useBotStore = create<BotState>() (
 		},
 
 		resetValues: () => {
-			set({
-				botCount: 0
-			})
+			set({ botCount: 0 })
 		}
 	}),
 );

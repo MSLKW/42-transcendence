@@ -5,7 +5,6 @@ import { useChatStore } from "../../../store/ChatStore";
 import { useGameStatsStore } from "../../../store/GameStatsStore";
 import { usePartyStore } from "../../../store/PartyStore";
 import { useProfileStore } from "../../../store/ProfileStore";
-import { useSceneStore } from "../../../store/SceneStore";
 import { chatSocket } from "../../chat/chatSocket";
 
 export function partyStateHandler(socket: Socket) {
@@ -44,8 +43,6 @@ export function partyStateHandler(socket: Socket) {
 			useGameStatsStore.getState().setCachedStats(),
 			useAuthStore.getState().setCachedCreatedAts(),
 		]);
-
-		useSceneStore.setState({ initialRender: true });
 
 		if (isClientNewHost)
 			useNotificationStore.getState().showNotification("You are the host of this party", NOTIFICATION_TYPE.message);

@@ -6,7 +6,6 @@ export type SCENES = "Badge" | "Login" | "Home" | "Lobby" | "Game";
 
 interface SceneValues {
 	sceneVerboseMode: boolean;
-	initialRender: boolean;
 	currentScene: SCENES;
 	showWindow: Record<string, boolean>;
 	statsUuid: string | null;
@@ -43,7 +42,6 @@ export const useSceneStore = create<SceneState>() (
 	persist( 
 		(set, get) => ({
 			sceneVerboseMode: false,
-			initialRender: false,
 			currentScene: "Login",
 			showWindow: defaultShowWindow,
 			statsUuid: null,
