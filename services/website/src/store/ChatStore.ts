@@ -21,6 +21,7 @@ interface ChatValues {
 	chatVerboseMode: boolean;
 	chatSocketId: string | null;
 	chatRoomId: string | null;
+	chatPlayerCount: number | null;
 	chatLog: ChatData[];
 	isChatRateLimited: boolean;
 }
@@ -44,6 +45,7 @@ export const useChatStore = create<ChatState>() (
 			chatVerboseMode: false,
 			chatSocketId: null,
 			chatRoomId: null,
+			chatPlayerCount: null,
 			chatLog: [],
 			isChatRateLimited: false,
 
@@ -77,6 +79,7 @@ export const useChatStore = create<ChatState>() (
 				set({
 					chatSocketId: null,
 					chatRoomId: null,
+					chatPlayerCount: null,
 					chatLog: [],
 					isChatRateLimited: false,
 				});

@@ -30,11 +30,12 @@ export default function Dev() {
 
 	const chatAPIConnection = useChatStore((store) => store.chatAPIConnection);
 	const chatLog = useChatStore((store) => store.chatLog);
+	const chatPlayerCount = useChatStore((store) => store.chatPlayerCount);
 	const chatRoomId = useChatStore((store) => store.chatRoomId);
 	const chatSocketId = useChatStore((store) => store.chatSocketId);
 	const chatVerboseMode = useChatStore((store) => store.chatVerboseMode);
 	const isChatRateLimited = useChatStore((store) => store.isChatRateLimited);
-	
+
 	const cachedFriends = useFriendsStore((store) => store.cachedFriends);
 	const friendRequestSent = useFriendsStore((store) => store.friendRequestSent);
 	const friendsAPIConnection = useFriendsStore((store) => store.friendsAPIConnection);
@@ -176,6 +177,7 @@ export default function Dev() {
 					<hr />
 					<ul className="flex flex-wrap place-content-between gap-x-20">
 						<DevButton label={`bubbles: ${Object.values(bubbles).flatMap(b => b).length}`} call={() => console.log("bubbles:", bubbles) }/>
+						<li>chatPlayerCount: {`${chatPlayerCount}`}</li>
 						<DevButton label={`chatLog: ${Object.values(chatLog).flatMap(b => b).length}`} call={() => console.log("chatLog:", chatLog) }/>
 						<DevButton label={`isChatRateLimited: ${Object.keys(bubbles).length}`} call={() => console.log("isChatRateLimited:", isChatRateLimited) }/>
 						<DevButton label={`typingUsers: ${Object.entries(typingUsers).filter(([_, isTyping]) => isTyping).map(([uuid]) => uuid).length}`} call={() => console.log("typingUsers:", typingUsers)} />

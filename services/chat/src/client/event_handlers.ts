@@ -18,7 +18,7 @@ export function registerEventHandlers(
 	client: Client,
 	partyManager: PartyManager,
 ): void {
-	registerRoomEvents(socket, client, partyManager);
+	registerRoomEvents(io, socket, client, partyManager);
 	registerChatActivityEvents(io, socket, client, partyManager);
 }
 

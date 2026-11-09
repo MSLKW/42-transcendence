@@ -1,7 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import { chatSocket } from "../../api/chat/chatSocket";
 import { useChatStore, MAX_MESSAGE_LENGTH } from "../../store/ChatStore";
-import { usePartyStore } from "../../store/PartyStore";
 import { useTypingStore } from "../../store/TypingStore";
 import { Window } from "../window/Window";
 import { SendButton } from "./send/SendButton";
@@ -13,7 +12,7 @@ import { ChatRateLimit } from "./ChatRateLimit";
 export const ChatWindow = () => {
 	const chatLog = useChatStore((store) => store.chatLog);
 	const isChatRateLimited = useChatStore((store) => store.isChatRateLimited);
-	const members = usePartyStore((store) => store.members);
+	const chatPlayerCount = useChatStore((store) => store.chatPlayerCount);
 	const typingUsers = useTypingStore((store) => store.typingUsers);
 
 	const [message, setMessage] = useState("");
@@ -152,7 +151,7 @@ export const ChatWindow = () => {
 				{ 
 					isChatRateLimited ? <ChatRateLimit /> :
 					Object.keys(typingUsers).length ? <ChatTypingIndicator /> :
-					<p>{members.length === 1 ? "1 player" : members.length + " players"} in chat</p>
+					<p>{chatPlayerCount === null ? "…" : chatPlayerCount === 1 ? "1 player" : `${chatPlayerCount} players`} in chat</p>
 				}
 			</div>
 		</Window>

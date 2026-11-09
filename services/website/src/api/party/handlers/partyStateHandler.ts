@@ -33,6 +33,7 @@ export function partyStateHandler(socket: Socket) {
 		if (currentChatRoomId !== newChatRoomId) {
 			useChatStore.setState ({
 				chatRoomId: newChatRoomId,
+				chatPlayerCount: null,
 				chatLog: [],
 			})
 		}

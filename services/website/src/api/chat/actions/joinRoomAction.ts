@@ -13,6 +13,7 @@ export async function joinRoomAction(socket: Socket | null, roomId: string) {
 		const response = await new Promise<{
 			success: boolean;
 			roomId?: string;
+			count?: number;
 			reason?: string;
 		}>((resolve) => {
 			socket.emit("chat_join_room", { roomId: roomId }, resolve);
@@ -23,7 +24,10 @@ export async function joinRoomAction(socket: Socket | null, roomId: string) {
 			return;
 		}
 
-		useChatStore.setState({ chatRoomId: response.roomId ?? roomId });
+		useChatStore.setState({
+			chatRoomId: response.roomId ?? roomId,
+			chatPlayerCount: response.count ?? null,
+		});
 
 		if (useChatStore.getState().chatVerboseMode)
 			console.log(`[chat > 'emit' chat_join_room] roomId: ${roomId}`);
