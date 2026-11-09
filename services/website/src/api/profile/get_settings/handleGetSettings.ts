@@ -3,6 +3,9 @@ import { useProfileStore } from "../../../store/ProfileStore";
 import { fetchGetSettings } from "./fetchGetSettings";
 
 export const handleGetSettings = async (uuid: string) => {
+	if (!useProfileStore.getState().profileAPIConnection)
+		return null;
+
 	try {
 		const response = await fetchGetSettings(uuid);
 

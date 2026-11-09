@@ -8,7 +8,7 @@ interface SceneValues {
 	sceneVerboseMode: boolean;
 	currentScene: SCENES;
 	showWindow: Record<string, boolean>;
-	statsUuid: string | null;
+	playerStatsUuid: string | null;
 }
 
 interface SceneState extends SceneValues {
@@ -44,7 +44,7 @@ export const useSceneStore = create<SceneState>() (
 			sceneVerboseMode: false,
 			currentScene: "Login",
 			showWindow: defaultShowWindow,
-			statsUuid: null,
+			playerStatsUuid: null,
 
 			setCurrentScene: (scene) => {
 				set({ currentScene: scene });
@@ -55,7 +55,7 @@ export const useSceneStore = create<SceneState>() (
 			setShowWindow: (window, show, uuid) => {
 				const showWindow = get().showWindow;
 				set({
-					statsUuid: uuid,
+					playerStatsUuid: uuid,
 					showWindow: {
 						...showWindow,
 						[window]: show,
@@ -77,7 +77,7 @@ export const useSceneStore = create<SceneState>() (
 				get().resetWindows();
 				set({
 					currentScene: "Login",
-					statsUuid: null,
+					playerStatsUuid: null,
 				});
 			},
 		}),

@@ -17,7 +17,7 @@ export const MAX_MESSAGE_LENGTH = 500;
 let rateLimitTimeout: ReturnType<typeof setTimeout> | null = null;
 
 interface ChatValues {
-	chatAPIEnabled: boolean;
+	chatAPIConnection: boolean;
 	chatVerboseMode: boolean;
 	chatSocketId: string | null;
 	chatRoomId: string | null;
@@ -40,7 +40,7 @@ interface ChatState extends ChatValues {
 export const useChatStore = create<ChatState>() (
 	persist(
 		(set) => ({
-			chatAPIEnabled: true,
+			chatAPIConnection: true,
 			chatVerboseMode: false,
 			chatSocketId: null,
 			chatRoomId: null,
@@ -87,7 +87,7 @@ export const useChatStore = create<ChatState>() (
 			version: 1,
 
 			partialize: (state) => ({
-				chatAPIEnabled: state.chatAPIEnabled,
+				chatAPIConnection: state.chatAPIConnection,
 				chatVerboseMode: state.chatVerboseMode,
 			}),
 

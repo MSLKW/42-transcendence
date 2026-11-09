@@ -4,7 +4,7 @@ import { usePartyStore } from "./PartyStore";
 import { handleCreatedAt } from "../api/authentication/get_created-at/handleCreatedAt";
 
 interface AuthValues {
-	authAPIEnabled: boolean;
+	authAPIConnection: boolean;
 	authVerboseMode: boolean;
 	authValidation: boolean;
 	isAuthenticated: boolean;
@@ -21,7 +21,7 @@ interface AuthState extends AuthValues {
 export const useAuthStore = create<AuthState>() (
 	persist(
 		(set) => ({
-			authAPIEnabled: true,
+			authAPIConnection: true,
 			authVerboseMode: false,
 			authValidation: true,
 			isAuthenticated: false,
@@ -72,7 +72,7 @@ export const useAuthStore = create<AuthState>() (
 			name: 'auth-storage',
 
 			partialize: (state) => ({
-				authAPIEnabled: state.authAPIEnabled,
+				authAPIConnection: state.authAPIConnection,
 				authVerboseMode: state.authVerboseMode,
 				authValidation: state.authValidation,
 				cachedCreatedAts: state.cachedCreatedAts,

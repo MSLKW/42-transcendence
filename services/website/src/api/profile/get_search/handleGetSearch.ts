@@ -3,6 +3,9 @@ import { useProfileStore } from "../../../store/ProfileStore";
 import { fetchGetSearch } from "./fetchGetSearch";
 
 export const handleGetSearch = async (query: string, signal?: AbortSignal): Promise<string[]> => {
+	if (!useProfileStore.getState().profileAPIConnection)
+		return [];
+
 	try {
 		const response = await fetchGetSearch(query, signal);
 

@@ -2,7 +2,7 @@ import { fetchValidate } from "./fetchValidate";
 import { useAuthStore } from "../../../store/AuthStore";
 
 export const handleValidate = async () => {
-	if (!useAuthStore.getState().authAPIEnabled)
+	if (!useAuthStore.getState().authAPIConnection)
 		return;
 
 	try {

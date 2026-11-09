@@ -10,7 +10,7 @@ import { useNotificationStore, NOTIFICATION_TYPE } from "../../../store/Notifica
 import { useSceneStore } from "../../../store/SceneStore";
 
 export const handleSignUp = async (email: string, password: string, setIsLoading: Dispatch<SetStateAction<boolean>>) => {
-	if (!useAuthStore.getState().authAPIEnabled)
+	if (!useAuthStore.getState().authAPIConnection)
 		return;
 
 	try {

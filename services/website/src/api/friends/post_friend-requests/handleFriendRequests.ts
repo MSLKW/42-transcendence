@@ -1,6 +1,8 @@
 import { useNotificationStore, NOTIFICATION_TYPE } from "../../../store/NotificationStore";
 import { fetchFriendRequests } from "./fetchFriendRequests";
 import { useFriendsStore } from "../../../store/FriendsStore";
+import { handleFriendRequestsSent } from "../get_friend-requests_sent/handleFriendRequestsSent";
+import { useAuthStore } from "../../../store/AuthStore";
 
 export const handleFriendRequests = async (senderId: string | null, receiverId: string | null, name: string) => {
 	if (!senderId || !receiverId) {
@@ -11,6 +13,12 @@ export const handleFriendRequests = async (senderId: string | null, receiverId: 
 
 	try {
 		const response = await fetchFriendRequests(senderId, receiverId);
+
+		const clientUuid = useAuthStore.getState().clientUuid;
+		void handleFriendRequestsSent(clientUuid)
+			.then((requests) => {
+				useFriendsStore.setState({ friendRequestSent: requests });
+			});
 
 		if (useFriendsStore.getState().friendsVerboseMode)
 			console.log("[friends > 'POST' friend-requests] response:", response);

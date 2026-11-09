@@ -1,8 +1,8 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-import { handleFriendships } from "../api/friends/get_friendships/handleFriendships";
 
 interface FriendValues {
+	friendsAPIConnection: boolean;
 	friendsVerboseMode: boolean;
 	cachedFriends: string[];
 	friendRequestSent: string[];
@@ -15,6 +15,7 @@ interface FriendState extends FriendValues {
 export const useFriendsStore = create<FriendState>() (
 	persist(
 		(set, _get) => ({
+			friendsAPIConnection: true,
 			friendsVerboseMode: false,
 			cachedFriends: [],
 			friendRequestSent: [],
@@ -28,6 +29,12 @@ export const useFriendsStore = create<FriendState>() (
 		}),
 		{
 			name: "friend-storage",
+
+			partialize: (state) => ({
+				friendsAPIConnection: state.friendsAPIConnection,
+				friendsVerboseMode: state.friendsVerboseMode,
+				cachedFriends: state.cachedFriends,
+			}),
 		}
 	)
 );

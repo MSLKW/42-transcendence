@@ -3,6 +3,9 @@ import { useProfileStore } from "../../../store/ProfileStore";
 import { fetchPutProfile } from "./fetchPutProfile";
 
 export const handlePutProfile = async (username: string, avatarPath: string, badge: string) => {
+	if (!useProfileStore.getState().profileAPIConnection)
+		return;
+
 	try {
 		const response = await fetchPutProfile(username, avatarPath, badge);
 

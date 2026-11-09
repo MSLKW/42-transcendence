@@ -2,6 +2,9 @@ import { useGameStatsStore } from "../../../store/GameStatsStore";
 import { fetchPublicPlayerGameData } from "./fetchPublicPlayerGameData";
 
 export const handlePublicPlayerGameData = async (playerUuid: string) => {
+	if (!useGameStatsStore.getState().gameStatsAPIConnection)
+		return;
+
 	try {
 		const response = await fetchPublicPlayerGameData(playerUuid);
 		if (!response)

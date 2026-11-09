@@ -2,6 +2,9 @@ import { useGameStatsStore } from "../../../store/GameStatsStore";
 import { fetchOwnPlayerGameData } from "./fetchOwnPlayerGameData";
 
 export const handleOwnPlayerGameData = async () => {
+	if (!useGameStatsStore.getState().gameStatsAPIConnection)
+		return;
+
 	try {
 		const response = await fetchOwnPlayerGameData();
 		if (!response)

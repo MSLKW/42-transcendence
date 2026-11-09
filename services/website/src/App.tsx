@@ -1,4 +1,4 @@
-import { useRef, useEffect } from "react";
+import { useRef, useEffect, useCallback } from "react";
 import { handleValidate } from "./api/authentication/get_validate/handleValidate";
 import { chatSocket } from "./api/chat/chatSocket";
 import { partySocket } from "./api/party/partySocket";
@@ -7,6 +7,7 @@ import { subscribeToUserJoined } from "./api/chat/subscribe/subscribeToUserJoine
 import { subscribeToUserLeft } from "./api/chat/subscribe/subscribeToUserLeft";
 import { subscribeToUserTyping } from "./api/chat/subscribe/subscribeToUserTyping";
 import { subscribeToRateLimited } from "./api/chat/subscribe/subscribeToRateLimited";
+import { handleFriendships } from "./api/friends/get_friendships/handleFriendships";
 import { handleFriendRequestsSent } from "./api/friends/get_friend-requests_sent/handleFriendRequestsSent";
 import { handleFriendRequestsReceived } from "./api/friends/get_friend-requests_received/handleFriendRequestsReceived";
 import { handleFriendRequestsAccept } from "./api/friends/post_friend-requests_accept/handleFriendRequestsAccept";
@@ -41,16 +42,19 @@ import { StatsWindow } from "./components/stats/StatsWindow";
 import { ThreeJsManager } from './components/3d/ThreeJsManager';
 import { gameInstance, joinGameLobby, clearGameInstance } from "./api/game/main";
 import Dev from "./Dev";
+import { useFriendEvents } from "./api/friends/useFriendEvents";
+import { useGameStore } from "./store/GameStore";
 
 export let threejsManager: ThreeJsManager;
 
 export default function App() {
 	const clientUuid = useAuthStore((store) => store.clientUuid);
-	const chatAPIEnabled = useChatStore((store) => store.chatAPIEnabled);
-	const partyAPIEnabled = usePartyStore((store) => store.partyAPIEnabled);
+	const chatAPIConnection = useChatStore((store) => store.chatAPIConnection);
+	const friendsVerboseMode = useFriendsStore((store) => store.friendsVerboseMode);
+	const gameAPIConnection = useGameStore((store) => store.gameAPIConnection);
+	const partyAPIConnection = usePartyStore((store) => store.partyAPIConnection);
 	const partyGameId = usePartyStore((store) => store.partyGameId);
 	const cachedProfiles = useProfileStore((store) => store.cachedProfiles);
-	const isProfileLoaded = useProfileStore((store) => store.isProfileLoaded);
 	const currentScene = useSceneStore((store) => store.currentScene);
 	const showWindow = useSceneStore((store) => store.showWindow);
 
@@ -61,7 +65,7 @@ export default function App() {
 		if (!clientUuid || currentScene === "Login")
 			return;
 
-		if (partyAPIEnabled)
+		if (partyAPIConnection)
 			partySocket.connect();
 		else
 			partySocket.disconnect();
@@ -69,14 +73,14 @@ export default function App() {
 		return () => {
 			partySocket.disconnect();
 		};
-	}, [clientUuid, partyAPIEnabled]);
+	}, [clientUuid, partyAPIConnection]);
 
 	/** Chat socket connection + subscriptions */
 	useEffect(() => {
 		if (!clientUuid)
 			return;
 
-		if (!chatAPIEnabled) {
+		if (!chatAPIConnection) {
 			chatSocket.disconnect();
 			return;
 		}
@@ -96,7 +100,23 @@ export default function App() {
 			unsubscribeFromRateLimited();
 			chatSocket.disconnect();
 		};
-	}, [clientUuid, chatAPIEnabled]);
+	}, [clientUuid, chatAPIConnection]);
+
+	/** Friends connection */
+	const handleFriendUpdate = useCallback(() => {
+		if (!clientUuid)
+			return;
+
+		void handleFriendships(clientUuid)
+			.then((friends) => {
+				useFriendsStore.setState({ cachedFriends: friends });
+			})
+			.catch((error) => {
+				if (friendsVerboseMode)
+					console.warn("Failed to refresh friendships:", error);
+			})
+	}, [clientUuid]);
+	useFriendEvents(clientUuid, handleFriendUpdate);
 
 	/** Friend requests sent + received */
 	useEffect(() => {
@@ -158,17 +178,20 @@ export default function App() {
 
 	/** Initial profile setup */
 	useEffect(() => {
-		if (currentScene === "Login" || !clientUuid || !isProfileLoaded)
+		if (currentScene === "Login" || !clientUuid)
 			return;
 
 		if (!cachedProfiles[clientUuid]?.name || !cachedProfiles[clientUuid]?.avatar)
 			useSceneStore.getState().setShowWindow("setup", true);
 		else
 			useSceneStore.getState().setShowWindow("setup", false);
-	}, [currentScene, clientUuid, cachedProfiles, isProfileLoaded]);
+	}, [currentScene, clientUuid, cachedProfiles]);
 
 	// Connect to game server
 	useEffect(() => {
+		if (!gameAPIConnection)
+			return;
+
 		if (partyGameId === null && gameInstance !== null) {
 			clearGameInstance();
 		}

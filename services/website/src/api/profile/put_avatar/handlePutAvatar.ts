@@ -3,6 +3,9 @@ import { useProfileStore } from "../../../store/ProfileStore";
 import { fetchPutAvatar } from "./fetchPutAvatar";
 
 export const handlePutAvatar = async (avatar: File) => {
+	if (!useProfileStore.getState().profileAPIConnection)
+		return;
+
 	try {
 		const response = await fetchPutAvatar(avatar);
 

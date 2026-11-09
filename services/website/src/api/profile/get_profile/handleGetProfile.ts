@@ -2,6 +2,9 @@ import { useProfileStore, type UserData } from "../../../store/ProfileStore";
 import { fetchGetProfile } from "./fetchGetProfile";
 
 export const handleGetProfile = async (uuid: string): Promise<UserData | null> => {
+	if (!useProfileStore.getState().profileAPIConnection)
+		return null;
+
 	try {
 		const response = await fetchGetProfile(uuid);
 

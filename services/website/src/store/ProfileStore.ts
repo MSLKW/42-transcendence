@@ -28,9 +28,9 @@ export type UserData = {
 };
 
 interface ProfileValues {
+	profileAPIConnection: boolean;
 	profileVerboseMode: boolean;
 	profileValidation: boolean;
-	isProfileLoaded: boolean;
 	cachedProfiles: Record<string, CachedProfile>;
 	avatarVersions: Record<string, number>;
 };
@@ -45,9 +45,9 @@ interface ProfileState extends ProfileValues {
 export const useProfileStore = create<ProfileState>() (
 	persist(
 		(set, _get) => ({
+			profileAPIConnection: false,
 			profileVerboseMode: false,
 			profileValidation: true,
-			isProfileLoaded: false,
 			cachedProfiles: {},
 			avatarVersions: {},
 
@@ -109,7 +109,6 @@ export const useProfileStore = create<ProfileState>() (
 
 			resetValues: () => {
 				set({
-					isProfileLoaded: false,
 					cachedProfiles: {},
 					avatarVersions: {},
 				});
@@ -117,6 +116,12 @@ export const useProfileStore = create<ProfileState>() (
 		}),
 		{
 			name: 'profile-storage',
+
+			partialize: (state) => ({
+				profileAPIConnection: state.profileAPIConnection,
+				profileVerboseMode: state.profileVerboseMode,
+				cachedProfiles: state.cachedProfiles,
+			}),
 		}
 	)
 );

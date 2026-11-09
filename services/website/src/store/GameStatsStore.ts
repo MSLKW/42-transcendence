@@ -120,6 +120,7 @@ export interface CachedStat {
 }
 
 interface GameStatsValues {
+	gameStatsAPIConnection: boolean;
 	gameStatsVerboseMode: boolean;
 	cachedStats: Record<string, CachedStat>;
 	cachedBadges: Record<PublicBadgeId, boolean>;
@@ -129,13 +130,13 @@ interface GameStatsState extends GameStatsValues {
 	setCachedStats: () => Promise<void>;
 	updatePlayerCachedStat: (uuid: string | null, stats: CachedStat) => Promise<void>;
 	removePlayerCachedStat: (uuid: string | null) => void;
-
 	resetValues: () => void;
 };
 
 export const useGameStatsStore = create<GameStatsState>() (
 	persist(
 		(set) => ({
+			gameStatsAPIConnection: true,
 			gameStatsVerboseMode: false,
 			cachedStats: {},
 			cachedBadges: {
@@ -226,10 +227,6 @@ export const useGameStatsStore = create<GameStatsState>() (
 					return { cachedStats };
 				});
 			},
-
-			// setCachedBadges: async () => {
-				
-			// },
 
 			resetValues: () => {
 				set({

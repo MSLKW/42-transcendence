@@ -24,10 +24,10 @@ export const StatsWindow: React.FC = () => {
 	const partyVerboseMode = usePartyStore((store) => store.partyVerboseMode);
 	const cachedProfiles = useProfileStore((store) => store.cachedProfiles);
 	const profileVerboseMode = useProfileStore((store) => store.profileVerboseMode);
-	const statsUuid = useSceneStore((store) => store.statsUuid!);
+	const playerStatsUuid = useSceneStore((store) => store.playerStatsUuid!);
 	
-	const cachedProfile = statsUuid && statsUuid in cachedProfiles ? cachedProfiles[statsUuid] : undefined;
-	const cachedStat = statsUuid && statsUuid in cachedStats ? cachedStats[statsUuid] : undefined;
+	const cachedProfile = playerStatsUuid && playerStatsUuid in cachedProfiles ? cachedProfiles[playerStatsUuid] : undefined;
+	const cachedStat = playerStatsUuid && playerStatsUuid in cachedStats ? cachedStats[playerStatsUuid] : undefined;
 
 	const [name, setName] = useState(cachedProfile?.name ?? "n/a");
 	const [avatar, setAvatar] = useState(cachedProfile?.avatar ?? undefined);
@@ -48,15 +48,15 @@ export const StatsWindow: React.FC = () => {
 	useEffect(() => {
 		if (dataFetched.current)
 			return;
-		dataFetched.current = statsUuid;
+		dataFetched.current = playerStatsUuid;
 
 		const fetchPlayerData = async () => {
 			try {
 				const [profile, createdAt, online, playerStats] = await Promise.all([
-					handleGetProfile(statsUuid),
-					handleCreatedAt(statsUuid),
-					handleGetOnline(statsUuid),
-					handlePublicPlayerGameData(statsUuid),
+					handleGetProfile(playerStatsUuid),
+					handleCreatedAt(playerStatsUuid),
+					handleGetOnline(playerStatsUuid),
+					handlePublicPlayerGameData(playerStatsUuid),
 				]);
 
 				setName(profile?.username ?? "n/a");
@@ -73,8 +73,8 @@ export const StatsWindow: React.FC = () => {
 				setCurrentLevelXpThreshold(playerStats.levelProgress.currentLevelXpThreshold);
 				setCurrentLevelProgressPercentage(playerStats.levelProgress.currentLevelProgressPercentage);
 				setAchievements(playerStats.achievements);
-				if (members && members.includes(statsUuid)) {
-					useGameStatsStore.getState().updatePlayerCachedStat(statsUuid, {
+				if (members && members.includes(playerStatsUuid)) {
+					useGameStatsStore.getState().updatePlayerCachedStat(playerStatsUuid, {
 						level: playerStats.stats.level,
 						xp: playerStats.stats.xp,
 						displayedBadgeId: playerStats.stats.displayedBadgeId,
@@ -99,7 +99,7 @@ export const StatsWindow: React.FC = () => {
 			}
 		};
 		fetchPlayerData();
-	}, [statsUuid]);
+	}, [playerStatsUuid]);
 
 	return (
 		<Window
@@ -113,9 +113,9 @@ export const StatsWindow: React.FC = () => {
 				overflow-y-scroll
 			">
 				<div className="flex">
-					<AvatarMemberModule uuid={statsUuid} name={name ?? "-"} image={avatar} />
+					<AvatarMemberModule uuid={playerStatsUuid} name={name ?? "-"} image={avatar} />
 					<PlayerDataModule
-						uuid={statsUuid}
+						uuid={playerStatsUuid}
 						availability={availability}
 						lastOnline={lastOnline}
 						createdAt={createdAt}
@@ -137,8 +137,8 @@ export const StatsWindow: React.FC = () => {
 					py-2rem px-2rem
 					gap-1rem
 				">
-					{ members && members.includes(statsUuid) && <KickPlayerButton playerUuid={statsUuid}/>}
-					<FriendToggleButton uuid={statsUuid} name={name ?? "Player"}/>
+					{ members && members.includes(playerStatsUuid) && <KickPlayerButton playerUuid={playerStatsUuid}/>}
+					<FriendToggleButton uuid={playerStatsUuid} name={name ?? "Player"}/>
 				</div>
 			</div>
 		</Window>

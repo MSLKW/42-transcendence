@@ -2,6 +2,9 @@ import { useGameStatsStore } from "../../../store/GameStatsStore";
 import { fetchEasterEggFound } from "./fetchEasterEggFound";
 
 export const handleEasterEggFound = async (eggId: string) => {
+	if (!useGameStatsStore.getState().gameStatsAPIConnection)
+		return;
+
 	try {
 		const response = await fetchEasterEggFound(eggId);
 		if (!response)

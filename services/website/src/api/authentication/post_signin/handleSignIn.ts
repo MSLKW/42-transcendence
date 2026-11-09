@@ -8,7 +8,7 @@ import { useNotificationStore, NOTIFICATION_TYPE } from "../../../store/Notifica
 import { useSceneStore } from "../../../store/SceneStore";
 
 export const handleSignIn = async (email: string, password: string) => {
-	if (!useAuthStore.getState().authAPIEnabled)
+	if (!useAuthStore.getState().authAPIConnection)
 		return;
 
 	try {

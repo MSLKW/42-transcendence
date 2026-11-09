@@ -2,6 +2,9 @@ import { useGameStatsStore } from "../../../store/GameStatsStore";
 import { fetchDisplayedBadge } from "./fetchDisplayedBadge";
 
 export const handleDisplayedBadge = async (badgeId: string) => {
+	if (!useGameStatsStore.getState().gameStatsAPIConnection)
+		return;
+
 	try {
 		const response = await fetchDisplayedBadge(badgeId);
 		if (!response)
