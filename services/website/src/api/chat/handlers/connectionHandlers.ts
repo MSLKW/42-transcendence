@@ -13,10 +13,8 @@ export function connectionHandlers(
 	});
 
 	socket.on("disconnect", (reason) => {
-		useChatStore.setState({
-			chatSocketId: null,
-			chatRoomId: null,
-		});
+		// Keep the selected room so ChatSocketService can rejoin after reconnecting.
+		useChatStore.setState({ chatSocketId: null });
 
 		if (useChatStore.getState().chatVerboseMode)
 			console.log("[chat > 'on' disconnect] reason:", reason);

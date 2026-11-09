@@ -69,15 +69,11 @@ export default function App() {
 			partySocket.connect();
 		else
 			partySocket.disconnect();
-
-		return () => {
-			partySocket.disconnect();
-		};
-	}, [clientUuid, partyAPIConnection]);
+	}, [clientUuid, currentScene, partyAPIConnection]);
 
 	/** Chat socket connection + subscriptions */
 	useEffect(() => {
-		if (!clientUuid)
+		if (!clientUuid || currentScene === "Login")
 			return;
 
 		if (!chatAPIConnection) {
@@ -98,9 +94,8 @@ export default function App() {
 			unsubscribeFromUserLeft();
 			unsubscribeFromUserTyping();
 			unsubscribeFromRateLimited();
-			chatSocket.disconnect();
 		};
-	}, [clientUuid, chatAPIConnection]);
+	}, [clientUuid, currentScene, chatAPIConnection]);
 
 	/** Friends connection */
 	const handleFriendUpdate = useCallback(() => {

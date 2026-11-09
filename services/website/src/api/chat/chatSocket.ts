@@ -56,6 +56,11 @@ class ChatSocketService {
 		connectionHandlers(
 			this.socket
 		);
+		this.socket.on("connect", () => {
+			const roomId = useChatStore.getState().chatRoomId;
+			if (roomId)
+				this.joinRoom(roomId);
+		});
 
 		this.socket.connect();
 	}
