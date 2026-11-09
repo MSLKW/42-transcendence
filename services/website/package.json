@@ -10,8 +10,9 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@big2/game-types": "*",
     "@big2/friends-types": "*",
+    "@big2/game-types": "*",
+    "@fontsource-variable/inter": "^5.3.0",
     "@tailwindcss/vite": "^4.3.1",
     "gsap": "^3.15.0",
     "motion": "^13.1.0",
