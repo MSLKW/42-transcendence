@@ -1,8 +1,8 @@
 import { useEffect } from "react";
-import { useDevStore } from "../../store/DevStore";
+import { useSceneStore } from "../../store/SceneStore";
 
 export const useFrameView = () => {
-	const showFrame = useDevStore((store) => store.showFrame);
+	const showFrame = useSceneStore((store) => store.showFrame);
 	
 	useEffect(() => {
 		if (showFrame)

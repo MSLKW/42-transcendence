@@ -5,8 +5,8 @@ import { handleCreatedAt } from "../api/authentication/get_created-at/handleCrea
 
 interface AuthValues {
 	authAPIConnection: boolean;
+	authFrontendValidation: boolean;
 	authVerboseMode: boolean;
-	authValidation: boolean;
 	isAuthenticated: boolean;
 	clientUuid: string | null;
 	cachedCreatedAts: Record<string, Date>;
@@ -22,8 +22,8 @@ export const useAuthStore = create<AuthState>() (
 	persist(
 		(set) => ({
 			authAPIConnection: true,
+			authFrontendValidation: true,
 			authVerboseMode: false,
-			authValidation: true,
 			isAuthenticated: false,
 			clientUuid: null,
 			cachedCreatedAts: {},
@@ -74,7 +74,7 @@ export const useAuthStore = create<AuthState>() (
 			partialize: (state) => ({
 				authAPIConnection: state.authAPIConnection,
 				authVerboseMode: state.authVerboseMode,
-				authValidation: state.authValidation,
+				authFrontendValidation: state.authFrontendValidation,
 				cachedCreatedAts: state.cachedCreatedAts,
 			})
 		}

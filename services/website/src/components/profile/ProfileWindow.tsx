@@ -26,7 +26,7 @@ export const ProfileWindow = () => {
 	const gameStatsVerboseMode = useGameStatsStore((store) => store.gameStatsVerboseMode);
 	const members = usePartyStore((store) => store.members);
 	const profileVerboseMode = useProfileStore((store) => store.profileVerboseMode);
-	const profileValidation = useProfileStore((store) => store.profileValidation);
+	const profileFrontendValidation = useProfileStore((store) => store.profileFrontendValidation);
 	const cachedProfiles = useProfileStore((store) => store.cachedProfiles);
 	const cachedStats = useGameStatsStore((store) => store.cachedStats);
 	const cachedBadges = useGameStatsStore((store) => store.cachedBadges);
@@ -101,7 +101,7 @@ export const ProfileWindow = () => {
 	const isBadgeValid = Boolean(displayedBadgeId);
 	const isValid = isNameValid && isAvatarValid && isBadgeValid;
 	const handleProfileUpdate = () => {
-		if (profileValidation && !isValid)
+		if (profileFrontendValidation && !isValid)
 			return;
 
 		useSceneStore.getState().setShowWindow("badge", false);
@@ -135,7 +135,7 @@ export const ProfileWindow = () => {
 		<Window
 			title={`Profile`}
 			dismissKey="profile"
-			isDismissable={profileValidation ? isValid : true}
+			isDismissable={profileFrontendValidation ? isValid : true}
 			call={handleProfileUpdate}
 			lightbox={true}
 		>
@@ -168,7 +168,7 @@ export const ProfileWindow = () => {
 						setHasChange={setHasChange}
 					/>
 				</div>
-				{profileValidation && !isNameValid &&
+				{profileFrontendValidation && !isNameValid &&
 					<h3 className="text-n6 text-center mb-5">Name must be 3–20 characters and contain only letters, numbers, hyphens, or underscores</h3>
 				}
 				<AvatarSelectModule

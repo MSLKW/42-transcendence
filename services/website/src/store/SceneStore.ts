@@ -27,6 +27,7 @@ export const defaultShowWindow = {
 interface SceneValues {
 	sceneVerboseMode: boolean;
 	currentScene: SCENES;
+	showFrame: boolean;
 	showWindow: Record<string, boolean>;
 	playerStatsUuid: string | null;
 }
@@ -43,6 +44,7 @@ export const useSceneStore = create<SceneState>() (
 		(set, get) => ({
 			sceneVerboseMode: false,
 			currentScene: "Login",
+			showFrame: false,
 			showWindow: defaultShowWindow,
 			playerStatsUuid: null,
 

@@ -34,14 +34,14 @@ export const StatsWindow: React.FC = () => {
 	const [createdAt, setCreatedAt] = useState<Date | null>(null);
 	const [availability, setAvailability] = useState<AVAILABILITY_TYPE | null>(null);
 	const [lastOnline, setLastOnline] = useState<Date | null>(null);
-	const [level, setLevel] = useState(cachedStat?.level ?? 0);
-	const [xp, setXp] = useState(cachedStat?.xp ?? 0);
-	const [currentLevelXpThreshold, setCurrentLevelXpThreshold] = useState(cachedStat?.currentLevelXpThreshold ?? 0);
-	const [currentLevelProgressPercentage, setCurrentLevelProgressPercentage] = useState(cachedStat?.currentLevelProgressPercentage ?? 0);
-	const [displayedBadgeId, setDisplayedBadgeId] = useState(cachedStat?.displayedBadgeId ?? "fresh_deal");
-	const [totalPlayed, setTotalPlayed] = useState(cachedStat?.totalPlayed ?? 0);
-	const [totalWins, setTotalWins] = useState(cachedStat?.totalWins ?? 0);
-	const [winStreak, setWinStreak] = useState(cachedStat?.winStreak ?? 0);
+	const [level, setLevel] = useState(cachedStat?.level ?? null);
+	const [xp, setXp] = useState(cachedStat?.xp ?? null);
+	const [currentLevelXpThreshold, setCurrentLevelXpThreshold] = useState(cachedStat?.currentLevelXpThreshold ?? null);
+	const [currentLevelProgressPercentage, setCurrentLevelProgressPercentage] = useState(cachedStat?.currentLevelProgressPercentage ?? null);
+	const [displayedBadgeId, setDisplayedBadgeId] = useState(cachedStat?.displayedBadgeId ?? null);
+	const [totalPlayed, setTotalPlayed] = useState(cachedStat?.totalPlayed ?? null);
+	const [totalWins, setTotalWins] = useState(cachedStat?.totalWins ?? null);
+	const [winStreak, setWinStreak] = useState(cachedStat?.winStreak ?? null);
 	const [achievements, setAchievements] = useState(cachedStat?.achievements ?? undefined);
 
 	const dataFetched = useRef<string | null>(null);

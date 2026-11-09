@@ -3,21 +3,22 @@ import { useAuthStore } from "./store/AuthStore";
 import { useBotStore } from "./store/BotStore";
 import { useBubbleStore } from "./store/BubbleStore";
 import { useChatStore } from "./store/ChatStore";
-import { useDevStore } from "./store/DevStore";
 import { useFriendsStore } from "./store/FriendsStore";
 import { useGameStatsStore } from "./store/GameStatsStore";
 import { useGameStore } from "./store/GameStore";
 import { useNotificationStore, NOTIFICATION_TYPE } from "./store/NotificationStore";
 import { usePartyStore } from "./store/PartyStore";
 import { useProfileStore } from "./store/ProfileStore";
+import { useResultsStore } from "./store/ResultsStore";
 import { useSceneStore } from "./store/SceneStore";
 import { useTypingStore } from "./store/TypingStore";
 import { DevButton } from "./components/dev/DevBtn";
 import { useFrameView } from "./utilities/react/useFrameView";
+import { useSettingsStore } from "./store/SettingsStore";
 
 export default function Dev() {
 	const authAPIConnection = useAuthStore((store) => store.authAPIConnection);
-	const authValidation = useAuthStore((store) => store.authValidation);
+	const authFrontendValidation = useAuthStore((store) => store.authFrontendValidation);
 	const authVerboseMode = useAuthStore((store) => store.authVerboseMode);
 	const cachedCreatedAts = useAuthStore((store) => store.cachedCreatedAts);
 	const clientUuid = useAuthStore((store) => store.clientUuid);
@@ -38,16 +39,39 @@ export default function Dev() {
 	const friendRequestSent = useFriendsStore((store) => store.friendRequestSent);
 	const friendsAPIConnection = useFriendsStore((store) => store.friendsAPIConnection);
 	const friendsVerboseMode = useFriendsStore((store) => store.friendsVerboseMode);
+	const isFriendsConnected = useFriendsStore((store) => store.isFriendsConnected);
 	
 	const gameAPIConnection = useGameStore((store) => store.gameAPIConnection);
 	const gameSocketId = useGameStore((store) => store.gameSocketId);
 	const gameVerboseMode = useGameStore((store) => store.gameVerboseMode);
+	const totalPlayers = useGameStore((store) => store.totalPlayers);
+	const gameSeats = useGameStore((store) => store.gameSeats);
+	const userSeats = useGameStore((store) => store.userSeats);
+	const playerDisconnection = useGameStore((store) => store.playerDisconnection);
+	const gameStarted = useGameStore((store) => store.gameStarted);
+	const cardsLeft = useGameStore((store) => store.cardsLeft);
+	const currentHand = useGameStore((store) => store.currentHand);
+	const selectedCards = useGameStore((store) => store.selectedCards);
+	const cardHeapTopCards = useGameStore((store) => store.cardHeapTopCards);
+	const lowestCardRequired = useGameStore((store) => store.lowestCardRequired);
+	const round = useGameStore((store) => store.round);
+	const seatRef = useGameStore((store) => store.seatRef);
+	const activeSeat = useGameStore((store) => store.activeSeat);
+	const isActiveSeatSkippable = useGameStore((store) => store.isActiveSeatSkippable);
+	const isCardHandPlayable = useGameStore((store) => store.isCardHandPlayable);
+	const sortType = useGameStore((store) => store.sortType);
+	const playerPassed = useGameStore((store) => store.playerPassed);
+	const playerTimer = useGameStore((store) => store.playerTimer);
+	const playerRemainingTimer = useGameStore((store) => store.playerRemainingTimer);
 
 	const cachedStats = useGameStatsStore((store) => store.cachedStats);
 	const cachedBadges = useGameStatsStore((store) => store.cachedBadges);
 	const gameStatsAPIConnection = useGameStatsStore((store) => store.gameStatsAPIConnection);
 	const gameStatsVerboseMode = useGameStatsStore((store) => store.gameStatsVerboseMode);
 	
+	const notifications = useNotificationStore((store) => store.notifications);
+	const isNotifFiltered = useNotificationStore((store) => store.isNotifFiltered);
+
 	const availabilityOverrides = usePartyStore((store) => store.availabilityOverrides);
 	const hostUuid = usePartyStore((store) => store.hostUuid);
 	const members = usePartyStore((store) => store.members);
@@ -57,15 +81,21 @@ export default function Dev() {
 	const partyVerboseMode = usePartyStore((store) => store.partyVerboseMode);
 	
 	const profileAPIConnection = useProfileStore((store) => store.profileAPIConnection);
-	const profileValidation = useProfileStore((store) => store.profileValidation);
+	const profileFrontendValidation = useProfileStore((store) => store.profileFrontendValidation);
 	const profileVerboseMode = useProfileStore((store) => store.profileVerboseMode);
 	const cachedProfiles = useProfileStore((store) => store.cachedProfiles);
 	const avatarVersions = useProfileStore((store) => store.avatarVersions);
+
+	const results = useResultsStore((store) => store.results);
 
 	const currentScene = useSceneStore((store) => store.currentScene);
 	const playerStatsUuid = useSceneStore((store) => store.playerStatsUuid);
 	const sceneVerboseMode = useSceneStore((store) => store.sceneVerboseMode);
 	const showWindow = useSceneStore((store) => store.showWindow);
+
+	const allow3OfAKind = useSettingsStore((store) => store.allow3OfAKind);
+	const allow2OfSpadesEnd = useSettingsStore((store) => store.allow2OfSpadesEnd);
+	const autoPassIndex = useSettingsStore((store) => store.autoPassIndex);
 
 	const typingUsers = useTypingStore((store) => store.typingUsers);
 
@@ -75,7 +105,7 @@ export default function Dev() {
 	useFrameView();
 
 	return (
-		<section className="w-full text-b4 py-1rem gap-1rem flex flex-col px-3rem bg-n0 gap-10">
+		<section className="w-full text-a4 py-1rem gap-1rem flex flex-col px-3rem bg-n0 gap-10">
 			{/* verbose mode */}
 				<div>
 					<h2><b>Toggle All ...</b></h2>
@@ -108,25 +138,30 @@ export default function Dev() {
 			{/* auth */}
 				<div className={`
 					${authAPIConnection ? "" : "opacity-60"}
-					${authVerboseMode ? "text-c4" : "text-b4"}
+					${clientUuid ? "text-a4" : "text-b4"}
+					${authVerboseMode ? "font-extrabold" : ""}
 				`}>
 					<h2><b>Auth</b></h2>
 					<ul className="flex flex-wrap place-content-between gap-x-20">
 						<DevButton label={`API Connection: ${authAPIConnection}`} call={() => useAuthStore.setState({ authAPIConnection: !authAPIConnection })}/>
-						<DevButton label={`Frontend Validation: ${authValidation}`} call={() => useAuthStore.setState({ authValidation: !authValidation })}/>
+						<DevButton label={`Frontend Validation: ${authFrontendValidation}`} call={() => useAuthStore.setState({ authFrontendValidation: !authFrontendValidation })}/>
 						<DevButton label={`Verbose Mode: ${authVerboseMode}`} call={() => useAuthStore.setState({ authVerboseMode: !authVerboseMode })}/>
 					</ul>
 					<hr />
 					<ul className="flex flex-wrap place-content-between gap-x-20">
-						<li>isAuthenticated: {`${isAuthenticated}`}</li>
 						<li>clientUuid: {`${clientUuid}`} </li>
+					</ul>
+					<hr />
+					<ul className="flex flex-wrap place-content-between gap-x-20">
+						<li>isAuthenticated: {`${isAuthenticated}`}</li>
 						<DevButton label={`cachedCreatedAts: ${Object.keys(cachedCreatedAts).length}`} call={() => console.log("cachedCreatedAts: ", cachedCreatedAts)}/>
 					</ul>
 				</div>
 			{/* chat */}
 				<div className={`
 					${chatAPIConnection ? "" : "opacity-60"}
-					${chatVerboseMode ? "text-c4" : "text-b4"}
+					${(chatSocketId && chatRoomId) ? "text-c4" : "text-b4"}
+					${chatVerboseMode ? "font-extrabold" : ""}
 				`}>
 					<h2><b>Chat</b></h2>
 					<ul className="flex flex-wrap place-content-between gap-x-20">
@@ -137,15 +172,20 @@ export default function Dev() {
 					<ul className="flex flex-wrap place-content-between gap-x-20">
 						<li>chatSocketId: {`${chatSocketId}`}</li>
 						<li>chatRoomId: {`${chatRoomId}`}</li>
+					</ul>
+					<hr />
+					<ul className="flex flex-wrap place-content-between gap-x-20">
+						<DevButton label={`bubbles: ${Object.values(bubbles).flatMap(b => b).length}`} call={() => console.log("bubbles:", bubbles) }/>
 						<DevButton label={`chatLog: ${Object.values(chatLog).flatMap(b => b).length}`} call={() => console.log("chatLog:", chatLog) }/>
 						<DevButton label={`isChatRateLimited: ${Object.keys(bubbles).length}`} call={() => console.log("isChatRateLimited:", isChatRateLimited) }/>
-						<DevButton label={`bubbles: ${Object.values(bubbles).flatMap(b => b).length}`} call={() => console.log("bubbles:", bubbles) }/>
+						<DevButton label={`typingUsers: ${Object.entries(typingUsers).filter(([_, isTyping]) => isTyping).map(([uuid]) => uuid).length}`} call={() => console.log("typingUsers:", typingUsers)} />
 					</ul>
 				</div>
 			{/* friends */}
 				<div className={`
 					${friendsAPIConnection ? "" : "opacity-60"}
-					${friendsVerboseMode ? "text-c4" : "text-b4"}
+					${isFriendsConnected ? "text-c4" : "text-b4"}
+					${friendsVerboseMode ? "font-extrabold" : ""}
 				`}>
 					<h2><b>Friends</b></h2>
 					<ul className="flex flex-wrap place-content-between gap-x-20">
@@ -155,13 +195,60 @@ export default function Dev() {
 					<hr />
 					<ul className="flex flex-wrap place-content-between gap-x-20">
 						<DevButton label={`cachedFriends: ${cachedFriends ? cachedFriends.length : 0}`} call={() => console.log("cachedFriends: ", cachedFriends)} />
+						<li>{`isFriendsConnected: ${isFriendsConnected}`}</li>
 						<DevButton label={`friendRequestSent: ${friendRequestSent.filter((item: any) => item.status === "Pending").length}`} call={() => console.log("friendRequestSent:", friendRequestSent) }/>
+					</ul>
+				</div>
+			{/* game */}
+				<div className={`
+					${gameAPIConnection ? "" : "opacity-60"}
+					${gameSocketId ? "text-c4" : "text-b4"}
+					${gameVerboseMode ? "font-extrabold" : ""}
+				`}>
+					<h2><b>Game</b></h2>
+					<ul className="flex flex-wrap place-content-between gap-x-20">
+						<DevButton label={`API Connection: ${gameAPIConnection}`} call={() => useGameStore.setState({
+							gameAPIConnection: !gameAPIConnection,
+							gameSocketId: null,
+						})}/>
+						<DevButton label={`Verbose Mode: ${gameVerboseMode}`} call={() => useGameStore.setState({ gameVerboseMode: !gameVerboseMode })}/>
+					</ul>
+					<hr />
+					<ul className="flex flex-wrap place-content-between gap-x-20">
+						<li>gameSocketId: {`${gameSocketId}`}</li>
+					</ul>
+					<hr />
+					<ul className="flex flex-wrap place-content-between gap-x-20">
+						<DevButton label="activeSeat" call={() => console.log("activeSeat:", activeSeat)}/>
+						<li>botCount: {`${botCount}`}</li>
+						<DevButton label="allow3OfAKind" call={() => console.log("allow3OfAKind:", allow3OfAKind)}/>
+						<DevButton label="allow2OfSpadesEnd" call={() => console.log("allow2OfSpadesEnd:", allow2OfSpadesEnd)}/>
+						<DevButton label="autoPassIndex" call={() => console.log("autoPassIndex:", autoPassIndex)}/>
+						<DevButton label="cardHeapTopCards" call={() => console.log("cardHeapTopCards:", cardHeapTopCards)}/>
+						<DevButton label="cardsLeft" call={() => console.log("cardsLeft:", cardsLeft)}/>
+						<DevButton label="currentHand" call={() => console.log("currentHand:", currentHand)}/>
+						<DevButton label="gameSeats" call={() => console.log("gameSeats:", gameSeats)}/>
+						<DevButton label="gameStarted" call={() => console.log("gameStarted:", gameStarted)}/>
+						<DevButton label="isActiveSeatSkippable" call={() => console.log("isActiveSeatSkippable:", isActiveSeatSkippable)}/>
+						<DevButton label="isCardHandPlayable" call={() => console.log("isCardHandPlayable:", isCardHandPlayable)}/>
+						<DevButton label="lowestCardRequired" call={() => console.log("lowestCardRequired:", lowestCardRequired)}/>
+						<DevButton label="playerDisconnection" call={() => console.log("playerDisconnection:", playerDisconnection)}/>
+						<DevButton label="playerPassed" call={() => console.log("playerPassed:", playerPassed)}/>
+						<DevButton label="playerRemainingTimer" call={() => console.log("playerRemainingTimer:", playerRemainingTimer)}/>
+						<DevButton label="playerTimer" call={() => console.log("playerTimer:", playerTimer)}/>
+						<DevButton label="results" call={() => console.log("results:", results)}/>
+						<DevButton label="round" call={() => console.log("round:", round)}/>
+						<DevButton label="seatRef" call={() => console.log("seatRef:", seatRef)}/>
+						<DevButton label="sortType" call={() => console.log("sortType:", sortType)}/>
+						<DevButton label="selectedCards" call={() => console.log("selectedCards:", selectedCards)}/>
+						<DevButton label="totalPlayers" call={() => console.log("totalPlayers:", totalPlayers)}/>
+						<DevButton label="userSeats" call={() => console.log("userSeats:", userSeats)}/>
 					</ul>
 				</div>
 			{/* game stats */}
 				<div className={`
 					${gameStatsAPIConnection ? "" : "opacity-60"}
-					${gameStatsVerboseMode ? "text-c4" : "text-b4"}
+					${gameStatsVerboseMode ? "font-extrabold" : ""}
 				`}>
 					<h2><b>Game Stats</b></h2>
 					<ul className="flex flex-wrap place-content-between gap-x-20">
@@ -174,22 +261,6 @@ export default function Dev() {
 						<DevButton label={`cachedBadges: ${Object.values(cachedBadges).filter(Boolean).length}`} call={() => console.log("cachedBadges:", cachedBadges)}/>
 					</ul>
 				</div>
-			{/* game */}
-				<div className={`
-					${gameAPIConnection ? "" : "opacity-60"}
-					${gameVerboseMode ? "text-c4" : "text-b4"}
-				`}>
-					<h2><b>Game</b></h2>
-					<ul className="flex flex-wrap place-content-between gap-x-20">
-						<DevButton label={`API Connection: ${gameAPIConnection}`} call={() => useGameStore.setState({ gameAPIConnection: !gameAPIConnection })}/>
-						<DevButton label={`Verbose Mode: ${gameVerboseMode}`} call={() => useGameStore.setState({ gameVerboseMode: !gameVerboseMode })}/>
-					</ul>
-					<hr />
-					<ul className="flex flex-wrap place-content-between gap-x-20">
-						<li>gameSocketId: {`${gameSocketId}`}</li>
-						<li>botCount: {`${botCount}`}</li>
-					</ul>
-				</div>
 			{/* notification */}
 				<div>
 					<h2><b>Notification</b></h2>
@@ -197,12 +268,15 @@ export default function Dev() {
 					<ul className="flex flex-wrap place-content-between gap-x-20">
 						<DevButton label="Notify Message" call={() => useNotificationStore.getState().showNotification("This is a message notification", NOTIFICATION_TYPE.message)} />
 						<DevButton label="Notify Error" call={() => useNotificationStore.getState().showNotification("This is an error notification", NOTIFICATION_TYPE.error)} />
+						<DevButton label={`notifications: ${notifications.length}`} call={() => console.log("notifications:", notifications)} />
+						<li>{`isNotifFiltered: ${isNotifFiltered}`}</li>
 					</ul>
 				</div>
 			{/* party */}
 				<div className={`
 					${partyAPIConnection ? "" : "opacity-60"}
-					${partyVerboseMode ? "text-c4" : "text-b4"}
+					${(partySocketId && hostUuid) ? "text-c4" : "text-b4"}
+					${partyVerboseMode ? "font-extrabold" : ""}
 				`}>
 					<h2><b>Party</b></h2>
 					<ul className="flex flex-wrap place-content-between gap-x-20">
@@ -214,6 +288,9 @@ export default function Dev() {
 						<li>partySocketId: {`${partySocketId}`} </li>
 						<li>hostUuid: {`${hostUuid}`} </li>
 						<li>partyGameId: {`${partyGameId}`}</li>
+					</ul>
+					<hr />
+					<ul className="flex flex-wrap place-content-between gap-x-20">
 						<DevButton label={`members: ${Object.keys(members).length}`} call={() => console.log("members:", members) }/>
 						<DevButton label={`availabilityOverrides: ${Object.keys(availabilityOverrides).length}`} call={() => console.log("availabilityOverrides:", availabilityOverrides) }/>
 					</ul>
@@ -221,12 +298,12 @@ export default function Dev() {
 			{/* profile */}
 				<div className={`
 					${profileAPIConnection ? "" : "opacity-60"}
-					${profileVerboseMode ? "text-c4" : "text-b4"}
+					${profileVerboseMode ? "font-extrabold" : ""}
 				`}>
 					<h2><b>Profile</b></h2>
 					<ul className="flex flex-wrap place-content-between gap-x-20">
 						<DevButton label={`API Connection: ${profileAPIConnection}`} call={() => useProfileStore.setState({ profileAPIConnection: !profileAPIConnection })}/>
-						<DevButton label={`Frontend Validation: ${profileValidation}`} call={() => useProfileStore.setState({ profileValidation: !profileValidation })}/>
+						<DevButton label={`Frontend Validation: ${profileFrontendValidation}`} call={() => useProfileStore.setState({ profileFrontendValidation: !profileFrontendValidation })}/>
 						<DevButton label={`Verbose Mode: ${profileVerboseMode}`} call={() => useProfileStore.setState({ profileVerboseMode: !profileVerboseMode })}/>
 					</ul>
 					<hr />
@@ -237,7 +314,7 @@ export default function Dev() {
 				</div>
 			{/* scene */}
 				<div className={`
-					${gameVerboseMode ? "text-c4" : "text-b4"}
+					${gameVerboseMode ? "font-extrabold" : ""}
 				`}>
 					<h2><b>Scene</b></h2>
 					<ul className="flex flex-wrap place-content-between gap-x-20">
@@ -246,17 +323,9 @@ export default function Dev() {
 					<hr />
 					<ul className="flex flex-wrap place-content-between gap-x-20">
 						<li>currentScene: {`${currentScene}`}</li>
-						<DevButton label="Frame" call={() => useDevStore.setState((store) => ({ showFrame: !store.showFrame }))} />
+						<DevButton label="Frame" call={() => useSceneStore.setState((store) => ({ showFrame: !store.showFrame }))} />
 						<DevButton label={`showWindow: ${Object.values(showWindow).filter(Boolean).length}`} call={() => console.log("showWindow:", showWindow)} />
 						<li>playerStatsUuid: {`${playerStatsUuid}`}</li>
-					</ul>
-				</div>
-			{/* scene */}
-				<div>
-					<h2><b>Typing Store</b></h2>
-					<hr />
-					<ul className="flex flex-wrap place-content-between gap-x-20">
-						<DevButton label={`typingUsers: ${Object.entries(typingUsers).filter(([_, isTyping]) => isTyping).map(([uuid]) => uuid).length}`} call={() => console.log("typingUsers:", typingUsers)} />
 					</ul>
 				</div>
 		</section>

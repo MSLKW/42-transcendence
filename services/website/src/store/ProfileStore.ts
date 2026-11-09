@@ -29,8 +29,8 @@ export type UserData = {
 
 interface ProfileValues {
 	profileAPIConnection: boolean;
+	profileFrontendValidation: boolean;
 	profileVerboseMode: boolean;
-	profileValidation: boolean;
 	cachedProfiles: Record<string, CachedProfile>;
 	avatarVersions: Record<string, number>;
 };
@@ -46,8 +46,8 @@ export const useProfileStore = create<ProfileState>() (
 	persist(
 		(set, _get) => ({
 			profileAPIConnection: true,
+			profileFrontendValidation: true,
 			profileVerboseMode: false,
-			profileValidation: true,
 			cachedProfiles: {},
 			avatarVersions: {},
 
