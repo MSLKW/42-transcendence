@@ -82,7 +82,10 @@ export default function Dev() {
 							useAuthStore.setState({ authAPIConnection: toggleAPIConnection.current });
 							useChatStore.setState({ chatAPIConnection: toggleAPIConnection.current })
 							useFriendsStore.setState({ friendsAPIConnection: toggleAPIConnection.current })
+							useGameStore.setState({ gameAPIConnection: toggleAPIConnection.current })
+							useGameStatsStore.setState({ gameStatsAPIConnection: toggleAPIConnection.current })
 							usePartyStore.setState({ partyAPIConnection: toggleAPIConnection.current })
+							useProfileStore.setState({ profileAPIConnection: toggleAPIConnection.current })
 						}}/>
 						<DevButton label={`Verbose Modes: ${toggleAllVerbose.current}`} call={() => {
 							toggleAllVerbose.current = !toggleAllVerbose.current;
@@ -100,7 +103,10 @@ export default function Dev() {
 					</ul>
 				</div>
 			{/* auth */}
-				<div>
+				<div className={`
+					${authAPIConnection ? "" : "opacity-60"}
+					${authVerboseMode ? "text-c4" : "text-b4"}
+				`}>
 					<h2><b>Auth</b></h2>
 					<ul className="flex flex-wrap place-content-between gap-x-20">
 						<DevButton label={`API Connection: ${authAPIConnection}`} call={() => useAuthStore.setState({ authAPIConnection: !authAPIConnection })}/>
@@ -115,7 +121,10 @@ export default function Dev() {
 					</ul>
 				</div>
 			{/* chat */}
-				<div>
+				<div className={`
+					${chatAPIConnection ? "" : "opacity-60"}
+					${chatVerboseMode ? "text-c4" : "text-b4"}
+				`}>
 					<h2><b>Chat</b></h2>
 					<ul className="flex flex-wrap place-content-between gap-x-20">
 						<DevButton label={`API Connection: ${chatAPIConnection}`} call={() => useChatStore.setState({ chatAPIConnection: !chatAPIConnection })}/>
@@ -131,7 +140,10 @@ export default function Dev() {
 					</ul>
 				</div>
 			{/* friends */}
-				<div>
+				<div className={`
+					${friendsAPIConnection ? "" : "opacity-60"}
+					${friendsVerboseMode ? "text-c4" : "text-b4"}
+				`}>
 					<h2><b>Friends</b></h2>
 					<ul className="flex flex-wrap place-content-between gap-x-20">
 						<DevButton label={`API Connection: ${friendsAPIConnection}`} call={() => useFriendsStore.setState({ friendsAPIConnection: !friendsAPIConnection })}/>
@@ -144,7 +156,10 @@ export default function Dev() {
 					</ul>
 				</div>
 			{/* game stats */}
-				<div>
+				<div className={`
+					${gameStatsAPIConnection ? "" : "opacity-60"}
+					${gameStatsVerboseMode ? "text-c4" : "text-b4"}
+				`}>
 					<h2><b>Game Stats</b></h2>
 					<ul className="flex flex-wrap place-content-between gap-x-20">
 						<DevButton label={`API Connection: ${gameStatsAPIConnection}`} call={() => useGameStatsStore.setState({ gameStatsAPIConnection: !gameStatsAPIConnection })}/>
@@ -157,7 +172,10 @@ export default function Dev() {
 					</ul>
 				</div>
 			{/* game */}
-				<div>
+				<div className={`
+					${gameAPIConnection ? "" : "opacity-60"}
+					${gameVerboseMode ? "text-c4" : "text-b4"}
+				`}>
 					<h2><b>Game</b></h2>
 					<ul className="flex flex-wrap place-content-between gap-x-20">
 						<DevButton label={`API Connection: ${gameAPIConnection}`} call={() => useGameStore.setState({ gameAPIConnection: !gameAPIConnection })}/>
@@ -172,13 +190,17 @@ export default function Dev() {
 			{/* notification */}
 				<div>
 					<h2><b>Notification</b></h2>
+					<hr />
 					<ul className="flex flex-wrap place-content-between gap-x-20">
 						<DevButton label="Notify Message" call={() => useNotificationStore.getState().showNotification("This is a message notification", NOTIFICATION_TYPE.message)} />
 						<DevButton label="Notify Error" call={() => useNotificationStore.getState().showNotification("This is an error notification", NOTIFICATION_TYPE.error)} />
 					</ul>
 				</div>
 			{/* party */}
-				<div>
+				<div className={`
+					${partyAPIConnection ? "" : "opacity-60"}
+					${partyVerboseMode ? "text-c4" : "text-b4"}
+				`}>
 					<h2><b>Party</b></h2>
 					<ul className="flex flex-wrap place-content-between gap-x-20">
 						<DevButton label={`API Connection: ${partyAPIConnection}`} call={() => usePartyStore.setState({ partyAPIConnection: !partyAPIConnection })}/>
@@ -194,7 +216,10 @@ export default function Dev() {
 					</ul>
 				</div>
 			{/* profile */}
-				<div>
+				<div className={`
+					${profileAPIConnection ? "" : "opacity-60"}
+					${profileVerboseMode ? "text-c4" : "text-b4"}
+				`}>
 					<h2><b>Profile</b></h2>
 					<ul className="flex flex-wrap place-content-between gap-x-20">
 						<DevButton label={`API Connection: ${profileAPIConnection}`} call={() => useProfileStore.setState({ profileAPIConnection: !profileAPIConnection })}/>
@@ -208,7 +233,9 @@ export default function Dev() {
 					</ul>
 				</div>
 			{/* scene */}
-				<div>
+				<div className={`
+					${gameVerboseMode ? "text-c4" : "text-b4"}
+				`}>
 					<h2><b>Scene</b></h2>
 					<ul className="flex flex-wrap place-content-between gap-x-20">
 						<DevButton label={`Verbose Mode: ${sceneVerboseMode}`} call={() => useSceneStore.setState({ sceneVerboseMode: !sceneVerboseMode })}/>
@@ -217,7 +244,7 @@ export default function Dev() {
 					<ul className="flex flex-wrap place-content-between gap-x-20">
 						<li>currentScene: {`${currentScene}`}</li>
 						<DevButton label="Frame" call={() => useDevStore.setState((store) => ({ showFrame: !store.showFrame }))} />
-						<DevButton label={`showWindow: ${Object.keys(showWindow).length}`} call={() => console.log("showWindow:", showWindow)} />
+						<DevButton label={`showWindow: ${Object.values(showWindow).filter(Boolean).length}`} call={() => console.log("showWindow:", showWindow)} />
 						<li>playerStatsUuid: {`${playerStatsUuid}`}</li>
 					</ul>
 				</div>
