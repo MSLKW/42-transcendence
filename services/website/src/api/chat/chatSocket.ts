@@ -57,6 +57,7 @@ class ChatSocketService {
 			this.socket
 		);
 		this.socket.on("connect", () => {
+			/** Rejoin the stored room after Socket.IO reconnects */
 			const roomId = useChatStore.getState().chatRoomId;
 			if (roomId)
 				this.joinRoom(roomId);

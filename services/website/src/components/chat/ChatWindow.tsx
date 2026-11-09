@@ -27,6 +27,7 @@ export const ChatWindow = () => {
 
 	/** scroll */
 	useEffect(() => {
+		/** Keep the newest message in view as the bounded chat log changes */
 		if (scrollContainerRef.current) {
 			scrollContainerRef.current.scrollTo({
 				top: scrollContainerRef.current.scrollHeight,
@@ -101,6 +102,7 @@ export const ChatWindow = () => {
 						:
 							<ul className="w-full flex flex-col text-n6">
 								{chatLog.map((data, index) => {
+									/** Group adjacent messages from one sender to avoid repeating avatars and spacing */
 									const isFirstFromClient = index === 0 || chatLog[index - 1].uuid !== data.uuid;
 									const nextMessage = chatLog[index + 1];
 									const isLastFromClient = nextMessage && nextMessage?.uuid !== data.uuid;

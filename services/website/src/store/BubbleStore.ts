@@ -43,6 +43,7 @@ export const useBubbleStore = create<BubbleState>(
 			}));
 
 			const timer = setTimeout(() => {
+				/** Remove transient bubbles automatically while keeping their timers cancellable */
 				get().removeBubble(uuid, id);
 			}, 4000);
 			bubbleTimers.set(id, timer);

@@ -54,6 +54,7 @@ export const PartyWindow = () => {
 		usePartyStore.setState({ availabilityOverrides: {} });
 
 		const controller = new AbortController();
+		/** Ignore stale responses even when an earlier request finishes after it was aborted */
 		const requestId = ++searchRequestId.current;
 
 		const timeoutId = setTimeout(async () => {

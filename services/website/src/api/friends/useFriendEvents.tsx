@@ -1,4 +1,3 @@
-// import { useState, useEffect } from "react";
 import { useEffect } from "react";
 import { handleGetProfile } from "../profile/get_profile/handleGetProfile";
 import { useNotificationStore, NOTIFICATION_TYPE } from "../../store/NotificationStore";
@@ -10,11 +9,8 @@ import { handleEasterEggFound } from "../gameStats/post_easter-egg-found/handleE
 const friendsUrl = import.meta.env.VITE_API_FRIENDS_PATH;
 
 export function useFriendEvents(clientUuid: string | null, onFriendUpdate?: () => void) {
-	// const [isConnected, setIsConnected] = useState(false);
-
 	useEffect(() => {
 		if (!clientUuid) {
-			// setIsConnected(false);
 			useFriendsStore.setState({ isFriendsConnected: false });
 			return;
 		}
@@ -24,7 +20,6 @@ export function useFriendEvents(clientUuid: string | null, onFriendUpdate?: () =
 		});
 
 		eventSource.onopen = () => {
-			// setIsConnected(true);
 			useFriendsStore.setState({ isFriendsConnected: true });
 		};
 
@@ -37,7 +32,6 @@ export function useFriendEvents(clientUuid: string | null, onFriendUpdate?: () =
 			if (useFriendsStore.getState().friendsVerboseMode)
 				console.warn("[friends > replaced] Connection replaced by another tab/device:", event.data);
 			eventSource.close();
-			// setIsConnected(false);
 			useFriendsStore.setState({ isFriendsConnected: false });
 		});
 
@@ -129,18 +123,14 @@ export function useFriendEvents(clientUuid: string | null, onFriendUpdate?: () =
 		eventSource.onerror = (error) => {
 			if (useFriendsStore.getState().friendsVerboseMode)
 				console.warn("[friends > onerror] SSE Error / Disconnected:", error);
-			// setIsConnected(false);
 			useFriendsStore.setState({ isFriendsConnected: false });
 		}
 
 		return () => {
 			eventSource.close();
-			// setIsConnected(false);
 			useFriendsStore.setState({ isFriendsConnected: false });
 			if (useFriendsStore.getState().friendsVerboseMode)
 				console.log("[friends > return] eventSource.close()");
 		};
 	}, [clientUuid, onFriendUpdate]);
-
-	// return { isConnected };
 }

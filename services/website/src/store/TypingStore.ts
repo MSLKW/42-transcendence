@@ -57,6 +57,7 @@ export const useTypingStore = create<TypingState>(
 			}));
 
 			const timeout = setTimeout(() => {
+				/** Ignore an older timer if a newer typing update replaced it */
 				if (typingTimeouts.get(senderUuid) !== timeout)
 					return;
 

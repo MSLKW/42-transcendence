@@ -160,6 +160,7 @@ export const useGameStatsStore = create<GameStatsState>() (
 
 			setCachedStats: async () => {
 				const members = usePartyStore.getState().members;
+				/** Party rosters may contain duplicate or empty seats, so fetch each real member once */
 				const allUuids = Array.from(new Set(members))
 					.filter((uuid): uuid is string => uuid !== null);
 

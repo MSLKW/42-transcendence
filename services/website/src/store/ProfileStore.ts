@@ -54,6 +54,7 @@ export const useProfileStore = create<ProfileState>() (
 			setCachedProfile: async () => {
 				const clientUuid = useAuthStore.getState().clientUuid;
 				const members = usePartyStore.getState().members;
+				/** Deduplicate occupied seats before parallel profile lookups */
 				const allUuids = Array.from(new Set(members))
 					.filter((uuid): uuid is string => uuid !== null);
 				const cachedFriends = useFriendsStore.getState().cachedFriends;

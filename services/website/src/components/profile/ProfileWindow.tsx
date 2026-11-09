@@ -52,6 +52,7 @@ export const ProfileWindow = () => {
 
 	const dataFetched = useRef<string | null>(null);
 	useEffect(() => {
+		/** Avoid duplicate profile and stats requests when the window rerenders for the same client */
 		if (!clientUuid || dataFetched.current)
 			return;
 		dataFetched.current = clientUuid;

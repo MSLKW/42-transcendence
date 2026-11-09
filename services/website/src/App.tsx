@@ -81,6 +81,7 @@ export default function App() {
 			return;
 		}
 
+		/** Keep subscriptions scoped to this effect so scene or auth changes can remove them cleanly */
 		chatSocket.connect();
 		const unsubscribeFromMessages = subscribeToMessages();
 		const unsubscribeFromUserJoined = subscribeToUserJoined();
@@ -199,6 +200,7 @@ export default function App() {
 	/** Kicks client back to login is invalidated */
 	const hasValidated = useRef(false);
 	useEffect(() => {
+		/** Validate once on mount - socket reconnects handle later session checks */
 		if (hasValidated.current || currentScene === "Login")
 			return;
 		hasValidated.current = true;

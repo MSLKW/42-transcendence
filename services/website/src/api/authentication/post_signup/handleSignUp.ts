@@ -20,6 +20,7 @@ export const handleSignUp = async (email: string, password: string, setIsLoading
 		if (useAuthStore.getState().authVerboseMode)
 			console.log("[authentication > 'POST' signup]");
 
+		/** Sign in immediately after registration so the rest of the app can use the new session */
 		const response = await fetchSignIn(email, password);
 
 		const [clientStats, clientFriends] = await Promise.all([

@@ -17,6 +17,7 @@ export function partyStateHandler(socket: Socket) {
 			console.log("[party > 'on' party_state] partyData:", partyData);
 
 		const clientUuid = useAuthStore.getState().clientUuid;
+		/** Notify only when this update represents a host change that promotes the current client */
 		const isClientNewHost = 
 			usePartyStore.getState().hostUuid !== partyData.hostUuid &&
 			clientUuid === partyData.hostUuid &&
@@ -31,6 +32,7 @@ export function partyStateHandler(socket: Socket) {
 		const currentChatRoomId = useChatStore.getState().chatRoomId;
 		const newChatRoomId = partyData.hostUuid;
 		if (currentChatRoomId !== newChatRoomId) {
+			/** Party chat is keyed by its host, so changing hosts starts a fresh local transcript */
 			useChatStore.setState ({
 				chatRoomId: newChatRoomId,
 				chatPlayerCount: null,
@@ -39,6 +41,7 @@ export function partyStateHandler(socket: Socket) {
 		}
 		chatSocket.joinRoom(newChatRoomId);
 
+		/** Refresh member metadata together after the authoritative roster changes */
 		await Promise.all([
 			useProfileStore.getState().setCachedProfile(),
 			useGameStatsStore.getState().setCachedStats(),

@@ -46,6 +46,7 @@ export const StatsWindow: React.FC = () => {
 
 	const dataFetched = useRef<string | null>(null);
 	useEffect(() => {
+		/** This window is opened for one selected player, so load their details only once */
 		if (dataFetched.current)
 			return;
 		dataFetched.current = playerStatsUuid;

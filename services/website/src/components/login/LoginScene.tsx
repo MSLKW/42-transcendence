@@ -21,7 +21,7 @@ import { SignInButton } from "./sign_in/SignInButton";
 
 export const LoginScene = () => {
 	useEffect(() => {
-		/** reset values */
+		/** Clear session-scoped client state before disconnecting sockets on return to login */
 		useAuthStore.getState().resetValues();
 		useBotStore.getState().resetValues();
 		useBubbleStore.getState().clearAllBubbles();

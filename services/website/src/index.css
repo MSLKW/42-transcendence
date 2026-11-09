@@ -59,12 +59,6 @@
 	--color-r5: #f9a49f;
 	--color-r6: #fddcda;
 	--color-f0: #f65e5f;
-
-	/* --background-image-big2: radial-gradient(
-		circle,
-		var(--color-n1) 0%,
-		var(--color-n0) 100%
-	); */
 		
 	--font-sans: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
 
@@ -83,9 +77,7 @@ body,
         font-sans
         ;
 }
-/* html {
-	@apply bg-n1;
-} */
 html.frame-mode * {
+	/* Frame mode outlines every element to help inspect layout bounds during development */
 	outline: 1px solid var(--color-f0) !important;
 }

@@ -51,6 +51,7 @@ export const useChatStore = create<ChatState>() (
 
 			addToCachedChat: (type, uuid, name, avatar, msg) => {
 				set((state) => ({
+					/** Retain only the newest entries so a long session cannot grow the local transcript forever */
 					chatLog: [
 						...state.chatLog,
 						{ type, uuid, name, avatar, msg }

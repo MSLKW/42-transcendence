@@ -32,6 +32,7 @@ export function connectionHandlers(socket: Socket) {
 			hostUuid: null,
 		});
 
+		/** Planned sign-outs should not show the stale-session window */
 		if (partySocket.isIntentionalDisconnect())
 			return;
 
