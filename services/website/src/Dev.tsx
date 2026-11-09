@@ -11,6 +11,7 @@ import { useNotificationStore, NOTIFICATION_TYPE } from "./store/NotificationSto
 import { usePartyStore } from "./store/PartyStore";
 import { useProfileStore } from "./store/ProfileStore";
 import { useSceneStore } from "./store/SceneStore";
+import { useTypingStore } from "./store/TypingStore";
 import { DevButton } from "./components/dev/DevBtn";
 import { useFrameView } from "./utilities/react/useFrameView";
 
@@ -65,6 +66,8 @@ export default function Dev() {
 	const playerStatsUuid = useSceneStore((store) => store.playerStatsUuid);
 	const sceneVerboseMode = useSceneStore((store) => store.sceneVerboseMode);
 	const showWindow = useSceneStore((store) => store.showWindow);
+
+	const typingUsers = useTypingStore((store) => store.typingUsers);
 
 	const toggleAPIConnection = useRef(true);
 	const toggleAllVerbose = useRef(false);
@@ -246,6 +249,14 @@ export default function Dev() {
 						<DevButton label="Frame" call={() => useDevStore.setState((store) => ({ showFrame: !store.showFrame }))} />
 						<DevButton label={`showWindow: ${Object.values(showWindow).filter(Boolean).length}`} call={() => console.log("showWindow:", showWindow)} />
 						<li>playerStatsUuid: {`${playerStatsUuid}`}</li>
+					</ul>
+				</div>
+			{/* scene */}
+				<div>
+					<h2><b>Typing Store</b></h2>
+					<hr />
+					<ul className="flex flex-wrap place-content-between gap-x-20">
+						<DevButton label={`typingUsers: ${Object.entries(typingUsers).filter(([_, isTyping]) => isTyping).map(([uuid]) => uuid).length}`} call={() => console.log("typingUsers:", typingUsers)} />
 					</ul>
 				</div>
 		</section>

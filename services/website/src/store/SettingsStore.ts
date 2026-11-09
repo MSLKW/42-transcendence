@@ -60,6 +60,14 @@ export const useSettingsStore = create<SettingsState>()(
 				});
 			}
 		}),
-		{ name: 'settings-storage' }
+		{
+			name: 'settings-storage',
+		
+			partialize: (state) => ({
+				allow3OfAKind: state.allow3OfAKind,
+				allow2OfSpadesEnd: state.allow2OfSpadesEnd,
+				autoPassIndex: state.autoPassIndex,
+			}),
+		}
 	)
 );

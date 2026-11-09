@@ -45,7 +45,7 @@ interface ProfileState extends ProfileValues {
 export const useProfileStore = create<ProfileState>() (
 	persist(
 		(set, _get) => ({
-			profileAPIConnection: false,
+			profileAPIConnection: true,
 			profileVerboseMode: false,
 			profileValidation: true,
 			cachedProfiles: {},

@@ -254,6 +254,13 @@ export const useGameStatsStore = create<GameStatsState>() (
 		}),
 		{
 			name: 'game-stats-storage',
+
+			partialize: (state) => ({
+				gameStatsAPIConnection: state.gameStatsAPIConnection,
+				gameStatsVerboseMode: state.gameStatsVerboseMode,
+				cachedStats: state.cachedStats,
+				cachedBadges: state.cachedBadges,
+			}),
 		}
 	)
 );

@@ -84,17 +84,11 @@ export const useChatStore = create<ChatState>() (
 		}),
 		{
 			name: 'chat-storage',
-			version: 1,
 
 			partialize: (state) => ({
 				chatAPIConnection: state.chatAPIConnection,
 				chatVerboseMode: state.chatVerboseMode,
 			}),
-
-			migrate: (persistedState) => {
-				const state = persistedState as { chatVerboseMode?: boolean };
-				return { chatVerboseMode: state.chatVerboseMode ?? false};
-			},
 		}
 	)
 );
