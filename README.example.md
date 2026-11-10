@@ -2,7 +2,7 @@
 
 # Big2
 
-Big2 is a browser-based multiplayer implementation of the card game Big Two, or fondly known locally as Chor Dai Di. Players create accounts, join a lobby with friends, and play together in real time at a 3D-rendered card table. The project is a TypeScript monorepo of a React client and independently deployable services.
+Big2 is a browser-based multiplayer implementation of the card game Big Two, or fondly known to Malaysian locals as Chor Dai Di. Players create accounts, join a lobby with friends, and play together in real time at a 3D-rendered card table. The project is a TypeScript monorepo of a React client and independently deployable services.
 
 The website is served through Nginx, which routes requests to the authentication, party, profile, friends, chat, and game-stats services. The game server manages lobbies and matches, while the game-bot service connects automated players. Shared TypeScript contracts and PostgreSQL schemas live in `packages/`; database setup is in `infra/`.
 
@@ -37,33 +37,69 @@ The containers use Node.js 20 or 24 and PostgreSQL 17. Root `npm install` is onl
 
 ### Configure and run
 
-1. From the repository root, create the local environment file:
+1. Clone the repository and navigate to its root directory.
+
+2. Generate the local environment configuration, database passwords, authentication token, and SSL certificate:
 
    ```sh
-   cp .env.example .env
+   make secrets
    ```
 
-2. Compose expects password and token files under the ignored `secrets/` directory. Generate local values (keep them private):
-
-   ```sh
-   mkdir -p secrets/database-passwords secrets/tokens secrets/ssl
-   for name in db-admin-password db-auth-password db-party-password db-profile-password db-friends-password db-game-stats-password; do
-     openssl rand -hex 32 > "secrets/database-passwords/$name.txt"
-   done
-   openssl rand -hex 32 > secrets/tokens/statistics-token.txt
-   openssl req -x509 -newkey rsa:2048 -nodes -keyout secrets/ssl/transcendence.key \
-     -out secrets/ssl/transcendence.crt -days 365 -subj "/CN=localhost"
+   This command automatically:
+   
+   - Creates .env by copying .env.example if .env does not already exist.
+   - Creates the required directories under secrets/.
+   - Generates six database passwords using openssl rand -hex 32.
+   - Generates the game statistics authentication token.
+   - Generates a self-signed SSL certificate and private key for localhost.
+   
+   Existing .env files and generated secrets are preserved. The command skips individual files that already exist, preventing accidental credential regeneration and potential disruption to existing services.
+   
+   Generated files are stored in the following structure:
+   
    ```
+   .
+   ├── .env
+   └── secrets/
+       ├── database-passwords/
+       │   ├── db-admin-password.txt
+       │   ├── db-auth-password.txt
+       │   ├── db-party-password.txt
+       │   ├── db-profile-password.txt
+       │   ├── db-friends-password.txt
+       │   └── db-game-stats-password.txt
+       ├── tokens/
+       │   └── statistics-token.txt
+       └── ssl/
+           ├── transcendence.key
+           └── transcendence.crt
+   ```
+   
+   Important: Keep .env and secrets/ private. They contain credentials and private keys and should never be committed to Git. Make sure both are included in .gitignore.
 
 3. Build and start the stack:
 
    ```sh
-   docker compose up --build
+   make all
    ```
 
-   This starts PostgreSQL, runs database migrations, and then starts the website, API services, game server, bot service, and Nginx. The default `.env.example` config uses HTTP; open [http://localhost:8080](http://localhost:8080). To use HTTPS, set `SSL_ENABLE=ssl` and `SOCKET_PROTOCOL=https` in `.env`, then trust the locally generated certificate in your browser.
+   Alternatively, start the development environment with:
 
-4. Stop the stack with `docker compose down` (or `make down`). Persistent database and avatar volumes remain. `make fclean` also removes project volumes and deletes their data.
+   ```sh
+   make dev
+   ```
+
+   The Makefile provides the following commands:
+
+   This starts PostgreSQL, runs database migrations, and then starts the website, API services, game server, bot service, and Nginx. The default .env.example config uses HTTP; open http://localhost:8080. To use HTTPS, set SSL_ENABLE=ssl and SOCKET_PROTOCOL=https in .env, then trust the locally generated certificate in your browser.
+
+4. Stop the stack with:
+
+   ```sh
+   make dev
+   ```
+
+   Persistent database and avatar volumes remain. make fclean also removes project volumes and deletes their data.
 
 The website is bind-mounted for Vite hot reload. See the service READMEs under `services/` for API contracts and service-specific testing instructions.
 
@@ -91,7 +127,7 @@ The website is bind-mounted for Vite hot reload. See the service READMEs under `
 | Backend services | Node.js, TypeScript, Express 5, Socket.IO | Separate services provide HTTP APIs and live game, party, and chat events. |
 | Validation and data access | Zod, Drizzle ORM | Validate service payloads and define typed PostgreSQL schemas and migrations. |
 | Database | PostgreSQL 17 | Relational user and game-progress data benefit from foreign keys, uniqueness rules, transactions, and separate service schemas. Each data-owning service connects with its own database role. |
-| Infrastructure | Docker Compose, Nginx | Run the multi-service stack locally; Nginx routes browser HTTP and WebSocket traffic through a single origin. |
+| Infrastructure | Docker Compose, Nginx, GNU Make, OpenSSL | Run the multi-service stack locally; Nginx routes browser HTTP and WebSocket traffic through a single origin. Make automates environment setup and secret generation, while OpenSSL generates secure random credentials and local TLS certificates. |
 
 The client and server are both TypeScript-based so their game events and payloads can share types. Services are separated by responsibility so identity, profile, social, chat, game, and progression code can evolve independently.
 
@@ -147,7 +183,7 @@ The service boundaries and shared TypeScript types address a central integration
 
 ## Resources
 
-- [Big Two rules reference (Pagat)](https://www.pagat.com/climbing/bigtwo.html)
+- [Big Two rules reference](https://www.pagat.com/climbing/bigtwo.html)
 - [React documentation](https://react.dev/learn)
 - [Three.js documentation](https://threejs.org/docs/)
 - [Socket.IO documentation](https://socket.io/docs/v4/)

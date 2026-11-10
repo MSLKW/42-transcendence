@@ -8,7 +8,7 @@ RESET = \033[0K\033[0m  					#\033[0K for reset background colour
 
 
 # --- Put this at the very top of your file, before the "all:" target -------
-include .env
+-include .env
 export
 
 
@@ -153,10 +153,24 @@ check-imports:
 	@! grep -rnE "game-stats-types/(website|game-stats)" services/game-server/src && echo "ok: game-server imports only its own entry"
 	@! grep -rnE "game-stats-types/(game-server|game-stats)" services/website/src && echo "ok: website imports only its own entry"
 
-## Generate database passwords, authentication tokens and SSL certificates
+## Generate .env if missing, then generate database passwords, authentication tokens and SSL certificates
 secrets:
+	@echo "$(PURPLE)\n🔐 Checking environment configuration...\n$(RESET)"
+	@if [ ! -f .env ]; then \
+		if [ ! -f .env.example ]; then \
+			echo "$(PURPLE)Error: .env.example does not exist!$(RESET)"; \
+			exit 1; \
+		fi; \
+		cp .env.example .env || exit 1; \
+		echo "$(GREEN)Created .env from .env.example$(RESET)"; \
+	else \
+		echo "$(BLUE).env already exists (skipped)$(RESET)"; \
+	fi
+
 	@echo "$(PURPLE)\nGenerating project secrets...\n$(RESET)"
 	@mkdir -p secrets/database-passwords secrets/tokens secrets/ssl
+	@chmod 700 secrets secrets/database-passwords secrets/tokens secrets/ssl
+	@chmod 600 secrets/database-passwords/*.txt secrets/tokens/*.txt
 
 	@for name in db-admin-password db-auth-password db-party-password db-profile-password db-friends-password db-game-stats-password; do \
 		if [ ! -f "secrets/database-passwords/$$name.txt" ]; then \
@@ -175,11 +189,12 @@ secrets:
 	fi
 
 	@if [ ! -f secrets/ssl/transcendence.key ] || [ ! -f secrets/ssl/transcendence.crt ]; then \
-		openssl req -x509 -newkey rsa:2048 -nodes \
+		@openssl req -x509 -newkey rsa:2048 -nodes \
 			-keyout secrets/ssl/transcendence.key \
 			-out secrets/ssl/transcendence.crt \
-			-days 365 -subj "/CN=localhost"; \
-		echo "$(GREEN)Generated SSL certificate$(RESET)"; \
+			-days 365 -subj "/CN=localhost" && \
+		chmod 600 secrets/ssl/transcendence.key && \
+		echo "$(GREEN)Generated SSL certificate$(RESET)"
 	else \
 		echo "$(BLUE)Existing SSL certificate (skipped)$(RESET)"; \
 	fi
