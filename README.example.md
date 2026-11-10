@@ -2,7 +2,7 @@
 
 # Big2
 
-Big2 is a browser-based multiplayer implementation of Big Two (Big 2). Players create accounts, join a lobby with friends, and play together in real time at a 3D-rendered card table. The project is a TypeScript monorepo of a React client and independently deployable services.
+Big2 is a browser-based multiplayer implementation of the card game Big Two, or fondly known locally as Chor Dai Di. Players create accounts, join a lobby with friends, and play together in real time at a 3D-rendered card table. The project is a TypeScript monorepo of a React client and independently deployable services.
 
 The website is served through Nginx, which routes requests to the authentication, party, profile, friends, chat, and game-stats services. The game server manages lobbies and matches, while the game-bot service connects automated players. Shared TypeScript contracts and PostgreSQL schemas live in `packages/`; database setup is in `infra/`.
 
@@ -10,16 +10,20 @@ The website is served through Nginx, which routes requests to the authentication
 
 | Feature | What it does | Contributors |
 |---|---|---|
-| Accounts and sessions | Register, sign in/out, validate sessions, and protect service requests. | Jeremy, Azrul |
-| Parties and lobbies | Invite or remove players, set seats, change game settings, and track presence. | Jeremy, Max |
 | Big Two gameplay | Play singles and combinations with turn handling, reconnects, timers, and results. | Max |
-| Spectating and bots | Watch an active game or fill an open seat with a bot using selectable play styles. | Max (spectating), Jeremy (bots) |
-| 3D client | View and interact with a Three.js card table; sort, select, drag, play, or pass cards. | Max, Azrul |
+| 3D client | View and interact with a Three.js card table; sort, select, drag, play, or pass cards. | Max |
+| Game lobbies | Set seats, change game settings, and bot management. | Max |
+| Authentication | Register, sign in/out, validate sessions, and protect service requests. | Jeremy |
+| Party system | Invite or remove players, set seats, change game settings, and see availability. | Jeremy |
+| Game bots | Fill an open seat with a bot with predefined play style. | Jeremy |
+| Profiles | Set or retreives a player's username, avatar and badges. Supports uploading a custom avatar. | Jeremy |
+| Database | Store user accounts, player profiles / stats and persistent game state securely across sessions  | Aisyah |
+| Friends service | Send, accept, reject, and remove friend requests; receive live updates. | Aisyah |
+| Game stats | View game results, rankings, XP, levels, achievements, badges, and easter eggs. | Aisyah |
+| Website | Provide a responsive, web interface, site layout, navigation and cohesive styling for the entire platform | Azrul |
 | Chat and emotes | Send party messages and emotes, see typing activity, and receive rate-limit feedback. | Azrul |
-| Friends and presence | Send, accept, reject, and remove friend requests; receive live updates and see availability. | Aisyah |
-| Profiles and settings | Choose a username and avatar, upload a custom avatar, and configure game preferences. | Jeremy, Azrul |
-| Progression and results | View game results, rankings, XP, levels, achievements, badges, and easter eggs. | Aisyah, Max, Azrul |
-| Notifications | Receive in-app notices for invitations, activity, and progression. | Azrul, Jeremy |
+| Notifications | Receive in-app notices for invitations, activity, and progression. | Azrul |
+| Windowed UI | Render a draggable window for features like party or chat, complete with a menubar, title and close button | Azrul |
 
 ## Instructions
 
@@ -136,15 +140,10 @@ Module points follow the project rubric: Major = 2 points, Minor = 1 point.
 |---|---|
 | Game client and game server | **Max:** 3D game client, lobby/game UI, authoritative multiplayer rules, seat management, reconnects, spectators, and result events. |
 | Authentication, party, profile, and bot services | **Jeremy:** account/session APIs; party invites and presence; profile and settings APIs; bot lifecycle and decision controllers. |
-| Database, friends, and game stats | **Aisyah:** PostgreSQL schemas and migrations; friendship requests and live events; XP, levels, badges, achievements, and idempotent round-stat processing. |
-| Website and chat | **Azrul:** React UI, client state and service integration, account/profile/social/game screens, Three.js integration, and real-time chat. |
+| Database, friends, and game stats | **Aisyah:** PostgreSQL schemas and migrations; friendship requests and live events; XP, levels, badges, and achievements |
+| Website and chat | **Azrul:** React UI, client state and service integration, site layout and navigation, ui web interfaces, and real-time chat. |
 
 The service boundaries and shared TypeScript types address a central integration challenge: keeping independently developed APIs and real-time messages consistent. Other important implementation challenges include restoring a client to an active game after reconnecting and preventing retried game-end requests from counting a round twice; these are handled with game-state synchronization and persisted round IDs/responses.
-
-## Known Limitations
-
-- Guest authentication is not implemented; the service endpoint currently returns `501`.
-- The game-stats service exposes a loopback-only port for its local tester; normal browser requests go through Nginx.
 
 ## Resources
 
@@ -157,6 +156,6 @@ The service boundaries and shared TypeScript types address a central integration
 - [Docker Compose documentation](https://docs.docker.com/compose/)
 - Service-specific API and development notes: `services/*/README.md`; database migrations: `infra/migrator/migrations/`.
 
-### AI use
+## AI use
 
-AI assistance was used to add concise explanatory comments to selected website source files and to draft this README from the repository’s code and documentation. In that work, AI did not change application logic or generate project features; the implementation and technical decisions remain the team’s. Any other AI use during development should be added here by the team.
+AI assistance was used to draft this README from the repository’s code and documentation. In that work, AI did not change application logic or generate project features; the implementation and technical decisions remain the team’s.

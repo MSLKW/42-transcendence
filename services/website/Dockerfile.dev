@@ -1,0 +1,19 @@
+FROM node:24-alpine
+WORKDIR /app
+
+COPY --from=game-types    package.json ./packages/types/game-types/
+COPY --from=friends-types package.json ./packages/types/friends-types/
+COPY                  package.json ./services/website/
+COPY --from=root       package*.json ./
+
+RUN npm ci
+
+COPY --from=game-types    . ./packages/types/game-types/
+COPY --from=friends-types . ./packages/types/friends-types/
+COPY                  . ./services/website/
+
+RUN npm run build:docker -w @big2/game-types
+
+EXPOSE 5173
+WORKDIR /app/services/website
+CMD ["npm", "run", "dev"]

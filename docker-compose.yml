@@ -23,12 +23,6 @@ volumes: # industry standard => name volumes => more secure oppose to anyone eve
     name: ${DG_VOLUME:?}
   avatars-data:
     name: ${PROFILE_AVATARS_VOLUME:?}
-  root-modules-data:
-    name: ${WEBSITE_ROOT_MODULES_VOLUME:?}
-  website-modules-data:
-    name: ${WEBSITE_SERVICE_MODULES_VOLUME:?}
-
-
 secrets: # auto make all secret files just read only mode
   db-admin-password:
     file: ./secrets/database-passwords/db-admin-password.txt
@@ -187,6 +181,9 @@ services:
       - transcendence
     volumes:
       - avatars-data:${PROFILE_SERVICE_AVATAR_DIR:?}:ro
+    depends_on:
+      website:
+        condition: service_healthy
 
 
   # #     INFRASTRUCTURE MICROSERVICE
@@ -212,37 +209,22 @@ services:
         root:             .
         game-types:       ./packages/types/game-types
         friends-types:    ./packages/types/friends-types
-        game-stats-types: ./packages/types/game-stats-types
+      args:
+        VITE_API_AUTH_PATH: ${API_AUTH_PATH:?}
+        VITE_API_PROFILE_PATH: ${API_PROFILE_PATH:?}
+        VITE_API_PARTY_PATH: ${API_PARTY_PATH:?}
+        VITE_API_FRIENDS_PATH: ${API_FRIENDS_PATH:?}
+        VITE_API_GAME_STATS_PATH: ${API_GAME_STATS_PATH:?}
+        VITE_SOCKET_CHAT_PATH: ${SOCKET_CHAT_PATH:?}
+        VITE_SOCKET_PARTY_PATH: ${SOCKET_PARTY_PATH:?}
+        VITE_SOCKET_GAME_SERVER_PATH: ${SOCKET_GAME_SERVER_PATH:?}
+        VITE_SOCKET_GAME_BOT_PATH: ${SOCKET_GAME_BOT_PATH:?}
+        VITE_SOCKET_URL: ${SOCKET_URL:?}
+        SHOW_DEV_SECTION: ${SHOW_DEV_SECTION:-false}
     pull_policy: never
     restart: unless-stopped
-    volumes: # temporary for vite hmr in development stage
-      - ./services/website:/app/services/website # this is the one for hmr
-      - root-modules-data:/app/node_modules
-      - website-modules-data:/app/services/website/node_modules
-    environment: # for development stage only
-      DOMAIN_PORT: ${DOMAIN_PORT:?} # Right now only for vite config, can remove in production
-      VITE_API_AUTH_PATH: ${API_AUTH_PATH:?}
-      VITE_API_PROFILE_PATH: ${API_PROFILE_PATH:?}
-      VITE_API_PARTY_PATH: ${API_PARTY_PATH:?}
-      VITE_API_FRIENDS_PATH: ${API_FRIENDS_PATH:?}
-      VITE_API_GAME_STATS_PATH: ${API_GAME_STATS_PATH:?}
-      VITE_SOCKET_CHAT_PATH: ${SOCKET_CHAT_PATH:?}
-      VITE_SOCKET_PARTY_PATH: ${SOCKET_PARTY_PATH:?}
-      VITE_SOCKET_GAME_SERVER_PATH: ${SOCKET_GAME_SERVER_PATH:?}
-      VITE_SOCKET_GAME_BOT_PATH: ${SOCKET_GAME_BOT_PATH:?}
-      VITE_SOCKET_URL: ${SOCKET_URL:?}
-      SHOW_DEV_SECTION: ${SHOW_DEV_SECTION:-false}
-    # args: # production stage only
-    #   VITE_API_AUTH_PATH: ${API_AUTH_PATH:?}
-    #   VITE_API_PROFILE_PATH: ${API_PROFILE_PATH:?}
-    #   VITE_API_PARTY_PATH: ${API_PARTY_PATH:?}
-    #   VITE_API_FRIENDS_PATH: ${API_FRIENDS_PATH:?}
-    #   VITE_API_GAME_STATS_PATH: ${API_GAME_STATS_PATH:?}
-    #   VITE_SOCKET_CHAT_PATH: ${SOCKET_CHAT_PATH:?}
-    #   VITE_SOCKET_PARTY_PATH: ${SOCKET_PARTY_PATH:?}
-    #   VITE_SOCKET_GAME_SERVER_PATH: ${SOCKET_GAME_SERVER_PATH:?}
-    #   VITE_SOCKET_GAME_BOT_PATH: ${SOCKET_GAME_BOT_PATH:?}
-    #   VITE_SOCKET_URL: ${SOCKET_URL:?}
+    expose:
+      - "5173"
     networks:
       - transcendence
 

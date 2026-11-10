@@ -61,13 +61,21 @@ The frontend does not own game rules or persistent account data. The game server
 
 ## Run the website
 
-The recommended development setup runs the website with its backend dependencies through Docker Compose. From the repository root, configure `.env` and the secret files as described in the [root README](../../README.md), then run:
+The default Compose configuration builds the website into static assets and serves them with Nginx. From the repository root, configure `.env` and the secret files as described in the [root README](../../README.md), then run:
 
 ```sh
-docker compose up --build
+docker compose up --build -d
 ```
 
-Open [http://localhost:8080](http://localhost:8080) with the default `.env.example` configuration. The website container runs Vite on port `5173`, is bind-mounted for hot reload, and is exposed to the browser through Nginx. The other API and socket services must be available for account, lobby, social, chat, and gameplay features to work.
+Open the configured domain (default: [http://localhost:8080](http://localhost:8080)). The outer Nginx proxy routes website requests to the static website container on port `5173`; client-side routes fall back to `index.html`. API and Socket.IO settings are embedded in the built assets, so changing the `VITE_*` values or `SHOW_DEV_SECTION` requires rebuilding the website image. `SOCKET_URL` must use the same public host and protocol as the deployment; set `SOCKET_PROTOCOL=https` when TLS is enabled.
+
+For website development with Vite hot reload, use the development Compose overlay:
+
+```sh
+docker compose -f docker-compose.yml -f docker-compose.dev.yml up --build
+```
+
+The `make all` command starts the production configuration. Use `make dev` for the hot-reload development configuration. The backend API and socket services must also be available for account, lobby, social, chat, and gameplay features to work.
 
 ### Workspace scripts
 

@@ -13,19 +13,25 @@ export
 
 
 # --- Compose ---------------------------------------------------------------
-# Single compose file for now (no dev override yet).
 COMPOSE				=	docker compose -f ./docker-compose.yml
+COMPOSE_DEV			=	docker compose -f ./docker-compose.yml -f ./docker-compose.dev.yml
 SHELLABLE_SERVICES	:=	website authentication party profile friends chat game-server game-bot game-stats \
                			postgresql nginx 
 # drizzle-gateway migrator redis
 
 
 # --- Makefile Commands -----------------------------------------------------
-## Build (cached) and start all services; recreates upon new changes
+## Build and start the production Compose configuration
 all: 
-	@echo "$(PURPLE)\n🛠️  Building and launching full Docker environment from scratch... \n$(RESET)"
+	@echo "$(PURPLE)\n🛠️  Building and launching the production Docker environment... \n$(RESET)"
 	@$(COMPOSE) up --build 
 #-d
+
+
+## Build and start all services with Vite hot reload for website development
+dev:
+	@echo "$(PURPLE)\n🛠️  Building and launching the development Docker environment... \n$(RESET)"
+	@$(COMPOSE_DEV) up --build
  
 
 ## Stop and remove containers + network (keeps images & volumes)
