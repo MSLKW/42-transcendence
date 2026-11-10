@@ -221,30 +221,30 @@ export default function Dev() {
 					</ul>
 					<hr />
 					<ul className="flex flex-wrap place-content-between gap-x-20">
-						<DevButton label="activeSeat" call={() => console.log("activeSeat:", activeSeat)}/>
+						<DevButton label={`activeSeat: ${activeSeat}`} call={() => console.log("activeSeat:", activeSeat)}/>
 						<li>botCount: {`${botCount}`}</li>
-						<DevButton label="allow3OfAKind" call={() => console.log("allow3OfAKind:", allow3OfAKind)}/>
-						<DevButton label="allow2OfSpadesEnd" call={() => console.log("allow2OfSpadesEnd:", allow2OfSpadesEnd)}/>
-						<DevButton label="autoPassIndex" call={() => console.log("autoPassIndex:", autoPassIndex)}/>
-						<DevButton label="cardHeapTopCards" call={() => console.log("cardHeapTopCards:", cardHeapTopCards)}/>
-						<DevButton label="cardsLeft" call={() => console.log("cardsLeft:", cardsLeft)}/>
-						<DevButton label="currentHand" call={() => console.log("currentHand:", currentHand)}/>
-						<DevButton label="gameSeats" call={() => console.log("gameSeats:", gameSeats)}/>
-						<DevButton label="gameStarted" call={() => console.log("gameStarted:", gameStarted)}/>
-						<DevButton label="isActiveSeatSkippable" call={() => console.log("isActiveSeatSkippable:", isActiveSeatSkippable)}/>
-						<DevButton label="isCardHandPlayable" call={() => console.log("isCardHandPlayable:", isCardHandPlayable)}/>
-						<DevButton label="lowestCardRequired" call={() => console.log("lowestCardRequired:", lowestCardRequired)}/>
-						<DevButton label="playerDisconnection" call={() => console.log("playerDisconnection:", playerDisconnection)}/>
-						<DevButton label="playerPassed" call={() => console.log("playerPassed:", playerPassed)}/>
-						<DevButton label="playerRemainingTimer" call={() => console.log("playerRemainingTimer:", playerRemainingTimer)}/>
-						<DevButton label="playerTimer" call={() => console.log("playerTimer:", playerTimer)}/>
-						<DevButton label="results" call={() => console.log("results:", results)}/>
-						<DevButton label="round" call={() => console.log("round:", round)}/>
-						<DevButton label="seatRef" call={() => console.log("seatRef:", seatRef)}/>
-						<DevButton label="sortType" call={() => console.log("sortType:", sortType)}/>
-						<DevButton label="selectedCards" call={() => console.log("selectedCards:", selectedCards)}/>
-						<DevButton label="totalPlayers" call={() => console.log("totalPlayers:", totalPlayers)}/>
-						<DevButton label="userSeats" call={() => console.log("userSeats:", userSeats)}/>
+						<DevButton label={`allow3OfAKind: ${allow3OfAKind}`} call={() => console.log("allow3OfAKind:", allow3OfAKind)}/>
+						<DevButton label={`allow2OfSpadesEnd: ${allow2OfSpadesEnd}`} call={() => console.log("allow2OfSpadesEnd:", allow2OfSpadesEnd)}/>
+						<DevButton label={`autoPassIndex: ${autoPassIndex}`} call={() => console.log("autoPassIndex:", autoPassIndex)}/>
+						<DevButton label={`cardHeapTopCards: ${cardHeapTopCards?.cards.length}`} call={() => console.log("cardHeapTopCards:", cardHeapTopCards)}/>
+						<DevButton label={`cardsLeft: ${cardsLeft}`} call={() => console.log("cardsLeft:", cardsLeft)}/>
+						<DevButton label={`currentHand: ${currentHand}`} call={() => console.log("currentHand:", currentHand)}/>
+						<DevButton label={`gameSeats: ${gameSeats.length}`} call={() => console.log("gameSeats:", gameSeats)}/>
+						<DevButton label={`gameStarted: ${gameStarted}`} call={() => console.log("gameStarted:", gameStarted)}/>
+						<DevButton label={`isActiveSeatSkippable: ${isActiveSeatSkippable}`} call={() => console.log("isActiveSeatSkippable:", isActiveSeatSkippable)}/>
+						<DevButton label={`isCardHandPlayable: ${isCardHandPlayable}`} call={() => console.log("isCardHandPlayable:", isCardHandPlayable)}/>
+						<DevButton label={`lowestCardRequired: ${lowestCardRequired}`} call={() => console.log("lowestCardRequired:", lowestCardRequired)}/>
+						<DevButton label={`playerDisconnection: ${Object.values(playerDisconnection).filter(Boolean).length}`} call={() => console.log("playerDisconnection:", playerDisconnection)}/>
+						<DevButton label={`playerPassed: ${playerPassed.length}`} call={() => console.log("playerPassed:", playerPassed)}/>
+						<DevButton label={`playerRemainingTimer: ${playerRemainingTimer}`} call={() => console.log("playerRemainingTimer:", playerRemainingTimer)}/>
+						<DevButton label={`playerTimer: ${playerTimer}`} call={() => console.log("playerTimer:", playerTimer)}/>
+						<DevButton label={`results: ${Object.keys(results).length}`} call={() => console.log("results:", results)}/>
+						<DevButton label={`round: ${round}`} call={() => console.log("round:", round)}/>
+						<DevButton label={`seatRef: ${seatRef}`} call={() => console.log("seatRef:", seatRef)}/>
+						<DevButton label={`sortType: ${sortType}`} call={() => console.log("sortType:", sortType)}/>
+						<DevButton label={`selectedCards: ${selectedCards?.cards.length}`} call={() => console.log("selectedCards:", selectedCards)}/>
+						<DevButton label={`totalPlayers: ${totalPlayers}`} call={() => console.log("totalPlayers:", totalPlayers)}/>
+						<DevButton label={`userSeats: ${userSeats.length}`} call={() => console.log("userSeats:", userSeats)}/>
 					</ul>
 				</div>
 			{/* game stats */}
