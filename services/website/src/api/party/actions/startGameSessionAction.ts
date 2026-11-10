@@ -20,6 +20,7 @@ export async function startGameSessionAction(socket: Socket | null) {
 			NOTIFICATION_TYPE.error
 		);
 
-		console.warn("[party > 'emit' start_game_session] error:", error);
+		if (usePartyStore.getState().partyVerboseMode)
+			console.warn("[party > 'emit' start_game_session] error:", error);
 	}
 }

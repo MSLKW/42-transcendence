@@ -1,7 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import { chatSocket } from "../../api/chat/chatSocket";
-import { useChatStore } from "../../store/ChatStore";
-import { usePartyStore } from "../../store/PartyStore";
+import { useChatStore, MAX_MESSAGE_LENGTH } from "../../store/ChatStore";
 import { useTypingStore } from "../../store/TypingStore";
 import { Window } from "../window/Window";
 import { SendButton } from "./send/SendButton";
@@ -11,9 +10,9 @@ import { ChatTypingIndicator } from "./ChatTypingIndicator";
 import { ChatRateLimit } from "./ChatRateLimit";
 
 export const ChatWindow = () => {
-	const cachedChat = useChatStore((store) => store.cachedChat);
-	const rateLimited = useChatStore((store) => store.rateLimited);
-	const members = usePartyStore((store) => store.members);
+	const chatLog = useChatStore((store) => store.chatLog);
+	const isChatRateLimited = useChatStore((store) => store.isChatRateLimited);
+	const chatPlayerCount = useChatStore((store) => store.chatPlayerCount);
 	const typingUsers = useTypingStore((store) => store.typingUsers);
 
 	const [message, setMessage] = useState("");
@@ -28,13 +27,14 @@ export const ChatWindow = () => {
 
 	/** scroll */
 	useEffect(() => {
+		/** Keep the newest message in view as the bounded chat log changes */
 		if (scrollContainerRef.current) {
 			scrollContainerRef.current.scrollTo({
 				top: scrollContainerRef.current.scrollHeight,
 				behavior: "smooth"
 			});
 		}
-	}, [cachedChat]);
+	}, [chatLog]);
 
 	const wasTyping = useRef(false);
 	useEffect(() => {
@@ -57,6 +57,10 @@ export const ChatWindow = () => {
 
 	const handleSend = (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
+
+		const trimmedMessage = message.trim();
+		if (!trimmedMessage || message.length > MAX_MESSAGE_LENGTH || isChatRateLimited)
+			return;
 
 		chatSocket.sendChat("MESSAGE", message);
 		setMessage("");
@@ -92,14 +96,15 @@ export const ChatWindow = () => {
 						flex flex-1 flex-col place-content-start place-items-center
 						gap-1rem
 				">
-					{!cachedChat.length
+					{!chatLog.length
 						?
 							<h2 className="text-n6/50">Chat messages appear here</h2>
 						:
 							<ul className="w-full flex flex-col text-n6">
-								{cachedChat.map((data, index) => {
-									const isFirstFromClient = index === 0 || cachedChat[index - 1].uuid !== data.uuid;
-									const nextMessage = cachedChat[index + 1];
+								{chatLog.map((data, index) => {
+									/** Group adjacent messages from one sender to avoid repeating avatars and spacing */
+									const isFirstFromClient = index === 0 || chatLog[index - 1].uuid !== data.uuid;
+									const nextMessage = chatLog[index + 1];
 									const isLastFromClient = nextMessage && nextMessage?.uuid !== data.uuid;
 
 									return (
@@ -129,8 +134,9 @@ export const ChatWindow = () => {
 				">
 					<input
 						ref={focusRef}
-						disabled={rateLimited ? true : false}
+						disabled={isChatRateLimited}
 						type="text"
+						maxLength={MAX_MESSAGE_LENGTH}
 						placeholder="Message"
 						value={message}
 						onChange={handleChange}
@@ -145,9 +151,9 @@ export const ChatWindow = () => {
 				text-n6 opacity-60
 			">
 				{ 
-					rateLimited ? <ChatRateLimit /> :
+					isChatRateLimited ? <ChatRateLimit /> :
 					Object.keys(typingUsers).length ? <ChatTypingIndicator /> :
-					<p>{members.length === 1 ? "1 player" : members.length + " players"} in chat</p>
+					<p>{chatPlayerCount === null ? "…" : chatPlayerCount === 1 ? "1 player" : `${chatPlayerCount} players`} in chat</p>
 				}
 			</div>
 		</Window>

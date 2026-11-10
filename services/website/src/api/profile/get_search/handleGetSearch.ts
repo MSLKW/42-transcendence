@@ -3,6 +3,9 @@ import { useProfileStore } from "../../../store/ProfileStore";
 import { fetchGetSearch } from "./fetchGetSearch";
 
 export const handleGetSearch = async (query: string, signal?: AbortSignal): Promise<string[]> => {
+	if (!useProfileStore.getState().profileAPIConnection)
+		return [];
+
 	try {
 		const response = await fetchGetSearch(query, signal);
 
@@ -11,11 +14,15 @@ export const handleGetSearch = async (query: string, signal?: AbortSignal): Prom
 
 		return response.searchResults;
 	} catch (err) {
+		if (signal?.aborted)
+			return [];
+
 		const error = err instanceof Error ? err.message : "Something went wrong. Please try again";
 
 		useNotificationStore.getState().showNotification(error, NOTIFICATION_TYPE.error);
 
-		console.warn(`[profile > 'GET' search/${query}] error:${error}`);
+		if (useProfileStore.getState().profileVerboseMode)
+			console.warn(`[profile > 'GET' search/${query}] error:${error}`);
 
 		return [];
 	}

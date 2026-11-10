@@ -24,6 +24,7 @@ export const useWindowDrag = (initialPosition = { x: 0, y: 0 }) => {
 		if (e.button !== 0) return;
 
 		draggingRef.current = true;
+		/** Preserve the cursor's grab point so the window does not jump to the pointer */
 		offsetRef.current = {
 			x: e.clientX - position.x,
 			y: e.clientY - position.y,

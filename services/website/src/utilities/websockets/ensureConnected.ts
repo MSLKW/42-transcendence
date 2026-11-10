@@ -5,6 +5,7 @@ export function ensureConnected(socket: Socket): Promise<void> {
 		return Promise.resolve();
 
 	return new Promise((resolve, reject) => {
+		/** Remove the one-shot listener on either outcome to avoid leaking connection handlers */
 		const timeout = setTimeout(() => {
 			cleanup();
 			reject(new Error("Socket connection timeout"));

@@ -18,7 +18,8 @@ export const handleGetOnline = async (uuid: string): Promise<OnlineData | null> 
 	} catch (err) {
 		const error = err instanceof Error ? err.message : "Something went wrong. Please try again";
 
-		console.warn(`[party > 'GET' online/${uuid}] error:${error}`);
+		if (usePartyStore.getState().partyVerboseMode)
+			console.warn(`[party > 'GET' online/${uuid}] error:${error}`);
 
 		return null;
 	}

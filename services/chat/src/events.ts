@@ -29,7 +29,7 @@ export interface ChatMessagePayload {
 
 /** Payload sent when a client exceeds a message limit */
 export interface ChatRateLimitedPayload {
-	type: "MESSAGE" | "EMOTE";
+	type: ChatType;
 	message: string;
 }
 
@@ -37,7 +37,7 @@ export interface ChatRateLimitedPayload {
 export interface ClientToServerEvents {
 	chat_join_room: (
 		payload: { roomId: string },
-		callback: (response: { success: boolean; roomId?: string; reason?: string }) => void
+		callback: (response: { success: boolean; roomId?: string; count?: number; reason?: string }) => void
 	) => void;
 	chat_typing: (payload: { isTyping: boolean }) => void;
 	chat_message: (payload: {
@@ -50,6 +50,7 @@ export interface ClientToServerEvents {
 export interface ServerToClientEvents {
 	chat_user_joined: (payload: ChatUserJoinedPayload) => void;
 	chat_user_left: (payload: ChatUserLeftPayload) => void;
+	chat_room_player_count: (payload: { roomId: string; count: number }) => void;
 	chat_user_typing: (payload: ChatIsTypingPayload) => void;
 	chat_message: (payload: ChatMessagePayload) => void;
 	chat_rate_limited: (payload: ChatRateLimitedPayload) => void;

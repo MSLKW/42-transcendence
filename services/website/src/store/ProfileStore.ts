@@ -28,15 +28,15 @@ export type UserData = {
 };
 
 interface ProfileValues {
+	profileAPIConnection: boolean;
+	profileFrontendValidation: boolean;
 	profileVerboseMode: boolean;
-	profileValidation: boolean;
-	isProfileLoaded: boolean;
 	cachedProfiles: Record<string, CachedProfile>;
 	avatarVersions: Record<string, number>;
 };
 
 interface ProfileState extends ProfileValues {
-	setCachedProfile: () => Promise<void>,
+	setCachedProfile: () => Promise<void>;
 	removeCachedProfile: (uuid: string | null) => void;
 	markAvatarUpdated: (uuid: string) => void;
 	resetValues: () => void;
@@ -45,27 +45,21 @@ interface ProfileState extends ProfileValues {
 export const useProfileStore = create<ProfileState>() (
 	persist(
 		(set, _get) => ({
+			profileAPIConnection: true,
+			profileFrontendValidation: true,
 			profileVerboseMode: false,
-			profileValidation: true,
-			isProfileLoaded: false,
 			cachedProfiles: {},
 			avatarVersions: {},
 
 			setCachedProfile: async () => {
 				const clientUuid = useAuthStore.getState().clientUuid;
 				const members = usePartyStore.getState().members;
+				/** Deduplicate occupied seats before parallel profile lookups */
+				const allUuids = Array.from(new Set(members))
+					.filter((uuid): uuid is string => uuid !== null);
 				const cachedFriends = useFriendsStore.getState().cachedFriends;
 
-				const allUuids = Array.from(
-					new Set([
-						...members,
-						...(clientUuid ? [clientUuid] : [])
-					])
-				).filter(
-					(uuid): uuid is string => uuid !== null
-				);
-
-				const profiles = await Promise.all(
+				const results = await Promise.all(
 					allUuids.map(async (memberUuid) => {
 						const userData = await handleGetProfile(memberUuid);
 						if (!userData)
@@ -75,31 +69,23 @@ export const useProfileStore = create<ProfileState>() (
 							memberUuid === clientUuid ? "Self" :
 							cachedFriends.includes(memberUuid) ? "Friend" :
 							"Stranger";
-
-						return {
-							uuid: memberUuid,
-							data: {
+						return [
+							memberUuid,
+							{
 								name: userData.username,
 								avatar: userData.avatarPath,
 								badge: userData.badge,
 								relation: humanRelation,
-							},
-						}
+							}
+						];
 					})
 				);
 
-				set((state) => {
-					const cachedProfiles = { ...state.cachedProfiles };
-					for (const profile of profiles) {
-						if (!profile)
-							continue;
-						cachedProfiles[profile.uuid] = profile.data;
-					}
-					return {
-						cachedProfiles,
-						isProfileLoaded: true,
-					}
-				});
+				set(() => ({
+					cachedProfiles: Object.fromEntries(
+						results.filter((item) => item !== null)
+					),
+				}));
 			},
 
 			removeCachedProfile: (uuid) => {
@@ -124,7 +110,6 @@ export const useProfileStore = create<ProfileState>() (
 
 			resetValues: () => {
 				set({
-					isProfileLoaded: false,
 					cachedProfiles: {},
 					avatarVersions: {},
 				});
@@ -132,6 +117,12 @@ export const useProfileStore = create<ProfileState>() (
 		}),
 		{
 			name: 'profile-storage',
+
+			partialize: (state) => ({
+				profileAPIConnection: state.profileAPIConnection,
+				profileVerboseMode: state.profileVerboseMode,
+				cachedProfiles: state.cachedProfiles,
+			}),
 		}
 	)
 );

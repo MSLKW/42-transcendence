@@ -23,6 +23,7 @@ export const SingleNotification = ({ notification }: SingleNotificationProps) =>
 			return;
 		isClosing.current = true;
 
+		/** Clear pending timers before starting the manual exit path to prevent duplicate removal */
 		cancelAnimationFrame(animationFrame.current);
 		clearTimeout(exitAnimationTimer.current);
 		clearTimeout(autoUnmountTimer.current);

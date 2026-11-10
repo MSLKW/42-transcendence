@@ -12,7 +12,8 @@ export const handleGetEvents = async () => {
 	} catch (err) {
 		const error = err instanceof Error ? err.message : "Something went wrong. Please try again";
 
-		console.warn(`[friends > 'GET' events] error:${error}`);
+		if (useFriendsStore.getState().friendsVerboseMode)
+			console.warn(`[friends > 'GET' events] error:${error}`);
 
 		return null;
 	}

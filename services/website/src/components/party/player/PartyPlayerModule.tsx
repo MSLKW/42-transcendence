@@ -1,12 +1,12 @@
 
 import { useState, useRef, useEffect } from "react";
 import { partySocket } from "../../../api/party/partySocket";
-import { handleGetProfile } from "../../../api/profile/get_profile/handleGetProfile";
 import { handleGetOnline } from "../../../api/party/get_online/handleGetOnline";
+import { handleGetProfile } from "../../../api/profile/get_profile/handleGetProfile";
 import { useAuthStore } from "../../../store/AuthStore";
 import { useFriendsStore } from "../../../store/FriendsStore";
 import { usePartyStore, type AVAILABILITY_TYPE } from "../../../store/PartyStore";
-import type { UserData } from "../../../store/ProfileStore";
+import { useProfileStore, type UserData } from "../../../store/ProfileStore";
 import { useSceneStore } from "../../../store/SceneStore";
 import { Tooltip } from "../../../utilities/react/Tooltip";
 import { PlayerStatusModule } from "../../player/status/PlayerStatusModule";
@@ -19,9 +19,11 @@ interface PartyPlayerModuleProps {
 
 export const PartyPlayerModule = ({ uuid }: PartyPlayerModuleProps) => {
 	const clientUuid = useAuthStore((store) => store.clientUuid);
-	const hostUuid = usePartyStore((store) => store.hostUuid);
 	const cachedFriends = useFriendsStore((store) => store.cachedFriends);
+	const hostUuid = usePartyStore((store) => store.hostUuid);
+	const partyVerboseMode = usePartyStore((store) => store.partyVerboseMode);
 	const availabilityOverride = usePartyStore((store) => store.availabilityOverrides[uuid]);
+	const profileVerboseMode = useProfileStore((store) => store.profileVerboseMode);
 
 	const [isLoading, setIsLoading] = useState<boolean>(true);
 	const [availability, setAvailability] = useState<AVAILABILITY_TYPE | null>(null);
@@ -51,7 +53,8 @@ export const PartyPlayerModule = ({ uuid }: PartyPlayerModuleProps) => {
 					setLastOnline(online?.lastOnline ? new Date(online.lastOnline) : null);
 				}
 			} catch (error) {
-				console.warn("Failed to fetch player profile:", error);
+				if (partyVerboseMode || profileVerboseMode)
+					console.warn("Failed to fetch player profile:", error);
 			} finally {
 				setIsLoading(false);
 			}
@@ -127,7 +130,7 @@ export const PartyPlayerModule = ({ uuid }: PartyPlayerModuleProps) => {
 					<h3>{playerData.username}</h3>
 					<div className={`
 						${
-							((availability === "Online" || availability === "Busy") && relation != "Self")
+							((effectiveAvailability === "Online" || effectiveAvailability === "Busy") && relation != "Self")
 								? "place-content-between"
 								: "place-content-center"
 						}
@@ -136,7 +139,7 @@ export const PartyPlayerModule = ({ uuid }: PartyPlayerModuleProps) => {
 					`}>
 						<PlayerStatusModule
 							uuid={uuid}
-							availability={availability}
+							availability={effectiveAvailability}
 							lastOnline={lastOnline}
 						/>
 						{(effectiveAvailability === "Online" || effectiveAvailability === "Busy") && relation != "Self" &&

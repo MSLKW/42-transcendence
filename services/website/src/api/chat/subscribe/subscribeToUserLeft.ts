@@ -9,7 +9,8 @@ export const subscribeToUserLeft = () => {
 
 		const hostUuid = usePartyStore.getState().hostUuid;
 		if (!hostUuid) {
-			console.warn("[chat > 'subscribe' onUserLeft] error: Cannot join room - missing hostUuid");
+			if (useChatStore.getState().chatVerboseMode)
+				console.warn("[chat > 'subscribe' onUserLeft] error: Cannot join room - missing hostUuid");
 			return;
 		}
 

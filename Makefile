@@ -8,24 +8,30 @@ RESET = \033[0K\033[0m  					#\033[0K for reset background colour
 
 
 # --- Put this at the very top of your file, before the "all:" target -------
-include .env
+-include .env
 export
 
 
 # --- Compose ---------------------------------------------------------------
-# Single compose file for now (no dev override yet).
 COMPOSE				=	docker compose -f ./docker-compose.yml
+COMPOSE_DEV			=	docker compose -f ./docker-compose.yml -f ./docker-compose.dev.yml
 SHELLABLE_SERVICES	:=	website authentication party profile friends chat game-server game-bot game-stats \
                			postgresql nginx 
 # drizzle-gateway migrator redis
 
 
 # --- Makefile Commands -----------------------------------------------------
-## Build (cached) and start all services; recreates upon new changes
+## Build and start the production Compose configuration
 all: 
-	@echo "$(PURPLE)\n🛠️  Building and launching full Docker environment from scratch... \n$(RESET)"
+	@echo "$(PURPLE)\n🛠️  Building and launching the production Docker environment... \n$(RESET)"
 	@$(COMPOSE) up --build 
 #-d
+
+
+## Build and start all services with Vite hot reload for website development
+dev:
+	@echo "$(PURPLE)\n🛠️  Building and launching the development Docker environment... \n$(RESET)"
+	@$(COMPOSE_DEV) up --build
  
 
 ## Stop and remove containers + network (keeps images & volumes)
@@ -147,19 +153,58 @@ check-imports:
 	@! grep -rnE "game-stats-types/(website|game-stats)" services/game-server/src && echo "ok: game-server imports only its own entry"
 	@! grep -rnE "game-stats-types/(game-server|game-stats)" services/website/src && echo "ok: website imports only its own entry"
 
-.PHONY: all down up stop restart clean fclean re logs nuclear purge progress config ls help shell- check-imports
+## Generate .env if missing, then generate database passwords, authentication tokens and SSL certificates
+secrets:
+	@echo "$(PURPLE)\nChecking environment configuration...\n$(RESET)"
+	@if [ ! -f .env ]; then \
+		if [ ! -f .env.example ]; then \
+			echo "$(PURPLE)Error: .env.example does not exist!$(RESET)"; \
+			exit 1; \
+		fi; \
+		cp .env.example .env || exit 1; \
+		echo "$(GREEN)Created .env from .env.example$(RESET)"; \
+	else \
+		echo "$(BLUE).env already exists (skipped)$(RESET)"; \
+	fi
 
+	@echo "$(PURPLE)\nGenerating project secrets...\n$(RESET)"
 
-# --- as learning references only, not to be run via makefile commands. must be in these sequence ----------------------------------------------
-#	# Step-by-step full teardown of THIS project only (stop, rm containers, rm images, rm volumes, rm networks)
-# 	@echo "$(PURPLE)Stopping all running containers for this project...$(RESET)"
-# 	@$(COMPOSE) stop
-# 	@echo "$(PURPLE)Removing all containers for this project...$(RESET)"
-# 	@$(COMPOSE) rm -f
-# 	@echo "$(PURPLE)Removing all images built for this project...$(RESET)"
-# 	@$(COMPOSE) down --rmi all
-# 	@echo "$(PURPLE)Removing all volumes for this project...$(RESET)"
-# 	@$(COMPOSE) down --volumes
-# 	@echo "$(PURPLE)Removing this project's network...$(RESET)"
-# 	@$(COMPOSE) down
-# 	@echo "$(PURPLE)Done — this project's containers, images, volumes and networks are gone.$(RESET)"
+	@mkdir -p secrets/database-passwords
+	@chmod 700 secrets
+	@chmod 700 secrets/database-passwords
+	@for name in db-admin-password db-auth-password db-party-password db-profile-password db-friends-password db-game-stats-password; do \
+		if [ ! -f "secrets/database-passwords/$$name.txt" ]; then \
+			openssl rand -hex 32 > "secrets/database-passwords/$$name.txt" && \
+			echo "$(GREEN)Generated $$name$(RESET)"; \
+		else \
+			echo "$(BLUE)Existing $$name (skipped)$(RESET)"; \
+		fi; \
+	done
+	@chmod 600 secrets/database-passwords/*.txt
+
+	@mkdir -p secrets/tokens
+	@chmod 700 secrets/tokens
+	@if [ ! -f secrets/tokens/statistics-token.txt ]; then \
+		openssl rand -hex 32 > secrets/tokens/statistics-token.txt && \
+		echo "$(GREEN)Generated statistics token$(RESET)"; \
+	else \
+		echo "$(BLUE)Existing statistics token (skipped)$(RESET)"; \
+	fi
+	@chmod 600 secrets/tokens/*.txt
+
+	@mkdir -p secrets/ssl
+	@chmod 700 secrets/ssl
+	@if [ ! -f secrets/ssl/transcendence.key ] || [ ! -f secrets/ssl/transcendence.crt ]; then \
+		openssl req -x509 -newkey rsa:2048 -nodes \
+			-keyout secrets/ssl/transcendence.key \
+			-out secrets/ssl/transcendence.crt \
+			-days 365 -subj "/CN=localhost" && \
+		echo "$(GREEN)Generated SSL certificate$(RESET)"; \
+	else \
+		echo "$(BLUE)Existing SSL certificate (skipped)$(RESET)"; \
+	fi
+	@chmod 600 secrets/ssl/transcendence.key secrets/ssl/transcendence.crt
+
+	@echo "$(PURPLE)\nSecret generation completed!\n$(RESET)"
+
+.PHONY: all down up stop restart clean fclean re logs nuclear purge progress config ls help shell- check-imports secrets

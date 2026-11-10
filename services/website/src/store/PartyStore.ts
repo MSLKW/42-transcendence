@@ -4,6 +4,7 @@ import { persist } from "zustand/middleware";
 export type AVAILABILITY_TYPE = "Offline" | "Online" | "Busy";
 
 interface PartyValues {
+	partyAPIConnection: boolean;
 	partyVerboseMode: boolean; 
 	partySocketId: string | null;
 	partyGameId: string | null;
@@ -22,6 +23,7 @@ interface PartyState extends PartyValues {
 export const usePartyStore = create<PartyState>() (
 	persist(
 		(set, get) => ({
+			partyAPIConnection: true,
 			partyVerboseMode: false,
 			partySocketId: null,
 			partyGameId: null,
@@ -63,6 +65,11 @@ export const usePartyStore = create<PartyState>() (
 		}),
 		{
 			name: 'party-storage',
+
+			partialize: (state) => ({
+				partyAPIConnection: state.partyAPIConnection,
+				partyVerboseMode: state.partyVerboseMode,
+			})
 		}
 	)
 );

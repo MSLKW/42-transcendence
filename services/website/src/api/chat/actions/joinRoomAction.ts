@@ -13,16 +13,21 @@ export async function joinRoomAction(socket: Socket | null, roomId: string) {
 		const response = await new Promise<{
 			success: boolean;
 			roomId?: string;
+			count?: number;
 			reason?: string;
 		}>((resolve) => {
 			socket.emit("chat_join_room", { roomId: roomId }, resolve);
 		})
 		if (!response.success) {
-			console.warn("[chat > 'emit' chat_join_room] reason: ", response.reason ?? "Unable to join chat room");
+			if (useChatStore.getState().chatVerboseMode)
+				console.warn("[chat > 'emit' chat_join_room] reason: ", response.reason ?? "Unable to join chat room");
 			return;
 		}
 
-		useChatStore.setState({ chatRoomId: response.roomId ?? roomId });
+		useChatStore.setState({
+			chatRoomId: response.roomId ?? roomId,
+			chatPlayerCount: response.count ?? null,
+		});
 
 		if (useChatStore.getState().chatVerboseMode)
 			console.log(`[chat > 'emit' chat_join_room] roomId: ${roomId}`);
@@ -32,6 +37,7 @@ export async function joinRoomAction(socket: Socket | null, roomId: string) {
 			NOTIFICATION_TYPE.error
 		);
 
-		console.warn("[chat > 'emit' chat_join_room] error:", error);
+		if (useChatStore.getState().chatVerboseMode)
+			console.warn("[chat > 'emit' chat_join_room] error:", error);
 	}
 }

@@ -23,7 +23,7 @@ export const FriendToggleButton = ({ uuid, name }: FriendToggleButtonProps) => {
 	useEffect(() => {
 		if (cachedFriends?.includes(uuid))
 			setIsFriend("FRIEND");
-		else if (friendRequestSent.includes(uuid))
+		else if (friendRequestSent.includes(uuid) && friendRequestSent.filter((item: any) => item.status === "Pending"))
 			setIsFriend("PENDING");
 		else
 			setIsFriend("STRANGER");

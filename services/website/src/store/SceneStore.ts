@@ -4,21 +4,6 @@ import { threejsManager } from "../App";
 
 export type SCENES = "Badge" | "Login" | "Home" | "Lobby" | "Game";
 
-interface SceneValues {
-	sceneVerboseMode: boolean;
-	initialRender: boolean;
-	currentScene: SCENES;
-	showWindow: Record<string, boolean>;
-	statsUuid: string | null;
-}
-
-interface SceneState extends SceneValues {
-	setCurrentScene: (scene: SCENES) => void;
-	setShowWindow: (window: string, show: boolean, uuid?: string) => void;
-	resetWindows: () => void;
-	resetValues: () =>void
-}
-
 export const defaultShowWindow = {
 	badge: false,
 	bots: false,
@@ -39,14 +24,29 @@ export const defaultShowWindow = {
 	stats: false,
 } as const;
 
+interface SceneValues {
+	sceneVerboseMode: boolean;
+	currentScene: SCENES;
+	showFrame: boolean;
+	showWindow: Record<string, boolean>;
+	playerStatsUuid: string | null;
+}
+
+interface SceneState extends SceneValues {
+	setCurrentScene: (scene: SCENES) => void;
+	setShowWindow: (window: string, show: boolean, uuid?: string) => void;
+	resetWindows: () => void;
+	resetValues: () => void;
+}
+
 export const useSceneStore = create<SceneState>() (
 	persist( 
 		(set, get) => ({
 			sceneVerboseMode: false,
-			initialRender: false,
 			currentScene: "Login",
+			showFrame: false,
 			showWindow: defaultShowWindow,
-			statsUuid: null,
+			playerStatsUuid: null,
 
 			setCurrentScene: (scene) => {
 				set({ currentScene: scene });
@@ -57,7 +57,7 @@ export const useSceneStore = create<SceneState>() (
 			setShowWindow: (window, show, uuid) => {
 				const showWindow = get().showWindow;
 				set({
-					statsUuid: uuid,
+					playerStatsUuid: uuid,
 					showWindow: {
 						...showWindow,
 						[window]: show,
@@ -79,7 +79,7 @@ export const useSceneStore = create<SceneState>() (
 				get().resetWindows();
 				set({
 					currentScene: "Login",
-					statsUuid: null,
+					playerStatsUuid: null,
 				});
 			},
 		}),

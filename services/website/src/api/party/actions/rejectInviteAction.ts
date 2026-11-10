@@ -25,6 +25,7 @@ export async function rejectInviteAction(socket: Socket | null, hostUuid: string
 			NOTIFICATION_TYPE.error
 		);
 
-		console.warn("[party > 'emit' reject_invite] error:", error);
+		if (usePartyStore.getState().partyVerboseMode)
+			console.warn("[party > 'emit' reject_invite] error:", error);
 	}
 }

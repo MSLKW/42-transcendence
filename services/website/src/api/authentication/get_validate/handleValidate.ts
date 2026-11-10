@@ -2,6 +2,9 @@ import { fetchValidate } from "./fetchValidate";
 import { useAuthStore } from "../../../store/AuthStore";
 
 export const handleValidate = async () => {
+	if (!useAuthStore.getState().authAPIConnection)
+		return;
+
 	try {
 		const response = await fetchValidate();
 		if (!response)
@@ -22,7 +25,8 @@ export const handleValidate = async () => {
 			clientUuid: null,
 		});
 
-		console.warn("[authentication > 'GET' validate] error:", error);
+		if (useAuthStore.getState().authVerboseMode)
+			console.warn("[authentication > 'GET' validate] error:", error);
 
 		return null;
 	}

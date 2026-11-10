@@ -12,16 +12,18 @@ export interface ChatData {
 }
 
 const MAX_CACHED_MESSAGES = 100;
+export const MAX_MESSAGE_LENGTH = 500;
 
 let rateLimitTimeout: ReturnType<typeof setTimeout> | null = null;
 
 interface ChatValues {
+	chatAPIConnection: boolean;
 	chatVerboseMode: boolean;
-	isChatSubscribed: boolean,
 	chatSocketId: string | null;
 	chatRoomId: string | null;
-	cachedChat: ChatData[];
-	rateLimited: string | null;
+	chatPlayerCount: number | null;
+	chatLog: ChatData[];
+	isChatRateLimited: boolean;
 }
 
 interface ChatState extends ChatValues {
@@ -32,36 +34,39 @@ interface ChatState extends ChatValues {
 		avatar: string | undefined,
 		msg: string
 	) => void;
-	showRateLimited: (message: string) => void;
+	rateLimitedIsTrue: () => void;
 	resetValues: () => void;
 }
 
 export const useChatStore = create<ChatState>() (
 	persist(
 		(set) => ({
+			chatAPIConnection: true,
 			chatVerboseMode: false,
-			isChatSubscribed: false,
 			chatSocketId: null,
 			chatRoomId: null,
-			cachedChat: [],
-			rateLimited: null,
+			chatPlayerCount: null,
+			chatLog: [],
+			isChatRateLimited: false,
 
 			addToCachedChat: (type, uuid, name, avatar, msg) => {
 				set((state) => ({
-					cachedChat: [
-						...state.cachedChat,
+					/** Retain only the newest entries so a long session cannot grow the local transcript forever */
+					chatLog: [
+						...state.chatLog,
 						{ type, uuid, name, avatar, msg }
 					].slice(-MAX_CACHED_MESSAGES)
 				}));
 			},
 
-			showRateLimited: (message) => {
+			rateLimitedIsTrue: () => {
 				if (rateLimitTimeout)
 					clearTimeout(rateLimitTimeout);
 
-				set({ rateLimited: message });
+				set({ isChatRateLimited: true });
+
 				rateLimitTimeout = setTimeout(() => {
-					set({ rateLimited: null });
+					set({ isChatRateLimited: false });
 					rateLimitTimeout = null;
 				}, 3000);
 			},
@@ -73,26 +78,21 @@ export const useChatStore = create<ChatState>() (
 				}
 
 				set({
-					isChatSubscribed: false,
 					chatSocketId: null,
 					chatRoomId: null,
-					cachedChat: [],
-					rateLimited: null,
+					chatPlayerCount: null,
+					chatLog: [],
+					isChatRateLimited: false,
 				});
 			},
 		}),
 		{
 			name: 'chat-storage',
-			version: 1,
 
 			partialize: (state) => ({
+				chatAPIConnection: state.chatAPIConnection,
 				chatVerboseMode: state.chatVerboseMode,
 			}),
-
-			migrate: (persistedState) => {
-				const state = persistedState as { chatVerboseMode?: boolean };
-				return { chatVerboseMode: state.chatVerboseMode ?? false};
-			},
 		}
 	)
 );

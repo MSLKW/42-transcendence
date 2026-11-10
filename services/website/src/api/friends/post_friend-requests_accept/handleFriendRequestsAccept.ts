@@ -15,6 +15,7 @@ export const handleFriendRequestsAccept = async (requestId: string, name: string
 
 		useNotificationStore.getState().showNotification(error, NOTIFICATION_TYPE.error);
 
-		console.warn("[friends] > 'POST' friend-requests/", requestId, "/accept] error:", error);
+		if (useFriendsStore.getState().friendsVerboseMode)
+			console.warn("[friends] > 'POST' friend-requests/", requestId, "/accept] error:", error);
 	}
 }

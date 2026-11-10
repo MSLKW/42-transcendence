@@ -3,6 +3,9 @@ import { useProfileStore } from "../../../store/ProfileStore";
 import { fetchPutProfile } from "./fetchPutProfile";
 
 export const handlePutProfile = async (username: string, avatarPath: string, badge: string) => {
+	if (!useProfileStore.getState().profileAPIConnection)
+		return;
+
 	try {
 		const response = await fetchPutProfile(username, avatarPath, badge);
 
@@ -18,7 +21,8 @@ export const handlePutProfile = async (username: string, avatarPath: string, bad
 
 		useNotificationStore.getState().showNotification(error, NOTIFICATION_TYPE.error);
 
-		console.warn("[profile > 'PUT' profile] error:", error);
+		if (useProfileStore.getState().profileVerboseMode)
+			console.warn("[profile > 'PUT' profile] error:", error);
 
 		throw err;
 	}

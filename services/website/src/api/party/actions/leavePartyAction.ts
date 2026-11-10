@@ -21,8 +21,11 @@ export async function leavePartyAction(socket: Socket | null) {
 
 		socket?.emit("leave_party");
 
-		await useProfileStore.getState().setCachedProfile();
-		await useGameStatsStore.getState().setCachedStats();
+		await Promise.all([
+			useProfileStore.getState().setCachedProfile(),
+			useGameStatsStore.getState().setCachedStats(),
+			useAuthStore.getState().setCachedCreatedAts(),
+		]);
 
 		useSceneStore.getState().setShowWindow("profile", false);
 
@@ -50,6 +53,7 @@ export async function leavePartyAction(socket: Socket | null) {
 			NOTIFICATION_TYPE.error
 		);
 
-		console.warn("[party > 'emit' leave_party] error:", error);
+		if (usePartyStore.getState().partyVerboseMode)
+			console.warn("[party > 'emit' leave_party] error:", error);
 	}
 }

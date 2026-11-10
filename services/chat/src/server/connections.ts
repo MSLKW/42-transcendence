@@ -4,6 +4,7 @@ import { clientManager } from "../client/ClientManager";
 import { registerEventHandlers, removeRateLimiters } from "../client/event_handlers";
 import { ClientToServerEvents, ServerToClientEvents } from "../events";
 import { PartyManager } from "../party/PartyManager";
+import { emitPlayerCountInRoom } from "../client/getPlayerCountInRoom";
 
 /** Socket type used by connection lifecycle handlers */
 type ChatSocket = Socket<ClientToServerEvents, ServerToClientEvents>;
@@ -36,24 +37,27 @@ export function registerConnections(
 		}
 
 		const existing = clientManager.getByUuid(uuid);
+		let roomId: string;
 		if (existing) {
 			clientManager.cancelRemoval(uuid);
 
 			partyManager.reconcilePlayer(uuid);
-			socket.join(partyManager.getRoomForPlayer(uuid));
+			roomId = partyManager.getRoomForPlayer(uuid);
+			socket.join(roomId);
 			registerEventHandlers(io, socket, existing, partyManager);
 
 			const oldSocket = clientManager.rebindSocket(existing, socket);
 			oldSocket.disconnect(true);
 			console.log(`User<${uuid}> reconnected on socket<${socket.id}> in room ${existing.roomId}`);
 		} else {
-			const roomId = partyManager.getRoomForPlayer(uuid);
+			roomId = partyManager.getRoomForPlayer(uuid);
 			const client = new Client(socket, uuid, roomId);
 			clientManager.add(client);
 			socket.join(roomId);
 			registerEventHandlers(io, socket, client, partyManager);
 			console.log(`User<${uuid}> connected on socket ${socket.id} in room ${roomId}`);
 		}
+		void emitPlayerCountInRoom(io, roomId);
 
 		socket.on("disconnect", (reason: DisconnectReason) => {
 			if (isShuttingDown())
@@ -62,6 +66,7 @@ export function registerConnections(
 			const client = clientManager.getBySocketId(socket.id);
 			if (!client || client.socket.id !== socket.id)
 				return;
+			void emitPlayerCountInRoom(io, client.roomId);
 
 			if (permanentDisconnectReasons.has(reason)) {
 				removeRateLimiters(client.uuid);

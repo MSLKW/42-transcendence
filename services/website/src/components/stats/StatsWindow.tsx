@@ -1,9 +1,11 @@
 import { useState, useRef, useEffect } from "react";
 import { handleCreatedAt } from "../../api/authentication/get_created-at/handleCreatedAt";
+import { handlePublicPlayerGameData } from "../../api/gameStats/get_public-player-game-data/handlePublicPlayerGameData";
 import { handleGetOnline } from "../../api/party/get_online/handleGetOnline";
 import { handleGetProfile } from "../../api/profile/get_profile/handleGetProfile";
-import { usePartyStore, type AVAILABILITY_TYPE } from "../../store/PartyStore";
+import { useAuthStore } from "../../store/AuthStore";
 import { useGameStatsStore } from "../../store/GameStatsStore";
+import { usePartyStore, type AVAILABILITY_TYPE } from "../../store/PartyStore";
 import { useProfileStore } from "../../store/ProfileStore";
 import { useSceneStore } from "../../store/SceneStore";
 import { Window } from "../window/Window";
@@ -13,45 +15,49 @@ import { PlayerDataModule } from "../player/data/PlayerDataModule";
 import { PlayerStatsModule } from "../player/stats/PlayerStatsModule";
 import { FriendToggleButton } from "./friend/FriendToggleButton";
 import { KickPlayerButton } from "./kick/KickPlayerButton";
-import { handlePublicPlayerGameData } from "../../api/gameStats/get_public-player-game-data/handlePublicPlayerGameData";
 
 export const StatsWindow: React.FC = () => {
-	const statsUuid = useSceneStore((store) => store.statsUuid!);
-	const members = usePartyStore((store) => store.members);
-	const cachedProfiles = useProfileStore((store) => store.cachedProfiles);
+	const authVerboseMode = useAuthStore((store) => store.authVerboseMode);
 	const cachedStats = useGameStatsStore((store) => store.cachedStats);
+	const gameStatsVerboseMode = useGameStatsStore((store) => store.gameStatsVerboseMode);
+	const members = usePartyStore((store) => store.members);
+	const partyVerboseMode = usePartyStore((store) => store.partyVerboseMode);
+	const cachedProfiles = useProfileStore((store) => store.cachedProfiles);
+	const profileVerboseMode = useProfileStore((store) => store.profileVerboseMode);
+	const playerStatsUuid = useSceneStore((store) => store.playerStatsUuid!);
 	
-	const cachedProfile = statsUuid && statsUuid in cachedProfiles ? cachedProfiles[statsUuid] : undefined;
-	const cachedStat = statsUuid && statsUuid in cachedStats ? cachedStats[statsUuid] : undefined;
+	const cachedProfile = playerStatsUuid && playerStatsUuid in cachedProfiles ? cachedProfiles[playerStatsUuid] : undefined;
+	const cachedStat = playerStatsUuid && playerStatsUuid in cachedStats ? cachedStats[playerStatsUuid] : undefined;
 
 	const [name, setName] = useState(cachedProfile?.name ?? "n/a");
 	const [avatar, setAvatar] = useState(cachedProfile?.avatar ?? undefined);
 	const [createdAt, setCreatedAt] = useState<Date | null>(null);
 	const [availability, setAvailability] = useState<AVAILABILITY_TYPE | null>(null);
 	const [lastOnline, setLastOnline] = useState<Date | null>(null);
-	const [level, setLevel] = useState(cachedStat?.level ?? 0);
-	const [xp, setXp] = useState(cachedStat?.xp ?? 0);
-	const [currentLevelXpThreshold, setCurrentLevelXpThreshold] = useState(cachedStat?.currentLevelXpThreshold ?? 0);
-	const [currentLevelProgressPercentage, setCurrentLevelProgressPercentage] = useState(cachedStat?.currentLevelProgressPercentage ?? 0);
-	const [displayedBadgeId, setDisplayedBadgeId] = useState(cachedStat?.displayedBadgeId ?? "fresh_deal");
-	const [totalPlayed, setTotalPlayed] = useState(cachedStat?.totalPlayed ?? 0);
-	const [totalWins, setTotalWins] = useState(cachedStat?.totalWins ?? 0);
-	const [winStreak, setWinStreak] = useState(cachedStat?.winStreak ?? 0);
+	const [level, setLevel] = useState(cachedStat?.level ?? null);
+	const [xp, setXp] = useState(cachedStat?.xp ?? null);
+	const [currentLevelXpThreshold, setCurrentLevelXpThreshold] = useState(cachedStat?.currentLevelXpThreshold ?? null);
+	const [currentLevelProgressPercentage, setCurrentLevelProgressPercentage] = useState(cachedStat?.currentLevelProgressPercentage ?? null);
+	const [displayedBadgeId, setDisplayedBadgeId] = useState(cachedStat?.displayedBadgeId ?? null);
+	const [totalPlayed, setTotalPlayed] = useState(cachedStat?.totalPlayed ?? null);
+	const [totalWins, setTotalWins] = useState(cachedStat?.totalWins ?? null);
+	const [winStreak, setWinStreak] = useState(cachedStat?.winStreak ?? null);
 	const [achievements, setAchievements] = useState(cachedStat?.achievements ?? undefined);
 
-	const statsFetched = useRef<string | null>(null);
+	const dataFetched = useRef<string | null>(null);
 	useEffect(() => {
-		if (statsFetched.current)
+		/** This window is opened for one selected player, so load their details only once */
+		if (dataFetched.current)
 			return;
-		statsFetched.current = statsUuid;
+		dataFetched.current = playerStatsUuid;
 
 		const fetchPlayerData = async () => {
 			try {
-				const [profile, createdAt, online, clientStats] = await Promise.all([
-					handleGetProfile(statsUuid),
-					handleCreatedAt(statsUuid),
-					handleGetOnline(statsUuid),
-					handlePublicPlayerGameData(statsUuid),
+				const [profile, createdAt, online, playerStats] = await Promise.all([
+					handleGetProfile(playerStatsUuid),
+					handleCreatedAt(playerStatsUuid),
+					handleGetOnline(playerStatsUuid),
+					handlePublicPlayerGameData(playerStatsUuid),
 				]);
 
 				setName(profile?.username ?? "n/a");
@@ -59,17 +65,28 @@ export const StatsWindow: React.FC = () => {
 
 				setCreatedAt(createdAt ?? null);
 
-				setLevel(clientStats.stats.level);
-				setXp(clientStats.stats.xp);
-				setDisplayedBadgeId(clientStats.stats.displayedBadgeId);
-				setTotalPlayed(clientStats.stats.totalPlayed);
-				setTotalWins(clientStats.stats.totalWins);
-				setWinStreak(clientStats.stats.winStreak);
-
-				setCurrentLevelXpThreshold(clientStats.levelProgress.currentLevelXpThreshold);
-				setCurrentLevelProgressPercentage(clientStats.levelProgress.currentLevelProgressPercentage);
-
-				setAchievements(clientStats.achievements);
+				setLevel(playerStats.stats.level);
+				setXp(playerStats.stats.xp);
+				setDisplayedBadgeId(playerStats.stats.displayedBadgeId);
+				setTotalPlayed(playerStats.stats.totalPlayed);
+				setTotalWins(playerStats.stats.totalWins);
+				setWinStreak(playerStats.stats.winStreak);
+				setCurrentLevelXpThreshold(playerStats.levelProgress.currentLevelXpThreshold);
+				setCurrentLevelProgressPercentage(playerStats.levelProgress.currentLevelProgressPercentage);
+				setAchievements(playerStats.achievements);
+				if (members && members.includes(playerStatsUuid)) {
+					useGameStatsStore.getState().updatePlayerCachedStat(playerStatsUuid, {
+						level: playerStats.stats.level,
+						xp: playerStats.stats.xp,
+						displayedBadgeId: playerStats.stats.displayedBadgeId,
+						totalPlayed: playerStats.stats.totalPlayed,
+						totalWins: playerStats.stats.totalWins,
+						winStreak: playerStats.stats.winStreak,
+						currentLevelXpThreshold: playerStats.levelProgress.currentLevelXpThreshold,
+						currentLevelProgressPercentage: playerStats.levelProgress.currentLevelProgressPercentage,
+						achievements: playerStats.achievements,
+					});
+				}
 
 				if (online?.isOnline)
 					setAvailability(online.inParty ? "Busy" : "Online");
@@ -78,11 +95,12 @@ export const StatsWindow: React.FC = () => {
 					setLastOnline(online?.lastOnline ? new Date(online.lastOnline) : null);
 				}
 			} catch (error) {
-				console.warn("Failed to fetch player data:", error);
+				if (authVerboseMode || gameStatsVerboseMode || partyVerboseMode || profileVerboseMode)
+					console.warn("Failed to fetch player data:", error);
 			}
 		};
 		fetchPlayerData();
-	}, [statsUuid]);
+	}, [playerStatsUuid]);
 
 	return (
 		<Window
@@ -96,9 +114,9 @@ export const StatsWindow: React.FC = () => {
 				overflow-y-scroll
 			">
 				<div className="flex">
-					<AvatarMemberModule uuid={statsFetched.current} name={name ?? "-"} image={avatar} />
+					<AvatarMemberModule uuid={playerStatsUuid} name={name ?? "-"} image={avatar} />
 					<PlayerDataModule
-						uuid={statsFetched.current!}
+						uuid={playerStatsUuid}
 						availability={availability}
 						lastOnline={lastOnline}
 						createdAt={createdAt}
@@ -120,10 +138,8 @@ export const StatsWindow: React.FC = () => {
 					py-2rem px-2rem
 					gap-1rem
 				">
-					{ members && statsFetched.current && members.includes(statsFetched.current) && <KickPlayerButton playerUuid={statsFetched.current}/>}
-					{statsFetched.current &&
-						<FriendToggleButton uuid={statsFetched.current!} name={name ?? "Player"}/>
-					}
+					{ members && members.includes(playerStatsUuid) && <KickPlayerButton playerUuid={playerStatsUuid}/>}
+					<FriendToggleButton uuid={playerStatsUuid} name={name ?? "Player"}/>
 				</div>
 			</div>
 		</Window>

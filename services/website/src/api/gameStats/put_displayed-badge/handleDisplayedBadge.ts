@@ -2,6 +2,9 @@ import { useGameStatsStore } from "../../../store/GameStatsStore";
 import { fetchDisplayedBadge } from "./fetchDisplayedBadge";
 
 export const handleDisplayedBadge = async (badgeId: string) => {
+	if (!useGameStatsStore.getState().gameStatsAPIConnection)
+		return;
+
 	try {
 		const response = await fetchDisplayedBadge(badgeId);
 		if (!response)
@@ -12,7 +15,8 @@ export const handleDisplayedBadge = async (badgeId: string) => {
 
 		return response;
 	} catch(error) {
-		console.warn("[gameStats > 'POST' displayed-badge] error:", error);
+		if (useGameStatsStore.getState().gameStatsVerboseMode)
+			console.warn("[gameStats > 'POST' displayed-badge] error:", error);
 
 		return null;
 	}

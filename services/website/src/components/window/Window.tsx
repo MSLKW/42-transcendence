@@ -87,7 +87,7 @@ export const Window: React.FC<WindowProps> = ({
 								<Tooltip text="Clear Chat">
 									<button
 										type="button"
-										onClick={() => useChatStore.setState({ cachedChat: [] })}
+										onClick={() => useChatStore.setState({ chatLog: [] })}
 										className="btn-icon"
 									>
 										<ClearIcon />

@@ -16,5 +16,8 @@ export const fetchOwnPlayerGameData = async () => {
 		throw new Error(`Failed to get own player game data (${response.status} ${response.statusText})`);
 	}
 
-	return await response.json();
+	const text = await response.text();
+	if (!text || text.trim() === "")
+		return [];
+	return JSON.parse(text);
 }

@@ -37,6 +37,7 @@ export class LoginScene extends SceneContainer {
 	}
 
 	public animate(ctx: ThreeJsManager): void {
+		/** Scale rotation by elapsed time so the background spins consistently across frame rates */
 		const delta = this.timer.getDelta();
 		this.timer.update();
 		this.sphere.rotation.y += 0.025 * delta;

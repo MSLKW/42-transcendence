@@ -2,6 +2,9 @@ import { useGameStatsStore } from "../../../store/GameStatsStore";
 import { fetchEasterEggFound } from "./fetchEasterEggFound";
 
 export const handleEasterEggFound = async (eggId: string) => {
+	if (!useGameStatsStore.getState().gameStatsAPIConnection)
+		return;
+
 	try {
 		const response = await fetchEasterEggFound(eggId);
 		if (!response)
@@ -12,7 +15,8 @@ export const handleEasterEggFound = async (eggId: string) => {
 
 		return response;
 	} catch(error) {
-		console.warn("[gameStats > 'POST' easter-egg-found] error:", error);
+		if (useGameStatsStore.getState().gameStatsVerboseMode)
+			console.warn("[gameStats > 'POST' easter-egg-found] error:", error);
 
 		return null;
 	}
