@@ -6,7 +6,6 @@ type ChatServer = Server<ClientToServerEvents, ServerToClientEvents>;
 /** Returns the number of currently connected sockets in a room. */
 export async function getPlayerCountInRoom(io: ChatServer, roomId: string): Promise<number> {
 	const sockets = await io.in(roomId).fetchSockets();
-	console.log("sockets.length:", sockets.length);
 	return sockets.length;
 }
 

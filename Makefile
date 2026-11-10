@@ -153,7 +153,40 @@ check-imports:
 	@! grep -rnE "game-stats-types/(website|game-stats)" services/game-server/src && echo "ok: game-server imports only its own entry"
 	@! grep -rnE "game-stats-types/(game-server|game-stats)" services/website/src && echo "ok: website imports only its own entry"
 
-.PHONY: all down up stop restart clean fclean re logs nuclear purge progress config ls help shell- check-imports
+## Generate database passwords, authentication tokens and SSL certificates
+secrets:
+	@echo "$(PURPLE)\nGenerating project secrets...\n$(RESET)"
+	@mkdir -p secrets/database-passwords secrets/tokens secrets/ssl
+
+	@for name in db-admin-password db-auth-password db-party-password db-profile-password db-friends-password db-game-stats-password; do \
+		if [ ! -f "secrets/database-passwords/$$name.txt" ]; then \
+			openssl rand -hex 32 > "secrets/database-passwords/$$name.txt"; \
+			echo "$(GREEN)Generated $$name$(RESET)"; \
+		else \
+			echo "$(BLUE)Existing $$name (skipped)$(RESET)"; \
+		fi; \
+	done
+
+	@if [ ! -f secrets/tokens/statistics-token.txt ]; then \
+		openssl rand -hex 32 > secrets/tokens/statistics-token.txt; \
+		echo "$(GREEN)Generated statistics token$(RESET)"; \
+	else \
+		echo "$(BLUE)Existing statistics token (skipped)$(RESET)"; \
+	fi
+
+	@if [ ! -f secrets/ssl/transcendence.key ] || [ ! -f secrets/ssl/transcendence.crt ]; then \
+		openssl req -x509 -newkey rsa:2048 -nodes \
+			-keyout secrets/ssl/transcendence.key \
+			-out secrets/ssl/transcendence.crt \
+			-days 365 -subj "/CN=localhost"; \
+		echo "$(GREEN)Generated SSL certificate$(RESET)"; \
+	else \
+		echo "$(BLUE)Existing SSL certificate (skipped)$(RESET)"; \
+	fi
+
+	@echo "$(PURPLE)\nSecret generation completed!\n$(RESET)"
+
+.PHONY: all down up stop restart clean fclean re logs nuclear purge progress config ls help shell- check-imports secrets
 
 
 # --- as learning references only, not to be run via makefile commands. must be in these sequence ----------------------------------------------
