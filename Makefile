@@ -80,7 +80,7 @@ logs:
 
 ## Open a shell in a service (e.g. make shell-website)
 shell-:
-	@printf 'Usage: make shell-<%s>\n' "$(shell echo $(SERVICES) | tr ' ' '|')"
+	@printf 'Usage: make shell-<%s>\n' "$(shell echo $(SHELLABLE_SERVICES) | tr ' ' '|')"
 define SHELL_TEMPLATE
 shell-$(1):
 	@$(COMPOSE) exec $(1) sh
@@ -104,6 +104,7 @@ ls:
 ## Destructive! Total system wipe out across entire machine.
 nuclear:
 	@echo "$(PURPLE)docker system prune -a --volumes -f$(RESET)"
+	@docker compose down -v
 	@docker system prune -a --volumes -f
 # -a: Removes all unused images, not just dangling ones.
 # --volumes: Removes all unused volumes.

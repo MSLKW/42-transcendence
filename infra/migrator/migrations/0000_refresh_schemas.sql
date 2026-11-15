@@ -82,11 +82,11 @@ CREATE TABLE "profile_schema"."user_settings" (
 	"id" uuid PRIMARY KEY NOT NULL,
 	"allow_3_of_a_kind" boolean DEFAULT false NOT NULL,
 	"allow_2_of_spades_end" boolean DEFAULT false NOT NULL,
-	"auto_pass_index" integer DEFAULT 0 NOT NULL,
+	"auto_pass_timer_ms" integer DEFAULT 0 NOT NULL,
 	"end_game_condition" integer DEFAULT 0 NOT NULL,
 	"score_calculation" integer DEFAULT 0 NOT NULL,
 	"card_style" integer DEFAULT 0 NOT NULL,
-	"ui_color" integer DEFAULT 0 NOT NULL,
+	"ui_colour" integer DEFAULT 0 NOT NULL,
 	"fx_level" integer DEFAULT 0 NOT NULL,
 	"mx_level" integer DEFAULT 0 NOT NULL,
 	"updated_at" timestamp with time zone DEFAULT now() NOT NULL

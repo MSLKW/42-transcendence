@@ -67,8 +67,9 @@ export class DrizzleUserStore implements UserStore
 			return {
 				allow3OfAKind: 		settings.allow3OfAKind,
 				allow2OfSpadesEnd: 	settings.allow2OfSpadesEnd,
+				autoPassTimerMs:	settings.autoPassTimerMs,
 				cardStyle: 			settings.cardStyle,
-				uiColour: 			settings.uiColor,
+				uiColour: 			settings.uiColour,
 				fxLevel: 			settings.fxLevel,
 				mxLevel: 			settings.mxLevel,
 			};
