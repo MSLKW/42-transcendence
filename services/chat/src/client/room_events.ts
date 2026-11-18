@@ -1,15 +1,17 @@
-import { Socket } from "socket.io";
+import { Server, Socket } from "socket.io";
 import { Client } from "./Client";
 import { ClientToServerEvents, ServerToClientEvents } from "../events";
 import { PartyManager } from "../party/PartyManager";
+import { emitPlayerCountInRoom, getPlayerCountInRoom } from "./getPlayerCountInRoom";
 
 /** Socket type used by room event handlers */
 type ChatSocket = Socket<ClientToServerEvents, ServerToClientEvents>;
+type ChatServer = Server<ClientToServerEvents, ServerToClientEvents>;
 
 /** Registers room join and leave behavior */
-export function registerRoomEvents(socket: ChatSocket, client: Client, partyManager: PartyManager): void {
-	socket.on("chat_join_room", (payload, ack) => {
-		const sendAck = (response: { success: boolean; roomId?: string; reason?: string }) => {
+export function registerRoomEvents(io: ChatServer, socket: ChatSocket, client: Client, partyManager: PartyManager): void {
+	socket.on("chat_join_room", async (payload, ack) => {
+		const sendAck = (response: { success: boolean; roomId?: string; count?: number; reason?: string }) => {
 			if (typeof ack === "function")
 				ack(response);
 		}
@@ -41,25 +43,30 @@ export function registerRoomEvents(socket: ChatSocket, client: Client, partyMana
 		}
 		if (client.roomId === requestedRoomId) {
 			if (!socket.rooms.has(requestedRoomId))
-				socket.join(requestedRoomId);
-			sendAck({ success: true, roomId: requestedRoomId });
+				await socket.join(requestedRoomId);
+			const count = await getPlayerCountInRoom(io, requestedRoomId);
+			sendAck({ success: true, roomId: requestedRoomId, count });
+			void emitPlayerCountInRoom(io, requestedRoomId);
 			return;
 		}
 
 		const previousRoomId = client.roomId;
-		socket.leave(previousRoomId);
+		await socket.leave(previousRoomId);
 		socket.to(previousRoomId).emit("chat_user_left", {
 			senderUuid: client.uuid,
 			timestamp: new Date().toISOString(),
 		});
 
 		client.roomId = requestedRoomId;
-		socket.join(requestedRoomId);
+		await socket.join(requestedRoomId);
 		socket.to(requestedRoomId).emit("chat_user_joined", {
 			senderUuid: client.uuid,
 			timestamp: new Date().toISOString(),
 		});
+		void emitPlayerCountInRoom(io, previousRoomId);
+		void emitPlayerCountInRoom(io, requestedRoomId);
 		console.log(`User<${client.uuid}> joined chat room: ${requestedRoomId}`);
-		sendAck({ success: true, roomId: requestedRoomId });
+		const count = await getPlayerCountInRoom(io, requestedRoomId);
+		sendAck({ success: true, roomId: requestedRoomId, count });
 	});
 }

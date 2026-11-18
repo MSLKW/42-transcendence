@@ -43,6 +43,7 @@ export const useBubbleStore = create<BubbleState>(
 			}));
 
 			const timer = setTimeout(() => {
+				/** Remove transient bubbles automatically while keeping their timers cancellable */
 				get().removeBubble(uuid, id);
 			}, 4000);
 			bubbleTimers.set(id, timer);
@@ -59,13 +60,14 @@ export const useBubbleStore = create<BubbleState>(
 				const current = state.bubbles[uuid] ?? [];
 				const updated = current.filter((bubble) => bubble.id !== bubbleId);
 
-				return {
-					bubbles: {
-						...state.bubbles,
-						[uuid]: updated,
-					},
-				};
-			})
+				const bubbles = { ...state.bubbles };
+				if (updated.length === 0)
+					delete bubbles[uuid];
+				else
+					bubbles[uuid] = updated;
+
+				return { bubbles };
+			});
 		},
 
 		clearBubbles: (uuid) => {

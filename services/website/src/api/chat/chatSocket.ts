@@ -56,6 +56,12 @@ class ChatSocketService {
 		connectionHandlers(
 			this.socket
 		);
+		this.socket.on("connect", () => {
+			/** Rejoin the stored room after Socket.IO reconnects */
+			const roomId = useChatStore.getState().chatRoomId;
+			if (roomId)
+				this.joinRoom(roomId);
+		});
 
 		this.socket.connect();
 	}
@@ -65,11 +71,6 @@ class ChatSocketService {
 
 		this.socket.disconnect();
 		this.socket = null;
-
-		useChatStore.setState({
-			chatSocketId: null,
-			chatRoomId: null,
-		});
 	}
 	public reconnect() {
 		if (!this.socket) {

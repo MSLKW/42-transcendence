@@ -24,6 +24,7 @@ export const ResultsWindow = () => {
 		<Window
 			title={`Results of Round ${round}`}
 			dismissKey="results"
+			lightbox={true}
 		>
 			<div className="py-2rem px-3rem max-h-[85vh] overflow-y-scroll pointer-events-auto">
 				<div className="flex flex-col gap-3rem pb-5">

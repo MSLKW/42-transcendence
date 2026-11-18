@@ -25,7 +25,8 @@ export function playerJoinedHandler(socket: Socket) {
 			if (usePartyStore.getState().partyVerboseMode)
 				console.log("[party > 'on' player_joined] uuid:", payload.uuid);
 		} catch (error) {
-			console.warn("[party > 'on' player_joined] error:", error);
+			if (usePartyStore.getState().partyVerboseMode)
+				console.warn("[party > 'on' player_joined] error:", error);
 		}
 	});
 }

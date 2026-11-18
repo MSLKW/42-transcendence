@@ -13,5 +13,8 @@ export const fetchCreatedAt = async (uuid: string) => {
 			throw new Error(`Failed to get data (${response.status} ${response.statusText})`);
 	}
 
-	return await response.json();
+	const text = await response.text();
+	if (!text || text.trim() === "")
+		return [];
+	return JSON.parse(text);
 }

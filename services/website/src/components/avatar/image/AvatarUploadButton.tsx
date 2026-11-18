@@ -33,6 +33,7 @@ export const AvatarUploadButton = ({ setAvatar }: AvatarUploadButtonProps) => {
 			const response = await handlePutAvatar(file);
 			if (!response?.ok)
 				return;
+			/** Increment the cache key so existing custom-avatar previews reload the uploaded image */
 			markAvatarUpdated(clientUuid);
 			setAvatar(`avatars/${clientUuid}.webp`);
 		} finally {

@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useCallback } from "react";
 import { handleFriendships } from "../../api/friends/get_friendships/handleFriendships";
 import { handleFriendRequestsSent } from "../../api/friends/get_friend-requests_sent/handleFriendRequestsSent";
 import { handleGetSearch } from "../../api/profile/get_search/handleGetSearch";
@@ -11,6 +11,7 @@ import { usePartyStore } from "../../store/PartyStore";
 
 export const PartyWindow = () => {
 	const cachedFriends = useFriendsStore((store) => store.cachedFriends);
+	const friendsVerboseMode = useFriendsStore((store) => store.friendsVerboseMode);
 	const clientUuid = useAuthStore((store) => store.clientUuid);
 
 	const [searchQuery, setSearchQuery] = useState<string>("");
@@ -25,7 +26,8 @@ export const PartyWindow = () => {
 				useFriendsStore.setState({ cachedFriends: friends });
 			})
 			.catch((error) => {
-				console.warn("Failed to handle get friendships:", error);
+				if (friendsVerboseMode)
+					console.warn("Failed to handle get friendships:", error);
 			});
 		void handleFriendRequestsSent(clientUuid!)
 			.then((requests) => {
@@ -34,13 +36,13 @@ export const PartyWindow = () => {
 				useFriendsStore.setState({ friendRequestSent: newFriendRequestSent });
 			})
 			.catch((error) => {
-				console.warn("Failed to handle friend request sent:", error);
+				if (friendsVerboseMode)
+					console.warn("Failed to handle friend request sent:", error);
 			});
 	}, [clientUuid]);
 
-	const searchFunction = async () => {
+	const searchFunction = useCallback(() => {
 		const query = searchQuery.trim();
-
 		if (query === "") {
 			setFilteredResults([]);
 			setIsSearching(false);
@@ -52,6 +54,7 @@ export const PartyWindow = () => {
 		usePartyStore.setState({ availabilityOverrides: {} });
 
 		const controller = new AbortController();
+		/** Ignore stale responses even when an earlier request finishes after it was aborted */
 		const requestId = ++searchRequestId.current;
 
 		const timeoutId = setTimeout(async () => {
@@ -62,6 +65,9 @@ export const PartyWindow = () => {
 					return;
 
 				setFilteredResults(results);
+			} catch (error) {
+				if (controller.signal.aborted)
+					return;
 			} finally {
 				if (requestId === searchRequestId.current)
 					setIsSearching(false);
@@ -71,12 +77,14 @@ export const PartyWindow = () => {
 		return () => {
 			clearTimeout(timeoutId);
 			controller.abort();
+			if (requestId === searchRequestId.current)
+				searchRequestId.current++;
 		};
-	}
+	}, [searchQuery]);
 
 	useEffect(() => {
-		searchFunction();
-	}, [searchQuery]);
+		return searchFunction();
+	}, [searchFunction]);
 
 	return (
 		<Window
@@ -129,10 +137,7 @@ export const PartyWindow = () => {
 				<SearchModule 
 					value={searchQuery}
 					onChange={setSearchQuery}
-					search={() => {
-						setFilteredResults([]);
-						searchFunction();
-					}}
+					search={() => setFilteredResults([])}
 				/>
 			</div>
 			<div className="

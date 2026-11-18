@@ -15,5 +15,8 @@ export const fetchPublicPlayerGameData = async (playerUuid: string) => {
 		throw new Error(errorData.message || `Failed to get public player game data (${response.status} ${response.statusText})`);
 	}
 
-	return await response.json();
+	const text = await response.text();
+	if (!text || text.trim() === "")
+		return [];
+	return JSON.parse(text);
 }

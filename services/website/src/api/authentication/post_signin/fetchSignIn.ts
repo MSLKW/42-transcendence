@@ -14,5 +14,8 @@ export const fetchSignIn = async (email: string, password: string) => {
 		throw new Error(errorData.message || `Failed to sign in (${response.status} ${response.statusText})`);
 	}
 
-	return await response.json();
+	const text = await response.text();
+	if (!text || text.trim() === "")
+		return [];
+	return JSON.parse(text);
 };

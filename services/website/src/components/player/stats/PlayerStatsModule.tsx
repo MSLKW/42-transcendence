@@ -1,7 +1,7 @@
 interface PlayerStatsModuleProps {
-	totalPlayed: number,
-	totalWins: number,
-	winStreak: number,
+	totalPlayed: number | null,
+	totalWins: number | null,
+	winStreak: number | null,
 }
 
 export const PlayerStatsModule = ({ totalPlayed, totalWins, winStreak }: PlayerStatsModuleProps) => {
@@ -17,21 +17,21 @@ export const PlayerStatsModule = ({ totalPlayed, totalWins, winStreak }: PlayerS
 				p-5
 			">
 				<h2>Total Played</h2>
-				<h3>{totalPlayed}</h3>
+				<h3>{totalPlayed ?? "n/a"}</h3>
 			</div>
 			<div className="
 				w-full h-full
 				p-5
 			">
 				<h2>Total Wins</h2>
-				<h3>{totalWins}</h3>
+				<h3>{totalWins ?? "n/a"}</h3>
 			</div>
 			<div className="
 				w-full h-full
 				p-5
 			">
 				<h2>Win Streak</h2>
-				<h3>{winStreak}</h3>
+				<h3>{winStreak ?? "n/a"}</h3>
 			</div>
 		</div>
 	);

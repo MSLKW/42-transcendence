@@ -73,7 +73,7 @@ export const AvatarModule = ({
 				{ playerPassed.includes(uuid) &&
 					<div className="
 						absolute bottom-0 translate-y-2 left-1/2 -translate-x-1/2
-						bg-n1/80 text-n6 border border-n2
+						bg-a3 text-n6 border border-n2
 						w-[120%] rounded-full
 					">
 						<p>PASSED</p>

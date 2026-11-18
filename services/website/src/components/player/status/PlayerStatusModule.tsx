@@ -30,7 +30,7 @@ export const PlayerStatusModule = ({ uuid, availability, lastOnline }: PlayerSta
 			{effectiveAvailability === "Offline" &&
 				<Tooltip text={`Last Online: ${lastOnline?.toLocaleString()}`}>
 					<p className="
-						h-2rem aspect-square
+						h-1.5rem aspect-square
 						rounded-full
 						border border-n6 text-n6 opacity-60
 						flex place-content-center place-items-center

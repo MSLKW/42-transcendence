@@ -1,3 +1,4 @@
+@import "@fontsource-variable/inter";
 @import "tailwindcss";
 @import "./css/base/bg.css";
 @import "./css/base/container.css";
@@ -59,14 +60,8 @@
 	--color-r5: #f9a49f;
 	--color-r6: #fddcda;
 	--color-f0: #f65e5f;
-
-	/* --background-image-big2: radial-gradient(
-		circle,
-		var(--color-n1) 0%,
-		var(--color-n0) 100%
-	); */
 		
-	--font-sans: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+	--font-sans: "Inter", sans-serif;
 
 	--text-base: clamp(0.625rem, 0.536vmin + 0.518rem, 1rem);
 	--text-lg: clamp(0.75rem, 0.536vmin + 0.643rem, 1.125rem);
@@ -78,14 +73,13 @@ html,
 body,
 #root {
 	@apply 
-        w-screen h-screen
-        m-0 p-0
-        font-sans
-        ;
+		w-screen h-screen
+		m-0 p-0
+		font-sans;
+	-webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
 }
-/* html {
-	@apply bg-n1;
-} */
 html.frame-mode * {
+	/* Frame mode outlines every element to help inspect layout bounds during development */
 	outline: 1px solid var(--color-f0) !important;
 }

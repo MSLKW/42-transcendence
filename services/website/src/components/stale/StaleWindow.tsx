@@ -4,7 +4,6 @@ import { Window } from "../window/Window";
 
 export const StaleWindow = () => {
 	const isAuthenticated = useAuthStore((store) => store.isAuthenticated);
-	console.log("isAuthenticated:", isAuthenticated);
 
 	return (
 		<div className="z-999">

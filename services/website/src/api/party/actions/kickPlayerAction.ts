@@ -5,6 +5,7 @@ import { useProfileStore } from "../../../store/ProfileStore";
 import { usePartyStore } from "../../../store/PartyStore";
 import { useSceneStore } from "../../../store/SceneStore";
 import { useGameStatsStore } from "../../../store/GameStatsStore";
+import { useAuthStore } from "../../../store/AuthStore";
 
 export async function kickPlayerAction(socket: Socket | null, recipientUuid: string) {
 	if (!socket)
@@ -15,8 +16,9 @@ export async function kickPlayerAction(socket: Socket | null, recipientUuid: str
 
 		socket?.emit("kick_player", { recipientUuid });
 
-		await useProfileStore.getState().setCachedProfile();
-		await useGameStatsStore.getState().setCachedStats();
+		useAuthStore.getState().removePlayerCreatedAt(recipientUuid);
+		useGameStatsStore.getState().removePlayerCachedStat(recipientUuid);
+		useProfileStore.getState().removeCachedProfile(recipientUuid);
 
 		useSceneStore.getState().setShowWindow("stats", false);
 
@@ -28,6 +30,7 @@ export async function kickPlayerAction(socket: Socket | null, recipientUuid: str
 			NOTIFICATION_TYPE.error
 		);
 
-		console.warn("[party > 'emit' kick_player] error:", error);
+		if (usePartyStore.getState().partyVerboseMode)
+			console.warn("[party > 'emit' kick_player] error:", error);
 	}
 }

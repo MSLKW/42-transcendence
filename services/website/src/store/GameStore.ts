@@ -31,6 +31,7 @@ export type HAND_TYPE = keyof typeof HAND_VALUES;
 export const HAND_LABEL = Object.keys(HAND_VALUES) as HAND_TYPE[];
 
 interface GameValues {
+	gameAPIConnection: boolean,
 	gameVerboseMode: boolean,
 	gameSocketId: string | null,
 	totalPlayers: number;
@@ -80,6 +81,7 @@ interface GameState extends GameValues {
 export const useGameStore = create<GameState>() (
 	persist(
 		(set, get) => ({
+			gameAPIConnection: true,
 			gameVerboseMode: false,
 			gameSocketId: null,
 			totalPlayers: 0,
@@ -332,6 +334,31 @@ export const useGameStore = create<GameState>() (
 		}),
 		{
 			name: 'game-storage',
+
+			partialize: (state) => ({
+				gameAPIConnection: state.gameAPIConnection,
+				gameVerboseMode: state.gameVerboseMode,
+				gameSocketId: state.gameSocketId,
+				totalPlayers: state.totalPlayers,
+				gameSeats: state.gameSeats,
+				userSeats: state.userSeats,
+				playerDisconnection: state.playerDisconnection,
+				gameStarted: state.gameStarted,
+				cardsLeft: state.cardsLeft,
+				currentHand: state.currentHand,
+				selectedCards: state.selectedCards,
+				cardHeapTopCards: state.cardHeapTopCards,
+				lowestCardRequired: state.lowestCardRequired,
+				round: state.round,
+				seatRef: state.seatRef,
+				activeSeat: state.activeSeat,
+				isActiveSeatSkippable: state.isActiveSeatSkippable,
+				isCardHandPlayable: state.isCardHandPlayable,
+				sortType: state.sortType,
+				playerPassed: state.playerPassed,
+				playerTimer: state.playerTimer,
+				playerRemainingTimer: state.playerRemainingTimer,
+			}),
 		}
 	)
 );

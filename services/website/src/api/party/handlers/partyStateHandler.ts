@@ -5,7 +5,6 @@ import { useChatStore } from "../../../store/ChatStore";
 import { useGameStatsStore } from "../../../store/GameStatsStore";
 import { usePartyStore } from "../../../store/PartyStore";
 import { useProfileStore } from "../../../store/ProfileStore";
-import { useSceneStore } from "../../../store/SceneStore";
 import { chatSocket } from "../../chat/chatSocket";
 
 export function partyStateHandler(socket: Socket) {
@@ -18,6 +17,7 @@ export function partyStateHandler(socket: Socket) {
 			console.log("[party > 'on' party_state] partyData:", partyData);
 
 		const clientUuid = useAuthStore.getState().clientUuid;
+		/** Notify only when this update represents a host change that promotes the current client */
 		const isClientNewHost = 
 			usePartyStore.getState().hostUuid !== partyData.hostUuid &&
 			clientUuid === partyData.hostUuid &&
@@ -32,17 +32,21 @@ export function partyStateHandler(socket: Socket) {
 		const currentChatRoomId = useChatStore.getState().chatRoomId;
 		const newChatRoomId = partyData.hostUuid;
 		if (currentChatRoomId !== newChatRoomId) {
+			/** Party chat is keyed by its host, so changing hosts starts a fresh local transcript */
 			useChatStore.setState ({
 				chatRoomId: newChatRoomId,
-				cachedChat: [],
+				chatPlayerCount: null,
+				chatLog: [],
 			})
 		}
 		chatSocket.joinRoom(newChatRoomId);
 
-		await useProfileStore.getState().setCachedProfile();
-		await useGameStatsStore.getState().setCachedStats();
-
-		useSceneStore.setState({ initialRender: true });
+		/** Refresh member metadata together after the authoritative roster changes */
+		await Promise.all([
+			useProfileStore.getState().setCachedProfile(),
+			useGameStatsStore.getState().setCachedStats(),
+			useAuthStore.getState().setCachedCreatedAts(),
+		]);
 
 		if (isClientNewHost)
 			useNotificationStore.getState().showNotification("You are the host of this party", NOTIFICATION_TYPE.message);

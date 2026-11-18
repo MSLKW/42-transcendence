@@ -15,5 +15,13 @@ export const fetchGetProfile = async (uuid: string): Promise<UserData> => {
 			throw new Error(`Failed to get profile (${response.status} ${response.statusText})`);
 	}
 
-	return await response.json();
+	const text = await response.text();
+	if (!text || text.trim() === "") {
+		return {
+			username: null,
+			avatarPath: null,
+			badge: "fresh_deal",
+		};
+	}
+	return JSON.parse(text);
 }

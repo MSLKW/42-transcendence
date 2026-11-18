@@ -33,7 +33,9 @@ export async function sendInviteAction(socket: Socket | null, recipientUuid: str
 
 			setAvailability(recipientUuid, "Offline");
 
-			console.warn("[party > 'emit' send_invite] reason:Failed to invite player");
+			if (usePartyStore.getState().partyVerboseMode)
+				console.warn("[party > 'emit' send_invite] reason:Failed to invite player");
+
 			return;
 		}
 
@@ -53,6 +55,7 @@ export async function sendInviteAction(socket: Socket | null, recipientUuid: str
 			NOTIFICATION_TYPE.error
 		);
 
-		console.warn("[party > 'emit' send_invite] error:", error);
+		if (usePartyStore.getState().partyVerboseMode)
+			console.warn("[party > 'emit' send_invite] error:", error);
 	}
 }

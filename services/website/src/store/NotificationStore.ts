@@ -36,6 +36,7 @@ export const useNotificationStore = create<NotificationState>()(
 		isNotifFiltered: false,
 
 		showNotification: (msg, type, id = null, btn1, btn2) => {
+			/** Use the message as a fallback key so duplicate notices are not stacked */
 			if (!id)
 				id = msg;
 

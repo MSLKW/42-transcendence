@@ -1,4 +1,5 @@
 import { io, Socket } from "socket.io-client";
+import { VITE_SOCKET_URL, VITE_SOCKET_PARTY_PATH } from "../../config/env";
 import { acceptInviteAction } from "./actions/acceptInviteAction";
 import { kickPlayerAction } from "./actions/kickPlayerAction";
 import { leavePartyAction } from "./actions/leavePartyAction";
@@ -13,8 +14,6 @@ import { partyStateHandler } from "./handlers/partyStateHandler";
 import { playerLeftHandler } from "./handlers/playerLeftHandler";
 import { playerJoinedHandler } from "./handlers/playerJoinedHandler";
 import { usePartyStore } from "../../store/PartyStore";
-
-const partySocketUrl = window.location.origin;
 
 export type SendInviteResponse = {
 	success: boolean;
@@ -39,8 +38,8 @@ class PartySocketService {
 			return;
 		}
 
-		this.socket = io(partySocketUrl, {
-			path: "/socket/party",
+		this.socket = io(VITE_SOCKET_URL, {
+			path: VITE_SOCKET_PARTY_PATH,
 			transports: ["websocket", "polling"],
 			autoConnect: false,
 			reconnection: true,

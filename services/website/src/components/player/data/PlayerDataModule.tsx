@@ -10,10 +10,10 @@ interface PlayerDataModuleProps {
 	availability: AVAILABILITY_TYPE | null;
 	lastOnline: Date | null;
 	createdAt: Date | null;
-	xp: number;
-	level: number;
-	currentLevelXpThreshold: number;
-	currentLevelProgressPercentage: number;
+	xp: number | null;
+	level: number | null;
+	currentLevelXpThreshold: number | null;
+	currentLevelProgressPercentage: number | null;
 	displayedBadgeId: PublicBadgeId | null;
 	availableBadges?: Record<PublicBadgeId, boolean>;
 	setBadge?: (badge: PublicBadgeId) => void;
@@ -50,10 +50,13 @@ export const PlayerDataModule = ({
 				place-items-center
 				leading-tight
 			">
-				<h2>Level {xp}</h2>
+				<h2>Level {level ?? "n/a"}</h2>
 				<div className="w-full">
 					<p className="text-center">
-						XP: {level} / {currentLevelXpThreshold}
+						{
+							(!xp && !currentLevelXpThreshold) ? "XP: n/a" :
+							`XP: ${xp ?? "n/a"} / ${currentLevelXpThreshold ?? "n/a"}`
+						}
 					</p>
 					<div className="
 						h-2
@@ -101,7 +104,7 @@ export const PlayerDataModule = ({
 							</button>
 						:
 							<h3 className="w-full leading-none">
-								<i>{displayedBadgeId ? BADGE_NAMES[displayedBadgeId] : "n/a"}</i>
+								<i>Badge: {displayedBadgeId ? BADGE_NAMES[displayedBadgeId] : "n/a"}</i>
 							</h3>
 					}
 					{ showWindow["badge"] &&
@@ -121,7 +124,7 @@ export const PlayerDataModule = ({
 			</div>
 			<div className="text-a5">
 				<p>UUID: {uuid}</p>
-				<p>Joined: {createdAt?.toString() ?? "n/a"}</p>
+				<p>Created At: {createdAt?.toLocaleString() ?? "n/a"}</p>
 			</div>
 		</div>
 	);

@@ -1,6 +1,5 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-import { useAuthStore } from "./AuthStore";
 import { usePartyStore } from "./PartyStore";
 import { handlePublicPlayerGameData } from "../api/gameStats/get_public-player-game-data/handlePublicPlayerGameData";
 
@@ -111,29 +110,33 @@ export const ACHIEVEMENT_HINTS: Record<AchievementId, string> = {
 export interface CachedStat {
 	level: number;
 	xp: number;
+	displayedBadgeId: PublicBadgeId;
 	totalPlayed: number;
 	totalWins: number;
 	winStreak: number;
-	displayedBadgeId: PublicBadgeId;
 	currentLevelXpThreshold: number;
 	currentLevelProgressPercentage: number;
 	achievements: Record<AchievementId, Date | null>;
 }
 
-interface StatsValues {
+interface GameStatsValues {
+	gameStatsAPIConnection: boolean;
 	gameStatsVerboseMode: boolean;
 	cachedStats: Record<string, CachedStat>;
 	cachedBadges: Record<PublicBadgeId, boolean>;
 };
 
-interface StatsState extends StatsValues {
+interface GameStatsState extends GameStatsValues {
 	setCachedStats: () => Promise<void>;
-	removeCachedStat: (uuid: string | null) => void;
+	updatePlayerCachedStat: (uuid: string | null, stats: CachedStat) => Promise<void>;
+	removePlayerCachedStat: (uuid: string | null) => void;
+	resetValues: () => void;
 };
 
-export const useGameStatsStore = create<StatsState>() (
+export const useGameStatsStore = create<GameStatsState>() (
 	persist(
-		(set, _get) => ({
+		(set) => ({
+			gameStatsAPIConnection: true,
 			gameStatsVerboseMode: false,
 			cachedStats: {},
 			cachedBadges: {
@@ -156,27 +159,20 @@ export const useGameStatsStore = create<StatsState>() (
 			},
 
 			setCachedStats: async () => {
-				const clientUuid = useAuthStore.getState().clientUuid;
 				const members = usePartyStore.getState().members;
+				/** Party rosters may contain duplicate or empty seats, so fetch each real member once */
+				const allUuids = Array.from(new Set(members))
+					.filter((uuid): uuid is string => uuid !== null);
 
-				const allUuids = Array.from(
-					new Set([
-						...members,
-						...(clientUuid ? [clientUuid] : [])
-					])
-				).filter(
-					(uuid): uuid is string => uuid !== null
-				);
-
-				const stats = await Promise.all(
+				const results = await Promise.all(
 					allUuids.map(async (memberUuid) => {
 						const userStats = await handlePublicPlayerGameData(memberUuid);
 						if (!userStats)
 							return null;
 
-						return {
-							uuid: memberUuid,
-							data: {
+						return [
+							memberUuid,
+							{
 								level: userStats.stats.level,
 								xp: userStats.stats.xp,
 								totalPlayed: userStats.stats.totalPlayed,
@@ -186,25 +182,43 @@ export const useGameStatsStore = create<StatsState>() (
 								currentLevelXpThreshold: userStats.levelProgress.currentLevelXpThreshold,
 								currentLevelProgressPercentage: userStats.levelProgress.currentLevelProgressPercentage,
 								achievements: userStats.achievements,
-							},
-						}
+							}
+						];
 					})
 				);
 
-				set((state) => {
-					const cachedStats = { ...state.cachedStats };
-					for (const stat of stats) {
-						if (!stat)
-							continue;
-						cachedStats[stat.uuid] = stat.data;
-					}
-					return {
-						cachedStats,
-					}
-				});
+				set(() => ({
+					cachedStats: Object.fromEntries(
+						results.filter((item) => item !== null)
+					),
+				}));
 			},
 
-			removeCachedStat: (uuid) => {
+			updatePlayerCachedStat: async (uuid, stats) => {
+				if (!uuid)
+					return;
+
+				const playerData = {
+					level: stats.level,
+					xp: stats.xp,
+					totalPlayed: stats.totalPlayed,
+					totalWins: stats.totalWins,
+					winStreak: stats.winStreak,
+					displayedBadgeId: stats.displayedBadgeId,
+					currentLevelXpThreshold: stats.currentLevelXpThreshold,
+					currentLevelProgressPercentage: stats.currentLevelProgressPercentage,
+					achievements: stats.achievements,
+				};
+
+				set((state) => ({
+					cachedStats: {
+						...state.cachedStats,
+						[uuid]: playerData,
+					},
+				}));
+			},
+
+			removePlayerCachedStat: (uuid) => {
 				if (!uuid)
 					return;
 
@@ -214,9 +228,40 @@ export const useGameStatsStore = create<StatsState>() (
 					return { cachedStats };
 				});
 			},
+
+			resetValues: () => {
+				set({
+					cachedStats: {},
+					cachedBadges: {
+						fresh_deal: false,
+						beginners_luck: false,
+						worthy_opponent: false,
+						enthusiast: false,
+						risk_taker: false,
+						the_strategist: false,
+						big_2_champion: false,
+						double_digits: false,
+						century_club: false,
+						hot_hand: false,
+						flush_with_pride: false,
+						never_folds: false,
+						curious_cat: false,
+						imposter: false,
+						social_butterfly: false,
+						connoisseur: false,
+					},
+				});
+			}
 		}),
 		{
-			name: 'stats-storage',
+			name: 'game-stats-storage',
+
+			partialize: (state) => ({
+				gameStatsAPIConnection: state.gameStatsAPIConnection,
+				gameStatsVerboseMode: state.gameStatsVerboseMode,
+				cachedStats: state.cachedStats,
+				cachedBadges: state.cachedBadges,
+			}),
 		}
 	)
 );

@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import { io, Socket } from 'socket.io-client';
+import { VITE_SOCKET_URL, VITE_SOCKET_GAME_SERVER_PATH } from '../../config/env';
 import { type GameStateTransmit, type StatusTransmit, type SeatOrderTransmit, type GameSettingsTransmit, type GameEndStatsTransmit, type AchievementUnlockTransmit, type PlayerTurnTransmit, type SkipTurnTransmit } from '@big2/game-types';
 import { CardHeap } from './CardHeap';
 import { Player } from './Player';
@@ -20,8 +21,6 @@ import { useNotificationStore, NOTIFICATION_TYPE } from '../../store/Notificatio
 // import { clearGameInstance, gameLog } from './main';
 import { gameLog } from './main';
 
-const gameSocketUrl = window.location.origin;
-
 export class Game {
 	private socket: Socket;
 	private centerPosition: THREE.Vector3 = new THREE.Vector3(0, 0.6, 0);
@@ -35,8 +34,8 @@ export class Game {
 
 	constructor(sessionId: string, playerId: string) {
 		this.playerId = playerId;
-		this.socket = io(gameSocketUrl, {
-			path: "/socket/game/",
+		this.socket = io(VITE_SOCKET_URL, {
+			path: VITE_SOCKET_GAME_SERVER_PATH,
 			auth: {
 				lobbyId: sessionId,
 				uuid: playerId
@@ -124,6 +123,8 @@ export class Game {
 
 		this.socket.on("connect", () => {
 			gameLog(`[gameSocket] 'connect' id: ${this.socket.id}`);
+			useGameStore.setState({ gameSocketId: this.socket.id });
+
 			// console.log(useSceneStore.getState().currentScene, useGameStore.getState().gameStarted);
 			// if (useSceneStore.getState().currentScene !== "Game" || useGameStore.getState().gameStarted === false)
 				useSceneStore.getState().setCurrentScene("Lobby"); // figure this out
@@ -140,6 +141,8 @@ export class Game {
 
 		this.socket.on("disconnect", (reason) => {
 			gameLog(`[gameSocket] 'disconnect' reason: ${reason}`);
+			useGameStore.setState({ gameSocketId: null });
+
 			this.resetGame();
 			useGameStore.getState().resetLobby();
 			const currentScene = useSceneStore.getState().currentScene;

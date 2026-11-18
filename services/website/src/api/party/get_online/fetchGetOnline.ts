@@ -9,5 +9,8 @@ export const fetchGetOnline = async (uuid: string) => {
 	if (!response.ok)
 		throw new Error(`Failed to get online data (${response.status}, ${response.statusText})`);
 
-	return await response.json();
+	const text = await response.text();
+	if (!text || text.trim() === "")
+		return [];
+	return JSON.parse(text);
 };

@@ -24,6 +24,7 @@ export async function sendChatAction(socket: Socket | null, chatType: string, me
 			NOTIFICATION_TYPE.error
 		);
 
-		console.warn("[chat > 'emit' chat_message] error:", error);
+		if (useChatStore.getState().chatVerboseMode)
+			console.warn("[chat > 'emit' chat_message] error:", error);
 	}
 }

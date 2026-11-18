@@ -3,6 +3,9 @@ import { useProfileStore } from "../../../store/ProfileStore";
 import { fetchPutAvatar } from "./fetchPutAvatar";
 
 export const handlePutAvatar = async (avatar: File) => {
+	if (!useProfileStore.getState().profileAPIConnection)
+		return;
+
 	try {
 		const response = await fetchPutAvatar(avatar);
 
@@ -15,6 +18,7 @@ export const handlePutAvatar = async (avatar: File) => {
 
 		useNotificationStore.getState().showNotification(error, NOTIFICATION_TYPE.error);
 
-		console.warn("[profile > 'PUT' avatar] error:", error);
+		if (useProfileStore.getState().profileVerboseMode)
+			console.warn("[profile > 'PUT' avatar] error:", error);
 	}
 }

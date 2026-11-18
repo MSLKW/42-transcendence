@@ -15,6 +15,7 @@ export function Tooltip({ text, position = "top", children }: TooltipProps) {
 	const [pos, setPos] = useState({ top: 0, left: 0 });
 
 	const showTooltip = (e: React.MouseEvent<HTMLDivElement>) => {
+		/** Keep hover labels out of the way while the game scene needs pointer focus */
 		if (currentScene === "Game" || !text)
 			return;
 

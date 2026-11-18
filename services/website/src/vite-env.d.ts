@@ -13,4 +13,5 @@ interface ImportMetaEnv {
 	readonly VITE_SOCKET_GAME_SERVER_PATH: string;
 	readonly VITE_SOCKET_GAME_BOT_PATH: string;
 	readonly VITE_SOCKET_URL: string;
+	readonly SHOW_DEV_SECTION: boolean;
 }

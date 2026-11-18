@@ -3,6 +3,9 @@ import { useProfileStore } from "../../../store/ProfileStore";
 import { fetchGetSettings } from "./fetchGetSettings";
 
 export const handleGetSettings = async (uuid: string) => {
+	if (!useProfileStore.getState().profileAPIConnection)
+		return null;
+
 	try {
 		const response = await fetchGetSettings(uuid);
 
@@ -15,7 +18,8 @@ export const handleGetSettings = async (uuid: string) => {
 
 		useNotificationStore.getState().showNotification(error, NOTIFICATION_TYPE.error);
 
-		console.warn(`[profile > 'GET' settings/${uuid}] error:${error}`);
+		if (useProfileStore.getState().profileVerboseMode)
+			console.warn(`[profile > 'GET' settings/${uuid}] error:${error}`);
 
 		return null;
 	}

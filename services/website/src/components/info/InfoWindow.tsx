@@ -1,5 +1,4 @@
 import { Window } from "../window/Window";
-import { ShowDevSection } from "./Dev/ShowDevSection";
 import { PrivacyPolicyModule } from "./privacy_policy/PrivacyPolicy";
 import { TermsOfServiceModule } from "./terms_of_service/TermsOfService";
 
@@ -25,7 +24,6 @@ export const InfoWindow = () => {
 				">
 					<PrivacyPolicyModule />
 					<TermsOfServiceModule />
-					<ShowDevSection />
 				</div>
 			</div>
 		</Window>

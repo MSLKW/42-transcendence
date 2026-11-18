@@ -19,5 +19,8 @@ export const fetchGetSearch = async (query: string, signal?: AbortSignal): Promi
 			throw new Error(`Failed to search (${response.status} ${response.statusText})`);
 	}
 
-	return await response.json();
+	const text = await response.text();
+	if (!text || text.trim() === "")
+		return { searchResults: [] };
+	return JSON.parse(text);
 }

@@ -25,7 +25,8 @@ export function playerLeftHandler(socket: Socket) {
 			if (usePartyStore.getState().partyVerboseMode)
 				console.log("[party > 'on' player_left] uuid:", payload.uuid);
 		} catch (error) {
-			console.warn("[party > 'on' player_left] error:", error);
+			if (usePartyStore.getState().partyVerboseMode)
+				console.warn("[party > 'on' player_left] error:", error);
 		}
 	});
 }

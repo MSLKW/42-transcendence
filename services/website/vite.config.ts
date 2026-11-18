@@ -23,6 +23,9 @@ if (missing.length)
 	throw new Error(`[Error] Missing environment variables: ${missing.join(", ")}`);
 
 export default defineConfig({
+	define: {
+		"import.meta.env.SHOW_DEV_SECTION": JSON.stringify(process.env.SHOW_DEV_SECTION === "true"),
+	},
 	server: {
 		host: true,
 		port: 5173, // 5173

@@ -13,13 +13,15 @@ export function connectionHandlers(
 	});
 
 	socket.on("disconnect", (reason) => {
-		useChatStore.setState({
-			chatSocketId: null,
-			chatRoomId: null,
-		});
+		useChatStore.setState({ chatSocketId: null, chatPlayerCount: null });
 
 		if (useChatStore.getState().chatVerboseMode)
 			console.log("[chat > 'on' disconnect] reason:", reason);
+	});
+
+	socket.on("chat_room_player_count", ({ roomId, count }) => {
+		if (useChatStore.getState().chatRoomId === roomId)
+			useChatStore.setState({ chatPlayerCount: count });
 	});
 
 	socket.on("connect_error", (error) => {

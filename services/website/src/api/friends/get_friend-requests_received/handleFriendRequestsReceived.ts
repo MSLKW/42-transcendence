@@ -12,7 +12,8 @@ export const handleFriendRequestsReceived = async (receiverUuid: string) => {
 	} catch (err) {
 		const error = err instanceof Error ? err.message : "Something went wrong. Please try again";
 
-		console.warn(`[friends > 'GET' friend-requests/received/${receiverUuid}] error:${error}`);
+		if (useFriendsStore.getState().friendsVerboseMode)
+			console.warn(`[friends > 'GET' friend-requests/received/${receiverUuid}] error:${error}`);
 
 		return null;
 	}

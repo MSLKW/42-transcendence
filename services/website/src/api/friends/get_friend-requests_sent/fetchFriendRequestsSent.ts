@@ -12,5 +12,8 @@ export const fetchFriendRequestsSent = async (senderUuid: string) => {
 		throw new Error(`Failed to get all sent friend requests (${response.status}, ${response.statusText})`);
 	}
 
-	return await response.json();
+	const text = await response.text();
+	if (!text || text.trim() === "")
+		return [];
+	return JSON.parse(text);
 };

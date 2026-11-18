@@ -2,6 +2,9 @@ import { useAuthStore } from "../../../store/AuthStore";
 import { fetchCreatedAt } from "./fetchCreatedAt";
 
 export const handleCreatedAt = async (uuid: string) => {
+	if (!useAuthStore.getState().authAPIConnection)
+		return;
+
 	try {
 		const response = await fetchCreatedAt(uuid);
 

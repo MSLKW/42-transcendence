@@ -48,7 +48,7 @@ export const useResultsStore = create<ResultsState>() (
 					const roundPoints = gameEndStats.playerPenaltyPoints[playerUuid];
 					const previousTotalPoints = existingPlayer ? existingPlayer.totalPoints : 0;
 					const totalPoints = previousTotalPoints + roundPoints;
-					
+
 					return {
 						uuid: playerUuid,
 						cards,
@@ -108,6 +108,10 @@ export const useResultsStore = create<ResultsState>() (
 		}),
 		{
 			name: 'results-storage',
+
+			partialize: (state) => ({
+				results: state.results,
+			}),
 		}
 	)
 )

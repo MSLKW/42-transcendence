@@ -1,4 +1,5 @@
 import { useRef, useEffect, useCallback } from "react";
+import { handleValidate } from "./api/authentication/get_validate/handleValidate";
 import { chatSocket } from "./api/chat/chatSocket";
 import { partySocket } from "./api/party/partySocket";
 import { subscribeToMessages } from "./api/chat/subscribe/subscribeToMessages";
@@ -11,12 +12,12 @@ import { handleFriendRequestsSent } from "./api/friends/get_friend-requests_sent
 import { handleFriendRequestsReceived } from "./api/friends/get_friend-requests_received/handleFriendRequestsReceived";
 import { handleFriendRequestsAccept } from "./api/friends/post_friend-requests_accept/handleFriendRequestsAccept";
 import { handleFriendRequestsReject } from "./api/friends/post_friend-requests_reject/handleFriendRequestsReject";
-import { useFriendEvents } from "./api/friends/useFriendEvents";
 import { handleGetProfile } from "./api/profile/get_profile/handleGetProfile";
 import { useAuthStore } from "./store/AuthStore";
-import { useDevStore } from "./store/DevStore";
+import { useChatStore } from "./store/ChatStore";
 import { useFriendsStore } from "./store/FriendsStore";
 import { useNotificationStore, NOTIFICATION_TYPE } from "./store/NotificationStore";
+import { usePartyStore } from "./store/PartyStore";
 import { useProfileStore } from "./store/ProfileStore";
 import { useSceneStore } from "./store/SceneStore";
 import { useScrollToTop } from "./utilities/react/useScrollToTop";
@@ -41,45 +42,47 @@ import { StatsWindow } from "./components/stats/StatsWindow";
 import { ThreeJsManager } from './components/3d/ThreeJsManager';
 import { gameInstance, joinGameLobby, clearGameInstance } from "./api/game/main";
 import Dev from "./Dev";
-import { usePartyStore } from "./store/PartyStore";
-import { handleValidate } from "./api/authentication/get_validate/handleValidate";
+import { useFriendEvents } from "./api/friends/useFriendEvents";
+import { useGameStore } from "./store/GameStore";
 
 export let threejsManager: ThreeJsManager;
 
 export default function App() {
 	const clientUuid = useAuthStore((store) => store.clientUuid);
+	const chatAPIConnection = useChatStore((store) => store.chatAPIConnection);
+	const friendsVerboseMode = useFriendsStore((store) => store.friendsVerboseMode);
+	const gameAPIConnection = useGameStore((store) => store.gameAPIConnection);
+	const partyAPIConnection = usePartyStore((store) => store.partyAPIConnection);
+	const partyGameId = usePartyStore((store) => store.partyGameId);
 	const cachedProfiles = useProfileStore((store) => store.cachedProfiles);
-	const isProfileLoaded = useProfileStore((store) => store.isProfileLoaded);
 	const currentScene = useSceneStore((store) => store.currentScene);
 	const showWindow = useSceneStore((store) => store.showWindow);
-	const showDevSection = useDevStore((store) => store.showDevSection);
-	const partyGameId = usePartyStore((store) => store.partyGameId);
-	const initialRender = useSceneStore((store) => store.initialRender);
+
+	const showDevSection = import.meta.env.SHOW_DEV_SECTION;
 
 	/** Party socket connection */
 	useEffect(() => {
-		if (!clientUuid)
+		if (!clientUuid || currentScene === "Login")
 			return;
 
-		partySocket.connect();
-
-		const timerId = setTimeout(() => {
-			useSceneStore.setState({ initialRender: true });
-		}, 1000);
-
-		return () => {
+		if (partyAPIConnection)
+			partySocket.connect();
+		else
 			partySocket.disconnect();
-			clearTimeout(timerId);
-		};
-	}, [clientUuid]);
+	}, [clientUuid, currentScene, partyAPIConnection]);
 
 	/** Chat socket connection + subscriptions */
 	useEffect(() => {
-		if (!clientUuid)
+		if (!clientUuid || currentScene === "Login")
 			return;
 
-		chatSocket.connect();
+		if (!chatAPIConnection) {
+			chatSocket.disconnect();
+			return;
+		}
 
+		/** Keep subscriptions scoped to this effect so scene or auth changes can remove them cleanly */
+		chatSocket.connect();
 		const unsubscribeFromMessages = subscribeToMessages();
 		const unsubscribeFromUserJoined = subscribeToUserJoined();
 		const unsubscribeFromUserLeft = subscribeToUserLeft();
@@ -92,22 +95,22 @@ export default function App() {
 			unsubscribeFromUserLeft();
 			unsubscribeFromUserTyping();
 			unsubscribeFromRateLimited();
-			chatSocket.disconnect();
 		};
-	}, [clientUuid]);
+	}, [clientUuid, currentScene, chatAPIConnection]);
 
 	/** Friends connection */
 	const handleFriendUpdate = useCallback(() => {
 		if (!clientUuid)
 			return;
 
-		void handleFriendships(clientUuid!)
+		void handleFriendships(clientUuid)
 			.then((friends) => {
 				useFriendsStore.setState({ cachedFriends: friends });
 			})
 			.catch((error) => {
-				console.warn("Failed to refresh friendships:", error);
-			});
+				if (friendsVerboseMode)
+					console.warn("Failed to refresh friendships:", error);
+			})
 	}, [clientUuid]);
 	useFriendEvents(clientUuid, handleFriendUpdate);
 
@@ -119,9 +122,6 @@ export default function App() {
 		void handleFriendRequestsSent(clientUuid)
 			.then((requests) => {
 				useFriendsStore.setState({ friendRequestSent: requests });
-			})
-			.catch((error) => {
-				console.warn("Sent requests failed:", error);
 			});
 
 		void handleFriendRequestsReceived(clientUuid)
@@ -139,9 +139,6 @@ export default function App() {
 						);
 					})
 				);
-			})
-			.catch((error) => {
-				console.warn("Failed to process friend requests:", error);
 			});
 	}, [clientUuid, currentScene]);
 
@@ -157,7 +154,7 @@ export default function App() {
 				threejsManager.dispose()
 			}
 		}
-	}, [initialRender]);
+	}, []);
 
 	/** Three js scene handler */
 	useEffect(() => {
@@ -168,7 +165,7 @@ export default function App() {
 		if (threejsManager.getSceneId() !== currentSceneLowered) {
 			threejsManager.changeScene(currentSceneLowered);
 		}
-	}, [currentScene, initialRender]);
+	}, [currentScene]);
 
 	/** Scroll to top */
 	useEffect(() => {
@@ -177,43 +174,46 @@ export default function App() {
 
 	/** Initial profile setup */
 	useEffect(() => {
-		if (currentScene === "Login" || !clientUuid || !isProfileLoaded)
+		if (currentScene === "Login" || !clientUuid)
 			return;
 
 		if (!cachedProfiles[clientUuid]?.name || !cachedProfiles[clientUuid]?.avatar)
 			useSceneStore.getState().setShowWindow("setup", true);
 		else
 			useSceneStore.getState().setShowWindow("setup", false);
-	}, [currentScene, clientUuid, cachedProfiles, isProfileLoaded]);
+	}, [currentScene, clientUuid, cachedProfiles]);
 
 	// Connect to game server
 	useEffect(() => {
+		if (!gameAPIConnection)
+			return;
+
 		if (partyGameId === null && gameInstance !== null) {
 			clearGameInstance();
 		}
 		else if (partyGameId !== null && clientUuid)
 			joinGameLobby(partyGameId, clientUuid);
-		else if (usePartyStore.getState().partyVerboseMode)
-			console.log("[party > 'on' party_state] Blocked from joining game lobby w/ partyGameId:", partyGameId);
+		// else if (usePartyStore.getState().partyVerboseMode)
+			// console.log("[party > 'on' party_state] Blocked from joining game lobby w/ partyGameId:", partyGameId);
 	}, [partyGameId]);
 
 	/** Kicks client back to login is invalidated */
+	const hasValidated = useRef(false);
 	useEffect(() => {
+		/** Validate once on mount - socket reconnects handle later session checks */
+		if (hasValidated.current || currentScene === "Login")
+			return;
+		hasValidated.current = true;
+
 		void handleValidate().then((res) => {
 			if (!res)
 				useSceneStore.getState().setCurrentScene("Login");
 		});
 	}, []);
 
-	/** Render if current scene is login */
-	useEffect(() => {
-		if (currentScene === "Login")
-			useSceneStore.setState({ initialRender: true });
-	}, [currentScene]);
-
 	return (
 		<>
-			{initialRender && <StripeBg />}
+			<StripeBg />
 			<section className="
 				z-0 absolute top-0 left-1/2 -translate-x-1/2
 				h-full min-h-120 max-h-360
@@ -221,37 +221,33 @@ export default function App() {
 			">
 				{ <div className="w-full h-full" ref={containerRef}/> }
 			</section>
-			{initialRender &&
-				<>
-					<section className="
-						h-full min-h-120 max-h-360
-						w-full min-w-80 max-w-360
-						mx-auto p-[clamp(0.125rem,5vw+0.125rem,3.125rem)]
-						flex flex-col
-						z-1 relative
-						pointer-events-none
-					">
-						{ currentScene === "Login" && <LoginScene /> }
-						{ currentScene === "Home" && <HomeScene /> }
-						{ currentScene === "Lobby" && <LobbyScene /> }
-						{ currentScene === "Game" && <GameScene /> }
-						{ showWindow["chat"] && <ChatWindow /> }
-						{ showWindow["createAccount"] && <CreateAccountWindow /> }
-						{ showWindow["info"] && <InfoWindow /> }
-						{ showWindow["notification"] && <NotificationWindow /> }
-						{ showWindow["leave"] && <LeaveWindow /> }
-						{ showWindow["party"] && <PartyWindow /> }
-						{ showWindow["profile"] && <ProfileWindow /> }
-						{ showWindow["rank"] && <RankWindow /> }
-						{ showWindow["results"] && <ResultsWindow /> }
-						{ showWindow["setup"] && <SetupWindow /> }
-						{ showWindow["signIn"] && <SignInWindow /> }
-						{ showWindow["stale"] && <StaleWindow /> }
-						{ showWindow["stats"] && <StatsWindow /> }
-					</section>
-					{ showDevSection && <Dev /> }
-				</>
-			}
+			<section className="
+				h-full min-h-120 max-h-360
+				w-full min-w-80 max-w-360
+				mx-auto p-[clamp(0.125rem,5vw+0.125rem,3.125rem)]
+				flex flex-col
+				z-1 relative
+				pointer-events-none
+			">
+				{ currentScene === "Login" && <LoginScene /> }
+				{ currentScene === "Home" && <HomeScene /> }
+				{ currentScene === "Lobby" && <LobbyScene /> }
+				{ currentScene === "Game" && <GameScene /> }
+				{ showWindow["chat"] && <ChatWindow /> }
+				{ showWindow["createAccount"] && <CreateAccountWindow /> }
+				{ showWindow["info"] && <InfoWindow /> }
+				{ showWindow["notification"] && <NotificationWindow /> }
+				{ showWindow["leave"] && <LeaveWindow /> }
+				{ showWindow["party"] && <PartyWindow /> }
+				{ showWindow["profile"] && <ProfileWindow /> }
+				{ showWindow["rank"] && <RankWindow /> }
+				{ showWindow["results"] && <ResultsWindow /> }
+				{ showWindow["setup"] && <SetupWindow /> }
+				{ showWindow["signIn"] && <SignInWindow /> }
+				{ showWindow["stale"] && <StaleWindow /> }
+				{ showWindow["stats"] && <StatsWindow /> }
+			</section>
+			{ showDevSection && <Dev /> }
 		</>
 	);
 }
