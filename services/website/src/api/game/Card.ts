@@ -117,7 +117,7 @@ export class Card {
 	private static initTextureAtlas(): Array<THREE.Texture>
 	{
 		const textureAtlas: Array<THREE.Texture> = [];
-		const textureAtlasPath: string = '/resources/cardTextures.png';
+		const textureAtlasPath: string = '/resources/cardTextures.webp';
 		const cols: number = 13;
 		const rows: number = 4;
 		// Index starts from bottom-left and goes right(x) and up(y)
