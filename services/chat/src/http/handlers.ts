@@ -6,6 +6,7 @@ import {
 	PartyPayload,
 } from "../party/PartyManager";
 import { ValidationError } from "../party/errors";
+import { normalizePartyPayload } from "../party/validation";
 
 /** Creates the HTTP handler for health checks and party routes */
 export function createHttpRequestHandler(
@@ -83,10 +84,10 @@ function validatePartyPayload(body: unknown): PartyPayload {
 	if (!Array.isArray(value.playerUuids))
 		throw new ValidationError("playerUuids must be an array");
 
-	return {
+	return normalizePartyPayload({
 		hostUuid: value.hostUuid,
 		playerUuids: value.playerUuids as string[],
-	};
+	});
 }
 
 /** Reads and parses a bounded JSON request body */
