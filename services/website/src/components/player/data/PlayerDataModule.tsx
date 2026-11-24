@@ -2,6 +2,7 @@ import { useAuthStore } from "../../../store/AuthStore";
 import type { AVAILABILITY_TYPE } from "../../../store/PartyStore";
 import { type PublicBadgeId, BADGE_NAMES } from "../../../store/GameStatsStore";
 import { useSceneStore } from "../../../store/SceneStore";
+import { useUiSoundProps } from "../../../utilities/react/useUiSoundProps";
 import { BadgeWindow } from "./badge/BadgeWindow";
 import { PlayerStatusModule } from "../status/PlayerStatusModule";
 
@@ -84,6 +85,7 @@ export const PlayerDataModule = ({
 						?
 							<button
 								type="button"
+								{...useUiSoundProps()}
 								onClick={() => useSceneStore.getState().setShowWindow("badge", true)}
 								className="
 									w-full

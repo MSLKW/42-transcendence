@@ -3,6 +3,7 @@ import { handleValidate } from "../../../api/authentication/get_validate/handleV
 import { useGameStore, type GAMEMODE_TYPE } from "../../../store/GameStore";
 import { usePartyStore } from "../../../store/PartyStore";
 import { useAuthStore } from "../../../store/AuthStore";
+import { useUiSoundProps } from "../../../utilities/react/useUiSoundProps";
 import { PersonIcon } from "./person/PersonIcon";
 
 interface HomeProps {
@@ -26,6 +27,7 @@ export const HomeCardButton = ({ gameMode, playerCount }: HomeProps) => {
 			<button
 				type="button"
 				disabled={clientUuid !== hostUuid}
+				{...useUiSoundProps()}
 				onClick={handleCardClick}
 				className={`
 					h-full max-h-150 aspect-2/3
@@ -34,7 +36,7 @@ export const HomeCardButton = ({ gameMode, playerCount }: HomeProps) => {
 					p-[clamp(1.25rem,1.786vmin+0.893rem,2.5rem)]
 					flex flex-col place-content-between
 					hover:not-disabled:scale-105 active:hover:not-disabled:scale-100
-					focus-visible:outline-2 outline-b5
+					focus:outline-2 outline-b5
 					${clientUuid === hostUuid ? "cursor-pointer" : ""}
 					snap-center
 			`}>

@@ -24,13 +24,11 @@ export const FormInputModule = ({
 	call
 }: FormInputModuleProps) => {
 	const focusRef = useRef<HTMLInputElement | null>(null);
-	const suppressNextFocusSoundRef = useRef(false);
+	const suppressNextFocusSoundRef = useRef(hasFocusRef);
 
 	useEffect(() => {
-		if (hasFocusRef && focusRef.current) {
-			suppressNextFocusSoundRef.current = true;
+		if (hasFocusRef && focusRef.current)
 			focusRef.current.focus();
-		}
 	}, [hasFocusRef]);
 
 	const [showValue, setShowValue] = useState(!isPassword);
@@ -54,8 +52,9 @@ export const FormInputModule = ({
 						suppressNextFocusSoundRef.current = false;
 						return;
 					}
-					playUiSound("hover");
+					playUiSound("click");
 				}}
+				onPointerDown={() => playUiSound("click")}
 				onChange={(e) => call(e.target.value)}
 				className="
 					w-[65%]

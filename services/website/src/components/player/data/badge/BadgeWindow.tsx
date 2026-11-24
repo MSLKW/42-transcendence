@@ -2,6 +2,7 @@ import { handleDisplayedBadge } from "../../../../api/gameStats/put_displayed-ba
 import { type PublicBadgeId, BADGE_NAMES, BADGE_HINTS } from "../../../../store/GameStatsStore";
 import { useSceneStore } from "../../../../store/SceneStore";
 import { Tooltip } from "../../../../utilities/react/Tooltip";
+import { useUiSoundProps } from "../../../../utilities/react/useUiSoundProps";
 import { LightboxButton } from "../../../lightbox/LightboxButton";
 
 interface BadgeWindowProps {
@@ -39,6 +40,7 @@ export const BadgeWindow = ({ badge, availableBadges, setBadge, setHasChange }: 
 									<button
 										type="button"
 										disabled={!isUnlocked}
+										{...useUiSoundProps()}
 										onClick={() => {
 											setBadge(b as PublicBadgeId);
 											handleDisplayedBadge(b);

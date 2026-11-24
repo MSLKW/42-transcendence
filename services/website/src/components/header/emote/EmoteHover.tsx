@@ -12,7 +12,7 @@ export const EmoteHover = ({ isOpen, toggleOpen }: EmoteHoverProps) => {
 	return (
 		<button
 			type="button"
-			{...useUiSoundProps({ keyDown: false, keyUp: false })}
+			{...useUiSoundProps({ pointerDown: false, pointerUp: false, keyDown: false, keyUp: false })}
 			aria-expanded={isOpen}
 			aria-haspopup="true"
 			onClick={toggleOpen}

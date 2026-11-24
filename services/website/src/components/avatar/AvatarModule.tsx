@@ -1,11 +1,12 @@
+import { useGameStore } from "../../store/GameStore";
 import { useProfileStore } from "../../store/ProfileStore";
 import { useSceneStore } from "../../store/SceneStore";
+import { Tooltip } from "../../utilities/react/Tooltip";
+import { useUiSoundProps } from "../../utilities/react/useUiSoundProps";
 import { AvatarImage } from "./image/AvatarImage";
 import { AvatarName } from "./name/AvatarName";
 import { AvatarCornerButton } from "./corner/AvatarCornerButton";
 import { ChatBubbles } from "../bubble/ChatBubble";
-import { Tooltip } from "../../utilities/react/Tooltip";
-import { useGameStore } from "../../store/GameStore";
 
 interface AvatarModuleProps {
 	uuid: string;
@@ -39,6 +40,7 @@ export const AvatarModule = ({
 			<ChatBubbles uuid={uuid} />
 			<button
 				type="button"
+				{...useUiSoundProps()}
 				onClick={(e) => {
 					e.currentTarget.blur();
 
@@ -52,7 +54,7 @@ export const AvatarModule = ({
 				}}
 				className={`
 					rounded-sm
-					${ (currentScene !== "Game" && relation !== "Bot") && "hover:not-disabled:scale-105 active:hover:not-disabled:scale-100 focus-visible:outline-2 cursor-pointer" }
+					${ (currentScene !== "Game" && relation !== "Bot") && "hover:not-disabled:scale-105 active:hover:not-disabled:scale-100 focus:outline-2 cursor-pointer" }
 					outline-b5
 					relative h-min
 					${ currentScene === "Game" && isActive === true && "animate-glow"}

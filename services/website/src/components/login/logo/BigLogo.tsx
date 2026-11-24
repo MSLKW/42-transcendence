@@ -39,7 +39,7 @@ export const BigLogo = () => {
 					className="
 						btn-text
 						border border-transparent hover:not-disabled:border-n6
-						text-1.5rem text-b5 focus-visible:text-n6 hover:text-n6 font-extralight tracking-widest whitespace-nowrap
+						text-1.5rem text-b5 focus:text-n6 hover:text-n6 font-extralight tracking-widest whitespace-nowrap
 						h-4rem aspect-8/1
 						outline-n6
 				">

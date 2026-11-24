@@ -1,6 +1,8 @@
 import { useRef, useEffect } from "react";
 import { Tooltip } from "../../../utilities/react/Tooltip";
+import { useUiSoundProps } from "../../../utilities/react/useUiSoundProps";
 import { SearchIcon } from "./SearchIcon";
+import { playUiSound } from "../../../audio/uiSounds";
 
 interface SearchModuleProps {
 	value: string;
@@ -10,6 +12,8 @@ interface SearchModuleProps {
 
 export const SearchModule = ({ value, onChange, search }: SearchModuleProps) => {
 	const focusRef = useRef<HTMLInputElement | null>(null);
+	const suppressNextFocusSoundRef = useRef(true);
+	
 	useEffect(() => {
 		if (focusRef.current)
 			focusRef.current.focus();
@@ -29,6 +33,14 @@ export const SearchModule = ({ value, onChange, search }: SearchModuleProps) => 
 				type="text"
 				value={value}
 				placeholder="Search By Name"
+				onFocus={() => {
+					if (suppressNextFocusSoundRef.current) {
+						suppressNextFocusSoundRef.current = false;
+						return;
+					}
+					playUiSound("click");
+				}}
+				onPointerDown={() => playUiSound("click")}
 				onChange={(e) => onChange(e.target.value)}
 				className="input-chat"
 			/>
@@ -36,6 +48,7 @@ export const SearchModule = ({ value, onChange, search }: SearchModuleProps) => 
 				<button
 					type="button"
 					disabled={value ? false : true}
+					{...useUiSoundProps()}
 					className="btn-icon bg-accent"
 					onClick={search}
 				>

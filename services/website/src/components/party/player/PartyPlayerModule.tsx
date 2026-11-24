@@ -12,6 +12,7 @@ import { Tooltip } from "../../../utilities/react/Tooltip";
 import { PlayerStatusModule } from "../../player/status/PlayerStatusModule";
 import { AvatarImage } from "../../avatar/image/AvatarImage";
 import { InviteIcon } from "../invite/InviteIcon";
+import { useUiSoundProps } from "../../../utilities/react/useUiSoundProps";
 
 interface PartyPlayerModuleProps {
 	uuid: string;
@@ -63,11 +64,12 @@ export const PartyPlayerModule = ({ uuid }: PartyPlayerModuleProps) => {
 	}, [uuid]);
 
 	const effectiveAvailability = availabilityOverride ?? availability;
-
 	const relation = 
 		cachedFriends?.includes(uuid) ? "Friend" :
 		clientUuid === uuid ? "Self" :
 		"Stranger";
+	const uiSoundProps = useUiSoundProps();
+	const uiInviteProp = useUiSoundProps({ pointerUp: false, keyUp: false });
 
 	if (isLoading)
 		return (<p>Loading player...</p>);
@@ -92,6 +94,7 @@ export const PartyPlayerModule = ({ uuid }: PartyPlayerModuleProps) => {
 			}>
 				<button
 					type="button"
+					{...uiSoundProps}
 					onClick={() => {
 						if (clientUuid === uuid)
 							useSceneStore.getState().setShowWindow("profile", true, uuid);
@@ -114,6 +117,7 @@ export const PartyPlayerModule = ({ uuid }: PartyPlayerModuleProps) => {
 				<button
 					type="button"
 					disabled={hostUuid !== clientUuid}
+					{...uiInviteProp}
 					onClick={handleSendInvite}
 					className={`
 						h-auto min-w-60

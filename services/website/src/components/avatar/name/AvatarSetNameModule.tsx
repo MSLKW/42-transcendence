@@ -1,5 +1,6 @@
 import { useRef, useEffect } from "react";
 import { AvatarImage } from "../image/AvatarImage";
+import { playUiSound } from "../../../audio/uiSounds";
 
 interface AvatarSetNameModuleProps {
 	name: string;
@@ -38,13 +39,15 @@ export const AvatarSetNameModule = ({ name, avatar, uuid, setName, setHasChange 
 					type="text"
 					value={name ?? ""}
 					placeholder="Name"
-					onChange={handleInput}
+					onFocus={() => playUiSound("click")}
+					onPointerDown={() => playUiSound("click")}
 					onKeyDown={(e) => {
 						if (e.key === "Enter")
 							e.preventDefault();
 						if (e.key === "Enter"|| e.key === "Escape")
 							e.currentTarget.blur();
 					}}
+					onChange={handleInput}
 					minLength={3}
 					maxLength={20}
 					className="

@@ -1,5 +1,6 @@
 import { useSceneStore } from "../../../store/SceneStore";
 import { Tooltip } from "../../../utilities/react/Tooltip";
+import { useUiSoundProps } from "../../../utilities/react/useUiSoundProps";
 import { PartyIcon } from "./PartyCallIcon";
 import { AvatarName } from "../../avatar/name/AvatarName";
 
@@ -14,6 +15,7 @@ export const PartyCallButton = () => {
 			<Tooltip text="Find Players">
 				<button
 					type="button"
+					{...useUiSoundProps()}
 					onClick={(e) => {
 						e.currentTarget.blur();
 						useSceneStore.getState().setShowWindow("party", !showWindow.party);

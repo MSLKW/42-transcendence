@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from "react";
 import { useNotificationStore, type NotificationItem } from "../../store/NotificationStore";
 import { playUiSound } from "../../audio/uiSounds";
+import { useUiSoundProps } from "../../utilities/react/useUiSoundProps";
 
 interface SingleNotificationProps {
 	notification: NotificationItem;
@@ -113,6 +114,7 @@ export const SingleNotification = ({ notification }: SingleNotificationProps) =>
 				">
 					<button
 						type="button"
+						{...useUiSoundProps({ pointerUp: false, keyUp: false })}
 						onClick={() => {
 							onButton1Click?.();
 							removeNotification(id);
@@ -126,6 +128,7 @@ export const SingleNotification = ({ notification }: SingleNotificationProps) =>
 					</button>
 					<button
 						type="button"
+						{...useUiSoundProps({ pointerUp: false, keyUp: false })}
 						onClick={() => {
 							onButton2Click?.();
 							removeNotification(id);

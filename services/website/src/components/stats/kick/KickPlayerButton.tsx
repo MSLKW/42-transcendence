@@ -2,6 +2,7 @@ import { partySocket } from "../../../api/party/partySocket";
 import { usePartyStore } from "../../../store/PartyStore";
 import { useAuthStore } from "../../../store/AuthStore";
 import { KickIcon } from "./KickIcon";
+import { useUiSoundProps } from "../../../utilities/react/useUiSoundProps";
 
 interface KickPlayerButtonProps {
 	playerUuid: string;
@@ -21,6 +22,7 @@ export const KickPlayerButton = ({ playerUuid }: KickPlayerButtonProps) => {
 		<button
 			type="button"
 			disabled={clientUuid !== hostUuid}
+			{...useUiSoundProps()}
 			onClick={handleKickPlayer}
 			className="
 				h-4rem aspect-5/1

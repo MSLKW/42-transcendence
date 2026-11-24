@@ -1,12 +1,21 @@
+import { useEffect, useRef } from "react";
 import { handleLogout } from "../../api/authentication/delete_logout/handleLogout";
 import { useGameStore } from "../../store/GameStore";
 import { usePartyStore } from "../../store/PartyStore";
 import { useSceneStore } from "../../store/SceneStore";
 import { Window } from "../window/Window";
+import { useUiSoundProps } from "../../utilities/react/useUiSoundProps";
 
 export const LeaveWindow = () => {
 	const members = usePartyStore((store) => store.members);
 	const currentScene = useSceneStore((store) => store.currentScene);
+
+	const focusRef = useRef<HTMLButtonElement>(null);
+	const suppressNextFocusSoundRef = useRef(true);
+
+	useEffect(() => {
+		focusRef.current?.focus();
+	}, []);
 
 	const handleLeaveClick = () => {
 		useSceneStore.getState().setShowWindow("leave", false);
@@ -48,7 +57,9 @@ export const LeaveWindow = () => {
 					gap-1rem
 				">
 					<button
+						ref={focusRef}
 						type="button"
+						{...useUiSoundProps({ suppressNextFocus: suppressNextFocusSoundRef.current })}
 						onClick={() => useSceneStore.getState().setShowWindow("leave", false)}
 						className="
 							h-3rem aspect-5/1
@@ -59,6 +70,7 @@ export const LeaveWindow = () => {
 					</button>
 					<button
 						type="button"
+						{...useUiSoundProps({ pointerUp: false, keyUp: false })}
 						onClick={handleLeaveClick}
 						className="
 							h-3rem aspect-5/1
