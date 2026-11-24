@@ -1,8 +1,8 @@
-import { useRef, type ReactNode } from "react";
+import type { ReactNode } from "react";
 import { useChatStore } from "../../store/ChatStore";
 import { useSceneStore } from "../../store/SceneStore";
-import { playUiSound } from "../../audio/uiSounds";
 import { Tooltip } from "../../utilities/react/Tooltip";
+import { useUiSoundProps } from "../../utilities/react/useUiSoundProps";
 import { useWindowDrag } from "../../utilities/react/useWindowDrag";
 import { LightboxButton } from "../lightbox/LightboxButton";
 import { ClearIcon } from "./clear/ClearIcon";
@@ -34,7 +34,6 @@ export const Window: React.FC<WindowProps> = ({
 	call,
 }) => {
 	const { position, handleMouseDown } = useWindowDrag();
-	const pointerFocusRef = useRef(false);
 
 	return (
 		<section className="
@@ -89,24 +88,7 @@ export const Window: React.FC<WindowProps> = ({
 								<Tooltip text="Clear Chat">
 									<button
 										type="button"
-										onPointerEnter={() => playUiSound("hover")}
-										onPointerDown={() => {
-											pointerFocusRef.current = true;
-											playUiSound("click");
-										}}
-										onPointerUp={() => playUiSound("release")}
-										onFocus={() => {
-											if (!pointerFocusRef.current)
-												playUiSound("hover");
-										}}
-										onKeyDown={(event) => {
-											if ((event.key === "Enter" || event.key === " ") && !event.repeat)
-												playUiSound("click");
-										}}
-										onKeyUp={(event) => {
-											if (event.key === "Enter" || event.key === " ")
-												playUiSound("release");
-										}}
+										{...useUiSoundProps()}
 										onClick={() => useChatStore.setState({ chatLog: [] })}
 										className="btn-icon"
 									>
@@ -117,24 +99,7 @@ export const Window: React.FC<WindowProps> = ({
 							<Tooltip text="Close Window">
 								<button
 									type="button"
-									onPointerEnter={() => playUiSound("hover")}
-									onPointerDown={() => {
-										pointerFocusRef.current = true;
-										playUiSound("click");
-									}}
-									onPointerUp={() => playUiSound("release")}
-									onFocus={() => {
-										if (!pointerFocusRef.current)
-											playUiSound("hover");
-									}}
-									onKeyDown={(event) => {
-										if ((event.key === "Enter" || event.key === " ") && !event.repeat)
-											playUiSound("click");
-									}}
-									onKeyUp={(event) => {
-										if (event.key === "Enter" || event.key === " ")
-											playUiSound("release");
-									}}
+									{...useUiSoundProps()}
 									disabled={!isDismissable}
 									onClick={call ? call : () => useSceneStore.getState().setShowWindow(dismissKey, false)}
 									className="btn-icon"

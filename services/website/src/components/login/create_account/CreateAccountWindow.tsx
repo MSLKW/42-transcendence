@@ -1,8 +1,8 @@
-import { useState, useRef } from "react";
+import { useState } from "react";
 import { useAuthStore } from "../../../store/AuthStore";
 import { useNotificationStore, NOTIFICATION_TYPE } from "../../../store/NotificationStore";
 import { handleSignUp } from "../../../api/authentication/post_signup/handleSignUp";
-import { playUiSound } from "../../../audio/uiSounds";
+import { useUiSoundProps } from "../../../utilities/react/useUiSoundProps";
 import { Window } from "../../window/Window";
 import { FormInputModule } from "../form/FormInputModule";
 
@@ -13,7 +13,6 @@ export const CreateAccountWindow = () => {
 	const [password, setPassword] = useState("");
 	const [confirmPassword, setConfirmPassword] = useState("");
 	const [isLoading, setIsLoading] = useState(false);
-	const pointerFocusRef = useRef(false);
 
 	const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
@@ -91,19 +90,7 @@ export const CreateAccountWindow = () => {
 				<button
 					type="submit"
 					disabled={isLoading}
-					onPointerEnter={() => playUiSound("hover")}
-					onPointerDown={() => {
-						pointerFocusRef.current = true;
-						playUiSound("click");
-					}}
-					onFocus={() => {
-						if (!pointerFocusRef.current)
-							playUiSound("hover")
-					}}
-					onKeyDown={(event) => {
-						if ((event.key === "Enter" || event.key === " ") && !event.repeat)
-							playUiSound("click");
-					}}
+					{...useUiSoundProps({ pointerUp: false, keyUp: false })}
 					className="
 						btn-text bg-white
 						h-3rem aspect-6/1

@@ -8,7 +8,7 @@ const soundFiles = {
 type UiSound = keyof typeof soundFiles;
 
 let audioContext: AudioContext | null = null;
-let buffers: Partial<Record<UiSound, AudioBuffer>> = {};
+let buffers: Record<UiSound, AudioBuffer> | null = null;
 let loading: Promise<void> | null = null;
 const pendingSounds: UiSound[] = [];
 
@@ -18,29 +18,34 @@ const initializeUiSounds = () => {
 		audioContext ??= new AudioContext();
 		const context = audioContext;
 		if (context.state === "suspended") void context.resume();
-		loading = Promise.all(Object.entries(soundFiles).map(async ([sound, file]) => {
+		const loadAttempt = Promise.all(Object.entries(soundFiles).map(async ([sound, file]) => {
 			const response = await fetch(file);
 			if (!response.ok) throw new Error(`Failed to load UI sound: ${file}`);
-			buffers[sound as UiSound] = await context.decodeAudioData(await response.arrayBuffer());
-		})).then(() => {
+			return [sound as UiSound, await context.decodeAudioData(await response.arrayBuffer())] as const;
+		})).then((entries) => {
+			buffers = Object.fromEntries(entries) as Record<UiSound, AudioBuffer>;
 			const queuedSounds = pendingSounds.splice(0);
 			for (const sound of queuedSounds)
 				playDecodedUiSound(sound);
 		}).catch((error: unknown) => {
 			pendingSounds.length = 0;
-			loading = null;
 			console.error("Unable to preload UI sounds", error);
+		}).finally(() => {
+			if (loading === loadAttempt)
+				loading = null;
 		});
+		loading = loadAttempt;
 	}
 	return loading;
 };
 
 const playDecodedUiSound = (sound: UiSound) => {
 	const context = audioContext;
-	if (!context)
+	const loadedBuffers = buffers;
+	if (!context || !loadedBuffers)
 		return;
 
-	const buffer = buffers[sound];
+	const buffer = loadedBuffers[sound];
 	if (!buffer)
 		return;
 
@@ -60,7 +65,7 @@ export const playUiSound = (sound: UiSound) => {
 		void initializeUiSounds();
 	}
 
-	if (buffers[sound]) {
+	if (buffers?.[sound]) {
 		playDecodedUiSound(sound);
 		return;
 	}

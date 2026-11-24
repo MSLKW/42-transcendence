@@ -1,12 +1,10 @@
-import { useRef } from "react";
 import { useSceneStore } from "../../../store/SceneStore";
-import { playUiSound } from "../../../audio/uiSounds";
 import { Tooltip } from "../../../utilities/react/Tooltip";
+import { useUiSoundProps } from "../../../utilities/react/useUiSoundProps";
 
 export const BigLogo = () => {
 	const showWindow = useSceneStore((store) => store.showWindow);
-	const pointerFocusRef = useRef(false);
-
+	
 	return (
 		<div className="
 			flex flex-col place-content-center place-items-center
@@ -36,24 +34,7 @@ export const BigLogo = () => {
 			<Tooltip text="Additional Info">
 				<button
 					type="button"
-					onPointerEnter={() => playUiSound("hover")}
-					onPointerDown={() => {
-						pointerFocusRef.current = true;
-						playUiSound("click");
-					}}
-					onPointerUp={() => playUiSound("release")}
-					onFocus={() => {
-						if (!pointerFocusRef.current)
-							playUiSound("hover");
-					}}
-					onKeyDown={(event) => {
-						if ((event.key === "Enter" || event.key === " ") && !event.repeat)
-							playUiSound("click");
-					}}
-					onKeyUp={(event) => {
-						if (event.key === "Enter" || event.key === " ")
-							playUiSound("release");
-					}}
+					{...useUiSoundProps()}
 					onClick={() => useSceneStore.getState().setShowWindow("info", !showWindow.info)}
 					className="
 						btn-text
