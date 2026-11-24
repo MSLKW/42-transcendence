@@ -1,5 +1,6 @@
 import { useGameStore } from "../../../store/GameStore";
 import { Tooltip } from "../../../utilities/react/Tooltip";
+import { useUiSoundProps } from "../../../utilities/react/useUiSoundProps";
 import { AvatarName } from "../../avatar/name/AvatarName";
 import { TakeSeatIcon } from "./TakeSeatIcon";
 interface TakeSeatButtonProps {
@@ -16,6 +17,7 @@ export const TakeSeatButton = ({ seatNumber }: TakeSeatButtonProps ) => {
 			<Tooltip text="Choose this seat">
 				<button
 					type="button"
+					{...useUiSoundProps()}
 					onClick={(e) => {
 						e.currentTarget.blur();
 						takeSeat(seatNumber);

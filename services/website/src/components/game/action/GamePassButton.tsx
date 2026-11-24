@@ -1,5 +1,6 @@
 import { useGameStore } from "../../../store/GameStore";
 import { useAuthStore } from "../../../store/AuthStore";
+import { useUiSoundProps } from "../../../utilities/react/useUiSoundProps";
 
 export const GamePassButton = () => {
 	const clientUuid = useAuthStore((store) => store.clientUuid);
@@ -13,8 +14,9 @@ export const GamePassButton = () => {
 	return (
 		<button
 			type="button"
-			onClick={skipTurn}
 			disabled={activeSeat !== clientSeat || (activeSeat === clientSeat && isActiveSeatSkippable === false)}
+			{...useUiSoundProps()}
+			onClick={skipTurn}
 			className="
 				btn-text bg-light
 				h-3rem aspect-5/1

@@ -3,6 +3,7 @@ import { useGameStore } from "../../../store/GameStore";
 import { usePartyStore } from "../../../store/PartyStore";
 import { useSettingsStore } from "../../../store/SettingsStore";
 import { Tooltip } from "../../../utilities/react/Tooltip";
+import { useUiSoundProps } from "../../../utilities/react/useUiSoundProps";
 import { ToggleButton } from "../toggle/ToggleButton";
 import { autoPassKeys } from "@big2/game-types";
 
@@ -25,9 +26,13 @@ export const HostSettings = () => {
 					text-n6/80
 					flex flex-col gap-1.5rem
 					pointer-events-auto
+					${ hostUuid !== clientUuid ? "opacity-60" : ""}
 			`}>
 				<h1>Lobby Rules</h1>
-				<label className="flex flex-col w-full gap-0.5rem cursor-pointer hover:scale-105">
+				<label 
+					{...useUiSoundProps()}
+					className="flex flex-col w-full gap-0.5rem cursor-pointer hover:scale-105
+				">
 					<h3 className="w-full"><b>Play Three of a Kind?</b></h3>
 					<div className="flex place-content-start place-items-start w-full gap-1rem">
 						<ToggleButton
@@ -43,7 +48,10 @@ export const HostSettings = () => {
 						</h3>
 					</div>
 				</label>
-				<label className="flex flex-col w-full gap-0.5rem cursor-pointer hover:scale-105">
+				<label
+					{...useUiSoundProps()}
+					className="flex flex-col w-full gap-0.5rem cursor-pointer hover:scale-105
+				">
 					<h3 className="w-full"><b>Finish with 2 of Spades?</b></h3>
 					<div className="flex place-content-start place-items-start w-full gap-1rem">
 						<ToggleButton
@@ -73,6 +81,7 @@ export const HostSettings = () => {
 						step="1"
 						value={autoPassIndex}
 						disabled={clientUuid !== hostUuid}
+						{...useUiSoundProps()}
 						onChange={ (e) => {
 							const index = parseInt(e.target.value, 10);
 							useSettingsStore.setState({ autoPassIndex: index });

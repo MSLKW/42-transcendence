@@ -56,6 +56,7 @@ export function registerEventHandlers(socket: Socket, client: Client)
 	{
 		const party = clientManager.getByUuid(payload.hostUuid)?.party;
 		party?.removeInvite(client.uuid);
+		client.invites = client.invites.filter(uuid => uuid != payload.hostUuid); //az
 	});
 
 	socket.on("leave_party", () =>

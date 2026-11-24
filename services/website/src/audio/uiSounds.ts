@@ -4,6 +4,7 @@ const soundFiles = {
 	release: "/audio/button_release.opus",
 	notif: "/audio/notif.opus",
 	chat: "/audio/chat.opus",
+	shuffle: "/audio/shuffle.opus",
 } as const;
 
 type UiSound = keyof typeof soundFiles;

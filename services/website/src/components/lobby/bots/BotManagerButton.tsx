@@ -2,6 +2,7 @@ import { useAuthStore } from "../../../store/AuthStore";
 import { useBotStore } from "../../../store/BotStore";
 import { usePartyStore } from "../../../store/PartyStore";
 import { Tooltip } from "../../../utilities/react/Tooltip";
+import { useUiSoundProps } from "../../../utilities/react/useUiSoundProps";
 import { AvatarName } from "../../avatar/name/AvatarName";
 import { AddBotsIcon } from "./AddBotsIcon";
 import { RemoveBotsIcon } from "./RemoveBotsIcon";
@@ -31,6 +32,7 @@ export const BotManagerButton = () => {
 				<button 
 					type="button"
 					disabled={clientUuid !== hostUuid}
+					{...useUiSoundProps()}
 					onClick={(e) => {handleBotCount(e)}}
 					className="
 						h-6rem aspect-square
