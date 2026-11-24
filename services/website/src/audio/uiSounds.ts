@@ -51,15 +51,19 @@ const playDecodedUiSound = (sound: UiSound) => {
 };
 
 export const playUiSound = (sound: UiSound) => {
+	// Ignore hover/focus sounds until an explicit action unlocks audio. This
+	// prevents programmatic autofocus during initial render from creating a context.
+	if (!audioContext && (sound === "hover" || sound === "notif"))
+		return;
+
+	if (!audioContext) {
+		void initializeUiSounds();
+	}
+
 	if (buffers[sound]) {
 		playDecodedUiSound(sound);
 		return;
 	}
 
-	if (audioContext) {
-		pendingSounds.push(sound);
-		void initializeUiSounds();
-	}
+	pendingSounds.push(sound);
 };
-
-export const initializeUiSoundsOnUserGesture = () => initializeUiSounds();

@@ -1,5 +1,5 @@
 import { useRef } from "react";
-import { initializeUiSoundsOnUserGesture, playUiSound } from "../../../audio/uiSounds";
+import { playUiSound } from "../../../audio/uiSounds";
 import { useSceneStore } from "../../../store/SceneStore";
 
 export const CreateAccountButton = () => {
@@ -12,7 +12,6 @@ export const CreateAccountButton = () => {
 			onPointerEnter={() => playUiSound("hover")}
 			onPointerDown={() => {
 				pointerFocusRef.current = true;
-				initializeUiSoundsOnUserGesture();
 				playUiSound("click");
 			}}
 			onPointerUp={() => playUiSound("release")}
@@ -22,10 +21,8 @@ export const CreateAccountButton = () => {
 			}}
 			onBlur={() => pointerFocusRef.current = false }
 			onKeyDown={(event) => {
-				if ((event.key === "Enter" || event.key === " ") && !event.repeat) {
-					initializeUiSoundsOnUserGesture();
+				if ((event.key === "Enter" || event.key === " ") && !event.repeat)
 					playUiSound("click");
-				}
 			}}
 			onKeyUp={(event) => {
 				if (event.key === "Enter" || event.key === " ")
