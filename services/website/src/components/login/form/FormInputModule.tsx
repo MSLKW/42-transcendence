@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import { playUiSound } from "../../../audio/uiSounds";
+import { useUiSoundProps } from "../../../utilities/react/useUiSoundProps";
 import { ShowPasswordIcon } from "./password/ShowPasswordIcon";
 import { HidePasswordIcon } from "./password/HidePasswordIcon";
 
@@ -33,8 +34,7 @@ export const FormInputModule = ({
 	}, [hasFocusRef]);
 
 	const [showValue, setShowValue] = useState(!isPassword);
-	const pointerFocusRef = useRef(false);
-	
+
 	return (
 		<label
 			htmlFor={inputFor}
@@ -71,25 +71,7 @@ export const FormInputModule = ({
 				<button
 					type="button"
 					tabIndex={-1}
-					onPointerEnter={() => playUiSound("hover")}
-					onPointerDown={() => {
-						pointerFocusRef.current = true;
-						suppressNextFocusSoundRef.current = true;
-						playUiSound("click");
-					}}
-					onPointerUp={() => playUiSound("release")}
-					onFocus={() => {
-						if (!pointerFocusRef.current)
-							playUiSound("hover");
-					}}
-					onKeyDown={(event) => {
-						if ((event.key === "Enter" || event.key === " ") && !event.repeat)
-							playUiSound("click");
-					}}
-					onKeyUp={(event) => {
-						if (event.key === "Enter" || event.key === " ")
-							playUiSound("release");
-					}}
+					{...useUiSoundProps({ focus: false, pointerUp: false })}
 					onClick={() => {
 						setShowValue(!showValue);
 						focusRef.current?.focus();
