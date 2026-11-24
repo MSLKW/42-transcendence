@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect } from "react";
+import { playUiSound } from "../../../audio/uiSounds";
 import { ShowPasswordIcon } from "./password/ShowPasswordIcon";
 import { HidePasswordIcon } from "./password/HidePasswordIcon";
 
@@ -22,12 +23,17 @@ export const FormInputModule = ({
 	call
 }: FormInputModuleProps) => {
 	const focusRef = useRef<HTMLInputElement | null>(null);
+	const suppressNextFocusSoundRef = useRef(false);
+
 	useEffect(() => {
-		if (hasFocusRef && focusRef.current)
+		if (hasFocusRef && focusRef.current) {
+			suppressNextFocusSoundRef.current = true;
 			focusRef.current.focus();
+		}
 	}, [hasFocusRef]);
 
 	const [showValue, setShowValue] = useState(!isPassword);
+	const pointerFocusRef = useRef(false);
 	
 	return (
 		<label
@@ -35,8 +41,7 @@ export const FormInputModule = ({
 			className="
 				flex gap-2rem
 				relative
-			"
-		>
+		">
 			<h2 className="text-right w-[30%] whitespace-nowrap">{label}</h2>
 			<input
 				ref={hasFocusRef ? focusRef : undefined}
@@ -44,6 +49,13 @@ export const FormInputModule = ({
 				type={showValue ? "text" : "password"}
 				value={value}
 				placeholder={placeholder}
+				onFocus={() => {
+					if (suppressNextFocusSoundRef.current) {
+						suppressNextFocusSoundRef.current = false;
+						return;
+					}
+					playUiSound("hover");
+				}}
 				onChange={(e) => call(e.target.value)}
 				className="
 					w-[65%]
@@ -54,13 +66,34 @@ export const FormInputModule = ({
 					pointer-events-auto
 					focus:outline-2 outline-b5
 					placeholder:text-1rem
-				"
-			/>
+			"/>
 			{ isPassword &&
 				<button
 					type="button"
 					tabIndex={-1}
-					onClick={() => setShowValue(!showValue)}
+					onPointerEnter={() => playUiSound("hover")}
+					onPointerDown={() => {
+						pointerFocusRef.current = true;
+						suppressNextFocusSoundRef.current = true;
+						playUiSound("click");
+					}}
+					onPointerUp={() => playUiSound("release")}
+					onFocus={() => {
+						if (!pointerFocusRef.current)
+							playUiSound("hover");
+					}}
+					onKeyDown={(event) => {
+						if ((event.key === "Enter" || event.key === " ") && !event.repeat)
+							playUiSound("click");
+					}}
+					onKeyUp={(event) => {
+						if (event.key === "Enter" || event.key === " ")
+							playUiSound("release");
+					}}
+					onClick={() => {
+						setShowValue(!showValue);
+						focusRef.current?.focus();
+					}}
 					className="
 						absolute right-1 top-1/2 -translate-y-1/2
 						h-[80%] aspect-square

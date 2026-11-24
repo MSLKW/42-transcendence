@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import { useNotificationStore, type NotificationItem } from "../../store/NotificationStore";
+import { playUiSound } from "../../audio/uiSounds";
 
 interface SingleNotificationProps {
 	notification: NotificationItem;
@@ -51,6 +52,8 @@ export const SingleNotification = ({ notification }: SingleNotificationProps) =>
 			onButton1Click?.();
 			removeNotification(id);
 		}, 2500);
+
+		playUiSound("notif");
 
 		return () => {
 			clearTimeout(manualUnmountTimer.current);

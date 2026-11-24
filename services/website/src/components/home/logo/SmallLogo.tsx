@@ -1,10 +1,35 @@
+import { useRef } from "react";
 import { useSceneStore } from "../../../store/SceneStore";
+import { initializeUiSoundsOnUserGesture, playUiSound } from "../../../audio/uiSounds";
 import { Tooltip } from "../../../utilities/react/Tooltip";
 
 export const SmallLogo = () => {
+	const pointerFocusRef = useRef(false);
+
 	return (
 		<button
 			type="button"
+			onPointerEnter={() => playUiSound("hover")}
+			onPointerDown={() => {
+				pointerFocusRef.current = true;
+				initializeUiSoundsOnUserGesture();
+				playUiSound("click");
+			}}
+			onPointerUp={() => playUiSound("release")}
+			onFocus={() => {
+				if (!pointerFocusRef.current)
+					playUiSound("hover");
+			}}
+			onKeyDown={(event) => {
+				if ((event.key === "Enter" || event.key === " ") && !event.repeat) {
+					initializeUiSoundsOnUserGesture();
+					playUiSound("click");
+				}
+			}}
+			onKeyUp={(event) => {
+				if (event.key === "Enter" || event.key === " ")
+					playUiSound("release");
+			}}
 			onClick={() => useSceneStore.getState().setShowWindow("info", true)}
 			className="
 				btn-text rounded-xl

@@ -1,13 +1,15 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { useNotificationStore, NOTIFICATION_TYPE } from "../../../store/NotificationStore";
+import { handleSignIn } from "../../../api/authentication/post_signin/handleSignIn";
+import { playUiSound } from "../../../audio/uiSounds";
 import { Window } from "../../window/Window";
 import { FormInputModule } from "../form/FormInputModule";
-import { handleSignIn } from "../../../api/authentication/post_signin/handleSignIn";
 
 export const SignInWindow = () => {
 	const [email, setEmail] = useState("");
 	const [password, setPassword] = useState("");
 	const [isLoading, setIsLoading] = useState(false);
+	const pointerFocusRef = useRef(false);
 
 	const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
@@ -61,6 +63,19 @@ export const SignInWindow = () => {
 				<button
 					type="submit"
 					disabled={isLoading}
+					onPointerEnter={() => playUiSound("hover")}
+					onPointerDown={() => {
+						pointerFocusRef.current = true;
+						playUiSound("click");
+					}}
+					onFocus={() => {
+						if (!pointerFocusRef.current)
+							playUiSound("hover")
+					}}
+					onKeyDown={(event) => {
+						if ((event.key === "Enter" || event.key === " ") && !event.repeat)
+							playUiSound("click");
+					}}
 					className="
 						btn-text bg-white
 						h-3rem aspect-6/1
