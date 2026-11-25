@@ -5,6 +5,7 @@ import { gsap } from 'gsap';
 import { threejsManager } from '../../App';
 import { gameScene } from '../../components/3d/ThreeJsManager';
 import { useGameStore } from '../../store/GameStore';
+import { playUiSound } from '../../audio/uiSounds';
 
 export class CardManager {
 	/* Card Manager */
@@ -315,6 +316,7 @@ export class CardManager {
 		if (card.isHover === true) {
 			if (index === -1) {
 				threejsManager.outlinePass.selectedObjects.push(card.object);
+				playUiSound("card_hover"); //az
 			}
 			position.add(new THREE.Vector3(0, 0.5, 0.1).applyQuaternion(card.object.quaternion));
 		}
@@ -365,6 +367,7 @@ export class CardManager {
 			this.updateCardObjects(this.selectedCards.cards, this.selectedSlots);
 			useGameStore.getState().setSelectedCards(this.selectedCards.transmit());
 		}
+		playUiSound("card_click");
 		return (selected);
 	}
 

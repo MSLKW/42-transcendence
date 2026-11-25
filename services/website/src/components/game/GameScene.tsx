@@ -1,4 +1,3 @@
-import { useEffect } from "react";
 import { useGameStore } from "../../store/GameStore";
 import { useProfileStore } from "../../store/ProfileStore";
 import { useAuthStore } from "../../store/AuthStore";
@@ -8,7 +7,6 @@ import { RankCallButton } from "./rank/RankCallButton";
 import { SortButtons } from "./sort/SortButton";
 import { GamePassButton } from "./action/GamePassButton";
 import { GamePlayButton } from "./action/GamePlayButton";
-import { playUiSound } from "../../audio/uiSounds";
 
 export const GameScene = () => {
 	const totalPlayers = useGameStore((store) => store.totalPlayers);
@@ -22,10 +20,6 @@ export const GameScene = () => {
 	const clientUuid = useAuthStore((store) => store.clientUuid);
 
 	const clientSeat = gameSeats.indexOf(clientUuid);
-
-	useEffect(() => {
-		playUiSound("shuffle");
-	}, []);
 
 	return (
 		<>

@@ -1,5 +1,5 @@
 import { useRef } from "react";
-import { playUiSound } from "../../audio/uiSounds";
+import { playUiSound, type UiSound } from "../../audio/uiSounds";
 
 interface UiSoundPropsOptions {
 	pointerEnter?: boolean;
@@ -9,6 +9,7 @@ interface UiSoundPropsOptions {
 	keyDown?: boolean;
 	keyUp?: boolean;
 	suppressNextFocus?: boolean;
+	upSound?: UiSound;
 }
 
 /** Shared pointer, keyboard, and focus sounds for interactive controls. */
@@ -21,6 +22,7 @@ export const useUiSoundProps = (options: UiSoundPropsOptions = {}) => {
 		keyDown = true,
 		keyUp = true,
 		suppressNextFocus = false,
+		upSound = "release",
 	} = options;
 	const pointerFocusRef = useRef(false);
 	const suppressNextFocusSoundRef = useRef(suppressNextFocus);
@@ -37,7 +39,7 @@ export const useUiSoundProps = (options: UiSoundPropsOptions = {}) => {
 		},
 		onPointerUp: () => {
 			if (pointerUp)
-				playUiSound("release");
+				playUiSound(upSound);
 		},
 		onFocus: () => {
 			if (suppressNextFocusSoundRef.current) {
@@ -56,7 +58,7 @@ export const useUiSoundProps = (options: UiSoundPropsOptions = {}) => {
 		},
 		onKeyUp: (event: React.KeyboardEvent<HTMLElement>) => {
 			if (keyUp && (event.key === "Enter" || event.key === " "))
-				playUiSound("release");
+				playUiSound(upSound);
 		},
 	};
 };

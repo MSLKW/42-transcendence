@@ -20,6 +20,7 @@ import { useSettingsStore } from '../../store/SettingsStore';
 import { useNotificationStore, NOTIFICATION_TYPE } from '../../store/NotificationStore';
 // import { clearGameInstance, gameLog } from './main';
 import { gameLog } from './main';
+import { playUiSound } from '../../audio/uiSounds';
 
 export class Game {
 	private socket: Socket;
@@ -159,6 +160,7 @@ export class Game {
 				useGameStore.setState({ round: gameEndStats.temporaryRoundsPlayed });
 				useSceneStore.getState().setCurrentScene("Lobby");
 				useSceneStore.getState().setShowWindow("results", true);
+				playUiSound("results");
 				this.resetGame();
 				useGameStore.getState().resetGame();
 			}, "+=1");

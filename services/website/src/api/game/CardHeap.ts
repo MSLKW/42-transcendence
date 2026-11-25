@@ -4,6 +4,7 @@ import { CardHand } from './CardHand';
 import { type CardHandTransmit } from '@big2/game-types';
 import { Card } from './Card';
 import { useGameStore } from '../../store/GameStore';
+import { playUiSound } from '../../audio/uiSounds';
 
 export class CardHeap {
 	public	cardHandQueue: gsap.core.Timeline;
@@ -38,6 +39,7 @@ export class CardHeap {
 		this.position.x = this.getRandomRange(-0.3, 0.3);
 		this.position.z = this.getRandomRange(-0.3, 0.3);
 		this.rotation.z = this.getRandomRange(-0.3, 0.3);
+		playUiSound("play");
 		return (timeline);
 	}
 

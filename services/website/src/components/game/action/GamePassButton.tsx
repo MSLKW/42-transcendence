@@ -15,7 +15,7 @@ export const GamePassButton = () => {
 		<button
 			type="button"
 			disabled={activeSeat !== clientSeat || (activeSeat === clientSeat && isActiveSeatSkippable === false)}
-			{...useUiSoundProps()}
+			{...useUiSoundProps({ upSound: "pass" })}
 			onClick={skipTurn}
 			className="
 				btn-text bg-light

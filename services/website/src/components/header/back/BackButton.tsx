@@ -4,6 +4,7 @@ import { useGameStore } from "../../../store/GameStore";
 import { usePartyStore } from "../../../store/PartyStore";
 import { useSceneStore } from "../../../store/SceneStore";
 import { BackIcon } from "./BackIcon";
+import { useUiSoundProps } from "../../../utilities/react/useUiSoundProps";
 
 export const BackButton = () => {
 	const currentScene = useSceneStore((store) => store.currentScene);
@@ -25,6 +26,7 @@ export const BackButton = () => {
 	return (
 		<button
 			type="button"
+			{...useUiSoundProps()}
 			onClick={handleBackClick}
 			className="btn-icon"
 		>

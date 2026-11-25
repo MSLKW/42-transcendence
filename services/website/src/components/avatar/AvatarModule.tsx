@@ -43,10 +43,8 @@ export const AvatarModule = ({
 				{...useUiSoundProps()}
 				onClick={(e) => {
 					e.currentTarget.blur();
-
 					if (currentScene === "Game" || relation === "Bot")
 						return;
-
 					if (relation === "Self")
 						useSceneStore.getState().setShowWindow("profile", true);
 					else
@@ -82,7 +80,7 @@ export const AvatarModule = ({
 					</div>
 				}
 			</button>
-			{ showName && <AvatarName name={cachedProfiles[uuid?? ""]?.name ?? "-"} /> }
+			{ showName && <AvatarName name={cachedProfiles[uuid ?? ""]?.name ?? "-"} /> }
 		</div>
 	);
 }

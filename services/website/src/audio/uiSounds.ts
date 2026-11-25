@@ -5,9 +5,14 @@ const soundFiles = {
 	notif: "/audio/notif.opus",
 	chat: "/audio/chat.opus",
 	shuffle: "/audio/shuffle.opus",
+	card_hover: "/audio/card_hover.opus",
+	card_click: "/audio/card_click.opus",
+	pass: "/audio/pass.opus",
+	play: "/audio/play.opus",
+	results: "/audio/results.opus",
 } as const;
 
-type UiSound = keyof typeof soundFiles;
+export type UiSound = keyof typeof soundFiles;
 
 let audioContext: AudioContext | null = null;
 let buffers: Record<UiSound, AudioBuffer> | null = null;

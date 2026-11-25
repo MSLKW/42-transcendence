@@ -19,7 +19,7 @@ export const GamePlayButton = () => {
 		<button
 			type="button"
 			disabled={!(activeSeat === clientSeat && isCardHandPlayable === true)}
-			{...useUiSoundProps()}
+			{...useUiSoundProps({ pointerUp: false, keyUp: false })}
 			onClick={handlePlay}
 			className="
 				btn-text bg-light
