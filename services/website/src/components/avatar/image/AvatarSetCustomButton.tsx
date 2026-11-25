@@ -18,7 +18,7 @@ export const AvatarSetCustomButton = ({ id, avatar, setAvatar, setHasChange }: A
 		setImageExists(true);
 	}, [id, avatarVersion]);
 
-	const imagePath = `avatars/${id}.webp`;
+	const imagePath = `/avatars/${id}.webp`;
 	/** The version query forces a fresh request after this user's custom avatar changes */
 	const imageSrc = `${imagePath}?v=${avatarVersion ?? 0}`;
 	const uiSoundProps = useUiSoundProps();

@@ -36,7 +36,7 @@ export const AvatarUploadButton = ({ setAvatar }: AvatarUploadButtonProps) => {
 				return;
 			/** Increment the cache key so existing custom-avatar previews reload the uploaded image */
 			markAvatarUpdated(clientUuid);
-			setAvatar(`avatars/${clientUuid}.webp`);
+			setAvatar(`/avatars/${clientUuid}.webp`);
 		} finally {
 			event.target.value = "";
 		}
@@ -64,7 +64,7 @@ export const AvatarUploadButton = ({ setAvatar }: AvatarUploadButtonProps) => {
 					cursor-pointer
 			">
 				<img
-					src="avatar-upload.webp"
+					src="/avatars/avatar-upload.webp"
 					alt="Upload avatar"
 				/>
 			</button>
