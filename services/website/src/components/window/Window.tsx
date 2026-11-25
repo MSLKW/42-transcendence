@@ -1,8 +1,9 @@
-import type { ReactNode } from "react";
+import { useEffect, type ReactNode } from "react";
 import { useChatStore } from "../../store/ChatStore";
 import { useSceneStore } from "../../store/SceneStore";
 import { Tooltip } from "../../utilities/react/Tooltip";
 import { useUiSoundProps } from "../../utilities/audio/useUiSoundProps";
+import { playUiSound } from "../../utilities/audio/uiSounds";
 import { useWindowDrag } from "../../utilities/react/useWindowDrag";
 import { LightboxButton } from "../lightbox/LightboxButton";
 import { ClearIcon } from "./clear/ClearIcon";
@@ -34,6 +35,25 @@ export const Window: React.FC<WindowProps> = ({
 	call,
 }) => {
 	const { position, handleMouseDown } = useWindowDrag();
+
+	useEffect(() => {
+		if (!isDismissable)
+			return;
+
+		const handleKeyDown = (event: KeyboardEvent) => {
+			if (event.key !== "Escape")
+				return;
+
+			if (call)
+				call();
+			else
+				useSceneStore.getState().setShowWindow(dismissKey, false);
+			playUiSound("release");
+		};
+
+		window.addEventListener("keydown", handleKeyDown);
+		return () => window.removeEventListener("keydown", handleKeyDown);
+	}, [call, dismissKey, isDismissable]);
 
 	return (
 		<section className="

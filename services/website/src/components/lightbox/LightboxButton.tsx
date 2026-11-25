@@ -1,4 +1,5 @@
 import { useSceneStore } from "../../store/SceneStore";
+import { playUiSound } from "../../utilities/audio/uiSounds";
 
 interface LightboxButtonProps {
 	dismiss: string;
@@ -12,6 +13,8 @@ export const LightboxButton = ({ dismiss, blur, isDismissable = true, call }: Li
 		<button
 			type="button"
 			tabIndex={-1}
+			onPointerUp={() => playUiSound("release")}
+			onKeyUp={() => playUiSound("release")}
 			onClick={
 				call
 					? call
