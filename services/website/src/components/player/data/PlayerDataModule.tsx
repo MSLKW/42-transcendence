@@ -88,11 +88,9 @@ export const PlayerDataModule = ({
 								{...useUiSoundProps()}
 								onClick={() => useSceneStore.getState().setShowWindow("badge", true)}
 								className="
-									w-full
-									bg-n6
+									w-full bg-n6
 									border border-n5 rounded-full
-									text-sm
-									self-center
+									text-sm self-center focus:outline-2 outline-b5
 									cursor-pointer
 							">
 								<span className="

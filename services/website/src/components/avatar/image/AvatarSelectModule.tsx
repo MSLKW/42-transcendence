@@ -34,7 +34,7 @@ export const AvatarSelectModule = ({ avatar, setAvatar, setHasChange = () => {} 
 				grid grid-flow-col auto-cols-max grid-rows-3
 				gap-1rem py-2rem px-2rem
 				overflow-x-auto
-				bg-dark-semi rounded-xl
+				bg-dark-semi rounded-xl outline-b5 focus:outline-2
 			">
 				{
 					AVATAR_IMGS.map((img) => {

@@ -16,6 +16,7 @@ export const AvatarSelectButton = ({ id, avatar, setAvatar, setHasChange }: Avat
 				setAvatar(id ?? "");
 				setHasChange(true);
 			}}
+			tabIndex={-1}
 			className={`
 				hover:not-disabled:scale-105 active:hover:not-disabled:scale-100
 				focus:outline-double hover:not-disabled:outline-double outline-b5

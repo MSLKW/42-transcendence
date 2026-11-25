@@ -1,4 +1,4 @@
-import { useEffect, type ReactNode } from "react";
+import { useEffect, useRef, type ReactNode } from "react";
 import { useChatStore } from "../../store/ChatStore";
 import { useSceneStore } from "../../store/SceneStore";
 import { Tooltip } from "../../utilities/react/Tooltip";
@@ -35,6 +35,53 @@ export const Window: React.FC<WindowProps> = ({
 	call,
 }) => {
 	const { position, handleMouseDown } = useWindowDrag();
+	const dialogRef = useRef<HTMLDivElement>(null);
+
+	useEffect(() => {
+		if (!lightbox)
+			return;
+
+		const previouslyFocused = document.activeElement instanceof HTMLElement
+			? document.activeElement
+			: null;
+		const dialog = dialogRef.current;
+		if (!dialog)
+			return;
+
+		const getFocusable = () => Array.from(dialog.querySelectorAll<HTMLElement>(
+			'button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), a[href], [tabindex]:not([tabindex="-1"])'
+		)).filter((element) => element.getAttribute("aria-hidden") !== "true");
+
+		const focusable = getFocusable();
+		(focusable[0] ?? dialog).focus();
+
+		const handleTab = (event: KeyboardEvent) => {
+			if (event.key !== "Tab")
+				return;
+			const items = getFocusable();
+			if (items.length === 0) {
+				event.preventDefault();
+				dialog.focus();
+				return;
+			}
+			const first = items[0];
+			const last = items[items.length - 1];
+			if (event.shiftKey && (document.activeElement === first || !dialog.contains(document.activeElement))) {
+				event.preventDefault();
+				last.focus();
+			} else if (!event.shiftKey && (document.activeElement === last || !dialog.contains(document.activeElement))) {
+				event.preventDefault();
+				first.focus();
+			}
+		};
+
+		document.addEventListener("keydown", handleTab);
+		return () => {
+			document.removeEventListener("keydown", handleTab);
+			if (previouslyFocused?.isConnected)
+				previouslyFocused.focus();
+		};
+	}, [lightbox]);
 
 	useEffect(() => {
 		if (!isDismissable)
@@ -72,6 +119,10 @@ export const Window: React.FC<WindowProps> = ({
 				/>
 			}
 			<div
+				ref={dialogRef}
+				tabIndex={lightbox ? -1 : undefined}
+				role={lightbox ? "dialog" : undefined}
+				aria-modal={lightbox ? true : undefined}
 				style={{ transform: `translate(${position.x}px, ${position.y}px)`, }} 
 				className={`
 					absolute
@@ -110,7 +161,7 @@ export const Window: React.FC<WindowProps> = ({
 										type="button"
 										{...useUiSoundProps()}
 										onClick={() => useChatStore.setState({ chatLog: [] })}
-										className="btn-icon"
+										className="btn-icon -outline-offset-4"
 									>
 										<ClearIcon />
 									</button>
@@ -122,7 +173,7 @@ export const Window: React.FC<WindowProps> = ({
 									{...useUiSoundProps()}
 									disabled={!isDismissable}
 									onClick={call ? call : () => useSceneStore.getState().setShowWindow(dismissKey, false)}
-									className="btn-icon"
+									className="btn-icon -outline-offset-4"
 								>
 									<CloseIcon />
 								</button>
