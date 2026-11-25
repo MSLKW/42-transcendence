@@ -54,12 +54,15 @@ export const LobbyScene = () => {
 						{ totalPlayers === 4 &&
 							( userSeats[2]
 								?
-									<AvatarModule
-										key={userSeats[2]}
-										uuid={userSeats[2]}
-										image={cachedProfiles[userSeats[2]]?.avatar ?? undefined}
-										cornerButton={userSeats[2] === hostUuid ? "host" : ""}
-									/>
+									<>
+										<AvatarModule
+											key={userSeats[2]}
+											uuid={userSeats[2]}
+											image={cachedProfiles[userSeats[2]]?.avatar ?? undefined}
+											cornerButton={userSeats[2] === hostUuid ? "host" : ""}
+											isInteractive={!userSeats[2].startsWith("bot-")}
+										/>
+									</>
 								: <TakeSeatButton seatNumber={2}/>
 							)
 						}
@@ -72,6 +75,7 @@ export const LobbyScene = () => {
 											uuid={userSeats[1]}
 											image={cachedProfiles[userSeats[1]]?.avatar ?? undefined}
 											cornerButton={userSeats[1] === hostUuid ? "host" : ""}
+											isInteractive={!userSeats[1].startsWith("bot-")}
 										/>
 									: <TakeSeatButton seatNumber={1}/>
 								}
@@ -82,6 +86,7 @@ export const LobbyScene = () => {
 											uuid={userSeats[2]}
 											image={cachedProfiles[userSeats[2]]?.avatar ?? undefined}
 											cornerButton={userSeats[2] === hostUuid ? "host" : ""}
+											isInteractive={!userSeats[2].startsWith("bot-")}
 										/>
 									: <TakeSeatButton seatNumber={2}/>
 								}
@@ -95,6 +100,7 @@ export const LobbyScene = () => {
 										uuid={userSeats[1]}
 										image={cachedProfiles[userSeats[1]]?.avatar ?? undefined}
 										cornerButton={userSeats[1] === hostUuid ? "host" : ""}
+											isInteractive={!userSeats[1].startsWith("bot-")}
 									/>
 								: <TakeSeatButton seatNumber={1}/>
 							)
@@ -113,6 +119,7 @@ export const LobbyScene = () => {
 										uuid={userSeats[1]}
 										image={cachedProfiles[userSeats[1]]?.avatar ?? undefined}
 										cornerButton={userSeats[1] === hostUuid ? "host" : ""}
+										isInteractive={!userSeats[1].startsWith("bot-")}
 									/>
 								: <TakeSeatButton seatNumber={1}/>
 							)
@@ -138,6 +145,7 @@ export const LobbyScene = () => {
 										uuid={userSeats[3]}
 										image={cachedProfiles[userSeats[3]]?.avatar ?? undefined}
 										cornerButton={userSeats[3] === hostUuid ? "host" : ""}
+										isInteractive={!userSeats[3].startsWith("bot-")}
 									/>
 								: <TakeSeatButton seatNumber={3}/>
 								)
@@ -151,6 +159,7 @@ export const LobbyScene = () => {
 									uuid={userSeats[0]}
 									image={cachedProfiles[userSeats[0]]?.avatar ?? undefined}
 									cornerButton={userSeats[0] === hostUuid ? "host" : ""}
+									isInteractive={!userSeats[0].startsWith("bot-")}
 								/>
 							: <TakeSeatButton seatNumber={0}/>
 						}
