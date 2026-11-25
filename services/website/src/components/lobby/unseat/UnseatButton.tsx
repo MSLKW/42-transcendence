@@ -2,7 +2,7 @@
 import { useAuthStore } from "../../../store/AuthStore";
 import { useGameStore } from "../../../store/GameStore";
 import { Tooltip } from "../../../utilities/react/Tooltip";
-import { useUiSoundProps } from "../../../utilities/react/useUiSoundProps";
+import { useUiSoundProps } from "../../../utilities/audio/useUiSoundProps";
 import { AvatarName } from "../../avatar/name/AvatarName";
 import { UnseatIcon } from "./UnseatIcon";
 

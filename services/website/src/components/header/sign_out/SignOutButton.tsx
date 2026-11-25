@@ -1,6 +1,6 @@
 import { useSceneStore } from "../../../store/SceneStore";
 import { Tooltip } from "../../../utilities/react/Tooltip";
-import { useUiSoundProps } from "../../../utilities/react/useUiSoundProps";
+import { useUiSoundProps } from "../../../utilities/audio/useUiSoundProps";
 import { SignOutIcon } from "./SignOutIcon";
 
 export const SignOutButton = () => {

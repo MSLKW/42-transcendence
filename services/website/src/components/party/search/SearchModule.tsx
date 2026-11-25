@@ -1,8 +1,8 @@
 import { useRef, useEffect } from "react";
 import { Tooltip } from "../../../utilities/react/Tooltip";
-import { useUiSoundProps } from "../../../utilities/react/useUiSoundProps";
+import { useUiSoundProps } from "../../../utilities/audio/useUiSoundProps";
 import { SearchIcon } from "./SearchIcon";
-import { playUiSound } from "../../../audio/uiSounds";
+import { playUiSound } from "../../../utilities/audio/uiSounds";
 
 interface SearchModuleProps {
 	value: string;

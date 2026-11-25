@@ -5,7 +5,7 @@ import { gsap } from 'gsap';
 import { threejsManager } from '../../App';
 import { gameScene } from '../../components/3d/ThreeJsManager';
 import { useGameStore } from '../../store/GameStore';
-import { playUiSound } from '../../audio/uiSounds';
+import { playUiSound } from '../../utilities/audio/uiSounds';
 
 export class CardManager {
 	/* Card Manager */

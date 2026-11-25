@@ -4,7 +4,7 @@ import { CardHand } from './CardHand';
 import { type CardHandTransmit } from '@big2/game-types';
 import { Card } from './Card';
 import { useGameStore } from '../../store/GameStore';
-import { playUiSound } from '../../audio/uiSounds';
+import { playUiSound } from '../../utilities/audio/uiSounds';
 
 export class CardHeap {
 	public	cardHandQueue: gsap.core.Timeline;

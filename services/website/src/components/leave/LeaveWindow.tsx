@@ -4,7 +4,7 @@ import { useGameStore } from "../../store/GameStore";
 import { usePartyStore } from "../../store/PartyStore";
 import { useSceneStore } from "../../store/SceneStore";
 import { Window } from "../window/Window";
-import { useUiSoundProps } from "../../utilities/react/useUiSoundProps";
+import { useUiSoundProps } from "../../utilities/audio/useUiSoundProps";
 
 export const LeaveWindow = () => {
 	const members = usePartyStore((store) => store.members);

@@ -1,5 +1,5 @@
 import { useSceneStore } from "../../../store/SceneStore";
-import { useUiSoundProps } from "../../../utilities/react/useUiSoundProps";
+import { useUiSoundProps } from "../../../utilities/audio/useUiSoundProps";
 
 export const CreateAccountButton = () => {
 	const showWindow =  useSceneStore((store) => store.showWindow);

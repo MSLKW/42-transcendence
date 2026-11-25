@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useProfileStore } from '../../../store/ProfileStore';
-import { useUiSoundProps } from '../../../utilities/react/useUiSoundProps';
+import { useUiSoundProps } from '../../../utilities/audio/useUiSoundProps';
 
 interface AvatarSetCustomButtonProps {
 	id: string | null;

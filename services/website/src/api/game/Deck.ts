@@ -2,7 +2,7 @@ import * as THREE from 'three';
 import { type GameStateTransmit, CardRank } from '@big2/game-types';
 import { Card } from './Card';
 import { gsap } from 'gsap';
-import { playUiSound } from '../../audio/uiSounds';
+import { playUiSound } from '../../utilities/audio/uiSounds';
 
 export class Deck {
 	private cards: Array<Card>;

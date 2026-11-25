@@ -3,7 +3,7 @@ import { useGameStore } from "../../../store/GameStore";
 import { usePartyStore } from "../../../store/PartyStore";
 import { useSettingsStore } from "../../../store/SettingsStore";
 import { Tooltip } from "../../../utilities/react/Tooltip";
-import { useUiSoundProps } from "../../../utilities/react/useUiSoundProps";
+import { useUiSoundProps } from "../../../utilities/audio/useUiSoundProps";
 import { ToggleButton } from "../toggle/ToggleButton";
 import { autoPassKeys } from "@big2/game-types";
 

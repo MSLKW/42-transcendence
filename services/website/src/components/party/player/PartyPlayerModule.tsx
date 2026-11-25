@@ -12,7 +12,7 @@ import { Tooltip } from "../../../utilities/react/Tooltip";
 import { PlayerStatusModule } from "../../player/status/PlayerStatusModule";
 import { AvatarImage } from "../../avatar/image/AvatarImage";
 import { InviteIcon } from "../invite/InviteIcon";
-import { useUiSoundProps } from "../../../utilities/react/useUiSoundProps";
+import { useUiSoundProps } from "../../../utilities/audio/useUiSoundProps";
 
 interface PartyPlayerModuleProps {
 	uuid: string;

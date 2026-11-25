@@ -20,7 +20,7 @@ import { useSettingsStore } from '../../store/SettingsStore';
 import { useNotificationStore, NOTIFICATION_TYPE } from '../../store/NotificationStore';
 // import { clearGameInstance, gameLog } from './main';
 import { gameLog } from './main';
-import { playUiSound } from '../../audio/uiSounds';
+import { playUiSound } from '../../utilities/audio/uiSounds';
 
 export class Game {
 	private socket: Socket;

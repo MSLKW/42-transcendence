@@ -2,7 +2,7 @@ import type { ReactNode } from "react";
 import { useChatStore } from "../../store/ChatStore";
 import { useSceneStore } from "../../store/SceneStore";
 import { Tooltip } from "../../utilities/react/Tooltip";
-import { useUiSoundProps } from "../../utilities/react/useUiSoundProps";
+import { useUiSoundProps } from "../../utilities/audio/useUiSoundProps";
 import { useWindowDrag } from "../../utilities/react/useWindowDrag";
 import { LightboxButton } from "../lightbox/LightboxButton";
 import { ClearIcon } from "./clear/ClearIcon";

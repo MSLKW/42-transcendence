@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNotificationStore, NOTIFICATION_TYPE } from "../../../store/NotificationStore";
 import { handleSignIn } from "../../../api/authentication/post_signin/handleSignIn";
-import { useUiSoundProps } from "../../../utilities/react/useUiSoundProps";
+import { useUiSoundProps } from "../../../utilities/audio/useUiSoundProps";
 import { Window } from "../../window/Window";
 import { FormInputModule } from "../form/FormInputModule";
 

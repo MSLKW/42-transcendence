@@ -1,5 +1,5 @@
 import { useRef } from "react";
-import { playUiSound, type UiSound } from "../../audio/uiSounds";
+import { playUiSound, type UiSound } from "./uiSounds";
 
 interface UiSoundPropsOptions {
 	pointerEnter?: boolean;

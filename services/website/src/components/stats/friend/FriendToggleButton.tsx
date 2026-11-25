@@ -5,7 +5,7 @@ import { AddFriendIcon } from "./AddFriendIcon";
 import { handleFriendRequests } from "../../../api/friends/post_friend-requests/handleFriendRequests";
 import { useAuthStore } from "../../../store/AuthStore";
 import { handleDeleteFriendships } from "../../../api/friends/delete_friendships/handleDeleteFriendships";
-import { useUiSoundProps } from "../../../utilities/react/useUiSoundProps";
+import { useUiSoundProps } from "../../../utilities/audio/useUiSoundProps";
 
 type FRIEND_STATUS = "STRANGER" | "PENDING" | "FRIEND";
 

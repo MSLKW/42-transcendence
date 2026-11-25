@@ -2,7 +2,7 @@ import { partySocket } from "../../../api/party/partySocket";
 import { usePartyStore } from "../../../store/PartyStore";
 import { useAuthStore } from "../../../store/AuthStore";
 import { KickIcon } from "./KickIcon";
-import { useUiSoundProps } from "../../../utilities/react/useUiSoundProps";
+import { useUiSoundProps } from "../../../utilities/audio/useUiSoundProps";
 
 interface KickPlayerButtonProps {
 	playerUuid: string;

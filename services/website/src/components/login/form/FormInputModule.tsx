@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from "react";
-import { playUiSound } from "../../../audio/uiSounds";
-import { useUiSoundProps } from "../../../utilities/react/useUiSoundProps";
+import { playUiSound } from "../../../utilities/audio/uiSounds";
+import { useUiSoundProps } from "../../../utilities/audio/useUiSoundProps";
 import { ShowPasswordIcon } from "./password/ShowPasswordIcon";
 import { HidePasswordIcon } from "./password/HidePasswordIcon";
 

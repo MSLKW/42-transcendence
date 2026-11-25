@@ -2,7 +2,7 @@ import { useState, useRef, useEffect } from "react";
 import { chatSocket } from "../../api/chat/chatSocket";
 import { useChatStore, MAX_MESSAGE_LENGTH } from "../../store/ChatStore";
 import { useTypingStore } from "../../store/TypingStore";
-import { playUiSound } from "../../audio/uiSounds";
+import { playUiSound } from "../../utilities/audio/uiSounds";
 import { Window } from "../window/Window";
 import { SendButton } from "./send/SendButton";
 import { ChatMessage } from "./ChatMessage";

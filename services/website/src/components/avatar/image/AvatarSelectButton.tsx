@@ -1,4 +1,4 @@
-import { useUiSoundProps } from "../../../utilities/react/useUiSoundProps";
+import { useUiSoundProps } from "../../../utilities/audio/useUiSoundProps";
 
 interface AvatarSelectButtonProps {
 	id: string | null;

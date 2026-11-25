@@ -1,6 +1,6 @@
 import { useGameStore } from "../../../store/GameStore";
 import { useAuthStore } from "../../../store/AuthStore";
-import { useUiSoundProps } from "../../../utilities/react/useUiSoundProps";
+import { useUiSoundProps } from "../../../utilities/audio/useUiSoundProps";
 
 export const GamePassButton = () => {
 	const clientUuid = useAuthStore((store) => store.clientUuid);

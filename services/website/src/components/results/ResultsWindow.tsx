@@ -8,7 +8,7 @@ import { ResultsTotalModule } from "./total/ResultsTotalModule";
 import { useResultsStore } from "../../store/ResultsStore";
 import { useProfileStore } from "../../store/ProfileStore";
 import { useSceneStore } from "../../store/SceneStore";
-import { useUiSoundProps } from "../../utilities/react/useUiSoundProps";
+import { useUiSoundProps } from "../../utilities/audio/useUiSoundProps";
 
 export const ResultsWindow = () => {
 	const round = useGameStore((store) => store.round);

@@ -1,5 +1,5 @@
 import { AchievementTooltip } from "../../../utilities/react/AchievementTooltip";
-import { useUiSoundProps } from "../../../utilities/react/useUiSoundProps";
+import { useUiSoundProps } from "../../../utilities/audio/useUiSoundProps";
 import { AchievementDoubleIcon } from "./icons/AchievementDoubleIcon";
 import { AchievementTripleIcon } from "./icons/AchievementTripleIcon";
 import { AchievementStraightIcon } from "./icons/AchievementStraight";

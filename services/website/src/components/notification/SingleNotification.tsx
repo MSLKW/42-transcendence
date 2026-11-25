@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect } from "react";
 import { useNotificationStore, type NotificationItem } from "../../store/NotificationStore";
-import { playUiSound } from "../../audio/uiSounds";
-import { useUiSoundProps } from "../../utilities/react/useUiSoundProps";
+import { playUiSound } from "../../utilities/audio/uiSounds";
+import { useUiSoundProps } from "../../utilities/audio/useUiSoundProps";
 
 interface SingleNotificationProps {
 	notification: NotificationItem;

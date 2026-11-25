@@ -2,7 +2,7 @@ import { useAuthStore } from "../../../store/AuthStore";
 import { useBotStore } from "../../../store/BotStore";
 import { usePartyStore } from "../../../store/PartyStore";
 import { Tooltip } from "../../../utilities/react/Tooltip";
-import { useUiSoundProps } from "../../../utilities/react/useUiSoundProps";
+import { useUiSoundProps } from "../../../utilities/audio/useUiSoundProps";
 import { AvatarName } from "../../avatar/name/AvatarName";
 import { AddBotsIcon } from "./AddBotsIcon";
 import { RemoveBotsIcon } from "./RemoveBotsIcon";

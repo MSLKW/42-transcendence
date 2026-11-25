@@ -1,6 +1,6 @@
 import { useRef, useEffect } from "react";
 import { AvatarImage } from "../image/AvatarImage";
-import { playUiSound } from "../../../audio/uiSounds";
+import { playUiSound } from "../../../utilities/audio/uiSounds";
 
 interface AvatarSetNameModuleProps {
 	name: string;

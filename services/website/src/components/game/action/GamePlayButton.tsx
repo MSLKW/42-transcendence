@@ -1,7 +1,7 @@
 import { useGameStore } from "../../../store/GameStore";
 import { useAuthStore } from "../../../store/AuthStore";
 import { gameInstance } from "../../../api/game/main";
-import { useUiSoundProps } from "../../../utilities/react/useUiSoundProps";
+import { useUiSoundProps } from "../../../utilities/audio/useUiSoundProps";
 
 export const GamePlayButton = () => {
 	const gameSeats = useGameStore((store) => store.gameSeats);

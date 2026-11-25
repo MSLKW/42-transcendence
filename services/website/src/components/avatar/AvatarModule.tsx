@@ -2,7 +2,7 @@ import { useGameStore } from "../../store/GameStore";
 import { useProfileStore } from "../../store/ProfileStore";
 import { useSceneStore } from "../../store/SceneStore";
 import { Tooltip } from "../../utilities/react/Tooltip";
-import { useUiSoundProps } from "../../utilities/react/useUiSoundProps";
+import { useUiSoundProps } from "../../utilities/audio/useUiSoundProps";
 import { AvatarImage } from "./image/AvatarImage";
 import { AvatarName } from "./name/AvatarName";
 import { AvatarCornerButton } from "./corner/AvatarCornerButton";

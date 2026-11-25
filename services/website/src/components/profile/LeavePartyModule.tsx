@@ -1,5 +1,5 @@
 import { partySocket } from "../../api/party/partySocket";
-import { useUiSoundProps } from "../../utilities/react/useUiSoundProps";
+import { useUiSoundProps } from "../../utilities/audio/useUiSoundProps";
 
 export const LeavePartyModule = () => {
 	return (

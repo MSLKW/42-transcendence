@@ -1,7 +1,7 @@
 import { chatSocket } from "../../../api/chat/chatSocket";
 import { useChatStore } from "../../../store/ChatStore";
 import { Tooltip } from "../../../utilities/react/Tooltip";
-import { useUiSoundProps } from "../../../utilities/react/useUiSoundProps";
+import { useUiSoundProps } from "../../../utilities/audio/useUiSoundProps";
 
 interface EmoteOptionsProps {
 	emoji: string;

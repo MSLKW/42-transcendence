@@ -3,7 +3,7 @@ import { handleValidate } from "../../../api/authentication/get_validate/handleV
 import { useGameStore, type GAMEMODE_TYPE } from "../../../store/GameStore";
 import { usePartyStore } from "../../../store/PartyStore";
 import { useAuthStore } from "../../../store/AuthStore";
-import { useUiSoundProps } from "../../../utilities/react/useUiSoundProps";
+import { useUiSoundProps } from "../../../utilities/audio/useUiSoundProps";
 import { PersonIcon } from "./person/PersonIcon";
 
 interface HomeProps {

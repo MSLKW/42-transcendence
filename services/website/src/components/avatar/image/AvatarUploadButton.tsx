@@ -2,7 +2,7 @@ import { useRef } from "react";
 import { handlePutAvatar } from "../../../api/profile/put_avatar/handlePutAvatar"
 import { useAuthStore } from "../../../store/AuthStore";
 import { useProfileStore } from "../../../store/ProfileStore";
-import { useUiSoundProps } from "../../../utilities/react/useUiSoundProps";
+import { useUiSoundProps } from "../../../utilities/audio/useUiSoundProps";
 
 interface AvatarUploadButtonProps {
 	setAvatar: (img: string) => void;
