@@ -139,6 +139,8 @@ export const Window: React.FC<WindowProps> = ({
 				{ headerType !== "None" &&
 					<div
 						onMouseDown={handleMouseDown}
+						onPointerDown={() => playUiSound("click")}
+						onPointerUp={() => playUiSound("release")}
 						className={`
 							h-4rem
 							${ headerType === "Standard" ? "bg-a2" : "bg-r2" }

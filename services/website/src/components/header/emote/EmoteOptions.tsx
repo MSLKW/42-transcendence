@@ -24,6 +24,7 @@ export const EmoteOptions = ({ emoji, tip }: EmoteOptionsProps) => {
 				disabled={isChatRateLimited}
 				{...useUiSoundProps()}
 				onClick={handleSend}
+				tabIndex={-1}
 				className="
 					text-3rem rounded-full
 					h-12 aspect-square

@@ -11,7 +11,6 @@ export const LeaveWindow = () => {
 	const currentScene = useSceneStore((store) => store.currentScene);
 
 	const focusRef = useRef<HTMLButtonElement>(null);
-	const suppressNextFocusSoundRef = useRef(true);
 
 	useEffect(() => {
 		focusRef.current?.focus();
@@ -59,7 +58,7 @@ export const LeaveWindow = () => {
 					<button
 						ref={focusRef}
 						type="button"
-						{...useUiSoundProps({ suppressNextFocus: suppressNextFocusSoundRef.current })}
+						{...useUiSoundProps()}
 						onClick={() => useSceneStore.getState().setShowWindow("leave", false)}
 						className="
 							h-3rem aspect-5/1

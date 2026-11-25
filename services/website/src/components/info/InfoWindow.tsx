@@ -20,7 +20,7 @@ export const InfoWindow = () => {
 					h-200 max-h-[80vh]
 					px-3rem
 					divide-n2/40 divide-y-2
-					overflow-scroll
+					overflow-scroll outline-b5 focus-visible:outline-2 -outline-offset-2 rounded-b-xl
 				">
 					<PrivacyPolicyModule />
 					<TermsOfServiceModule />

@@ -1,6 +1,5 @@
 import { useState, useRef, useEffect } from "react";
 import { playUiSound } from "../../../utilities/audio/uiSounds";
-import { useUiSoundProps } from "../../../utilities/audio/useUiSoundProps";
 import { ShowPasswordIcon } from "./password/ShowPasswordIcon";
 import { HidePasswordIcon } from "./password/HidePasswordIcon";
 
@@ -24,7 +23,6 @@ export const FormInputModule = ({
 	call
 }: FormInputModuleProps) => {
 	const focusRef = useRef<HTMLInputElement | null>(null);
-	const suppressNextFocusSoundRef = useRef(hasFocusRef);
 
 	useEffect(() => {
 		if (hasFocusRef && focusRef.current)
@@ -47,13 +45,6 @@ export const FormInputModule = ({
 				type={showValue ? "text" : "password"}
 				value={value}
 				placeholder={placeholder}
-				onFocus={() => {
-					if (suppressNextFocusSoundRef.current) {
-						suppressNextFocusSoundRef.current = false;
-						return;
-					}
-					playUiSound("click");
-				}}
 				onPointerDown={() => playUiSound("click")}
 				onChange={(e) => call(e.target.value)}
 				className="
@@ -70,7 +61,7 @@ export const FormInputModule = ({
 				<button
 					type="button"
 					tabIndex={-1}
-					{...useUiSoundProps({ focus: false, pointerUp: false })}
+					// {...useUiSoundProps({ focus: false, pointerUp: false })}
 					onClick={() => {
 						setShowValue(!showValue);
 						focusRef.current?.focus();

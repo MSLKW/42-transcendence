@@ -19,7 +19,6 @@ export const ChatWindow = () => {
 	const [message, setMessage] = useState("");
 
 	const focusRef = useRef<HTMLInputElement | null>(null);
-	const suppressNextFocusSoundRef = useRef(true);
 	const scrollContainerRef = useRef<HTMLDivElement | null>(null);
 
 	/** focus */
@@ -142,13 +141,7 @@ export const ChatWindow = () => {
 						type="text"
 						maxLength={MAX_MESSAGE_LENGTH}
 						placeholder="Message"
-						onFocus={() => {
-							if (suppressNextFocusSoundRef.current) {
-								suppressNextFocusSoundRef.current = false;
-								return;
-							}
-							playUiSound("click");
-						}}
+						onPointerDown={() => playUiSound("click")}
 						value={message}
 						onChange={handleChange}
 						className="input-chat"

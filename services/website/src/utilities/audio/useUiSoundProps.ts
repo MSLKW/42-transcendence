@@ -5,10 +5,8 @@ interface UiSoundPropsOptions {
 	pointerEnter?: boolean;
 	pointerDown?: boolean;
 	pointerUp?: boolean;
-	focus?: boolean;
 	keyDown?: boolean;
 	keyUp?: boolean;
-	suppressNextFocus?: boolean;
 	upSound?: UiSound;
 }
 
@@ -18,14 +16,11 @@ export const useUiSoundProps = (options: UiSoundPropsOptions = {}) => {
 		pointerEnter = true,
 		pointerDown = true,
 		pointerUp = true,
-		focus = true,
 		keyDown = true,
 		keyUp = true,
-		suppressNextFocus = false,
 		upSound = "release",
 	} = options;
 	const pointerFocusRef = useRef(false);
-	const suppressNextFocusSoundRef = useRef(suppressNextFocus);
 
 	return {
 		onPointerEnter: () => {
@@ -40,14 +35,6 @@ export const useUiSoundProps = (options: UiSoundPropsOptions = {}) => {
 		onPointerUp: () => {
 			if (pointerUp)
 				playUiSound(upSound);
-		},
-		onFocus: () => {
-			if (suppressNextFocusSoundRef.current) {
-				suppressNextFocusSoundRef.current = false;
-				return;
-			}
-			if (focus && !pointerFocusRef.current)
-				playUiSound("hover");
 		},
 		onBlur: () => {
 			pointerFocusRef.current = false;

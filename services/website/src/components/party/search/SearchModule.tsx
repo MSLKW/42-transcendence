@@ -11,7 +11,6 @@ interface SearchModuleProps {
 
 export const SearchModule = ({ value, onChange }: SearchModuleProps) => {
 	const focusRef = useRef<HTMLInputElement | null>(null);
-	const suppressNextFocusSoundRef = useRef(true);
 	const [query, setQuery] = useState<string | null>(null);
 
 	useEffect(() => {
@@ -33,13 +32,6 @@ export const SearchModule = ({ value, onChange }: SearchModuleProps) => {
 				type="text"
 				value={value}
 				placeholder="Search By Name"
-				onFocus={() => {
-					if (suppressNextFocusSoundRef.current) {
-						suppressNextFocusSoundRef.current = false;
-						return;
-					}
-					playUiSound("click");
-				}}
 				onPointerDown={() => playUiSound("click")}
 				onChange={(e) => {
 					setQuery(e.target.value);

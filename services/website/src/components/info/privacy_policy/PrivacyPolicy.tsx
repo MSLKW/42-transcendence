@@ -1,5 +1,6 @@
 import { handleEasterEggFound } from "../../../api/gameStats/post_easter-egg-found/handleEasterEggFound";
 import { NOTIFICATION_TYPE, useNotificationStore } from "../../../store/NotificationStore";
+import { useUiSoundProps } from "../../../utilities/audio/useUiSoundProps";
 
 export const PrivacyPolicyModule = () => {
 	const handleEmailClick = async () => {
@@ -54,8 +55,9 @@ export const PrivacyPolicyModule = () => {
 				<h3>If you have questions about this Privacy Policy, please contact us at:{" "}
 					<button
 						type="button"
+						{...useUiSoundProps()}
 						onClick={handleEmailClick}
-						className="cursor-pointer text-a5"
+						className="cursor-pointer text-a5 focus-visible:outline-2 outline-b5 rounded-full outline-offset-2"
 					>
 						support@big2.com
 					</button>
