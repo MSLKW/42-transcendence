@@ -39,7 +39,7 @@ export const AvatarSetNameModule = ({ name, avatar, uuid, setName, setHasChange 
 					type="text"
 					value={name ?? ""}
 					placeholder="Name"
-					onFocus={() => playUiSound("click")}
+					onPointerEnter={() => playUiSound("hover")}
 					onPointerDown={() => playUiSound("click")}
 					onKeyDown={(e) => {
 						if (e.key === "Enter")

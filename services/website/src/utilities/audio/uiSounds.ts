@@ -18,6 +18,8 @@ let audioContext: AudioContext | null = null;
 let buffers: Record<UiSound, AudioBuffer> | null = null;
 let loading: Promise<void> | null = null;
 const pendingSounds: UiSound[] = [];
+const HOVER_SOUND_COOLDOWN_MS = 80;
+let lastHoverSoundAt = Number.NEGATIVE_INFINITY;
 
 const initializeUiSounds = () => {
 	if (!loading) {
@@ -63,6 +65,13 @@ const playDecodedUiSound = (sound: UiSound) => {
 };
 
 export const playUiSound = (sound: UiSound) => {
+	if (sound === "hover" || sound === "card_hover") {
+		const now = performance.now();
+		if (now - lastHoverSoundAt < HOVER_SOUND_COOLDOWN_MS)
+			return;
+		lastHoverSoundAt = now;
+	}
+
 	// Ignore hover/focus sounds until an explicit action unlocks audio. This
 	// prevents programmatic autofocus during initial render from creating a context.
 	if (!audioContext && (sound === "hover" || sound === "notif"))

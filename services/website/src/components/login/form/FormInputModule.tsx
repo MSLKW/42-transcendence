@@ -45,6 +45,7 @@ export const FormInputModule = ({
 				type={showValue ? "text" : "password"}
 				value={value}
 				placeholder={placeholder}
+				onPointerEnter={() => playUiSound("hover")}
 				onPointerDown={() => playUiSound("click")}
 				onChange={(e) => call(e.target.value)}
 				className="

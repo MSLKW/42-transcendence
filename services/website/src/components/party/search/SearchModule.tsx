@@ -32,6 +32,7 @@ export const SearchModule = ({ value, onChange }: SearchModuleProps) => {
 				type="text"
 				value={value}
 				placeholder="Search By Name"
+				onPointerEnter={() => playUiSound("hover")}
 				onPointerDown={() => playUiSound("click")}
 				onChange={(e) => {
 					setQuery(e.target.value);

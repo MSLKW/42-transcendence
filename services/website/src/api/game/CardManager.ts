@@ -316,7 +316,7 @@ export class CardManager {
 		if (card.isHover === true) {
 			if (index === -1) {
 				threejsManager.outlinePass.selectedObjects.push(card.object);
-				playUiSound("card_hover"); //az
+				playUiSound("card_hover");
 			}
 			position.add(new THREE.Vector3(0, 0.5, 0.1).applyQuaternion(card.object.quaternion));
 		}

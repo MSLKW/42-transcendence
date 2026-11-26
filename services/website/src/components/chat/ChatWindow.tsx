@@ -141,6 +141,7 @@ export const ChatWindow = () => {
 						type="text"
 						maxLength={MAX_MESSAGE_LENGTH}
 						placeholder="Message"
+						onPointerEnter={() => playUiSound("hover")}
 						onPointerDown={() => playUiSound("click")}
 						value={message}
 						onChange={handleChange}
