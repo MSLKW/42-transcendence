@@ -1,4 +1,5 @@
 import { AchievementTooltip } from "../../../utilities/react/AchievementTooltip";
+import { useUiSoundProps } from "../../../utilities/audio/useUiSoundProps";
 import { AchievementDoubleIcon } from "./icons/AchievementDoubleIcon";
 import { AchievementTripleIcon } from "./icons/AchievementTripleIcon";
 import { AchievementStraightIcon } from "./icons/AchievementStraight";
@@ -27,12 +28,12 @@ export const AchievementImage = ({ title, description, unlocked }: AchievementIm
 
 	return (
 		<AchievementTooltip text={title} description={description} date={subtitle}>
-			<button
-				type="button"
+			<div
 				aria-label={`${title}, ${subtitle}`}
+				{...useUiSoundProps({ pointerDown: false, pointerUp: false, keyDown: false, keyUp: false })}
 				className={`
 					h-12.5 aspect-square
-					btn-icon rounded-full bg-radial border
+					rounded-full bg-radial border hover:scale-105
 					${unlocked ? "from-b4 to-b2 border-b5 text-b5" : "from-a4 to-a2 border-a5 opacity-60"}
 					cursor-help
 			`}>
@@ -50,7 +51,7 @@ export const AchievementImage = ({ title, description, unlocked }: AchievementIm
 					title === "No Pass" ? <AchievementNoPassIcon /> :
 					<AchievementFirstWinIcon />
 				}
-			</button>
+			</div>
 		</AchievementTooltip>
 	);
 }

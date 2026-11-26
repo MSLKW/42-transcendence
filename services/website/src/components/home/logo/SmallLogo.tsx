@@ -1,10 +1,12 @@
 import { useSceneStore } from "../../../store/SceneStore";
 import { Tooltip } from "../../../utilities/react/Tooltip";
+import { useUiSoundProps } from "../../../utilities/audio/useUiSoundProps";
 
 export const SmallLogo = () => {
 	return (
 		<button
 			type="button"
+			{...useUiSoundProps()}
 			onClick={() => useSceneStore.getState().setShowWindow("info", true)}
 			className="
 				btn-text rounded-xl

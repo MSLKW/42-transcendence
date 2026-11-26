@@ -22,11 +22,11 @@
 			left-1/2 -translate-x-1/2
 			;
 	}
-	&:focus-visible,
+	&:focus,
     &:hover {
         @apply z-50;
     }
-	&:focus-visible::after,
+	&:focus::after,
 	&:hover::after {
 		@apply scale-100 opacity-100;
 	}
@@ -42,11 +42,11 @@
 			left-1/2 -translate-x-1/2
 			;
 	}
-	&:focus-visible,
+	&:focus,
     &:hover {
         @apply z-50;
     }
-	&:focus-visible::after,
+	&:focus::after,
 	&:hover::after {
 		@apply scale-100 opacity-100;
 	}
@@ -62,11 +62,11 @@
 			top-1/2 -translate-y-1/2
 			;
 	}
-	&:focus-visible,
+	&:focus,
     &:hover {
         @apply z-50;
     }
-	&:focus-visible::after,
+	&:focus::after,
 	&:hover::after {
 		@apply scale-100 opacity-100;
 	}

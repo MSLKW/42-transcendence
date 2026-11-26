@@ -2,6 +2,7 @@ import { useRef } from "react";
 import { handlePutAvatar } from "../../../api/profile/put_avatar/handlePutAvatar"
 import { useAuthStore } from "../../../store/AuthStore";
 import { useProfileStore } from "../../../store/ProfileStore";
+import { useUiSoundProps } from "../../../utilities/audio/useUiSoundProps";
 
 interface AvatarUploadButtonProps {
 	setAvatar: (img: string) => void;
@@ -35,7 +36,7 @@ export const AvatarUploadButton = ({ setAvatar }: AvatarUploadButtonProps) => {
 				return;
 			/** Increment the cache key so existing custom-avatar previews reload the uploaded image */
 			markAvatarUpdated(clientUuid);
-			setAvatar(`avatars/${clientUuid}.webp`);
+			setAvatar(`/avatars/${clientUuid}.webp`);
 		} finally {
 			event.target.value = "";
 		}
@@ -52,17 +53,18 @@ export const AvatarUploadButton = ({ setAvatar }: AvatarUploadButtonProps) => {
 			/>
 			<button
 				type="submit"
+				{...useUiSoundProps()}
 				onClick={handleClick}
 				className="
 					hover:not-disabled:scale-105 active:hover:not-disabled:scale-100
-					focus-visible:outline-double hover:not-disabled:outline-double outline-b5
+					focus:outline-double hover:not-disabled:outline-double outline-b5
 					border-n2 bg-n3/20
 					h-6rem aspect-square
 					border rounded-sm
 					cursor-pointer
 			">
 				<img
-					src="avatar-upload.webp"
+					src="/avatars/avatar-upload.webp"
 					alt="Upload avatar"
 				/>
 			</button>

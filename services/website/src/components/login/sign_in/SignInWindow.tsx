@@ -1,10 +1,12 @@
 import { useState } from "react";
 import { useNotificationStore, NOTIFICATION_TYPE } from "../../../store/NotificationStore";
+import { handleSignIn } from "../../../api/authentication/post_signin/handleSignIn";
+import { useUiSoundProps } from "../../../utilities/audio/useUiSoundProps";
 import { Window } from "../../window/Window";
 import { FormInputModule } from "../form/FormInputModule";
-import { handleSignIn } from "../../../api/authentication/post_signin/handleSignIn";
 
 export const SignInWindow = () => {
+	const submitSoundProps = useUiSoundProps({ pointerUp: false, keyUp: false });
 	const [email, setEmail] = useState("");
 	const [password, setPassword] = useState("");
 	const [isLoading, setIsLoading] = useState(false);
@@ -61,6 +63,7 @@ export const SignInWindow = () => {
 				<button
 					type="submit"
 					disabled={isLoading}
+					{...submitSoundProps}
 					className="
 						btn-text bg-white
 						h-3rem aspect-6/1

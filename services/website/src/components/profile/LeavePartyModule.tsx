@@ -1,4 +1,5 @@
 import { partySocket } from "../../api/party/partySocket";
+import { useUiSoundProps } from "../../utilities/audio/useUiSoundProps";
 
 export const LeavePartyModule = () => {
 	return (
@@ -10,6 +11,7 @@ export const LeavePartyModule = () => {
 		>
 			<button
 				type="button"
+				{...useUiSoundProps()}
 				onClick={() => partySocket.leaveParty()}
 				className="
 					btn-text bg-light

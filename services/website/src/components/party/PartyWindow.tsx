@@ -88,7 +88,7 @@ export const PartyWindow = () => {
 
 	return (
 		<Window
-			title="Search to add / invite players"
+			title="Search & invite players"
 			dismissKey="party"
 			placement="bl"
 		>
@@ -137,7 +137,6 @@ export const PartyWindow = () => {
 				<SearchModule 
 					value={searchQuery}
 					onChange={setSearchQuery}
-					search={() => setFilteredResults([])}
 				/>
 			</div>
 			<div className="

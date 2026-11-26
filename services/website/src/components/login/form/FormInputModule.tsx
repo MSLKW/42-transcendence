@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect } from "react";
+import { playUiSound } from "../../../utilities/audio/uiSounds";
 import { ShowPasswordIcon } from "./password/ShowPasswordIcon";
 import { HidePasswordIcon } from "./password/HidePasswordIcon";
 
@@ -22,21 +23,21 @@ export const FormInputModule = ({
 	call
 }: FormInputModuleProps) => {
 	const focusRef = useRef<HTMLInputElement | null>(null);
+
 	useEffect(() => {
 		if (hasFocusRef && focusRef.current)
 			focusRef.current.focus();
 	}, [hasFocusRef]);
 
 	const [showValue, setShowValue] = useState(!isPassword);
-	
+
 	return (
 		<label
 			htmlFor={inputFor}
 			className="
 				flex gap-2rem
 				relative
-			"
-		>
+		">
 			<h2 className="text-right w-[30%] whitespace-nowrap">{label}</h2>
 			<input
 				ref={hasFocusRef ? focusRef : undefined}
@@ -44,6 +45,8 @@ export const FormInputModule = ({
 				type={showValue ? "text" : "password"}
 				value={value}
 				placeholder={placeholder}
+				onPointerEnter={() => playUiSound("hover")}
+				onPointerDown={() => playUiSound("click")}
 				onChange={(e) => call(e.target.value)}
 				className="
 					w-[65%]
@@ -54,13 +57,16 @@ export const FormInputModule = ({
 					pointer-events-auto
 					focus:outline-2 outline-b5
 					placeholder:text-1rem
-				"
-			/>
+			"/>
 			{ isPassword &&
 				<button
 					type="button"
 					tabIndex={-1}
-					onClick={() => setShowValue(!showValue)}
+					// {...useUiSoundProps({ focus: false, pointerUp: false })}
+					onClick={() => {
+						setShowValue(!showValue);
+						focusRef.current?.focus();
+					}}
 					className="
 						absolute right-1 top-1/2 -translate-y-1/2
 						h-[80%] aspect-square

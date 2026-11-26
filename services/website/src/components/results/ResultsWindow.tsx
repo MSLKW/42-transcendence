@@ -8,6 +8,7 @@ import { ResultsTotalModule } from "./total/ResultsTotalModule";
 import { useResultsStore } from "../../store/ResultsStore";
 import { useProfileStore } from "../../store/ProfileStore";
 import { useSceneStore } from "../../store/SceneStore";
+import { useUiSoundProps } from "../../utilities/audio/useUiSoundProps";
 
 export const ResultsWindow = () => {
 	const round = useGameStore((store) => store.round);
@@ -38,6 +39,7 @@ export const ResultsWindow = () => {
 						<div className="flex gap-2rem">
 							<button
 								type="button"
+								{...useUiSoundProps()}
 								onClick={leaveGame}
 								className="
 									h-3rem aspect-6/1
@@ -47,6 +49,7 @@ export const ResultsWindow = () => {
 							</button>
 							<button
 								type="button"
+								{...useUiSoundProps()}
 								onClick={() => useSceneStore.getState().setShowWindow("results", false)}
 								className="
 									h-3rem aspect-6/1

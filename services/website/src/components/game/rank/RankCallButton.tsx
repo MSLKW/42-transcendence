@@ -1,6 +1,7 @@
 import { useGameStore } from "../../../store/GameStore";
 import { useSceneStore } from "../../../store/SceneStore";
 import { Tooltip } from "../../../utilities/react/Tooltip";
+import { useUiSoundProps } from "../../../utilities/audio/useUiSoundProps";
 import { RankIcon } from "./RankIcon";
 
 export const RankCallButton = () => {
@@ -10,6 +11,7 @@ export const RankCallButton = () => {
 		<Tooltip text="View Rank List">
 			<button
 				type="button"
+				{...useUiSoundProps()}
 				onClick={() => useSceneStore.getState().setShowWindow("rank", true)}
 				className="
 					btn-text bg-dark-semi

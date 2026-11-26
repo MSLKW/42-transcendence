@@ -1,11 +1,12 @@
+import { useGameStore } from "../../store/GameStore";
 import { useProfileStore } from "../../store/ProfileStore";
 import { useSceneStore } from "../../store/SceneStore";
+import { Tooltip } from "../../utilities/react/Tooltip";
+import { useUiSoundProps } from "../../utilities/audio/useUiSoundProps";
 import { AvatarImage } from "./image/AvatarImage";
 import { AvatarName } from "./name/AvatarName";
 import { AvatarCornerButton } from "./corner/AvatarCornerButton";
 import { ChatBubbles } from "../bubble/ChatBubble";
-import { Tooltip } from "../../utilities/react/Tooltip";
-import { useGameStore } from "../../store/GameStore";
 
 interface AvatarModuleProps {
 	uuid: string;
@@ -14,6 +15,7 @@ interface AvatarModuleProps {
 	isActive?: boolean;
 	isDisconnected?: boolean;
 	showName?: boolean;
+	isInteractive?: boolean;
 }
 
 export const AvatarModule = ({
@@ -23,6 +25,7 @@ export const AvatarModule = ({
 	isActive = false,
 	isDisconnected = false,
 	showName = true,
+	isInteractive = true,
 }: AvatarModuleProps) => {
 	const cachedProfiles = useProfileStore((store) => store.cachedProfiles);
 	const currentScene = useSceneStore((store) => store.currentScene);
@@ -37,50 +40,66 @@ export const AvatarModule = ({
 			relative
 		">
 			<ChatBubbles uuid={uuid} />
-			<button
-				type="button"
-				onClick={(e) => {
-					e.currentTarget.blur();
-
-					if (currentScene === "Game" || relation === "Bot")
-						return;
-
-					if (relation === "Self")
-						useSceneStore.getState().setShowWindow("profile", true);
-					else
-						useSceneStore.getState().setShowWindow("stats", true, uuid);
-				}}
-				className={`
+			{isInteractive ? 
+				<button
+					type="button"
+					{...useUiSoundProps()}
+					onClick={(e) => {
+						e.currentTarget.blur();
+						if (currentScene === "Game" || relation === "Bot")
+							return;
+						if (relation === "Self")
+							useSceneStore.getState().setShowWindow("profile", true);
+						else
+							useSceneStore.getState().setShowWindow("stats", true, uuid);
+					}}
+					className={`
+						rounded-sm
+						${ (currentScene !== "Game" && relation !== "Bot") && "hover:not-disabled:scale-105 active:hover:not-disabled:scale-100 focus:outline-2 cursor-pointer" }
+						outline-b5
+						relative h-min
+						${ currentScene === "Game" && isActive === true && "animate-glow"}
+				`}>
+					<Tooltip text={
+						relation === "Self" ? "Edit Profile" :
+						relation === "Bot" ? null : 
+						"View Profile"
+					}>
+						<AvatarImage
+							uuid={uuid}
+							image={image ?? undefined}
+							isActive={isActive}
+							isDisconnected={isDisconnected}
+						/>
+					</Tooltip>
+					<AvatarCornerButton cornerButton={cornerButton} />
+				</button>
+			:
+				<div className={`
 					rounded-sm
-					${ (currentScene !== "Game" && relation !== "Bot") && "hover:not-disabled:scale-105 active:hover:not-disabled:scale-100 focus-visible:outline-2 cursor-pointer" }
 					outline-b5
 					relative h-min
 					${ currentScene === "Game" && isActive === true && "animate-glow"}
 				`}>
-				<Tooltip text={
-					relation === "Self" ? "Edit Profile" :
-					relation === "Bot" ? null : 
-					"View Profile"
-				}>
 					<AvatarImage
 						uuid={uuid}
 						image={image ?? undefined}
 						isActive={isActive}
 						isDisconnected={isDisconnected}
 					/>
-				</Tooltip>
-				<AvatarCornerButton cornerButton={cornerButton} />
-				{ playerPassed.includes(uuid) &&
-					<div className="
-						absolute bottom-0 translate-y-2 left-1/2 -translate-x-1/2
-						bg-a3 text-n6 border border-n2
-						w-[120%] rounded-full
-					">
-						<p>PASSED</p>
-					</div>
-				}
-			</button>
-			{ showName && <AvatarName name={cachedProfiles[uuid?? ""]?.name ?? "-"} /> }
+					<AvatarCornerButton cornerButton={cornerButton} />
+					{ playerPassed.includes(uuid) &&
+						<div className="
+							absolute bottom-0 translate-y-2 left-1/2 -translate-x-1/2
+							bg-a3 text-n6 border border-n2
+							w-[120%] rounded-full flex place-content-center place-items-center
+						">
+							<p>PASSED</p>
+						</div>
+					}
+				</div>
+			}
+			{ showName && <AvatarName name={cachedProfiles[uuid ?? ""]?.name ?? "-"} /> }
 		</div>
 	);
 }

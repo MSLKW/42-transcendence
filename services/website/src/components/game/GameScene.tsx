@@ -36,6 +36,7 @@ export const GameScene = () => {
 									cornerButton={cardsLeft[seatRef[1]] ?? -1}
 									isActive={gameStarted && activeSeat === seatRef[1]}
 									isDisconnected={playerDisconnection[gameSeats[seatRef[1]] ?? ""]}
+									isInteractive={false}
 								/>
 							}
 						</div>
@@ -48,6 +49,7 @@ export const GameScene = () => {
 									cornerButton={cardsLeft[seatRef[2]] ?? -1}
 									isActive={gameStarted && activeSeat === seatRef[2]}
 									isDisconnected={playerDisconnection[gameSeats[seatRef[2]] ?? ""]}
+									isInteractive={false}
 								/>
 							}
 						</div>
@@ -60,6 +62,7 @@ export const GameScene = () => {
 									cornerButton={cardsLeft[seatRef[3]] ?? -1}
 									isActive={gameStarted && activeSeat === seatRef[3]}
 									isDisconnected={playerDisconnection[gameSeats[seatRef[3]] ?? ""]}
+									isInteractive={false}
 								/>
 							}
 						</div>
@@ -76,6 +79,7 @@ export const GameScene = () => {
 									cornerButton={cardsLeft[seatRef[1]] ?? -1}
 									isActive={gameStarted && activeSeat === seatRef[1]}
 									isDisconnected={playerDisconnection[gameSeats[seatRef[1]] ?? ""]}
+									isInteractive={false}
 								/>
 							}
 						</div>
@@ -88,6 +92,7 @@ export const GameScene = () => {
 									cornerButton={cardsLeft[seatRef[2]] ?? -1}
 									isActive={gameStarted && activeSeat === seatRef[2]}
 									isDisconnected={playerDisconnection[gameSeats[seatRef[2]] ?? ""]}
+									isInteractive={false}
 								/>
 							}
 						</div>
@@ -103,6 +108,7 @@ export const GameScene = () => {
 								cornerButton={cardsLeft[seatRef[1]] ?? -1}
 								isActive={gameStarted && activeSeat === seatRef[1]}
 								isDisconnected={playerDisconnection[gameSeats[seatRef[1]] ?? ""]}
+								isInteractive={false}
 							/>
 						}
 					</div>
@@ -135,6 +141,7 @@ export const GameScene = () => {
 						cornerButton={cardsLeft[seatRef[0]]}
 						isActive={gameStarted && activeSeat === seatRef[0]}
 						isDisconnected={playerDisconnection[gameSeats[seatRef[0]] ?? ""]}
+						isInteractive={false}
 					/>
 				}
 				<div className="

@@ -1,6 +1,6 @@
 @utility bg-light {
 	@apply
-		bg-n6 hover:not-disabled:bg-b5 focus-visible:bg-b5
+		bg-n6 hover:not-disabled:bg-b5 focus:bg-b5
 		border border-n5 hover:not-disabled:border-b6
 		outline-b5
 		;

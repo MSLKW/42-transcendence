@@ -23,6 +23,7 @@ export const ResultsPodiumModule = () => {
 						uuid={results[0].uuid}
 						image={cachedProfiles[results[0].uuid ?? ""]?.avatar ?? undefined}
 						cornerButton="1st"
+						isInteractive={false}
 					/>
 					<span className={`${results[0].points > 0 ? "text-r4" : "text-c4"}`}>
 						+{results[0].points}
@@ -36,6 +37,7 @@ export const ResultsPodiumModule = () => {
 						uuid={results[1].uuid}
 						image={cachedProfiles[results[1].uuid ?? ""]?.avatar ?? undefined}
 						cornerButton="2nd"
+						isInteractive={false}
 					/>
 					<span className={`${results[1].points > 0 ? "text-r4" : "text-c4"}`}>
 						+{results[1].points}
@@ -49,6 +51,7 @@ export const ResultsPodiumModule = () => {
 						uuid={results[2].uuid}
 						image={cachedProfiles[results[2].uuid ?? ""]?.avatar ?? undefined}
 						cornerButton="3rd"
+						isInteractive={false}
 					/>
 					<span className={`${results[2].points > 0 ? "text-r4" : "text-c4"}`}>
 						+{results[2].points}
@@ -62,6 +65,7 @@ export const ResultsPodiumModule = () => {
 						uuid={results[3].uuid}
 						image={cachedProfiles[results[3].uuid ?? ""]?.avatar ?? undefined}
 						cornerButton="4th"
+						isInteractive={false}
 					/>
 					<span className={`${results[3].points > 0 ? "text-r4" : "text-c4"}`}>
 						+{results[3].points}

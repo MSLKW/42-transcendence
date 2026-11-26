@@ -1,6 +1,7 @@
 import { chatSocket } from "../../../api/chat/chatSocket";
 import { useChatStore } from "../../../store/ChatStore";
 import { Tooltip } from "../../../utilities/react/Tooltip";
+import { useUiSoundProps } from "../../../utilities/audio/useUiSoundProps";
 
 interface EmoteOptionsProps {
 	emoji: string;
@@ -21,7 +22,9 @@ export const EmoteOptions = ({ emoji, tip }: EmoteOptionsProps) => {
 				type="button"
 				key={emoji}
 				disabled={isChatRateLimited}
+				{...useUiSoundProps()}
 				onClick={handleSend}
+				tabIndex={-1}
 				className="
 					text-3rem rounded-full
 					h-12 aspect-square

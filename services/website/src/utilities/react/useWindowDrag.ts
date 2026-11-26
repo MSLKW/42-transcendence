@@ -21,7 +21,8 @@ export const useWindowDrag = (initialPosition = { x: 0, y: 0 }) => {
 	}, [handleMouseMove]);
 
 	const handleMouseDown = (e: React.MouseEvent<HTMLDivElement>) => {
-		if (e.button !== 0) return;
+		if (e.button !== 0)
+			return;
 
 		draggingRef.current = true;
 		/** Preserve the cursor's grab point so the window does not jump to the pointer */

@@ -1,4 +1,5 @@
 import { useSceneStore } from "../../../store/SceneStore";
+import { useUiSoundProps } from "../../../utilities/audio/useUiSoundProps";
 
 export const SignInButton = () => {
 	const showWindow = useSceneStore((store) => store.showWindow);
@@ -6,6 +7,7 @@ export const SignInButton = () => {
 	return (
 		<button
 			type="button"
+			{...useUiSoundProps()}
 			onClick={() => useSceneStore.getState().setShowWindow("signIn", !showWindow.signIn)}
 			className="
 				btn-text bg-light

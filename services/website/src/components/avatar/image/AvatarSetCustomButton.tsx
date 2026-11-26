@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useProfileStore } from '../../../store/ProfileStore';
+import { useUiSoundProps } from '../../../utilities/audio/useUiSoundProps';
 
 interface AvatarSetCustomButtonProps {
 	id: string | null;
@@ -17,9 +18,10 @@ export const AvatarSetCustomButton = ({ id, avatar, setAvatar, setHasChange }: A
 		setImageExists(true);
 	}, [id, avatarVersion]);
 
-	const imagePath = `avatars/${id}.webp`;
+	const imagePath = `/avatars/${id}.webp`;
 	/** The version query forces a fresh request after this user's custom avatar changes */
 	const imageSrc = `${imagePath}?v=${avatarVersion ?? 0}`;
+	const uiSoundProps = useUiSoundProps();
 
 	if (!id || !imageExists)
 		return null;
@@ -27,13 +29,14 @@ export const AvatarSetCustomButton = ({ id, avatar, setAvatar, setHasChange }: A
 	return (
 		<button
 			type="button"
+			{...uiSoundProps}
 			onClick={() => {
 				setAvatar(imagePath);
 				setHasChange(true);
 			}}
 			className={`
 				hover:not-disabled:scale-105 active:hover:not-disabled:scale-100
-				focus-visible:outline-double hover:not-disabled:outline-double outline-b5
+				focus:outline-double hover:not-disabled:outline-double outline-b5
 				${imagePath === avatar ? "outline-2 border-b4 bg-b5/40" : "border-n2 bg-n3/20"}
 				h-6rem aspect-square overflow-hidden
 				border rounded-sm

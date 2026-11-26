@@ -1,6 +1,7 @@
 import { useGameStore } from "../../../store/GameStore";
 import { useAuthStore } from "../../../store/AuthStore";
 import { gameInstance } from "../../../api/game/main";
+import { useUiSoundProps } from "../../../utilities/audio/useUiSoundProps";
 
 export const GamePlayButton = () => {
 	const gameSeats = useGameStore((store) => store.gameSeats);
@@ -17,8 +18,9 @@ export const GamePlayButton = () => {
 	return (
 		<button
 			type="button"
-			onClick={handlePlay}
 			disabled={!(activeSeat === clientSeat && isCardHandPlayable === true)}
+			{...useUiSoundProps({ pointerUp: false, keyUp: false })}
+			onClick={handlePlay}
 			className="
 				btn-text bg-light
 				h-3rem aspect-5/1

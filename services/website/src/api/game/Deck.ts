@@ -2,6 +2,7 @@ import * as THREE from 'three';
 import { type GameStateTransmit, CardRank } from '@big2/game-types';
 import { Card } from './Card';
 import { gsap } from 'gsap';
+import { playUiSound } from '../../utilities/audio/uiSounds';
 
 export class Deck {
 	private cards: Array<Card>;
@@ -100,8 +101,9 @@ export class Deck {
 		else {
 			const cycles = this.opponentCardsAmount / this.totalOpponents;
 			for (let i = 0; i < cycles; i++)
-			shuffleTimeline.add(this.toTop(0, this.totalOpponents, duration / cycles));
+				shuffleTimeline.add(this.toTop(0, this.totalOpponents, duration / cycles));
 		}
+		playUiSound("shuffle");
 		return (shuffleTimeline);
 	}
 

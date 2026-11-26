@@ -12,20 +12,20 @@ export const AvatarSelectModule = ({ avatar, setAvatar, setHasChange = () => {} 
 	const clientUuid = useAuthStore((store) => store.clientUuid);
 
 	const AVATAR_IMGS = [
-		"avatar-male-0.webp", "avatar-female-0.webp", "avatar-animal-0.webp",
-		"avatar-male-1.webp", "avatar-female-1.webp", "avatar-animal-1.webp",
-		"avatar-male-2.webp", "avatar-female-2.webp", "avatar-animal-2.webp",
-		"avatar-male-3.webp", "avatar-female-3.webp", "avatar-animal-3.webp",
-		"avatar-male-4.webp", "avatar-female-4.webp", "avatar-animal-4.webp",
-		"avatar-male-5.webp", "avatar-female-5.webp", "avatar-animal-5.webp",
-		"avatar-male-6.webp", "avatar-female-6.webp", "avatar-animal-6.webp",
-		"avatar-male-7.webp", "avatar-female-7.webp", "avatar-animal-7.webp",
-		"avatar-male-8.webp", "avatar-female-8.webp", "avatar-animal-8.webp",
-		"avatar-male-9.webp", "avatar-female-9.webp", "avatar-animal-9.webp",
-		"avatar-male-10.webp", "avatar-female-10.webp", "avatar-animal-10.webp",
-		"avatar-male-11.webp", "avatar-female-11.webp", "avatar-animal-11.webp",
-		"avatar-robot-0.webp", "avatar-robot-2.webp", "avatar-robot-4.webp",
-		"avatar-robot-1.webp", "avatar-robot-3.webp", "avatar-robot-5.webp",
+		"/avatars/avatar-male-0.webp", "/avatars/avatar-female-0.webp", "/avatars/avatar-animal-0.webp",
+		"/avatars/avatar-male-1.webp", "/avatars/avatar-female-1.webp", "/avatars/avatar-animal-1.webp",
+		"/avatars/avatar-male-2.webp", "/avatars/avatar-female-2.webp", "/avatars/avatar-animal-2.webp",
+		"/avatars/avatar-male-3.webp", "/avatars/avatar-female-3.webp", "/avatars/avatar-animal-3.webp",
+		"/avatars/avatar-male-4.webp", "/avatars/avatar-female-4.webp", "/avatars/avatar-animal-4.webp",
+		"/avatars/avatar-male-5.webp", "/avatars/avatar-female-5.webp", "/avatars/avatar-animal-5.webp",
+		"/avatars/avatar-male-6.webp", "/avatars/avatar-female-6.webp", "/avatars/avatar-animal-6.webp",
+		"/avatars/avatar-male-7.webp", "/avatars/avatar-female-7.webp", "/avatars/avatar-animal-7.webp",
+		"/avatars/avatar-male-8.webp", "/avatars/avatar-female-8.webp", "/avatars/avatar-animal-8.webp",
+		"/avatars/avatar-male-9.webp", "/avatars/avatar-female-9.webp", "/avatars/avatar-animal-9.webp",
+		"/avatars/avatar-male-10.webp", "/avatars/avatar-female-10.webp", "/avatars/avatar-animal-10.webp",
+		"/avatars/avatar-male-11.webp", "/avatars/avatar-female-11.webp", "/avatars/avatar-animal-11.webp",
+		"/avatars/avatar-robot-0.webp", "/avatars/avatar-robot-2.webp", "/avatars/avatar-robot-4.webp",
+		"/avatars/avatar-robot-1.webp", "/avatars/avatar-robot-3.webp", "/avatars/avatar-robot-5.webp",
 	] as const;
 
 	return (
@@ -34,7 +34,7 @@ export const AvatarSelectModule = ({ avatar, setAvatar, setHasChange = () => {} 
 				grid grid-flow-col auto-cols-max grid-rows-3
 				gap-1rem py-2rem px-2rem
 				overflow-x-auto
-				bg-dark-semi rounded-xl
+				bg-dark-semi rounded-xl outline-b5 focus:outline-2
 			">
 				{
 					AVATAR_IMGS.map((img) => {

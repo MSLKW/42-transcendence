@@ -81,10 +81,13 @@ export const useProfileStore = create<ProfileState>() (
 					})
 				);
 
-				set(() => ({
-					cachedProfiles: Object.fromEntries(
-						results.filter((item) => item !== null)
-					),
+				set((state) => ({
+					cachedProfiles: {
+						...Object.fromEntries(
+							Object.entries(state.cachedProfiles).filter(([uuid]) => uuid.startsWith("bot-"))
+						),
+						...Object.fromEntries(results.filter((item) => item !== null)),
+					},
 				}));
 			},
 

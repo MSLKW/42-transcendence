@@ -2,6 +2,7 @@ import { useNotificationStore } from "../../../store/NotificationStore";
 import { NotifShowAllIcon } from "./NotifShowAllIcon";
 import { NotifFilteredIcon } from "./NotifFilteredIcon";
 import { Tooltip } from "../../../utilities/react/Tooltip";
+import { useUiSoundProps } from "../../../utilities/audio/useUiSoundProps";
 
 export const NotifToggleButton = () => {
 	const isNotifFiltered = useNotificationStore((store) => store.isNotifFiltered);
@@ -10,6 +11,7 @@ export const NotifToggleButton = () => {
 	return (
 		<button
 			type="button"
+			{...useUiSoundProps()}
 			onClick={() => useNotificationStore.setState({ isNotifFiltered: !isNotifFiltered })}
 			className="btn-icon relative"
 		>

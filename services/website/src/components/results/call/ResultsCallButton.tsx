@@ -1,5 +1,6 @@
 import { useSceneStore } from "../../../store/SceneStore";
 import { Tooltip } from "../../../utilities/react/Tooltip";
+import { useUiSoundProps } from "../../../utilities/audio/useUiSoundProps";
 import { AvatarName } from "../../avatar/name/AvatarName";
 import { ResultsIcon } from "./ResultsIcons";
 
@@ -12,6 +13,7 @@ export const ResultsCallButton = () => {
 			<Tooltip text="View Results">
 				<button
 					type="button"
+					{...useUiSoundProps()}
 					onClick={() => useSceneStore.getState().setShowWindow("results", true)}
 					className="
 						h-6rem aspect-square

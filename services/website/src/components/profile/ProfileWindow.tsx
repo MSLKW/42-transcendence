@@ -121,7 +121,7 @@ export const ProfileWindow = () => {
 					if (response["newlyGrantedBadgeIdForEasterEgg"])
 						useNotificationStore.getState().showNotification("'Imposter' easter egg found!", NOTIFICATION_TYPE.message);
 				}
-				if (avatar === "avatar-animal-9.webp") {
+				if (avatar === "/avatars/avatar-animal-9.webp") {
 					const response = await handleEasterEggFound("egg_5640cd1ea99b");
 					if (response["newlyGrantedBadgeIdForEasterEgg"])
 						useNotificationStore.getState().showNotification("'Connoisseur' easter egg found!", NOTIFICATION_TYPE.message);

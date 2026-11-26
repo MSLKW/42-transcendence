@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import { gameInstance } from "../../../api/game/main";
 import { useGameStore } from "../../../store/GameStore";
 import { Tooltip } from "../../../utilities/react/Tooltip";
+import { useUiSoundProps } from "../../../utilities/audio/useUiSoundProps";
 
 interface SortButtonProps {
 	call?: (e: React.MouseEvent<HTMLButtonElement>) => void;
@@ -15,6 +16,7 @@ export const SortButton = ({ call, sortType, type, tip }: SortButtonProps) => {
 		<Tooltip text={tip} position="left">
 			<button
 				type="button"
+				{...useUiSoundProps()}
 				onClick={call}
 				className={`
 					btn-text bg-dark-semi

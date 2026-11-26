@@ -1,4 +1,5 @@
 import { useSceneStore } from "../../../store/SceneStore";
+import { useUiSoundProps } from "../../../utilities/audio/useUiSoundProps";
 
 export const CreateAccountButton = () => {
 	const showWindow =  useSceneStore((store) => store.showWindow);
@@ -6,6 +7,7 @@ export const CreateAccountButton = () => {
 	return (
 		<button
 			type="button"
+			{...useUiSoundProps()}
 			onClick={() => useSceneStore.getState().setShowWindow("createAccount", !showWindow.createAccount)}
 			className="
 				btn-text bg-light

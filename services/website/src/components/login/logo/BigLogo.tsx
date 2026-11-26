@@ -1,9 +1,10 @@
 import { useSceneStore } from "../../../store/SceneStore";
 import { Tooltip } from "../../../utilities/react/Tooltip";
+import { useUiSoundProps } from "../../../utilities/audio/useUiSoundProps";
 
 export const BigLogo = () => {
 	const showWindow = useSceneStore((store) => store.showWindow);
-
+	
 	return (
 		<div className="
 			flex flex-col place-content-center place-items-center
@@ -33,11 +34,12 @@ export const BigLogo = () => {
 			<Tooltip text="Additional Info">
 				<button
 					type="button"
+					{...useUiSoundProps()}
 					onClick={() => useSceneStore.getState().setShowWindow("info", !showWindow.info)}
 					className="
 						btn-text
 						border border-transparent hover:not-disabled:border-n6
-						text-1.5rem text-b5 focus-visible:text-n6 hover:text-n6 font-extralight tracking-widest whitespace-nowrap
+						text-1.5rem text-b5 focus:text-n6 hover:text-n6 font-extralight tracking-widest whitespace-nowrap
 						h-4rem aspect-8/1
 						outline-n6
 				">

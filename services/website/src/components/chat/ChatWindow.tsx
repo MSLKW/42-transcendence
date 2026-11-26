@@ -2,6 +2,7 @@ import { useState, useRef, useEffect } from "react";
 import { chatSocket } from "../../api/chat/chatSocket";
 import { useChatStore, MAX_MESSAGE_LENGTH } from "../../store/ChatStore";
 import { useTypingStore } from "../../store/TypingStore";
+import { playUiSound } from "../../utilities/audio/uiSounds";
 import { Window } from "../window/Window";
 import { SendButton } from "./send/SendButton";
 import { ChatMessage } from "./ChatMessage";
@@ -70,6 +71,8 @@ export const ChatWindow = () => {
 			wasTyping.current = false;
 			chatSocket.sendTyping(false);
 		}
+
+		playUiSound("chat");
 	};
 
 	return (
@@ -138,6 +141,8 @@ export const ChatWindow = () => {
 						type="text"
 						maxLength={MAX_MESSAGE_LENGTH}
 						placeholder="Message"
+						onPointerEnter={() => playUiSound("hover")}
+						onPointerDown={() => playUiSound("click")}
 						value={message}
 						onChange={handleChange}
 						className="input-chat"

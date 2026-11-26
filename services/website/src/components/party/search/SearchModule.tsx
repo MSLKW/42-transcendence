@@ -1,15 +1,18 @@
-import { useRef, useEffect } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Tooltip } from "../../../utilities/react/Tooltip";
+import { useUiSoundProps } from "../../../utilities/audio/useUiSoundProps";
 import { SearchIcon } from "./SearchIcon";
+import { playUiSound } from "../../../utilities/audio/uiSounds";
 
 interface SearchModuleProps {
 	value: string;
 	onChange: (query: string) => void;
-	search: () => void;
 }
 
-export const SearchModule = ({ value, onChange, search }: SearchModuleProps) => {
+export const SearchModule = ({ value, onChange }: SearchModuleProps) => {
 	const focusRef = useRef<HTMLInputElement | null>(null);
+	const [query, setQuery] = useState<string | null>(null);
+
 	useEffect(() => {
 		if (focusRef.current)
 			focusRef.current.focus();
@@ -29,15 +32,24 @@ export const SearchModule = ({ value, onChange, search }: SearchModuleProps) => 
 				type="text"
 				value={value}
 				placeholder="Search By Name"
-				onChange={(e) => onChange(e.target.value)}
+				onPointerEnter={() => playUiSound("hover")}
+				onPointerDown={() => playUiSound("click")}
+				onChange={(e) => {
+					setQuery(e.target.value);
+					onChange(e.target.value);
+				}}
 				className="input-chat"
 			/>
 			<Tooltip text="Search">
 				<button
 					type="button"
 					disabled={value ? false : true}
+					{...useUiSoundProps()}
+					onClick={() => {
+						if (query)
+							onChange(query);
+					}}
 					className="btn-icon bg-accent"
-					onClick={search}
 				>
 					<SearchIcon />
 				</button>

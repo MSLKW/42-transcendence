@@ -4,7 +4,7 @@ import { hasBotPrefix } from "../../../utils/botIdentifier";
 
 
 // 1. setup rules' values & schemas for PROFILE
-const SPECIAL_AVATAR_PATH = "avatar-animal-3.webp";		// TODO: determine which avatar filename is to be awarded with badge
+const SPECIAL_AVATAR_PATH = "/avatars/avatar-animal-3.webp";		// TODO: determine which avatar filename is to be awarded with badge
 const ProfileSchema = z.object({
 	username: z.string().nullable(),
 	avatarPath: z.string().nullable(),

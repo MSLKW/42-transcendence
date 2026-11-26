@@ -45,6 +45,7 @@ export function Tooltip({ text, position = "top", children }: TooltipProps) {
 			<div
 				onMouseEnter={showTooltip}
 				onMouseLeave={() => setVisible(false)}
+				className="flex flex-col"
 			>
 				{children}
 			</div>

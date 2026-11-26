@@ -26,15 +26,21 @@ export async function sendInviteAction(socket: Socket | null, recipientUuid: str
 
 		const response = await emitSendInvite(socket, recipientUuid);
 		if (!response.success) {
+			const isOffline = response.reason === "user is offline";
+			const reason = isOffline
+				? "Player is offline"
+				: response.reason ?? "Invitation could not be sent";
+
 			useNotificationStore.getState().showNotification(
-				"Cannot invite player: Player is offline",
+				`Cannot invite player: ${reason}`,
 				NOTIFICATION_TYPE.error
 			);
 
-			setAvailability(recipientUuid, "Offline");
+			if (isOffline)
+				setAvailability(recipientUuid, "Offline");
 
 			if (usePartyStore.getState().partyVerboseMode)
-				console.warn("[party > 'emit' send_invite] reason:Failed to invite player");
+				console.warn("[party > 'emit' send_invite] reason:", response.reason);
 
 			return;
 		}
